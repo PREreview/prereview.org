@@ -46,10 +46,9 @@ export const StartNow = ({
           const handleCommand = yield* Comments.HandleCommentCommand
           const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
 
-          yield* handleCommand({
-            commentId,
-            command: new Comments.StartComment({ authorId: user.orcid, prereviewId: prereview.id }),
-          })
+          yield* handleCommand(
+            new Comments.StartComment({ commentId, authorId: user.orcid, prereviewId: prereview.id }),
+          )
 
           const nextCommand = yield* Effect.flatten(getNextExpectedCommandForUserOnAComment(commentId))
 

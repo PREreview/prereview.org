@@ -90,10 +90,7 @@ export const CheckPageSubmission = ({
           const handleCommand = yield* Comments.HandleCommentCommand
 
           yield* pipe(
-            handleCommand({
-              commentId,
-              command: new Comments.PublishComment(),
-            }),
+            handleCommand(new Comments.PublishComment({ commentId })),
             Effect.catchIf(
               cause => cause._tag !== 'UnableToHandleCommand',
               cause => new Comments.UnableToHandleCommand({ cause }),

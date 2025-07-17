@@ -104,10 +104,7 @@ export const EnterCommentSubmission = ({
                 const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
-                  handleCommand({
-                    commentId,
-                    command: new Comments.EnterComment({ comment: form.comment }),
-                  }),
+                  handleCommand(new Comments.EnterComment({ commentId, comment: form.comment })),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
                     cause => new Comments.UnableToHandleCommand({ cause }),

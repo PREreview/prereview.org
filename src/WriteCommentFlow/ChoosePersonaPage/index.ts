@@ -105,10 +105,7 @@ export const ChoosePersonaSubmission = ({
                 const getNextExpectedCommandForUserOnAComment = yield* Comments.GetNextExpectedCommandForUserOnAComment
 
                 yield* pipe(
-                  handleCommand({
-                    commentId,
-                    command: new Comments.ChoosePersona({ persona: form.persona }),
-                  }),
+                  handleCommand(new Comments.ChoosePersona({ commentId, persona: form.persona })),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
                     cause => new Comments.UnableToHandleCommand({ cause }),

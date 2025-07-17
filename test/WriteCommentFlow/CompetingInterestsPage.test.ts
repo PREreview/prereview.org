@@ -211,13 +211,13 @@ describe('CompetingInterestsSubmission', () => {
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
-            expect(handleCommentCommand).toHaveBeenCalledWith({
-              commentId,
-              command: new Comments.DeclareCompetingInterests({
+            expect(handleCommentCommand).toHaveBeenCalledWith(
+              new Comments.DeclareCompetingInterests({
+                commentId,
                 competingInterests:
                   body.competingInterests === 'yes' ? Option.some(body.competingInterestsDetails) : Option.none(),
               }),
-            })
+            )
             expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),

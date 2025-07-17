@@ -61,10 +61,7 @@ export const EnterEmailAddressPage = ({
                     const handleCommand = yield* Comments.HandleCommentCommand
 
                     yield* pipe(
-                      handleCommand({
-                        commentId,
-                        command: new Comments.ConfirmExistenceOfVerifiedEmailAddress(),
-                      }),
+                      handleCommand(new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId })),
                       Effect.catchIf(
                         cause => cause._tag !== 'UnableToHandleCommand',
                         cause => new Comments.UnableToHandleCommand({ cause }),

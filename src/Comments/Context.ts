@@ -41,10 +41,7 @@ export class GetComment extends Context.Tag('GetComment')<
 
 export class HandleCommentCommand extends Context.Tag('HandleCommentCommand')<
   HandleCommentCommand,
-  (params: {
-    readonly commentId: Uuid.Uuid
-    readonly command: CommentCommand
-  }) => Effect.Effect<void, UnableToHandleCommand | CommentError>
+  (command: CommentCommand) => Effect.Effect<void, UnableToHandleCommand | CommentError>
 >() {}
 
 export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZenodoForComment')<

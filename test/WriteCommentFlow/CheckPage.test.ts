@@ -225,10 +225,7 @@ describe('CheckPageSubmission', () => {
             location: Routes.WriteCommentPublishing.href({ commentId }),
           })
 
-          expect(handleCommentCommand).toHaveBeenCalledWith({
-            commentId,
-            command: new Comments.PublishComment(),
-          })
+          expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.PublishComment({ commentId }))
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),

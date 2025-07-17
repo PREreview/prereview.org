@@ -211,10 +211,9 @@ describe('EnterCommentSubmission', () => {
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
-            expect(handleCommentCommand).toHaveBeenCalledWith({
-              commentId,
-              command: new Comments.EnterComment({ comment: body.comment }),
-            })
+            expect(handleCommentCommand).toHaveBeenCalledWith(
+              new Comments.EnterComment({ commentId, comment: body.comment }),
+            )
             expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),

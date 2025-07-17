@@ -102,10 +102,7 @@ export const CodeOfConductSubmission = ({
                 const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
-                  handleCommand({
-                    commentId,
-                    command: new Comments.AgreeToCodeOfConduct(),
-                  }),
+                  handleCommand(new Comments.AgreeToCodeOfConduct({ commentId })),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
                     cause => new Comments.UnableToHandleCommand({ cause }),

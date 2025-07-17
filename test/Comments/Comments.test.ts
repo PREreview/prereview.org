@@ -4,7 +4,7 @@ import { Option } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
-import { NonEmptyString } from '../../src/types/index.js'
+import { NonEmptyString, Uuid } from '../../src/types/index.js'
 import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
 const given = CommandHandlerSpecification.for({
@@ -16,85 +16,89 @@ const given = CommandHandlerSpecification.for({
 describe('when not started', () => {
   test('can be started', () =>
     given()
-      .when(new _.StartComment({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ commentId, prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') }))
       .then(new _.CommentWasStarted({ prereviewId: 89935, authorId: Orcid('0000-0002-1825-0097') })))
 
   test('cannot enter the comment', () =>
     given()
-      .when(new _.EnterComment({ comment: html`<p>Some comment.</p>` }))
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some comment.</p>` }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot choose persona', () =>
     given()
-      .when(new _.ChoosePersona({ persona: 'public' }))
+      .when(new _.ChoosePersona({ commentId, persona: 'public' }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot declare competing interests', () =>
     given()
-      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
+      .when(new _.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot agree to the code of conduct', () =>
-    given().when(new _.AgreeToCodeOfConduct()).thenError(new _.CommentHasNotBeenStarted()))
+    given().when(new _.AgreeToCodeOfConduct({ commentId })).thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot confirm the existence of a verified email address', () =>
-    given().when(new _.ConfirmExistenceOfVerifiedEmailAddress()).thenError(new _.CommentHasNotBeenStarted()))
+    given()
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
+      .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishComment()).thenError(new _.CommentHasNotBeenStarted()))
+    given().when(new _.PublishComment({ commentId })).thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot request publication', () =>
-    given().when(new _.PublishComment()).thenError(new _.CommentHasNotBeenStarted()))
+    given().when(new _.PublishComment({ commentId })).thenError(new _.CommentHasNotBeenStarted()))
 
   test('DOI cannot be marked as assigned', () =>
     given()
-      .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+      .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given().when(new _.MarkCommentAsPublished()).thenError(new _.CommentHasNotBeenStarted()))
+    given().when(new _.MarkCommentAsPublished({ commentId })).thenError(new _.CommentHasNotBeenStarted()))
 })
 
 describe('when in progress', () => {
   const started = new _.CommentWasStarted({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') })
   test('cannot be started again', () =>
     given(started)
-      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ commentId, prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can enter the comment', () =>
     given(started)
-      .when(new _.EnterComment({ comment: html`<p>Some comment.</p>` }))
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some comment.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some comment.</p>` })))
 
   test('can choose persona', () =>
     given(started)
-      .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .when(new _.ChoosePersona({ commentId, persona: 'pseudonym' }))
       .then(new _.PersonaForCommentWasChosen({ persona: 'pseudonym' })))
 
   test('can declare competing interests', () =>
     given(started)
-      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
+      .when(new _.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }))
       .then(new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() })))
 
   test('can agree to the code of conduct', () =>
-    given(started).when(new _.AgreeToCodeOfConduct()).then(new _.CodeOfConductForCommentWasAgreed()))
+    given(started).when(new _.AgreeToCodeOfConduct({ commentId })).then(new _.CodeOfConductForCommentWasAgreed()))
 
   test('re-agreeing to the code of conduct does nothing', () =>
-    given(started, new _.CodeOfConductForCommentWasAgreed()).when(new _.AgreeToCodeOfConduct()).thenNothing())
+    given(started, new _.CodeOfConductForCommentWasAgreed())
+      .when(new _.AgreeToCodeOfConduct({ commentId }))
+      .thenNothing())
 
   test('can confirm the existence of a verified email address', () =>
     given(started)
-      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
       .then(new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed()))
 
   test('re-confirming the existence of a verified email address does nothing', () =>
     given(started, new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed())
-      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
       .thenNothing())
 
   test('cannot request publication', () =>
-    given(started).when(new _.PublishComment()).thenError(new _.CommentIsIncomplete()))
+    given(started).when(new _.PublishComment({ commentId })).thenError(new _.CommentIsIncomplete()))
 
   test('cannot request publication', () =>
     given(
@@ -104,16 +108,16 @@ describe('when in progress', () => {
       new _.CompetingInterestsForCommentWereDeclared({ competingInterests: Option.none() }),
       new _.CodeOfConductForCommentWasAgreed(),
     )
-      .when(new _.PublishComment())
+      .when(new _.PublishComment({ commentId }))
       .thenError(new _.CommentIsIncomplete()))
 
   test('DOI cannot be marked as assigned', () =>
     given(started)
-      .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+      .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given(started).when(new _.MarkCommentAsPublished()).thenError(new _.CommentIsIncomplete()))
+    given(started).when(new _.MarkCommentAsPublished({ commentId })).thenError(new _.CommentIsIncomplete()))
 })
 
 describe('when ready for publication', () => {
@@ -128,23 +132,24 @@ describe('when ready for publication', () => {
 
   test('cannot be started again', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ commentId, prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyStarted()))
 
   test('can re-enter the comment', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some different comment.</p>` }))
       .then(new _.CommentWasEntered({ comment: html`<p>Some different comment.</p>` })))
 
   test('can choose persona', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .when(new _.ChoosePersona({ commentId, persona: 'pseudonym' }))
       .then(new _.PersonaForCommentWasChosen({ persona: 'pseudonym' })))
 
   test('can re-declare competing interests', () =>
     given(...minimumEventsToBeReady)
       .when(
         new _.DeclareCompetingInterests({
+          commentId,
           competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
         }),
       )
@@ -156,27 +161,27 @@ describe('when ready for publication', () => {
 
   test('agreeing to the code of conduct does nothing', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.AgreeToCodeOfConduct())
+      .when(new _.AgreeToCodeOfConduct({ commentId }))
       .thenNothing())
 
   test('re-confirming the existence of a verified email address does nothing', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
       .thenNothing())
 
   test('can request publication', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.PublishComment())
+      .when(new _.PublishComment({ commentId }))
       .then(new _.PublicationOfCommentWasRequested()))
 
   test('DOI can be marked as assigned', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+      .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .then(new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 
   test('cannot be marked as published', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.MarkCommentAsPublished())
+      .when(new _.MarkCommentAsPublished({ commentId }))
       .thenError(new _.DoiIsNotAssigned()))
 })
 
@@ -191,7 +196,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ commentId, prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot re-enter the comment', () =>
@@ -204,7 +209,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some different comment.</p>` }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot choose a new persona', () =>
@@ -217,7 +222,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .when(new _.ChoosePersona({ commentId, persona: 'pseudonym' }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot declare competing interests', () =>
@@ -230,7 +235,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
+      .when(new _.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot agree to the code of conduct', () =>
@@ -243,7 +248,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.AgreeToCodeOfConduct())
+      .when(new _.AgreeToCodeOfConduct({ commentId }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('cannot confirm the existence of a verified email address', () =>
@@ -256,7 +261,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
       .thenError(new _.CommentIsBeingPublished()))
 
   test('re-requesting publication does nothing', () =>
@@ -269,7 +274,7 @@ describe('when being published', () => {
       new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
       new _.PublicationOfCommentWasRequested(),
     )
-      .when(new _.PublishComment())
+      .when(new _.PublishComment({ commentId }))
       .thenNothing())
 
   describe("when a DOI hasn't been assigned", () => {
@@ -283,7 +288,7 @@ describe('when being published', () => {
         new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
         new _.PublicationOfCommentWasRequested(),
       )
-        .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+        .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
         .then(new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') })))
 
     test('cannot be marked as published', () =>
@@ -296,7 +301,7 @@ describe('when being published', () => {
         new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(),
         new _.PublicationOfCommentWasRequested(),
       )
-        .when(new _.MarkCommentAsPublished())
+        .when(new _.MarkCommentAsPublished({ commentId }))
         .thenError(new _.DoiIsNotAssigned()))
   })
 
@@ -312,7 +317,7 @@ describe('when being published', () => {
         new _.PublicationOfCommentWasRequested(),
         new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
-        .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+        .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
         .thenError(new _.DoiIsAlreadyAssigned()))
 
     test('can be marked as published', () =>
@@ -326,7 +331,7 @@ describe('when being published', () => {
         new _.PublicationOfCommentWasRequested(),
         new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
-        .when(new _.MarkCommentAsPublished())
+        .when(new _.MarkCommentAsPublished({ commentId }))
         .then(new _.CommentWasPublished()))
   })
 })
@@ -343,7 +348,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.StartComment({ prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
+      .when(new _.StartComment({ commentId, prereviewId: 123, authorId: Orcid('0000-0002-1825-0097') }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot re-enter the comment', () =>
@@ -357,7 +362,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.EnterComment({ comment: html`<p>Some different comment.</p>` }))
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some different comment.</p>` }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot choose a new persona', () =>
@@ -371,7 +376,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.ChoosePersona({ persona: 'pseudonym' }))
+      .when(new _.ChoosePersona({ commentId, persona: 'pseudonym' }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot declare competing interests', () =>
@@ -385,7 +390,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.DeclareCompetingInterests({ competingInterests: Option.none() }))
+      .when(new _.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot re-agree to the code of conduct', () =>
@@ -399,7 +404,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.AgreeToCodeOfConduct())
+      .when(new _.AgreeToCodeOfConduct({ commentId }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot confirm the existence of a verified email address', () =>
@@ -413,7 +418,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.ConfirmExistenceOfVerifiedEmailAddress())
+      .when(new _.ConfirmExistenceOfVerifiedEmailAddress({ commentId }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot be re-request publication', () =>
@@ -427,7 +432,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.PublishComment())
+      .when(new _.PublishComment({ commentId }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('DOI cannot be re-assigned', () =>
@@ -441,7 +446,7 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.MarkDoiAsAssigned({ id: 107286, doi: Doi('10.5072/zenodo.107286') }))
+      .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
   test('cannot be re-marked as published', () =>
@@ -455,6 +460,8 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished(),
     )
-      .when(new _.MarkCommentAsPublished())
+      .when(new _.MarkCommentAsPublished({ commentId }))
       .thenError(new _.CommentWasAlreadyPublished()))
 })
+
+const commentId = Uuid.Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8')

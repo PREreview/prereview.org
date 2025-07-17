@@ -36,12 +36,8 @@ export const CheckIfUserHasAVerifiedEmailAddress = (
       return
     }
 
-    yield* Effect.mapError(
-      handleCommand({
-        commentId,
-        command: new ConfirmExistenceOfVerifiedEmailAddress(),
-      }),
-      error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
+    yield* Effect.mapError(handleCommand(new ConfirmExistenceOfVerifiedEmailAddress({ commentId })), error =>
+      error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
     )
   })
 
@@ -63,12 +59,7 @@ export const AssignCommentADoiWhenPublicationWasRequested = ({
     yield* pipe(
       inputForCommentZenodoRecord,
       createRecordOnZenodoForComment,
-      Effect.andThen(([doi, id]) =>
-        handleCommand({
-          commentId,
-          command: new MarkDoiAsAssigned({ doi, id }),
-        }),
-      ),
+      Effect.andThen(([doi, id]) => handleCommand(new MarkDoiAsAssigned({ commentId, doi, id }))),
     )
   })
 
@@ -85,11 +76,7 @@ export const PublishCommentWhenCommentWasAssignedADoi = ({
 
     yield* publishCommentOnZenodo(event.id)
 
-    yield* Effect.mapError(
-      handleCommand({
-        commentId,
-        command: new MarkCommentAsPublished(),
-      }),
-      error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
+    yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId })), error =>
+      error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
     )
   })

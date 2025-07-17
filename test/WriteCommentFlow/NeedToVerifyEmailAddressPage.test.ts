@@ -48,10 +48,9 @@ describe('NeedToVerifyEmailAddressPage', () => {
                 location: RouteForCommand(nextCommand).href({ commentId }),
               })
 
-              expect(handleCommentCommand).toHaveBeenCalledWith({
-                commentId,
-                command: new Comments.ConfirmExistenceOfVerifiedEmailAddress(),
-              })
+              expect(handleCommentCommand).toHaveBeenCalledWith(
+                new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId }),
+              )
               expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
             }).pipe(
               Effect.provideService(Locale, locale),

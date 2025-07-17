@@ -207,10 +207,7 @@ describe('CodeOfConductSubmission', () => {
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
-            expect(handleCommentCommand).toHaveBeenCalledWith({
-              commentId,
-              command: new Comments.AgreeToCodeOfConduct(),
-            })
+            expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.AgreeToCodeOfConduct({ commentId }))
             expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),

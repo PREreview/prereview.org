@@ -59,10 +59,9 @@ describe('StartNow', () => {
             location: RouteForCommand(nextCommand).href({ commentId }),
           })
 
-          expect(handleCommentCommand).toHaveBeenCalledWith({
-            commentId,
-            command: new Comments.StartComment({ prereviewId: prereview.id, authorId: user.orcid }),
-          })
+          expect(handleCommentCommand).toHaveBeenCalledWith(
+            new Comments.StartComment({ commentId, prereviewId: prereview.id, authorId: user.orcid }),
+          )
           expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
         }).pipe(
           Effect.provideService(Locale, locale),

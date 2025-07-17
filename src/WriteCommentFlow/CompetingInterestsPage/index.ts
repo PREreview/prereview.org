@@ -102,12 +102,12 @@ export const CompetingInterestsSubmission = ({
                 const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
-                  handleCommand({
-                    commentId,
-                    command: new Comments.DeclareCompetingInterests({
+                  handleCommand(
+                    new Comments.DeclareCompetingInterests({
+                      commentId,
                       competingInterests: Option.some(form.competingInterestsDetails),
                     }),
-                  }),
+                  ),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
                     cause => new Comments.UnableToHandleCommand({ cause }),
@@ -125,12 +125,9 @@ export const CompetingInterestsSubmission = ({
                 const handleCommand = yield* Comments.HandleCommentCommand
 
                 yield* pipe(
-                  handleCommand({
-                    commentId,
-                    command: new Comments.DeclareCompetingInterests({
-                      competingInterests: Option.none(),
-                    }),
-                  }),
+                  handleCommand(
+                    new Comments.DeclareCompetingInterests({ commentId, competingInterests: Option.none() }),
+                  ),
                   Effect.catchIf(
                     cause => cause._tag !== 'UnableToHandleCommand',
                     cause => new Comments.UnableToHandleCommand({ cause }),

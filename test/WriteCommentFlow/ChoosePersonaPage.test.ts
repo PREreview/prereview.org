@@ -208,10 +208,9 @@ describe('ChoosePersonaSubmission', () => {
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
-            expect(handleCommentCommand).toHaveBeenCalledWith({
-              commentId,
-              command: new Comments.ChoosePersona({ persona: body.persona }),
-            })
+            expect(handleCommentCommand).toHaveBeenCalledWith(
+              new Comments.ChoosePersona({ commentId, persona: body.persona }),
+            )
             expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
           }).pipe(
             Effect.provideService(Locale, locale),

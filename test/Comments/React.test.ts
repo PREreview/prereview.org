@@ -20,10 +20,9 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
           handleCommentCommand,
         )
 
-        expect(handleCommentCommand).toHaveBeenCalledWith({
-          commentId,
-          command: new Comments.ConfirmExistenceOfVerifiedEmailAddress(),
-        })
+        expect(handleCommentCommand).toHaveBeenCalledWith(
+          new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId }),
+        )
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
@@ -117,10 +116,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
           handleCommentCommand,
         )
 
-        expect(handleCommentCommand).toHaveBeenCalledWith({
-          commentId,
-          command: new Comments.MarkDoiAsAssigned({ doi, id }),
-        })
+        expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkDoiAsAssigned({ commentId, doi, id }))
       }).pipe(
         Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
         EffectTest.run,
@@ -174,10 +170,7 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
         handleCommentCommand,
       )
 
-      expect(handleCommentCommand).toHaveBeenCalledWith({
-        commentId,
-        command: new Comments.MarkCommentAsPublished(),
-      })
+      expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkCommentAsPublished({ commentId }))
     }).pipe(
       Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
       EffectTest.run,
