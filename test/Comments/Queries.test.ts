@@ -41,9 +41,7 @@ describe('GetNextExpectedCommandForUser', () => {
   const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({
-    competingInterests: Option.none(),
-  })
+  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed()
   const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
     new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed()
 
@@ -166,7 +164,7 @@ describe('GetNextExpectedCommandForUser', () => {
     (authorId, prereviewId, resourceId) => {
       const events = [
         {
-          event: new Comments.PublicationOfCommentWasRequested({ prereviewId, authorId }),
+          event: new Comments.PublicationOfCommentWasRequested(),
           resourceId,
         },
       ]
@@ -187,9 +185,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({
-    competingInterests: Option.none(),
-  })
+  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed()
   const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
     new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed()
 
@@ -267,25 +263,19 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
   })
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
-    'when the comment is being published',
-    (authorId, prereviewId, resourceId) => {
-      const events = [new Comments.PublicationOfCommentWasRequested({ prereviewId, authorId })]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
+  test.prop([fc.uuid()])('when the comment is being published', resourceId => {
+    const events = [new Comments.PublicationOfCommentWasRequested()]
+    const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-      expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
-    },
-  )
+    expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
+  })
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
-    'when the comment has been published',
-    (authorId, prereviewId, resourceId) => {
-      const events = [new Comments.PublicationOfCommentWasRequested({ prereviewId, authorId })]
-      const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
+  test.prop([fc.uuid()])('when the comment has been published', resourceId => {
+    const events = [new Comments.CommentWasPublished()]
+    const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
-      expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))
-    },
-  )
+    expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))
+  })
 })
 
 describe('buildInputForCommentZenodoRecord', () => {
@@ -297,9 +287,7 @@ describe('buildInputForCommentZenodoRecord', () => {
   const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({
-    competingInterests: Option.none(),
-  })
+  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed()
   const publicationOfCommentWasRequested = new Comments.PublicationOfCommentWasRequested()
 
   test('builds input', () => {
