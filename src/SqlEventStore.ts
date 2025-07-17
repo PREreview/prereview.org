@@ -29,7 +29,7 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
         resource_id TEXT NOT NULL,
         resource_version INTEGER NOT NULL,
         event_type TEXT NOT NULL,
-        event_timestamp TEXT NOT NULL,
+        event_timestamp TIMESTAMPTZ NOT NULL,
         payload JSONB NOT NULL,
         FOREIGN KEY (resource_id) REFERENCES resources (id),
         UNIQUE (resource_id, resource_version)
@@ -382,7 +382,9 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
       resourceVersion: Schema.propertySignature(Schema.Union(Schema.NumberFromString, Schema.Number)).pipe(
         Schema.fromKey('resource_version'),
       ),
-      eventTimestamp: Schema.propertySignature(Schema.DateTimeUtc).pipe(Schema.fromKey('event_timestamp')),
+      eventTimestamp: Schema.propertySignature(Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate)).pipe(
+        Schema.fromKey('event_timestamp'),
+      ),
       eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
       payload: Schema.Union(
         Schema.Record({ key: Schema.String, value: Schema.Unknown }),
