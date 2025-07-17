@@ -36,36 +36,6 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       )
     `
 
-    yield* sql.withTransaction(
-      sql.onDialectOrElse({
-        pg: () =>
-          pipe(
-            sql`
-              SELECT
-                1
-              FROM
-                INFORMATION_SCHEMA.COLUMNS
-              WHERE
-                table_name = 'events'
-                AND column_name = 'payload'
-                AND data_type = 'text'
-            `,
-            Effect.andThen(
-              Array.match({
-                onEmpty: () => Effect.void,
-                onNonEmpty: () => sql`
-                  DROP INDEX IF EXISTS events_resource_id_idx;
-
-                  ALTER TABLE events
-                  ALTER COLUMN payload TYPE JSONB USING payload::jsonb;
-                `,
-              }),
-            ),
-          ),
-        orElse: () => Effect.void,
-      }),
-    )
-
     yield* sql.onDialectOrElse({
       pg: () => sql`
         CREATE INDEX IF NOT EXISTS events_resource_id_idx ON events (resource_id) STORING (
@@ -74,63 +44,6 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
           event_timestamp,
           payload
         )
-      `,
-      orElse: () => Effect.void,
-    })
-
-    yield* sql.onDialectOrElse({
-      pg: () =>
-        sql.withTransaction(sql`
-          UPDATE events
-          SET
-            event_type = 'PersonaForCommentWasChosen'
-          WHERE
-            event_type = 'PersonaWasChosen';
-
-          UPDATE events
-          SET
-            event_type = 'CompetingInterestsForCommentWereDeclared'
-          WHERE
-            event_type = 'CompetingInterestsWereDeclared';
-
-          UPDATE events
-          SET
-            event_type = 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'
-          WHERE
-            event_type = 'ExistenceOfVerifiedEmailAddressWasConfirmed';
-
-          UPDATE events
-          SET
-            event_type = 'PublicationOfCommentWasRequested'
-          WHERE
-            event_type = 'CommentPublicationWasRequested';
-
-          UPDATE events
-          SET
-            event_type = 'CommentWasAssignedADoi'
-          WHERE
-            event_type = 'DoiWasAssigned';
-        `),
-      orElse: () => Effect.void,
-    })
-
-    yield* sql.onDialectOrElse({
-      pg: () => sql`
-        UPDATE events
-        SET
-          payload = jsonb_set(payload, '{commentId}', to_jsonb(resource_id))
-        WHERE
-          ${sql.in('event_type', [
-          'CommentWasStarted',
-          'CommentWasEntered',
-          'PersonaForCommentWasChosen',
-          'CompetingInterestsForCommentWereDeclared',
-          'CodeOfConductForCommentWasAgreed',
-          'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed',
-          'PublicationOfCommentWasRequested',
-          'CommentWasAssignedADoi',
-          'CommentWasPublished',
-        ])}
       `,
       orElse: () => Effect.void,
     })
