@@ -88,7 +88,7 @@ pipe(
         canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),
         canSeeHomePageChanges: pipe(
           Config.withDefault(Config.boolean('CAN_SEE_HOME_PAGE_CHANGES'), false),
-          Config.map(canSeeHomePageChanges => user => canSeeHomePageChanges && isPrereviewTeam(user)),
+          Config.map(canSeeHomePageChanges => () => canSeeHomePageChanges),
         ),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
