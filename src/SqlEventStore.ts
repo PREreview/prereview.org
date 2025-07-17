@@ -78,37 +78,41 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       orElse: () => Effect.void,
     })
 
-    yield* sql.withTransaction(sql`
-      UPDATE events
-      SET
-        event_type = 'PersonaForCommentWasChosen'
-      WHERE
-        event_type = 'PersonaWasChosen';
+    yield* sql.onDialectOrElse({
+      pg: () =>
+        sql.withTransaction(sql`
+          UPDATE events
+          SET
+            event_type = 'PersonaForCommentWasChosen'
+          WHERE
+            event_type = 'PersonaWasChosen';
 
-      UPDATE events
-      SET
-        event_type = 'CompetingInterestsForCommentWereDeclared'
-      WHERE
-        event_type = 'CompetingInterestsWereDeclared';
+          UPDATE events
+          SET
+            event_type = 'CompetingInterestsForCommentWereDeclared'
+          WHERE
+            event_type = 'CompetingInterestsWereDeclared';
 
-      UPDATE events
-      SET
-        event_type = 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'
-      WHERE
-        event_type = 'ExistenceOfVerifiedEmailAddressWasConfirmed';
+          UPDATE events
+          SET
+            event_type = 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'
+          WHERE
+            event_type = 'ExistenceOfVerifiedEmailAddressWasConfirmed';
 
-      UPDATE events
-      SET
-        event_type = 'PublicationOfCommentWasRequested'
-      WHERE
-        event_type = 'CommentPublicationWasRequested';
+          UPDATE events
+          SET
+            event_type = 'PublicationOfCommentWasRequested'
+          WHERE
+            event_type = 'CommentPublicationWasRequested';
 
-      UPDATE events
-      SET
-        event_type = 'CommentWasAssignedADoi'
-      WHERE
-        event_type = 'DoiWasAssigned';
-    `)
+          UPDATE events
+          SET
+            event_type = 'CommentWasAssignedADoi'
+          WHERE
+            event_type = 'DoiWasAssigned';
+        `),
+      orElse: () => Effect.void,
+    })
 
     const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
       const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
