@@ -48,6 +48,18 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       orElse: () => Effect.void,
     })
 
+    yield* sql.onDialectOrElse({
+      pg: () => sql`
+        UPDATE events
+        SET
+          event_type = 'CodeOfConductForCommentWasAgreed',
+          payload = jsonb_set(payload, '{commentId}', to_jsonb(resource_id))
+        WHERE
+          event_type = 'CodeOfConductWasAgreed';
+      `,
+      orElse: () => Effect.void,
+    })
+
     const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
       const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
 
