@@ -37,36 +37,6 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
     `
 
     yield* sql.onDialectOrElse({
-      pg: () =>
-        sql.withTransaction(
-          pipe(
-            sql`
-              SELECT
-                1
-              FROM
-                INFORMATION_SCHEMA.COLUMNS
-              WHERE
-                table_name = 'events'
-                AND column_name = 'event_timestamp'
-                AND data_type = 'text'
-            `,
-            Effect.andThen(
-              Array.match({
-                onEmpty: () => Effect.void,
-                onNonEmpty: () => sql`
-                  DROP INDEX IF EXISTS events_resource_id_idx;
-
-                  ALTER TABLE events
-                  ALTER COLUMN event_timestamp TYPE TIMESTAMPTZ USING event_timestamp::timestamptz;
-                `,
-              }),
-            ),
-          ),
-        ),
-      orElse: () => Effect.void,
-    })
-
-    yield* sql.onDialectOrElse({
       pg: () => sql`
         CREATE INDEX IF NOT EXISTS events_resource_id_idx ON events (resource_id) STORING (
           resource_version,
@@ -74,18 +44,6 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
           event_timestamp,
           payload
         )
-      `,
-      orElse: () => Effect.void,
-    })
-
-    yield* sql.onDialectOrElse({
-      pg: () => sql`
-        UPDATE events
-        SET
-          event_type = 'CodeOfConductForCommentWasAgreed',
-          payload = jsonb_set(payload, '{commentId}', to_jsonb(resource_id))
-        WHERE
-          event_type = 'CodeOfConductWasAgreed';
       `,
       orElse: () => Effect.void,
     })
