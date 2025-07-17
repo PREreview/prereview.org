@@ -12,13 +12,16 @@
     "message": "Antes de comenzar"
   },
   "orcidLogIn": {
-    "message": "Te pediremos que inicies sesión con tu iD de ORCID. Si no tienes un iD, puedes crear uno."
+    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un ORCID iD, puedes crear uno."
   },
   "whatIsOrcidHeading": {
     "message": "¿Qué es un ORCID iD?"
   },
   "whatIsOrcid": {
     "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las demás personas con el mismo nombre o similar."
+  },
+  "reloadPageButton": {
+    "message": "Recargar página"
   },
   "carryOnMessage": {
     "message": "Como ya has comenzado un comentario en este PREreview del {preprint}, te llevaremos al siguiente paso para que puedas continuar.{preprint}."

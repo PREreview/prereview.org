@@ -2,6 +2,9 @@
   "prereviewsOf": {
     "message": "PREreviews de {preprint}"
   },
+  "preprintDetails": {
+    "message": "Detalles del preprint"
+  },
   "abstractHeading": {
     "message": "Resumen"
   },
@@ -21,7 +24,7 @@
     "message": "{number, plural, one {{number, number} PREreview} other {{number, number} PREreviews}}"
   },
   "writeAPrereview": {
-    "message": "Escribir una PREreview"
+    "message": "Redactar una PREreview"
   },
   "requestAPrereview": {
     "message": "Solicitar una PREreview"
@@ -29,8 +32,14 @@
   "prereviewByOneAuthor": {
     "message": "PREreview de {author}"
   },
+  "prereviewByOneAuthorInClub": {
+    "message": "PREreview de {author} en {club}"
+  },
   "prereviewByMultipleAuthors": {
     "message": "PREreview de {author} y colaboradores/as"
+  },
+  "prereviewByMultipleAuthorsInClub": {
+    "message": "PREreview de {author} y otros/as en {club}"
   },
   "otherAuthors": {
     "message": "{number, plural, one {{number, number} other author} other {{number, number} otros/as autores/as}}"
@@ -38,11 +47,20 @@
   "authoredBy": {
     "message": "<visuallyHidden>Escrito</visuallyHidden> por {authors}"
   },
+  "authoredByInClub": {
+    "message": "<visuallyHidden>Redactada</visuallyHidden> por {authors} en {club}"
+  },
   "readPrereviewByOneAuthor": {
     "message": "Leer <visuallyHidden>la PREreview de {author}</visuallyHidden>"
   },
+  "readPrereviewByOneAuthorInClub": {
+    "message": "Leer <visuallyHidden>la PREreview de {author} en {club}</visuallyHidden>"
+  },
   "readPrereviewByMultipleAuthors": {
     "message": "Leer <visuallyHidden>la PREreview de {author} y colaboradores/as</visuallyHidden>"
+  },
+  "readPrereviewByMultipleAuthorsInClub": {
+    "message": "Leer <visuallyHidden>la PREreview de {author} et al en {club}</visuallyHidden>"
   },
   "rapidPrereviews": {
     "message": "{number, plural, one {{number, number} Rapid PREreview} other {{number, number} Rapid PREreviews}}"
@@ -54,7 +72,7 @@
     "message": "Recientemente hemos reemplazado las Rapid PREreviews con <link>PREreviews estructuradas</link>."
   },
   "writeStructuredPrereview": {
-    "message": "Ahora puedes <link>escribir una PREreview estructurada</link>."
+    "message": "Ahora puedes <link>redactar una PREreview estructurada</link>."
   },
   "updatingRapidPrereviews": {
     "message": "Pronto actualizaremos Rapid PREreviews antiguas como estas."

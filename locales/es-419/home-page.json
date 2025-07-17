@@ -11,6 +11,42 @@
   "requestReviewButton": {
     "message": "Solicitar una revisión"
   },
+  "trainingTitle": {
+    "message": "Capacitación en revisión por pares"
+  },
+  "trainingText": {
+    "message": "Talleres interactivos para organizaciones e instituciones que buscan ayudar a sus miembros a perfeccionar sus habilidades como revisores/as."
+  },
+  "trainingLink": {
+    "message": "Lee acerca de nuestros talleres de capacitación"
+  },
+  "liveReviewsTitle": {
+    "message": "Revisiones en vivo"
+  },
+  "liveReviewsText": {
+    "message": "Celebramos sesiones colaborativas e interactivas de revisión de preprints como un enfoque alternativo a la revisión por pares tradicional."
+  },
+  "liveReviewsLink": {
+    "message": "Más detalles sobre Revisiones en vivo"
+  },
+  "clubsTitle": {
+    "message": "Clubes de PREreview"
+  },
+  "clubsText": {
+    "message": "Inicia o únete a uno de nuestros grupos de revisión de preprints; en estos, sus integrantes colaboran para ofrecer retroalimentación oportuna y constructiva."
+  },
+  "clubsLink": {
+    "message": "Conoce nuestros numerosos Clubes de PREreview"
+  },
+  "missionTitle": {
+    "message": "Existe un mejor camino para investigadores/as con dificultades de acceso"
+  },
+  "missionText": {
+    "message": "Brindamos apoyo y fomentamos la participación de comunidades de investigadores/as diversas e históricamente excluidas (particularmente quienes están en etapas tempranas de su carrera) para que puedan encontrar su voz, capacitarse y participar en la revisión por pares."
+  },
+  "missionLink": {
+    "message": "Más detalles sobre nuestra misión"
+  },
   "overviewUnderservedResearchersTitle": {
     "message": "Para investigadores(as) con dificultades de acceso"
   },

@@ -8,6 +8,9 @@
   "ownPreprint": {
     "message": "Lo sentimos, no puedes revisar tu propio preprint"
   },
+  "unableToPublish": {
+    "message": "No nos fue posible publicar tu PREreview. Guardamos tu trabajo."
+  },
   "tryAgainLater": {
     "message": "Por favor intentar de nuevo más tarde regresando a esta página."
   },
@@ -217,6 +220,9 @@
   },
   "letCommunityKnow": {
     "message": "Haz saber a la comunidad que publicaste tu revisión."
+  },
+  "shareOnBluesky": {
+    "message": "Compártelo en Bluesky"
   },
   "shareOnLinkedin": {
     "message": "Compártelo en LinkedIn"
@@ -559,6 +565,9 @@
   },
   "unacceptableBehaviourSexualisedLanguage": {
     "message": "Uso de lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseados."
+  },
+  "unacceptableBehaviourReviewingOwnPreprint": {
+    "message": "Revisar tu propio preprint."
   },
   "unacceptableBehaviourInappropriate": {
     "message": "Cualquier otra conducta que pudiera considerarse razonablemente inapropiada en un entorno profesional."

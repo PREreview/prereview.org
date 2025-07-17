@@ -20,6 +20,9 @@
   "reviewAuthors": {
     "message": "<hide>Escrita</hide> por {authors}"
   },
+  "clubReviewAuthors": {
+    "message": "<hide>Redactada</hide> por {authors} del {club}"
+  },
   "otherAuthors": {
     "message": "{otherAuthors, plural, one {{otherAuthors, number} otro/a autor/a} other {{otherAuthors, number} otros/as autores/as}}"
   },
