@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, Match, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
+import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
 import * as ReviewPage from '../review-page/index.js'
 import type { Uuid } from '../types/index.js'
 import {
@@ -49,12 +49,17 @@ export const makeHandleCommentCommand: Effect.Effect<
       yield* pipe(
         DecideComment(state)(command),
         Effect.tap(
-          Array.match({
-            onEmpty: () => Effect.void,
-            onNonEmpty: events => eventStore.commitEvents(command.commentId, latestVersion)(...events),
+          Option.match({
+            onNone: () => Effect.void,
+            onSome: event => eventStore.commitEvents(command.commentId, latestVersion)(event),
           }),
         ),
-        Effect.andThen(Effect.forEach(event => PubSub.publish(commentEvents, { commentId: command.commentId, event }))),
+        Effect.tap(
+          Option.match({
+            onNone: () => Effect.void,
+            onSome: event => PubSub.publish(commentEvents, { commentId: command.commentId, event }),
+          }),
+        ),
       )
     }).pipe(
       Effect.catchTag(

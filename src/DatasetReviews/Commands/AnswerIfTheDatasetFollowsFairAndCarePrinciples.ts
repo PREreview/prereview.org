@@ -47,18 +47,18 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
 }
 
 export const decide: {
-  (state: State, command: Command): Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Error>
-  (command: Command): (state: State) => Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Error>
+  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
+  (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
 } = Function.dual(
   2,
-  (state: State, command: Command): Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Error> =>
+  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
     Match.valueTags(state, {
       NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
       IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
       HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
       NotAnswered: () =>
         Either.right(
-          Array.of(
+          Option.some(
             new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
               answer: command.answer,
               datasetReviewId: command.datasetReviewId,
@@ -67,10 +67,10 @@ export const decide: {
         ),
       HasBeenAnswered: ({ answer }) =>
         Boolean.match(Equal.equals(command.answer, answer), {
-          onTrue: () => Either.right(Array.empty()),
+          onTrue: () => Either.right(Option.none()),
           onFalse: () =>
             Either.right(
-              Array.of(
+              Option.some(
                 new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
                   answer: command.answer,
                   datasetReviewId: command.datasetReviewId,

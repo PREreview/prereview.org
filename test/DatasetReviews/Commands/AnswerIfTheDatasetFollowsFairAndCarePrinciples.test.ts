@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Either, Equal, identity, Predicate, Tuple } from 'effect'
+import { Array, Either, Equal, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -112,7 +112,7 @@ describe('decide', () => {
 
     expect(result).toStrictEqual(
       Either.right(
-        Array.of(new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer, datasetReviewId })),
+        Option.some(new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer, datasetReviewId })),
       ),
     )
   })
@@ -127,7 +127,7 @@ describe('decide', () => {
 
       expect(result).toStrictEqual(
         Either.right(
-          Array.of(
+          Option.some(
             new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: answer2, datasetReviewId }),
           ),
         ),
@@ -137,7 +137,7 @@ describe('decide', () => {
     test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('with the same answer', answer => {
       const result = _.decide(new _.HasBeenAnswered({ answer }), { answer, datasetReviewId })
 
-      expect(result).toStrictEqual(Either.right(Array.empty()))
+      expect(result).toStrictEqual(Either.right(Option.none()))
     })
   })
 

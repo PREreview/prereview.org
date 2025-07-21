@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, flow, Function, Match, Predicate } from 'effect'
+import { Array, Boolean, Data, Either, flow, Function, Match, Option, Predicate } from 'effect'
 import type * as Datasets from '../../Datasets/index.js'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
@@ -25,22 +25,22 @@ export const decide: {
   (
     state: StartDatasetReviewState,
     command: StartDatasetReview,
-  ): Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
+  ): Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
   (
     command: StartDatasetReview,
   ): (
     state: StartDatasetReviewState,
-  ) => Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
+  ) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted>
 } = Function.dual(
   2,
   (
     state: StartDatasetReviewState,
     command: StartDatasetReview,
-  ): Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted> =>
+  ): Either.Either<Option.Option<Events.DatasetReviewEvent>, Errors.DatasetReviewWasAlreadyStarted> =>
     Match.valueTags(state, {
       NotStarted: () =>
         Either.right(
-          Array.of(
+          Option.some(
             new Events.DatasetReviewWasStarted({
               authorId: command.authorId,
               datasetId: command.datasetId,

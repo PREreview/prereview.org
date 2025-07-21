@@ -1,4 +1,4 @@
-import { Array, Either, flow, Function, Match, pipe } from 'effect'
+import { Either, flow, Function, Match, Option, pipe } from 'effect'
 import type * as Commands from './Commands.js'
 import * as Errors from './Errors.js'
 import * as Events from './Events.js'
@@ -9,7 +9,7 @@ const onStartComment = (command: Commands.StartComment) =>
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', () =>
       Either.right(
-        Array.of(
+        Option.some(
           new Events.CommentWasStarted({
             commentId: command.commentId,
             prereviewId: command.prereviewId,
@@ -30,10 +30,14 @@ const onEnterComment = (command: Commands.EnterComment) =>
     Match.value<State.CommentState>,
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () =>
-      Either.right(Array.of(new Events.CommentWasEntered({ commentId: command.commentId, comment: command.comment }))),
+      Either.right(
+        Option.some(new Events.CommentWasEntered({ commentId: command.commentId, comment: command.comment })),
+      ),
     ),
     Match.tag('CommentReadyForPublishing', () =>
-      Either.right(Array.of(new Events.CommentWasEntered({ commentId: command.commentId, comment: command.comment }))),
+      Either.right(
+        Option.some(new Events.CommentWasEntered({ commentId: command.commentId, comment: command.comment })),
+      ),
     ),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
@@ -46,12 +50,12 @@ const onChoosePersona = (command: Commands.ChoosePersona) =>
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () =>
       Either.right(
-        Array.of(new Events.PersonaForCommentWasChosen({ commentId: command.commentId, persona: command.persona })),
+        Option.some(new Events.PersonaForCommentWasChosen({ commentId: command.commentId, persona: command.persona })),
       ),
     ),
     Match.tag('CommentReadyForPublishing', () =>
       Either.right(
-        Array.of(new Events.PersonaForCommentWasChosen({ commentId: command.commentId, persona: command.persona })),
+        Option.some(new Events.PersonaForCommentWasChosen({ commentId: command.commentId, persona: command.persona })),
       ),
     ),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
@@ -66,11 +70,11 @@ const onAgreeToCodeOfConduct = (command: Commands.AgreeToCodeOfConduct) =>
     Match.tag('CommentInProgress', state =>
       Either.right(
         !state.codeOfConductAgreed
-          ? Array.of(new Events.CodeOfConductForCommentWasAgreed({ commentId: command.commentId }))
-          : Array.empty(),
+          ? Option.some(new Events.CodeOfConductForCommentWasAgreed({ commentId: command.commentId }))
+          : Option.none(),
       ),
     ),
-    Match.tag('CommentReadyForPublishing', () => Either.right(Array.empty())),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Option.none())),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,
@@ -82,7 +86,7 @@ const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () =>
       Either.right(
-        Array.of(
+        Option.some(
           new Events.CompetingInterestsForCommentWereDeclared({
             commentId: command.commentId,
             competingInterests: command.competingInterests,
@@ -92,7 +96,7 @@ const onDeclareCompetingInterests = (command: Commands.DeclareCompetingInterests
     ),
     Match.tag('CommentReadyForPublishing', () =>
       Either.right(
-        Array.of(
+        Option.some(
           new Events.CompetingInterestsForCommentWereDeclared({
             commentId: command.commentId,
             competingInterests: command.competingInterests,
@@ -112,11 +116,13 @@ const onConfirmExistenceOfVerifiedEmailAddress = (command: Commands.ConfirmExist
     Match.tag('CommentInProgress', state =>
       Either.right(
         !state.verifiedEmailAddressExists
-          ? Array.of(new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: command.commentId }))
-          : Array.empty(),
+          ? Option.some(
+              new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: command.commentId }),
+            )
+          : Option.none(),
       ),
     ),
-    Match.tag('CommentReadyForPublishing', () => Either.right(Array.empty())),
+    Match.tag('CommentReadyForPublishing', () => Either.right(Option.none())),
     Match.tag('CommentBeingPublished', () => Either.left(new Errors.CommentIsBeingPublished())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,
@@ -128,9 +134,9 @@ const onPublishComment = (command: Commands.PublishComment) =>
     Match.tag('CommentNotStarted', () => Either.left(new Errors.CommentHasNotBeenStarted())),
     Match.tag('CommentInProgress', () => Either.left(new Errors.CommentIsIncomplete())),
     Match.tag('CommentReadyForPublishing', () =>
-      Either.right(Array.of(new Events.PublicationOfCommentWasRequested({ commentId: command.commentId }))),
+      Either.right(Option.some(new Events.PublicationOfCommentWasRequested({ commentId: command.commentId }))),
     ),
-    Match.tag('CommentBeingPublished', () => Either.right(Array.empty())),
+    Match.tag('CommentBeingPublished', () => Either.right(Option.none())),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,
   )
@@ -142,13 +148,15 @@ const onMarkDoiAsAssigned = (command: Commands.MarkDoiAsAssigned) =>
     Match.tag('CommentInProgress', () => Either.left(new Errors.CommentIsIncomplete())),
     Match.tag('CommentReadyForPublishing', () =>
       Either.right(
-        Array.of(new Events.CommentWasAssignedADoi({ commentId: command.commentId, doi: command.doi, id: command.id })),
+        Option.some(
+          new Events.CommentWasAssignedADoi({ commentId: command.commentId, doi: command.doi, id: command.id }),
+        ),
       ),
     ),
     Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Either.right(
-            Array.of(
+            Option.some(
               new Events.CommentWasAssignedADoi({ commentId: command.commentId, doi: command.doi, id: command.id }),
             ),
           )
@@ -167,7 +175,7 @@ const onMarkCommentAsPublished = (command: Commands.MarkCommentAsPublished) =>
     Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Either.left(new Errors.DoiIsNotAssigned())
-        : Either.right(Array.of(new Events.CommentWasPublished({ commentId: command.commentId }))),
+        : Either.right(Option.some(new Events.CommentWasPublished({ commentId: command.commentId }))),
     ),
     Match.tag('CommentPublished', () => Either.left(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,
@@ -189,5 +197,5 @@ const onCommand = pipe(
 
 export const DecideComment = (
   state: State.CommentState,
-): ((command: Commands.CommentCommand) => Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.CommentError>) =>
-  flow(onCommand, Function.apply(state)<Either.Either<ReadonlyArray<Events.CommentEvent>, Errors.CommentError>>)
+): ((command: Commands.CommentCommand) => Either.Either<Option.Option<Events.CommentEvent>, Errors.CommentError>) =>
+  flow(onCommand, Function.apply(state)<Either.Either<Option.Option<Events.CommentEvent>, Errors.CommentError>>)

@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/StartDatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -32,7 +32,7 @@ describe('decide', () => {
     const result = _.decide(new _.NotStarted(), { authorId, datasetId, datasetReviewId })
 
     expect(result).toStrictEqual(
-      Either.right([new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })]),
+      Either.right(Option.some(new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId }))),
     )
   })
 

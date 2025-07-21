@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
+import { Context, Data, Effect, type Either, Layer, Option, pipe } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
@@ -34,7 +34,7 @@ const makeDatasetReviewCommands: Effect.Effect<
 
   const handleCommand = <State, Command extends { datasetReviewId: Uuid.Uuid }, Error>(
     foldState: (events: ReadonlyArray<Events.DatasetReviewEvent>) => State,
-    decide: (command: Command) => (state: State) => Either.Either<ReadonlyArray<Events.DatasetReviewEvent>, Error>,
+    decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
   ): CommandHandler<Command, Error> =>
     Effect.fn(
       function* (command) {
@@ -44,9 +44,9 @@ const makeDatasetReviewCommands: Effect.Effect<
           foldState(events),
           decide(command),
           Effect.tap(
-            Array.match({
-              onEmpty: () => Effect.void,
-              onNonEmpty: events => eventStore.commitEvents(command.datasetReviewId, latestVersion)(...events),
+            Option.match({
+              onNone: () => Effect.void,
+              onSome: event => eventStore.commitEvents(command.datasetReviewId, latestVersion)(event),
             }),
           ),
         )
