@@ -90,7 +90,7 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
-      const events = yield* eventStore.getAllEvents
+      const events = yield* Effect.andThen(eventStore.getAllEvents, Array.map(Struct.get('event')))
 
       return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
     }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
@@ -130,6 +130,7 @@ export const ReactToCommentEvents: Layer.Layer<
 
     yield* pipe(
       eventStore.getAllEventsOfType('PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'),
+      Effect.andThen(Array.map(Struct.get('event'))),
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>

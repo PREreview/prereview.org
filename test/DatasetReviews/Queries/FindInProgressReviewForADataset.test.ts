@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
-import { Array, Option } from 'effect'
+import { Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/FindInProgressReviewForADataset.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -8,7 +8,6 @@ import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const resourceId = Uuid.Uuid('b005c394-b9a5-4713-b6a9-bafc8467c3f4')
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const publicationWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId })
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
@@ -16,11 +15,11 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 describe('FindInProgressReviewForADataset', () => {
   describe('when at least one review needs further user input', () => {
     test('returns the review', () => {
-      const events = [{ event: datasetReviewWasStarted, resourceId }]
+      const events = [datasetReviewWasStarted]
 
       const actual = _.FindInProgressReviewForADataset(events)(authorId, datasetId)
 
-      expect(actual).toStrictEqual(Option.some(resourceId))
+      expect(actual).toStrictEqual(Option.some(datasetReviewId))
     })
   })
 
@@ -34,14 +33,11 @@ describe('FindInProgressReviewForADataset', () => {
 
   describe('when in-progress reviews are by other users', () => {
     const events = [
-      {
-        event: new DatasetReviews.DatasetReviewWasStarted({
-          authorId: Orcid.Orcid('0000-0002-6109-0367'),
-          datasetId,
-          datasetReviewId,
-        }),
-        resourceId,
-      },
+      new DatasetReviews.DatasetReviewWasStarted({
+        authorId: Orcid.Orcid('0000-0002-6109-0367'),
+        datasetId,
+        datasetReviewId,
+      }),
     ]
 
     test('returns nothing', () => {
@@ -54,14 +50,11 @@ describe('FindInProgressReviewForADataset', () => {
   describe('when in-progress reviews are for other datasets', () => {
     test('returns nothing', () => {
       const events = [
-        {
-          event: new DatasetReviews.DatasetReviewWasStarted({
-            authorId,
-            datasetId: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') }),
-            datasetReviewId,
-          }),
-          resourceId,
-        },
+        new DatasetReviews.DatasetReviewWasStarted({
+          authorId,
+          datasetId: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') }),
+          datasetReviewId,
+        }),
       ]
 
       const actual = _.FindInProgressReviewForADataset(events)(authorId, datasetId)
@@ -76,10 +69,7 @@ describe('FindInProgressReviewForADataset', () => {
     ['has datasetReviewWasPublished', [datasetReviewWasPublished]],
   ])('when no user input is needed for a comment (%s)', (_name, events) => {
     test('returns nothing', () => {
-      const actual = _.FindInProgressReviewForADataset(Array.map(events, event => ({ event, resourceId })))(
-        authorId,
-        datasetId,
-      )
+      const actual = _.FindInProgressReviewForADataset(events)(authorId, datasetId)
 
       expect(actual).toStrictEqual(Option.none())
     })

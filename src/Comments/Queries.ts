@@ -14,7 +14,7 @@ export const GetPrereviewId = (eventsForComment: ReadonlyArray<CommentEvent>): O
   )
 
 export const GetNextExpectedCommandForUser =
-  (events: ReadonlyArray<{ readonly event: CommentEvent; readonly resourceId: Uuid.Uuid }>) =>
+  (events: ReadonlyArray<CommentEvent>) =>
   ({
     authorId,
     prereviewId,
@@ -23,24 +23,21 @@ export const GetNextExpectedCommandForUser =
     readonly prereviewId: number
   }): ExpectedCommand.ExpectedCommandForUser => {
     const [commentId, comment] = pipe(
-      Array.reduce(
-        events,
-        Record.empty<Uuid.Uuid, ReadonlyArray<CommentEvent>>(),
-        (candidates, { event, resourceId }) =>
-          pipe(
-            Record.modifyOption(candidates, resourceId, Array.append(event)),
-            Option.getOrElse(() => {
-              if (
-                event._tag === 'CommentWasStarted' &&
-                Equal.equals(event.authorId, authorId) &&
-                Equal.equals(event.prereviewId, prereviewId)
-              ) {
-                return Record.set(candidates, resourceId, Array.of(event))
-              }
+      Array.reduce(events, Record.empty<Uuid.Uuid, ReadonlyArray<CommentEvent>>(), (candidates, event) =>
+        pipe(
+          Record.modifyOption(candidates, event.commentId, Array.append(event)),
+          Option.getOrElse(() => {
+            if (
+              event._tag === 'CommentWasStarted' &&
+              Equal.equals(event.authorId, authorId) &&
+              Equal.equals(event.prereviewId, prereviewId)
+            ) {
+              return Record.set(candidates, event.commentId, Array.of(event))
+            }
 
-              return candidates
-            }),
-          ),
+            return candidates
+          }),
+        ),
       ),
       Record.map(Array.reduce(new CommentNotStarted() as CommentState, (state, event) => EvolveComment(state)(event))),
       Record.filter(state => state._tag === 'CommentInProgress' || state._tag === 'CommentReadyForPublishing'),
@@ -162,21 +159,18 @@ export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequ
 export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
 
 export const GetACommentInNeedOfADoi = (
-  events: ReadonlyArray<{
-    readonly event: PublicationOfCommentWasRequested | CommentWasAssignedADoi
-    readonly resourceId: Uuid.Uuid
-  }>,
+  events: ReadonlyArray<PublicationOfCommentWasRequested | CommentWasAssignedADoi>,
 ): Either.Either<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
   const hasADoi = new Set()
 
-  for (const { event, resourceId } of events.toReversed()) {
+  for (const event of events.toReversed()) {
     if (event._tag === 'CommentWasAssignedADoi') {
-      hasADoi.add(resourceId)
+      hasADoi.add(event.commentId)
       continue
     }
 
-    if (!hasADoi.has(resourceId)) {
-      return Either.right(resourceId)
+    if (!hasADoi.has(event.commentId)) {
+      return Either.right(event.commentId)
     }
   }
 

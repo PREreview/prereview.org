@@ -1509,8 +1509,12 @@ export const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
       .record({ commentId: uuid() })
       .map(data => new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
 
-export const publicationOfCommentWasRequested = (): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
-  fc.record({ commentId: uuid() }).map(data => new Comments.PublicationOfCommentWasRequested(data))
+export const publicationOfCommentWasRequested = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.PublicationOfCommentWasRequested['commentId']>
+} = {}): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
+  fc.record({ commentId: commentId ?? uuid() }).map(data => new Comments.PublicationOfCommentWasRequested(data))
 
 export const commentWasAssignedADoi = (): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
   fc

@@ -1,7 +1,7 @@
-import { Array, Context, Data, Effect, Layer, type Option } from 'effect'
+import { Array, Context, Data, Effect, Layer, Struct, type Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import { type AnsweredIfTheDatasetFollowsFairAndCarePrinciples, DatasetReviewsEventStore } from '../Events.js'
+import { DatasetReviewsEventStore, type AnsweredIfTheDatasetFollowsFairAndCarePrinciples } from '../Events.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -55,10 +55,13 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
-          const events = yield* eventStore.getAllEventsOfType(
-            'DatasetReviewWasStarted',
-            'PublicationOfDatasetReviewWasRequested',
-            'DatasetReviewWasPublished',
+          const events = yield* Effect.andThen(
+            eventStore.getAllEventsOfType(
+              'DatasetReviewWasStarted',
+              'PublicationOfDatasetReviewWasRequested',
+              'DatasetReviewWasPublished',
+            ),
+            Array.map(Struct.get('event')),
           )
 
           return FindInProgressReviewForADataset(events)(...args)

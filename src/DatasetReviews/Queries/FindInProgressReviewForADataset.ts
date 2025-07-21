@@ -5,17 +5,13 @@ import type * as Events from '../Events.js'
 
 export const FindInProgressReviewForADataset =
   (
-    events: ReadonlyArray<{
-      readonly event:
-        | Events.DatasetReviewWasStarted
-        | Events.PublicationOfDatasetReviewWasRequested
-        | Events.DatasetReviewWasPublished
-      readonly resourceId: Uuid.Uuid
-    }>,
+    events: ReadonlyArray<
+      Events.DatasetReviewWasStarted | Events.PublicationOfDatasetReviewWasRequested | Events.DatasetReviewWasPublished
+    >,
   ) =>
   (authorId: Orcid.Orcid, datasetId: Datasets.DatasetId): Option.Option<Uuid.Uuid> =>
     pipe(
-      Array.reduce(events, Record.empty<Uuid.Uuid, boolean>(), (candidates, { event, resourceId }) =>
+      Array.reduce(events, Record.empty<Uuid.Uuid, boolean>(), (candidates, event) =>
         Match.valueTags(event, {
           DatasetReviewWasStarted: () => {
             if (
@@ -23,13 +19,13 @@ export const FindInProgressReviewForADataset =
               Equal.equals(event.authorId, authorId) &&
               Equal.equals(event.datasetId, datasetId)
             ) {
-              return Record.set(candidates, resourceId, false)
+              return Record.set(candidates, event.datasetReviewId, false)
             }
 
             return candidates
           },
-          PublicationOfDatasetReviewWasRequested: () => Record.replace(candidates, resourceId, true),
-          DatasetReviewWasPublished: () => Record.replace(candidates, resourceId, true),
+          PublicationOfDatasetReviewWasRequested: () => Record.replace(candidates, event.datasetReviewId, true),
+          DatasetReviewWasPublished: () => Record.replace(candidates, event.datasetReviewId, true),
         }),
       ),
       Record.findFirst(Boolean.not),
