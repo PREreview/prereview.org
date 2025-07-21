@@ -51,7 +51,7 @@ export const makeHandleCommentCommand: Effect.Effect<
         Effect.tap(
           Option.match({
             onNone: () => Effect.void,
-            onSome: event => eventStore.commitEvents(command.commentId, latestVersion)(event),
+            onSome: event => eventStore.commitEvent(command.commentId, latestVersion)(event),
           }),
         ),
         Effect.tap(

@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Effect, Equal, Layer, TestClock } from 'effect'
+import { type Array, Effect, Equal, Layer, TestClock } from 'effect'
 import {
   CodeOfConductForCommentWasAgreed,
   CommentEvent,
@@ -34,40 +34,38 @@ it.prop([fc.string(), fc.uuid()])('starts empty', (resourceType, resourceId) =>
 )
 
 describe('when the last known version is 0', () => {
-  it.prop([fc.string(), fc.uuid(), fc.nonEmptyArray(fc.commentEvent())])(
-    'creates a new resource',
-    (resourceType, resourceId, events) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make(resourceType, CommentEvent)
+  it.prop([fc.string(), fc.uuid(), fc.commentEvent()])('creates a new resource', (resourceType, resourceId, event) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make(resourceType, CommentEvent)
 
-        yield* eventStore.commitEvents(resourceId, 0)(...events)
+      yield* eventStore.commitEvent(resourceId, 0)(event)
 
-        const actual = yield* eventStore.getEvents(resourceId)
-        const all = yield* eventStore.getAllEvents
+      const actual = yield* eventStore.getEvents(resourceId)
+      const all = yield* eventStore.getAllEvents
 
-        expect(actual).toStrictEqual({ events, latestVersion: events.length })
-        expect(all).toStrictEqual(Array.map(events, (event, i) => ({ event, resourceId, version: i + 1 })))
-      }).pipe(
-        Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(TestLibsqlClient),
-        EffectTest.run,
-      ),
+      expect(actual).toStrictEqual({ events: [event], latestVersion: 1 })
+      expect(all).toStrictEqual([{ event, resourceId, version: 1 }])
+    }).pipe(
+      Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
   )
 
   describe('but the resource exists with a different type', () => {
     it.prop([
       fc.tuple(fc.string(), fc.string()).filter(([a, b]) => !Equal.equals(a, b)),
       fc.uuid(),
-      fc.nonEmptyArray(fc.commentEvent()),
+      fc.commentEvent(),
       fc.nonEmptyArray(fc.datasetReviewEvent()),
-    ])('does nothing', ([resourceType, otherResourceType], resourceId, events, otherEvents) =>
+    ])('does nothing', ([resourceType, otherResourceType], resourceId, event, otherEvents) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make(resourceType, CommentEvent)
         const otherEventStore = yield* _.make(otherResourceType, DatasetReviewEvent)
 
-        yield* otherEventStore.commitEvents(resourceId, 0)(...otherEvents)
+        yield* Effect.forEach(otherEvents, (otherEvent, i) => otherEventStore.commitEvent(resourceId, i)(otherEvent))
 
-        const error = yield* Effect.flip(eventStore.commitEvents(resourceId, 0)(...events))
+        const error = yield* Effect.flip(eventStore.commitEvent(resourceId, 0)(event))
 
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -91,13 +89,13 @@ describe('when the last known version is 0', () => {
 
 describe('when the last known version is invalid', () => {
   describe('when the resource does not exist', () => {
-    it.prop([fc.string(), fc.uuid(), fc.integer({ min: 1 }), fc.nonEmptyArray(fc.commentEvent())])(
+    it.prop([fc.string(), fc.uuid(), fc.integer({ min: 1 }), fc.commentEvent()])(
       'does not create a resource',
-      (resourceType, resourceId, lastKnownVersion, events) =>
+      (resourceType, resourceId, lastKnownVersion, event) =>
         Effect.gen(function* () {
           const eventStore = yield* _.make(resourceType, CommentEvent)
 
-          const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+          const error = yield* Effect.flip(eventStore.commitEvent(resourceId, lastKnownVersion)(event))
 
           expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
 
@@ -121,14 +119,16 @@ describe('when the last known version is invalid', () => {
       fc
         .nonEmptyArray(fc.commentEvent())
         .chain(existingEvents => fc.tuple(fc.constant(existingEvents), fc.integer({ min: existingEvents.length + 1 }))),
-      fc.nonEmptyArray(fc.commentEvent()),
-    ])('does nothing', (resourceType, resourceId, [existingEvents, lastKnownVersion], events) =>
+      fc.commentEvent(),
+    ])('does nothing', (resourceType, resourceId, [existingEvents, lastKnownVersion], event) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make(resourceType, CommentEvent)
 
-        yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
+        yield* Effect.forEach(existingEvents, (existingEvent, i) =>
+          eventStore.commitEvent(resourceId, i)(existingEvent),
+        )
 
-        const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+        const error = yield* Effect.flip(eventStore.commitEvent(resourceId, lastKnownVersion)(event))
 
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -156,8 +156,8 @@ describe('when the last known version is up to date', () => {
       Effect.gen(function* () {
         const eventStore = yield* _.make(resourceType, CommentEvent)
 
-        yield* eventStore.commitEvents(resourceId, 0)(event1)
-        yield* eventStore.commitEvents(resourceId, 1)(event2)
+        yield* eventStore.commitEvent(resourceId, 0)(event1)
+        yield* eventStore.commitEvent(resourceId, 1)(event2)
 
         const actual = yield* eventStore.getEvents(resourceId)
         const all = yield* eventStore.getAllEvents
@@ -185,14 +185,14 @@ describe('when the last known version is out of date', () => {
         fc.integer().filter(lastKnownVersion => lastKnownVersion !== existingEvents.length),
       ),
     ),
-    fc.nonEmptyArray(fc.commentEvent()),
-  ])('does not replace an event', (resourceType, resourceId, [existingEvents, lastKnownVersion], events) =>
+    fc.commentEvent(),
+  ])('does not replace an event', (resourceType, resourceId, [existingEvents, lastKnownVersion], event) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make(resourceType, CommentEvent)
 
-      yield* eventStore.commitEvents(resourceId, 0)(...existingEvents)
+      yield* Effect.forEach(existingEvents, (existingEvent, i) => eventStore.commitEvent(resourceId, i)(existingEvent))
 
-      const error = yield* Effect.flip(eventStore.commitEvents(resourceId, lastKnownVersion)(...events))
+      const error = yield* Effect.flip(eventStore.commitEvent(resourceId, lastKnownVersion)(event))
 
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
@@ -222,11 +222,11 @@ it.prop([
   Effect.gen(function* () {
     const eventStore = yield* _.make(resourceType, CommentEvent)
 
-    yield* eventStore.commitEvents(resourceId1, 0)(event1)
+    yield* eventStore.commitEvent(resourceId1, 0)(event1)
     yield* TestClock.adjust('1 second')
-    yield* eventStore.commitEvents(resourceId2, 0)(event2)
+    yield* eventStore.commitEvent(resourceId2, 0)(event2)
     yield* TestClock.adjust('1 second')
-    yield* eventStore.commitEvents(resourceId2, 1)(event3)
+    yield* eventStore.commitEvent(resourceId2, 1)(event3)
 
     const actual1 = yield* eventStore.getEvents(resourceId1)
 
@@ -285,7 +285,9 @@ test.each([
   Effect.gen(function* () {
     const eventStore = yield* _.make('Comment', CommentEvent)
 
-    yield* eventStore.commitEvents(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), 0)(...events)
+    yield* Effect.forEach(events, (event, i) =>
+      eventStore.commitEvent(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), i)(event),
+    )
 
     const actual = yield* eventStore.getAllEventsOfType(...types)
 

@@ -1,4 +1,4 @@
-import { type Array, Data, type Effect } from 'effect'
+import { Data, type Effect } from 'effect'
 import type { Uuid } from './types/index.js'
 
 export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}
@@ -28,8 +28,8 @@ export interface EventStore<T extends { readonly _tag: string }> {
     resourceId: Uuid.Uuid,
   ) => Effect.Effect<{ readonly events: ReadonlyArray<T>; readonly latestVersion: number }, FailedToGetEvents>
 
-  readonly commitEvents: (
+  readonly commitEvent: (
     resourceId: Uuid.Uuid,
     lastKnownVersion: number,
-  ) => (...event: Array.NonEmptyReadonlyArray<T>) => Effect.Effect<number, ResourceHasChanged | FailedToCommitEvent>
+  ) => (event: T) => Effect.Effect<number, ResourceHasChanged | FailedToCommitEvent>
 }

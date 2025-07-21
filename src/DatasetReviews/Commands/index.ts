@@ -46,7 +46,7 @@ const makeDatasetReviewCommands: Effect.Effect<
           Effect.tap(
             Option.match({
               onNone: () => Effect.void,
-              onSome: event => eventStore.commitEvents(command.datasetReviewId, latestVersion)(event),
+              onSome: event => eventStore.commitEvent(command.datasetReviewId, latestVersion)(event),
             }),
           ),
         )
