@@ -17,6 +17,9 @@
   "messageLoggedIn": {
     "message": "Has iniciado sesión."
   },
+  "messageLoggedInDemoUser": {
+    "message": "Has iniciado sesión como usuario/a de prueba."
+  },
   "messageVerifyEmail": {
     "message": "Te enviamos un correo electrónico. Por favor ábrelo y sigue el enlace para verificar tu dirección."
   },

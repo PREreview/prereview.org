@@ -41,6 +41,9 @@
   "menuLogIn": {
     "message": "Iniciar sesión"
   },
+  "menuLogInDemoUser": {
+    "message": "Iniciar sesión como usuario/a de prueba"
+  },
   "menuReviews": {
     "message": "Revisiones"
   },
