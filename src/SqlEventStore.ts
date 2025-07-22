@@ -3,8 +3,9 @@ import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
-export const make = <A extends { _tag: string }, I extends { _tag: string }>(
+export const make = <T extends string, A extends { _tag: T }, I extends { _tag: T }>(
   resourceType: string,
+  eventTypes: Array.NonEmptyReadonlyArray<T>,
   eventSchema: Schema.Schema<A, I>,
 ): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
   Effect.gen(function* () {
@@ -48,44 +49,11 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
       orElse: () => Effect.void,
     })
 
-    const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
-      const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
-
-      const rows = yield* pipe(
-        sql`
-          SELECT
-            event_id,
-            resource_id,
-            resource_version,
-            event_type,
-            event_timestamp,
-            payload
-          FROM
-            events
-            INNER JOIN resources ON resources.id = events.resource_id
-          WHERE
-            resources.type = ${encodedResourceType}
-          ORDER BY
-            resource_version ASC,
-            event_timestamp ASC
-        `,
-        Effect.andThen(Schema.decodeUnknown(Schema.Array(eventsTable))),
-      )
-
-      return Array.map(rows, row => ({ resourceId: row.resourceId, event: row.event, version: row.resourceVersion }))
-    }).pipe(
-      Effect.tapError(error =>
-        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
-          error,
-          resourceType,
-        }),
-      ),
-      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-    )
-
-    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
-      function* (...types) {
-        const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
+    const query = Effect.fn(
+      function* <T extends I['_tag']>(filter: EventFilter<I, T>) {
+        const condition = filter.resourceId
+          ? sql.and([sql.in('event_type', filter.types), sql`resource_id = ${filter.resourceId}`])
+          : sql.in('event_type', filter.types)
 
         const rows = yield* pipe(
           sql`
@@ -98,18 +66,47 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
               payload
             FROM
               events
-              INNER JOIN resources ON resources.id = events.resource_id
             WHERE
-              resources.type = ${encodedResourceType}
-              AND ${sql.in('event_type', types)}
+              ${condition}
             ORDER BY
-              resource_version ASC,
               event_timestamp ASC
           `,
           Effect.andThen(
-            Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema.pipe(Schema.filter(hasTag(...types)))))),
+            Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema.pipe(Schema.filter(hasTag(...filter.types)))))),
           ),
         )
+
+        return rows
+      },
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+          error,
+        }),
+      ),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    )
+
+    const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
+      const rows = yield* query({ types: eventTypes })
+
+      return Array.map(rows, row => ({
+        resourceId: row.resourceId,
+        event: row.event,
+        version: row.resourceVersion,
+      }))
+    }).pipe(
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+          error,
+          resourceType,
+        }),
+      ),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    )
+
+    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
+      function* <T extends A['_tag']>(...types: Array.NonEmptyReadonlyArray<T>) {
+        const rows = yield* query({ types })
 
         return Array.map(rows, row => ({
           resourceId: row.resourceId,
@@ -128,29 +125,7 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
 
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
-        const encodedResourceId = yield* Schema.encode(resourcesTable.fields.id)(resourceId)
-        const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
-
-        const rows = yield* pipe(
-          sql`
-            SELECT
-              event_id,
-              resource_id,
-              resource_version,
-              event_type,
-              event_timestamp,
-              payload
-            FROM
-              events
-              INNER JOIN resources ON resources.id = events.resource_id
-            WHERE
-              resource_id = ${encodedResourceId}
-              AND resources.type = ${encodedResourceType}
-            ORDER BY
-              resource_version ASC
-          `,
-          Effect.andThen(Schema.decodeUnknown(Schema.Array(eventsTable))),
-        )
+        const rows = yield* query({ types: eventTypes, resourceId })
 
         const latestVersion = Array.match(rows, {
           onEmpty: () => 0,
@@ -368,6 +343,11 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
         }),
     },
   )
+
+interface EventFilter<A extends { readonly _tag: string }, T extends A['_tag']> {
+  types: Array.NonEmptyReadonlyArray<T>
+  resourceId?: Uuid.Uuid
+}
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 

@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { type Array, Effect, Equal, Layer, TestClock } from 'effect'
+import { Array, Effect, Equal, Layer, Struct, TestClock } from 'effect'
 import {
   CodeOfConductForCommentWasAgreed,
   CommentEvent,
@@ -19,7 +19,7 @@ import { shouldNotBeCalled } from './should-not-be-called.js'
 
 it.prop([fc.string(), fc.uuid()])('starts empty', (resourceType, resourceId) =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(resourceType, CommentEvent)
+    const eventStore = yield* _.make(resourceType, Array.map(CommentEvent.members, Struct.get('_tag')), CommentEvent)
 
     const actual = yield* eventStore.getEvents(resourceId)
     const all = yield* eventStore.getAllEvents
@@ -36,7 +36,7 @@ it.prop([fc.string(), fc.uuid()])('starts empty', (resourceType, resourceId) =>
 describe('when the last known version is 0', () => {
   it.prop([fc.string(), fc.uuid(), fc.commentEvent()])('creates a new resource', (resourceType, resourceId, event) =>
     Effect.gen(function* () {
-      const eventStore = yield* _.make(resourceType, CommentEvent)
+      const eventStore = yield* _.make(resourceType, Array.map(CommentEvent.members, Struct.get('_tag')), CommentEvent)
 
       yield* eventStore.commitEvent(resourceId, 0)(event)
 
@@ -60,8 +60,16 @@ describe('when the last known version is 0', () => {
       fc.nonEmptyArray(fc.datasetReviewEvent()),
     ])('does nothing', ([resourceType, otherResourceType], resourceId, event, otherEvents) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(resourceType, CommentEvent)
-        const otherEventStore = yield* _.make(otherResourceType, DatasetReviewEvent)
+        const eventStore = yield* _.make(
+          resourceType,
+          Array.map(CommentEvent.members, Struct.get('_tag')),
+          CommentEvent,
+        )
+        const otherEventStore = yield* _.make(
+          otherResourceType,
+          Array.map(DatasetReviewEvent.members, Struct.get('_tag')),
+          DatasetReviewEvent,
+        )
 
         yield* Effect.forEach(otherEvents, (otherEvent, i) => otherEventStore.commitEvent(resourceId, i)(otherEvent))
 
@@ -93,7 +101,11 @@ describe('when the last known version is invalid', () => {
       'does not create a resource',
       (resourceType, resourceId, lastKnownVersion, event) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make(resourceType, CommentEvent)
+          const eventStore = yield* _.make(
+            resourceType,
+            Array.map(CommentEvent.members, Struct.get('_tag')),
+            CommentEvent,
+          )
 
           const error = yield* Effect.flip(eventStore.commitEvent(resourceId, lastKnownVersion)(event))
 
@@ -122,7 +134,11 @@ describe('when the last known version is invalid', () => {
       fc.commentEvent(),
     ])('does nothing', (resourceType, resourceId, [existingEvents, lastKnownVersion], event) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(resourceType, CommentEvent)
+        const eventStore = yield* _.make(
+          resourceType,
+          Array.map(CommentEvent.members, Struct.get('_tag')),
+          CommentEvent,
+        )
 
         yield* Effect.forEach(existingEvents, (existingEvent, i) =>
           eventStore.commitEvent(resourceId, i)(existingEvent),
@@ -154,7 +170,11 @@ describe('when the last known version is up to date', () => {
     'updates an existing resource',
     (resourceType, resourceId, event1, event2) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(resourceType, CommentEvent)
+        const eventStore = yield* _.make(
+          resourceType,
+          Array.map(CommentEvent.members, Struct.get('_tag')),
+          CommentEvent,
+        )
 
         yield* eventStore.commitEvent(resourceId, 0)(event1)
         yield* eventStore.commitEvent(resourceId, 1)(event2)
@@ -188,7 +208,7 @@ describe('when the last known version is out of date', () => {
     fc.commentEvent(),
   ])('does not replace an event', (resourceType, resourceId, [existingEvents, lastKnownVersion], event) =>
     Effect.gen(function* () {
-      const eventStore = yield* _.make(resourceType, CommentEvent)
+      const eventStore = yield* _.make(resourceType, Array.map(CommentEvent.members, Struct.get('_tag')), CommentEvent)
 
       yield* Effect.forEach(existingEvents, (existingEvent, i) => eventStore.commitEvent(resourceId, i)(existingEvent))
 
@@ -220,7 +240,7 @@ it.prop([
   fc.commentEvent(),
 ])('isolates resources', (resourceType, [resourceId1, resourceId2], event1, event2, event3) =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(resourceType, CommentEvent)
+    const eventStore = yield* _.make(resourceType, Array.map(CommentEvent.members, Struct.get('_tag')), CommentEvent)
 
     yield* eventStore.commitEvent(resourceId1, 0)(event1)
     yield* TestClock.adjust('1 second')
@@ -283,7 +303,7 @@ test.each([
   [string, Array.NonEmptyReadonlyArray<CommentEvent['_tag']>, Array.NonEmptyReadonlyArray<CommentEvent>, number]
 >)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make('Comment', CommentEvent)
+    const eventStore = yield* _.make('Comment', Array.map(CommentEvent.members, Struct.get('_tag')), CommentEvent)
 
     yield* Effect.forEach(events, (event, i) =>
       eventStore.commitEvent(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), i)(event),
