@@ -347,6 +347,7 @@ export const Program = pipe(
         Comments.CommentEventStore,
         SqlEventStore.make(
           'Comment',
+          'commentId',
           Array.map(Comments.CommentEvent.members, Struct.get('_tag')),
           Comments.CommentEvent,
         ),
@@ -355,6 +356,7 @@ export const Program = pipe(
         DatasetReviews.DatasetReviewsEventStore,
         SqlEventStore.make(
           'DatasetReview',
+          'datasetReviewId',
           Array.map(DatasetReviews.DatasetReviewEvent.members, Struct.get('_tag')),
           DatasetReviews.DatasetReviewEvent,
         ),

@@ -5,6 +5,7 @@ import { Uuid } from './types/index.js'
 
 export const make = <T extends string, A extends { _tag: T }, I extends { _tag: T }>(
   resourceType: string,
+  resourceIdProperty: Extract<keyof Omit<I, '_tag'>, string>,
   eventTypes: Array.NonEmptyReadonlyArray<T>,
   eventSchema: Schema.Schema<A, I>,
 ): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
@@ -52,7 +53,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     const query = Effect.fn(
       function* <T extends I['_tag']>(filter: EventFilter<I, T>) {
         const condition = filter.resourceId
-          ? sql.and([sql.in('event_type', filter.types), sql`resource_id = ${filter.resourceId}`])
+          ? sql.and([sql.in('event_type', filter.types), sql`payload ->> ${resourceIdProperty} = ${filter.resourceId}`])
           : sql.in('event_type', filter.types)
 
         const rows = yield* pipe(

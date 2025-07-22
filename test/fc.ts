@@ -1469,45 +1469,63 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
     })
     .map(args => new Prereview(args))
 
-export const commentWasStarted = (): fc.Arbitrary<Comments.CommentWasStarted> =>
+export const commentWasStarted = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.CommentWasStarted['commentId']>
+} = {}): fc.Arbitrary<Comments.CommentWasStarted> =>
   fc
     .record({
-      commentId: uuid(),
+      commentId: commentId ?? uuid(),
       prereviewId: fc.integer(),
       authorId: orcid(),
     })
     .map(data => new Comments.CommentWasStarted(data))
 
-export const commentWasEntered = (): fc.Arbitrary<Comments.CommentWasEntered> =>
+export const commentWasEntered = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.CommentWasEntered['commentId']>
+} = {}): fc.Arbitrary<Comments.CommentWasEntered> =>
   fc
     .record({
-      commentId: uuid(),
+      commentId: commentId ?? uuid(),
       comment: html(),
     })
     .map(data => new Comments.CommentWasEntered(data))
 
-export const personaForCommentWasChosen = (): fc.Arbitrary<Comments.PersonaForCommentWasChosen> =>
+export const personaForCommentWasChosen = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.PersonaForCommentWasChosen['commentId']>
+} = {}): fc.Arbitrary<Comments.PersonaForCommentWasChosen> =>
   fc
     .record({
-      commentId: uuid(),
+      commentId: commentId ?? uuid(),
       persona: constantFrom('public', 'pseudonym'),
     })
     .map(data => new Comments.PersonaForCommentWasChosen(data))
 
-export const competingInterestsForCommentWereDeclared =
-  (): fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared> =>
-    fc
-      .record({
-        commentId: uuid(),
-        competingInterests: maybe(nonEmptyString()),
-      })
-      .map(data => new Comments.CompetingInterestsForCommentWereDeclared(data))
+export const competingInterestsForCommentWereDeclared = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared['commentId']>
+} = {}): fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared> =>
+  fc
+    .record({
+      commentId: commentId ?? uuid(),
+      competingInterests: maybe(nonEmptyString()),
+    })
+    .map(data => new Comments.CompetingInterestsForCommentWereDeclared(data))
 
-export const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
-  (): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
-    fc
-      .record({ commentId: uuid() })
-      .map(data => new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
+export const existenceOfVerifiedEmailAddressForCommentWasConfirmed = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed['commentId']>
+} = {}): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
+  fc
+    .record({ commentId: commentId ?? uuid() })
+    .map(data => new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
 
 export const publicationOfCommentWasRequested = ({
   commentId,
@@ -1516,71 +1534,109 @@ export const publicationOfCommentWasRequested = ({
 } = {}): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
   fc.record({ commentId: commentId ?? uuid() }).map(data => new Comments.PublicationOfCommentWasRequested(data))
 
-export const commentWasAssignedADoi = (): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
+export const commentWasAssignedADoi = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.CommentWasAssignedADoi['commentId']>
+} = {}): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
   fc
     .record({
-      commentId: uuid(),
+      commentId: commentId ?? uuid(),
       id: fc.integer(),
       doi: doi(),
     })
     .map(data => new Comments.CommentWasAssignedADoi(data))
 
-export const commentWasPublished = (): fc.Arbitrary<Comments.CommentWasPublished> =>
-  fc.record({ commentId: uuid() }).map(data => new Comments.CommentWasPublished(data))
+export const commentWasPublished = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Comments.CommentWasPublished['commentId']>
+} = {}): fc.Arbitrary<Comments.CommentWasPublished> =>
+  fc.record({ commentId: commentId ?? uuid() }).map(data => new Comments.CommentWasPublished(data))
 
-export const commentEvent = (): fc.Arbitrary<Comments.CommentEvent> =>
+export const commentEvent = (
+  args: {
+    commentId?: fc.Arbitrary<Comments.CommentEvent['commentId']>
+  } = {},
+): fc.Arbitrary<Comments.CommentEvent> =>
   fc.oneof(
-    commentWasStarted(),
-    commentWasEntered(),
-    personaForCommentWasChosen(),
-    competingInterestsForCommentWereDeclared(),
-    existenceOfVerifiedEmailAddressForCommentWasConfirmed(),
-    publicationOfCommentWasRequested(),
-    commentWasAssignedADoi(),
-    commentWasPublished(),
+    commentWasStarted(args),
+    commentWasEntered(args),
+    personaForCommentWasChosen(args),
+    competingInterestsForCommentWereDeclared(args),
+    existenceOfVerifiedEmailAddressForCommentWasConfirmed(args),
+    publicationOfCommentWasRequested(args),
+    commentWasAssignedADoi(args),
+    commentWasPublished(args),
   )
 
-export const datasetReviewWasStarted = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted> =>
+export const datasetReviewWasStarted = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted['datasetReviewId']>
+} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted> =>
   fc
     .record({
       authorId: orcid(),
       datasetId: datasetId(),
-      datasetReviewId: uuid(),
+      datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
 
-export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples =
-  (): fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples> =>
-    fc
-      .record({
-        answer: constantFrom('yes', 'partly', 'no', 'unsure'),
-        datasetReviewId: uuid(),
-      })
-      .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
+export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['datasetReviewId']>
+} = {}): fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples> =>
+  fc
+    .record({
+      answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
 
-export const publicationOfDatasetReviewWasRequested =
-  (): fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested> =>
-    fc.record({ datasetReviewId: uuid() }).map(data => new DatasetReviews.PublicationOfDatasetReviewWasRequested(data))
+export const publicationOfDatasetReviewWasRequested = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested['datasetReviewId']>
+} = {}): fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested> =>
+  fc
+    .record({ datasetReviewId: datasetReviewId ?? uuid() })
+    .map(data => new DatasetReviews.PublicationOfDatasetReviewWasRequested(data))
 
-export const datasetReviewWasAssignedADoi = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi> =>
+export const datasetReviewWasAssignedADoi = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi['datasetReviewId']>
+} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
-      datasetReviewId: uuid(),
+      datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new DatasetReviews.DatasetReviewWasAssignedADoi(data))
 
-export const datasetReviewWasPublished = (): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
-  fc.record({ datasetReviewId: uuid() }).map(data => new DatasetReviews.DatasetReviewWasPublished(data))
+export const datasetReviewWasPublished = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished['datasetReviewId']>
+} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
+  fc
+    .record({ datasetReviewId: datasetReviewId ?? uuid() })
+    .map(data => new DatasetReviews.DatasetReviewWasPublished(data))
 
-export const datasetReviewEvent = (): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
+export const datasetReviewEvent = (
+  args: {
+    datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewEvent['datasetReviewId']>
+  } = {},
+): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
   fc.oneof(
-    datasetReviewWasStarted(),
-    datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
-    publicationOfDatasetReviewWasRequested(),
-    datasetReviewWasAssignedADoi(),
-    datasetReviewWasPublished(),
+    datasetReviewWasStarted(args),
+    datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
+    publicationOfDatasetReviewWasRequested(args),
+    datasetReviewWasAssignedADoi(args),
+    datasetReviewWasPublished(args),
   )
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
