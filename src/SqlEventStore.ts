@@ -84,7 +84,7 @@ export const make = <A extends { _tag: string }, I extends { _tag: string }>(
     )
 
     const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
-      function* <T extends A['_tag']>(...types: ReadonlyArray<T>) {
+      function* (...types) {
         const encodedResourceType = yield* Schema.encode(resourcesTable.fields.type)(resourceType)
 
         const rows = yield* pipe(
