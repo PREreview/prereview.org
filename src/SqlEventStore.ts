@@ -1,5 +1,5 @@
 import { SqlClient, type SqlError } from '@effect/sql'
-import { Array, DateTime, Effect, flow, ParseResult, pipe, Schema } from 'effect'
+import { Array, DateTime, Effect, flow, Option, ParseResult, pipe, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
@@ -50,8 +50,8 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       orElse: () => Effect.void,
     })
 
-    const query = Effect.fn(
-      function* <T extends I['_tag']>(filter: EventFilter<I, T>) {
+    const selectEventRows = Effect.fn(
+      function* <T extends I['_tag']>(filter: EventStore.EventFilter<I, T>) {
         const condition = filter.resourceId
           ? sql.and([sql.in('event_type', filter.types), sql`payload ->> ${resourceIdProperty} = ${filter.resourceId}`])
           : sql.in('event_type', filter.types)
@@ -87,8 +87,17 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
+    const query: EventStore.EventStore<A>['query'] = Effect.fn(function* (filter) {
+      const rows = yield* selectEventRows(filter)
+
+      return Array.match(rows, {
+        onEmpty: Option.none,
+        onNonEmpty: rows => Option.some({ events: Array.map(rows, Struct.get('event')) }),
+      })
+    })
+
     const getAllEvents: EventStore.EventStore<A>['getAllEvents'] = Effect.gen(function* () {
-      const rows = yield* query({ types: eventTypes })
+      const rows = yield* selectEventRows({ types: eventTypes })
 
       return Array.map(rows, row => ({
         resourceId: row.resourceId,
@@ -107,7 +116,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
 
     const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
       function* (...types) {
-        const rows = yield* query({ types })
+        const rows = yield* selectEventRows({ types })
 
         return Array.map(rows, row => ({
           resourceId: row.resourceId,
@@ -126,7 +135,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
 
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
-        const rows = yield* query({ types: eventTypes, resourceId })
+        const rows = yield* selectEventRows({ types: eventTypes, resourceId })
 
         const latestVersion = Array.match(rows, {
           onEmpty: () => 0,
@@ -287,7 +296,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
         )
 
-    return { getAllEvents, getAllEventsOfType, getEvents, commitEvent }
+    return { query, getAllEvents, getAllEventsOfType, getEvents, commitEvent }
   })
 
 const hasTag =
@@ -344,11 +353,6 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
         }),
     },
   )
-
-interface EventFilter<A extends { readonly _tag: string }, T extends A['_tag']> {
-  types: Array.NonEmptyReadonlyArray<T>
-  resourceId?: Uuid.Uuid
-}
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 
