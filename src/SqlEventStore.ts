@@ -105,7 +105,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     )
 
     const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
-      function* <T extends A['_tag']>(...types: Array.NonEmptyReadonlyArray<T>) {
+      function* (...types) {
         const rows = yield* query({ types })
 
         return Array.map(rows, row => ({
