@@ -9,7 +9,7 @@ export class ResourceHasChanged extends Data.TaggedError('ResourceHasChanged') {
 
 export interface EventFilter<A extends { readonly _tag: string }, T extends A['_tag']> {
   types: Array.NonEmptyReadonlyArray<T>
-  resourceId?: Uuid.Uuid
+  predicates?: Partial<Omit<A, '_tag'>>
 }
 
 export interface EventStore<T extends { readonly _tag: string }> {

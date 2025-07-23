@@ -1,5 +1,5 @@
-import { SqlClient, type SqlError } from '@effect/sql'
-import { Array, DateTime, Effect, flow, Option, ParseResult, pipe, Schema, Struct } from 'effect'
+import { SqlClient, type SqlError, type Statement } from '@effect/sql'
+import { Array, DateTime, Effect, flow, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
@@ -51,10 +51,16 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     })
 
     const selectEventRows = Effect.fn(
-      function* <T extends I['_tag']>(filter: EventStore.EventFilter<I, T>) {
-        const condition = filter.resourceId
-          ? sql.and([sql.in('event_type', filter.types), sql`payload ->> ${resourceIdProperty} = ${filter.resourceId}`])
-          : sql.in('event_type', filter.types)
+      function* <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) {
+        const condition =
+          filter.predicates && Object.keys(filter.predicates).length > 0
+            ? sql.and([
+                sql.in('event_type', filter.types),
+                ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+                  typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
+                ),
+              ])
+            : sql.in('event_type', filter.types)
 
         const rows = yield* pipe(
           sql`
@@ -135,7 +141,10 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
 
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
-        const rows = yield* selectEventRows({ types: eventTypes, resourceId })
+        const rows = yield* selectEventRows({
+          types: eventTypes,
+          predicates: { [resourceIdProperty]: resourceId } as never,
+        })
 
         const latestVersion = Array.match(rows, {
           onEmpty: () => 0,
