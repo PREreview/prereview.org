@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { Array, Schema, Struct } from 'effect'
 import { Html, rawHtml } from '../html.js'
 import { Doi, NonEmptyString, Orcid, Uuid } from '../types/index.js'
 
@@ -70,3 +70,5 @@ export const CommentEvent = Schema.Union(
   CommentWasAssignedADoi,
   CommentWasPublished,
 )
+
+export const CommentEventTypes = Array.map(CommentEvent.members, Struct.get('_tag'))
