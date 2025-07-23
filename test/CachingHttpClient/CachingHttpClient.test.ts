@@ -59,12 +59,11 @@ describe('there is no cache entry', () => {
           const client = yield* pipe(
             _.CachingHttpClient(timeToStale),
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-            Effect.provide(
-              Layer.mock(_.HttpCache, {
-                get: () => new _.NoCachedResponseFound({}),
-                set: () => new InternalHttpCacheFailure({ cause: error }),
-              }),
-            ),
+            Effect.provideService(_.HttpCache, {
+              get: () => new _.NoCachedResponseFound({}),
+              set: () => new InternalHttpCacheFailure({ cause: error }),
+              delete: () => Effect.void,
+            }),
           )
           const actualResponse = yield* client.execute(response.request)
           expect(actualResponse).toStrictEqual(response)
@@ -423,6 +422,7 @@ describe('getting from the cache is too slow', () => {
           Effect.provide(
             Layer.mock(_.HttpCache, {
               get: () => pipe(Effect.sync(shouldNotBeCalled), Effect.delay(Duration.sum(_.CacheTimeout, delay))),
+              set: () => Effect.void,
             }),
           ),
         )
