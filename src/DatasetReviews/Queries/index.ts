@@ -1,7 +1,11 @@
-import { Array, Context, Data, Effect, Layer, Struct, type Option } from 'effect'
+import { Array, Context, Data, Effect, Layer, Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import { DatasetReviewsEventStore, type AnsweredIfTheDatasetFollowsFairAndCarePrinciples } from '../Events.js'
+import {
+  DatasetReviewEventTypes,
+  DatasetReviewsEventStore,
+  type AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
+} from '../Events.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -42,8 +46,11 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
 
     return {
       checkIfReviewIsInProgress: Effect.fn(
-        function* (...args) {
-          const { events } = yield* eventStore.getEvents(...args)
+        function* (datasetReviewId) {
+          const { events } = yield* Effect.andThen(
+            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+            Option.getOrElse(() => ({ events: Array.empty() })),
+          )
 
           if (Array.isEmptyReadonlyArray(events)) {
             return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
@@ -55,13 +62,11 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
-          const events = yield* Effect.andThen(
-            eventStore.getAllEventsOfType(
-              'DatasetReviewWasStarted',
-              'PublicationOfDatasetReviewWasRequested',
-              'DatasetReviewWasPublished',
-            ),
-            Array.map(Struct.get('event')),
+          const { events } = yield* Effect.andThen(
+            eventStore.query({
+              types: ['DatasetReviewWasStarted', 'PublicationOfDatasetReviewWasRequested', 'DatasetReviewWasPublished'],
+            }),
+            Option.getOrElse(() => ({ events: Array.empty() })),
           )
 
           return FindInProgressReviewForADataset(events)(...args)
@@ -69,8 +74,11 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
       getAuthor: Effect.fn(
-        function* (...args) {
-          const { events } = yield* eventStore.getEvents(...args)
+        function* (datasetReviewId) {
+          const { events } = yield* Effect.andThen(
+            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+            Option.getOrElse(() => ({ events: Array.empty() })),
+          )
 
           if (Array.isEmptyReadonlyArray(events)) {
             return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
@@ -81,8 +89,11 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
       getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
-        function* (...args) {
-          const { events } = yield* eventStore.getEvents(...args)
+        function* (datasetReviewId) {
+          const { events } = yield* Effect.andThen(
+            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+            Option.getOrElse(() => ({ events: Array.empty() })),
+          )
 
           if (Array.isEmptyReadonlyArray(events)) {
             return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })

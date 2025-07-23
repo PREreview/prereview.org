@@ -1,4 +1,4 @@
-import { Context, Schema } from 'effect'
+import { Array, Context, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.js'
 import type { EventStore } from '../EventStore.js'
 import { Doi, Orcid, Uuid } from '../types/index.js'
@@ -47,3 +47,5 @@ export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
 )
+
+export const DatasetReviewEventTypes = Array.map(DatasetReviewEvent.members, Struct.get('_tag'))
