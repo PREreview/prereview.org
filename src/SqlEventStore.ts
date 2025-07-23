@@ -93,6 +93,30 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
+    const all: EventStore.EventStore<A>['all'] = pipe(
+      sql`
+        SELECT
+          event_id,
+          resource_id,
+          resource_version,
+          event_type,
+          event_timestamp,
+          payload
+        FROM
+          events
+        ORDER BY
+          event_timestamp ASC
+      `,
+      Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema)))),
+      Effect.andThen(Array.map(Struct.get('event'))),
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
+          error,
+        }),
+      ),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    )
+
     const query: EventStore.EventStore<A>['query'] = Effect.fn(function* (filter) {
       const rows = yield* selectEventRows(filter)
 
@@ -305,7 +329,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
         )
 
-    return { query, getAllEvents, getAllEventsOfType, getEvents, commitEvent }
+    return { all, query, getAllEvents, getAllEventsOfType, getEvents, commitEvent }
   })
 
 const hasTag =

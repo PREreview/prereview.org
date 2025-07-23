@@ -15,6 +15,8 @@ export interface EventFilter<A extends { readonly _tag: string }, T extends A['_
 }
 
 export interface EventStore<T extends { readonly _tag: string }> {
+  readonly all: Effect.Effect<ReadonlyArray<T>, FailedToGetEvents>
+
   readonly query: <Tag extends T['_tag']>(
     filter: EventFilter<T, Tag>,
   ) => Effect.Effect<
