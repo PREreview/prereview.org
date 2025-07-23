@@ -10,7 +10,6 @@ import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('FollowsFairAndCarePrinciplesQuestion', () => {
   describe('when the dataset review is by the user', () => {
@@ -31,7 +30,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           })
         }).pipe(
           Effect.provide(
-            queriesLayer({
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfReviewIsInProgress: () => Effect.void,
               getAuthor: () => Effect.succeed(user.orcid),
               getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeed(answer),
@@ -59,7 +58,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           })
         }).pipe(
           Effect.provide(
-            queriesLayer({
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
@@ -86,7 +85,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           })
         }).pipe(
           Effect.provide(
-            queriesLayer({
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
@@ -117,7 +116,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(datasetReviewAuthor) })),
+      Effect.provide(
+        Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
+      ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
@@ -139,7 +140,11 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnknownDatasetReview({}) })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -161,7 +166,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnableToQuery({}) })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -189,8 +196,14 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.void })),
-        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {
+            answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.void,
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -221,8 +234,14 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer({ answerIfTheDatasetFollowsFairAndCarePrinciples: () => error })),
-        Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {
+            answerIfTheDatasetFollowsFairAndCarePrinciples: () => error,
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -258,8 +277,8 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         js: ['error-summary.js'],
       })
     }).pipe(
-      Effect.provide(commandsLayer()),
-      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) })),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
@@ -286,8 +305,10 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(commandsLayer()),
-      Effect.provide(queriesLayer({ getAuthor: () => Effect.succeed(datasetReviewAuthor) })),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+      Effect.provide(
+        Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
+      ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
@@ -309,8 +330,12 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer()),
-        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnknownDatasetReview({}) })),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -332,27 +357,13 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer()),
-        Effect.provide(queriesLayer({ getAuthor: () => new DatasetReviews.UnableToQuery({}) })),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
   )
 })
-
-const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewCommands.Service>) =>
-  Layer.succeed(DatasetReviews.DatasetReviewCommands, {
-    startDatasetReview: () => Effect.sync(shouldNotBeCalled),
-    answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
-    ...implementations,
-  })
-
-const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
-  Layer.succeed(DatasetReviews.DatasetReviewQueries, {
-    checkIfReviewIsInProgress: () => Effect.sync(shouldNotBeCalled),
-    findInProgressReviewForADataset: () => Effect.sync(shouldNotBeCalled),
-    getAuthor: () => Effect.sync(shouldNotBeCalled),
-    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
-    ...implementations,
-  })

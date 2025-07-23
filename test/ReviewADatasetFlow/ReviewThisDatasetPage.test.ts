@@ -9,7 +9,6 @@ import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('ReviewThisDatasetPage', () => {
   test.prop([fc.supportedLocale()])('when the user is not logged in', locale =>
@@ -25,7 +24,11 @@ describe('ReviewThisDatasetPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provide(queriesLayer()), Effect.provideService(Locale, locale), EffectTest.run),
+    }).pipe(
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+      Effect.provideService(Locale, locale),
+      EffectTest.run,
+    ),
   )
 
   describe('when the user is logged in', () => {
@@ -39,7 +42,11 @@ describe('ReviewThisDatasetPage', () => {
           location: Routes.ReviewThisDatasetStartNow,
         })
       }).pipe(
-        Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedSome(reviewId) })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -60,7 +67,11 @@ describe('ReviewThisDatasetPage', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedNone })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedNone,
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -81,7 +92,9 @@ describe('ReviewThisDatasetPage', () => {
         })
       }).pipe(
         Effect.provide(
-          queriesLayer({ findInProgressReviewForADataset: () => new DatasetReviews.UnableToQuery({ cause }) }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => new DatasetReviews.UnableToQuery({ cause }),
+          }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -90,12 +103,3 @@ describe('ReviewThisDatasetPage', () => {
     )
   })
 })
-
-export const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
-  Layer.succeed(DatasetReviews.DatasetReviewQueries, {
-    checkIfReviewIsInProgress: () => Effect.sync(shouldNotBeCalled),
-    findInProgressReviewForADataset: () => Effect.sync(shouldNotBeCalled),
-    getAuthor: () => Effect.sync(shouldNotBeCalled),
-    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
-    ...implementations,
-  })

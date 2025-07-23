@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Layer } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
@@ -14,19 +14,6 @@ import * as _ from '../../src/WriteCommentFlow/StartNow/index.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
-
-const constructPrereviewsService = (
-  getPrereview: typeof Prereviews.Prereviews.Service.getPrereview,
-): typeof Prereviews.Prereviews.Service => ({
-  getFiveMostRecent: Effect.sync(shouldNotBeCalled),
-  getForClub: () => Effect.sync(shouldNotBeCalled),
-  getForPreprint: () => Effect.sync(shouldNotBeCalled),
-  getForProfile: () => Effect.sync(shouldNotBeCalled),
-  getForUser: () => Effect.sync(shouldNotBeCalled),
-  getRapidPrereviewsForPreprint: () => Effect.sync(shouldNotBeCalled),
-  getPrereview,
-  search: () => Effect.sync(shouldNotBeCalled),
-})
 
 describe('StartNow', () => {
   describe('when there is a user', () => {
@@ -69,10 +56,7 @@ describe('StartNow', () => {
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
             Effect.succeed(new Comments.ExpectedToStartAComment()),
           ),
-          Effect.provideService(
-            Prereviews.Prereviews,
-            constructPrereviewsService(() => Effect.succeed(prereview)),
-          ),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -105,10 +89,7 @@ describe('StartNow', () => {
             Effect.succeed(new Comments.ExpectedToStartAComment()),
           ),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(
-            Prereviews.Prereviews,
-            constructPrereviewsService(() => Effect.succeed(prereview)),
-          ),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -139,10 +120,7 @@ describe('StartNow', () => {
             Effect.succeed(new Comments.ExpectedToEnterAComment({ commentId })),
           ),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(
-            Prereviews.Prereviews,
-            constructPrereviewsService(() => Effect.succeed(prereview)),
-          ),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -166,10 +144,7 @@ describe('StartNow', () => {
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-        Effect.provideService(
-          Prereviews.Prereviews,
-          constructPrereviewsService(() => Effect.fail(new Prereview.PrereviewWasRemoved())),
-        ),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewWasRemoved() })),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -197,10 +172,7 @@ describe('StartNow', () => {
             Effect.fail(new Comments.UnableToQuery({})),
           ),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(
-            Prereviews.Prereviews,
-            constructPrereviewsService(() => Effect.succeed(prereview)),
-          ),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -224,10 +196,7 @@ describe('StartNow', () => {
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-        Effect.provideService(
-          Prereviews.Prereviews,
-          constructPrereviewsService(() => Effect.fail(new Prereview.PrereviewIsNotFound())),
-        ),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsNotFound() })),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -253,9 +222,8 @@ describe('StartNow', () => {
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-          Effect.provideService(
-            Prereviews.Prereviews,
-            constructPrereviewsService(() => Effect.fail(new Prereview.PrereviewIsUnavailable())),
+          Effect.provide(
+            Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsUnavailable() }),
           ),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
@@ -277,7 +245,7 @@ describe('StartNow', () => {
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
-      Effect.provideService(Prereviews.Prereviews, constructPrereviewsService(shouldNotBeCalled)),
+      Effect.provide(Layer.mock(Prereviews.Prereviews, {})),
       EffectTest.run,
     ),
   )

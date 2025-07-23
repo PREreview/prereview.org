@@ -24,8 +24,12 @@ describe('StartNow', () => {
           location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: uuid }),
         })
       }).pipe(
-        Effect.provide(commandsLayer({ startDatasetReview: () => Effect.void })),
-        Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedNone })),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { startDatasetReview: () => Effect.void })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedNone,
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
@@ -54,8 +58,12 @@ describe('StartNow', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(commandsLayer({ startDatasetReview: () => error })),
-        Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedNone })),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { startDatasetReview: () => error })),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedNone,
+          }),
+        ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
@@ -78,8 +86,12 @@ describe('StartNow', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(commandsLayer()),
-      Effect.provide(queriesLayer({ findInProgressReviewForADataset: () => Effect.succeedSome(reviewId) })),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+      Effect.provide(
+        Layer.mock(DatasetReviews.DatasetReviewQueries, {
+          findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
+        }),
+      ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
@@ -100,9 +112,11 @@ describe('StartNow', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(commandsLayer()),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
       Effect.provide(
-        queriesLayer({ findInProgressReviewForADataset: () => new DatasetReviews.UnableToQuery({ cause }) }),
+        Layer.mock(DatasetReviews.DatasetReviewQueries, {
+          findInProgressReviewForADataset: () => new DatasetReviews.UnableToQuery({ cause }),
+        }),
       ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
@@ -111,19 +125,3 @@ describe('StartNow', () => {
     ),
   )
 })
-
-const commandsLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewCommands.Service>) =>
-  Layer.succeed(DatasetReviews.DatasetReviewCommands, {
-    startDatasetReview: () => Effect.sync(shouldNotBeCalled),
-    answerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
-    ...implementations,
-  })
-
-const queriesLayer = (implementations?: Partial<typeof DatasetReviews.DatasetReviewQueries.Service>) =>
-  Layer.succeed(DatasetReviews.DatasetReviewQueries, {
-    checkIfReviewIsInProgress: () => Effect.sync(shouldNotBeCalled),
-    findInProgressReviewForADataset: () => Effect.sync(shouldNotBeCalled),
-    getAuthor: () => Effect.sync(shouldNotBeCalled),
-    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.sync(shouldNotBeCalled),
-    ...implementations,
-  })

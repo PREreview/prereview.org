@@ -59,11 +59,12 @@ describe('there is no cache entry', () => {
           const client = yield* pipe(
             _.CachingHttpClient(timeToStale),
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-            Effect.provideService(_.HttpCache, {
-              get: () => new _.NoCachedResponseFound({}),
-              set: () => new InternalHttpCacheFailure({ cause: error }),
-              delete: () => Effect.void,
-            }),
+            Effect.provide(
+              Layer.mock(_.HttpCache, {
+                get: () => new _.NoCachedResponseFound({}),
+                set: () => new InternalHttpCacheFailure({ cause: error }),
+              }),
+            ),
           )
           const actualResponse = yield* client.execute(response.request)
           expect(actualResponse).toStrictEqual(response)
@@ -419,11 +420,11 @@ describe('getting from the cache is too slow', () => {
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-          Effect.provideService(_.HttpCache, {
-            get: () => pipe(Effect.sync(shouldNotBeCalled), Effect.delay(Duration.sum(_.CacheTimeout, delay))),
-            set: () => Effect.void,
-            delete: shouldNotBeCalled,
-          }),
+          Effect.provide(
+            Layer.mock(_.HttpCache, {
+              get: () => pipe(Effect.sync(shouldNotBeCalled), Effect.delay(Duration.sum(_.CacheTimeout, delay))),
+            }),
+          ),
         )
         const fiber = yield* pipe(client.execute(response.request), Effect.fork)
         yield* TestClock.adjust(_.CacheTimeout)
@@ -446,11 +447,7 @@ describe('with a non-GET request', () => {
       const client = yield* pipe(
         _.CachingHttpClient(timeToStale),
         Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
-        Effect.provideService(_.HttpCache, {
-          get: shouldNotBeCalled,
-          set: shouldNotBeCalled,
-          delete: shouldNotBeCalled,
-        }),
+        Effect.provide(Layer.mock(_.HttpCache, {})),
       )
       const actualResponse = yield* client.execute(response.request)
 
