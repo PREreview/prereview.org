@@ -12,7 +12,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
-import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Tuple } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Struct, Tuple } from 'effect'
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -253,7 +253,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     )
     .chain(omit =>
       fc.record(
-        Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as never,
+        Object.fromEntries(Struct.entries(recordModel).filter(([key]) => key !== omit)),
         (constraints ?? { requiredKeys: [] }) as never,
       ),
     )
@@ -1250,7 +1250,7 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       include,
     )
     .map(([headers, include]) => {
-      Object.entries(include).forEach(([key, value]) => {
+      Struct.entries(include).forEach(([key, value]) => {
         headers.set(key, value)
       })
       return headers

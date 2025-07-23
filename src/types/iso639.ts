@@ -1,4 +1,4 @@
-import { Option, pipe, Schema } from 'effect'
+import { Option, pipe, Schema, Struct } from 'effect'
 import iso6391, { type LanguageCode as Iso6391Code } from 'iso-639-1'
 import type iso6393 from 'iso-639-3/to-1.json'
 import type { SupportedLocale } from '../locales/index.js'
@@ -209,6 +209,6 @@ const iso6393To1Mapping = {
 } satisfies Record<Iso6393Code, Iso6391Code>
 
 const swapFn = <T extends Record<string, S>, S extends string>(obj: T): { [K in keyof T as T[K]]: K } =>
-  Object.entries(obj).reduce((res, [key, value]) => {
+  Struct.entries(obj).reduce((res, [key, value]) => {
     return { ...res, [value]: key }
   }, {}) as never

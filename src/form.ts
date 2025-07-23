@@ -1,4 +1,4 @@
-import { flow, Option, pipe, Record, String } from 'effect'
+import { flow, Option, pipe, Record, String, Struct } from 'effect'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as DE from 'io-ts/lib/DecodeError.js'
@@ -36,7 +36,7 @@ export const decodeFields = <T extends FieldDecoders>(fields: T) =>
   flow(
     (body: unknown) =>
       Object.fromEntries(
-        Object.entries(fields).map(([key, decoder]) => {
+        Struct.entries(fields).map(([key, decoder]) => {
           return [
             key,
             decoder(typeof body === 'object' && body !== null ? (body as Record<string, unknown>)[key] : undefined),
