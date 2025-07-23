@@ -14,7 +14,6 @@ const translateDep = import('./locales/index.js')
 
 const deps = Promise.all([
   import('@tiptap/core'),
-  import('@tiptap/extension-link'),
   import('@tiptap/extension-subscript'),
   import('@tiptap/extension-superscript'),
   import('@tiptap/extension-typography'),
@@ -86,7 +85,7 @@ export class HtmlEditor extends HTMLElement {
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
-    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
+    const [{ Editor }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
 
     const [bold, italic, subscript, superscript, link, heading1, heading2, heading3, bulletedList, numberedList] =
       await toolbarButtons
@@ -118,10 +117,10 @@ export class HtmlEditor extends HTMLElement {
             levels: [1, 2, 3],
           },
           horizontalRule: false,
+          link: {
+            openOnClick: false,
+          },
           strike: false,
-        }),
-        Link.configure({
-          openOnClick: false,
         }),
         Subscript.extend({
           excludes: 'superscript',
