@@ -21,6 +21,7 @@ const pageIds = {
   },
   Clubs: {
     'en-US': '64637b4c07fb34a92c7f84ec',
+    'pt-BR': '68753ced07fb34a92c7fb266',
   },
   CodeOfConduct: {
     'en-US': '6154aa157741400e8722bb00',
@@ -32,9 +33,11 @@ const pageIds = {
   },
   Funding: {
     'en-US': '6154aa157741400e8722bb12',
+    'pt-BR': '68753e3d07fb34a92c7fb284',
   },
   HowToUse: {
     'en-US': '651d895e07fb34a92c7f8d28',
+    'pt-BR': '68753dc807fb34a92c7fb27a',
   },
   LiveReviews: {
     'en-US': '6154aa157741400e8722bb10',
@@ -46,9 +49,11 @@ const pageIds = {
   },
   PrivacyPolicy: {
     'en-US': '6154aa157741400e8722bb0f',
+    'pt-BR': '68753ee307fb34a92c7fb298',
   },
   Resources: {
     'en-US': '6526c6ae07fb34a92c7f8d6f',
+    'pt-BR': '68753f1607fb34a92c7fb2a4',
   },
   Trainings: {
     'en-US': '64639b5007fb34a92c7f8518',
