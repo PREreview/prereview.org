@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, Layer, Option } from 'effect'
+import { Context, Data, Effect, Layer, type Option } from 'effect'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import {
@@ -47,60 +47,49 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
     return {
       checkIfReviewIsInProgress: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* Effect.andThen(
-            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
-            Option.getOrElse(() => ({ events: Array.empty() })),
-          )
-
-          if (Array.isEmptyReadonlyArray(events)) {
-            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
-          }
+          const { events } = yield* eventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
 
           return yield* CheckIfReviewIsInProgress(events)
         },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
-          const { events } = yield* Effect.andThen(
-            eventStore.query({
-              types: ['DatasetReviewWasStarted', 'PublicationOfDatasetReviewWasRequested', 'DatasetReviewWasPublished'],
-            }),
-            Option.getOrElse(() => ({ events: Array.empty() })),
-          )
+          const { events } = yield* eventStore.query({
+            types: ['DatasetReviewWasStarted', 'PublicationOfDatasetReviewWasRequested', 'DatasetReviewWasPublished'],
+          })
 
           return FindInProgressReviewForADataset(events)(...args)
         },
+        Effect.catchTag('NoEventsFound', () => Effect.succeedNone),
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
       getAuthor: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* Effect.andThen(
-            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
-            Option.getOrElse(() => ({ events: Array.empty() })),
-          )
-
-          if (Array.isEmptyReadonlyArray(events)) {
-            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
-          }
+          const { events } = yield* eventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
 
           return yield* GetAuthor(events)
         },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
       getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* Effect.andThen(
-            eventStore.query({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
-            Option.getOrElse(() => ({ events: Array.empty() })),
-          )
-
-          if (Array.isEmptyReadonlyArray(events)) {
-            return yield* new Errors.UnknownDatasetReview({ cause: 'No events found' })
-          }
+          const { events } = yield* eventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
 
           return GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples(events)
         },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
     }

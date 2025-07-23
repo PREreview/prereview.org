@@ -1,5 +1,7 @@
-import { type Array, Data, type Effect, type Option } from 'effect'
+import { type Array, Data, type Effect } from 'effect'
 import type { Uuid } from './types/index.js'
+
+export class NoEventsFound extends Data.TaggedClass('NoEventsFound') {}
 
 export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}
 
@@ -16,8 +18,8 @@ export interface EventStore<T extends { readonly _tag: string }> {
   readonly query: <Tag extends T['_tag']>(
     filter: EventFilter<T, Tag>,
   ) => Effect.Effect<
-    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Extract<T, { _tag: Tag }>> }>,
-    FailedToGetEvents
+    { readonly events: Array.NonEmptyReadonlyArray<Extract<T, { _tag: Tag }>> },
+    NoEventsFound | FailedToGetEvents
   >
 
   readonly getAllEvents: Effect.Effect<

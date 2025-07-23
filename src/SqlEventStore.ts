@@ -1,5 +1,5 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
-import { Array, DateTime, Effect, flow, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
+import { Array, DateTime, Effect, flow, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
@@ -96,9 +96,9 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     const query: EventStore.EventStore<A>['query'] = Effect.fn(function* (filter) {
       const rows = yield* selectEventRows(filter)
 
-      return Array.match(rows, {
-        onEmpty: Option.none,
-        onNonEmpty: rows => Option.some({ events: Array.map(rows, Struct.get('event')) }),
+      return yield* Array.match(rows, {
+        onEmpty: () => Effect.fail(new EventStore.NoEventsFound()),
+        onNonEmpty: rows => Effect.succeed({ events: Array.map(rows, Struct.get('event')) }),
       })
     })
 
