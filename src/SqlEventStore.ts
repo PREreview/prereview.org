@@ -105,6 +105,8 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           payload
         FROM
           events
+        WHERE
+          ${sql.in('event_type', eventTypes)}
         ORDER BY
           event_timestamp ASC
       `,
