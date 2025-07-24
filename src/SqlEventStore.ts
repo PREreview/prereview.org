@@ -5,7 +5,6 @@ import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
 export const make = <T extends string, A extends { _tag: T }, I extends { _tag: T }>(
-  eventTypes: Array.NonEmptyReadonlyArray<T>,
   eventSchema: Schema.Schema<A, I>,
 ): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
   Effect.gen(function* () {
@@ -77,8 +76,6 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           payload
         FROM
           events
-        WHERE
-          ${sql.in('type', eventTypes)}
         ORDER BY
           timestamp ASC
       `,

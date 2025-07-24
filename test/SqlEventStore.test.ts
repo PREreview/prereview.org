@@ -3,14 +3,14 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Effect, Layer, Option, Schema, TestClock } from 'effect'
+import { type Array, Effect, Layer, Option, Schema, TestClock } from 'effect'
 import {
   CodeOfConductForCommentWasAgreed,
   CommentEvent,
   CommentEventTypes,
   ExistenceOfVerifiedEmailAddressForCommentWasConfirmed,
 } from '../src/Comments/Events.js'
-import { DatasetReviewEvent, DatasetReviewEventTypes } from '../src/DatasetReviews/Events.js'
+import { DatasetReviewEvent } from '../src/DatasetReviews/Events.js'
 import * as EventStore from '../src/EventStore.js'
 import * as _ from '../src/SqlEventStore.js'
 import { Uuid } from '../src/types/index.js'
@@ -20,7 +20,7 @@ import { shouldNotBeCalled } from './should-not-be-called.js'
 
 it.prop([fc.constant({ types: CommentEventTypes })])('starts empty', filter =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(CommentEventTypes, CommentEvent)
+    const eventStore = yield* _.make(CommentEvent)
 
     const error = yield* Effect.flip(eventStore.query(filter))
     const all = yield* eventStore.all
@@ -39,10 +39,7 @@ describe('when the last known event is none', () => {
     'appends the event',
     (event, filter, otherEvents) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(
-          Array.appendAll(CommentEventTypes, DatasetReviewEventTypes),
-          Schema.Union(CommentEvent, DatasetReviewEvent),
-        )
+        const eventStore = yield* _.make(Schema.Union(CommentEvent, DatasetReviewEvent))
 
         yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
 
@@ -64,7 +61,7 @@ describe('when the last known event is none', () => {
 describe('when the last known event matches', () => {
   it.prop([fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()])('appends the event', (existingEvents, event) =>
     Effect.gen(function* () {
-      const eventStore = yield* _.make(CommentEventTypes, CommentEvent)
+      const eventStore = yield* _.make(CommentEvent)
 
       yield* Effect.forEach(existingEvents, existingEvent =>
         TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
@@ -93,7 +90,7 @@ describe('when the last known event is different', () => {
     'does nothing',
     (existingEvents, event, lastKnownEvent) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(CommentEventTypes, CommentEvent)
+        const eventStore = yield* _.make(CommentEvent)
 
         yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
@@ -154,7 +151,7 @@ test.each([
   [string, Array.NonEmptyReadonlyArray<CommentEvent['_tag']>, Array.NonEmptyReadonlyArray<CommentEvent>, number]
 >)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(CommentEventTypes, CommentEvent)
+    const eventStore = yield* _.make(CommentEvent)
 
     yield* Effect.forEach(events, event => eventStore.append(event))
 

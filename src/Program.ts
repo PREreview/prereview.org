@@ -343,11 +343,8 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       commentEvents,
-      Layer.effect(Comments.CommentEventStore, SqlEventStore.make(Comments.CommentEventTypes, Comments.CommentEvent)),
-      Layer.effect(
-        DatasetReviews.DatasetReviewsEventStore,
-        SqlEventStore.make(DatasetReviews.DatasetReviewEventTypes, DatasetReviews.DatasetReviewEvent),
-      ).pipe(
+      Layer.effect(Comments.CommentEventStore, SqlEventStore.make(Comments.CommentEvent)),
+      Layer.effect(DatasetReviews.DatasetReviewsEventStore, SqlEventStore.make(DatasetReviews.DatasetReviewEvent)).pipe(
         Layer.provide(
           LibsqlClient.layerConfig({
             url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
