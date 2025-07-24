@@ -18,7 +18,15 @@ import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
-it.prop([fc.constant({ types: CommentEventTypes })])('starts empty', filter =>
+it.prop([
+  fc.record(
+    {
+      types: fc.nonEmptyArray(fc.constantFrom(...CommentEventTypes)),
+      predicate: fc.dictionary(fc.string(), fc.string()),
+    },
+    { requiredKeys: ['types'] },
+  ),
+])('starts empty', filter =>
   Effect.gen(function* () {
     const eventStore = yield* _.make(CommentEvent)
 
@@ -35,26 +43,34 @@ it.prop([fc.constant({ types: CommentEventTypes })])('starts empty', filter =>
 )
 
 describe('when the last known event is none', () => {
-  it.prop([fc.commentEvent(), fc.constant({ types: CommentEventTypes }), fc.array(fc.datasetReviewEvent())])(
-    'appends the event',
-    (event, filter, otherEvents) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make(Schema.Union(CommentEvent, DatasetReviewEvent))
+  it.prop([
+    fc.commentEvent(),
+    fc.record(
+      {
+        types: fc.nonEmptyArray(fc.constantFrom(...CommentEventTypes)),
+        predicate: fc.dictionary(fc.string(), fc.string()),
+      },
+      { requiredKeys: ['types'] },
+    ),
+    fc.array(fc.datasetReviewEvent()),
+  ])('appends the event', (event, filter, otherEvents) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make(Schema.Union(CommentEvent, DatasetReviewEvent))
 
-        yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
+      yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
 
-        yield* eventStore.append(event, { filter, lastKnownEvent: Option.none() })
+      yield* eventStore.append(event, { filter, lastKnownEvent: Option.none() })
 
-        const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
-        const all = yield* eventStore.all
+      const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
+      const all = yield* eventStore.all
 
-        expect(actual).toStrictEqual({ events: [event], lastKnownEvent: expect.anything() })
-        expect(all).toStrictEqual([...otherEvents, event])
-      }).pipe(
-        Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(TestLibsqlClient),
-        EffectTest.run,
-      ),
+      expect(actual).toStrictEqual({ events: [event], lastKnownEvent: expect.anything() })
+      expect(all).toStrictEqual([...otherEvents, event])
+    }).pipe(
+      Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
   )
 })
 
