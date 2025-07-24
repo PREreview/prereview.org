@@ -364,7 +364,7 @@ test.each([
       eventStore.commitEvent(Uuid.Uuid('872d24c0-a78a-4a45-9ed0-051a38306707'), i)(event),
     )
 
-    const actual = yield* eventStore.getAllEventsOfType(...types)
+    const { events: actual } = yield* eventStore.query({ types })
 
     expect(actual).toHaveLength(expectedLength)
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
