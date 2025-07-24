@@ -129,25 +129,6 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       })
     })
 
-    const getAllEventsOfType: EventStore.EventStore<A>['getAllEventsOfType'] = Effect.fn(
-      function* (...types) {
-        const rows = yield* selectEventRows({ types })
-
-        return Array.map(rows, row => ({
-          resourceId: row.resourceId,
-          event: row.event,
-          version: row.resourceVersion,
-        }))
-      },
-      Effect.tapError(error =>
-        Effect.annotateLogs(Effect.logError('Unable to get all events'), {
-          error,
-          resourceType,
-        }),
-      ),
-      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-    )
-
     const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
       Effect.gen(function* () {
         const rows = yield* selectEventRows({
@@ -311,7 +292,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
         )
 
-    return { all, query, getAllEventsOfType, getEvents, commitEvent }
+    return { all, query, getEvents, commitEvent }
   })
 
 const hasTag =

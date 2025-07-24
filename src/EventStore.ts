@@ -24,17 +24,6 @@ export interface EventStore<T extends { readonly _tag: string }> {
     NoEventsFound | FailedToGetEvents
   >
 
-  readonly getAllEventsOfType: <Type extends T['_tag']>(
-    ...types: Array.NonEmptyReadonlyArray<Type>
-  ) => Effect.Effect<
-    ReadonlyArray<{
-      readonly event: Extract<T, { _tag: Type }>
-      readonly version: number
-      readonly resourceId: Uuid.Uuid
-    }>,
-    FailedToGetEvents
-  >
-
   readonly getEvents: (
     resourceId: Uuid.Uuid,
   ) => Effect.Effect<{ readonly events: ReadonlyArray<T>; readonly latestVersion: number }, FailedToGetEvents>
