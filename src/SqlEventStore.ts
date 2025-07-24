@@ -47,11 +47,44 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       orElse: () => Effect.void,
     })
 
+    yield* sql.onDialectOrElse({
+      pg: () =>
+        sql.withTransaction(
+          pipe(
+            sql`
+              SELECT
+                1
+              FROM
+                INFORMATION_SCHEMA.COLUMNS
+              WHERE
+                table_name = 'events'
+                AND column_name = 'event_id'
+            `,
+            Effect.andThen(
+              Array.match({
+                onEmpty: () => Effect.void,
+                onNonEmpty: () => sql`
+                  ALTER TABLE events
+                  RENAME COLUMN event_id TO id;
+
+                  ALTER TABLE events
+                  RENAME COLUMN event_type TO type;
+
+                  ALTER TABLE events
+                  RENAME COLUMN event_timestamp TO timestamp;
+                `,
+              }),
+            ),
+          ),
+        ),
+      orElse: () => Effect.void,
+    })
+
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
-        event_id TEXT NOT NULL PRIMARY KEY,
-        event_type TEXT NOT NULL,
-        event_timestamp TIMESTAMPTZ NOT NULL,
+        id TEXT NOT NULL PRIMARY KEY,
+        type TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL,
         payload JSONB NOT NULL
       )
     `
@@ -59,28 +92,28 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     const buildFilterCondition = <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) =>
       filter.predicates && Struct.keys(filter.predicates).length > 0
         ? sql.and([
-            sql.in('event_type', filter.types),
+            sql.in('type', filter.types),
             ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
               typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
             ),
           ])
-        : sql.in('event_type', filter.types)
+        : sql.in('type', filter.types)
 
     const selectEventRows = Effect.fn(
       function* <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) {
         const rows = yield* pipe(
           sql`
             SELECT
-              event_id,
-              event_type,
-              event_timestamp,
+              id,
+              type,
+              timestamp,
               payload
             FROM
               events
             WHERE
               ${buildFilterCondition(filter)}
             ORDER BY
-              event_timestamp ASC
+              timestamp ASC
           `,
           Effect.andThen(
             Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema.pipe(Schema.filter(hasTag(...filter.types)))))),
@@ -100,16 +133,16 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
     const all: EventStore.EventStore<A>['all'] = pipe(
       sql`
         SELECT
-          event_id,
-          event_type,
-          event_timestamp,
+          id,
+          type,
+          timestamp,
           payload
         FROM
           events
         WHERE
-          ${sql.in('event_type', eventTypes)}
+          ${sql.in('type', eventTypes)}
         ORDER BY
-          event_timestamp ASC
+          timestamp ASC
       `,
       Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema)))),
       Effect.andThen(Array.map(Struct.get('event'))),
@@ -129,19 +162,19 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
         onNonEmpty: rows =>
           Effect.succeed({
             events: Array.map(rows, Struct.get('event')),
-            lastKnownEvent: Array.lastNonEmpty(rows).eventId,
+            lastKnownEvent: Array.lastNonEmpty(rows).id,
           }),
       })
     })
 
     const append: EventStore.EventStore<A>['append'] = Effect.fn(
       function* (event, appendCondition) {
-        const eventId = yield* generateUuid
-        const eventTimestamp = yield* DateTime.now
+        const id = yield* generateUuid
+        const timestamp = yield* DateTime.now
 
         const encoded = yield* Schema.encode(eventsTable)({
-          eventId,
-          eventTimestamp,
+          id,
+          timestamp,
           event,
         })
 
@@ -149,11 +182,11 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           return yield* pipe(
             sql`
               INSERT INTO
-                events (event_id, event_type, event_timestamp, payload)
+                events (id, type, timestamp, payload)
               SELECT
-                ${encoded.event_id},
-                ${encoded.event_type},
-                ${encoded.event_timestamp},
+                ${encoded.id},
+                ${encoded.type},
+                ${encoded.timestamp},
                 ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
             `.raw,
             Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
@@ -174,13 +207,13 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           onSome: lastKnownEvent => sql`
             (
               SELECT
-                event_id
+                id
               FROM
                 events
               WHERE
                 ${buildFilterCondition(appendCondition.filter)}
               ORDER BY
-                event_timestamp DESC
+                timestamp DESC
               LIMIT
                 1
             ) = ${lastKnownEvent}
@@ -190,11 +223,11 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
         const results = yield* pipe(
           sql`
             INSERT INTO
-              events (event_id, event_type, event_timestamp, payload)
+              events (id, type, timestamp, payload)
             SELECT
-              ${encoded.event_id},
-              ${encoded.event_type},
-              ${encoded.event_timestamp},
+              ${encoded.id},
+              ${encoded.type},
+              ${encoded.timestamp},
               ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
             WHERE
               (${condition})
@@ -220,11 +253,9 @@ const hasTag =
 const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema.Schema<A, I>) =>
   Schema.transformOrFail(
     Schema.Struct({
-      eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
-      eventTimestamp: Schema.propertySignature(Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate)).pipe(
-        Schema.fromKey('event_timestamp'),
-      ),
-      eventType: Schema.propertySignature(Schema.String).pipe(Schema.fromKey('event_type')),
+      id: Uuid.UuidSchema,
+      timestamp: Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate),
+      type: Schema.String,
       payload: Schema.Union(
         Schema.Record({ key: Schema.String, value: Schema.Unknown }),
         Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
@@ -232,16 +263,16 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
     }),
     Schema.typeSchema(
       Schema.Struct({
-        eventId: Uuid.UuidSchema,
-        eventTimestamp: Schema.DateTimeUtc,
+        id: Uuid.UuidSchema,
+        timestamp: Schema.DateTimeUtc,
         event: eventSchema,
       }),
     ),
     {
       strict: true,
-      decode: ({ eventType, payload, ...rest }) =>
+      decode: ({ type, payload, ...rest }) =>
         Effect.gen(function* () {
-          const event = yield* ParseResult.decodeUnknown(eventSchema)({ _tag: eventType, ...payload })
+          const event = yield* ParseResult.decodeUnknown(eventSchema)({ _tag: type, ...payload })
 
           return { ...rest, event }
         }),
@@ -249,7 +280,7 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
         Effect.gen(function* () {
           const { _tag, ...payload } = yield* ParseResult.encodeUnknown(eventSchema)(event)
 
-          return { ...rest, eventType: _tag, payload }
+          return { ...rest, type: _tag, payload }
         }),
     },
   )
