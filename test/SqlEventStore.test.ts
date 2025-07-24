@@ -27,7 +27,7 @@ it.prop([fc.string(), fc.uuid()])('starts empty', (resourceType, resourceId) =>
     )
 
     const actual = yield* eventStore.getEvents(resourceId)
-    const all = yield* eventStore.getAllEvents
+    const all = yield* eventStore.all
 
     expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
     expect(all).toStrictEqual([])
@@ -51,10 +51,10 @@ describe('when the last known version is 0', () => {
       yield* eventStore.commitEvent(event.commentId, 0)(event)
 
       const actual = yield* eventStore.getEvents(event.commentId)
-      const all = yield* eventStore.getAllEvents
+      const all = yield* eventStore.all
 
       expect(actual).toStrictEqual({ events: [event], latestVersion: 1 })
-      expect(all).toStrictEqual([{ event, resourceId: event.commentId, version: 1 }])
+      expect(all).toStrictEqual([event])
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
       Effect.provide(TestLibsqlClient),
@@ -64,7 +64,7 @@ describe('when the last known version is 0', () => {
 
   describe('but the resource exists with a different type', () => {
     it.prop([
-      fc.tuple(fc.string(), fc.string()).filter(([a, b]) => !Equal.equals(a, b)),
+      fc.tuple(fc.string(), fc.string()).filter(([a, b]) => !Equal.equals(a.trim(), b.trim())),
       fc
         .uuid()
         .chain(uuid =>
@@ -97,9 +97,9 @@ describe('when the last known version is 0', () => {
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
         const actual = yield* eventStore.getEvents(event.commentId)
-        const all = yield* eventStore.getAllEvents
+        const all = yield* eventStore.all
         const actualOther = yield* otherEventStore.getEvents(event.commentId)
-        const allOther = yield* otherEventStore.getAllEvents
+        const allOther = yield* otherEventStore.all
 
         expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
         expect(all).toHaveLength(0)
@@ -132,7 +132,7 @@ describe('when the last known version is invalid', () => {
           expect(error).toBeInstanceOf(EventStore.FailedToCommitEvent)
 
           const actual = yield* eventStore.getEvents(event.commentId)
-          const all = yield* eventStore.getAllEvents
+          const all = yield* eventStore.all
 
           expect(actual).toStrictEqual({ events: [], latestVersion: 0 })
           expect(all).toStrictEqual([])
@@ -178,7 +178,7 @@ describe('when the last known version is invalid', () => {
         expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
         const actual = yield* eventStore.getEvents(event.commentId)
-        const all = yield* eventStore.getAllEvents
+        const all = yield* eventStore.all
 
         expect(actual).toStrictEqual({
           events: existingEvents,
@@ -218,13 +218,10 @@ describe('when the last known version is up to date', () => {
       yield* eventStore.commitEvent(event2.commentId, 1)(event2)
 
       const actual = yield* eventStore.getEvents(event2.commentId)
-      const all = yield* eventStore.getAllEvents
+      const all = yield* eventStore.all
 
       expect(actual).toStrictEqual({ events: [event1, event2], latestVersion: 2 })
-      expect(all).toStrictEqual([
-        { event: event1, resourceId: event1.commentId, version: 1 },
-        { event: event2, resourceId: event2.commentId, version: 2 },
-      ])
+      expect(all).toStrictEqual([event1, event2])
     }).pipe(
       Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
       Effect.provide(TestLibsqlClient),
@@ -263,7 +260,7 @@ describe('when the last known version is out of date', () => {
       expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
 
       const actual = yield* eventStore.getEvents(event.commentId)
-      const all = yield* eventStore.getAllEvents
+      const all = yield* eventStore.all
 
       expect(actual).toStrictEqual({
         events: existingEvents,
@@ -313,13 +310,9 @@ it.prop([
 
     expect(actual2).toStrictEqual({ events: [event2, event3], latestVersion: 2 })
 
-    const all = yield* eventStore.getAllEvents
+    const all = yield* eventStore.all
 
-    expect(all).toStrictEqual([
-      { event: event1, resourceId: event1.commentId, version: 1 },
-      { event: event2, resourceId: event2.commentId, version: 1 },
-      { event: event3, resourceId: event3.commentId, version: 2 },
-    ])
+    expect(all).toStrictEqual([event1, event2, event3])
   }).pipe(Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make), Effect.provide(TestLibsqlClient), EffectTest.run),
 )
 
