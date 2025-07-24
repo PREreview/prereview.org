@@ -49,9 +49,9 @@ import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/cros
 import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
-import * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as Datasets from '../src/Datasets/index.js'
 import type { Email } from '../src/email.js'
+import * as Events from '../src/Events.js'
 import type { GhostPage } from '../src/GhostPage/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
@@ -1472,93 +1472,93 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
 export const commentWasStarted = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.CommentWasStarted['commentId']>
-} = {}): fc.Arbitrary<Comments.CommentWasStarted> =>
+  commentId?: fc.Arbitrary<Events.CommentWasStarted['commentId']>
+} = {}): fc.Arbitrary<Events.CommentWasStarted> =>
   fc
     .record({
       commentId: commentId ?? uuid(),
       prereviewId: fc.integer(),
       authorId: orcid(),
     })
-    .map(data => new Comments.CommentWasStarted(data))
+    .map(data => new Events.CommentWasStarted(data))
 
 export const commentWasEntered = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.CommentWasEntered['commentId']>
-} = {}): fc.Arbitrary<Comments.CommentWasEntered> =>
+  commentId?: fc.Arbitrary<Events.CommentWasEntered['commentId']>
+} = {}): fc.Arbitrary<Events.CommentWasEntered> =>
   fc
     .record({
       commentId: commentId ?? uuid(),
       comment: html(),
     })
-    .map(data => new Comments.CommentWasEntered(data))
+    .map(data => new Events.CommentWasEntered(data))
 
 export const personaForCommentWasChosen = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.PersonaForCommentWasChosen['commentId']>
-} = {}): fc.Arbitrary<Comments.PersonaForCommentWasChosen> =>
+  commentId?: fc.Arbitrary<Events.PersonaForCommentWasChosen['commentId']>
+} = {}): fc.Arbitrary<Events.PersonaForCommentWasChosen> =>
   fc
     .record({
       commentId: commentId ?? uuid(),
       persona: constantFrom('public', 'pseudonym'),
     })
-    .map(data => new Comments.PersonaForCommentWasChosen(data))
+    .map(data => new Events.PersonaForCommentWasChosen(data))
 
 export const competingInterestsForCommentWereDeclared = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared['commentId']>
-} = {}): fc.Arbitrary<Comments.CompetingInterestsForCommentWereDeclared> =>
+  commentId?: fc.Arbitrary<Events.CompetingInterestsForCommentWereDeclared['commentId']>
+} = {}): fc.Arbitrary<Events.CompetingInterestsForCommentWereDeclared> =>
   fc
     .record({
       commentId: commentId ?? uuid(),
       competingInterests: maybe(nonEmptyString()),
     })
-    .map(data => new Comments.CompetingInterestsForCommentWereDeclared(data))
+    .map(data => new Events.CompetingInterestsForCommentWereDeclared(data))
 
 export const existenceOfVerifiedEmailAddressForCommentWasConfirmed = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed['commentId']>
-} = {}): fc.Arbitrary<Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
+  commentId?: fc.Arbitrary<Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed['commentId']>
+} = {}): fc.Arbitrary<Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed> =>
   fc
     .record({ commentId: commentId ?? uuid() })
-    .map(data => new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
+    .map(data => new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed(data))
 
 export const publicationOfCommentWasRequested = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.PublicationOfCommentWasRequested['commentId']>
-} = {}): fc.Arbitrary<Comments.PublicationOfCommentWasRequested> =>
-  fc.record({ commentId: commentId ?? uuid() }).map(data => new Comments.PublicationOfCommentWasRequested(data))
+  commentId?: fc.Arbitrary<Events.PublicationOfCommentWasRequested['commentId']>
+} = {}): fc.Arbitrary<Events.PublicationOfCommentWasRequested> =>
+  fc.record({ commentId: commentId ?? uuid() }).map(data => new Events.PublicationOfCommentWasRequested(data))
 
 export const commentWasAssignedADoi = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.CommentWasAssignedADoi['commentId']>
-} = {}): fc.Arbitrary<Comments.CommentWasAssignedADoi> =>
+  commentId?: fc.Arbitrary<Events.CommentWasAssignedADoi['commentId']>
+} = {}): fc.Arbitrary<Events.CommentWasAssignedADoi> =>
   fc
     .record({
       commentId: commentId ?? uuid(),
       id: fc.integer(),
       doi: doi(),
     })
-    .map(data => new Comments.CommentWasAssignedADoi(data))
+    .map(data => new Events.CommentWasAssignedADoi(data))
 
 export const commentWasPublished = ({
   commentId,
 }: {
-  commentId?: fc.Arbitrary<Comments.CommentWasPublished['commentId']>
-} = {}): fc.Arbitrary<Comments.CommentWasPublished> =>
-  fc.record({ commentId: commentId ?? uuid() }).map(data => new Comments.CommentWasPublished(data))
+  commentId?: fc.Arbitrary<Events.CommentWasPublished['commentId']>
+} = {}): fc.Arbitrary<Events.CommentWasPublished> =>
+  fc.record({ commentId: commentId ?? uuid() }).map(data => new Events.CommentWasPublished(data))
 
 export const commentEvent = (
   args: {
-    commentId?: fc.Arbitrary<Comments.CommentEvent['commentId']>
+    commentId?: fc.Arbitrary<Events.CommentEvent['commentId']>
   } = {},
-): fc.Arbitrary<Comments.CommentEvent> =>
+): fc.Arbitrary<Events.CommentEvent> =>
   fc.oneof(
     commentWasStarted(args),
     commentWasEntered(args),
@@ -1573,64 +1573,62 @@ export const commentEvent = (
 export const datasetReviewWasStarted = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted['datasetReviewId']>
-} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasStarted> =>
+  datasetReviewId?: fc.Arbitrary<Events.DatasetReviewWasStarted['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DatasetReviewWasStarted> =>
   fc
     .record({
       authorId: orcid(),
       datasetId: datasetId(),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
-    .map(data => new DatasetReviews.DatasetReviewWasStarted(data))
+    .map(data => new Events.DatasetReviewWasStarted(data))
 
 export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['datasetReviewId']>
-} = {}): fc.Arbitrary<DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples> =>
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples> =>
   fc
     .record({
       answer: constantFrom('yes', 'partly', 'no', 'unsure'),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
-    .map(data => new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
+    .map(data => new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
 
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested['datasetReviewId']>
-} = {}): fc.Arbitrary<DatasetReviews.PublicationOfDatasetReviewWasRequested> =>
+  datasetReviewId?: fc.Arbitrary<Events.PublicationOfDatasetReviewWasRequested['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.PublicationOfDatasetReviewWasRequested> =>
   fc
     .record({ datasetReviewId: datasetReviewId ?? uuid() })
-    .map(data => new DatasetReviews.PublicationOfDatasetReviewWasRequested(data))
+    .map(data => new Events.PublicationOfDatasetReviewWasRequested(data))
 
 export const datasetReviewWasAssignedADoi = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi['datasetReviewId']>
-} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasAssignedADoi> =>
+  datasetReviewId?: fc.Arbitrary<Events.DatasetReviewWasAssignedADoi['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DatasetReviewWasAssignedADoi> =>
   fc
     .record({
       id: fc.integer(),
       doi: doi(),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
-    .map(data => new DatasetReviews.DatasetReviewWasAssignedADoi(data))
+    .map(data => new Events.DatasetReviewWasAssignedADoi(data))
 
 export const datasetReviewWasPublished = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished['datasetReviewId']>
-} = {}): fc.Arbitrary<DatasetReviews.DatasetReviewWasPublished> =>
-  fc
-    .record({ datasetReviewId: datasetReviewId ?? uuid() })
-    .map(data => new DatasetReviews.DatasetReviewWasPublished(data))
+  datasetReviewId?: fc.Arbitrary<Events.DatasetReviewWasPublished['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DatasetReviewWasPublished> =>
+  fc.record({ datasetReviewId: datasetReviewId ?? uuid() }).map(data => new Events.DatasetReviewWasPublished(data))
 
 export const datasetReviewEvent = (
   args: {
-    datasetReviewId?: fc.Arbitrary<DatasetReviews.DatasetReviewEvent['datasetReviewId']>
+    datasetReviewId?: fc.Arbitrary<Events.DatasetReviewEvent['datasetReviewId']>
   } = {},
-): fc.Arbitrary<DatasetReviews.DatasetReviewEvent> =>
+): fc.Arbitrary<Events.DatasetReviewEvent> =>
   fc.oneof(
     datasetReviewWasStarted(args),
     datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
@@ -1638,6 +1636,8 @@ export const datasetReviewEvent = (
     datasetReviewWasAssignedADoi(args),
     datasetReviewWasPublished(args),
   )
+
+export const event = (): fc.Arbitrary<Events.Event> => fc.oneof(commentEvent(), datasetReviewEvent())
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
