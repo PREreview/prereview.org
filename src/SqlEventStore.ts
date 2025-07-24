@@ -22,6 +22,11 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       )
     `
 
+    yield* sql.onDialectOrElse({
+      pg: () => sql`CREATE INDEX IF NOT EXISTS events_timestamp_idx ON events (timestamp) STORING (type, payload)`,
+      orElse: () => Effect.void,
+    })
+
     const buildFilterCondition = <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) =>
       filter.predicates && Struct.keys(filter.predicates).length > 0
         ? sql.and([
