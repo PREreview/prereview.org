@@ -21,6 +21,7 @@ const pageIds = {
   },
   Clubs: {
     'en-US': '64637b4c07fb34a92c7f84ec',
+    'es-419': '6881011607fb34a92c7fb34c',
     'pt-BR': '68753ced07fb34a92c7fb266',
   },
   CodeOfConduct: {
@@ -49,6 +50,7 @@ const pageIds = {
   },
   PrivacyPolicy: {
     'en-US': '6154aa157741400e8722bb0f',
+    'es-419': '6881015b07fb34a92c7fb355',
     'pt-BR': '68753ee307fb34a92c7fb298',
   },
   Resources: {
