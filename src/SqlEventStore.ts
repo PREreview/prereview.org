@@ -51,18 +51,18 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       orElse: () => Effect.void,
     })
 
+    const buildFilterCondition = <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) =>
+      filter.predicates && Struct.keys(filter.predicates).length > 0
+        ? sql.and([
+            sql.in('event_type', filter.types),
+            ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+              typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
+            ),
+          ])
+        : sql.in('event_type', filter.types)
+
     const selectEventRows = Effect.fn(
       function* <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) {
-        const condition =
-          filter.predicates && Object.keys(filter.predicates).length > 0
-            ? sql.and([
-                sql.in('event_type', filter.types),
-                ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                  typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-                ),
-              ])
-            : sql.in('event_type', filter.types)
-
         const rows = yield* pipe(
           sql`
             SELECT
@@ -75,7 +75,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
             FROM
               events
             WHERE
-              ${condition}
+              ${buildFilterCondition(filter)}
             ORDER BY
               event_timestamp ASC
           `,
