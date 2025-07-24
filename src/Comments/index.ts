@@ -78,7 +78,7 @@ export const makeHandleCommentCommand: Effect.Effect<
       Effect.catchTag(
         'FailedToCommitEvent',
         'FailedToGetEvents',
-        'ResourceHasChanged',
+        'NewEventsFound',
         cause => new UnableToHandleCommand({ cause }),
       ),
     )

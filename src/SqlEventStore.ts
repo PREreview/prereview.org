@@ -173,7 +173,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
         )
         if (results.rowsAffected !== 1) {
-          return yield* new EventStore.ResourceHasChanged()
+          return yield* new EventStore.NewEventsFound()
         }
       },
       Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),

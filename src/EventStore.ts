@@ -7,7 +7,7 @@ export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ c
 
 export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')<{ cause?: Error }> {}
 
-export class ResourceHasChanged extends Data.TaggedError('ResourceHasChanged') {}
+export class NewEventsFound extends Data.TaggedError('NewEventsFound') {}
 
 export interface EventFilter<A extends { readonly _tag: string }, T extends A['_tag']> {
   types: Array.NonEmptyReadonlyArray<T>
@@ -27,5 +27,5 @@ export interface EventStore<T extends { readonly _tag: string }> {
   readonly append: <Tag extends T['_tag']>(
     event: T,
     condition?: { filter: EventFilter<T, Tag>; lastKnownEvent: Option.Option<Uuid.Uuid> },
-  ) => Effect.Effect<void, ResourceHasChanged | FailedToCommitEvent>
+  ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }

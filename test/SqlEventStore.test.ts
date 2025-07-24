@@ -104,7 +104,7 @@ describe('when the last known event is different', () => {
           }),
         )
 
-        expect(error).toBeInstanceOf(EventStore.ResourceHasChanged)
+        expect(error).toBeInstanceOf(EventStore.NewEventsFound)
 
         const all = yield* eventStore.all
 
