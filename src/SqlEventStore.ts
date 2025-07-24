@@ -125,7 +125,11 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
 
       return yield* Array.match(rows, {
         onEmpty: () => Effect.fail(new EventStore.NoEventsFound()),
-        onNonEmpty: rows => Effect.succeed({ events: Array.map(rows, Struct.get('event')) }),
+        onNonEmpty: rows =>
+          Effect.succeed({
+            events: Array.map(rows, Struct.get('event')),
+            lastKnownEvent: Array.lastNonEmpty(rows).eventId,
+          }),
       })
     })
 
