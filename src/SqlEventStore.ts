@@ -1,4 +1,5 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
+import { PgClient } from '@effect/sql-pg'
 import { Array, DateTime, Effect, flow, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
@@ -291,10 +292,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
                       ${encoded.resource_version},
                       ${encoded.event_type},
                       ${encoded.event_timestamp},
-                      ${sql.onDialectOrElse({
-                      pg: () => sql`'${sql.unsafe(JSON.stringify(encoded.payload))}'::jsonb`,
-                      orElse: () => sql`${JSON.stringify(encoded.payload)}`,
-                    })}
+                      ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
                     WHERE
                       NOT EXISTS (
                         SELECT
@@ -386,6 +384,8 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
         }),
     },
   )
+
+const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient => PgClient.TypeId in sql
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 
