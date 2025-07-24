@@ -1,55 +1,60 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
 import { PgClient } from '@effect/sql-pg'
-import { Array, DateTime, Effect, flow, ParseResult, pipe, Record, Schema, Struct } from 'effect'
+import { Array, DateTime, Effect, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Uuid } from './types/index.js'
 
 export const make = <T extends string, A extends { _tag: T }, I extends { _tag: T }>(
-  resourceType: string,
-  resourceIdProperty: Extract<keyof Omit<I, '_tag'>, string>,
   eventTypes: Array.NonEmptyReadonlyArray<T>,
   eventSchema: Schema.Schema<A, I>,
 ): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     const generateUuid = yield* Uuid.GenerateUuid
-    const resourcesTable = ResourcesTable(resourceType)
     const eventsTable = EventsTable(eventSchema)
 
-    yield* sql`
-      CREATE TABLE IF NOT EXISTS resources (
-        id TEXT NOT NULL PRIMARY KEY,
-        type TEXT NOT NULL,
-        version INTEGER NOT NULL
-      )
-    `
+    yield* sql.onDialectOrElse({
+      pg: () =>
+        sql.withTransaction(
+          pipe(
+            sql`
+              SELECT
+                1
+              FROM
+                INFORMATION_SCHEMA.COLUMNS
+              WHERE
+                table_name = 'events'
+                AND column_name = 'resource_id'
+            `,
+            Effect.andThen(
+              Array.match({
+                onEmpty: () => Effect.void,
+                onNonEmpty: () => sql`
+                  DROP INDEX IF EXISTS events_resource_id_idx;
 
-    yield* sql`CREATE INDEX IF NOT EXISTS resources_type_idx ON resources (type)`
+                  DROP INDEX IF EXISTS resources_type_idx;
+
+                  ALTER TABLE events
+                  DROP resource_id,
+                  DROP resource_version;
+
+                  DROP TABLE IF EXISTS resources;
+                `,
+              }),
+            ),
+          ),
+        ),
+      orElse: () => Effect.void,
+    })
 
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
         event_id TEXT NOT NULL PRIMARY KEY,
-        resource_id TEXT NOT NULL,
-        resource_version INTEGER NOT NULL,
         event_type TEXT NOT NULL,
         event_timestamp TIMESTAMPTZ NOT NULL,
-        payload JSONB NOT NULL,
-        FOREIGN KEY (resource_id) REFERENCES resources (id),
-        UNIQUE (resource_id, resource_version)
+        payload JSONB NOT NULL
       )
     `
-
-    yield* sql.onDialectOrElse({
-      pg: () => sql`
-        CREATE INDEX IF NOT EXISTS events_resource_id_idx ON events (resource_id) STORING (
-          resource_version,
-          event_type,
-          event_timestamp,
-          payload
-        )
-      `,
-      orElse: () => Effect.void,
-    })
 
     const buildFilterCondition = <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) =>
       filter.predicates && Struct.keys(filter.predicates).length > 0
@@ -67,8 +72,6 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
           sql`
             SELECT
               event_id,
-              resource_id,
-              resource_version,
               event_type,
               event_timestamp,
               payload
@@ -98,8 +101,6 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       sql`
         SELECT
           event_id,
-          resource_id,
-          resource_version,
           event_type,
           event_timestamp,
           payload
@@ -133,170 +134,82 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       })
     })
 
-    const getEvents: EventStore.EventStore<A>['getEvents'] = resourceId =>
-      Effect.gen(function* () {
-        const rows = yield* selectEventRows({
-          types: eventTypes,
-          predicates: { [resourceIdProperty]: resourceId } as never,
+    const append: EventStore.EventStore<A>['append'] = Effect.fn(
+      function* (event, appendCondition) {
+        const eventId = yield* generateUuid
+        const eventTimestamp = yield* DateTime.now
+
+        const encoded = yield* Schema.encode(eventsTable)({
+          eventId,
+          eventTimestamp,
+          event,
         })
 
-        const latestVersion = Array.match(rows, {
-          onEmpty: () => 0,
-          onNonEmpty: flow(Array.lastNonEmpty, row => row.resourceVersion),
+        if (!appendCondition) {
+          return yield* pipe(
+            sql`
+              INSERT INTO
+                events (event_id, event_type, event_timestamp, payload)
+              SELECT
+                ${encoded.event_id},
+                ${encoded.event_type},
+                ${encoded.event_timestamp},
+                ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
+            `.raw,
+            Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
+          )
+        }
+
+        const condition = Option.match(appendCondition.lastKnownEvent, {
+          onNone: () => sql`
+            NOT EXISTS (
+              SELECT
+                1
+              FROM
+                events
+              WHERE
+                ${buildFilterCondition(appendCondition.filter)}
+            )
+          `,
+          onSome: lastKnownEvent => sql`
+            (
+              SELECT
+                event_id
+              FROM
+                events
+              WHERE
+                ${buildFilterCondition(appendCondition.filter)}
+              ORDER BY
+                event_timestamp DESC
+              LIMIT
+                1
+            ) = ${lastKnownEvent}
+          `,
         })
 
-        return { events: Array.map(rows, row => row.event), latestVersion }
-      }).pipe(
-        Effect.tapError(error =>
-          Effect.annotateLogs(Effect.logError('Unable to get events'), {
-            error,
-            resourceId,
-            resourceType,
-          }),
-        ),
-        Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-      )
-
-    const commitEvent: EventStore.EventStore<A>['commitEvent'] = (resourceId, lastKnownVersion) => event =>
-      sql
-        .withTransaction(
-          pipe(
-            Effect.gen(function* () {
-              const encoded = yield* Schema.encode(resourcesTable)({
-                id: resourceId,
-                type: resourceType,
-                version: lastKnownVersion,
-              })
-
-              const encodedNewVersion = yield* Schema.encode(resourcesTable.fields.version)(lastKnownVersion + 1)
-
-              if (lastKnownVersion === 0) {
-                const results = yield* pipe(
-                  sql`
-                    INSERT INTO
-                      resources (id, type, version)
-                    SELECT
-                      ${encoded.id},
-                      ${encoded.type},
-                      ${encodedNewVersion}
-                    WHERE
-                      NOT EXISTS (
-                        SELECT
-                          id
-                        FROM
-                          resources
-                        WHERE
-                          id = ${encoded.id}
-                      )
-                  `.raw,
-                  Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
-                )
-
-                if (results.rowsAffected !== 1) {
-                  return yield* new EventStore.ResourceHasChanged()
-                }
-
-                return
-              }
-
-              const rows = yield* sql`
-                SELECT
-                  id,
-                  type
-                FROM
-                  resources
-                WHERE
-                  id = ${encoded.id}
-                  AND type = ${encoded.type}
-              `
-
-              if (rows.length !== 1) {
-                return yield* new EventStore.FailedToCommitEvent({})
-              }
-
-              const results = yield* pipe(
-                sql`
-                  UPDATE resources
-                  SET
-                    version = ${encodedNewVersion}
-                  WHERE
-                    id = ${encoded.id}
-                    AND version = ${encoded.version}
-                `.raw,
-                Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
-              )
-
-              if (results.rowsAffected !== 1) {
-                return yield* new EventStore.ResourceHasChanged()
-              }
-            }),
-            Effect.andThen(() =>
-              Effect.gen(function* () {
-                const newResourceVersion = lastKnownVersion + 1
-                const eventId = yield* generateUuid
-                const eventTimestamp = yield* DateTime.now
-
-                const encoded = yield* Schema.encode(eventsTable)({
-                  eventId,
-                  resourceId,
-                  resourceVersion: newResourceVersion,
-                  eventTimestamp,
-                  event,
-                })
-
-                const results = yield* pipe(
-                  sql`
-                    INSERT INTO
-                      events (
-                        event_id,
-                        resource_id,
-                        resource_version,
-                        event_type,
-                        event_timestamp,
-                        payload
-                      )
-                    SELECT
-                      ${encoded.event_id},
-                      ${encoded.resource_id},
-                      ${encoded.resource_version},
-                      ${encoded.event_type},
-                      ${encoded.event_timestamp},
-                      ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
-                    WHERE
-                      NOT EXISTS (
-                        SELECT
-                          event_id
-                        FROM
-                          events
-                        WHERE
-                          resource_id = ${encoded.resource_id}
-                          AND resource_version >= ${encoded.resource_version}
-                      )
-                  `.raw,
-                  Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
-                )
-
-                if (results.rowsAffected !== 1) {
-                  return yield* new EventStore.ResourceHasChanged()
-                }
-
-                return newResourceVersion
-              }),
-            ),
-          ),
+        const results = yield* pipe(
+          sql`
+            INSERT INTO
+              events (event_id, event_type, event_timestamp, payload)
+            SELECT
+              ${encoded.event_id},
+              ${encoded.event_type},
+              ${encoded.event_timestamp},
+              ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
+            WHERE
+              (${condition})
+          `.raw,
+          Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
         )
-        .pipe(
-          Effect.tapError(error =>
-            Effect.annotateLogs(Effect.logError('Unable to commit events'), {
-              error,
-              resourceId,
-              resourceType,
-            }),
-          ),
-          Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
-        )
+        if (results.rowsAffected !== 1) {
+          return yield* new EventStore.ResourceHasChanged()
+        }
+      },
+      Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
+      Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
+    )
 
-    return { all, query, getEvents, commitEvent }
+    return { all, query, append }
   })
 
 const hasTag =
@@ -304,21 +217,10 @@ const hasTag =
   <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
     Array.contains(tags, tagged._tag)
 
-const ResourcesTable = (resourceType: string) =>
-  Schema.Struct({
-    id: Uuid.UuidSchema,
-    type: Schema.Literal(resourceType),
-    version: Schema.Number,
-  })
-
 const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema.Schema<A, I>) =>
   Schema.transformOrFail(
     Schema.Struct({
       eventId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('event_id')),
-      resourceId: Schema.propertySignature(Uuid.UuidSchema).pipe(Schema.fromKey('resource_id')),
-      resourceVersion: Schema.propertySignature(Schema.Union(Schema.NumberFromString, Schema.Number)).pipe(
-        Schema.fromKey('resource_version'),
-      ),
       eventTimestamp: Schema.propertySignature(Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate)).pipe(
         Schema.fromKey('event_timestamp'),
       ),
@@ -331,8 +233,6 @@ const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema
     Schema.typeSchema(
       Schema.Struct({
         eventId: Uuid.UuidSchema,
-        resourceId: Uuid.UuidSchema,
-        resourceVersion: Schema.Number,
         eventTimestamp: Schema.DateTimeUtc,
         event: eventSchema,
       }),

@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Array, Config, Effect, flow, Layer, Match, Option, pipe, PubSub, Struct } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -343,23 +343,10 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       commentEvents,
-      Layer.effect(
-        Comments.CommentEventStore,
-        SqlEventStore.make(
-          'Comment',
-          'commentId',
-          Array.map(Comments.CommentEvent.members, Struct.get('_tag')),
-          Comments.CommentEvent,
-        ),
-      ),
+      Layer.effect(Comments.CommentEventStore, SqlEventStore.make(Comments.CommentEventTypes, Comments.CommentEvent)),
       Layer.effect(
         DatasetReviews.DatasetReviewsEventStore,
-        SqlEventStore.make(
-          'DatasetReview',
-          'datasetReviewId',
-          Array.map(DatasetReviews.DatasetReviewEvent.members, Struct.get('_tag')),
-          DatasetReviews.DatasetReviewEvent,
-        ),
+        SqlEventStore.make(DatasetReviews.DatasetReviewEventTypes, DatasetReviews.DatasetReviewEvent),
       ).pipe(
         Layer.provide(
           LibsqlClient.layerConfig({

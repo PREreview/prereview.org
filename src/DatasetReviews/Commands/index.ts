@@ -1,4 +1,5 @@
 import { Context, Data, Effect, type Either, Layer, Option, pipe } from 'effect'
+import type * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
@@ -38,7 +39,15 @@ const makeDatasetReviewCommands: Effect.Effect<
   ): CommandHandler<Command, Error> =>
     Effect.fn(
       function* (command) {
-        const { events, latestVersion } = yield* eventStore.getEvents(command.datasetReviewId)
+        const filter = {
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        } satisfies EventStore.EventFilter<Events.DatasetReviewEvent, Events.DatasetReviewEvent['_tag']>
+
+        const { events, lastKnownEvent } = yield* pipe(
+          eventStore.query(filter),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
+        )
 
         yield* pipe(
           foldState(events),
@@ -46,7 +55,8 @@ const makeDatasetReviewCommands: Effect.Effect<
           Effect.tap(
             Option.match({
               onNone: () => Effect.void,
-              onSome: event => eventStore.commitEvent(command.datasetReviewId, latestVersion)(event),
+              onSome: event =>
+                eventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
             }),
           ),
         )
