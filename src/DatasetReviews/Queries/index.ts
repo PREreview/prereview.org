@@ -7,6 +7,7 @@ import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
+import type { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -19,6 +20,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
     getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples>,
+      Errors.UnknownDatasetReview
+    >
+    getPreviewForAReviewReadyToBePublished: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
     >
   }
@@ -37,7 +42,10 @@ export const {
   findInProgressReviewForADataset,
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
+  getPreviewForAReviewReadyToBePublished,
 } = Effect.serviceFunctions(DatasetReviewQueries)
+
+export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublished.js'
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, EventStore> = Effect.gen(
   function* () {
@@ -91,6 +99,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
+      getPreviewForAReviewReadyToBePublished: () => new UnableToQuery({ cause: 'not implemented' }),
     }
   },
 )
