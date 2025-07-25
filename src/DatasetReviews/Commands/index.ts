@@ -42,7 +42,7 @@ const makeDatasetReviewCommands: Effect.Effect<
         const filter = {
           types: Events.DatasetReviewEventTypes,
           predicates: { datasetReviewId: command.datasetReviewId },
-        } satisfies EventStore.EventFilter<Events.DatasetReviewEvent, Events.DatasetReviewEvent['_tag']>
+        } satisfies EventStore.EventFilter<Events.DatasetReviewEvent['_tag']>
 
         const { events, lastKnownEvent } = yield* pipe(
           eventStore.query(filter),

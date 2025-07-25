@@ -15,10 +15,7 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
   PubSub.PubSub<{ readonly commentId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
 
-export class CommentEventStore extends Context.Tag('CommentEventStore')<
-  CommentEventStore,
-  EventStore<CommentEvent>
->() {}
+export class CommentEventStore extends Context.Tag('CommentEventStore')<CommentEventStore, EventStore>() {}
 
 export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
   GetNextExpectedCommandForUserOnAComment,

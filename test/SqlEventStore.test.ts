@@ -22,7 +22,7 @@ it.prop([
   ),
 ])('starts empty', filter =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(Events.Event)
+    const eventStore = yield* _.make
 
     const error = yield* Effect.flip(eventStore.query(filter))
     const all = yield* eventStore.all
@@ -49,7 +49,7 @@ describe('when the last known event is none', () => {
     fc.array(fc.datasetReviewEvent()),
   ])('appends the event', (event, filter, otherEvents) =>
     Effect.gen(function* () {
-      const eventStore = yield* _.make(Events.Event)
+      const eventStore = yield* _.make
 
       yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
 
@@ -71,7 +71,7 @@ describe('when the last known event is none', () => {
 describe('when the last known event matches', () => {
   it.prop([fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()])('appends the event', (existingEvents, event) =>
     Effect.gen(function* () {
-      const eventStore = yield* _.make(Events.Event)
+      const eventStore = yield* _.make
 
       yield* Effect.forEach(existingEvents, existingEvent =>
         TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
@@ -100,7 +100,7 @@ describe('when the last known event is different', () => {
     'does nothing',
     (existingEvents, event, lastKnownEvent) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make(Events.Event)
+        const eventStore = yield* _.make
 
         yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
@@ -166,7 +166,7 @@ test.each([
   ]
 >)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
   Effect.gen(function* () {
-    const eventStore = yield* _.make(Events.Event)
+    const eventStore = yield* _.make
 
     yield* Effect.forEach(events, event => eventStore.append(event))
 

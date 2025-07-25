@@ -7,7 +7,7 @@ export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
 export class DatasetReviewsEventStore extends Context.Tag('DatasetReviewsEventStore')<
   DatasetReviewsEventStore,
-  EventStore<DatasetReviewEvent>
+  EventStore
 >() {}
 
 export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWasStarted>()('DatasetReviewWasStarted', {

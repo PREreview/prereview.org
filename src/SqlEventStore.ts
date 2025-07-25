@@ -2,15 +2,14 @@ import { SqlClient, type SqlError, type Statement } from '@effect/sql'
 import { PgClient } from '@effect/sql-pg'
 import { Array, DateTime, Effect, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
+import { Event } from './Events.js'
 import { Uuid } from './types/index.js'
 
-export const make = <T extends string, A extends { _tag: T }, I extends { _tag: T }>(
-  eventSchema: Schema.Schema<A, I>,
-): Effect.Effect<EventStore.EventStore<A>, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =>
+export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlClient.SqlClient | Uuid.GenerateUuid> =
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     const generateUuid = yield* Uuid.GenerateUuid
-    const eventsTable = EventsTable(eventSchema)
+    const eventsTable = EventsTable(Event)
 
     yield* sql`
       CREATE TABLE IF NOT EXISTS events (
@@ -26,7 +25,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       orElse: () => Effect.void,
     })
 
-    const buildFilterCondition = <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) =>
+    const buildFilterCondition = <T extends Event['_tag']>(filter: EventStore.EventFilter<T>) =>
       filter.predicates && Struct.keys(filter.predicates).length > 0
         ? sql.and([
             sql.in('type', filter.types),
@@ -37,7 +36,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
         : sql.in('type', filter.types)
 
     const selectEventRows = Effect.fn(
-      function* <T extends A['_tag']>(filter: EventStore.EventFilter<A, T>) {
+      function* <T extends Event['_tag']>(filter: EventStore.EventFilter<T>) {
         const rows = yield* pipe(
           sql`
             SELECT
@@ -53,7 +52,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
               timestamp ASC
           `,
           Effect.andThen(
-            Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema.pipe(Schema.filter(hasTag(...filter.types)))))),
+            Schema.decodeUnknown(Schema.Array(EventsTable(Event.pipe(Schema.filter(hasTag(...filter.types)))))),
           ),
         )
 
@@ -67,7 +66,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
-    const all: EventStore.EventStore<A>['all'] = pipe(
+    const all: EventStore.EventStore['all'] = pipe(
       sql`
         SELECT
           id,
@@ -79,7 +78,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
         ORDER BY
           timestamp ASC
       `,
-      Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable(eventSchema)))),
+      Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable(Event)))),
       Effect.andThen(Array.map(Struct.get('event'))),
       Effect.tapError(error =>
         Effect.annotateLogs(Effect.logError('Unable to get all events'), {
@@ -89,7 +88,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     )
 
-    const query: EventStore.EventStore<A>['query'] = Effect.fn(function* (filter) {
+    const query: EventStore.EventStore['query'] = Effect.fn(function* (filter) {
       const rows = yield* selectEventRows(filter)
 
       return yield* Array.match(rows, {
@@ -102,7 +101,7 @@ export const make = <T extends string, A extends { _tag: T }, I extends { _tag: 
       })
     })
 
-    const append: EventStore.EventStore<A>['append'] = Effect.fn(
+    const append: EventStore.EventStore['append'] = Effect.fn(
       function* (event, appendCondition) {
         const id = yield* generateUuid
         const timestamp = yield* DateTime.now

@@ -8,7 +8,6 @@ import { DeprecatedLoggerEnv, ExpressConfig, Locale } from './Context.js'
 import * as DatasetReviews from './DatasetReviews/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
-import * as Events from './Events.js'
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -344,8 +343,8 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       commentEvents,
-      Layer.effect(Comments.CommentEventStore, SqlEventStore.make(Events.CommentEvent)),
-      Layer.effect(DatasetReviews.DatasetReviewsEventStore, SqlEventStore.make(Events.DatasetReviewEvent)).pipe(
+      Layer.effect(Comments.CommentEventStore, SqlEventStore.make),
+      Layer.effect(DatasetReviews.DatasetReviewsEventStore, SqlEventStore.make).pipe(
         Layer.provide(
           LibsqlClient.layerConfig({
             url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
