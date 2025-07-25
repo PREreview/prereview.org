@@ -1,6 +1,6 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
 import { PgClient } from '@effect/sql-pg'
-import { Array, DateTime, Effect, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
+import { Array, DateTime, Effect, Layer, Option, ParseResult, pipe, Record, Schema, Struct } from 'effect'
 import * as EventStore from './EventStore.js'
 import { Event } from './Events.js'
 import { Uuid } from './types/index.js'
@@ -178,6 +178,8 @@ export const make: Effect.Effect<EventStore.EventStore, SqlError.SqlError, SqlCl
 
     return { all, query, append }
   })
+
+export const layer = Layer.effect(EventStore.EventStore, make)
 
 const hasTag =
   <Tag extends string>(...tags: ReadonlyArray<Tag>) =>
