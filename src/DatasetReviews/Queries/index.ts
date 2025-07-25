@@ -1,11 +1,8 @@
 import { Context, Data, Effect, Layer, type Option } from 'effect'
+import { EventStore } from '../../EventStore.js'
 import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import {
-  DatasetReviewEventTypes,
-  DatasetReviewsEventStore,
-  type AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
-} from '../Events.js'
+import { DatasetReviewEventTypes, type AnsweredIfTheDatasetFollowsFairAndCarePrinciples } from '../Events.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -40,9 +37,9 @@ export const {
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
 } = Effect.serviceFunctions(DatasetReviewQueries)
 
-const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, DatasetReviewsEventStore> =
-  Effect.gen(function* () {
-    const eventStore = yield* DatasetReviewsEventStore
+const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, EventStore> = Effect.gen(
+  function* () {
+    const eventStore = yield* EventStore
 
     return {
       checkIfReviewIsInProgress: Effect.fn(
@@ -93,6 +90,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
     }
-  })
+  },
+)
 
 export const queriesLayer = Layer.effect(DatasetReviewQueries, makeDatasetReviewQueries)

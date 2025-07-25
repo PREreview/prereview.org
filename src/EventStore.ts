@@ -1,6 +1,8 @@
-import { type Array, Data, type Effect, type Option } from 'effect'
+import { type Array, Context, Data, type Effect, type Option } from 'effect'
 import type { Event } from './Events.js'
 import type { Uuid } from './types/index.js'
+
+export const EventStore = Context.GenericTag<EventStore>('EventStore')
 
 export class NoEventsFound extends Data.TaggedClass('NoEventsFound') {}
 

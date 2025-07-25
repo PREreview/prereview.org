@@ -1,7 +1,6 @@
 import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type Option, type PubSub } from 'effect'
 import type { Orcid } from 'orcid-id-ts'
-import type { EventStore } from '../EventStore.js'
 import type { Html } from '../html.js'
 import type { NonEmptyString, Uuid } from '../types/index.js'
 import type { CommentCommand } from './Commands.js'
@@ -14,8 +13,6 @@ export class CommentEvents extends Context.Tag('CommentEvents')<
   CommentEvents,
   PubSub.PubSub<{ readonly commentId: Uuid.Uuid; readonly event: CommentEvent }>
 >() {}
-
-export class CommentEventStore extends Context.Tag('CommentEventStore')<CommentEventStore, EventStore>() {}
 
 export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
   GetNextExpectedCommandForUserOnAComment,
