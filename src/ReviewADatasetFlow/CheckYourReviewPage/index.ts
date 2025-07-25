@@ -3,7 +3,8 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 
@@ -20,9 +21,19 @@ export const CheckYourReviewPage = ({
       return yield* PageNotFound
     }
 
+    yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
+
     return yield* HavingProblemsPage
   }).pipe(
     Effect.catchTags({
+      DatasetReviewHasBeenPublished: () => HavingProblemsPage,
+      DatasetReviewIsBeingPublished: () => HavingProblemsPage,
+      DatasetReviewNotReadyToBePublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
+          }),
+        ),
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),

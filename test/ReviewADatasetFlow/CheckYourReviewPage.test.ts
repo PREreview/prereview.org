@@ -1,18 +1,27 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer } from 'effect'
+import { Effect, Equal, Layer, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/CheckYourReviewPage/index.js'
+import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('CheckYourReviewPage', () => {
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
-    'when the dataset review is by the user',
-    (datasetReviewId, locale, user) =>
+  describe('when the dataset review is by the user', () => {
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.record({
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
+          .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
+          .map(Struct.get('answer')),
+      }),
+    ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
@@ -28,13 +37,96 @@ describe('CheckYourReviewPage', () => {
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getAuthor: () => Effect.succeed(user.orcid),
+            getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
           }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
-  )
+    )
+
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+      "when the dataset review isn't ready to be published",
+      (datasetReviewId, locale, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SEE_OTHER,
+            location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => Effect.succeed(user.orcid),
+              getPreviewForAReviewReadyToBePublished: () =>
+                new DatasetReviews.DatasetReviewNotReadyToBePublished({
+                  missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+                }),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+    )
+
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+      'when the dataset review is being published',
+      (datasetReviewId, locale, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => Effect.succeed(user.orcid),
+              getPreviewForAReviewReadyToBePublished: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+    )
+
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+      'when the dataset review has been published',
+      (datasetReviewId, locale, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.SERVICE_UNAVAILABLE,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => Effect.succeed(user.orcid),
+              getPreviewForAReviewReadyToBePublished: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+    )
+  })
 
   test.prop([
     fc.uuid(),
