@@ -335,7 +335,15 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      DatasetReviews.layer,
+      pipe(
+        DatasetReviews.layer,
+        Layer.provide(Layer.effect(DatasetReviews.DatasetReviewsEventStore, SqlEventStore.make)),
+        Layer.provide(
+          LibsqlClient.layerConfig({
+            url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
+          }),
+        ),
+      ),
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
   ),
@@ -344,13 +352,6 @@ export const Program = pipe(
     Layer.mergeAll(
       commentEvents,
       Layer.effect(Comments.CommentEventStore, SqlEventStore.make),
-      Layer.effect(DatasetReviews.DatasetReviewsEventStore, SqlEventStore.make).pipe(
-        Layer.provide(
-          LibsqlClient.layerConfig({
-            url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
-          }),
-        ),
-      ),
       LoggingHttpClient.layer,
     ),
   ),
