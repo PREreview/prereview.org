@@ -188,12 +188,9 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SEE_OTHER,
+          location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }),
         })
       }).pipe(
         Effect.provide(

@@ -4,7 +4,8 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import * as FollowsFairAndCarePrinciplesForm from './FollowsFairAndCarePrinciplesForm.js'
@@ -69,7 +70,7 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
             datasetReviewId,
           })
 
-          return yield* HavingProblemsPage
+          return Response.RedirectResponse({ location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }) })
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
