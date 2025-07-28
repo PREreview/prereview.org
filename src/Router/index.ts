@@ -8,6 +8,7 @@ import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
@@ -62,6 +63,7 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     ),
   ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
+  MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, () => HavingProblemsPage),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
   HttpRouter.append(MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
