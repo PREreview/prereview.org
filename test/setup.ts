@@ -1,6 +1,6 @@
 import type { Tester, TesterContext } from '@jest/expect-utils'
 import { expect } from '@jest/globals'
-import { Equal, Utils } from 'effect'
+import { Either, Equal, Utils } from 'effect'
 import type { MatcherFunction } from 'expect'
 import * as fc from 'fast-check'
 import { Html, PlainText } from '../src/html.js'
@@ -14,6 +14,16 @@ expect.addEqualityTesters([effectEquals, urlEquals, temporalEquals])
 function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
   if (!Equal.isEqual(a) || !Equal.isEqual(b)) {
     return undefined
+  }
+
+  if (Either.isEither(a) && Either.isEither(b)) {
+    if (Either.isLeft(a) && Either.isLeft(b)) {
+      a = a.left
+      b = b.left
+    } else if (Either.isRight(a) && Either.isRight(b)) {
+      a = a.right
+      b = b.right
+    }
   }
 
   return Utils.structuralRegion(
