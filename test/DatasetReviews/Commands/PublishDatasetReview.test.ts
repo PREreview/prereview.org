@@ -100,13 +100,13 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
-  test.failing('has not been started', () => {
+  test('has not been started', () => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.failing.prop([fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))])(
+  test.prop([fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))])(
     'is not ready',
     missing => {
       const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
@@ -115,7 +115,7 @@ describe('decide', () => {
     },
   )
 
-  test.failing('is ready', () => {
+  test('is ready', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -123,13 +123,13 @@ describe('decide', () => {
     )
   })
 
-  test.failing('is being published', () => {
+  test('is being published', () => {
     const result = _.decide(new _.IsBeingPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
-  test.failing('has been published', () => {
+  test('has been published', () => {
     const result = _.decide(new _.HasBeenPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))

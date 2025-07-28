@@ -1,7 +1,7 @@
-import { type Array, Data, type Either, Function, type Option } from 'effect'
+import { Data, Either, Function, Match, Option, type Array } from 'effect'
 import type { Uuid } from '../../types/index.js'
-import type * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Errors from '../Errors.js'
+import * as Events from '../Events.js'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
@@ -37,8 +37,15 @@ export const decide: {
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
 } = Function.dual(
   2,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> => {
-    throw new Error('Not implemented')
-  },
+  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+    Match.valueTags(state, {
+      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+      NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBePublished({ missing })),
+      IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
+      HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+      IsReady: () =>
+        Either.right(
+          Option.some(new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId: command.datasetReviewId })),
+        ),
+    }),
 )
