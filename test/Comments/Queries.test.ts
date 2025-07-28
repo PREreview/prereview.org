@@ -174,6 +174,13 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({ commentId: resourceId })
   const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
     new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: resourceId })
+  const publicationOfCommentWasRequested = new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })
+  const commentWasAssignedADoi = new Comments.CommentWasAssignedADoi({
+    commentId: resourceId,
+    id: 107286,
+    doi: Doi('10.5072/zenodo.107286'),
+  })
+  const commentWasPublished = new Comments.CommentWasPublished({ commentId: resourceId })
 
   describe('when the comment needs further user input', () => {
     test.each([
@@ -249,15 +256,35 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     expect(actual).toStrictEqual(Either.left(new Comments.CommentHasNotBeenStarted()))
   })
 
-  test.prop([fc.uuid()])('when the comment is being published', resourceId => {
-    const events = [new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })]
+  test('when the comment is being published', () => {
+    const events = [
+      commentWasStarted,
+      commentWasEntered,
+      personaForCommentWasChosen,
+      competingInterestsForCommentWereDeclared,
+      codeOfConductForCommentWasAgreed,
+      existenceOfVerifiedEmailAddressForCommentWasConfirmed,
+      publicationOfCommentWasRequested,
+    ]
+
     const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
     expect(actual).toStrictEqual(Either.left(new Comments.CommentIsBeingPublished()))
   })
 
-  test.prop([fc.uuid()])('when the comment has been published', resourceId => {
-    const events = [new Comments.CommentWasPublished({ commentId: resourceId })]
+  test('when the comment has been published', () => {
+    const events = [
+      commentWasStarted,
+      commentWasEntered,
+      personaForCommentWasChosen,
+      competingInterestsForCommentWereDeclared,
+      codeOfConductForCommentWasAgreed,
+      existenceOfVerifiedEmailAddressForCommentWasConfirmed,
+      publicationOfCommentWasRequested,
+      commentWasAssignedADoi,
+      commentWasPublished,
+    ]
+
     const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
     expect(actual).toStrictEqual(Either.left(new Comments.CommentWasAlreadyPublished()))

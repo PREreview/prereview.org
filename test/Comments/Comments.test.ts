@@ -118,7 +118,7 @@ describe('when in progress', () => {
   test('DOI cannot be marked as assigned', () =>
     given(started)
       .when(new _.MarkDoiAsAssigned({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }))
-      .thenError(new _.CommentHasNotBeenStarted()))
+      .thenError(new _.CommentIsIncomplete()))
 
   test('cannot be marked as published', () =>
     given(started).when(new _.MarkCommentAsPublished({ commentId })).thenError(new _.CommentIsIncomplete()))

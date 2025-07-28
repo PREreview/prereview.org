@@ -3,7 +3,11 @@ import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Cause, DateTime, Effect, Either, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
-import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.js'
+import {
+  CacheValueFromStringSchema,
+  InternalHttpCacheFailure,
+  NoCachedResponseFound,
+} from '../../src/CachingHttpClient/HttpCache.js'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -43,7 +47,7 @@ describe('getFromRedis', () => {
 
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
-          expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
+          expect(result).toStrictEqual(Either.left(new NoCachedResponseFound({})))
         }).pipe(EffectTest.run),
       )
 
@@ -67,7 +71,7 @@ describe('getFromRedis', () => {
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
-        expect(result).toStrictEqual(Either.left(new Cause.NoSuchElementException()))
+        expect(result).toStrictEqual(Either.left(new NoCachedResponseFound({})))
       }).pipe(EffectTest.run),
     )
   })

@@ -78,7 +78,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         EffectTest.run,
@@ -133,7 +133,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Either.left(error))
       }).pipe(
         Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
         EffectTest.run,
@@ -154,7 +154,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToAssignADoi({})))
       }).pipe(EffectTest.run),
   )
 })

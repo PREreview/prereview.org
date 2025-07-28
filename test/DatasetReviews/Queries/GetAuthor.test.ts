@@ -53,7 +53,7 @@ describe('GetAuthor', () => {
     })('returns an error', events => {
       const actual = _.GetAuthor(events)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnableToQuery({})))
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
     })
   })
 })
