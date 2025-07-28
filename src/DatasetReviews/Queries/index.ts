@@ -3,7 +3,7 @@ import { EventStore } from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import { DatasetReviewEventTypes } from '../Events.js'
-import type { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
+import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -70,7 +70,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
       ),
-      checkIfReviewIsBeingPublished: () => new UnableToQuery({ cause: 'Not implemented' }),
+      checkIfReviewIsBeingPublished: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* eventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* CheckIfReviewIsBeingPublished(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
           const { events } = yield* eventStore.query({

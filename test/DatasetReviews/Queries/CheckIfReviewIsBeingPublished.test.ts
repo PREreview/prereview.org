@@ -20,7 +20,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('CheckIfReviewIsBeingPublished', () => {
   describe('when it is being published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
@@ -66,7 +66,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
   })
 
   describe('when it is in progress', () => {
-    it.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+    it.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
       examples: [
         [[datasetReviewWasStarted]], // was started
         [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // with answer
@@ -79,7 +79,7 @@ describe('CheckIfReviewIsBeingPublished', () => {
   })
 
   describe('when it has been published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
