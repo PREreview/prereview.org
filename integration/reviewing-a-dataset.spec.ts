@@ -10,7 +10,7 @@ import {
 
 const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
 
-test.extend(canLogIn)('can review a dataset', async ({ page }, testInfo) => {
+test.extend(canLogIn)('can review a dataset', async ({ javaScriptEnabled, page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
 
   await expect(page.getByRole('main')).toContainText('We will ask you to log in')
@@ -25,6 +25,23 @@ test.extend(canLogIn)('can review a dataset', async ({ page }, testInfo) => {
   testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
+
+  if (javaScriptEnabled) {
+    await page.getByRole('link', { name: 'Continue' }).click()
+  } else {
+    await expect(async () => {
+      await page.getByRole('link', { name: 'Reload page' }).click()
+
+      await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
+    }).toPass()
+  }
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
 })
 
 test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }, testInfo) => {
@@ -67,6 +84,26 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
+})
+
+test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }, testInfo) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Partly').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  testInfo.fail()
+
+  const review = page.getByRole('region', { name: 'Your PREreview' })
+
+  await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+
+  await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
+
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? I don’t know')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
