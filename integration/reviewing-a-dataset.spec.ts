@@ -20,6 +20,7 @@ test.extend(canLogIn)('can review a dataset', async ({ page }, testInfo) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
 
   await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   testInfo.fail()
 
