@@ -1,0 +1,137 @@
+import { test } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
+import { Array, Either, identity, Option, Predicate } from 'effect'
+import * as _ from '../../../src/DatasetReviews/Commands/PublishDatasetReview.js'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
+import * as Datasets from '../../../src/Datasets/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import * as fc from '../../fc.js'
+
+const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
+const authorId = Orcid.Orcid('0000-0002-1825-0097')
+const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
+const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answered = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+  datasetReviewId,
+})
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+
+describe('foldState', () => {
+  test.failing.prop(
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    {
+      examples: [
+        [[]], // no events
+        [[answered, datasetReviewWasPublished]], // with events
+      ],
+    },
+  )('not started', () => {
+    const state = _.foldState([])
+
+    expect(state).toStrictEqual(new _.NotStarted())
+  })
+
+  test.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+    examples: [
+      [[started]], // was started
+    ],
+  })('not ready', events => {
+    const state = _.foldState(events)
+
+    expect(state).toStrictEqual(new _.NotReady({ missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] }))
+  })
+
+  test.failing.prop(
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples())
+        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+    ],
+    {
+      examples: [
+        [[started, answered]], // answered
+        [[answered, started]], // different order
+      ],
+    },
+  )('is ready', events => {
+    const state = _.foldState(events)
+
+    expect(state).toStrictEqual(new _.IsReady())
+  })
+
+  test.failing.prop(
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
+        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+    ],
+    {
+      examples: [
+        [[started, publicationOfDatasetReviewWasRequested]], // was requested
+        [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
+        [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
+      ],
+    },
+  )('is being published', events => {
+    const state = _.foldState(events)
+
+    expect(state).toStrictEqual(new _.IsBeingPublished())
+  })
+
+  test.failing.prop(
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+    ],
+    {
+      examples: [
+        [[started, answered, datasetReviewWasPublished]], // was published
+        [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
+        [[started, datasetReviewWasPublished, answered]], // different order
+      ],
+    },
+  )('has been published', events => {
+    const state = _.foldState(events)
+
+    expect(state).toStrictEqual(new _.HasBeenPublished())
+  })
+})
+
+describe('decide', () => {
+  test.failing('has not been started', () => {
+    const result = _.decide(new _.NotStarted(), { datasetReviewId })
+
+    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
+  })
+
+  test.failing.prop([fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))])(
+    'is not ready',
+    missing => {
+      const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
+
+      expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing })))
+    },
+  )
+
+  test.failing('is ready', () => {
+    const result = _.decide(new _.IsReady(), { datasetReviewId })
+
+    expect(result).toStrictEqual(
+      Either.right(Option.some(new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId }))),
+    )
+  })
+
+  test.failing('is being published', () => {
+    const result = _.decide(new _.IsBeingPublished(), { datasetReviewId })
+
+    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+  })
+
+  test.failing('has been published', () => {
+    const result = _.decide(new _.HasBeenPublished(), { datasetReviewId })
+
+    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+  })
+})
