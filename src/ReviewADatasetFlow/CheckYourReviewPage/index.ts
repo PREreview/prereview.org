@@ -45,3 +45,24 @@ export const CheckYourReviewPage = ({
       UnknownDatasetReview: () => PageNotFound,
     }),
   )
+
+export const CheckYourReviewSubmission = ({
+  datasetReviewId,
+}: {
+  datasetReviewId: Uuid.Uuid
+}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const author = yield* DatasetReviews.getAuthor(datasetReviewId)
+
+    if (!Equal.equals(user.orcid, author)) {
+      return yield* PageNotFound
+    }
+
+    return yield* HavingProblemsPage
+  }).pipe(
+    Effect.catchTags({
+      UnableToQuery: () => HavingProblemsPage,
+      UnknownDatasetReview: () => PageNotFound,
+    }),
+  )

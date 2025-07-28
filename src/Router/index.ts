@@ -63,7 +63,7 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     ),
   ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
-  MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, () => HavingProblemsPage),
+  MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
   MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, () => HavingProblemsPage),
   MakeRoute('GET', Routes.ReviewADatasetReviewPublished, () => HavingProblemsPage),
 ]).pipe(
