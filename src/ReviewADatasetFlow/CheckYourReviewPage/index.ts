@@ -27,8 +27,14 @@ export const CheckYourReviewPage = ({
     return MakeResponse({ datasetReviewId, review })
   }).pipe(
     Effect.catchTags({
-      DatasetReviewHasBeenPublished: () => HavingProblemsPage,
-      DatasetReviewIsBeingPublished: () => HavingProblemsPage,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
       DatasetReviewNotReadyToBePublished: () =>
         Effect.succeed(
           Response.RedirectResponse({

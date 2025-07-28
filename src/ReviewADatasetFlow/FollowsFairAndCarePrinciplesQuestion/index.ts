@@ -34,8 +34,14 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
     return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
-      DatasetReviewHasBeenPublished: () => HavingProblemsPage,
-      DatasetReviewIsBeingPublished: () => HavingProblemsPage,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),

@@ -49,12 +49,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
           expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SEE_OTHER,
+            location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }),
           })
         }).pipe(
           Effect.provide(
@@ -76,12 +73,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
           expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SEE_OTHER,
+            location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
           })
         }).pipe(
           Effect.provide(

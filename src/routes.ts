@@ -54,13 +54,13 @@ export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
-export const ReviewADatasetPublishing: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetReviewBeingPublished: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/review-being-published',
   href: params => `/review-a-dataset/${params.datasetReviewId}/review-being-published`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
-export const ReviewADatasetPublished: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetReviewPublished: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/review-published',
   href: params => `/review-a-dataset/${params.datasetReviewId}/review-published`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
