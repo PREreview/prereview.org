@@ -7,7 +7,7 @@ import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
-import type { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
+import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -99,7 +99,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       ),
-      getPreviewForAReviewReadyToBePublished: () => new UnableToQuery({ cause: 'not implemented' }),
+      getPreviewForAReviewReadyToBePublished: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* eventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* GetPreviewForAReviewReadyToBePublished(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+      ),
     }
   },
 )
