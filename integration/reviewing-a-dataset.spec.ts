@@ -22,11 +22,11 @@ test.extend(canLogIn)('can review a dataset', async ({ javaScriptEnabled, page }
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  testInfo.fail()
-
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+  testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
 

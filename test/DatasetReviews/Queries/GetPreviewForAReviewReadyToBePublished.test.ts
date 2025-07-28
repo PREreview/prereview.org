@@ -22,7 +22,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('GetPreviewForAReviewReadyToBePublished', () => {
   describe('when it is ready to be published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .uuid()
@@ -74,7 +74,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
   })
 
   describe('when it is not ready to be published', () => {
-    it.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+    it.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
       examples: [
         [[datasetReviewWasStarted]], // was started
       ],
@@ -92,7 +92,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
   })
 
   describe('when it is being published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
@@ -125,7 +125,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
   })
 
   describe('when it has been published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())

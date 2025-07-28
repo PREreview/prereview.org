@@ -1,4 +1,4 @@
-import { Either } from 'effect'
+import { Array, Either, Option } from 'effect'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
@@ -7,7 +7,6 @@ export interface DatasetReviewPreview {
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: ReadonlyArray<Events.DatasetReviewEvent>,
 ): Either.Either<
   DatasetReviewPreview,
@@ -15,4 +14,42 @@ export const GetPreviewForAReviewReadyToBePublished = (
   | Errors.DatasetReviewIsBeingPublished
   | Errors.DatasetReviewHasBeenPublished
   | Errors.UnexpectedSequenceOfEvents
-> => Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'Query not implemented' }))
+> => {
+  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
+    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+  }
+
+  if (hasEvent(events, 'DatasetReviewWasPublished')) {
+    return Either.left(new Errors.DatasetReviewHasBeenPublished())
+  }
+
+  if (hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
+    return Either.left(new Errors.DatasetReviewIsBeingPublished())
+  }
+
+  const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
+  )
+
+  return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
+    onNone: () =>
+      Either.left(
+        new Errors.DatasetReviewNotReadyToBePublished({
+          missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+        }),
+      ),
+    onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
+      Either.right({
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
+      }),
+  })
+}
+
+function hasEvent(events: ReadonlyArray<Events.DatasetReviewEvent>, tag: Events.DatasetReviewEvent['_tag']): boolean {
+  return Array.some(events, hasTag(tag))
+}
+
+function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+}
