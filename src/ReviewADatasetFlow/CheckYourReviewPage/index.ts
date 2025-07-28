@@ -1,4 +1,4 @@
-import { Effect, Equal } from 'effect'
+import { Effect, Equal, pipe } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -50,7 +50,11 @@ export const CheckYourReviewSubmission = ({
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -59,7 +63,13 @@ export const CheckYourReviewSubmission = ({
       return yield* PageNotFound
     }
 
-    return yield* HavingProblemsPage
+    return yield* pipe(
+      DatasetReviews.publishDatasetReview({ datasetReviewId }),
+      Effect.andThen(
+        Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+      ),
+      Effect.catchAll(() => HavingProblemsPage),
+    )
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,

@@ -202,9 +202,43 @@ describe('CheckYourReviewPage', () => {
 })
 
 describe('CheckYourReviewSubmission', () => {
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
-    'when the form is submitted',
-    (datasetReviewId, locale, user) =>
+  describe('when the form is submitted', () => {
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+      'when the review can be published',
+      (datasetReviewId, locale, user) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewSubmission({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SEE_OTHER,
+            location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { publishDatasetReview: () => Effect.void })),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewNotReadyToBePublished({
+          missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+        }),
+        new DatasetReviews.DatasetReviewIsBeingPublished(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+      ),
+    ])("when the review can't be published", (datasetReviewId, locale, user, error) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckYourReviewSubmission({ datasetReviewId })
 
@@ -218,13 +252,17 @@ describe('CheckYourReviewSubmission', () => {
         })
       }).pipe(
         Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { publishDatasetReview: () => Effect.fail(error) }),
+        ),
+        Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
-  )
+    )
+  })
 
   test.prop([
     fc.uuid(),
@@ -245,6 +283,7 @@ describe('CheckYourReviewSubmission', () => {
         js: [],
       })
     }).pipe(
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
       ),
@@ -269,6 +308,7 @@ describe('CheckYourReviewSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
@@ -295,6 +335,7 @@ describe('CheckYourReviewSubmission', () => {
           js: [],
         })
       }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
         ),

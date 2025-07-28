@@ -25,7 +25,7 @@ type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { startDatasetReview, answerIfTheDatasetFollowsFairAndCarePrinciples } =
+export const { startDatasetReview, answerIfTheDatasetFollowsFairAndCarePrinciples, publishDatasetReview } =
   Effect.serviceFunctions(DatasetReviewCommands)
 
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, EventStore.EventStore> =
