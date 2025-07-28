@@ -3,9 +3,11 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
-import type * as Response from '../../response.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { ReviewBeingPublishedPage as MakeResponse } from './ReviewBeingPublishedPage.js'
 
 export const ReviewBeingPublishedPage = ({
   datasetReviewId,
@@ -20,9 +22,16 @@ export const ReviewBeingPublishedPage = ({
       return yield* PageNotFound
     }
 
-    return yield* HavingProblemsPage
+    yield* DatasetReviews.checkIfReviewIsBeingPublished(datasetReviewId)
+
+    return MakeResponse({ datasetReviewId })
   }).pipe(
     Effect.catchTags({
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsInProgress: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),

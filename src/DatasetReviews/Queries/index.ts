@@ -44,6 +44,7 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 
 export const {
   checkIfReviewIsInProgress,
+  checkIfReviewIsBeingPublished,
   findInProgressReviewForADataset,
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
