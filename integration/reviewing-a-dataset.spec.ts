@@ -56,9 +56,11 @@ test.extend(canChooseLocale)('can choose a locale before starting', async ({ pag
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
-  async ({ page }) => {
+  async ({ page }, testInfo) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
 
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
@@ -69,9 +71,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Does this dataset follow FAIR and CARE principles?',
-    )
+    testInfo.fail()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
   },
 )
 
