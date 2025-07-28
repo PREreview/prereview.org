@@ -24,21 +24,23 @@ export const CheckYourReviewPage = ({
               <h2 id="review-label">Your review</h2>
             </div>
 
-            <dl class="summary-list">
-              <div>
-                <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
-                <dd>
-                  ${pipe(
-                    Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples),
-                    Match.when('yes', () => 'Yes'),
-                    Match.when('partly', () => 'Partly'),
-                    Match.when('no', () => 'No'),
-                    Match.when('unsure', () => 'I don’t know'),
-                    Match.exhaustive,
-                  )}
-                </dd>
-              </div>
-            </dl>
+            <div aria-labelledby="review-label" role="region">
+              <dl class="summary-list">
+                <div>
+                  <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+                  <dd>
+                    ${pipe(
+                      Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples),
+                      Match.when('yes', () => 'Yes'),
+                      Match.when('partly', () => 'Partly'),
+                      Match.when('no', () => 'No'),
+                      Match.when('unsure', () => 'I don’t know'),
+                      Match.exhaustive,
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
 
           <h2>Now publish your PREreview</h2>

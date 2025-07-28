@@ -92,11 +92,12 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  testInfo.fail()
-
-  const review = page.getByRole('region', { name: 'Your PREreview' })
+  const review = page.getByRole('region', { name: 'Your review' })
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+
+  testInfo.fail()
+  await expect(page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' })).toBeVisible()
 
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
 
