@@ -26,12 +26,12 @@ describe('CheckYourReviewPage', () => {
         const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          _tag: 'StreamlinePageResponse',
+          status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          skipToLabel: 'form',
+          js: ['single-use-form.js'],
         })
       }).pipe(
         Effect.provide(

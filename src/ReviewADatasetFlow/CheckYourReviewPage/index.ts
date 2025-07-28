@@ -7,6 +7,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { CheckYourReviewPage as MakeResponse } from './CheckYourReviewPage.js'
 
 export const CheckYourReviewPage = ({
   datasetReviewId,
@@ -21,9 +22,9 @@ export const CheckYourReviewPage = ({
       return yield* PageNotFound
     }
 
-    yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
+    const review = yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
 
-    return yield* HavingProblemsPage
+    return MakeResponse({ datasetReviewId, review })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () => HavingProblemsPage,
