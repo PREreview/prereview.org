@@ -1,10 +1,11 @@
-import type { Either } from 'effect'
-import type * as Errors from '../Errors.js'
+import { Either } from 'effect'
+import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
-export declare const CheckIfReviewIsBeingPublished: (
+export const CheckIfReviewIsBeingPublished = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-) => Either.Either<
+): Either.Either<
   void,
   Errors.DatasetReviewHasBeenPublished | Errors.DatasetReviewIsInProgress | Errors.UnexpectedSequenceOfEvents
->
+> => Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'Not implemented' }))
