@@ -12,13 +12,15 @@ export type Error =
   | Errors.DatasetReviewIsBeingPublished
   | Errors.DatasetReviewHasBeenPublished
 
-export type State = NotStarted | NotReady | IsBeingPublished | HasBeenPublished
+export type State = NotStarted | NotReady | IsReady | IsBeingPublished | HasBeenPublished
 
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
 export class NotReady extends Data.TaggedClass('NotReady')<{
   missing: Array.NonEmptyReadonlyArray<'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'>
 }> {}
+
+export class IsReady extends Data.TaggedClass('IsReady') {}
 
 export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
