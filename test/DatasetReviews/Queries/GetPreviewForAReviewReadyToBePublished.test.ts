@@ -125,7 +125,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
   })
 
   describe('when it has been published', () => {
-    it.only.failing.prop(
+    it.failing.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
