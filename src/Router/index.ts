@@ -64,6 +64,8 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
   MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, () => HavingProblemsPage),
+  MakeRoute('GET', Routes.ReviewADatasetPublishing, () => HavingProblemsPage),
+  MakeRoute('GET', Routes.ReviewADatasetPublished, () => HavingProblemsPage),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
   HttpRouter.append(MakeStaticRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
