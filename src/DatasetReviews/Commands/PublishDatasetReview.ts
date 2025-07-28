@@ -1,4 +1,4 @@
-import { Data, Either, Function, Match, Option, type Array } from 'effect'
+import { Array, Data, Either, Function, Match, Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
@@ -27,9 +27,24 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
-  throw new Error('Not implemented')
+  if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
+    return new NotStarted()
+  }
+
+  if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
+    return new HasBeenPublished()
+  }
+
+  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+    return new IsBeingPublished()
+  }
+
+  if (!Array.some(events, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))) {
+    return new NotReady({ missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] })
+  }
+
+  return new IsReady()
 }
 
 export const decide: {
@@ -49,3 +64,7 @@ export const decide: {
         ),
     }),
 )
+
+function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+}
