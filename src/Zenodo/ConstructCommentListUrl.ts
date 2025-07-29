@@ -1,12 +1,12 @@
 import { Url, UrlParams } from '@effect/platform'
 import type * as Doi from 'doi-ts'
 import { Effect } from 'effect'
-import { ZenodoOrigin } from './CommunityRecords.js'
+import { ZenodoApi } from './ZenodoApi.js'
 
-export const constructCommentListUrl = (prereviewDoi: Doi.Doi): Effect.Effect<URL, never, ZenodoOrigin> =>
+export const constructCommentListUrl = (prereviewDoi: Doi.Doi): Effect.Effect<URL, never, ZenodoApi> =>
   Effect.gen(function* () {
-    const zenodoOrigin = yield* ZenodoOrigin
-    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoOrigin)
+    const zenodoApi = yield* ZenodoApi
+    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
     const params = UrlParams.fromInput({
       q: `related.identifier:"${prereviewDoi}" AND related.relation:"references"`,
       size: '100',

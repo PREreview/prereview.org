@@ -1,11 +1,11 @@
 import { describe, expect, it } from '@jest/globals'
-import { Array, Effect } from 'effect'
+import { Array, Effect, Redacted } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Doi } from '../../src/types/index.js'
 import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
+import * as Zenodo from '../../src/Zenodo/index.js'
 import * as EffectTest from '../EffectTest.js'
 
 describe('constructUrlsToInvalidatePrereview', () => {
@@ -28,5 +28,8 @@ describe('constructUrlsToInvalidatePrereview', () => {
       const results = yield* _.constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user })
 
       expect(Array.map(results, result => result.href).sort()).toStrictEqual(expectedUrls.sort())
-    }).pipe(Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test')), EffectTest.run))
+    }).pipe(
+      Effect.provideService(Zenodo.ZenodoApi, { key: Redacted.make('key'), origin: new URL('http://zenodo.test') }),
+      EffectTest.run,
+    ))
 })

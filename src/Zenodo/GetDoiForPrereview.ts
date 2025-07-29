@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
 import { Doi } from '../types/index.js'
-import { ZenodoOrigin } from './CommunityRecords.js'
+import { ZenodoApi } from './ZenodoApi.js'
 
 const RecordSchema = Schema.Struct({
   metadata: Schema.Struct({
@@ -12,8 +12,8 @@ const RecordSchema = Schema.Struct({
 export const getDoiForPrereview = (prereviewId: number) =>
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
-    const zenodoOrigin = yield* ZenodoOrigin
-    const url = new URL(`/api/records/${prereviewId}`, zenodoOrigin)
+    const zenodoApi = yield* ZenodoApi
+    const url = new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
 
     return yield* pipe(
       httpClient.get(url),

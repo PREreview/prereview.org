@@ -3,7 +3,7 @@ import { Effect } from 'effect'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { toExternalIdentifier } from '../zenodo.js'
-import { ZenodoOrigin } from './CommunityRecords.js'
+import { ZenodoApi } from './ZenodoApi.js'
 
 export const constructUrlsToInvalidatePrereview = ({
   prereviewId,
@@ -13,7 +13,7 @@ export const constructUrlsToInvalidatePrereview = ({
   prereviewId: number
   preprintId: PreprintId | undefined
   user: User
-}): Effect.Effect<ReadonlyArray<URL>, never, ZenodoOrigin> =>
+}): Effect.Effect<ReadonlyArray<URL>, never, ZenodoApi> =>
   Effect.all(
     [
       constructUrlToRecord(prereviewId),
@@ -25,17 +25,17 @@ export const constructUrlsToInvalidatePrereview = ({
     },
   )
 
-const constructUrlToRecord = (prereviewId: number): Effect.Effect<URL, never, ZenodoOrigin> =>
+const constructUrlToRecord = (prereviewId: number): Effect.Effect<URL, never, ZenodoApi> =>
   Effect.gen(function* () {
-    const zenodoOrigin = yield* ZenodoOrigin
+    const zenodoApi = yield* ZenodoApi
 
-    return new URL(`/api/records/${prereviewId}`, zenodoOrigin)
+    return new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
   })
 
-const constructUrlToListOfPrereviewsByUser = (user: User): Effect.Effect<URL, never, ZenodoOrigin> =>
+const constructUrlToListOfPrereviewsByUser = (user: User): Effect.Effect<URL, never, ZenodoApi> =>
   Effect.gen(function* () {
-    const zenodoOrigin = yield* ZenodoOrigin
-    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoOrigin)
+    const zenodoApi = yield* ZenodoApi
+    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
     const params = UrlParams.fromInput({
       q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
       size: '100',
@@ -46,10 +46,10 @@ const constructUrlToListOfPrereviewsByUser = (user: User): Effect.Effect<URL, ne
     return Url.setUrlParams(zenodoCommunityRecordsApiUrl, params)
   })
 
-const constructUrlToListOfPrereviewsForPreprint = (preprintId: PreprintId): Effect.Effect<URL, never, ZenodoOrigin> =>
+const constructUrlToListOfPrereviewsForPreprint = (preprintId: PreprintId): Effect.Effect<URL, never, ZenodoApi> =>
   Effect.gen(function* () {
-    const zenodoOrigin = yield* ZenodoOrigin
-    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoOrigin)
+    const zenodoApi = yield* ZenodoApi
+    const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
     const params = UrlParams.fromInput({
       q: `related.identifier:"${toExternalIdentifier(preprintId).identifier}"`,
       size: '100',

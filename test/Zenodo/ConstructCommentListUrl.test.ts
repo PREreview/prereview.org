@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
-import { Effect } from 'effect'
-import { ZenodoOrigin } from '../../src/Zenodo/CommunityRecords.js'
+import { Effect, Redacted } from 'effect'
 import * as _ from '../../src/Zenodo/ConstructCommentListUrl.js'
+import * as Zenodo from '../../src/Zenodo/index.js'
 import { Doi } from '../../src/types/index.js'
 import * as EffectTest from '../EffectTest.js'
 
@@ -14,5 +14,8 @@ describe('ConstructCommentListUrl', () => {
       const result = yield* _.constructCommentListUrl(prereviewDoi)
 
       expect(result.href).toStrictEqual(expectedUrl)
-    }).pipe(Effect.provideService(ZenodoOrigin, new URL('http://zenodo.test')), EffectTest.run))
+    }).pipe(
+      Effect.provideService(Zenodo.ZenodoApi, { key: Redacted.make('key'), origin: new URL('http://zenodo.test') }),
+      EffectTest.run,
+    ))
 })
