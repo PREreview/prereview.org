@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
-import { Array, Effect, pipe } from 'effect'
+import { Array, Context, Effect, Layer, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -9,10 +9,28 @@ import { addCommentText } from './AddCommentText.js'
 import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
 import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.js'
+import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
 import { getDoiForPrereview } from './GetDoiForPrereview.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 
 export { ZenodoOrigin } from './CommunityRecords.js'
+
+export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
+
+export class Zenodo extends Context.Tag('Zenodo')<
+  Zenodo,
+  {
+    createRecordForDatasetReview: typeof CreateRecordForDatasetReview
+  }
+>() {}
+
+export const { createRecordForDatasetReview } = Effect.serviceFunctions(Zenodo)
+
+export const make: Effect.Effect<typeof Zenodo.Service> = Effect.sync(() => ({
+  createRecordForDatasetReview: CreateRecordForDatasetReview,
+}))
+
+export const layer = Layer.effect(Zenodo, make)
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,

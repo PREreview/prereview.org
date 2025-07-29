@@ -341,6 +341,7 @@ export const Program = pipe(
         Layer.fresh,
       ),
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
+      Zenodo.layer,
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
