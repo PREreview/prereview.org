@@ -1,4 +1,5 @@
 import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
+import * as Events from '../Events.js'
 import { EventStore } from '../EventStore.js'
 import * as ReviewPage from '../review-page/index.js'
 import {
@@ -141,7 +142,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
-  | CommentEvents
+  | Events.Events
   | EventStore
   | GetComment
   | HandleCommentCommand
@@ -151,9 +152,9 @@ export const ReactToCommentEvents: Layer.Layer<
   | ReviewPage.CommentsForReview
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
-    const commentEvents = yield* CommentEvents
+    const events = yield* Events.Events
     const eventStore = yield* EventStore
-    const dequeue = yield* PubSub.subscribe(commentEvents)
+    const dequeue = yield* PubSub.subscribe(events)
 
     yield* pipe(
       eventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
@@ -176,8 +177,8 @@ export const ReactToCommentEvents: Layer.Layer<
 
     return yield* pipe(
       Queue.take(dequeue),
+      Effect.filterOrElse(Events.isCommentEvent, () => Effect.fail('not a comment event')),
       Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
-      Effect.andThen(Struct.get('event')),
       Effect.andThen(
         pipe(
           Match.type<CommentEvent>(),
@@ -208,6 +209,10 @@ export const ReactToCommentEvents: Layer.Layer<
           ),
           Match.orElse(() => Effect.void),
         ),
+      ),
+      Effect.catchIf(
+        error => error === 'not a comment event',
+        () => Effect.void,
       ),
       Effect.catchAll(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
       Effect.scoped,

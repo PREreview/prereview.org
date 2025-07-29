@@ -14,7 +14,11 @@ export const Event = Schema.Union(
 
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
 
+const CommentEventTypes = Array.map(CommentEvents.CommentEvent.members, Struct.get('_tag'))
+
 export class Events extends Context.Tag('Events')<Events, PubSub.PubSub<Event>>() {}
+
+export const isCommentEvent: (event: Event) => event is CommentEvents.CommentEvent = isA(...CommentEventTypes)
 
 export const layer = Layer.scoped(
   Events,
@@ -23,3 +27,7 @@ export const layer = Layer.scoped(
     flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Events stopped'))),
   ),
 )
+
+function isA<Tag extends Event['_tag']>(...tags: ReadonlyArray<Tag>) {
+  return (event: Event): event is Extract<Event, { _tag: Tag }> => Array.contains(tags, event._tag)
+}
