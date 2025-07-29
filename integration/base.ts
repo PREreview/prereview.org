@@ -87,7 +87,7 @@ import { EmailAddress } from '../src/types/EmailAddress.js'
 import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import { BiorxivPreprintId } from '../src/types/preprint-id.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
-import { ZenodoOrigin } from '../src/Zenodo/CommunityRecords.js'
+import * as Zenodo from '../src/Zenodo/index.js'
 import Logger = L.Logger
 import LogEntry = L.LogEntry
 
@@ -1354,7 +1354,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             }),
             Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),
             Layer.succeed(SessionSecret, Redacted.make('')),
-            Layer.succeed(ZenodoOrigin, new URL('http://zenodo.test/')),
+            Layer.succeed(Zenodo.ZenodoApi, {
+              key: Redacted.make('key'),
+              origin: new URL('http://zenodo.test/'),
+            }),
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
           ),
         ),

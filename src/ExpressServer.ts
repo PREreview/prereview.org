@@ -12,6 +12,7 @@ import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
 import { GenerateUuid } from './types/uuid.js'
+import * as Zenodo from './Zenodo/index.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
@@ -42,6 +43,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars
   const loggerEnv = yield* DeprecatedLoggerEnv
   const orcidOauth = yield* OrcidOauth
+  const zenodoApi = yield* Zenodo.ZenodoApi
 
   const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
@@ -103,7 +105,7 @@ export const ExpressConfigLive = Effect.gen(function* () {
     slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
     userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
-    zenodoApiKey: env.ZENODO_API_KEY,
-    zenodoUrl: env.ZENODO_URL,
+    zenodoApiKey: Redacted.value(zenodoApi.key),
+    zenodoUrl: zenodoApi.origin,
   } satisfies typeof ExpressConfig.Service
 })

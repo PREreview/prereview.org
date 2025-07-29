@@ -140,7 +140,10 @@ pipe(
       }),
       Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
-      Layer.effect(Zenodo.ZenodoOrigin, Config.url('ZENODO_URL')),
+      Layer.effect(
+        Zenodo.ZenodoApi,
+        Config.all({ key: Config.redacted('ZENODO_API_KEY'), origin: Config.url('ZENODO_URL') }),
+      ),
     ),
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),

@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
-import { Array, Context, Effect, Layer, pipe } from 'effect'
+import { Array, Context, Effect, Layer, pipe, type Redacted } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -23,6 +23,8 @@ export class Zenodo extends Context.Tag('Zenodo')<
     createRecordForDatasetReview: typeof CreateRecordForDatasetReview
   }
 >() {}
+
+export class ZenodoApi extends Context.Tag('ZenodoApi')<ZenodoApi, { key: Redacted.Redacted; origin: URL }>() {}
 
 export const { createRecordForDatasetReview } = Effect.serviceFunctions(Zenodo)
 

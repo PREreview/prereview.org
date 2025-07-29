@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, flow, Layer, Match, Option, pipe } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe, Struct } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -347,4 +347,5 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
+  Layer.provide(Layer.effect(Zenodo.ZenodoOrigin, Effect.andThen(Zenodo.ZenodoApi, Struct.get('origin')))),
 )
