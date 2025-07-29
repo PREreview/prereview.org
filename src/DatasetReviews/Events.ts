@@ -20,6 +20,14 @@ export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<P
   { datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class ZenodoRecordForDatasetReviewWasCreated extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasCreated>()(
+  'ZenodoRecordForDatasetReviewWasCreated',
+  {
+    recordId: Schema.Number,
+    datasetReviewId: Uuid.UuidSchema,
+  },
+) {}
+
 export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetReviewWasAssignedADoi>()(
   'DatasetReviewWasAssignedADoi',
   {
@@ -38,6 +46,7 @@ export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
   PublicationOfDatasetReviewWasRequested,
+  ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
 )

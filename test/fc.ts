@@ -1604,6 +1604,18 @@ export const publicationOfDatasetReviewWasRequested = ({
     .record({ datasetReviewId: datasetReviewId ?? uuid() })
     .map(data => new Events.PublicationOfDatasetReviewWasRequested(data))
 
+export const zenodoRecordForDatasetReviewWasCreated = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.ZenodoRecordForDatasetReviewWasCreated['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.ZenodoRecordForDatasetReviewWasCreated> =>
+  fc
+    .record({
+      recordId: fc.integer(),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.ZenodoRecordForDatasetReviewWasCreated(data))
+
 export const datasetReviewWasAssignedADoi = ({
   datasetReviewId,
 }: {
@@ -1633,6 +1645,7 @@ export const datasetReviewEvent = (
     datasetReviewWasStarted(args),
     datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
     publicationOfDatasetReviewWasRequested(args),
+    zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
     datasetReviewWasPublished(args),
   )
