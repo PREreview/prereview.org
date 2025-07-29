@@ -31,7 +31,7 @@ it.prop([
     expect(all).toStrictEqual([])
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-    Effect.provide(Layer.mock(Events.Events, {})),
+    Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),
     EffectTest.run,
   ),
@@ -125,7 +125,7 @@ describe('when the last known event is different', () => {
         expect(all).toHaveLength(existingEvents.length)
       }).pipe(
         Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-        Effect.provide(Layer.mock(Events.Events, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
         Effect.provide(TestLibsqlClient),
         EffectTest.run,
       ),
@@ -183,7 +183,7 @@ test.each([
     expect(actual).toHaveLength(expectedLength)
   }).pipe(
     Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
-    Effect.provide(Layer.mock(Events.Events, {})),
+    Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),
     EffectTest.run,
   ),
