@@ -1,11 +1,15 @@
 import { Data, type Effect } from 'effect'
-import type * as DatasetReviews from '../../DatasetReviews/index.js'
+import type * as Events from '../../Events.js'
+
+export interface DatasetReview {
+  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
+}
 
 export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('FailedToCreateRecordForDatasetReview')<{
   cause?: unknown
 }> {}
 
 export const CreateRecordForDatasetReview: (
-  datasetReview: DatasetReviews.DatasetReviewPreview,
+  datasetReview: DatasetReview,
 ) => Effect.Effect<number, FailedToCreateRecordForDatasetReview> = () =>
   new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })

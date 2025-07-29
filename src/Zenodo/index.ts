@@ -15,7 +15,7 @@ import { transformRecordToCommentWithoutText } from './TransformRecordToCommentW
 
 export { ZenodoOrigin } from './CommunityRecords.js'
 
-export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
+export { FailedToCreateRecordForDatasetReview, type DatasetReview } from './CreateRecordForDatasetReview/index.js'
 
 export class Zenodo extends Context.Tag('Zenodo')<
   Zenodo,
