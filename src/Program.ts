@@ -343,6 +343,7 @@ export const Program = pipe(
             url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
           }),
         ),
+        Layer.fresh,
       ),
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
     ),
