@@ -1,6 +1,6 @@
 import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
 import * as Events from '../Events.js'
-import { EventStore } from '../EventStore.js'
+import * as EventStore from '../EventStore.js'
 import * as ReviewPage from '../review-page/index.js'
 import {
   UnableToHandleCommand,
@@ -29,110 +29,125 @@ export * from './Evolve.js'
 export * from './ExpectedCommand.js'
 export * from './State.js'
 
-export const makeHandleCommentCommand: Effect.Effect<typeof HandleCommentCommand.Service, never, EventStore> =
-  Effect.gen(function* () {
-    const eventStore = yield* EventStore
+export const makeHandleCommentCommand: Effect.Effect<
+  typeof HandleCommentCommand.Service,
+  never,
+  EventStore.EventStore
+> = Effect.gen(function* () {
+  const context = yield* Effect.context<EventStore.EventStore>()
 
-    return command =>
-      Effect.gen(function* () {
-        const { events, lastKnownEvent } = yield* pipe(
-          eventStore.query({
-            types: CommentEventTypes,
-            predicates: { commentId: command.commentId },
-          }),
-          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
-        )
-
-        const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-          EvolveComment(state)(event),
-        )
-
-        yield* pipe(
-          DecideComment(state)(command),
-          Effect.tap(
-            Option.match({
-              onNone: () => Effect.void,
-              onSome: event =>
-                eventStore.append(event, {
-                  filter: {
-                    types: CommentEventTypes,
-                    predicates: { commentId: command.commentId },
-                  },
-                  lastKnownEvent: Option.fromNullable(lastKnownEvent),
-                }),
-            }),
-          ),
-        )
-      }).pipe(
-        Effect.catchTag(
-          'FailedToCommitEvent',
-          'FailedToGetEvents',
-          'NewEventsFound',
-          cause => new UnableToHandleCommand({ cause }),
-        ),
-      )
-  })
-
-export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore> = Effect.gen(function* () {
-  const eventStore = yield* EventStore
-
-  return commentId =>
+  return command =>
     Effect.gen(function* () {
-      const events = yield* pipe(
-        eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-        Effect.andThen(Struct.get('events')),
-        Effect.catchTag('NoEventsFound', () => Effect.succeed(Array.empty())),
+      const { events, lastKnownEvent } = yield* pipe(
+        EventStore.query({
+          types: CommentEventTypes,
+          predicates: { commentId: command.commentId },
+        }),
+        Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
       )
 
-      return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
+      const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
         EvolveComment(state)(event),
       )
-    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+
+      yield* pipe(
+        DecideComment(state)(command),
+        Effect.tap(
+          Option.match({
+            onNone: () => Effect.void,
+            onSome: event =>
+              EventStore.append(event, {
+                filter: {
+                  types: CommentEventTypes,
+                  predicates: { commentId: command.commentId },
+                },
+                lastKnownEvent: Option.fromNullable(lastKnownEvent),
+              }),
+          }),
+        ),
+      )
+    }).pipe(
+      Effect.catchTag(
+        'FailedToCommitEvent',
+        'FailedToGetEvents',
+        'NewEventsFound',
+        cause => new UnableToHandleCommand({ cause }),
+      ),
+      Effect.provide(context),
+    )
 })
+
+export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore.EventStore> = Effect.gen(
+  function* () {
+    const context = yield* Effect.context<EventStore.EventStore>()
+
+    return commentId =>
+      Effect.gen(function* () {
+        const events = yield* pipe(
+          EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+          Effect.andThen(Struct.get('events')),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed(Array.empty())),
+        )
+
+        return Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
+          EvolveComment(state)(event),
+        )
+      }).pipe(
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      )
+  },
+)
 
 export const makeGetNextExpectedCommandForUser: Effect.Effect<
   typeof GetNextExpectedCommandForUser.Service,
   never,
-  EventStore
+  EventStore.EventStore
 > = Effect.gen(function* () {
-  const eventStore = yield* EventStore
+  const context = yield* Effect.context<EventStore.EventStore>()
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
       const events = yield* pipe(
-        eventStore.query({ types: CommentEventTypes }),
+        EventStore.query({ types: CommentEventTypes }),
         Effect.andThen(Struct.get('events')),
         Effect.catchTag('NoEventsFound', () => Effect.succeed(Array.empty())),
       )
 
       return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
-    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+    }).pipe(
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.provide(context),
+    )
 })
 
 export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   typeof GetNextExpectedCommandForUserOnAComment.Service,
   never,
-  EventStore
+  EventStore.EventStore
 > = Effect.gen(function* () {
-  const eventStore = yield* EventStore
+  const context = yield* Effect.context<EventStore.EventStore>()
 
   return commentId =>
     Effect.gen(function* () {
       const events = yield* pipe(
-        eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+        EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
         Effect.andThen(Struct.get('events')),
         Effect.catchTag('NoEventsFound', () => Effect.succeed(Array.empty())),
       )
 
       return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
-    }).pipe(Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })))
+    }).pipe(
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.provide(context),
+    )
 })
 
 export const ReactToCommentEvents: Layer.Layer<
   never,
   never,
   | Events.Events
-  | EventStore
+  | EventStore.EventStore
   | GetComment
   | HandleCommentCommand
   | DoesUserHaveAVerifiedEmailAddress
@@ -142,17 +157,16 @@ export const ReactToCommentEvents: Layer.Layer<
 > = Layer.scopedDiscard(
   Effect.gen(function* () {
     const events = yield* Events.Events
-    const eventStore = yield* EventStore
     const dequeue = yield* PubSub.subscribe(events)
 
     yield* pipe(
-      eventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
+      EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
       Effect.andThen(Struct.get('events')),
       Effect.andThen(events => Queries.GetACommentInNeedOfADoi(events)),
       Effect.bindTo('commentId'),
       Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
         pipe(
-          eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+          EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
           Effect.andThen(Struct.get('events')),
           Effect.andThen(Queries.buildInputForCommentZenodoRecord),
         ),
@@ -174,7 +188,7 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.tag('CommentWasStarted', ({ commentId }) => React.CheckIfUserHasAVerifiedEmailAddress(commentId)),
           Match.tag('PublicationOfCommentWasRequested', ({ commentId }) =>
             pipe(
-              eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+              EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.andThen(Struct.get('events')),
               Effect.andThen(Queries.buildInputForCommentZenodoRecord),
               Effect.andThen(inputForCommentZenodoRecord =>
@@ -185,7 +199,7 @@ export const ReactToCommentEvents: Layer.Layer<
           Match.tag('CommentWasAssignedADoi', React.PublishCommentWhenCommentWasAssignedADoi),
           Match.tag('CommentWasPublished', ({ commentId }) =>
             pipe(
-              eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+              EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.andThen(eventsForComment => Queries.GetPrereviewId(eventsForComment.events)),
               Effect.andThen(prereviewId =>
                 Effect.gen(function* () {

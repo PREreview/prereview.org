@@ -1,4 +1,4 @@
-import { type Array, Context, Data, type Effect, type Option } from 'effect'
+import { type Array, Context, Data, Effect, type Option } from 'effect'
 import type { Event } from './Events.js'
 import type { Uuid } from './types/index.js'
 
@@ -32,3 +32,20 @@ export interface EventStore {
     condition?: { filter: EventFilter<Tag>; lastKnownEvent: Option.Option<Uuid.Uuid> },
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
+
+export const { all } = Effect.serviceConstants(EventStore)
+
+export const query = Effect.fn(function* <Tag extends Event['_tag']>(filter: EventFilter<Tag>) {
+  const eventStore = yield* EventStore
+
+  return yield* eventStore.query(filter)
+})
+
+export const append = Effect.fn(function* <Tag extends Event['_tag']>(
+  event: Event,
+  condition?: { filter: EventFilter<Tag>; lastKnownEvent: Option.Option<Uuid.Uuid> },
+) {
+  const eventStore = yield* EventStore
+
+  return yield* eventStore.append(event, condition)
+})

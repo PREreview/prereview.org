@@ -30,7 +30,7 @@ export const { startDatasetReview, answerIfTheDatasetFollowsFairAndCarePrinciple
 
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const eventStore = yield* EventStore.EventStore
+    const context = yield* Effect.context<EventStore.EventStore>()
 
     const handleCommand = <State, Command extends { datasetReviewId: Uuid.Uuid }, Error>(
       foldState: (events: ReadonlyArray<Events.DatasetReviewEvent>) => State,
@@ -44,7 +44,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           } satisfies EventStore.EventFilter<Events.DatasetReviewEvent['_tag']>
 
           const { events, lastKnownEvent } = yield* pipe(
-            eventStore.query(filter),
+            EventStore.query(filter),
             Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
           )
 
@@ -55,7 +55,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  eventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
+                  EventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
               }),
             ),
           )
@@ -66,6 +66,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           'NewEventsFound',
           cause => new UnableToHandleCommand({ cause }),
         ),
+        Effect.provide(context),
       )
 
     return {
