@@ -81,7 +81,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | GenerateUuid
     | HttpClient.HttpClient
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
-    | Zenodo.ZenodoOrigin
+    | Zenodo.ZenodoApi
   > &
   ResolvePreprintIdEnv &
   GetPreprintIdEnv &

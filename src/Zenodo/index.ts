@@ -1,19 +1,17 @@
 import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
-import { Array, Context, Effect, Layer, pipe, type Redacted } from 'effect'
+import { Array, Context, Effect, Layer, pipe, type Redacted, Struct } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { addCommentText } from './AddCommentText.js'
-import { getCommunityRecords, type ZenodoOrigin } from './CommunityRecords.js'
+import { getCommunityRecords, ZenodoOrigin } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
 import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.js'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
 import { getDoiForPrereview } from './GetDoiForPrereview.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
-
-export { ZenodoOrigin } from './CommunityRecords.js'
 
 export { FailedToCreateRecordForDatasetReview, type DatasetReview } from './CreateRecordForDatasetReview/index.js'
 
@@ -36,7 +34,7 @@ export const layer = Layer.effect(Zenodo, make)
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,
-): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient | ZenodoOrigin> =>
+): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient | ZenodoApi> =>
   pipe(
     constructCommentListUrl(id),
     Effect.andThen(getCommunityRecords),
@@ -64,6 +62,7 @@ export const getCommentsForPrereviewFromZenodo = (
           Effect.andThen(Effect.fail('unavailable' as const)),
         ),
     }),
+    Effect.provideServiceEffect(ZenodoOrigin, Effect.andThen(ZenodoApi, Struct.get('origin'))),
   )
 
 export const invalidatePrereviewInCache = ({
@@ -74,7 +73,7 @@ export const invalidatePrereviewInCache = ({
   prereviewId: number
   preprintId?: PreprintId
   user: User
-}): Effect.Effect<void, never, ZenodoOrigin | CachingHttpClient.HttpCache> =>
+}): Effect.Effect<void, never, ZenodoApi | CachingHttpClient.HttpCache> =>
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
     Effect.andThen(Array.map(invalidateCacheEntry)),
@@ -88,6 +87,7 @@ export const invalidatePrereviewInCache = ({
     Effect.catchAll(error =>
       Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
     ),
+    Effect.provideServiceEffect(ZenodoOrigin, Effect.andThen(ZenodoApi, Struct.get('origin'))),
   )
 
 export const invalidateCommentsForPrereview = (
@@ -95,7 +95,7 @@ export const invalidateCommentsForPrereview = (
 ): Effect.Effect<
   void,
   ReviewPage.UnableToInvalidateComments,
-  CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoOrigin
+  CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoApi
 > =>
   pipe(
     getDoiForPrereview(prereviewId),
@@ -123,6 +123,7 @@ export const invalidateCommentsForPrereview = (
           Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
         ),
     }),
+    Effect.provideServiceEffect(ZenodoOrigin, Effect.andThen(ZenodoApi, Struct.get('origin'))),
   )
 
 const invalidateCacheEntry = Effect.fn(function* (url: URL) {

@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
+import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
@@ -26,6 +26,7 @@ import {
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from '../zenodo.js'
+import * as Zenodo from '../Zenodo/index.js'
 
 import PlainDate = Temporal.PlainDate
 
@@ -88,11 +89,12 @@ export const {
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const { legacyPrereviewApi, wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const { legacyPrereviewApi, wasPrereviewRemoved } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
+    const zenodoApi = yield* Zenodo.ZenodoApi
 
     return {
       getFiveMostRecent: pipe(
@@ -100,8 +102,8 @@ export const layer = Layer.effect(
           fetch,
           getPreprintTitle,
           ...logger,
-          zenodoApiKey,
-          zenodoUrl,
+          zenodoApiKey: Redacted.value(zenodoApi.key),
+          zenodoUrl: zenodoApi.origin,
         }),
         Effect.map(Struct.get('recentPrereviews')),
         Effect.orElseSucceed(Array.empty),
@@ -111,8 +113,8 @@ export const layer = Layer.effect(
           FptsToEffect.readerTaskEither(getPrereviewsForClubFromZenodo(id), {
             fetch,
             getPreprintTitle,
-            zenodoApiKey,
-            zenodoUrl,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
             ...logger,
           }),
           Effect.mapError(() => new PrereviewsAreUnavailable()),
@@ -121,8 +123,8 @@ export const layer = Layer.effect(
         pipe(
           FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
             fetch,
-            zenodoApiKey,
-            zenodoUrl,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
             ...logger,
           }),
           Effect.mapError(() => new PrereviewsAreUnavailable()),
@@ -132,8 +134,8 @@ export const layer = Layer.effect(
           FptsToEffect.readerTaskEither(getPrereviewsForProfileFromZenodo(profile), {
             fetch,
             getPreprintTitle,
-            zenodoApiKey,
-            zenodoUrl,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
             ...logger,
           }),
           Effect.mapError(() => new PrereviewsAreUnavailable()),
@@ -143,8 +145,8 @@ export const layer = Layer.effect(
           FptsToEffect.readerTaskEither(getPrereviewsForUserFromZenodo(user), {
             fetch,
             getPreprintTitle,
-            zenodoApiKey,
-            zenodoUrl,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
             ...logger,
           }),
           Effect.mapError(() => new PrereviewsAreUnavailable()),
@@ -173,8 +175,8 @@ export const layer = Layer.effect(
           fetch,
           getPreprint,
           wasPrereviewRemoved,
-          zenodoApiKey,
-          zenodoUrl,
+          zenodoApiKey: Redacted.value(zenodoApi.key),
+          zenodoUrl: zenodoApi.origin,
           ...logger,
         }),
       search: args =>
@@ -183,8 +185,8 @@ export const layer = Layer.effect(
             fetch,
             getPreprintTitle,
             ...logger,
-            zenodoApiKey,
-            zenodoUrl,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
           }),
           Effect.mapError(
             flow(

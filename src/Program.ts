@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, flow, Layer, Match, Option, pipe, Struct } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -37,9 +37,10 @@ import * as Zenodo from './Zenodo/index.js'
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
   Effect.gen(function* () {
-    const { wasPrereviewRemoved, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const { wasPrereviewRemoved } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
+    const zenodoApi = yield* Zenodo.ZenodoApi
 
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
 
@@ -48,8 +49,8 @@ const getPrereview = Layer.effect(
         fetch,
         getPreprint,
         wasPrereviewRemoved,
-        zenodoApiKey,
-        zenodoUrl,
+        zenodoApiKey: Redacted.value(zenodoApi.key),
+        zenodoUrl: zenodoApi.origin,
         ...logger,
       })
   }),
@@ -162,11 +163,12 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken, zenodoApiKey, zenodoUrl } = yield* ExpressConfig
+    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
     const publicUrl = yield* PublicUrl
+    const zenodoApi = yield* Zenodo.ZenodoApi
 
     const env = {
       fetch,
@@ -174,8 +176,8 @@ const createRecordOnZenodoForComment = Layer.effect(
       orcidApiUrl,
       orcidApiToken,
       publicUrl,
-      zenodoApiKey,
-      zenodoUrl,
+      zenodoApiKey: Redacted.value(zenodoApi.key),
+      zenodoUrl: zenodoApi.origin,
       ...logger,
     }
 
@@ -245,16 +247,16 @@ const createRecordOnZenodoForComment = Layer.effect(
 const publishComment = Layer.effect(
   Comments.PublishCommentOnZenodo,
   Effect.gen(function* () {
-    const { zenodoApiKey, zenodoUrl } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
+    const zenodoApi = yield* Zenodo.ZenodoApi
 
     return comment =>
       pipe(
         FptsToEffect.readerTaskEither(publishDepositionOnZenodo(comment), {
           fetch,
-          zenodoApiKey,
-          zenodoUrl,
+          zenodoApiKey: Redacted.value(zenodoApi.key),
+          zenodoUrl: zenodoApi.origin,
           ...logger,
         }),
         Effect.mapError(
@@ -280,7 +282,7 @@ const getCategories = Layer.effect(
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
-    const context = yield* Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoOrigin>()
+    const context = yield* Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>()
 
     return {
       get: reviewDoi => pipe(Zenodo.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
@@ -347,5 +349,4 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
-  Layer.provide(Layer.effect(Zenodo.ZenodoOrigin, Effect.andThen(Zenodo.ZenodoApi, Struct.get('origin')))),
 )

@@ -47,7 +47,7 @@ import type { TemplatePage } from '../../TemplatePage.js'
 import type { NonEmptyString } from '../../types/index.js'
 import type { GenerateUuid } from '../../types/uuid.js'
 import { LoggedInUser, SessionId, type User } from '../../user.js'
-import { ZenodoOrigin } from '../../Zenodo/index.js'
+import * as Zenodo from '../../Zenodo/index.js'
 import * as Response from '../Response.js'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.js'
 import { DataRouter } from './DataRouter.js'
@@ -108,7 +108,7 @@ export const nonEffectRouter: Effect.Effect<
   const cloudinaryApiConfig = yield* CloudinaryApiConfig
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const orcidOauth = yield* OrcidOauth
-  const zenodoOrigin = yield* ZenodoOrigin
+  const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
   const commentsForReview = yield* CommentsForReview
@@ -165,10 +165,7 @@ export const nonEffectRouter: Effect.Effect<
       url: expressConfig.orcidApiUrl,
       token: typeof expressConfig.orcidApiToken === 'string' ? Redacted.make(expressConfig.orcidApiToken) : undefined,
     },
-    zenodoApiConfig: {
-      key: Redacted.make(expressConfig.zenodoApiKey),
-      origin: zenodoOrigin,
-    },
+    zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
     legacyPrereviewApiConfig: {
       app: expressConfig.legacyPrereviewApi.app,
@@ -206,7 +203,7 @@ export interface Env {
     | PrereviewCoarNotifyConfig
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
-    | ZenodoOrigin
+    | Zenodo.ZenodoApi
   >
   logger: typeof DeprecatedLoggerEnv.Service
   users: {
@@ -239,10 +236,7 @@ export interface Env {
     token?: Redacted.Redacted
   }
   slackApiConfig: typeof SlackApiConfig.Service
-  zenodoApiConfig: {
-    key: Redacted.Redacted
-    origin: typeof ZenodoOrigin.Service
-  }
+  zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: {
     app: string

@@ -1314,8 +1314,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           slackUserIdStore,
           userOnboardingStore,
           wasPrereviewRemoved,
-          zenodoApiKey: '',
-          zenodoUrl: new URL('http://zenodo.test/'),
         }),
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
