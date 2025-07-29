@@ -1,7 +1,6 @@
 import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
 import { EventStore } from '../EventStore.js'
 import * as ReviewPage from '../review-page/index.js'
-import type { Uuid } from '../types/index.js'
 import {
   CommentEvents,
   UnableToHandleCommand,
@@ -178,13 +177,12 @@ export const ReactToCommentEvents: Layer.Layer<
     return yield* pipe(
       Queue.take(dequeue),
       Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
+      Effect.andThen(Struct.get('event')),
       Effect.andThen(
         pipe(
-          Match.type<{ commentId: Uuid.Uuid; event: CommentEvent }>(),
-          Match.when({ event: { _tag: 'CommentWasStarted' } }, ({ commentId }) =>
-            React.CheckIfUserHasAVerifiedEmailAddress(commentId),
-          ),
-          Match.when({ event: { _tag: 'PublicationOfCommentWasRequested' } }, ({ commentId }) =>
+          Match.type<CommentEvent>(),
+          Match.tag('CommentWasStarted', ({ commentId }) => React.CheckIfUserHasAVerifiedEmailAddress(commentId)),
+          Match.tag('PublicationOfCommentWasRequested', ({ commentId }) =>
             pipe(
               eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.andThen(Struct.get('events')),
@@ -194,10 +192,8 @@ export const ReactToCommentEvents: Layer.Layer<
               ),
             ),
           ),
-          Match.when({ event: { _tag: 'CommentWasAssignedADoi' } }, ({ event }) =>
-            React.PublishCommentWhenCommentWasAssignedADoi(event),
-          ),
-          Match.when({ event: { _tag: 'CommentWasPublished' } }, ({ commentId }) =>
+          Match.tag('CommentWasAssignedADoi', React.PublishCommentWhenCommentWasAssignedADoi),
+          Match.tag('CommentWasPublished', ({ commentId }) =>
             pipe(
               eventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
               Effect.andThen(eventsForComment => Queries.GetPrereviewId(eventsForComment.events)),
