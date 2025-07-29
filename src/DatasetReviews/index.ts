@@ -6,5 +6,6 @@ export * from './Commands/index.js'
 export * from './Errors.js'
 export * from './Events.js'
 export * from './Queries/index.js'
+export * from './Reactions/index.js'
 
 export const layer = Layer.mergeAll(Commands.commandsLayer, Queries.queriesLayer)

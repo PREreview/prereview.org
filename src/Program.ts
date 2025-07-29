@@ -300,7 +300,12 @@ const setUpFetch = Layer.effect(
 ).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
 export const Program = pipe(
-  Layer.mergeAll(WebApp, Comments.ReactToCommentEvents, CachingHttpClient.layerRevalidationWorker),
+  Layer.mergeAll(
+    WebApp,
+    DatasetReviews.reactionsWorker,
+    Comments.ReactToCommentEvents,
+    CachingHttpClient.layerRevalidationWorker,
+  ),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
     Layer.mergeAll(
