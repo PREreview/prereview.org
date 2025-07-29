@@ -1,19 +1,13 @@
 import { Array, Either, Option } from 'effect'
+import type * as Zenodo from '../../Zenodo/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
-export interface DatasetReviewPreview {
-  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
-}
-
-export const GetPreviewForAReviewReadyToBePublished = (
+export const GetDataForZenodoRecord = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
 ): Either.Either<
-  DatasetReviewPreview,
-  | Errors.DatasetReviewNotReadyToBePublished
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
-  | Errors.UnexpectedSequenceOfEvents
+  Zenodo.DatasetReview,
+  Errors.DatasetReviewIsInProgress | Errors.DatasetReviewHasBeenPublished | Errors.UnexpectedSequenceOfEvents
 > => {
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
     return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
@@ -23,8 +17,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     return Either.left(new Errors.DatasetReviewHasBeenPublished())
   }
 
-  if (hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
-    return Either.left(new Errors.DatasetReviewIsBeingPublished())
+  if (!hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
+    return Either.left(new Errors.DatasetReviewIsInProgress())
   }
 
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
@@ -33,12 +27,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
   )
 
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
-    onNone: () =>
-      Either.left(
-        new Errors.DatasetReviewNotReadyToBePublished({
-          missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-        }),
-      ),
+    onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,

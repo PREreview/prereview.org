@@ -8,6 +8,7 @@ import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
+import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
@@ -31,6 +32,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
     >
+    getDataForZenodoRecord: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetDataForZenodoRecord>,
+      Errors.UnknownDatasetReview
+    >
   }
 >() {}
 
@@ -49,6 +54,7 @@ export const {
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
   getPreviewForAReviewReadyToBePublished,
+  getDataForZenodoRecord,
 } = Effect.serviceFunctions(DatasetReviewQueries)
 
 export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublished.js'
@@ -130,6 +136,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
           })
 
           return yield* GetPreviewForAReviewReadyToBePublished(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      getDataForZenodoRecord: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* GetDataForZenodoRecord(events)
         },
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
