@@ -14,6 +14,10 @@ export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('Datase
 
 export class DatasetReviewWasAlreadyStarted extends Data.TaggedError('DatasetReviewWasAlreadyStarted') {}
 
+export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCreateRecordOnZenodo')<{
+  cause?: unknown
+}> {}
+
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
 export class UnknownDatasetReview extends Data.TaggedError('UnknownDatasetReview')<{ cause?: unknown }> {}

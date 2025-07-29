@@ -1,5 +1,6 @@
 import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
 import * as Events from '../../Events.js'
+import { CreateRecordOnZenodo } from './CreateRecordOnZenodo.js'
 
 const makeDatasetReviewReactions: Effect.Effect<never, never, Events.Events | Scope.Scope> = Effect.gen(function* () {
   const events = yield* Events.Events
@@ -10,9 +11,11 @@ const makeDatasetReviewReactions: Effect.Effect<never, never, Events.Events | Sc
     Effect.andThen(
       pipe(
         Match.type<Events.Event>(),
+        Match.tag('PublicationOfDatasetReviewWasRequested', event => CreateRecordOnZenodo(event.datasetReviewId)),
         Match.orElse(() => Effect.void),
       ),
     ),
+    Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DatasetReviewReactions failed'), { error })),
     Effect.scoped,
     Effect.forever,
   )
