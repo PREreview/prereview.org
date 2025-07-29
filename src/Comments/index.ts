@@ -3,7 +3,6 @@ import * as Events from '../Events.js'
 import { EventStore } from '../EventStore.js'
 import * as ReviewPage from '../review-page/index.js'
 import {
-  CommentEvents,
   UnableToHandleCommand,
   UnableToQuery,
   type CreateRecordOnZenodoForComment,
@@ -30,59 +29,49 @@ export * from './Evolve.js'
 export * from './ExpectedCommand.js'
 export * from './State.js'
 
-export const makeHandleCommentCommand: Effect.Effect<
-  typeof HandleCommentCommand.Service,
-  never,
-  EventStore | CommentEvents
-> = Effect.gen(function* () {
-  const eventStore = yield* EventStore
-  const commentEvents = yield* CommentEvents
+export const makeHandleCommentCommand: Effect.Effect<typeof HandleCommentCommand.Service, never, EventStore> =
+  Effect.gen(function* () {
+    const eventStore = yield* EventStore
 
-  return command =>
-    Effect.gen(function* () {
-      const { events, lastKnownEvent } = yield* pipe(
-        eventStore.query({
-          types: CommentEventTypes,
-          predicates: { commentId: command.commentId },
-        }),
-        Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
-      )
-
-      const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
-        EvolveComment(state)(event),
-      )
-
-      yield* pipe(
-        DecideComment(state)(command),
-        Effect.tap(
-          Option.match({
-            onNone: () => Effect.void,
-            onSome: event =>
-              eventStore.append(event, {
-                filter: {
-                  types: CommentEventTypes,
-                  predicates: { commentId: command.commentId },
-                },
-                lastKnownEvent: Option.fromNullable(lastKnownEvent),
-              }),
+    return command =>
+      Effect.gen(function* () {
+        const { events, lastKnownEvent } = yield* pipe(
+          eventStore.query({
+            types: CommentEventTypes,
+            predicates: { commentId: command.commentId },
           }),
-        ),
-        Effect.tap(
-          Option.match({
-            onNone: () => Effect.void,
-            onSome: event => PubSub.publish(commentEvents, { commentId: command.commentId, event }),
-          }),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
+        )
+
+        const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
+          EvolveComment(state)(event),
+        )
+
+        yield* pipe(
+          DecideComment(state)(command),
+          Effect.tap(
+            Option.match({
+              onNone: () => Effect.void,
+              onSome: event =>
+                eventStore.append(event, {
+                  filter: {
+                    types: CommentEventTypes,
+                    predicates: { commentId: command.commentId },
+                  },
+                  lastKnownEvent: Option.fromNullable(lastKnownEvent),
+                }),
+            }),
+          ),
+        )
+      }).pipe(
+        Effect.catchTag(
+          'FailedToCommitEvent',
+          'FailedToGetEvents',
+          'NewEventsFound',
+          cause => new UnableToHandleCommand({ cause }),
         ),
       )
-    }).pipe(
-      Effect.catchTag(
-        'FailedToCommitEvent',
-        'FailedToGetEvents',
-        'NewEventsFound',
-        cause => new UnableToHandleCommand({ cause }),
-      ),
-    )
-})
+  })
 
 export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore> = Effect.gen(function* () {
   const eventStore = yield* EventStore

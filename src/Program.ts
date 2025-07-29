@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, flow, Layer, Match, Option, pipe, PubSub } from 'effect'
+import { Config, Effect, flow, Layer, Match, Option, pipe } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -268,17 +268,6 @@ const publishComment = Layer.effect(
   }),
 )
 
-const commentEvents = Layer.scoped(
-  Comments.CommentEvents,
-  Effect.acquireRelease(
-    pipe(
-      PubSub.unbounded() satisfies Effect.Effect<typeof Comments.CommentEvents.Service>,
-      Effect.tap(Effect.logDebug('Comment events started')),
-    ),
-    flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Comment events stopped'))),
-  ),
-)
-
 const getCategories = Layer.effect(
   OpenAlex.GetCategories,
   Effect.gen(function* () {
@@ -350,6 +339,6 @@ export const Program = pipe(
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(commentEvents, SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
 )
