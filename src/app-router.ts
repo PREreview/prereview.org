@@ -1,5 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { Array, Function, pipe } from 'effect'
+import type { FetchEnv } from 'fetch-fp-ts'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -15,7 +16,6 @@ import type * as L from 'logger-fp-ts'
 import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
@@ -119,7 +119,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   AddToSessionEnv &
   PopFromSessionEnv &
   WasPrereviewRemovedEnv &
-  ZenodoAuthenticatedEnv
+  FetchEnv
 
 const maybeGetUser = RM.asks((env: RouterEnv) => env.user)
 

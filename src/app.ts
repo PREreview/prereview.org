@@ -11,6 +11,7 @@ import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import * as Keyv from './keyv.js'
@@ -45,6 +46,7 @@ export type ConfigEnv = Omit<
   | 'addToSession'
   | 'popFromSession'
 > &
+  ZenodoAuthenticatedEnv &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean
