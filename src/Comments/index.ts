@@ -194,8 +194,8 @@ export const ReactToCommentEvents: Layer.Layer<
               ),
             ),
           ),
-          Match.when({ event: { _tag: 'CommentWasAssignedADoi' } }, ({ commentId, event }) =>
-            React.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
+          Match.when({ event: { _tag: 'CommentWasAssignedADoi' } }, ({ event }) =>
+            React.PublishCommentWhenCommentWasAssignedADoi(event),
           ),
           Match.when({ event: { _tag: 'CommentWasPublished' } }, ({ commentId }) =>
             pipe(

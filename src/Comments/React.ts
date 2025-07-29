@@ -63,20 +63,16 @@ export const AssignCommentADoiWhenPublicationWasRequested = ({
     )
   })
 
-export const PublishCommentWhenCommentWasAssignedADoi = ({
-  commentId,
-  event,
-}: {
-  commentId: Uuid.Uuid
-  event: CommentWasAssignedADoi
-}): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> =>
+export const PublishCommentWhenCommentWasAssignedADoi = (
+  event: CommentWasAssignedADoi,
+): Effect.Effect<void, ToDo, HandleCommentCommand | PublishCommentOnZenodo> =>
   Effect.gen(function* () {
     const handleCommand = yield* HandleCommentCommand
     const publishCommentOnZenodo = yield* PublishCommentOnZenodo
 
     yield* publishCommentOnZenodo(event.id)
 
-    yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId })), error =>
+    yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId: event.commentId })), error =>
       error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
     )
   })

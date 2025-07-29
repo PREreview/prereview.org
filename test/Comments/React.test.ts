@@ -160,12 +160,18 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
 })
 
 describe('PublishCommentWhenCommentWasAssignedADoi', () => {
-  test.prop([fc.uuid(), fc.commentWasAssignedADoi()])('published comment', (commentId, event) =>
+  test.prop([
+    fc
+      .uuid()
+      .chain(commentId =>
+        fc.tuple(fc.constant(commentId), fc.commentWasAssignedADoi({ commentId: fc.constant(commentId) })),
+      ),
+  ])('published comment', ([commentId, event]) =>
     Effect.gen(function* () {
       const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
-        _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
+        _.PublishCommentWhenCommentWasAssignedADoi(event),
         Comments.HandleCommentCommand,
         handleCommentCommand,
       )
@@ -177,27 +183,25 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
     ),
   )
 
-  test.prop([fc.uuid(), fc.commentWasAssignedADoi(), fc.commentError()])(
-    "when the comment can't be updated",
-    (commentId, event, error) =>
-      Effect.gen(function* () {
-        const actual = yield* pipe(
-          _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
-          Effect.provideService(Comments.HandleCommentCommand, () => error),
-          Effect.either,
-        )
-
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
-      }).pipe(
-        Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
-        EffectTest.run,
-      ),
-  )
-
-  test.prop([fc.uuid(), fc.commentWasAssignedADoi()])("when the comment can't be published", (commentId, event) =>
+  test.prop([fc.commentWasAssignedADoi(), fc.commentError()])("when the comment can't be updated", (event, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.PublishCommentWhenCommentWasAssignedADoi({ commentId, event }),
+        _.PublishCommentWhenCommentWasAssignedADoi(event),
+        Effect.provideService(Comments.HandleCommentCommand, () => error),
+        Effect.either,
+      )
+
+      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+    }).pipe(
+      Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
+      EffectTest.run,
+    ),
+  )
+
+  test.prop([fc.commentWasAssignedADoi()])("when the comment can't be published", event =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        _.PublishCommentWhenCommentWasAssignedADoi(event),
         Effect.provideService(Comments.PublishCommentOnZenodo, () =>
           Effect.fail(new Comments.UnableToPublishComment({})),
         ),
