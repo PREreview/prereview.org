@@ -4,6 +4,7 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
 
@@ -15,6 +16,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Command,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
     >
+    markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
   }
 >() {}
@@ -25,8 +27,12 @@ type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { startDatasetReview, answerIfTheDatasetFollowsFairAndCarePrinciples, publishDatasetReview } =
-  Effect.serviceFunctions(DatasetReviewCommands)
+export const {
+  startDatasetReview,
+  answerIfTheDatasetFollowsFairAndCarePrinciples,
+  markRecordCreatedOnZenodo,
+  publishDatasetReview,
+} = Effect.serviceFunctions(DatasetReviewCommands)
 
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
@@ -75,6 +81,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
+      markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
       publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
     }
   })
