@@ -31,7 +31,6 @@ export class ZenodoRecordForDatasetReviewWasCreated extends Schema.TaggedClass<Z
 export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetReviewWasAssignedADoi>()(
   'DatasetReviewWasAssignedADoi',
   {
-    id: Schema.Number,
     doi: Doi.DoiSchema,
     datasetReviewId: Uuid.UuidSchema,
   },

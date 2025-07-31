@@ -1625,7 +1625,6 @@ export const datasetReviewWasAssignedADoi = ({
 } = {}): fc.Arbitrary<Events.DatasetReviewWasAssignedADoi> =>
   fc
     .record({
-      id: fc.integer(),
       doi: doi(),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
