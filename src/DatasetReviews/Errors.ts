@@ -26,6 +26,10 @@ export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCrea
   cause?: unknown
 }> {}
 
+export class FailedToGetDoiFromZenodo extends Data.TaggedError('FailedToGetDoiFromZenodo')<{
+  cause?: unknown
+}> {}
+
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
 export class UnknownDatasetReview extends Data.TaggedError('UnknownDatasetReview')<{ cause?: unknown }> {}
