@@ -1,5 +1,6 @@
 import { Data, Effect } from 'effect'
 import { CreateDeposition } from '../CreateDeposition/index.js'
+import { UploadFile } from '../UploadFile/index.js'
 import { DatasetReviewToDepositMetadata, type DatasetReview } from './DatasetReviewToDepositMetadata.js'
 
 export type { DatasetReview } from './DatasetReviewToDepositMetadata.js'
@@ -14,7 +15,7 @@ export const CreateRecordForDatasetReview = Effect.fn(
 
     const deposition = yield* CreateDeposition(depositMetadata)
 
-    return yield* new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })
+    yield* UploadFile(deposition, { content: depositMetadata.description.toString(), name: 'review.html' })
 
     return deposition.id
   },

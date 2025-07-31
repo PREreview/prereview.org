@@ -1942,6 +1942,10 @@ export const willPublishADatasetReview: Fixtures<
       status: Status.Created,
     })
 
+    fetch.putOnce('http://example.com/bucket/review.html', {
+      status: Status.Created,
+    })
+
     await use(fetch)
   },
 }
