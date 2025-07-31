@@ -1932,13 +1932,14 @@ export const willPublishADatasetReview: Fixtures<
           prereserve_doi: {
             doi: record.metadata.doi,
           },
+          related_identifiers: [record.metadata.related_identifiers[0]],
           upload_type: 'publication',
           publication_type: 'peerreview',
         },
         state: 'unsubmitted',
         submitted: false,
       }),
-      status: Status.OK,
+      status: Status.Created,
     })
 
     await use(fetch)
