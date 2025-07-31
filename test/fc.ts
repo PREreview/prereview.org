@@ -12,7 +12,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
-import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Struct, Tuple } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
 import type { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -180,6 +180,8 @@ export const hashSet = <A>(
   arb: fc.Arbitrary<A>,
   constraints?: fc.UniqueArraySharedConstraints,
 ): fc.Arbitrary<HashSet.HashSet<A>> => fc.uniqueArray(arb, constraints).map(HashSet.fromIterable)
+
+export const redacted = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Redacted.Redacted<A>> => arb.map(Redacted.make)
 
 const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
 

@@ -1,0 +1,41 @@
+{
+  "created": "2025-07-31T08:24:43.658203+00:00",
+  "modified": "2025-07-31T08:24:43.772099+00:00",
+  "id": 302432,
+  "conceptrecid": "302431",
+  "metadata": {
+    "title": "This is a dataset title",
+    "publication_date": "2025-07-31",
+    "description": "Does this dataset follow FAIR and CARE principles?\n      \nunsure",
+    "access_right": "open",
+    "creators": [{ "name": "A PREreviewer", "affiliation": null }],
+    "related_identifiers": [
+      { "identifier": "10.5061/dryad.wstqjq2n3", "relation": "reviews", "resource_type": "dataset", "scheme": "doi" }
+    ],
+    "license": "cc-by-4.0",
+    "imprint_publisher": "Zenodo",
+    "communities": [{ "identifier": "prereview-reviews" }],
+    "upload_type": "publication",
+    "publication_type": "peerreview",
+    "prereserve_doi": { "doi": "10.5281/zenodo.302432", "recid": 302432 }
+  },
+  "title": "This is a dataset title",
+  "links": {
+    "self": "https://sandbox.zenodo.org/api/deposit/depositions/302432",
+    "html": "https://sandbox.zenodo.org/deposit/302432",
+    "badge": "https://sandbox.zenodo.org/badge/doi/.svg",
+    "files": "https://sandbox.zenodo.org/api/deposit/depositions/302432/files",
+    "bucket": "https://sandbox.zenodo.org/api/files/785565e0-f5ea-40fc-b9fe-1a73957a9db0",
+    "latest_draft": "https://sandbox.zenodo.org/api/deposit/depositions/302432",
+    "latest_draft_html": "https://sandbox.zenodo.org/deposit/302432",
+    "publish": "https://sandbox.zenodo.org/api/deposit/depositions/302432/actions/publish",
+    "edit": "https://sandbox.zenodo.org/api/deposit/depositions/302432/actions/edit",
+    "discard": "https://sandbox.zenodo.org/api/deposit/depositions/302432/actions/discard",
+    "newversion": "https://sandbox.zenodo.org/api/deposit/depositions/302432/actions/newversion"
+  },
+  "record_id": 302432,
+  "owner": 107,
+  "files": [],
+  "state": "unsubmitted",
+  "submitted": false
+}
