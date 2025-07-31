@@ -30,7 +30,6 @@
   block-size: 1px;
   inline-size: 1px;
   overflow: hidden;
-  clip: rect(0 0 0 0);
   text-wrap-mode: nowrap;
   clip-path: inset(50%);
 }
@@ -2141,7 +2140,6 @@ skip-link {
       inline-size: 1px;
       padding: 0;
       overflow: hidden;
-      clip: rect(0 0 0 0);
       text-wrap-mode: nowrap;
       clip-path: inset(50%);
     }
@@ -2296,7 +2294,6 @@ skip-link {
       block-size: 1px;
       inline-size: 1px;
       overflow: hidden;
-      clip: rect(0 0 0 0);
       text-wrap-mode: nowrap;
       clip-path: inset(50%);
     }
