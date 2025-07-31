@@ -26,7 +26,7 @@ export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCrea
   cause?: unknown
 }> {}
 
-export class FailedToGetDoiFromZenodo extends Data.TaggedError('FailedToGetDoiFromZenodo')<{
+export class FailedToUseZenodoDoi extends Data.TaggedError('FailedToUseZenodoDoi')<{
   cause?: unknown
 }> {}
 

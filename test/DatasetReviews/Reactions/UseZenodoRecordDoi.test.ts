@@ -10,6 +10,6 @@ test.prop([fc.uuid(), fc.integer()])('UseZenodoRecordDoi', (datasetReviewId, rec
   Effect.gen(function* () {
     const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToGetDoiFromZenodo({})))
+    expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
   }).pipe(EffectTest.run),
 )
