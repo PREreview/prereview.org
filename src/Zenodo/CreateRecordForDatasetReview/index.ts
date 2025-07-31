@@ -1,4 +1,5 @@
 import { Data, Effect } from 'effect'
+import { CreateDeposition } from '../CreateDeposition/index.js'
 import { DatasetReviewToDepositMetadata, type DatasetReview } from './DatasetReviewToDepositMetadata.js'
 
 export type { DatasetReview } from './DatasetReviewToDepositMetadata.js'
@@ -7,11 +8,15 @@ export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('Fail
   cause?: unknown
 }> {}
 
-export const CreateRecordForDatasetReview = Effect.fn(function* (datasetReview: DatasetReview) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const depositMetadata = DatasetReviewToDepositMetadata(datasetReview)
+export const CreateRecordForDatasetReview = Effect.fn(
+  function* (datasetReview: DatasetReview) {
+    const depositMetadata = DatasetReviewToDepositMetadata(datasetReview)
 
-  return yield* new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })
+    const deposition = yield* CreateDeposition(depositMetadata)
 
-  return 1
-})
+    return yield* new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })
+
+    return deposition.id
+  },
+  Effect.catchAll(error => new FailedToCreateRecordForDatasetReview({ cause: error })),
+)

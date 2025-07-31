@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type * as Doi from 'doi-ts'
-import { Array, Context, Effect, Layer, pipe } from 'effect'
+import { Array, Context, Effect, flow, Layer, pipe } from 'effect'
 import * as CachingHttpClient from '../CachingHttpClient/index.js'
 import * as ReviewPage from '../review-page/index.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -32,9 +32,15 @@ export { ZenodoApi } from './ZenodoApi.js'
 
 export const { createRecordForDatasetReview } = Effect.serviceFunctions(Zenodo)
 
-export const make: Effect.Effect<typeof Zenodo.Service> = Effect.sync(() => ({
-  createRecordForDatasetReview: CreateRecordForDatasetReview,
-}))
+export const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | ZenodoApi> = Effect.gen(
+  function* () {
+    const context = yield* Effect.context<HttpClient.HttpClient | ZenodoApi>()
+
+    return {
+      createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
+    }
+  },
+)
 
 export const layer = Layer.effect(Zenodo, make)
 
