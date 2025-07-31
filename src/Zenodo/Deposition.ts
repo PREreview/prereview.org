@@ -24,7 +24,7 @@ export const DepositMetadata = Schema.Struct({
       Schema.Struct({
         identifier: Doi.DoiSchema,
         relation: Schema.Literal('reviews'),
-        resource_type: Schema.Literal('dataset'),
+        resourceType: Schema.propertySignature(Schema.Literal('dataset')).pipe(Schema.fromKey('resource_type')),
         scheme: Schema.Literal('doi'),
       }),
     ),
