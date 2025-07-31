@@ -4,9 +4,12 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
+
+type NewType = MarkDoiAsAssigned.Command
 
 export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
   DatasetReviewCommands,
@@ -17,6 +20,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
     >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
+    markDoiAsAssigned: CommandHandler<NewType, MarkDoiAsAssigned.Error>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
   }
 >() {}
@@ -31,6 +35,7 @@ export const {
   startDatasetReview,
   answerIfTheDatasetFollowsFairAndCarePrinciples,
   markRecordCreatedOnZenodo,
+  markDoiAsAssigned,
   publishDatasetReview,
 } = Effect.serviceFunctions(DatasetReviewCommands)
 
@@ -82,6 +87,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
+      markDoiAsAssigned: handleCommand(MarkDoiAsAssigned.foldState, MarkDoiAsAssigned.decide),
       publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
     }
   })
