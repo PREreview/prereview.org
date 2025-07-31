@@ -19,7 +19,12 @@ export { FailedToCreateRecordForDatasetReview, type DatasetReview } from './Crea
 export class Zenodo extends Context.Tag('Zenodo')<
   Zenodo,
   {
-    createRecordForDatasetReview: typeof CreateRecordForDatasetReview
+    createRecordForDatasetReview: (
+      ...args: Parameters<typeof CreateRecordForDatasetReview>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof CreateRecordForDatasetReview>>,
+      Effect.Effect.Error<ReturnType<typeof CreateRecordForDatasetReview>>
+    >
   }
 >() {}
 
