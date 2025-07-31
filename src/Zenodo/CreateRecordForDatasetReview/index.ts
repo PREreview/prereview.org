@@ -1,15 +1,17 @@
-import { Data, type Effect } from 'effect'
-import type * as Events from '../../Events.js'
+import { Data, Effect } from 'effect'
+import { DatasetReviewToDepositMetadata, type DatasetReview } from './DatasetReviewToDepositMetadata.js'
 
-export interface DatasetReview {
-  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
-}
+export type { DatasetReview } from './DatasetReviewToDepositMetadata.js'
 
 export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('FailedToCreateRecordForDatasetReview')<{
   cause?: unknown
 }> {}
 
-export const CreateRecordForDatasetReview: (
-  datasetReview: DatasetReview,
-) => Effect.Effect<number, FailedToCreateRecordForDatasetReview> = () =>
-  new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })
+export const CreateRecordForDatasetReview = Effect.fn(function* (datasetReview: DatasetReview) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const depositMetadata = DatasetReviewToDepositMetadata(datasetReview)
+
+  return yield* new FailedToCreateRecordForDatasetReview({ cause: 'not implemented' })
+
+  return 1
+})
