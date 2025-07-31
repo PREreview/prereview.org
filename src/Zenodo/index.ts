@@ -10,6 +10,7 @@ import { getCommunityRecords } from './CommunityRecords.js'
 import { constructCommentListUrl } from './ConstructCommentListUrl.js'
 import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.js'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
+import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.js'
 import { getDoiForPrereview } from './GetDoiForPrereview.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 import type { ZenodoApi } from './ZenodoApi.js'
@@ -25,12 +26,18 @@ export class Zenodo extends Context.Tag('Zenodo')<
       Effect.Effect.Success<ReturnType<typeof CreateRecordForDatasetReview>>,
       Effect.Effect.Error<ReturnType<typeof CreateRecordForDatasetReview>>
     >
+    getDoiForDatasetReviewRecord: (
+      ...args: Parameters<typeof GetDoiForDatasetReviewRecord>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof GetDoiForDatasetReviewRecord>>,
+      Effect.Effect.Error<ReturnType<typeof GetDoiForDatasetReviewRecord>>
+    >
   }
 >() {}
 
 export { ZenodoApi } from './ZenodoApi.js'
 
-export const { createRecordForDatasetReview } = Effect.serviceFunctions(Zenodo)
+export const { createRecordForDatasetReview, getDoiForDatasetReviewRecord } = Effect.serviceFunctions(Zenodo)
 
 export const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | ZenodoApi> = Effect.gen(
   function* () {
@@ -38,6 +45,7 @@ export const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpCl
 
     return {
       createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
+      getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
     }
   },
 )
