@@ -1,0 +1,16 @@
+{
+  "created": "2025-07-31T12:38:26.184722+00:00",
+  "updated": "2025-07-31T12:38:26.271423+00:00",
+  "version_id": "619ba769-f505-4b86-a531-cc2ac1fc82d5",
+  "key": "review.html",
+  "size": 134,
+  "mimetype": "text/html",
+  "checksum": "md5:a5d659f236ad71f8f605bd100dd98915",
+  "is_head": true,
+  "delete_marker": false,
+  "links": {
+    "self": "https://sandbox.zenodo.org/api/files/cb7f0ad8-e957-49ed-a8dd-8cda055b288f/review.html",
+    "version": "https://sandbox.zenodo.org/api/files/cb7f0ad8-e957-49ed-a8dd-8cda055b288f/review.html?version_id=619ba769-f505-4b86-a531-cc2ac1fc82d5",
+    "uploads": "https://sandbox.zenodo.org/api/files/cb7f0ad8-e957-49ed-a8dd-8cda055b288f/review.html?uploads=1"
+  }
+}
