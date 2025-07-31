@@ -149,7 +149,7 @@ function renderContentForOrcid(
                     'contactSlack',
                   )({
                     link: text =>
-                      html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>.`.toString(),
+                      html`<a href="https://content.prereview.org/join-prereview-slack/">${text}</a>`.toString(),
                   }),
                 )
               : ''}
