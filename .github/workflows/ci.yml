@@ -81,7 +81,7 @@ jobs:
           version: 0.8.3
 
       - name: 'Set up mo'
-        uses: shrink/actions-docker-extract@v3.0.1
+        uses: shrink/actions-docker-extract@v3.1.0
         with:
           image: ghcr.io/tests-always-included/mo:3.0.5
           path: /usr/local/bin/mo
