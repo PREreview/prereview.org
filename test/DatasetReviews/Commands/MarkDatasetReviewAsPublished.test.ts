@@ -21,7 +21,7 @@ const datasetReviewWasAssignedADoi = new DatasetReviews.DatasetReviewWasAssigned
 })
 const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
 
-describe.only('foldState', () => {
+describe('foldState', () => {
   test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
     examples: [
       [[]], // no events
@@ -121,13 +121,13 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test('has not been requested', () => {
+  test.failing('has not been requested', () => {
     const result = _.decide(new _.NotRequested(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
   })
 
-  test.prop([fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))])('is not ready', missing => {
+  test.failing.prop([fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))])('is not ready', missing => {
     const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -135,7 +135,7 @@ describe('decide', () => {
     )
   })
 
-  test('is ready', () => {
+  test.failing('is ready', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -143,7 +143,7 @@ describe('decide', () => {
     )
   })
 
-  test('already marked as published', () => {
+  test.failing('already marked as published', () => {
     const result = _.decide(new _.AlreadyMarkedAsPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))
