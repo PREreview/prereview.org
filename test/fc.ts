@@ -1637,6 +1637,22 @@ export const datasetReviewWasPublished = ({
 } = {}): fc.Arbitrary<Events.DatasetReviewWasPublished> =>
   fc.record({ datasetReviewId: datasetReviewId ?? uuid() }).map(data => new Events.DatasetReviewWasPublished(data))
 
+export const zenodoRecordForDatasetReviewWasPublished = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.ZenodoRecordForDatasetReviewWasPublished['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.ZenodoRecordForDatasetReviewWasPublished> =>
+  fc
+    .record({ datasetReviewId: datasetReviewId ?? uuid() })
+    .map(data => new Events.ZenodoRecordForDatasetReviewWasPublished(data))
+
+export const datasetReviewDoiWasActivated = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.DatasetReviewDoiWasActivated['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DatasetReviewDoiWasActivated> =>
+  fc.record({ datasetReviewId: datasetReviewId ?? uuid() }).map(data => new Events.DatasetReviewDoiWasActivated(data))
+
 export const datasetReviewEvent = (
   args: {
     datasetReviewId?: fc.Arbitrary<Events.DatasetReviewEvent['datasetReviewId']>
@@ -1649,6 +1665,8 @@ export const datasetReviewEvent = (
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
     datasetReviewWasPublished(args),
+    zenodoRecordForDatasetReviewWasPublished(args),
+    datasetReviewDoiWasActivated(args),
   )
 
 export const event = (): fc.Arbitrary<Events.Event> => fc.oneof(commentEvent(), datasetReviewEvent())

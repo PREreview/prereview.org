@@ -41,6 +41,16 @@ export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewW
   { datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class ZenodoRecordForDatasetReviewWasPublished extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasPublished>()(
+  'ZenodoRecordForDatasetReviewWasPublished',
+  { datasetReviewId: Uuid.UuidSchema },
+) {}
+
+export class DatasetReviewDoiWasActivated extends Schema.TaggedClass<DatasetReviewDoiWasActivated>()(
+  'DatasetReviewDoiWasActivated',
+  { datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
@@ -48,6 +58,8 @@ export const DatasetReviewEvent = Schema.Union(
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
+  ZenodoRecordForDatasetReviewWasPublished,
+  DatasetReviewDoiWasActivated,
 )
 
 export const DatasetReviewEventTypes = Array.map(DatasetReviewEvent.members, Struct.get('_tag'))
