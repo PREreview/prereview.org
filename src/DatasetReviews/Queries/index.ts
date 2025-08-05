@@ -10,7 +10,7 @@ import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswer
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
-import type { GetPublishedDoi } from './GetPublishedDoi.js'
+import { GetPublishedDoi } from './GetPublishedDoi.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -147,7 +147,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      getPublishedDoi: () => new UnableToQuery({ cause: 'not implemented' }),
+      getPublishedDoi: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* GetPublishedDoi(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
       getDataForZenodoRecord: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
