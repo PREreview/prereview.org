@@ -10,6 +10,7 @@ import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswer
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
+import type { GetPublishedDoi } from './GetPublishedDoi.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -32,6 +33,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
     >
+    getPublishedDoi: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedDoi>,
+      Errors.UnknownDatasetReview
+    >
     getDataForZenodoRecord: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetDataForZenodoRecord>,
       Errors.UnknownDatasetReview
@@ -50,6 +55,7 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 export const {
   checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
+  getPublishedDoi,
   findInProgressReviewForADataset,
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
@@ -141,6 +147,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      getPublishedDoi: () => new UnableToQuery({ cause: 'not implemented' }),
       getDataForZenodoRecord: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
