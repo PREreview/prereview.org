@@ -5,4 +5,7 @@ export interface Command {
   readonly datasetReviewId: Uuid.Uuid
 }
 
-export type Error = Errors.DatasetReviewHasNotBeenStarted | Errors.PublicationOfDatasetReviewWasNotRequested
+export type Error =
+  | Errors.DatasetReviewHasNotBeenStarted
+  | Errors.PublicationOfDatasetReviewWasNotRequested
+  | Errors.DatasetReviewNotReadyToBeMarkedAsPublished
