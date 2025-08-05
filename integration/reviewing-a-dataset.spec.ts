@@ -33,8 +33,6 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
 
-    testInfo.fail()
-
     if (javaScriptEnabled) {
       await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible()
 
@@ -46,6 +44,8 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
         await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
       }).toPass()
     }
+
+    testInfo.fail()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')

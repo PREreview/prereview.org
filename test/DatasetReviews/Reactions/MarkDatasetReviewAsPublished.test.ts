@@ -7,7 +7,7 @@ import * as EffectTest from '../../EffectTest.js'
 import * as fc from '../../fc.js'
 
 describe('MarkDatasetReviewAsPublished', () => {
-  test.failing.prop([fc.uuid()])('when the command can be completed', datasetReviewId =>
+  test.prop([fc.uuid()])('when the command can be completed', datasetReviewId =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
 
