@@ -40,6 +40,10 @@ export class FailedToUseZenodoDoi extends Data.TaggedError('FailedToUseZenodoDoi
   cause?: unknown
 }> {}
 
+export class FailedToMarkDatasetReviewAsPublished extends Data.TaggedError('FailedToMarkDatasetReviewAsPublished')<{
+  cause?: unknown
+}> {}
+
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
 export class UnknownDatasetReview extends Data.TaggedError('UnknownDatasetReview')<{ cause?: unknown }> {}

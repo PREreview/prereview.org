@@ -4,6 +4,7 @@ import type { Zenodo } from '../../Zenodo/index.js'
 import type { DatasetReviewCommands } from '../Commands/index.js'
 import type { DatasetReviewQueries } from '../Queries/index.js'
 import { CreateRecordOnZenodo } from './CreateRecordOnZenodo.js'
+import { MarkDatasetReviewAsPublished } from './MarkDatasetReviewAsPublished.js'
 import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.js'
 
 const makeDatasetReviewReactions: Effect.Effect<
@@ -23,6 +24,7 @@ const makeDatasetReviewReactions: Effect.Effect<
         Match.tag('ZenodoRecordForDatasetReviewWasCreated', event =>
           UseZenodoRecordDoi(event.datasetReviewId, event.recordId),
         ),
+        Match.tag('DatasetReviewWasAssignedADoi', event => MarkDatasetReviewAsPublished(event.datasetReviewId)),
         Match.orElse(() => Effect.void),
       ),
     ),
