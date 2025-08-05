@@ -1946,30 +1946,34 @@ export const willPublishADatasetReview: Fixtures<
       status: Status.Created,
     })
 
-    fetch.getOnce(`http://zenodo.test/api/deposit/depositions/${record.id}`, {
-      body: UnsubmittedDepositionC.encode({
-        ...record,
-        links: {
-          bucket: new URL('http://example.com/bucket'),
-          publish: new URL('http://example.com/publish'),
-          self: new URL('http://example.com/self'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          license: record.metadata.license.id,
-          prereserve_doi: {
-            doi: record.metadata.doi,
+    fetch.getOnce(
+      `http://zenodo.test/api/deposit/depositions/${record.id}`,
+      {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
           },
-          related_identifiers: [record.metadata.related_identifiers[0]],
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'unsubmitted',
-        submitted: false,
-      }),
-      status: Status.OK,
-    })
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            related_identifiers: [record.metadata.related_identifiers[0]],
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.OK,
+      },
+      { delay: 100 },
+    )
 
     await use(fetch)
   },
