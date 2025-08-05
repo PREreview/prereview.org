@@ -97,7 +97,7 @@ function publishedPage({
 }) {
   const t = translate(locale, 'author-invite-flow')
   const prereviewLink = (text: string) =>
-    `<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`.toString()
+    html`<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`.toString()
   return StreamlinePageResponse({
     title: pipe(t('nameAdded')(), plainText),
     main: html`

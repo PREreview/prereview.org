@@ -113,7 +113,7 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
   })
 }
 
-const codeOfConductLink = (text: string) => `<a href="${Routes.CodeOfConduct}">${text}</a>`.toString()
+const codeOfConductLink = (text: string) => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString()
 
 const toErrorItems = (locale: SupportedLocale) => (form: CodeOfConductForm) => html`
   ${E.isLeft(form.conduct)
