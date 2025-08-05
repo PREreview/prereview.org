@@ -9,8 +9,6 @@ import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
 
-type NewType = MarkDoiAsAssigned.Command
-
 export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
   DatasetReviewCommands,
   {
@@ -20,7 +18,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
     >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
-    markDoiAsAssigned: CommandHandler<NewType, MarkDoiAsAssigned.Error>
+    markDoiAsAssigned: CommandHandler<MarkDoiAsAssigned.Command, MarkDoiAsAssigned.Error>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
   }
 >() {}
