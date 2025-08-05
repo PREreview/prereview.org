@@ -6,6 +6,7 @@ import { PageNotFound } from '../../PageNotFound/index.js'
 import type * as Response from '../../response.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { ReviewPublishedPage as MakeResponse } from './ReviewPublishedPage.js'
 
 export const ReviewPublishedPage = ({
   datasetReviewId,
@@ -20,9 +21,13 @@ export const ReviewPublishedPage = ({
       return yield* PageNotFound
     }
 
-    return yield* HavingProblemsPage
+    const doi = yield* DatasetReviews.getPublishedDoi(datasetReviewId)
+
+    return MakeResponse({ datasetReviewId, doi })
   }).pipe(
     Effect.catchTags({
+      DatasetReviewIsBeingPublished: () => PageNotFound,
+      DatasetReviewIsInProgress: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),
