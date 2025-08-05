@@ -28,7 +28,15 @@ export class DatasetReviewAlreadyHasADoi extends Data.TaggedError('DatasetReview
   cause?: unknown
 }> {}
 
+export class DatasetReviewHasNotBeenAssignedADoi extends Data.TaggedError('DatasetReviewHasNotBeenAssignedADoi')<{
+  cause?: unknown
+}> {}
+
 export class DatasetReviewAlreadyHasAZenodoRecord extends Data.TaggedError('DatasetReviewAlreadyHasAZenodoRecord')<{
+  cause?: unknown
+}> {}
+
+export class DatasetReviewDoesNotHaveAZenodoRecord extends Data.TaggedError('DatasetReviewDoesNotHaveAZenodoRecord')<{
   cause?: unknown
 }> {}
 
