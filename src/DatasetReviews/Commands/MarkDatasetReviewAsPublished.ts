@@ -1,4 +1,4 @@
-import { type Array, Data, Either, Function, type Option } from 'effect'
+import { Array, Data, Either, Function, type Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -26,8 +26,25 @@ export class IsReady extends Data.TaggedClass('IsReady') {}
 
 export class AlreadyMarkedAsPublished extends Data.TaggedClass('AlreadyMarkedAsPublished') {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => new NotStarted()
+export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
+  if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
+    return new NotStarted()
+  }
+
+  if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
+    return new AlreadyMarkedAsPublished()
+  }
+
+  if (!Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+    return new NotRequested()
+  }
+
+  if (!Array.some(events, hasTag('DatasetReviewWasAssignedADoi'))) {
+    return new NotReady({ missing: ['DatasetReviewWasAssignedADoi'] })
+  }
+
+  return new IsReady()
+}
 
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
@@ -38,3 +55,7 @@ export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
     Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
 )
+
+function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+}

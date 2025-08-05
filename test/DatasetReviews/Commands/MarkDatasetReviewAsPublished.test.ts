@@ -33,7 +33,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
     examples: [
       [[started]], // was started
       [[started, answered]], // answered
@@ -44,7 +44,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotRequested())
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
@@ -63,7 +63,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotReady({ missing: ['DatasetReviewWasAssignedADoi'] }))
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(
@@ -86,7 +86,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.IsReady())
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
