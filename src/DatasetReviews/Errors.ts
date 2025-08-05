@@ -12,6 +12,10 @@ export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('Datase
   missing: Array.NonEmptyReadonlyArray<'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'>
 }> {}
 
+export class PublicationOfDatasetReviewWasNotRequested extends Data.TaggedError(
+  'DatasetReviewPublicationOfDatasetReviewWasNotRequestedNotReadyToBePublished',
+) {}
+
 export class DatasetReviewWasAlreadyStarted extends Data.TaggedError('DatasetReviewWasAlreadyStarted') {}
 
 export class DatasetReviewAlreadyHasADoi extends Data.TaggedError('DatasetReviewAlreadyHasADoi')<{

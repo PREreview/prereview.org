@@ -4,6 +4,7 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import type * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
@@ -20,6 +21,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markDoiAsAssigned: CommandHandler<MarkDoiAsAssigned.Command, MarkDoiAsAssigned.Error>
     publishDatasetReview: CommandHandler<PublishDatasetReview.Command, PublishDatasetReview.Error>
+    markDatasetReviewAsPublished: CommandHandler<
+      MarkDatasetReviewAsPublished.Command,
+      MarkDatasetReviewAsPublished.Error
+    >
   }
 >() {}
 
@@ -87,6 +92,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
       markDoiAsAssigned: handleCommand(MarkDoiAsAssigned.foldState, MarkDoiAsAssigned.decide),
       publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
+      markDatasetReviewAsPublished: () => new UnableToHandleCommand({ cause: 'not implemented' }),
     }
   })
 
