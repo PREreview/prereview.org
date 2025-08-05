@@ -8,8 +8,7 @@ export interface Command {
 
 export type Error =
   | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewIsInProgress
+  | Errors.DatasetReviewHasNotBeenPublished
   | Errors.DatasetReviewDoesNotHaveAZenodoRecord
 
 export type State = NotStarted | NotPublished | DoesNotHaveARecord | HasAnUnpublishedRecord | HasAPublishedRecord

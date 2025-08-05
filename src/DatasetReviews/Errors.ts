@@ -22,6 +22,10 @@ export class DatasetReviewNotReadyToBeMarkedAsPublished extends Data.TaggedError
   missing: Array.NonEmptyReadonlyArray<'DatasetReviewWasAssignedADoi'>
 }> {}
 
+export class DatasetReviewHasNotBeenPublished extends Data.TaggedError('DatasetReviewHasNotBeenPublished')<{
+  cause?: unknown
+}> {}
+
 export class DatasetReviewWasAlreadyStarted extends Data.TaggedError('DatasetReviewWasAlreadyStarted') {}
 
 export class DatasetReviewAlreadyHasADoi extends Data.TaggedError('DatasetReviewAlreadyHasADoi')<{
