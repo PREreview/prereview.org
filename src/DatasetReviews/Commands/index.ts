@@ -4,7 +4,7 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
-import type * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
+import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
@@ -92,7 +92,10 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
       markDoiAsAssigned: handleCommand(MarkDoiAsAssigned.foldState, MarkDoiAsAssigned.decide),
       publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
-      markDatasetReviewAsPublished: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      markDatasetReviewAsPublished: handleCommand(
+        MarkDatasetReviewAsPublished.foldState,
+        MarkDatasetReviewAsPublished.decide,
+      ),
     }
   })
 
