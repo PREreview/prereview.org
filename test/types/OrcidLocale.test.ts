@@ -22,7 +22,7 @@ describe('isOrcidLocale', () => {
 })
 
 describe('parse', () => {
-  test.prop([fc.orcidLocale().map(locale => Tuple.make(locale.toString(), locale))], {
+  test.prop([fc.orcidLocale().map(locale => Tuple.make<[string, _.OrcidLocale]>(locale, locale))], {
     examples: [[['en-US', 'en']], [['en-US-x-twain', 'en']], [['es-419', 'es']], [['zh-CN', 'zh_CN']]],
   })('with an ORCID locale', ([input, expected]) => {
     const actual = _.parse(input)
