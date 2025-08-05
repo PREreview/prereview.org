@@ -392,7 +392,7 @@ export const handleFlashMessageResponse = ({
 }): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
   pipe(
     M.status(Status.SeeOther),
-    M.ichain(() => M.header('Location', response.location.toString())),
+    M.ichain(() => M.header('Location', response.location)),
     M.ichain(() => M.header('Cache-Control', 'no-store, must-revalidate')),
     M.ichain(() => setFlashMessage(response.message)),
     M.ichain(() => M.closeHeaders()),
