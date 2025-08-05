@@ -47,6 +47,7 @@ export const {
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
+  markDoiAsActivated,
   publishDatasetReview,
   markDatasetReviewAsPublished,
 } = Effect.serviceFunctions(DatasetReviewCommands)

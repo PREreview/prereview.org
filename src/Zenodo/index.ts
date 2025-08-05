@@ -20,6 +20,8 @@ export { FailedToCreateRecordForDatasetReview, type DatasetReview } from './Crea
 
 export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecord/index.js'
 
+export { FailedToPublishRecord } from './PublishRecord/index.js'
+
 export class Zenodo extends Context.Tag('Zenodo')<
   Zenodo,
   {
