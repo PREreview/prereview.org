@@ -1,0 +1,63 @@
+{
+  "created": "2025-08-05T14:47:48.989907+00:00",
+  "modified": "2025-08-05T14:47:49.539822+00:00",
+  "id": 302552,
+  "conceptrecid": "302551",
+  "doi": "10.5072/zenodo.302552",
+  "conceptdoi": "10.5072/zenodo.302551",
+  "doi_url": "https://doi.org/10.5072/zenodo.302552",
+  "metadata": {
+    "title": "Dataset review",
+    "doi": "10.5072/zenodo.302552",
+    "publication_date": "2025-07-31",
+    "description": "Does this dataset follow FAIR and CARE principles?\n      \n\n        I don't know",
+    "access_right": "open",
+    "creators": [{ "name": "A PREreviewer", "affiliation": null }],
+    "related_identifiers": [
+      { "identifier": "10.5061/dryad.wstqjq2n3", "relation": "reviews", "resource_type": "dataset", "scheme": "doi" }
+    ],
+    "license": "cc-by-4.0",
+    "imprint_publisher": "Zenodo",
+    "communities": [{ "identifier": "prereview-reviews" }],
+    "upload_type": "publication",
+    "publication_type": "peerreview",
+    "prereserve_doi": { "doi": "10.5281/zenodo.302552", "recid": 302552 }
+  },
+  "title": "Dataset review",
+  "links": {
+    "self": "https://sandbox.zenodo.org/api/records/302552",
+    "html": "https://sandbox.zenodo.org/records/302552",
+    "doi": "https://doi.org/10.5072/zenodo.302552",
+    "parent_doi": "https://doi.org/10.5072/zenodo.302551",
+    "badge": "https://sandbox.zenodo.org/badge/doi/10.5072%2Fzenodo.302552.svg",
+    "conceptbadge": "https://sandbox.zenodo.org/badge/doi/10.5072%2Fzenodo.302551.svg",
+    "files": "https://sandbox.zenodo.org/api/records/302552/files",
+    "bucket": "https://sandbox.zenodo.org/api/files/cb7f0ad8-e957-49ed-a8dd-8cda055b288f",
+    "latest_draft": "https://sandbox.zenodo.org/api/deposit/depositions/302552",
+    "latest_draft_html": "https://sandbox.zenodo.org/deposit/302552",
+    "publish": "https://sandbox.zenodo.org/api/deposit/depositions/302552/actions/publish",
+    "edit": "https://sandbox.zenodo.org/api/deposit/depositions/302552/actions/edit",
+    "discard": "https://sandbox.zenodo.org/api/deposit/depositions/302552/actions/discard",
+    "newversion": "https://sandbox.zenodo.org/api/deposit/depositions/302552/actions/newversion",
+    "record": "https://sandbox.zenodo.org/api/records/302552",
+    "record_html": "https://sandbox.zenodo.org/record/302552",
+    "latest": "https://sandbox.zenodo.org/api/records/302552/versions/latest",
+    "latest_html": "https://sandbox.zenodo.org/records/302552/latest"
+  },
+  "record_id": 302552,
+  "owner": 107,
+  "files": [
+    {
+      "id": "db790e7a-fce2-4469-85e1-e898bb985b8c",
+      "filename": "review.html",
+      "filesize": 134,
+      "checksum": "a5d659f236ad71f8f605bd100dd98915",
+      "links": {
+        "self": "https://sandbox.zenodo.org/api/records/302552/files/db790e7a-fce2-4469-85e1-e898bb985b8c",
+        "download": "https://sandbox.zenodo.org/api/records/302552/draft/files/review.html/content"
+      }
+    }
+  ],
+  "state": "done",
+  "submitted": true
+}
