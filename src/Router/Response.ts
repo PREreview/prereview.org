@@ -92,17 +92,17 @@ export const toHttpServerResponse = (
       HttpServerResponse.html,
       HttpServerResponse.setStatus(response._tag === 'TwoUpPageResponse' ? StatusCodes.OK : response.status),
       Option.match(message, {
-        onNone: () => identity,
+        onNone: () => identity<HttpServerResponse.HttpServerResponse>,
         onSome: () =>
           HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
       }),
       Array.match(links, {
-        onEmpty: () => identity,
+        onEmpty: () => identity<HttpServerResponse.HttpServerResponse>,
         onNonEmpty: links => HttpServerResponse.setHeader('Link', Schema.encodeSync(Http.LinkHeaderSchema)(links)),
       }),
       Boolean.match(allowRobots, {
         onFalse: () => HttpServerResponse.setHeader('X-Robots-Tag', 'none, noarchive'),
-        onTrue: () => identity,
+        onTrue: () => identity<HttpServerResponse.HttpServerResponse>,
       }),
     )
   })
