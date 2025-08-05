@@ -137,7 +137,7 @@ describe('GetPublishedDoi', () => {
     )('returns an error', events => {
       const actual = _.GetPublishedDoi(events)
 
-      expect(actual).toStrictEqual(Either.void)
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
     })
   })
 
