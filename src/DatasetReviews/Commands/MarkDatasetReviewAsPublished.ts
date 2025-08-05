@@ -1,7 +1,7 @@
-import { Array, Data, Either, Function, type Option } from 'effect'
+import { Array, Data, Either, Function, Match, Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Events from '../Events.js'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
@@ -51,9 +51,15 @@ export const decide: {
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
 } = Function.dual(
   2,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    Match.valueTags(state, {
+      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+      NotRequested: () => Either.left(new Errors.PublicationOfDatasetReviewWasNotRequested()),
+      NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
+      IsReady: () =>
+        Either.right(Option.some(new Events.DatasetReviewWasPublished({ datasetReviewId: command.datasetReviewId }))),
+      AlreadyMarkedAsPublished: () => Either.right(Option.none()),
+    }),
 )
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

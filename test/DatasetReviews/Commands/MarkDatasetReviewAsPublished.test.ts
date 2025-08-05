@@ -121,13 +121,13 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.failing('has not been requested', () => {
+  test('has not been requested', () => {
     const result = _.decide(new _.NotRequested(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
   })
 
-  test.failing.prop([fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))])('is not ready', missing => {
+  test.prop([fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))])('is not ready', missing => {
     const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -135,7 +135,7 @@ describe('decide', () => {
     )
   })
 
-  test.failing('is ready', () => {
+  test('is ready', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -143,7 +143,7 @@ describe('decide', () => {
     )
   })
 
-  test.failing('already marked as published', () => {
+  test('already marked as published', () => {
     const result = _.decide(new _.AlreadyMarkedAsPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))
