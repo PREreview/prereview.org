@@ -48,6 +48,10 @@ export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCrea
   cause?: unknown
 }> {}
 
+export class FailedToPublishRecordOnZenodo extends Data.TaggedError('FailedToPublishRecordOnZenodo')<{
+  cause?: unknown
+}> {}
+
 export class FailedToUseZenodoDoi extends Data.TaggedError('FailedToUseZenodoDoi')<{
   cause?: unknown
 }> {}
