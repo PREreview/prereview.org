@@ -48,10 +48,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
 
-    testInfo.fail()
-    await expect(page.getByRole('link', { name: 'See your review' })).toBeVisible()
-
     await page.getByRole('link', { name: 'See your review' }).click()
+
+    testInfo.fail()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
       'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',

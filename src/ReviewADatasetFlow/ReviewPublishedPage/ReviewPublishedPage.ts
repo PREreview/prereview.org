@@ -15,6 +15,8 @@ export const ReviewPublishedPage = ({ datasetReviewId, doi }: { datasetReviewId:
           <div><strong class="doi" translate="no">${doi}</strong></div>
         </div>
       </div>
+
+      <a href="${Routes.DatasetReview.href({ datasetReviewId })}" class="button">See your review</a>
     `,
     canonical: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
   })
