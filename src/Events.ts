@@ -17,6 +17,8 @@ export interface EventFilter<T extends Event['_tag']> {
   predicates?: Partial<Omit<Event, '_tag'>>
 }
 
+export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
+
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
 
 const CommentEventTypes = Array.map(CommentEvents.CommentEvent.members, Struct.get('_tag'))
