@@ -11,10 +11,8 @@ export const PublishRecordOnZenodo = Effect.fn(
 
     yield* Zenodo.publishRecord(recordId)
 
-    yield* Effect.all(
-      [Commands.markRecordAsPublishedOnZenodo({ datasetReviewId }), Commands.markDoiAsActivated({ datasetReviewId })],
-      { concurrency: 'inherit' },
-    )
+    yield* Commands.markRecordAsPublishedOnZenodo({ datasetReviewId })
+    yield* Commands.markDoiAsActivated({ datasetReviewId })
   },
   Effect.catchAll(error => new Errors.FailedToPublishRecordOnZenodo({ cause: error })),
 )
