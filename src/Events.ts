@@ -14,7 +14,7 @@ export const Event = Schema.Union(
 
 export interface EventFilter<T extends Event['_tag']> {
   types: Array.NonEmptyReadonlyArray<T>
-  predicates?: Partial<Omit<Event, '_tag'>>
+  predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
 }
 
 export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
