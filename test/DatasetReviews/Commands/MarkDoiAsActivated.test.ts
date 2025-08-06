@@ -127,19 +127,19 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.failing('has not been published', () => {
+  test('has not been published', () => {
     const result = _.decide(new _.NotPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
   })
 
-  test.failing('has not been assigned a DOI', () => {
+  test('has not been assigned a DOI', () => {
     const result = _.decide(new _.HasNotBeenAssignedADoi(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenAssignedADoi({})))
   })
 
-  test.failing.prop([fc.doi()])('has a inactive DOI', doi => {
+  test.prop([fc.doi()])('has a inactive DOI', doi => {
     const result = _.decide(new _.HasAnInactiveDoi({ doi }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -147,7 +147,7 @@ describe('decide', () => {
     )
   })
 
-  test.failing.prop([fc.doi()])('with a different DOI', doi => {
+  test.prop([fc.doi()])('with a different DOI', doi => {
     const result = _.decide(new _.HasAnActiveDoi({ doi }), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))

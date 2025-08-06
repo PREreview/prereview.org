@@ -1,7 +1,7 @@
-import { Array, Data, Either, Function, Option } from 'effect'
+import { Array, Data, Either, Function, Match, Option } from 'effect'
 import type { Doi, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Events from '../Events.js'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
@@ -52,9 +52,17 @@ export const decide: {
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
 } = Function.dual(
   2,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
-    Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+    Match.valueTags(state, {
+      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+      NotPublished: () => Either.left(new Errors.DatasetReviewHasNotBeenPublished({})),
+      HasNotBeenAssignedADoi: () => Either.left(new Errors.DatasetReviewHasNotBeenAssignedADoi({})),
+      HasAnInactiveDoi: () =>
+        Either.right(
+          Option.some(new Events.DatasetReviewDoiWasActivated({ datasetReviewId: command.datasetReviewId })),
+        ),
+      HasAnActiveDoi: () => Either.right(Option.none()),
+    }),
 )
 
 function hasEvent(events: ReadonlyArray<Events.DatasetReviewEvent>, tag: Events.DatasetReviewEvent['_tag']): boolean {
