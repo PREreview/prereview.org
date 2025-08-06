@@ -1,7 +1,7 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import type { Either } from 'effect'
+import { Either } from 'effect'
 import type { Doi, Orcid, Uuid } from '../../types/index.js'
-import type * as Errors from '../Errors.js'
+import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface PublishedReview {
@@ -17,6 +17,8 @@ export interface PublishedReview {
   published: Temporal.PlainDate
 }
 
-export declare const GetPublishedReview: (
+export const GetPublishedReview = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-) => Either.Either<PublishedReview, Errors.DatasetReviewHasNotBeenPublished | Errors.UnexpectedSequenceOfEvents>
+): Either.Either<PublishedReview, Errors.DatasetReviewHasNotBeenPublished | Errors.UnexpectedSequenceOfEvents> =>
+  Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'not implemented' }))
