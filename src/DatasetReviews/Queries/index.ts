@@ -11,7 +11,7 @@ import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 import { GetPublishedDoi } from './GetPublishedDoi.js'
-import type { GetZenodoRecordId } from './GetZenodoRecordId.js'
+import { GetZenodoRecordId } from './GetZenodoRecordId.js'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
@@ -179,7 +179,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      getZenodoRecordId: () => new UnableToQuery({ cause: 'not implemented' }),
+      getZenodoRecordId: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* GetZenodoRecordId(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
     }
   })
 

@@ -1975,6 +1975,25 @@ export const willPublishADatasetReview: Fixtures<
       { delay: 100 },
     )
 
+    fetch.postOnce('http://example.com/publish', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          license: record.metadata.license.id,
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+      status: Status.Accepted,
+    })
+
     await use(fetch)
   },
 }

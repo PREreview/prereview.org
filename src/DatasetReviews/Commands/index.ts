@@ -5,9 +5,9 @@ import type * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
-import type * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
+import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
-import type * as MarkRecordAsPublishedOnZenodo from './MarkRecordAsPublishedOnZenodo.js'
+import * as MarkRecordAsPublishedOnZenodo from './MarkRecordAsPublishedOnZenodo.js'
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
@@ -100,9 +100,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
-      markRecordAsPublishedOnZenodo: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      markRecordAsPublishedOnZenodo: handleCommand(
+        MarkRecordAsPublishedOnZenodo.foldState,
+        MarkRecordAsPublishedOnZenodo.decide,
+      ),
       markDoiAsAssigned: handleCommand(MarkDoiAsAssigned.foldState, MarkDoiAsAssigned.decide),
-      markDoiAsActivated: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      markDoiAsActivated: handleCommand(MarkDoiAsActivated.foldState, MarkDoiAsActivated.decide),
       publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
       markDatasetReviewAsPublished: handleCommand(
         MarkDatasetReviewAsPublished.foldState,
