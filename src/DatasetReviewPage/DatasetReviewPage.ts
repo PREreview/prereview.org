@@ -1,27 +1,14 @@
-import type { Temporal } from '@js-temporal/polyfill'
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import type * as DatasetReviews from '../DatasetReviews/index.js'
 import { html, plainText } from '../html.js'
 import { DefaultLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 import { renderDate } from '../time.js'
-import { Doi, type Orcid, ProfileId, Pseudonym, type Uuid } from '../types/index.js'
+import { Doi, type Orcid, ProfileId, Pseudonym } from '../types/index.js'
 
-export interface DatasetReview {
-  author: {
-    name: string
-    orcid?: Orcid.Orcid
-  }
-  doi: Doi.Doi
-  id: Uuid.Uuid
-  questions: {
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
-  }
-  published: Temporal.PlainDate
-}
-
-export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReview }) => {
+export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReview }) => {
   return PageResponse({
     title: plainText`Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”`,
     description: plainText`Authored by ${datasetReview.author.name}`,

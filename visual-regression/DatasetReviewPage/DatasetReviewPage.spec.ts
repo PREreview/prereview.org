@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { createDatasetReviewPage, type DatasetReview } from '../../src/DatasetReviewPage/DatasetReviewPage.js'
+import { createDatasetReviewPage } from '../../src/DatasetReviewPage/DatasetReviewPage.js'
+import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import { Doi, Orcid, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
@@ -13,7 +14,7 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const datasetReview: DatasetReview = {
+const datasetReview: DatasetReviews.PublishedReview = {
   author: {
     name: 'Josiah Carberry',
     orcid: Orcid.Orcid('0000-0002-1825-0097'),
