@@ -18,7 +18,6 @@
     ],
     "license": "cc-by-4.0",
     "imprint_publisher": "Zenodo",
-    "communities": [{ "identifier": "prereview-reviews" }],
     "upload_type": "publication",
     "publication_type": "peerreview",
     "prereserve_doi": { "doi": "10.5281/zenodo.302552", "recid": 302552 }

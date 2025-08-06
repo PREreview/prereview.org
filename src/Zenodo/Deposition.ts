@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { Array, Schema } from 'effect'
 import { Html, rawHtml } from '../html.js'
 import { Doi } from '../types/index.js'
 
@@ -18,7 +18,9 @@ export const DepositMetadata = Schema.Struct({
   creators: Schema.Tuple(Schema.Struct({ name: Schema.String })),
   description: HtmlSchema,
   title: Schema.String,
-  communities: Schema.Tuple(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })),
+  communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {
+    default: Array.empty,
+  }),
   relatedIdentifiers: Schema.propertySignature(
     Schema.Tuple(
       Schema.Struct({
