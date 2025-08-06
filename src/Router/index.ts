@@ -1,4 +1,4 @@
-import { type HttpMethod, HttpRouter, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
 import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
@@ -36,7 +36,14 @@ const MakeRoute = <A, E, R>(
   HttpRouter.makeRoute(
     method,
     route.path,
-    pipe(HttpRouter.schemaParams(route.schema), Effect.andThen(handler), Effect.andThen(Response.toHttpServerResponse)),
+    pipe(
+      HttpRouter.schemaParams(route.schema),
+      Effect.catchTag('ParseError', () =>
+        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
+      ),
+      Effect.andThen(handler),
+      Effect.andThen(Response.toHttpServerResponse),
+    ),
   )
 
 const MakeStaticRoute = <E, R>(
