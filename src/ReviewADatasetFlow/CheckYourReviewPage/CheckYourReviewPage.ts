@@ -21,6 +21,25 @@ export const CheckYourReviewPage = ({
 
           <div class="summary-card">
             <div>
+              <h2>Dataset details</h2>
+            </div>
+
+            <dl class="summary-list">
+              <div>
+                <dt><span>Title</span></dt>
+                <dd>
+                  <cite>Metadata collected from 500 articles in the field of ecology and evolution</cite>
+                </dd>
+              </div>
+              <div>
+                <dt><span>Repository</span></dt>
+                <dd>Dryad</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="summary-card">
+            <div>
               <h2 id="review-label">Your review</h2>
             </div>
 
