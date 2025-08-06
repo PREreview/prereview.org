@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDoiAsActivated.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -53,11 +53,18 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotPublished())
   })
 
-  test.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started, answered, publicationOfDatasetReviewWasRequested, recordCreated, datasetReviewWasPublished]], // was published with a DOI
+  test.failing.prop(
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-  })('does not have a DOI', events => {
+    {
+      examples: [
+        [[started, answered, publicationOfDatasetReviewWasRequested, recordCreated, datasetReviewWasPublished]], // was published with a DOI
+      ],
+    },
+  )('does not have a DOI', events => {
     const state = _.foldState(events)
 
     expect(state).toStrictEqual(new _.HasNotBeenAssignedADoi())
@@ -66,13 +73,13 @@ describe('foldState', () => {
   test.failing.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi())
-        .map(([started, assigned]) => Tuple.make([started, assigned], assigned.doi)),
+        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi(), fc.datasetReviewWasPublished())
+        .map(([started, assigned, published]) => Tuple.make([started, assigned, published], assigned.doi)),
     ],
     {
       examples: [
-        [[[started, doiWasAssigned1], doiWasAssigned1.doi]], // assigned once
-        [[[started, doiWasAssigned1, doiWasAssigned2], doiWasAssigned2.doi]], // assigned twice
+        [[[started, doiWasAssigned1, datasetReviewWasPublished], doiWasAssigned1.doi]], // assigned once
+        [[[started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished], doiWasAssigned2.doi]], // assigned twice
       ],
     },
   )('has an inactive DOI', ([events, expected]) => {
@@ -84,14 +91,26 @@ describe('foldState', () => {
   test.failing.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi(), fc.datasetReviewDoiWasActivated())
-        .map(([started, assigned, activated]) => Tuple.make([started, assigned, activated], assigned.doi)),
+        .tuple(
+          fc.datasetReviewWasStarted(),
+          fc.datasetReviewWasAssignedADoi(),
+          fc.datasetReviewWasPublished(),
+          fc.datasetReviewDoiWasActivated(),
+        )
+        .map(([started, assigned, published, activated]) =>
+          Tuple.make([started, assigned, published, activated], assigned.doi),
+        ),
     ],
     {
       examples: [
-        [[[started, doiWasAssigned1, datasetReviewDoiWasActivated], doiWasAssigned1.doi]], // assigned once
-        [[[started, doiWasAssigned1, doiWasAssigned2], doiWasAssigned2.doi]], // assigned twice
-        [[[started, datasetReviewDoiWasActivated, doiWasAssigned1], doiWasAssigned1.doi]], // different order
+        [[[started, doiWasAssigned1, datasetReviewWasPublished, datasetReviewDoiWasActivated], doiWasAssigned1.doi]], // assigned once
+        [
+          [
+            [started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished, datasetReviewDoiWasActivated],
+            doiWasAssigned2.doi,
+          ],
+        ], // assigned twice
+        [[[started, datasetReviewWasPublished, datasetReviewDoiWasActivated, doiWasAssigned1], doiWasAssigned1.doi]], // different order
       ],
     },
   )('has an active DOI', ([events, expected]) => {
