@@ -1,3 +1,4 @@
+import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Function, Match, Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
@@ -5,6 +6,7 @@ import * as Events from '../Events.js'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid
+  readonly publicationDate: Temporal.PlainDate
 }
 
 export type Error =
@@ -57,7 +59,14 @@ export const decide: {
       NotRequested: () => Either.left(new Errors.PublicationOfDatasetReviewWasNotRequested()),
       NotReady: ({ missing }) => Either.left(new Errors.DatasetReviewNotReadyToBeMarkedAsPublished({ missing })),
       IsReady: () =>
-        Either.right(Option.some(new Events.DatasetReviewWasPublished({ datasetReviewId: command.datasetReviewId }))),
+        Either.right(
+          Option.some(
+            new Events.DatasetReviewWasPublished({
+              datasetReviewId: command.datasetReviewId,
+              publicationDate: command.publicationDate,
+            }),
+          ),
+        ),
       AlreadyMarkedAsPublished: () => Either.right(Option.none()),
     }),
 )

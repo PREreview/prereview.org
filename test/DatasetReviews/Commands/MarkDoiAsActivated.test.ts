@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDoiAsActivated.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -24,7 +25,10 @@ const doiWasAssigned2 = new DatasetReviews.DatasetReviewWasAssignedADoi({
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 const datasetReviewDoiWasActivated = new DatasetReviews.DatasetReviewDoiWasActivated({ datasetReviewId })
 
 describe('foldState', () => {

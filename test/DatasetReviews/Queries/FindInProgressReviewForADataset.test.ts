@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/FindInProgressReviewForADataset.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -10,7 +11,10 @@ const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const publicationWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('FindInProgressReviewForADataset', () => {
   describe('when at least one review needs further user input', () => {

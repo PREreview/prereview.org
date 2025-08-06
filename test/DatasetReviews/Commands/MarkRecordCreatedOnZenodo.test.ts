@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkRecordCreatedOnZenodo.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -17,7 +18,10 @@ const recordCreated2 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('foldState', () => {
   test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {

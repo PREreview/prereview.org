@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetAuthor.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -20,7 +21,10 @@ const datasetReviewWasStarted2 = new DatasetReviews.DatasetReviewWasStarted({
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('GetAuthor', () => {
   describe('when the dataset review has been started', () => {

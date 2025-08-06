@@ -1,5 +1,6 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { type Array, Either, identity, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetZenodoRecordId.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -18,7 +19,10 @@ const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfD
 })
 const recordCreated1 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 123, datasetReviewId })
 const recordCreated2 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 456, datasetReviewId })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 const recordPublished = new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId })
 
 describe('GetZenodoRecordId', () => {

@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -19,7 +20,10 @@ const answered2 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinc
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('foldState', () => {
   test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {

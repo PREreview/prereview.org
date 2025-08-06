@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../types/index.js'
+import { Doi, Orcid, Temporal, Uuid } from '../types/index.js'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
@@ -38,7 +38,7 @@ export class DatasetReviewWasAssignedADoi extends Schema.TaggedClass<DatasetRevi
 
 export class DatasetReviewWasPublished extends Schema.TaggedClass<DatasetReviewWasPublished>()(
   'DatasetReviewWasPublished',
-  { datasetReviewId: Uuid.UuidSchema },
+  { datasetReviewId: Uuid.UuidSchema, publicationDate: Temporal.PlainDateSchema },
 ) {}
 
 export class ZenodoRecordForDatasetReviewWasPublished extends Schema.TaggedClass<ZenodoRecordForDatasetReviewWasPublished>()(

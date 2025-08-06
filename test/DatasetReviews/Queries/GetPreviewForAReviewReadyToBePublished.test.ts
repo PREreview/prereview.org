@@ -1,5 +1,6 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviewForAReviewReadyToBePublished.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
@@ -18,7 +19,10 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('GetPreviewForAReviewReadyToBePublished', () => {
   describe('when it is ready to be published', () => {
