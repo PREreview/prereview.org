@@ -56,16 +56,19 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
   Effect.gen(function* () {
     const context = yield* Effect.context<EventStore.EventStore>()
 
-    const handleCommand = <State, Command extends { datasetReviewId: Uuid.Uuid }, Error>(
-      foldState: (events: ReadonlyArray<Events.DatasetReviewEvent>) => State,
+    const handleCommand = <
+      Event extends Events.DatasetReviewEvent['_tag'],
+      State,
+      Command extends { datasetReviewId: Uuid.Uuid },
+      Error,
+    >(
+      createFilter: (command: Command) => Events.EventFilter<Event>,
+      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => State,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>
       Effect.fn(
         function* (command) {
-          const filter = Events.EventFilter({
-            types: Events.DatasetReviewEventTypes,
-            predicates: { datasetReviewId: command.datasetReviewId },
-          })
+          const filter = createFilter(command)
 
           const { events, lastKnownEvent } = yield* pipe(
             EventStore.query(filter),
@@ -94,20 +97,67 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       )
 
     return {
-      startDatasetReview: handleCommand(StartDatasetReview.foldState, StartDatasetReview.decide),
+      startDatasetReview: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        StartDatasetReview.foldState,
+        StartDatasetReview.decide,
+      ),
       answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
-      markRecordCreatedOnZenodo: handleCommand(MarkRecordCreatedOnZenodo.foldState, MarkRecordCreatedOnZenodo.decide),
+      markRecordCreatedOnZenodo: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        MarkRecordCreatedOnZenodo.foldState,
+        MarkRecordCreatedOnZenodo.decide,
+      ),
       markRecordAsPublishedOnZenodo: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
         MarkRecordAsPublishedOnZenodo.foldState,
         MarkRecordAsPublishedOnZenodo.decide,
       ),
-      markDoiAsAssigned: handleCommand(MarkDoiAsAssigned.foldState, MarkDoiAsAssigned.decide),
-      markDoiAsActivated: handleCommand(MarkDoiAsActivated.foldState, MarkDoiAsActivated.decide),
-      publishDatasetReview: handleCommand(PublishDatasetReview.foldState, PublishDatasetReview.decide),
+      markDoiAsAssigned: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        MarkDoiAsAssigned.foldState,
+        MarkDoiAsAssigned.decide,
+      ),
+      markDoiAsActivated: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        MarkDoiAsActivated.foldState,
+        MarkDoiAsActivated.decide,
+      ),
+      publishDatasetReview: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        PublishDatasetReview.foldState,
+        PublishDatasetReview.decide,
+      ),
       markDatasetReviewAsPublished: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
         MarkDatasetReviewAsPublished.foldState,
         MarkDatasetReviewAsPublished.decide,
       ),
