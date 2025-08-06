@@ -1,5 +1,5 @@
 import { type Array, Context, Data, Effect, type Option } from 'effect'
-import type { Event } from './Events.js'
+import type { Event, EventFilter } from './Events.js'
 import type { Uuid } from './types/index.js'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
@@ -11,11 +11,6 @@ export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ c
 export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')<{ cause?: Error }> {}
 
 export class NewEventsFound extends Data.TaggedError('NewEventsFound') {}
-
-export interface EventFilter<T extends Event['_tag']> {
-  types: Array.NonEmptyReadonlyArray<T>
-  predicates?: Partial<Omit<Event, '_tag'>>
-}
 
 export interface EventStore {
   readonly all: Effect.Effect<ReadonlyArray<Event>, FailedToGetEvents>

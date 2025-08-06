@@ -29,7 +29,7 @@ export const make: Effect.Effect<
     orElse: () => Effect.void,
   })
 
-  const buildFilterCondition = <T extends Events.Event['_tag']>(filter: EventStore.EventFilter<T>) =>
+  const buildFilterCondition = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
     filter.predicates && Struct.keys(filter.predicates).length > 0
       ? sql.and([
           sql.in('type', filter.types),
@@ -40,7 +40,7 @@ export const make: Effect.Effect<
       : sql.in('type', filter.types)
 
   const selectEventRows = Effect.fn(
-    function* <T extends Events.Event['_tag']>(filter: EventStore.EventFilter<T>) {
+    function* <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) {
       const rows = yield* pipe(
         sql`
           SELECT

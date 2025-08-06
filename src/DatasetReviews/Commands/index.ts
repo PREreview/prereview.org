@@ -1,8 +1,8 @@
 import { Context, Data, Effect, type Either, Layer, Option, pipe } from 'effect'
+import * as Events from '../../Events.js'
 import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
-import * as Events from '../Events.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
@@ -65,7 +65,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           const filter = {
             types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId: command.datasetReviewId },
-          } satisfies EventStore.EventFilter<Events.DatasetReviewEvent['_tag']>
+          } satisfies Events.EventFilter<Events.DatasetReviewEvent['_tag']>
 
           const { events, lastKnownEvent } = yield* pipe(
             EventStore.query(filter),

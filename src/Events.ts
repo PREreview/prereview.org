@@ -12,6 +12,11 @@ export const Event = Schema.Union(
   ...DatasetReviewEvents.DatasetReviewEvent.members,
 )
 
+export interface EventFilter<T extends Event['_tag']> {
+  types: Array.NonEmptyReadonlyArray<T>
+  predicates?: Partial<Omit<Event, '_tag'>>
+}
+
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
 
 const CommentEventTypes = Array.map(CommentEvents.CommentEvent.members, Struct.get('_tag'))
