@@ -38,6 +38,12 @@ export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
 export const LogInDemo = '/log-in-demo'
 
+export const DatasetReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/reviews/:datasetReviewId',
+  href: params => `/reviews/${params.datasetReviewId}`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewThisDataset = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset'
 
 export const ReviewThisDatasetStartNow = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset/start-now'
