@@ -39,7 +39,7 @@ const datasetReviewWasPublished2 = new DatasetReviews.DatasetReviewWasPublished(
 describe('GetPublishedReview', () => {
   describe('when it has been published', () => {
     describe('when the data is available', () => {
-      it.failing.prop(
+      it.prop(
         [
           fc
             .tuple(
@@ -172,7 +172,7 @@ describe('GetPublishedReview', () => {
   })
 
   describe('when it has not been published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .nonEmptyArray(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasPublished'))))
