@@ -23,7 +23,7 @@ const recordPublished = new DatasetReviews.ZenodoRecordForDatasetReviewWasPublis
 
 describe('GetZenodoRecordId', () => {
   describe('when it has a Zenodo record', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.zenodoRecordForDatasetReviewWasCreated())
@@ -50,7 +50,7 @@ describe('GetZenodoRecordId', () => {
   })
 
   describe("when it doesn't have a Zenodo record", () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
