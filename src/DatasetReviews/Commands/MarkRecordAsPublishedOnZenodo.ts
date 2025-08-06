@@ -1,4 +1,4 @@
-import { Data, Either, Function, type Option } from 'effect'
+import { Array, Data, Either, Function, Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -24,8 +24,28 @@ export class HasAnUnpublishedRecord extends Data.TaggedClass('HasAnUnpublishedRe
 
 export class HasAPublishedRecord extends Data.TaggedClass('HasAPublishedRecord')<{ recordId: number }> {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => new NotStarted()
+export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
+  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
+    return new NotStarted()
+  }
+
+  if (!hasEvent(events, 'DatasetReviewWasPublished')) {
+    return new NotPublished()
+  }
+
+  const recordCreated = Array.findLast(events, hasTag('ZenodoRecordForDatasetReviewWasCreated'))
+
+  if (Option.isNone(recordCreated)) {
+    return new DoesNotHaveARecord()
+  }
+
+  const recordId = recordCreated.value.recordId
+
+  return Option.match(Array.findLast(events, hasTag('ZenodoRecordForDatasetReviewWasPublished')), {
+    onNone: () => new HasAnUnpublishedRecord({ recordId }),
+    onSome: () => new HasAPublishedRecord({ recordId }),
+  })
+}
 
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
@@ -36,3 +56,11 @@ export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
     Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
 )
+
+function hasEvent(events: ReadonlyArray<Events.DatasetReviewEvent>, tag: Events.DatasetReviewEvent['_tag']): boolean {
+  return Array.some(events, hasTag(tag))
+}
+
+function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+}
