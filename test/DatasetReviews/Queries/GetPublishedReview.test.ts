@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Either, identity, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -143,6 +143,30 @@ describe('GetPublishedReview', () => {
         const actual = _.GetPublishedReview(events)
 
         expect(actual).toStrictEqual(Either.right(expected))
+      })
+    })
+
+    describe("when the data isn't available", () => {
+      it.prop(
+        [
+          fc
+            .tuple(
+              fc.datasetReviewWasStarted(),
+              fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
+              fc.datasetReviewWasPublished(),
+            )
+            .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        ],
+        {
+          examples: [
+            [[datasetReviewWasStarted, datasetReviewWasAssignedADoi1, datasetReviewWasPublished1]], // no AnsweredIfTheDatasetFollowsFairAndCarePrinciples
+            [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished1]], // no DatasetReviewWasAssignedADoi
+          ],
+        },
+      )('returns an error', events => {
+        const actual = _.GetPublishedReview(events)
+
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
       })
     })
   })
