@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkRecordAsPublishedOnZenodo.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -50,11 +50,18 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotPublished())
   })
 
-  test.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started, answered, publicationOfDatasetReviewWasRequested, doiWasAssigned, datasetReviewWasPublished]], // was published with a DOI
+  test.failing.prop(
+    [
+      fc
+        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-  })('does not have a record', events => {
+    {
+      examples: [
+        [[started, answered, publicationOfDatasetReviewWasRequested, doiWasAssigned, datasetReviewWasPublished]], // was published with a DOI
+      ],
+    },
+  )('does not have a record', events => {
     const state = _.foldState(events)
 
     expect(state).toStrictEqual(new _.DoesNotHaveARecord())
@@ -63,13 +70,17 @@ describe('foldState', () => {
   test.failing.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.zenodoRecordForDatasetReviewWasCreated())
-        .map(([started, created]) => Tuple.make([started, created], created.recordId)),
+        .tuple(
+          fc.datasetReviewWasStarted(),
+          fc.zenodoRecordForDatasetReviewWasCreated(),
+          fc.datasetReviewWasPublished(),
+        )
+        .map(([started, created, published]) => Tuple.make([started, created, published], created.recordId)),
     ],
     {
       examples: [
-        [[[started, recordCreated1], recordCreated1.recordId]], // assigned once
-        [[[started, recordCreated1, recordCreated2], recordCreated2.recordId]], // assigned twice
+        [[[started, recordCreated1, datasetReviewWasPublished], recordCreated1.recordId]], // assigned once
+        [[[started, recordCreated1, recordCreated2, datasetReviewWasPublished], recordCreated2.recordId]], // assigned twice
       ],
     },
   )('has an unpublished record', ([events, expected]) => {
@@ -84,15 +95,21 @@ describe('foldState', () => {
         .tuple(
           fc.datasetReviewWasStarted(),
           fc.zenodoRecordForDatasetReviewWasCreated(),
+          fc.datasetReviewWasPublished(),
           fc.zenodoRecordForDatasetReviewWasPublished(),
         )
-        .map(([started, created, published]) => Tuple.make([started, created, published], created.recordId)),
+        .map(([started, created, ...published]) => Tuple.make([started, created, ...published], created.recordId)),
     ],
     {
       examples: [
-        [[[started, recordCreated1, recordWasPublished], recordCreated1.recordId]], // assigned once
-        [[[started, recordCreated1, recordCreated2], recordCreated2.recordId]], // assigned twice
-        [[[started, recordWasPublished, recordCreated1], recordCreated1.recordId]], // different order
+        [[[started, recordCreated1, datasetReviewWasPublished, recordWasPublished], recordCreated1.recordId]], // assigned once
+        [
+          [
+            [started, recordCreated1, recordCreated2, datasetReviewWasPublished, recordWasPublished],
+            recordCreated2.recordId,
+          ],
+        ], // assigned twice
+        [[[started, datasetReviewWasPublished, recordWasPublished, recordCreated1], recordCreated1.recordId]], // different order
       ],
     },
   )('has a published record', ([events, expected]) => {
