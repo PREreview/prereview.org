@@ -126,19 +126,19 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.failing('has not been published', () => {
+  test('has not been published', () => {
     const result = _.decide(new _.NotPublished(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
   })
 
-  test.failing('does not have a record', () => {
+  test('does not have a record', () => {
     const result = _.decide(new _.DoesNotHaveARecord(), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
   })
 
-  test.failing.prop([fc.integer()])('has an unpublished record', recordId => {
+  test.prop([fc.integer()])('has an unpublished record', recordId => {
     const result = _.decide(new _.HasAnUnpublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -146,7 +146,7 @@ describe('decide', () => {
     )
   })
 
-  test.failing.prop([fc.integer()])('has a published record', recordId => {
+  test.prop([fc.integer()])('has a published record', recordId => {
     const result = _.decide(new _.HasAPublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))
