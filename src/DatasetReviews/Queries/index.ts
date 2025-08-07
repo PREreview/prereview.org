@@ -1,4 +1,4 @@
-import { Context, Data, Effect, type Either, Layer } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer } from 'effect'
 import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
@@ -6,7 +6,7 @@ import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
-import type { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
+import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
@@ -125,7 +125,18 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      findPublishedReviewsForADataset: () => new UnableToQuery({ cause: 'not implemented' }),
+      findPublishedReviewsForADataset: Effect.fn(
+        function* (...args) {
+          const { events } = yield* EventStore.query({
+            types: ['DatasetReviewWasStarted', 'DatasetReviewWasPublished'],
+          })
+
+          return FindPublishedReviewsForADataset(events)(...args)
+        },
+        Effect.catchTag('NoEventsFound', () => Effect.sync(Array.empty)),
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
       getAuthor: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
