@@ -1574,14 +1574,16 @@ export const commentEvent = (
   )
 
 export const datasetReviewWasStarted = ({
+  datasetId: _datasetId,
   datasetReviewId,
 }: {
+  datasetId?: fc.Arbitrary<Events.DatasetReviewWasStarted['datasetId']>
   datasetReviewId?: fc.Arbitrary<Events.DatasetReviewWasStarted['datasetReviewId']>
 } = {}): fc.Arbitrary<Events.DatasetReviewWasStarted> =>
   fc
     .record({
       authorId: orcid(),
-      datasetId: datasetId(),
+      datasetId: _datasetId ?? datasetId(),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new Events.DatasetReviewWasStarted(data))
