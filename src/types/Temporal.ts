@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Clock, Effect, Order, ParseResult, Schema } from 'effect'
+import { Clock, Effect, type Order, ParseResult, Schema } from 'effect'
 
 export const currentInstant = Effect.andThen(Clock.currentTimeMillis, millis =>
   Temporal.Instant.fromEpochMilliseconds(millis),
