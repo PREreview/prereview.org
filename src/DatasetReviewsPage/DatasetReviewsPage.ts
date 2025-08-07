@@ -1,8 +1,14 @@
+import { Array } from 'effect'
+import type * as DatasetReviews from '../DatasetReviews/index.js'
 import { html, plainText } from '../html.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 
-export const createDatasetReviewsPage = () => {
+export const createDatasetReviewsPage = ({
+  datasetReviews,
+}: {
+  datasetReviews: ReadonlyArray<DatasetReviews.PublishedReview>
+}) => {
   return TwoUpPageResponse({
     title: plainText`PREreviews of “Metadata collected from 500 articles in the field of ecology and evolution”`,
     description: plainText`Authored by Jesse Wolf, Layla MacKay, Sarah Haworth, Morgan Dedato, Kiana Young, Marie-Laurence Cossette, Colin Elliott and Rebekah Oomen
@@ -53,11 +59,41 @@ The submitted dataset contains the metadata collected from 500 articles in the f
       </article>
     `,
     main: html`
-      <h2>0 PREreviews</h2>
+      <h2>${datasetReviews.length} PREreview${datasetReviews.length === 1 ? '' : 's'}</h2>
 
       <div class="button-group" role="group">
         <a href="${Routes.ReviewThisDataset}" class="button">Write a PREreview</a>
       </div>
+
+      ${Array.match(datasetReviews, {
+        onEmpty: () => '',
+        onNonEmpty: datasetReviews => html`
+          <ol class="cards">
+            ${Array.map(
+              datasetReviews,
+              datasetReview => html`
+                <li>
+                  <article aria-labelledby="prereview-${datasetReview.id}-title">
+                    <header>
+                      <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
+                        PREreview by ${datasetReview.author.name}
+                      </h3>
+
+                      <div class="byline">
+                        <span class="visually-hidden">Authored</span> by ${datasetReview.author.name}
+                      </div>
+                    </header>
+
+                    <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
+                      Read <span class="visually-hidden">the PREreview by ${datasetReview.author.name}</span>
+                    </a>
+                  </article>
+                </li>
+              `,
+            )}
+          </ol>
+        `,
+      })}
     `,
     canonical: Routes.DatasetReviews,
     type: 'dataset',
