@@ -32,11 +32,11 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 const datasetReviewWasPublished2 = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId: datasetReviewId2,
-  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+  publicationDate: Temporal.PlainDate.from('2025-02-01'),
 })
 const otherDatasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId: otherDatasetReviewId,
-  publicationDate: Temporal.PlainDate.from('2025-02-01'),
+  publicationDate: Temporal.PlainDate.from('2025-03-01'),
 })
 
 describe('FindPublishedReviewsForADataset', () => {
