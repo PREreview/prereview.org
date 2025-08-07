@@ -88,7 +88,7 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
 )
 
 const DatasetReviewPages = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
+  MakeStaticRoute('GET', Routes.DatasetReviews, DatasetReviewsPage()),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
 ]).pipe(
   HttpRouter.use(
