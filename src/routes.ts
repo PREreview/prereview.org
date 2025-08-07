@@ -38,6 +38,8 @@ export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
 export const LogInDemo = '/log-in-demo'
 
+export const DatasetReviews = '/datasets/doi-10.5061-dryad.wstqjq2n3'
+
 export const DatasetReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/reviews/:datasetReviewId',
   href: params => `/reviews/${params.datasetReviewId}`,
