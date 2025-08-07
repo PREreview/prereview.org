@@ -516,7 +516,7 @@ describe('handleResponse', () => {
           description: response.description,
           content: expect.htmlContaining(response.main),
           skipLinks: [
-            [expect.anything(), '#preprint-details'],
+            [expect.anything(), `#${response.type}-details`],
             [expect.anything(), '#prereviews'],
           ],
           js: [],
@@ -562,7 +562,7 @@ describe('handleResponse', () => {
           description: response.description,
           content: expect.htmlContaining(response.main),
           skipLinks: [
-            [expect.anything(), '#preprint-details'],
+            [expect.anything(), `#${response.type}-details`],
             [expect.anything(), '#prereviews'],
           ],
           js: [],
