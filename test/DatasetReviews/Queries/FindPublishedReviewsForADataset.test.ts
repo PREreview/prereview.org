@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Equal, identity } from 'effect'
+import { Equal, identity, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/FindPublishedReviewsForADataset.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -46,20 +46,14 @@ describe('FindPublishedReviewsForADataset', () => {
         fc
           .datasetReviewWasStarted()
           .chain(started =>
-            fc.tuple(
-              fc.constant(started.datasetId),
-              fc
-                .tuple(
-                  fc.constant(started),
-                  fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(started.datasetReviewId) }),
-                )
-                .map(
-                  identity<
-                    ReadonlyArray<DatasetReviews.DatasetReviewWasStarted | DatasetReviews.DatasetReviewWasPublished>
-                  >,
-                ),
-              fc.array(fc.anything()),
-            ),
+            fc
+              .tuple(
+                fc.constant(started),
+                fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(started.datasetReviewId) }),
+              )
+              .map(([started, published]) =>
+                Tuple.make(started.datasetId, [started, published], [started.datasetReviewId]),
+              ),
           ),
       ],
       {
