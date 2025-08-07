@@ -41,7 +41,7 @@ const otherDatasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublis
 
 describe('FindPublishedReviewsForADataset', () => {
   describe('when there are published reviews', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .datasetReviewWasStarted()
