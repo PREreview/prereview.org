@@ -6,6 +6,7 @@ import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
+import type { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
@@ -26,6 +27,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       Errors.UnknownDatasetReview
     >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
+    findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
     getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples>,
@@ -68,6 +70,7 @@ export const {
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
+  findPublishedReviewsForADataset,
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
   getPreviewForAReviewReadyToBePublished,
@@ -122,6 +125,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      findPublishedReviewsForADataset: () => new UnableToQuery({ cause: 'not implemented' }),
       getAuthor: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
