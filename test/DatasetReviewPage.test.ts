@@ -37,6 +37,7 @@ describe('DatasetReviewPage', () => {
         canonical: Routes.DatasetReview.href({ datasetReviewId: publishedReview.id }),
         status: StatusCodes.OK,
         title: expect.anything(),
+        nav: expect.anything(),
         description: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'prereview',
