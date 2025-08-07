@@ -6,7 +6,7 @@ export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
 export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWasStarted>()('DatasetReviewWasStarted', {
   authorId: Orcid.OrcidSchema,
-  datasetId: Datasets.DatasetId,
+  datasetId: Datasets.DatasetIdFromString,
   datasetReviewId: Uuid.UuidSchema,
 }) {}
 
