@@ -159,6 +159,7 @@ export const createPage = ({
       })}
     `,
     canonical: format(preprintReviewsMatch.formatter, { id: preprint.id }),
+    type: 'preprint',
   })
 
 function showReview(review: Prereview, locale: SupportedLocale) {

@@ -78,6 +78,7 @@ describe('preprintReviews', () => {
       h1: expect.anything(),
       aside: expect.anything(),
       main: expect.anything(),
+      type: 'preprint',
     })
     expect(getPreprint).toHaveBeenCalledWith(preprint.id)
     expect(getPrereviews).toHaveBeenCalledWith(preprint.id)
@@ -209,6 +210,7 @@ describe('preprintReviews', () => {
       h1: expect.anything(),
       aside: expect.anything(),
       main: expect.anything(),
+      type: 'preprint',
     })
   })
 })

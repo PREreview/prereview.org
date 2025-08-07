@@ -400,6 +400,7 @@ export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
     h1: html(),
     aside: html(),
     main: html(),
+    type: fc.constant('preprint'),
   })
 
 export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>

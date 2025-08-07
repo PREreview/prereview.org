@@ -64,6 +64,7 @@ export interface TwoUpPageResponse {
   readonly h1: Html
   readonly aside: Html
   readonly main: Html
+  readonly type: 'preprint'
 }
 
 export interface RedirectResponse {
@@ -203,9 +204,9 @@ export const toPage = ({
           <h1 class="visually-hidden">${response.h1}</h1>
 
           <aside
-            id="preprint-details"
+            id="${response.type}-details"
             tabindex="0"
-            aria-label="${translate(locale, 'preprint-reviews', 'preprintDetails')()}"
+            aria-label="${translate(locale, `${response.type}-reviews`, `${response.type}Details`)()}"
           >
             ${response.aside}
           </aside>
@@ -213,7 +214,7 @@ export const toPage = ({
           <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
         `,
         skipLinks: [
-          [rawHtml(translate(locale, 'skip-links', 'preprintDetails')()), '#preprint-details'],
+          [rawHtml(translate(locale, 'skip-links', `${response.type}Details`)()), `#${response.type}-details`],
           [rawHtml(translate(locale, 'skip-links', 'prereviews')()), '#prereviews'],
         ],
         js: message ? (['notification-banner.js'] as const) : [],
