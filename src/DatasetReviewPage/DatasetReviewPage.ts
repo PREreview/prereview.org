@@ -12,7 +12,12 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
   return PageResponse({
     title: plainText`Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”`,
     description: plainText`Authored by ${datasetReview.author.name}`,
-    nav: html`<a href="${Routes.DatasetReviews}" class="back"><span>Back to all reviews</span></a>`,
+    nav: html`
+      <a href="${Routes.DatasetReviews}" class="back"><span>Back to all reviews</span></a>
+      <a href="https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3" class="forward"
+        ><span>See the dataset</span></a
+      >
+    `,
     main: html`
       <header>
         <h1>Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”</h1>
