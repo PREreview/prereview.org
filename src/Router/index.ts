@@ -87,6 +87,20 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   ),
 )
 
+const DatasetReviewPages = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
+  MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
+]).pipe(
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      pipe(
+        Effect.andThen(FeatureFlags.EnsureCanReviewDatasets, app),
+        Effect.catchTag('CannotReviewDatasets', () => Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
+      ),
+    ),
+  ),
+)
+
 const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
   MakeRoute('GET', Routes.WriteCommentStartNow, WriteCommentFlow.StartNow),
@@ -189,8 +203,6 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
     MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
     MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
-    MakeStaticRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
-    MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
     MakeStaticRoute('GET', Routes.EdiaStatement, EdiaStatementPage),
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
@@ -213,6 +225,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
   ]),
+  HttpRouter.concat(DatasetReviewPages),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
