@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Clock, Effect, ParseResult, Schema } from 'effect'
+import { Clock, Effect, Order, ParseResult, Schema } from 'effect'
 
 export const currentInstant = Effect.andThen(Clock.currentTimeMillis, millis =>
   Temporal.Instant.fromEpochMilliseconds(millis),
@@ -74,3 +74,5 @@ export const InstantSchema = Schema.transformOrFail(Schema.String, InstantFromSe
     }),
   encode: date => ParseResult.succeed(date.toString()),
 })
+
+export const OrderPlainDate: Order.Order<Temporal.PlainDate> = (self, that) => Temporal.PlainDate.compare(self, that)
