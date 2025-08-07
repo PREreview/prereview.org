@@ -6,10 +6,10 @@ import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.js'
+import { DatasetReviewsPage } from '../DatasetReviewsPage/index.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
@@ -189,7 +189,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
     MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
     MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
-    MakeStaticRoute('GET', Routes.DatasetReviews, HavingProblemsPage),
+    MakeStaticRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
     MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
     MakeStaticRoute('GET', Routes.EdiaStatement, EdiaStatementPage),
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
