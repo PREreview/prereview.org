@@ -95,7 +95,12 @@ const DatasetReviewPages = HttpRouter.fromIterable([
     HttpMiddleware.make(app =>
       pipe(
         Effect.andThen(FeatureFlags.EnsureCanReviewDatasets, app),
-        Effect.catchTag('CannotReviewDatasets', () => Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
+        Effect.catchTag('CannotReviewDatasets', () =>
+          Effect.andThen(
+            HttpServerRequest.HttpServerRequest,
+            request => new HttpServerError.RouteNotFound({ request }),
+          ),
+        ),
       ),
     ),
   ),
