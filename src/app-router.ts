@@ -7,7 +7,7 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import httpErrors from 'http-errors'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -22,6 +22,7 @@ import type { EffectEnv } from './EffectToFpts.js'
 import type * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
+import * as StatusCodes from './StatusCodes.js'
 import type * as Zenodo from './Zenodo/index.js'
 import { type CloudinaryApiEnv, saveAvatarOnCloudinary } from './cloudinary.js'
 import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid/index.js'
@@ -221,16 +222,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
           RM.chainReaderTaskEitherK(usersData),
-          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.status(StatusCodes.OK)),
           RM.ichainFirst(() => RM.contentType('application/json')),
           RM.ichainFirst(() => RM.closeHeaders()),
           RM.ichainW(RM.send),
           RM.orElseW(error =>
             match(error)
               .with('unavailable', () =>
-                pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+                pipe(RM.status(StatusCodes.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
               )
-              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
+              .with('forbidden', () =>
+                pipe(RM.status(StatusCodes.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+              )
               .exhaustive(),
           ),
         ),
@@ -267,16 +270,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
           RM.chainReaderTaskEitherK(reviewsData),
-          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.status(StatusCodes.OK)),
           RM.ichainFirst(() => RM.contentType('application/json')),
           RM.ichainFirst(() => RM.closeHeaders()),
           RM.ichainW(RM.send),
           RM.orElseW(error =>
             match(error)
               .with('unavailable', () =>
-                pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+                pipe(RM.status(StatusCodes.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
               )
-              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
+              .with('forbidden', () =>
+                pipe(RM.status(StatusCodes.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+              )
               .exhaustive(),
           ),
         ),
@@ -294,16 +299,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.decodeHeader('Authorization', input => (typeof input === 'string' ? E.right(input) : E.right(''))),
           RM.chainReaderTaskEitherK(scietyList),
-          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.status(StatusCodes.OK)),
           RM.ichainFirst(() => RM.contentType('application/json')),
           RM.ichainFirst(() => RM.closeHeaders()),
           RM.ichainW(RM.send),
           RM.orElseW(error =>
             match(error)
               .with('unavailable', () =>
-                pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+                pipe(RM.status(StatusCodes.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
               )
-              .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
+              .with('forbidden', () =>
+                pipe(RM.status(StatusCodes.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+              )
               .exhaustive(),
           ),
         ),

@@ -2,9 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { MediaType } from 'hyper-ts'
 import type { TemplatePageEnv } from '../src/page.js'
 import * as _ from '../src/response.js'
+import * as StatusCodes from '../src/StatusCodes.js'
 import type { GetUserOnboardingEnv } from '../src/user-onboarding.js'
 import * as fc from './fc.js'
 import { runMiddleware } from './middleware.js'
@@ -289,7 +290,7 @@ describe('handleResponse', () => {
     expect(actual).toStrictEqual(
       E.right(
         expect.arrayContaining([
-          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setStatus', status: StatusCodes.SeeOther },
           { type: 'setHeader', name: 'Location', value: response.location },
           { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: response.message },
           { type: 'endResponse' },
@@ -319,7 +320,7 @@ describe('handleResponse', () => {
     expect(actual).toStrictEqual(
       E.right(
         expect.arrayContaining([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           {
             type: 'setHeader',
             name: 'Location',

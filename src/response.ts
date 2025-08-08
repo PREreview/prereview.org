@@ -1,6 +1,6 @@
 import { Array, Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
-import { type HeadersOpen, MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { type HeadersOpen, MediaType, type ResponseEnded, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
@@ -31,7 +31,7 @@ export interface PageResponse {
   readonly _tag: 'PageResponse'
   readonly canonical?: string
   readonly current?: Page['current']
-  readonly status: Status
+  readonly status: StatusCodes.StatusCode
   readonly title: Page['title']
   readonly description?: Page['description']
   readonly nav?: Html
@@ -46,7 +46,7 @@ export interface StreamlinePageResponse {
   readonly _tag: 'StreamlinePageResponse'
   readonly canonical?: string
   readonly current?: Page['current']
-  readonly status: Status
+  readonly status: StatusCodes.StatusCode
   readonly title: Page['title']
   readonly description?: Page['description']
   readonly nav?: Html
@@ -69,7 +69,7 @@ export interface TwoUpPageResponse {
 
 export interface RedirectResponse {
   readonly _tag: 'RedirectResponse'
-  readonly status: typeof Status.SeeOther | typeof Status.Found | typeof Status.MovedPermanently
+  readonly status: typeof StatusCodes.SeeOther | typeof StatusCodes.Found | typeof StatusCodes.MovedPermanently
   readonly location: URL | string
 }
 
@@ -93,7 +93,7 @@ export const PageResponse = (
   args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
 ): PageResponse => ({
   _tag: 'PageResponse',
-  status: Status.OK,
+  status: StatusCodes.OK,
   js: Array.empty(),
   skipToLabel: 'main',
   ...args,
@@ -103,7 +103,7 @@ export const StreamlinePageResponse = (
   args: Optional<Omit<StreamlinePageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
 ): StreamlinePageResponse => ({
   _tag: 'StreamlinePageResponse',
-  status: Status.OK,
+  status: StatusCodes.OK,
   js: Array.empty(),
   skipToLabel: 'main',
   ...args,
@@ -118,7 +118,7 @@ export const RedirectResponse = (
   args: Omit<RedirectResponse, '_tag' | 'status'> & Partial<Pick<RedirectResponse, 'status'>>,
 ): RedirectResponse => ({
   _tag: 'RedirectResponse',
-  status: Status.SeeOther,
+  status: StatusCodes.SeeOther,
   ...args,
 })
 
@@ -346,7 +346,7 @@ export const handleFlashMessageResponse = ({
   response: FlashMessageResponse
 }): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
   pipe(
-    M.status(Status.SeeOther),
+    M.status(StatusCodes.SeeOther),
     M.ichain(() => M.header('Location', response.location)),
     M.ichain(() => M.header('Cache-Control', 'no-store, must-revalidate')),
     M.ichain(() => setFlashMessage(response.message)),

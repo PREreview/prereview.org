@@ -8,11 +8,12 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { MediaType } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as _ from '../../src/log-in/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
 import { homeMatch, writeReviewMatch } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { OrcidLocale } from '../../src/types/index.js'
 import { UserC } from '../../src/user.js'
 import * as fc from '../fc.js'
@@ -32,7 +33,7 @@ describe('logIn', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        { type: 'setStatus', status: Status.Found },
+        { type: 'setStatus', status: StatusCodes.Found },
         {
           type: 'setHeader',
           name: 'Location',
@@ -60,7 +61,7 @@ describe('logIn', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           {
             type: 'setHeader',
             name: 'Location',
@@ -97,7 +98,7 @@ test.prop([fc.oauth(), fc.preprintId(), fc.supportedLocale(), fc.origin(), fc.co
 
     expect(actual).toStrictEqual(
       E.right([
-        { type: 'setStatus', status: Status.Found },
+        { type: 'setStatus', status: StatusCodes.Found },
         {
           type: 'setHeader',
           name: 'Location',
@@ -141,7 +142,7 @@ describe('logOut', () => {
     expect(await sessionStore.has(sessionId)).toBeFalsy()
     expect(actual).toStrictEqual(
       E.right([
-        { type: 'setStatus', status: Status.Found },
+        { type: 'setStatus', status: StatusCodes.Found },
         { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
         { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
         { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
@@ -159,7 +160,7 @@ describe('logOut', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
           { type: 'endResponse' },
@@ -197,7 +198,7 @@ describe('authenticate', () => {
         )({
           clock: SystemClock,
           fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-            status: Status.OK,
+            status: StatusCodes.OK,
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
@@ -221,7 +222,7 @@ describe('authenticate', () => {
       ])
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           { type: 'setHeader', name: 'Location', value: referer.href },
           {
             type: 'setCookie',
@@ -262,7 +263,7 @@ describe('authenticate', () => {
         )({
           clock: SystemClock,
           fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-            status: Status.OK,
+            status: StatusCodes.OK,
             body: accessToken,
           }),
           getPseudonym: shouldNotBeCalled,
@@ -285,7 +286,7 @@ describe('authenticate', () => {
       expect(sessions).toStrictEqual([])
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'blocked' },
           { type: 'endResponse' },
@@ -315,7 +316,7 @@ describe('authenticate', () => {
     async (code, [referer], orcidOauth, locale, accessToken, secret, sessionCookie, connection, page) => {
       const sessionStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-        status: Status.OK,
+        status: StatusCodes.OK,
         body: accessToken,
       })
 
@@ -345,7 +346,7 @@ describe('authenticate', () => {
       expect(sessions).toStrictEqual([])
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setStatus', status: StatusCodes.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
@@ -383,7 +384,7 @@ describe('authenticate', () => {
         )({
           clock: SystemClock,
           fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-            status: Status.OK,
+            status: StatusCodes.OK,
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
@@ -407,7 +408,7 @@ describe('authenticate', () => {
       ])
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Found },
+          { type: 'setStatus', status: StatusCodes.Found },
           { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           {
             type: 'setCookie',
@@ -440,7 +441,7 @@ describe('authenticateError', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.Forbidden },
+          { type: 'setStatus', status: StatusCodes.Forbidden },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
@@ -472,7 +473,7 @@ describe('authenticateError', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setStatus', status: StatusCodes.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
