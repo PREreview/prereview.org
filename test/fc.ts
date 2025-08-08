@@ -88,14 +88,7 @@ import type {
 } from '../src/review-request.js'
 import type { SlackUserId } from '../src/slack-user-id.js'
 import type { SlackUser } from '../src/slack-user.js'
-import {
-  type CacheableStatusCodes,
-  type NonCacheableStatusCodes,
-  type StatusCode,
-  StatusCodes,
-  isCacheable,
-  isNonCacheable,
-} from '../src/status-code.js'
+import * as StatusCodes from '../src/StatusCodes.js'
 import { type ClubId, clubIds } from '../src/types/club-id.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
@@ -1261,11 +1254,14 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       return headers
     })
 
-export const statusCode = (): fc.Arbitrary<StatusCode> => constantFrom(...StatusCodes.filter(status => status >= 200))
+export const statusCode = (): fc.Arbitrary<StatusCodes.StatusCode> =>
+  constantFrom(...StatusCodes.StatusCodes.filter(status => status >= 200))
 
-export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => statusCode().filter(isCacheable)
+export const cacheableStatusCode = (): fc.Arbitrary<StatusCodes.CacheableStatusCodes> =>
+  statusCode().filter(StatusCodes.isCacheable)
 
-export const nonCacheableStatusCode = (): fc.Arbitrary<NonCacheableStatusCodes> => statusCode().filter(isNonCacheable)
+export const nonCacheableStatusCode = (): fc.Arbitrary<StatusCodes.NonCacheableStatusCodes> =>
+  statusCode().filter(StatusCodes.isNonCacheable)
 
 export const fetchRequest = ({
   headers: headers_,

@@ -15,7 +15,7 @@ import { type Page, type TemplatePageEnv, templatePage } from './page.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import type * as Router from './Router/index.js'
 import { orcidCodeMatch } from './routes.js'
-import { isCacheable } from './status-code.js'
+import * as StatusCodes from './StatusCodes.js'
 import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
 
@@ -291,7 +291,7 @@ export const handlePageResponse = ({
     ),
     RM.ichainFirst(() => RM.status(response.status)),
     RM.ichainFirst(() =>
-      !isCacheable(response.status)
+      !StatusCodes.isCacheable(response.status)
         ? RM.header('Cache-Control', 'no-store, must-revalidate')
         : pipe(
             user ? RM.header('Cache-Control', 'no-cache, private') : RM.header('Cache-Control', 'no-cache, public'),
@@ -328,7 +328,7 @@ const handleRedirectResponse = ({
   pipe(
     M.status(response.status),
     M.ichain(() =>
-      !isCacheable(response.status)
+      !StatusCodes.isCacheable(response.status)
         ? M.header('Cache-Control', 'no-store, must-revalidate')
         : user
           ? M.header('Cache-Control', 'no-cache, private')
