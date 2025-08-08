@@ -14,7 +14,7 @@ import type { Uuid } from 'uuid-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { RedirectResponse, type Response } from '../response.js'
+import { type PageResponse, RedirectResponse } from '../response.js'
 import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
 import {
   ArxivPreprintId,
@@ -110,7 +110,7 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, Response>> = pipe(
+const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectResponse>> = pipe(
   [
     pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
@@ -168,14 +168,15 @@ const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, Response>> = pipe(
 
 export const legacyRoutes: (
   url: string,
-) => RTE.ReaderTaskEither<LegacyEnv, httpErrors.HttpError<StatusCodes.NOT_FOUND>, Response> = flow(
-  Option.liftThrowable(url => P.Route.parse(url)),
-  Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
-  Option.match({
-    onNone: () => RTE.left(new httpErrors.NotFound()),
-    onSome: ([response]) => RTE.rightReaderTask(response),
-  }),
-)
+) => RTE.ReaderTaskEither<LegacyEnv, httpErrors.HttpError<StatusCodes.NOT_FOUND>, PageResponse | RedirectResponse> =
+  flow(
+    Option.liftThrowable(url => P.Route.parse(url)),
+    Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
+    Option.match({
+      onNone: () => RTE.left(new httpErrors.NotFound()),
+      onSome: ([response]) => RTE.rightReaderTask(response),
+    }),
+  )
 
 const redirectToPreprintReviews = flow(
   getPreprintIdFromUuid,

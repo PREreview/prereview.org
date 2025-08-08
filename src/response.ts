@@ -142,7 +142,7 @@ export function handleResponse({
   user,
   locale,
 }: {
-  response: Response
+  response: PageResponse | RedirectResponse | FlashMessageResponse | LogInResponse
   user?: User
   locale: SupportedLocale
 }): RM.ReaderMiddleware<
@@ -154,8 +154,6 @@ export function handleResponse({
 > {
   return match({ response, user, locale })
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
-    .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
-    .with({ response: { _tag: 'TwoUpPageResponse' } }, handleTwoUpPageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
     .with({ response: { _tag: 'FlashMessageResponse' } }, RM.fromMiddlewareK(handleFlashMessageResponse))
     .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
@@ -317,57 +315,6 @@ export const handlePageResponse = ({
           .exhaustive(),
       ),
     ),
-    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
-  )
-
-const handleTwoUpPageResponse = ({
-  response,
-  user,
-  locale,
-}: {
-  response: TwoUpPageResponse
-  user?: User
-  locale: SupportedLocale
-}): RM.ReaderMiddleware<
-  GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
-  StatusOpen,
-  ResponseEnded,
-  never,
-  void
-> =>
-  pipe(
-    RM.of({}),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
-    RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
-    RM.apSW(
-      'canonical',
-      RM.asks(
-        ({ publicUrl }: PublicUrlEnv) =>
-          new URL(`${publicUrl.origin}${encodeURI(response.canonical).replace(/^([^/])/, '/$1')}`).href,
-      ),
-    ),
-    RM.bindW(
-      'body',
-      RM.fromReaderK(({ locale, userOnboarding, message }) =>
-        templatePage(
-          toPage({
-            locale,
-            userOnboarding,
-            message,
-            response,
-            user,
-          }),
-        ),
-      ),
-    ),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainFirst(() =>
-      user ? RM.header('Cache-Control', 'no-cache, private') : RM.header('Cache-Control', 'no-cache, public'),
-    ),
-    RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
-    RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
-    RM.ichainFirst(({ canonical }) => RM.header('Link', `<${canonical}>; rel="canonical"`)),
     RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
   )
 
