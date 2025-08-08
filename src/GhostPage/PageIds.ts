@@ -34,6 +34,7 @@ const pageIds = {
   },
   Funding: {
     'en-US': '6154aa157741400e8722bb12',
+    'es-419': '68835c7007fb34a92c7fb382',
     'pt-BR': '68753e3d07fb34a92c7fb284',
   },
   HowToUse: {
@@ -47,6 +48,7 @@ const pageIds = {
   },
   People: {
     'en-US': '6154aa157741400e8722bb0a',
+    'es-419': '68835d1e07fb34a92c7fb394',
   },
   PrivacyPolicy: {
     'en-US': '6154aa157741400e8722bb0f',
@@ -55,6 +57,7 @@ const pageIds = {
   },
   Resources: {
     'en-US': '6526c6ae07fb34a92c7f8d6f',
+    'es-419': '68835c4407fb34a92c7fb379',
     'pt-BR': '68753f1607fb34a92c7fb2a4',
   },
   Trainings: {
