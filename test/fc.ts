@@ -91,6 +91,8 @@ import type { SlackUser } from '../src/slack-user.js'
 import {
   type CacheableStatusCodes,
   type NonCacheableStatusCodes,
+  type StatusCode,
+  StatusCodes,
   isCacheable,
   isNonCacheable,
 } from '../src/status-code.js'
@@ -1259,8 +1261,7 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
       return headers
     })
 
-export const statusCode = (): fc.Arbitrary<Status> =>
-  constantFrom(...Object.values(Status).filter(status => status >= 200))
+export const statusCode = (): fc.Arbitrary<StatusCode> => constantFrom(...StatusCodes.filter(status => status >= 200))
 
 export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => statusCode().filter(isCacheable)
 
