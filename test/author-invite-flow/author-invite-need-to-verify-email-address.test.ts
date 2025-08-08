@@ -2,7 +2,6 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import * as _ from '../../src/author-invite-flow/need-to-verify-email-address-page/index.js'
 import type { GetAuthorInviteEnv } from '../../src/author-invite.js'
@@ -14,6 +13,7 @@ import {
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
 } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -45,7 +45,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
           canonical: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
-          status: Status.OK,
+          status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -78,7 +78,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SeeOther,
           location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
         })
       },
@@ -103,7 +103,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(authorInviteEnterEmailAddressMatch.formatter, { id: inviteId }),
       })
     })
@@ -121,7 +121,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -140,7 +140,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -164,7 +164,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
       })
     })
@@ -184,7 +184,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.Forbidden,
+        status: StatusCodes.Forbidden,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -203,7 +203,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SeeOther,
           location: format(authorInviteMatch.formatter, { id: inviteId }),
         })
       },
@@ -220,7 +220,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SeeOther,
           location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
@@ -237,7 +237,7 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.NotFound,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

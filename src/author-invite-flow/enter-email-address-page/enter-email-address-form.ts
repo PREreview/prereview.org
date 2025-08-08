@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
@@ -10,6 +9,7 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteEnterEmailAddressMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { EmailAddress } from '../../types/EmailAddress.js'
 
 export interface EnterEmailAddressForm {
@@ -32,7 +32,7 @@ export function enterEmailAddressForm({
   const t = translate(locale, 'author-invite-flow')
 
   return StreamlinePageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('contactDetails')(), errorPrefix(locale, error), plainText),
     main: html`
       <form method="post" action="${format(authorInviteEnterEmailAddressMatch.formatter, { id: inviteId })}" novalidate>

@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-details-page/change-open-for-requests-visibility.js'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -24,7 +24,7 @@ describe('changeOpenForRequestsVisibility', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(changeOpenForRequestsVisibilityMatch.formatter, {}),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -50,7 +50,7 @@ describe('changeOpenForRequestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(myDetailsMatch.formatter, {}),
       })
       expect(saveOpenForRequests).toHaveBeenCalledWith(user.orcid, { value: true, visibility })
@@ -70,7 +70,7 @@ describe('changeOpenForRequestsVisibility', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -93,7 +93,7 @@ describe('changeOpenForRequestsVisibility', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(myDetailsMatch.formatter, {}),
     })
     expect(saveOpenForRequests).toHaveBeenCalledWith(user.orcid, { value: true, visibility: 'restricted' })
@@ -109,7 +109,7 @@ describe('changeOpenForRequestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(myDetailsMatch.formatter, {}),
       })
     },
@@ -125,7 +125,7 @@ describe('changeOpenForRequestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(myDetailsMatch.formatter, {}),
       })
     },

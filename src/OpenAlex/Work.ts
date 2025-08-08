@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { type Doi, toUrl } from 'doi-ts'
 import { Array, Data, Effect, Equivalence, flow, pipe, Schema, String, Struct } from 'effect'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 
 export type Work = typeof WorkSchema.Type
 
@@ -38,9 +38,9 @@ export const getWorkByDoi = (
     Effect.mapError(error => new WorkIsUnavailable({ cause: error })),
     Effect.andThen(
       HttpClientResponse.matchStatus({
-        [Status.OK]: response => Effect.succeed(response),
-        [Status.NotFound]: response => new WorkIsNotFound({ cause: response }),
-        [Status.Gone]: response => new WorkIsNotFound({ cause: response }),
+        [StatusCodes.OK]: response => Effect.succeed(response),
+        [StatusCodes.NotFound]: response => new WorkIsNotFound({ cause: response }),
+        [StatusCodes.Gone]: response => new WorkIsNotFound({ cause: response }),
         orElse: response => new WorkIsUnavailable({ cause: response }),
       }),
     ),

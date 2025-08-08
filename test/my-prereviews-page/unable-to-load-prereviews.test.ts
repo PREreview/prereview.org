@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-prereviews-page/unable-to-load-prereviews.js'
 import * as fc from './fc.js'
 
@@ -9,7 +9,7 @@ test.prop([fc.supportedLocale()])('toResponse', locale => {
 
   expect(actual).toStrictEqual({
     _tag: 'PageResponse',
-    status: Status.ServiceUnavailable,
+    status: StatusCodes.ServiceUnavailable,
     title: expect.anything(),
     main: expect.anything(),
     skipToLabel: 'main',

@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, type MissingE, hasAnError } from '../../form.js'
@@ -12,6 +11,7 @@ import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import { writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../../routes.js'
 import { errorPrefix } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import { template } from './template.js'
 import { turndown } from './turndown.js'
 
@@ -24,7 +24,7 @@ export const writeReviewForm = (preprint: PreprintTitle, form: WriteReviewForm, 
   const t = translate(locale)
 
   return StreamlinePageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('write-review', 'writeYourReview')(), errorPrefix(locale, error), plainText),
     nav: html`
       <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back"

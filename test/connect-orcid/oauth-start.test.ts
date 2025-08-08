@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/connect-orcid/oauth-start.js'
 import { connectOrcidMatch } from '../../src/routes.js'
 import { OrcidLocale } from '../../src/types/index.js'
@@ -15,7 +15,7 @@ describe('connectOrcidStart', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: new URL(
           `?${new URLSearchParams({
             client_id: orcidOauth.clientId,

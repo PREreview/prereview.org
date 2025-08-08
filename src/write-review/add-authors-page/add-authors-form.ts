@@ -1,6 +1,5 @@
 import { pipe, type Array } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
 import { html, plainText, rawHtml } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
 import type { PreprintTitle } from '../../preprint.js'
@@ -12,6 +11,7 @@ import {
   writeReviewChangeAuthorMatch,
   writeReviewRemoveAuthorMatch,
 } from '../../routes.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { EmailAddress } from '../../types/EmailAddress.js'
 import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
@@ -30,7 +30,7 @@ export function addAuthorsForm({
   const authorCount = authors.length
 
   return StreamlinePageResponse({
-    status: Status.OK,
+    status: StatusCodes.OK,
     title: pipe(
       t('write-review', 'addedAuthorCount')({ authorCount }),
       prereviewOfSuffix(locale, preprint.title),

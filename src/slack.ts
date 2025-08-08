@@ -5,12 +5,12 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { type Orcid, toUrl } from 'orcid-id-ts'
 import { match, P } from 'ts-pattern'
 import { URL } from 'url'
+import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
@@ -86,7 +86,7 @@ export const getUserFromSlack = (slackId: string) =>
     RTE.fromReaderK(addSlackApiHeaders),
     RTE.chainW(F.send),
     RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
     RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackProfileD, SlackErrorD))), TE.mapLeft(D.draw))),
     RTE.local(timeoutRequest(2000)),
     RTE.chainEitherKW(response =>
@@ -121,7 +121,7 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
             F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
             F.send,
             RTE.mapLeft(() => 'network-error' as const),
-            RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+            RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
             RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
             RTE.chainEitherKW(response =>
               match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
@@ -156,7 +156,7 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
             F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
             F.send,
             RTE.mapLeft(() => 'network-error' as const),
-            RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+            RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
             RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
             RTE.chainEitherKW(response =>
               match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
@@ -182,7 +182,7 @@ const sendUserAMessage = (userId: SlackUserId, text: string) =>
     RTE.fromReaderK(addSlackApiHeaders),
     RTE.chainW(F.send),
     RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
     RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
     RTE.chainEitherKW(response =>
       match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),

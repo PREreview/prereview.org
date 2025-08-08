@@ -1,6 +1,6 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -13,7 +13,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
   const t = translate(locale)
 
   return PageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`

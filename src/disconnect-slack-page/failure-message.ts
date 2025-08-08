@@ -1,11 +1,11 @@
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 
 export const failureMessage = (locale: SupportedLocale) =>
   PageResponse({
-    status: Status.ServiceUnavailable,
+    status: StatusCodes.ServiceUnavailable,
     title: plainText(translate(locale, 'disconnect-slack-page', 'havingProblems')()),
     main: html`
       <h1>${translate(locale, 'disconnect-slack-page', 'havingProblems')()}</h1>

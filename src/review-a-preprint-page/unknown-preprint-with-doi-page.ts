@@ -1,6 +1,6 @@
 import { Match } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -11,7 +11,7 @@ export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprint
   const t = translate(locale)
 
   return PageResponse({
-    status: Status.BadRequest,
+    status: StatusCodes.BadRequest,
     title: plainText(t('review-a-preprint', 'dontKnowPreprint')()),
     main: html`
       <h1>${t('review-a-preprint', 'dontKnowPreprint')()}</h1>

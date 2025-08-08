@@ -3,9 +3,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
-import { Status } from 'hyper-ts'
 import * as _ from '../../src/GhostPage/GetPage.js'
 import { rawHtml } from '../../src/html.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 
@@ -161,7 +161,7 @@ describe('getPage', () => {
   test.prop([
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the response cannot be decoded', (id, key, response) =>
     Effect.gen(function* () {
       const fetch = fetchMock
@@ -192,7 +192,7 @@ describe('getPage', () => {
         .sandbox()
         .getOnce(
           { url: `https://content.prereview.org/ghost/api/content/pages/${id}/`, query: { key } },
-          Status.NotFound,
+          StatusCodes.NotFound,
         )
 
       const actual = yield* _.getPage(id).pipe(
@@ -209,7 +209,7 @@ describe('getPage', () => {
   test.prop([
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', (id, key, status) =>
     Effect.gen(function* () {
       const fetch = fetchMock

@@ -4,7 +4,7 @@ import { Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/legacy-routes/index.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { preprintReviewsMatch, profileMatch } from '../../src/routes.js'
@@ -37,7 +37,7 @@ describe('legacyRoutes', () => {
     expect(actual).toStrictEqual(
       E.right({
         _tag: 'RedirectResponse',
-        status: Status.MovedPermanently,
+        status: StatusCodes.MovedPermanently,
         location: expected,
       }),
     )
@@ -58,7 +58,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'RedirectResponse',
-            status: Status.MovedPermanently,
+            status: StatusCodes.MovedPermanently,
             location: format(profileMatch.formatter, { profile }),
           }),
         )
@@ -78,7 +78,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.NotFound,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -100,7 +100,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -128,7 +128,7 @@ describe('legacyRoutes', () => {
       expect(actual).toStrictEqual(
         E.right({
           _tag: 'RedirectResponse',
-          status: Status.MovedPermanently,
+          status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
         }),
       )
@@ -147,7 +147,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.NotFound,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -169,7 +169,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -200,7 +200,7 @@ describe('legacyRoutes', () => {
       expect(actual).toStrictEqual(
         E.right({
           _tag: 'RedirectResponse',
-          status: Status.MovedPermanently,
+          status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
         }),
       )
@@ -220,7 +220,7 @@ describe('legacyRoutes', () => {
       expect(actual).toStrictEqual(
         E.right({
           _tag: 'PageResponse',
-          status: Status.NotFound,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -242,7 +242,7 @@ describe('legacyRoutes', () => {
       expect(actual).toStrictEqual(
         E.right({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -270,7 +270,7 @@ describe('legacyRoutes', () => {
       expect(actual).toStrictEqual(
         E.right({
           _tag: 'RedirectResponse',
-          status: Status.MovedPermanently,
+          status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
         }),
       )
@@ -289,7 +289,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.NotFound,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -311,7 +311,7 @@ describe('legacyRoutes', () => {
         expect(actual).toStrictEqual(
           E.right({
             _tag: 'PageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',

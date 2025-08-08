@@ -4,8 +4,8 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as _ from '../src/orcid.js'
 import * as fc from './fc.js'
 
@@ -81,7 +81,7 @@ describe('getNameFromOrcid', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
           body: { 'error-code': errorCode },
-          status: Status.Conflict,
+          status: StatusCodes.Conflict,
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
@@ -96,7 +96,7 @@ describe('getNameFromOrcid', () => {
       .sandbox()
       .getOnce(
         { url: `${url.origin}/v3.0/${orcid}/personal-details`, headers: { Authorization: `Bearer ${token}` } },
-        { status: Status.NotFound },
+        { status: StatusCodes.NotFound },
       )
 
     await _.getNameFromOrcid(orcid)({
@@ -115,7 +115,9 @@ describe('getNameFromOrcid', () => {
     fc.orcid(),
     fc.oneof(
       fc.record({
-        status: fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK && status !== Status.Conflict),
+        status: fc
+          .integer({ min: 100, max: 599 })
+          .filter(status => status !== StatusCodes.OK && status !== StatusCodes.Conflict),
       }),
       fc.record({
         body: fc.record({ 'error-code': fc.integer().filter(code => code !== 9018) }),

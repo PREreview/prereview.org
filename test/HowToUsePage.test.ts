@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect } from 'effect'
-import { Status } from 'hyper-ts'
 import { Locale } from '../src/Context.js'
 import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.js'
 import * as _ from '../src/HowToUsePage.js'
 import * as Routes from '../src/routes.js'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
@@ -20,7 +20,7 @@ describe('HowToUsePage', () => {
         _tag: 'PageResponse',
         canonical: Routes.HowToUse,
         current: 'how-to-use',
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -36,7 +36,7 @@ describe('HowToUsePage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

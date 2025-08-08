@@ -2,8 +2,8 @@ import type { Doi } from 'doi-ts'
 import { flow, Function, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { Status } from 'hyper-ts'
 import * as L from 'logger-fp-ts'
+import * as StatusCodes from '../StatusCodes.js'
 
 export interface NewPrereview {
   preprint: { doi?: Doi }
@@ -30,7 +30,7 @@ export const postNewPrereview = ({
     F.setHeader('Authorization', `Bearer ${apiToken}`),
     F.send,
     RTE.mapLeft(() => 'network'),
-    RTE.filterOrElseW(F.hasStatus(Status.Created), () => 'non-201-response' as const),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.Created), () => 'non-201-response' as const),
     RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to post new PREreview')))),
     RTE.bimap(() => 'unavailable' as const, Function.constVoid),
   )

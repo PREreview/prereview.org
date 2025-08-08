@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-details-page/change-career-stage.js'
 import { changeCareerStageMatch, myDetailsMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -25,7 +25,7 @@ describe('changeCareerStage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(changeCareerStageMatch.formatter, {}),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -48,7 +48,7 @@ describe('changeCareerStage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SeeOther,
           location: format(myDetailsMatch.formatter, {}),
         })
         expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
@@ -71,7 +71,7 @@ describe('changeCareerStage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SeeOther,
           location: format(myDetailsMatch.formatter, {}),
         })
         expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, { value: careerStage, visibility: 'restricted' })
@@ -95,7 +95,7 @@ describe('changeCareerStage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -115,7 +115,7 @@ describe('changeCareerStage', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(myDetailsMatch.formatter, {}),
     })
     expect(deleteCareerStage).toHaveBeenCalledWith(user.orcid)
@@ -133,7 +133,7 @@ describe('changeCareerStage', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(changeCareerStageMatch.formatter, {}),
-        status: Status.BadRequest,
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),

@@ -17,7 +17,6 @@ import type { Request as ExpressRequest, Response as ExpressResponse } from 'exp
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import type * as H from 'hyper-ts'
-import { Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
@@ -401,7 +400,7 @@ export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
 export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
   fc.record({
     _tag: constant('RedirectResponse'),
-    status: constantFrom(Status.SeeOther, Status.Found, Status.MovedPermanently),
+    status: constantFrom(StatusCodes.SeeOther, StatusCodes.Found, StatusCodes.MovedPermanently),
     location: fc.oneof(fc.webPath(), url()),
   })
 
@@ -1291,7 +1290,7 @@ export const fetchResponse = ({
   text,
 }: {
   headers?: fc.Arbitrary<Headers>
-  status?: fc.Arbitrary<Status>
+  status?: fc.Arbitrary<StatusCodes.StatusCode>
   json?: fc.Arbitrary<Json>
   text?: fc.Arbitrary<string>
 } = {}): fc.Arbitrary<Response> =>
@@ -1302,7 +1301,8 @@ export const fetchResponse = ({
         status ??
         statusCode().filter(status =>
           (json ?? text)
-            ? ![Status.NoContent, Status.ResetContent].includes(status as never) && (status < 300 || status >= 400)
+            ? ![StatusCodes.NoContent, StatusCodes.ResetContent].includes(status as never) &&
+              (status < 300 || status >= 400)
             : true,
         ),
       text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
@@ -1310,7 +1310,7 @@ export const fetchResponse = ({
     .map(args => {
       return Object.defineProperties(
         new Response(
-          ![Status.NoContent, Status.ResetContent].includes(args.status as never) &&
+          ![StatusCodes.NoContent, StatusCodes.ResetContent].includes(args.status as never) &&
           (args.status < 300 || args.status >= 400)
             ? args.text
             : undefined,

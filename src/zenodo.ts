@@ -10,7 +10,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import httpErrors, { type HttpError } from 'http-errors'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
@@ -57,6 +56,7 @@ import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
+import * as StatusCodes from './StatusCodes.js'
 import type { ClubId } from './types/club-id.js'
 import { type FieldId, isFieldId } from './types/field.js'
 import { ProfileId } from './types/index.js'
@@ -260,7 +260,7 @@ export const getPrereviewFromZenodo = (id: number) =>
               .with({ _tag: 'PreprintIsNotFound' }, Option.none)
               .with(P.intersection(P.instanceOf(Error), { status: P.number }), Option.none)
               .with(P.instanceOf(Error), error => Option.some(error.message))
-              .with({ status: P.union(Status.NotFound, Status.Gone) }, Option.none)
+              .with({ status: P.union(StatusCodes.NotFound, StatusCodes.Gone) }, Option.none)
               .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => Option.some(D.draw(error)))
               .with('unknown-license', 'text-unavailable', Option.some)
@@ -280,7 +280,7 @@ export const getPrereviewFromZenodo = (id: number) =>
           'no reviewed preprint',
           'not-found',
           { _tag: 'PreprintIsNotFound' },
-          { status: P.union(Status.NotFound, Status.Gone) },
+          { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
           () => new Prereview.PrereviewIsNotFound(),
         )
         .otherwise(() => new Prereview.PrereviewIsUnavailable()),
@@ -1016,7 +1016,7 @@ const getReviewText = flow(
   F.Request('GET'),
   F.send,
   RTE.local(useStaleCache()),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   RTE.chainTaskEitherKW(F.getText(E.toError)),
   RTE.map(sanitizeHtml),
   RTE.orElseFirstW(

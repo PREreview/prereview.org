@@ -3,10 +3,10 @@ import { type Doi, hasRegistrant } from 'doi-ts'
 import { Array, Option, String, flow, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
+import * as StatusCodes from './StatusCodes.js'
 import { detectLanguage, detectLanguageFrom } from './detect-language.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { type Html, sanitizeHtml } from './html.js'
@@ -59,7 +59,7 @@ export const getPreprintFromCrossref = flow(
   RTE.chainEitherKW(workToPreprint),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, response => new Preprint.PreprintIsNotFound({ cause: response }))
+      .with({ status: StatusCodes.NotFound }, response => new Preprint.PreprintIsNotFound({ cause: response }))
       .with('not a preprint', () => new Preprint.NotAPreprint({}))
       .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),

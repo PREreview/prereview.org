@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-details-page/change-research-interests-visibility.js'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -25,7 +25,7 @@ describe('changeResearchInterestsVisibility', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(changeResearchInterestsVisibilityMatch.formatter, {}),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -52,7 +52,7 @@ describe('changeResearchInterestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(myDetailsMatch.formatter, {}),
       })
       expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
@@ -78,7 +78,7 @@ describe('changeResearchInterestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -103,7 +103,7 @@ describe('changeResearchInterestsVisibility', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(myDetailsMatch.formatter, {}),
     })
     expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
@@ -123,7 +123,7 @@ describe('changeResearchInterestsVisibility', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(myDetailsMatch.formatter, {}),
       })
     },

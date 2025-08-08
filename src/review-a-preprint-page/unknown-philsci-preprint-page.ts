@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -8,7 +8,7 @@ import type { PhilsciPreprintId } from '../types/preprint-id.js'
 
 export const createUnknownPhilsciPreprintPage = (preprint: PhilsciPreprintId, locale: SupportedLocale) =>
   PageResponse({
-    status: Status.BadRequest,
+    status: StatusCodes.BadRequest,
     title: plainText(translate(locale, 'review-a-preprint', 'dontKnowPreprint')()),
     main: html`
       <h1>${translate(locale, 'review-a-preprint', 'dontKnowPreprint')()}</h1>

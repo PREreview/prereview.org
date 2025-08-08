@@ -1,11 +1,11 @@
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 
 export const accessDeniedMessage = (locale: SupportedLocale) =>
   PageResponse({
-    status: Status.Forbidden,
+    status: StatusCodes.Forbidden,
     title: plainText(translate(locale, 'connect-orcid', 'cannotConnectRecord')()),
     main: html`
       <h1>${translate(locale, 'connect-orcid', 'cannotConnectRecord')()}</h1>

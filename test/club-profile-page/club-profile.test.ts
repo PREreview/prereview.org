@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { encode } from 'html-entities'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { getClubName } from '../../src/club-details.js'
 import * as _ from '../../src/club-profile-page/index.js'
 import { clubProfileMatch } from '../../src/routes.js'
@@ -31,7 +31,7 @@ describe('clubProfile', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(clubProfileMatch.formatter, { id: clubId }),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.plainTextContaining(getClubName(clubId)),
       main: expect.htmlContaining(encode(getClubName(clubId))),
       skipToLabel: 'main',
@@ -45,7 +45,7 @@ describe('clubProfile', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',

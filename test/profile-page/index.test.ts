@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { plainText } from '../../src/html.js'
 import * as _ from '../../src/profile-page/index.js'
 import { profileMatch } from '../../src/routes.js'
@@ -72,7 +72,7 @@ describe('profile', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           canonical: format(profileMatch.formatter, { profile }),
-          status: Status.OK,
+          status: StatusCodes.OK,
           title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
           main: expect.htmlContaining(profile.orcid),
           skipToLabel: 'main',
@@ -119,7 +119,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -156,7 +156,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -194,7 +194,7 @@ describe('profile', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
         main: expect.htmlContaining(profile.orcid),
         skipToLabel: 'main',
@@ -231,7 +231,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -268,7 +268,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -305,7 +305,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -342,7 +342,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -379,7 +379,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -416,7 +416,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -453,7 +453,7 @@ describe('profile', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -494,7 +494,7 @@ describe('profile', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(profileMatch.formatter, { profile }),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.plainTextContaining(profile.pseudonym),
         main: expect.htmlContaining(profile.pseudonym),
         skipToLabel: 'main',
@@ -522,7 +522,7 @@ test.prop([fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.nonEmpty
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',

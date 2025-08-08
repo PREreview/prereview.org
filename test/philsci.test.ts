@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/philsci.js'
 import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
@@ -110,21 +110,21 @@ describe('getPreprintFromPhilsci', () => {
     )
   })
 
-  test.prop([fc.philsciPreprintId(), fc.record({ status: fc.constantFrom(Status.NotFound, Status.Unauthorized) })])(
-    'when the preprint is not found',
-    async (id, response) => {
-      const fetch = fetchMock
-        .sandbox()
-        .getOnce(
-          `https://philsci-archive.pitt.edu/cgi/export/eprint/${id.value}/JSON/pittphilsci-eprint-${id.value}.json`,
-          response,
-        )
+  test.prop([
+    fc.philsciPreprintId(),
+    fc.record({ status: fc.constantFrom(StatusCodes.NotFound, StatusCodes.Unauthorized) }),
+  ])('when the preprint is not found', async (id, response) => {
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(
+        `https://philsci-archive.pitt.edu/cgi/export/eprint/${id.value}/JSON/pittphilsci-eprint-${id.value}.json`,
+        response,
+      )
 
-      const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
+    const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
 
-      expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
-    },
-  )
+    expect(actual).toStrictEqual(E.left(new PreprintIsNotFound({})))
+  })
 
   test.prop([fc.philsciPreprintId(), fc.string()])('when it is not a preprint', async (id, type) => {
     const fetch = fetchMock

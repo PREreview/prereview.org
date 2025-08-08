@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import type { GetPreprintTitleEnv } from '../../src/preprint.js'
 import * as _ from '../../src/request-review-flow/check-page/index.js'
 import { RedirectResponse } from '../../src/response.js'
@@ -73,7 +73,7 @@ describe('requestReviewCheck', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -106,7 +106,7 @@ describe('requestReviewCheck', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -141,7 +141,7 @@ describe('requestReviewCheck', () => {
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
           canonical: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
-          status: Status.OK,
+          status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
           main: expect.anything(),
@@ -174,7 +174,7 @@ describe('requestReviewCheck', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(requestReviewPublishedMatch.formatter, { id: preprint }),
       })
     })
@@ -201,7 +201,7 @@ describe('requestReviewCheck', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(requestReviewPersonaMatch.formatter, { id: preprint }),
       })
     })
@@ -229,7 +229,7 @@ describe('requestReviewCheck', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -261,7 +261,7 @@ describe('requestReviewCheck', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

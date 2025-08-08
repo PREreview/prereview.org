@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/review-page/index.js'
 import { reviewMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'
@@ -38,7 +38,7 @@ describe('reviewPage', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(reviewMatch.formatter, { id }),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       description: expect.anything(),
       nav: expect.anything(),
@@ -58,7 +58,7 @@ describe('reviewPage', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.NotFound,
+      status: StatusCodes.NotFound,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -74,7 +74,7 @@ describe('reviewPage', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.Gone,
+      status: StatusCodes.Gone,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -90,7 +90,7 @@ describe('reviewPage', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -108,7 +108,7 @@ describe('reviewPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

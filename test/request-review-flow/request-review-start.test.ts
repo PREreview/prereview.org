@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/request-review-flow/index.js'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.js'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../src/routes.js'
@@ -28,7 +28,7 @@ describe('requestReviewStart', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
       })
       expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
@@ -52,7 +52,7 @@ describe('requestReviewStart', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
       })
       expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
@@ -76,7 +76,7 @@ describe('requestReviewStart', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(requestReviewStartMatch.formatter, { id: preprintTitle.id }),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),

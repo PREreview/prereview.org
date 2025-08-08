@@ -4,9 +4,9 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import { Status } from 'hyper-ts'
 import { toUrl } from 'orcid-id-ts'
 import { URL } from 'url'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as _ from '../src/slack.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -45,7 +45,7 @@ describe('getUserFromSlack', () => {
   test.prop([
     fc.string(),
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])("when the user can't be decoded", async (slackApiToken, user, response) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
@@ -94,7 +94,7 @@ describe('getUserFromSlack', () => {
   test.prop([
     fc.string(),
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
   ])('when the response has a non-200 status code', async (slackApiToken, user, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
@@ -174,7 +174,7 @@ describe('addOrcidToSlackProfile', () => {
       },
     )
 
-    test.prop([fc.string(), fc.slackUserId(), fc.orcid(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+    test.prop([fc.string(), fc.slackUserId(), fc.orcid(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
       "when the response can't be decoded",
       async (slackApiToken, userId, orcid, response) => {
         const fetch = fetchMock.sandbox().postOnce(
@@ -234,7 +234,7 @@ describe('addOrcidToSlackProfile', () => {
       fc.string(),
       fc.slackUserId(),
       fc.orcid(),
-      fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
+      fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
     ])('when the response has a non-200 status code', async (slackApiToken, userId, orcid, status) => {
       const fetch = fetchMock.sandbox().postOnce(
         {
@@ -335,7 +335,7 @@ describe('removeOrcidFromSlackProfile', () => {
       expect(fetch.done()).toBeTruthy()
     })
 
-    test.prop([fc.string(), fc.slackUserId(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+    test.prop([fc.string(), fc.slackUserId(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
       "when the response can't be decoded",
       async (slackApiToken, userId, response) => {
         const fetch = fetchMock.sandbox().postOnce(
@@ -388,7 +388,7 @@ describe('removeOrcidFromSlackProfile', () => {
     test.prop([
       fc.string(),
       fc.slackUserId(),
-      fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
+      fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
     ])('when the response has a non-200 status code', async (slackApiToken, userId, status) => {
       const fetch = fetchMock.sandbox().postOnce(
         {

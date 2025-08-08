@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/request-review-flow/index.js'
 import type { GetReviewRequestEnv } from '../../src/review-request.js'
 import { requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes.js'
@@ -26,7 +26,7 @@ describe('requestReviewPublished', () => {
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
         canonical: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -48,7 +48,7 @@ describe('requestReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -71,7 +71,7 @@ describe('requestReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

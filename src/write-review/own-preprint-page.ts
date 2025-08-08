@@ -1,5 +1,5 @@
 import { format, type Formatter } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -12,7 +12,7 @@ export const ownPreprintPage = (
   locale: SupportedLocale,
 ) =>
   PageResponse({
-    status: Status.Forbidden,
+    status: StatusCodes.Forbidden,
     title: plainText(translate(locale, 'write-review', 'ownPreprint')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"

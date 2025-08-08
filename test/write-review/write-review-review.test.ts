@@ -2,7 +2,6 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import {
@@ -11,6 +10,7 @@ import {
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
 } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
 import * as fc from './fc.js'
@@ -36,7 +36,7 @@ describe('writeReviewReview', () => {
     expect(actual).toStrictEqual({
       _tag: 'StreamlinePageResponse',
       canonical: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -64,7 +64,7 @@ describe('writeReviewReview', () => {
     expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
     })
   })
@@ -88,7 +88,7 @@ describe('writeReviewReview', () => {
     expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
     })
   })
@@ -108,7 +108,7 @@ describe('writeReviewReview', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
     })
   })
@@ -123,7 +123,7 @@ describe('writeReviewReview', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -142,7 +142,7 @@ describe('writeReviewReview', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -161,7 +161,7 @@ describe('writeReviewReview', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -186,7 +186,7 @@ describe('writeReviewReview', () => {
     expect(actual).toStrictEqual({
       _tag: 'StreamlinePageResponse',
       canonical: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -216,7 +216,7 @@ describe('writeReviewReview', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -243,7 +243,7 @@ describe('writeReviewReview', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
       })
     },

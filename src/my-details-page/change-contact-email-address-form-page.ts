@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import { hasAnError, type InvalidE, type MissingE } from '../form.js'
 import { html, plainText } from '../html.js'
@@ -9,6 +8,7 @@ import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
+import * as StatusCodes from '../StatusCodes.js'
 import type { EmailAddress } from '../types/EmailAddress.js'
 
 interface ChangeContactEmailAddressForm {
@@ -20,7 +20,7 @@ export const createFormPage = (form: ChangeContactEmailAddressForm, locale: Supp
   const t = translate(locale, 'my-details')
 
   return PageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('whatEmailAddress')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a

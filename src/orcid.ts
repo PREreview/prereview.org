@@ -5,12 +5,12 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
+import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
@@ -54,7 +54,10 @@ const getPersonalDetails = flow(
   RTE.chainReaderK(addOrcidApiHeaders),
   RTE.chainW(flow(F.setHeader('Accept', 'application/json'), F.send)),
   RTE.mapLeft(() => 'network-error' as const),
-  RTE.filterOrElseW(F.hasStatus(Status.OK, Status.Conflict), response => `${response.status} status code` as const),
+  RTE.filterOrElseW(
+    F.hasStatus(StatusCodes.OK, StatusCodes.Conflict),
+    response => `${response.status} status code` as const,
+  ),
   RTE.chainTaskEitherKW(flow(F.decode(PersonDetailsResponseD), TE.mapLeft(D.draw))),
 )
 

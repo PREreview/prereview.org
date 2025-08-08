@@ -2,7 +2,6 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite.js'
 import * as _ from '../../src/author-invite-flow/index.js'
@@ -13,6 +12,7 @@ import {
   authorInvitePublishedMatch,
   authorInviteStartMatch,
 } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -35,7 +35,7 @@ describe('authorInvite', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(authorInviteMatch.formatter, { id: inviteId }),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -61,7 +61,7 @@ describe('authorInvite', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           canonical: format(authorInviteMatch.formatter, { id: inviteId }),
-          status: Status.OK,
+          status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -86,7 +86,7 @@ describe('authorInvite', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(authorInviteStartMatch.formatter, { id: inviteId }),
       })
     })
@@ -106,7 +106,7 @@ describe('authorInvite', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
       })
     })
@@ -140,7 +140,7 @@ describe('authorInvite', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -158,7 +158,7 @@ describe('authorInvite', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -181,7 +181,7 @@ describe('authorInvite', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.Forbidden,
+      status: StatusCodes.Forbidden,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -199,7 +199,7 @@ describe('authorInvite', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
       })
     },
@@ -215,7 +215,7 @@ describe('authorInvite', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

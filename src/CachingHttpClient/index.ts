@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
 import { Context, DateTime, Effect, flow, Function, Layer, pipe, Queue, type Duration } from 'effect'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import * as HttpCache from './HttpCache.js'
 
 export * from './HttpCache.js'
@@ -75,7 +75,7 @@ export const CachingHttpClient = (
           ),
           Effect.tap(
             HttpClientResponse.matchStatus({
-              [Status.OK]: response =>
+              [StatusCodes.OK]: response =>
                 pipe(
                   cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
                   Effect.tapErrorTag('InternalHttpCacheFailure', error =>
@@ -112,9 +112,9 @@ const revalidationWorker = Effect.gen(function* () {
       Effect.gen(function* () {
         const timestamp = yield* DateTime.now
         return yield* HttpClientResponse.matchStatus(response, {
-          [Status.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
-          [Status.NotFound]: response => cache.delete(new URL(response.request.url)),
-          [Status.Gone]: response => cache.delete(new URL(response.request.url)),
+          [StatusCodes.OK]: response => cache.set(response, DateTime.addDuration(timestamp, timeToStale)),
+          [StatusCodes.NotFound]: response => cache.delete(new URL(response.request.url)),
+          [StatusCodes.Gone]: response => cache.delete(new URL(response.request.url)),
           orElse: () => Effect.void,
         })
       }),

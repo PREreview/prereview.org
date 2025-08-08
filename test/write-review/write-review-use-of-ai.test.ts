@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewUseOfAiMatch } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
@@ -26,7 +26,7 @@ describe('writeReviewUseOfAi', () => {
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
         canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),
@@ -46,7 +46,7 @@ describe('writeReviewUseOfAi', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -62,7 +62,7 @@ describe('writeReviewUseOfAi', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -78,7 +78,7 @@ describe('writeReviewUseOfAi', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -97,7 +97,7 @@ describe('writeReviewUseOfAi', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -128,7 +128,7 @@ describe('writeReviewUseOfAiSubmission', () => {
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
       })
     })
@@ -152,7 +152,7 @@ describe('writeReviewUseOfAiSubmission', () => {
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
       })
     })
@@ -179,7 +179,7 @@ describe('writeReviewUseOfAiSubmission', () => {
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
         canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
-        status: Status.BadRequest,
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),
@@ -199,7 +199,7 @@ describe('writeReviewUseOfAiSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -215,7 +215,7 @@ describe('writeReviewUseOfAiSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -234,7 +234,7 @@ describe('writeReviewUseOfAiSubmission', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -255,7 +255,7 @@ describe('writeReviewUseOfAiSubmission', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.NotFound,
+      status: StatusCodes.NotFound,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',

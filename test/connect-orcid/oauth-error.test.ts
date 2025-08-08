@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/connect-orcid/oauth-error.js'
 import * as fc from '../fc.js'
 
@@ -10,7 +10,7 @@ describe('connectOrcidError', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.Forbidden,
+      status: StatusCodes.Forbidden,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -25,7 +25,7 @@ describe('connectOrcidError', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

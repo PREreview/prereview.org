@@ -4,10 +4,10 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { sanitizeHtml } from './html.js'
 import * as Preprint from './preprint.js'
@@ -102,7 +102,7 @@ export const getPreprintFromPhilsci = flow(
   RTE.mapLeft(error =>
     match(error)
       .with(
-        { status: P.union(Status.NotFound, Status.Unauthorized) },
+        { status: P.union(StatusCodes.NotFound, StatusCodes.Unauthorized) },
         response => new Preprint.PreprintIsNotFound({ cause: response }),
       )
       .with('not a preprint', () => new Preprint.NotAPreprint({}))
@@ -122,7 +122,7 @@ const getEprint = flow(
     new URL(`https://philsci-archive.pitt.edu/cgi/export/eprint/${id}/JSON/pittphilsci-eprint-${id}.json`),
   F.Request('GET'),
   F.send,
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   RTE.chainTaskEitherKW(F.decode(EprintD)),
 )
 

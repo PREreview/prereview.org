@@ -1,6 +1,5 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -10,6 +9,7 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../htm
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { PageResponse } from '../../response.js'
 import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import { renderDate } from '../../time.js'
 import { ProfileId } from '../../types/index.js'
 import { isPseudonym } from '../../types/Pseudonym.js'
@@ -25,7 +25,7 @@ export const declinePage = ({
   review: Prereview
 }) =>
   PageResponse({
-    status: Status.OK,
+    status: StatusCodes.OK,
     title: plainText(translate(locale, 'author-invite-flow', 'declineTheInvitation')()),
     main: html`
       <form method="post" action="${format(authorInviteDeclineMatch.formatter, { id: inviteId })}" novalidate>

@@ -4,12 +4,12 @@ import { SystemClock } from 'clock-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/prereview-coar-notify/new-prereview.js'
 import * as fc from './fc.js'
 
 describe('postNewPrereview', () => {
-  test.prop([fc.url(), fc.string(), fc.newPrereview(), fc.fetchResponse({ status: fc.constant(Status.Created) })])(
+  test.prop([fc.url(), fc.string(), fc.newPrereview(), fc.fetchResponse({ status: fc.constant(StatusCodes.Created) })])(
     'publishing succeeds',
     async (baseUrl, apiToken, newPrereview, response) => {
       const fetch = jest.fn<FetchEnv['fetch']>(_ => Promise.resolve(response))
@@ -47,7 +47,7 @@ describe('postNewPrereview', () => {
       fc.url(),
       fc.string(),
       fc.newPrereview(),
-      fc.fetchResponse({ status: fc.statusCode().filter(status => status !== Status.Created) }),
+      fc.fetchResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.Created) }),
     ])('with an unexpected status', async (baseUrl, apiToken, newPrereview, response) => {
       const result = await _.postNewPrereview({ baseUrl, apiToken, newPrereview })({
         fetch: () => Promise.resolve(response),

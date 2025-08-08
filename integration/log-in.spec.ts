@@ -1,6 +1,6 @@
-import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import path from 'path'
+import * as StatusCodes from '../src/StatusCodes.js'
 import {
   areLoggedIn,
   canLogIn,
@@ -116,7 +116,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can connect my ORCID record', async (
 
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
-  fetch.postOnce('http://orcid.test/revoke', { status: Status.OK })
+  fetch.postOnce('http://orcid.test/revoke', { status: StatusCodes.OK })
 
   await page.getByRole('link', { name: 'Disconnect ORCID record' }).click()
   await page.getByRole('button', { name: 'Disconnect record' }).click()

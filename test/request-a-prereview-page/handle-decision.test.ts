@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/request-a-prereview-page/handle-decision.js'
 import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
@@ -12,7 +12,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      status: StatusCodes.SeeOther,
       location: format(requestReviewMatch.formatter, { id: preprint }),
     })
   })
@@ -22,7 +22,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -35,7 +35,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -50,7 +50,7 @@ describe('handleDecision', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.BadRequest,
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -64,7 +64,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -77,7 +77,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -90,7 +90,7 @@ describe('handleDecision', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -104,7 +104,7 @@ describe('handleDecision', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(requestAPrereviewMatch.formatter, {}),
-      status: Status.BadRequest,
+      status: StatusCodes.BadRequest,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),
@@ -119,7 +119,7 @@ describe('handleDecision', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(requestAPrereviewMatch.formatter, {}),
-      status: Status.OK,
+      status: StatusCodes.OK,
       title: expect.anything(),
       nav: expect.anything(),
       main: expect.anything(),

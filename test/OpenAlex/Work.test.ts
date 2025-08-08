@@ -3,8 +3,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { toUrl } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
-import { Status } from 'hyper-ts'
 import * as _ from '../../src/OpenAlex/Work.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from './fc.js'
 
@@ -14,7 +14,7 @@ describe('getWorkByDoi', () => {
     fc.work().chain(work =>
       fc.tuple(
         fc.fetchResponse({
-          status: fc.constant(Status.OK),
+          status: fc.constant(StatusCodes.OK),
           json: fc.constant(Schema.encodeSync(_.WorkSchema)(work)),
         }),
         fc.constant(work),
@@ -32,7 +32,7 @@ describe('getWorkByDoi', () => {
     }).pipe(EffectTest.run),
   )
 
-  test.prop([fc.doi(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+  test.prop([fc.doi(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
     "when the work can't be decoded",
     (doi, response) =>
       Effect.gen(function* () {
@@ -47,7 +47,7 @@ describe('getWorkByDoi', () => {
       }).pipe(EffectTest.run),
   )
 
-  test.prop([fc.doi(), fc.fetchResponse({ status: fc.constantFrom(Status.NotFound, Status.Gone) })])(
+  test.prop([fc.doi(), fc.fetchResponse({ status: fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone) })])(
     'when the work is not found',
     (doi, response) =>
       Effect.gen(function* () {
@@ -65,7 +65,9 @@ describe('getWorkByDoi', () => {
   test.prop([
     fc.doi(),
     fc.fetchResponse({
-      status: fc.statusCode().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
+      status: fc
+        .statusCode()
+        .filter(status => ![StatusCodes.OK, StatusCodes.NotFound, StatusCodes.Gone].includes(status as never)),
     }),
   ])('when the status code is not ok', (doi, response) =>
     Effect.gen(function* () {
@@ -80,7 +82,9 @@ describe('getWorkByDoi', () => {
   test.prop([
     fc.doi(),
     fc.fetchResponse({
-      status: fc.statusCode().filter(status => ![Status.OK, Status.NotFound, Status.Gone].includes(status as never)),
+      status: fc
+        .statusCode()
+        .filter(status => ![StatusCodes.OK, StatusCodes.NotFound, StatusCodes.Gone].includes(status as never)),
     }),
   ])('when the status code is not ok', (doi, response) =>
     Effect.gen(function* () {

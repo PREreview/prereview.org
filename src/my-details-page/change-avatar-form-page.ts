@@ -1,7 +1,7 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { hasAnError, type MissingE, type TooBigE, type WrongTypeE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
@@ -18,7 +18,7 @@ export function createPage({ form, locale }: { form: UploadAvatarForm; locale: S
   const t = translate(locale, 'my-details')
 
   return PageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('uploadAnAvatar')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a

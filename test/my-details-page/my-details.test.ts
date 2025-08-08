@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-details-page/my-details.js'
 import { myDetailsMatch } from '../../src/routes.js'
 import type { SaveUserOnboardingEnv } from '../../src/user-onboarding.js'
@@ -59,7 +59,7 @@ describe('myDetails', () => {
             _tag: 'PageResponse',
             canonical: format(myDetailsMatch.formatter, {}),
             current: 'my-details',
-            status: Status.OK,
+            status: StatusCodes.OK,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -117,7 +117,7 @@ describe('myDetails', () => {
             _tag: 'PageResponse',
             canonical: format(myDetailsMatch.formatter, {}),
             current: 'my-details',
-            status: Status.OK,
+            status: StatusCodes.OK,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -172,7 +172,7 @@ describe('myDetails', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: Status.ServiceUnavailable,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -225,7 +225,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -277,7 +277,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -329,7 +329,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -381,7 +381,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -433,7 +433,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -485,7 +485,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -537,7 +537,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -589,7 +589,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -641,7 +641,7 @@ describe('myDetails', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

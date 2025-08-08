@@ -1,10 +1,10 @@
 import { Doi } from 'doi-ts'
 import { Duration, Function } from 'effect'
-import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import {
   areLoggedIn,
   canAddMultipleAuthors,
@@ -278,7 +278,7 @@ test
         url: 'http://prereview.test/api/v2/full-reviews',
         headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
       },
-      { status: Status.Created },
+      { status: StatusCodes.Created },
     )
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -321,7 +321,7 @@ test
         url: 'http://prereview.test/api/v2/full-reviews',
         headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
       },
-      { status: Status.Created },
+      { status: StatusCodes.Created },
       { delay: Duration.toMillis('5 seconds') },
     )
 
@@ -1586,7 +1586,7 @@ test('when the preprint is not found', async ({ fetch, page }) => {
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-not-find-anything')
 
-  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
+  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: StatusCodes.NotFound })
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -1668,7 +1668,7 @@ test('might not load the preprint in time', async ({ fetch, page }) => {
 
   fetch.get(
     'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
-    { status: Status.NotFound },
+    { status: StatusCodes.NotFound },
     { delay: Duration.toMillis('2.5 seconds') },
   )
 
@@ -1844,7 +1844,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test('are told if ORCID is unavailable', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
-  fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
+  fetch.postOnce('http://orcid.test/token', { status: StatusCodes.ServiceUnavailable })
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
@@ -1855,7 +1855,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
   fetch.postOnce(
     'http://orcid.test/token',
     {
-      status: Status.OK,
+      status: StatusCodes.OK,
       body: {
         access_token: 'access-token',
         token_type: 'Bearer',
@@ -1891,7 +1891,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    fetch.postOnce('http://zenodo.test/api/deposit/depositions', { status: Status.ServiceUnavailable })
+    fetch.postOnce('http://zenodo.test/api/deposit/depositions', { status: StatusCodes.ServiceUnavailable })
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -1906,7 +1906,7 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, pag
       url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
       headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
     },
-    { status: Status.NotFound },
+    { status: StatusCodes.NotFound },
     { delay: Duration.toMillis('2.5 seconds'), overwriteRoutes: true },
   )
   await page.getByRole('button', { name: 'Start now' }).click()

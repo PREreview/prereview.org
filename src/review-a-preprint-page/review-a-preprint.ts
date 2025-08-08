@@ -2,7 +2,6 @@ import type { Doi } from 'doi-ts'
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
 import type { InvalidE } from '../form.js'
 import { html, plainText, rawHtml } from '../html.js'
@@ -10,6 +9,7 @@ import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { homeMatch, reviewAPreprintMatch } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export type SubmittedWhichPreprint = E.Either<InvalidE, Doi>
 export type UnsubmittedWhichPreprint = E.Right<undefined>
@@ -20,7 +20,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
   const t = translate(locale)
 
   return PageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('review-a-preprint', 'whichPreprint')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`

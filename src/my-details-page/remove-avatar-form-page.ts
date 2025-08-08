@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
@@ -7,7 +7,7 @@ import { myDetailsMatch, removeAvatarMatch } from '../routes.js'
 
 export const page = (locale: SupportedLocale) =>
   PageResponse({
-    status: Status.OK,
+    status: StatusCodes.OK,
     title: plainText(translate(locale, 'my-details', 'removeYourAvatar')()),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a

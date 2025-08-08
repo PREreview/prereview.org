@@ -6,7 +6,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { Status } from 'hyper-ts'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
@@ -14,6 +13,7 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import { timeoutRequest, useStaleCache } from './fetch.js'
+import * as StatusCodes from './StatusCodes.js'
 import { ProfileId } from './types/index.js'
 import {
   type IndeterminatePreprintIdWithDoi,
@@ -184,11 +184,11 @@ export const getPreprintIdFromLegacyPreviewUuid: (
   RTE.chainW(F.send),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintUuidD)),
   RTE.mapLeft(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => 'not-found' as const)
+      .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
   RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
@@ -204,12 +204,12 @@ export const getProfileIdFromLegacyPreviewUuid: (
   RTE.chainW(F.send),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewProfileUuidD)),
   RTE.bimap(
     error =>
       match(error)
-        .with({ status: Status.NotFound }, () => 'not-found' as const)
+        .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
         .otherwise(() => 'unavailable' as const),
     ({ data: [data] }) =>
       match(data)
@@ -231,7 +231,7 @@ export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; nam
     ),
     RTE.chainW(F.send),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.Created), identity),
     RTE.chainTaskEitherKW(F.decode(PseudonymC)),
     RTE.mapLeft(() => 'unavailable' as const),
   )
@@ -243,7 +243,7 @@ export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
     RTE.chainW(F.send),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
       flow(
@@ -254,7 +254,7 @@ export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
     ),
     RTE.mapLeft(error =>
       match(error)
-        .with({ status: Status.NotFound }, () => 'not-found' as const)
+        .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
         .otherwise(() => 'unavailable' as const),
     ),
   )
@@ -265,7 +265,7 @@ export const getUsersFromLegacyPrereview = () =>
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
     RTE.chainW(F.send),
     RTE.local(timeoutRequest(5000)),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUsersD)),
     RTE.bimap(
       () => 'unavailable' as const,
@@ -289,7 +289,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
     RTE.chainW(F.send),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyRapidPrereviewsD)),
     RTE.map(
       flow(
@@ -315,7 +315,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
     ),
     RTE.orElseW(error =>
       match(error)
-        .with({ status: Status.NotFound }, () => RTE.right([]))
+        .with({ status: StatusCodes.NotFound }, () => RTE.right([]))
         .otherwise(() => RTE.left('unavailable' as const)),
     ),
   )
@@ -359,7 +359,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
             ),
             RTE.chainW(F.send),
             RTE.local(timeoutRequest(5000)),
-            RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
+            RTE.filterOrElseW(F.hasStatus(StatusCodes.Created), identity),
             RTE.orElseFirstW(
               RTE.fromReaderIOK(
                 flow(
@@ -385,7 +385,7 @@ const resolvePreprint = flow(
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
   RTE.local(timeoutRequest(5000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintD)),
 )
 

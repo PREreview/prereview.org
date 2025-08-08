@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as _ from '../src/crossref.js'
 import { rawHtml } from '../src/html.js'
 import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
@@ -1332,7 +1332,7 @@ describe('getPreprintFromCrossref', () => {
   test.prop([fc.legacyCrossrefPreprintId()])('when the preprint is not found', async id => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
+      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, { status: StatusCodes.NotFound })
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 

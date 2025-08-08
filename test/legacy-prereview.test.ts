@@ -5,7 +5,7 @@ import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import { rawHtml } from '../src/html.js'
 import * as _ from '../src/legacy-prereview.js'
 import * as fc from './fc.js'
@@ -62,7 +62,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, response)
 
@@ -78,7 +78,9 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (uuid, app, key, url, update) => {
-      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, Status.NotFound)
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch,
@@ -95,7 +97,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
 
@@ -169,7 +171,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, response)
 
@@ -185,7 +187,9 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (uuid, app, key, url, update) => {
-      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, Status.NotFound)
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
         fetch,
@@ -202,7 +206,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, status)
 
@@ -238,7 +242,7 @@ describe('createUserOnLegacyPrereview', () => {
           headers: { 'X-Api-App': app, 'X-Api-Key': key },
           body: { orcid, name },
         },
-        { status: Status.Created, body: pseudonym },
+        { status: StatusCodes.Created, body: pseudonym },
       )
 
       const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
@@ -257,7 +261,7 @@ describe('createUserOnLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.fetchResponse({ status: fc.constant(Status.Created) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.Created) }),
   ])('when the user cannot be decoded', async (orcid, name, app, key, url, update, response) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
@@ -284,7 +288,7 @@ describe('createUserOnLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.Created),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.Created),
   ])('when the response has a non-201 status code', async (orcid, name, app, key, url, update, status) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
@@ -363,7 +367,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+    fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the user cannot be decoded', async (orcid, app, key, url, update, response) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
 
@@ -379,7 +383,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
   test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (orcid, app, key, url, update) => {
-      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
         fetch,
@@ -396,7 +400,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (orcid, app, key, url, update, status) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
 
@@ -529,7 +533,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
             `${url}api/v2/preprints/doi-${encodeURIComponent(
               preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/rapid-reviews`,
-            { status: Status.NotFound },
+            { status: StatusCodes.NotFound },
           ),
         legacyPrereviewApi: {
           app,
@@ -549,7 +553,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     fc.origin(),
     fc.boolean(),
     fc.preprintIdWithDoi(),
-    fc.integer({ min: 400, max: 599 }).filter(status => status !== Status.NotFound),
+    fc.integer({ min: 400, max: 599 }).filter(status => status !== StatusCodes.NotFound),
   ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
     const fetch = fetchMock
       .sandbox()
@@ -607,7 +611,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
                 contents: '<p>hello</p>',
               },
             },
-            { status: Status.Created },
+            { status: StatusCodes.Created },
           )
 
         const actual = await _.createPrereviewOnLegacyPrereview({

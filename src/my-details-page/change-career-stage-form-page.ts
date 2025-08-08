@@ -1,6 +1,5 @@
 import { pipe, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.js'
 import { html, plainText, rawHtml } from '../html.js'
@@ -8,6 +7,7 @@ import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { changeCareerStageMatch, myDetailsMatch } from '../routes.js'
 import { errorPrefix } from '../shared-translation-elements.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export const createFormPage = ({
   careerStage,
@@ -19,7 +19,7 @@ export const createFormPage = ({
   locale: SupportedLocale
 }) =>
   PageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(translate(locale, 'my-details', 'whatCareerStage')(), errorPrefix(locale, error), plainText),
     nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a

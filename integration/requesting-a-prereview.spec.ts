@@ -1,4 +1,4 @@
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../src/StatusCodes.js'
 import { areLoggedIn, canChooseLocale, canLogIn, expect, test } from './base.js'
 
 test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
@@ -17,7 +17,7 @@ test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
   await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
+  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: StatusCodes.Created })
 
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
@@ -41,7 +41,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseud
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
   await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 
-  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
+  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: StatusCodes.Created })
 
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
@@ -226,7 +226,7 @@ test.extend(canLogIn).extend(areLoggedIn)('when the preprint is not found', asyn
   await page.goto('/request-a-prereview', { waitUntil: 'commit' })
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/this-should-not-find-anything')
 
-  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
+  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: StatusCodes.NotFound })
 
   await page.getByRole('button', { name: 'Continue' }).click()
 

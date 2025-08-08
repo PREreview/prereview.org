@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
@@ -10,6 +9,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewAddAuthorsMatch, writeReviewRemoveAuthorMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
@@ -30,7 +30,7 @@ export function removeAuthorForm({
   const t = translate(locale)
 
   return StreamlinePageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       t('write-review', 'sureYouWantToRemove')({ authorName: author.name }),
       prereviewOfSuffix(locale, preprint.title),

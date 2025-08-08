@@ -1,4 +1,4 @@
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import type * as Response from '../response.js'
@@ -17,7 +17,7 @@ export const toResponse: (
   locale: SupportedLocale,
 ) => Response.PageResponse = (unableToLoadPrereviews, locale) =>
   PageResponse({
-    status: Status.ServiceUnavailable,
+    status: StatusCodes.ServiceUnavailable,
     title: plainText(translate(locale, 'my-prereviews-page', 'havingProblems')()),
     main: html`
       <h1>${translate(locale, 'my-prereviews-page', 'havingProblems')()}</h1>

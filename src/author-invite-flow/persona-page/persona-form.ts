@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { hasAnError, type MissingE } from '../../form.js'
@@ -10,6 +9,7 @@ import { translate, type SupportedLocale } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInvitePersonaMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { User } from '../../user.js'
 
 export interface PersonaForm {
@@ -32,7 +32,7 @@ export function personaForm({
   const definition = (text: string) => html`<dfn>${text}</dfn>`.toString()
 
   return StreamlinePageResponse({
-    status: error ? Status.BadRequest : Status.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, error), plainText),
     main: html`
       <form method="post" action="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}" novalidate>

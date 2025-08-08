@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/my-prereviews-page/no-prereviews.js'
 import { myPrereviewsMatch } from '../../src/routes.js'
 import * as fc from './fc.js'
@@ -28,7 +28,7 @@ test.prop([fc.supportedLocale()])('toResponse', locale => {
     _tag: 'PageResponse',
     canonical: format(myPrereviewsMatch.formatter, {}),
     current: 'my-prereviews',
-    status: Status.OK,
+    status: StatusCodes.OK,
     title: expect.anything(),
     main: expect.anything(),
     skipToLabel: 'main',

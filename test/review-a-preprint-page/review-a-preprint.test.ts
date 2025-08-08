@@ -4,7 +4,7 @@ import { Doi } from 'doi-ts'
 import { Array, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import {
   NotAPreprint,
@@ -35,7 +35,7 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(reviewAPreprintMatch.formatter, {}),
-        status: Status.OK,
+        status: StatusCodes.OK,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),
@@ -111,7 +111,7 @@ describe('reviewAPreprint', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: Status.SeeOther,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: resolved }),
       })
       expect(resolvePreprintId).toHaveBeenCalledWith(...expected)
@@ -126,7 +126,7 @@ describe('reviewAPreprint', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.BadRequest,
+          status: StatusCodes.BadRequest,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -144,7 +144,7 @@ describe('reviewAPreprint', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.BadRequest,
+          status: StatusCodes.BadRequest,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -162,7 +162,7 @@ describe('reviewAPreprint', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -180,7 +180,7 @@ describe('reviewAPreprint', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.BadRequest,
+          status: StatusCodes.BadRequest,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -198,7 +198,7 @@ describe('reviewAPreprint', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.BadRequest,
+          status: StatusCodes.BadRequest,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -218,7 +218,7 @@ describe('reviewAPreprint', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(reviewAPreprintMatch.formatter, {}),
-        status: Status.BadRequest,
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         nav: expect.anything(),
         main: expect.anything(),

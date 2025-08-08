@@ -30,7 +30,6 @@ import {
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
-import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
@@ -82,6 +81,7 @@ import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
 import { Program } from '../src/Program.js'
 import { PublicUrl } from '../src/public-url.js'
 import { SlackApiConfig } from '../src/slack.js'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as TemplatePage from '../src/TemplatePage.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
 import { NonEmptyString } from '../src/types/NonEmptyString.js'
@@ -1464,7 +1464,7 @@ export const canLogIn: Fixtures<
   },
   page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
     fetch.post('http://orcid.test/token', {
-      status: Status.OK,
+      status: StatusCodes.OK,
       body: {
         access_token: 'access-token',
         token_type: 'Bearer',
@@ -1523,7 +1523,7 @@ export const isASlackUser: Fixtures<
 > = {
   fetch: async ({ fetch }, use) => {
     fetch.post('http://slack.test/token', {
-      status: Status.OK,
+      status: StatusCodes.OK,
       body: {
         authed_user: {
           id: 'U0JM',
@@ -1534,9 +1534,9 @@ export const isASlackUser: Fixtures<
       },
     })
 
-    fetch.post('https://slack.com/api/users.profile.set', { status: Status.OK, body: { ok: true } })
+    fetch.post('https://slack.com/api/users.profile.set', { status: StatusCodes.OK, body: { ok: true } })
 
-    fetch.post('https://slack.com/api/chat.postMessage', { status: Status.OK, body: { ok: true } })
+    fetch.post('https://slack.com/api/chat.postMessage', { status: StatusCodes.OK, body: { ok: true } })
 
     fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
       body: {
@@ -1628,7 +1628,7 @@ export const willPublishAReview: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.Created,
+        status: StatusCodes.Created,
       })
       .putOnce('http://example.com/self', {
         body: UnsubmittedDepositionC.encode({
@@ -1651,10 +1651,10 @@ export const willPublishAReview: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.OK,
+        status: StatusCodes.OK,
       })
       .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
+        status: StatusCodes.Created,
       })
       .postOnce('http://example.com/publish', {
         body: SubmittedDepositionC.encode({
@@ -1672,7 +1672,7 @@ export const willPublishAReview: Fixtures<
           state: 'done',
           submitted: true,
         }),
-        status: Status.Accepted,
+        status: StatusCodes.Accepted,
       })
       .getOnce(
         {
@@ -1680,7 +1680,7 @@ export const willPublishAReview: Fixtures<
           url: 'http://zenodo.test/api/records/1055806',
           functionMatcher: (_, req) => req.cache === 'reload',
         },
-        { status: Status.ServiceUnavailable },
+        { status: StatusCodes.ServiceUnavailable },
       )
       .getOnce(
         {
@@ -1689,9 +1689,9 @@ export const willPublishAReview: Fixtures<
           query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
           functionMatcher: (_, req) => req.cache === 'reload',
         },
-        { status: Status.ServiceUnavailable },
+        { status: StatusCodes.ServiceUnavailable },
       )
-      .postOnce('http://coar-notify.prereview.test/prereviews', { status: Status.Created })
+      .postOnce('http://coar-notify.prereview.test/prereviews', { status: StatusCodes.Created })
 
     await use(fetch)
   },
@@ -1791,7 +1791,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
             state: 'inprogress',
             submitted: true,
           }),
-          status: Status.Created,
+          status: StatusCodes.Created,
         },
       )
       .putOnce(
@@ -1814,7 +1814,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
             state: 'inprogress',
             submitted: true,
           }),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       )
       .postOnce(
@@ -1835,7 +1835,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
             state: 'done',
             submitted: true,
           }),
-          status: Status.Accepted,
+          status: StatusCodes.Accepted,
         },
       )
       .getOnce(
@@ -1844,7 +1844,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
           url: 'http://zenodo.test/api/records/1055806',
           functionMatcher: (_, req) => req.cache === 'reload',
         },
-        { status: Status.ServiceUnavailable },
+        { status: StatusCodes.ServiceUnavailable },
       )
       .getOnce(
         {
@@ -1853,7 +1853,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
           query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
           functionMatcher: (_, req) => req.cache === 'reload',
         },
-        { status: Status.ServiceUnavailable },
+        { status: StatusCodes.ServiceUnavailable },
       )
 
     await use(fetch)
@@ -1939,11 +1939,11 @@ export const willPublishADatasetReview: Fixtures<
         state: 'unsubmitted',
         submitted: false,
       }),
-      status: Status.Created,
+      status: StatusCodes.Created,
     })
 
     fetch.putOnce('http://example.com/bucket/review.html', {
-      status: Status.Created,
+      status: StatusCodes.Created,
     })
 
     fetch.getOnce(
@@ -1970,7 +1970,7 @@ export const willPublishADatasetReview: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.OK,
+        status: StatusCodes.OK,
       },
       { delay: 100 },
     )
@@ -1991,7 +1991,7 @@ export const willPublishADatasetReview: Fixtures<
         state: 'done',
         submitted: true,
       }),
-      status: Status.Accepted,
+      status: StatusCodes.Accepted,
     })
 
     await use(fetch)
@@ -2078,7 +2078,7 @@ export const willPublishAComment: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.Created,
+        status: StatusCodes.Created,
       })
       .putOnce('http://example.com/self', {
         body: UnsubmittedDepositionC.encode({
@@ -2101,10 +2101,10 @@ export const willPublishAComment: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.OK,
+        status: StatusCodes.OK,
       })
       .putOnce('http://example.com/bucket/comment.html', {
-        status: Status.Created,
+        status: StatusCodes.Created,
       })
       .getOnce('http://zenodo.test/api/deposit/depositions/112361', {
         body: UnsubmittedDepositionC.encode({
@@ -2127,7 +2127,7 @@ export const willPublishAComment: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.OK,
+        status: StatusCodes.OK,
       })
       .postOnce(
         'http://example.com/publish',
@@ -2147,7 +2147,7 @@ export const willPublishAComment: Fixtures<
             state: 'done',
             submitted: true,
           }),
-          status: Status.Accepted,
+          status: StatusCodes.Accepted,
         },
         { delay: 100 },
       )
