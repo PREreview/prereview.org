@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewMatch } from '../../src/routes.js'
 import type { PopFromSessionEnv } from '../../src/session.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as _ from '../../src/write-review/index.js'
 import { PublishedReviewC } from '../../src/write-review/published-review.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -56,7 +56,7 @@ describe('writeReviewPublished', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
-      status: StatusCodes.SEE_OTHER,
+      status: StatusCodes.SeeOther,
       location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
     })
   })
@@ -72,7 +72,7 @@ describe('writeReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -92,7 +92,7 @@ describe('writeReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -112,7 +112,7 @@ describe('writeReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },

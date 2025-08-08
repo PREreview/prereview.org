@@ -2,10 +2,10 @@ import { HttpServerResponse } from '@effect/platform'
 import { Effect, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import { StatusCodes } from 'http-status-codes'
 import { clubsData } from '../../clubs-data/index.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import * as Routes from '../../routes.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { Env } from './index.js'
 
 export const DataRouter = pipe(
@@ -28,7 +28,7 @@ export const DataRouter = pipe(
       Effect.catchIf(
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         (error): error is 'forbidden' => error === 'forbidden',
-        () => HttpServerResponse.empty({ status: StatusCodes.FORBIDDEN }),
+        () => HttpServerResponse.empty({ status: StatusCodes.Forbidden }),
       ),
     ),
   ),

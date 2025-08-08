@@ -1,7 +1,6 @@
 import { Match, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { StatusCodes } from 'http-status-codes'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
@@ -10,6 +9,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewDataPresentationMatch, writeReviewResultsSupportedMatch } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { NonEmptyString } from '../../types/NonEmptyString.js'
 import { prereviewOfSuffix } from '../shared-elements.js'
 
@@ -36,7 +36,7 @@ export function dataPresentationForm(preprint: PreprintTitle, form: DataPresenta
   const t = translate(locale, 'write-review')
 
   return StreamlinePageResponse({
-    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       t('areTheDataPresentationsWellSuited')(),
       errorPrefix(locale, error),

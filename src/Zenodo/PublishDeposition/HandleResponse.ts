@@ -1,9 +1,9 @@
 import { HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, flow } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../../StatusCodes.js'
 import { SubmittedDeposition } from '../Deposition.js'
 
 export const HandleResponse = flow(
-  HttpClientResponse.filterStatus(Equal.equals(StatusCodes.ACCEPTED)),
+  HttpClientResponse.filterStatus(Equal.equals(StatusCodes.Accepted)),
   Effect.andThen(HttpClientResponse.schemaBodyJson(SubmittedDeposition)),
 )

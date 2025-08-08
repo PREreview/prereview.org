@@ -2,11 +2,11 @@ import { HttpServerRequest, HttpServerResponse, Url } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as _ from '../../src/HttpMiddleware/ForceLogIn.js'
 import * as OrcidOauth from '../../src/OrcidOauth.js'
 import { PublicUrl } from '../../src/public-url.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { OrcidLocale } from '../../src/types/index.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -36,7 +36,7 @@ describe('forceLogIn', () => {
             }).toString()}`,
             new URL('http://orcid.test/oauth/authorize'),
           ),
-          { status: StatusCodes.MOVED_TEMPORARILY },
+          { status: StatusCodes.Found },
         ),
       )
     }).pipe(

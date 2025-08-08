@@ -1,6 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
@@ -22,6 +21,7 @@ import { DataStoreRedis } from '../Redis.js'
 import { ResourcesPage } from '../ResourcesPage.js'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.js'
 import * as Routes from '../routes.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { TrainingsPage } from '../TrainingsPage.js'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.js'
 import { LegacyRouter } from './LegacyRouter.js'
@@ -264,7 +264,7 @@ export const Router = pipe(
             Effect.annotateLogs({ message: asError.message, name: asError.name }),
           )
 
-          return yield* HttpServerResponse.json({ status: 'error' }, { status: StatusCodes.SERVICE_UNAVAILABLE })
+          return yield* HttpServerResponse.json({ status: 'error' }, { status: StatusCodes.ServiceUnavailable })
         }),
       ),
       HttpMiddleware.withLoggerDisabled,

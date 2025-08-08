@@ -1,11 +1,11 @@
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export const createPageNotFound = (locale: SupportedLocale): PageResponse =>
   PageResponse({
-    status: StatusCodes.NOT_FOUND,
+    status: StatusCodes.NotFound,
     title: plainText(translate(locale, 'page-not-found', 'pageNotFoundTitle')()),
     main: html`
       <h1>${translate(locale, 'page-not-found', 'pageNotFoundTitle')()}</h1>

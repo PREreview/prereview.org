@@ -2,9 +2,9 @@ import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
 import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/CachingHttpClient/index.js'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -267,7 +267,7 @@ describe('there is a cache entry', () => {
       describe('able to delete it', () => {
         test.prop([
           fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
-          fc.constantFrom(StatusCodes.NOT_FOUND, StatusCodes.GONE),
+          fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone),
           fc.httpClientResponse(),
         ])('deletes the cached value', (request, status, expectedResponse) =>
           Effect.gen(function* () {
@@ -303,7 +303,7 @@ describe('there is a cache entry', () => {
       describe('not able to delete it', () => {
         test.prop([
           fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
-          fc.constantFrom(StatusCodes.NOT_FOUND, StatusCodes.GONE),
+          fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone),
         ])('ignores the failure', (request, status) =>
           Effect.gen(function* () {
             const newResponse = HttpClientResponse.fromWeb(
@@ -378,7 +378,7 @@ describe('there is a cache entry', () => {
             request: fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
             status: fc
               .statusCode()
-              .filter(status => ![StatusCodes.OK, StatusCodes.NOT_FOUND, StatusCodes.GONE].includes(status as number)),
+              .filter(status => ![StatusCodes.OK, StatusCodes.NotFound, StatusCodes.Gone].includes(status as number)),
           }),
         ])('ignores the failure', response =>
           Effect.gen(function* () {

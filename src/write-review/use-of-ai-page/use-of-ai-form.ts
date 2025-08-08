@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { StatusCodes } from 'http-status-codes'
 import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../form.js'
 import { html, plainText, rawHtml } from '../../html.js'
@@ -15,6 +14,7 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import { backNav, prereviewOfSuffix } from '../shared-elements.js'
 
 export interface UseOfAiForm {
@@ -38,7 +38,7 @@ export function useOfAiForm(
   const t = translate(locale)
 
   return StreamlinePageResponse({
-    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       t('write-review', 'useOfAi')(),
       prereviewOfSuffix(locale, preprint.title),

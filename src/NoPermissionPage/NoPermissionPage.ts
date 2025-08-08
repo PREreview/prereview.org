@@ -1,11 +1,11 @@
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../html.js'
 import { type SupportedLocale, translate } from '../locales/index.js'
 import { PageResponse } from '../response.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export const createNoPermissionPage = (locale: SupportedLocale): PageResponse =>
   PageResponse({
-    status: StatusCodes.FORBIDDEN,
+    status: StatusCodes.Forbidden,
     title: plainText(translate(locale, 'no-permission-page', 'noPermissionTitle')()),
     main: html`
       <h1>${translate(locale, 'no-permission-page', 'noPermissionTitle')()}</h1>

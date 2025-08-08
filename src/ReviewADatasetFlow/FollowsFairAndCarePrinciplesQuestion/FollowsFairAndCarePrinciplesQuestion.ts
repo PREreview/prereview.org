@@ -1,8 +1,8 @@
 import { Either, Match, pipe } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { Uuid } from '../../types/uuid.js'
 import type { FollowsFairAndCarePrinciplesForm } from './FollowsFairAndCarePrinciplesForm.js'
 
@@ -14,7 +14,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
   form: FollowsFairAndCarePrinciplesForm
 }) => {
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset follow FAIR and CARE principles?`,
     main: html`
       <form

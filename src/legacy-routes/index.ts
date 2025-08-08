@@ -6,7 +6,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import httpErrors from 'http-errors'
-import { StatusCodes } from 'http-status-codes'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
@@ -16,6 +15,7 @@ import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { type PageResponse, RedirectResponse } from '../response.js'
 import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
+import * as StatusCodes from '../StatusCodes.js'
 import {
   ArxivPreprintId,
   type IndeterminatePreprintId,
@@ -127,7 +127,7 @@ const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectRes
       P.map(({ preprintId }) =>
         RT.of(
           RedirectResponse({
-            status: StatusCodes.MOVED_PERMANENTLY,
+            status: StatusCodes.MovedPermanently,
             location: P.format(writeReviewReviewTypeMatch.formatter, { id: preprintId }),
           }),
         ),
@@ -138,7 +138,7 @@ const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectRes
       P.map(({ preprintId }) =>
         RT.of(
           RedirectResponse({
-            status: StatusCodes.MOVED_PERMANENTLY,
+            status: StatusCodes.MovedPermanently,
             location: P.format(preprintReviewsMatch.formatter, { id: preprintId }),
           }),
         ),
@@ -168,15 +168,18 @@ const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectRes
 
 export const legacyRoutes: (
   url: string,
-) => RTE.ReaderTaskEither<LegacyEnv, httpErrors.HttpError<StatusCodes.NOT_FOUND>, PageResponse | RedirectResponse> =
-  flow(
-    Option.liftThrowable(url => P.Route.parse(url)),
-    Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
-    Option.match({
-      onNone: () => RTE.left(new httpErrors.NotFound()),
-      onSome: ([response]) => RTE.rightReaderTask(response),
-    }),
-  )
+) => RTE.ReaderTaskEither<
+  LegacyEnv,
+  httpErrors.HttpError<typeof StatusCodes.NotFound>,
+  PageResponse | RedirectResponse
+> = flow(
+  Option.liftThrowable(url => P.Route.parse(url)),
+  Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
+  Option.match({
+    onNone: () => RTE.left(new httpErrors.NotFound()),
+    onSome: ([response]) => RTE.rightReaderTask(response),
+  }),
+)
 
 const redirectToPreprintReviews = flow(
   getPreprintIdFromUuid,
@@ -191,7 +194,7 @@ const redirectToPreprintReviews = flow(
     id =>
       RT.of(
         RedirectResponse({
-          status: StatusCodes.MOVED_PERMANENTLY,
+          status: StatusCodes.MovedPermanently,
           location: P.format(preprintReviewsMatch.formatter, { id }),
         }),
       ),
@@ -211,7 +214,7 @@ const redirectToProfile = flow(
     profile =>
       RT.of(
         RedirectResponse({
-          status: StatusCodes.MOVED_PERMANENTLY,
+          status: StatusCodes.MovedPermanently,
           location: P.format(profileMatch.formatter, { profile }),
         }),
       ),

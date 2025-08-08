@@ -1,7 +1,6 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { StatusCodes } from 'http-status-codes'
 import { match, P } from 'ts-pattern'
 import { hasAnError, type InvalidE, type MissingE } from '../../form.js'
 import { html, plainText } from '../../html.js'
@@ -10,6 +9,7 @@ import type { PreprintTitle } from '../../preprint.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { writeReviewConductMatch, writeReviewEnterEmailAddressMatch } from '../../routes.js'
 import { errorPrefix } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { EmailAddress } from '../../types/EmailAddress.js'
 import { prereviewOfSuffix } from '../shared-elements.js'
 
@@ -26,7 +26,7 @@ export const enterEmailAddressPage = (
   const t = translate(locale, 'write-review')
 
   return StreamlinePageResponse({
-    status: error ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       t('contactDetails')(),
       prereviewOfSuffix(locale, preprint.title),

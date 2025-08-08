@@ -2,7 +2,6 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
@@ -11,6 +10,7 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
 import * as _ from '../../src/write-review/index.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -40,7 +40,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
       })
     },
@@ -133,7 +133,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -151,7 +151,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -169,7 +169,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -190,7 +190,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -211,7 +211,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },

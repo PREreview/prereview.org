@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Equal, Layer } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/ReviewBeingPublishedPage/index.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -48,7 +48,7 @@ describe('ReviewBeingPublishedPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            status: StatusCodes.SeeOther,
             location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
           })
         }).pipe(
@@ -72,7 +72,7 @@ describe('ReviewBeingPublishedPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -104,7 +104,7 @@ describe('ReviewBeingPublishedPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -128,7 +128,7 @@ describe('ReviewBeingPublishedPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -154,7 +154,7 @@ describe('ReviewBeingPublishedPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

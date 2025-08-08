@@ -1,12 +1,12 @@
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export const removedPermanentlyPage = (locale: SupportedLocale) =>
   PageResponse({
     title: plainText(translate(locale, 'legacy-routes', 'permanentlyTitle')()),
-    status: StatusCodes.GONE,
+    status: StatusCodes.Gone,
     main: html`
       <h1>${translate(locale, 'legacy-routes', 'permanentlyTitle')()}</h1>
 

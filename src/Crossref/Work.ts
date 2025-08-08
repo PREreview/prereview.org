@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, pipe, Schema, Tuple } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../StatusCodes.js'
 import { Doi, Orcid, Temporal } from '../types/index.js'
 
 const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
@@ -91,7 +91,7 @@ export const getWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | Work
     Effect.andThen(
       HttpClientResponse.matchStatus({
         [StatusCodes.OK]: response => Effect.succeed(response),
-        [StatusCodes.NOT_FOUND]: response => new WorkIsNotFound({ cause: response }),
+        [StatusCodes.NotFound]: response => new WorkIsNotFound({ cause: response }),
         orElse: response => new WorkIsUnavailable({ cause: response }),
       }),
     ),

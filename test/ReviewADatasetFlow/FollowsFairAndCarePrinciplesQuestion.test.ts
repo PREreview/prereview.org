@@ -2,11 +2,11 @@ import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Equal, Layer, Option } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -50,7 +50,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            status: StatusCodes.SeeOther,
             location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }),
           })
         }).pipe(
@@ -74,7 +74,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            status: StatusCodes.SeeOther,
             location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
           })
         }).pipe(
@@ -103,7 +103,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -127,7 +127,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -153,7 +153,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -183,7 +183,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }),
         })
       }).pipe(
@@ -218,7 +218,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -261,7 +261,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
         canonical: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
-        status: StatusCodes.BAD_REQUEST,
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
@@ -289,7 +289,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -314,7 +314,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -341,7 +341,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

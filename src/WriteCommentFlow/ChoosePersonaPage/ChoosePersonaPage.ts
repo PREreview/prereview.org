@@ -1,10 +1,10 @@
 import { Either, Match, pipe } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import { errorPrefix } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { Uuid } from '../../types/index.js'
 import type { User } from '../../user.js'
 import type * as ChoosePersonaForm from './ChoosePersonaForm.js'
@@ -21,7 +21,7 @@ export const ChoosePersonaPage = ({
   user: User
 }) =>
   StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       translate(locale, 'write-comment-flow', 'whatNameTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),

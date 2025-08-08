@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes.js'
 import type { AddToSessionEnv } from '../../src/session.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { localeToIso6391 } from '../../src/types/iso639.js'
 import { CompletedFormC } from '../../src/write-review/completed-form.js'
 import { FormC, formKey } from '../../src/write-review/form.js'
@@ -40,7 +40,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -69,7 +69,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -115,7 +115,7 @@ describe('writeReviewPublish', () => {
       })
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
       })
       expect(addToSession).toHaveBeenCalledWith('published-review', {
@@ -166,7 +166,7 @@ describe('writeReviewPublish', () => {
       })
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
       })
       expect(addToSession).toHaveBeenCalledWith('published-review', {
@@ -266,7 +266,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
       })
     },
@@ -285,7 +285,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -304,7 +304,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -326,7 +326,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -348,7 +348,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
@@ -379,7 +379,7 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

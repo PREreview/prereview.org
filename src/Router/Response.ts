@@ -2,13 +2,13 @@ import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
 import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Redacted, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
-import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { OrcidOauth } from '../OrcidOauth.js'
 import { PublicUrl } from '../public-url.js'
 import { toPage, type ForceLogInResponse, type Response } from '../response.js'
 import * as Routes from '../routes.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { TemplatePage } from '../TemplatePage.js'
 import { OrcidLocale, Uuid } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
@@ -32,7 +32,7 @@ export const toHttpServerResponse = (
 
     if (response._tag === 'FlashMessageResponse') {
       return yield* HttpServerResponse.redirect(response.location, {
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         cookies: Cookies.fromIterable([
           Cookies.unsafeMakeCookie('flash-message', response.message, { httpOnly: true, path: '/' }),
         ]),
@@ -47,7 +47,7 @@ export const toHttpServerResponse = (
         state: new URL(`${publicUrl.origin}${response.location}`).href,
       })
 
-      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_TEMPORARILY })
+      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
     }
 
     const locale = yield* Locale
@@ -121,7 +121,7 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
   yield* Effect.tryPromise(() => sessionStore.set(encodedSessionId, encodedSession))
 
   return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
-    status: StatusCodes.SEE_OTHER,
+    status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
       Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
       Cookies.unsafeMakeCookie(sessionCookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {

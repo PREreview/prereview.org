@@ -2,10 +2,10 @@ import { type HttpMethod, HttpRouter } from '@effect/platform'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../Context.js'
 import { RedirectResponse } from '../response.js'
 import * as Routes from '../routes.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../types/preprint-id.js'
 import { removedForNowPage } from './RemovedForNowPage.js'
 import { removedPermanentlyPage } from './RemovedPermanentlyPage.js'
@@ -110,5 +110,5 @@ export const LegacyRouter = HttpRouter.fromIterable([
 ])
 
 function movedPermanently(location: string) {
-  return RedirectResponse({ location, status: StatusCodes.MOVED_PERMANENTLY })
+  return RedirectResponse({ location, status: StatusCodes.MovedPermanently })
 }

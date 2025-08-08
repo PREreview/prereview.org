@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-orcid/oauth-code.js'
 import type { EditOrcidTokenEnv } from '../../src/orcid-token.js'
 import { connectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -164,7 +164,7 @@ describe('connectOrcidCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -183,7 +183,7 @@ describe('connectOrcidCode', () => {
     fc.origin(),
     fc
       .integer({ min: 200, max: 599 })
-      .filter(status => status !== (StatusCodes.OK as number) && status !== (StatusCodes.NOT_FOUND as number)),
+      .filter(status => status !== (StatusCodes.OK as number) && status !== (StatusCodes.NotFound as number)),
   ])('when the response has a non-200/404 status code', async (code, user, locale, oauth, publicUrl, accessToken) => {
     const orcidUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
@@ -201,7 +201,7 @@ describe('connectOrcidCode', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: StatusCodes.SERVICE_UNAVAILABLE,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -226,7 +226,7 @@ describe('connectOrcidCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import * as ContactEmailAddress from '../../src/contact-email-address.js'
 import { Locale } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
 import * as _ from '../../src/WriteCommentFlow/VerifyEmailAddress/index.js'
@@ -77,7 +77,7 @@ describe('VerifyEmailAddressPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -108,7 +108,7 @@ describe('VerifyEmailAddressPage', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
+              status: StatusCodes.ServiceUnavailable,
               title: expect.anything(),
               main: expect.anything(),
               skipToLabel: 'main',
@@ -134,7 +134,7 @@ describe('VerifyEmailAddressPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -162,7 +162,7 @@ describe('VerifyEmailAddressPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',

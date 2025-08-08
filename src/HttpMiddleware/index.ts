@@ -9,13 +9,13 @@ import {
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
 import { Array, Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.js'
 import { PublicUrl } from '../public-url.js'
 import { FlashMessageSchema } from '../response.js'
 import { securityHeaders } from '../securityHeaders.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { Uuid } from '../types/index.js'
 import { UserOnboardingService } from '../user-onboarding.js'
 import { EnsureUserIsLoggedIn, LoggedInUser, SessionId, UserSchema } from '../user.js'
@@ -38,7 +38,7 @@ export const removeTrailingSlashes = HttpMiddleware.make(app =>
     return yield* HttpServerResponse.redirect(
       new URL(`${publicUrl.origin}${request.url.slice(0, request.url.length - 1)}`),
       {
-        status: StatusCodes.MOVED_PERMANENTLY,
+        status: StatusCodes.MovedPermanently,
       },
     )
   }),
@@ -276,7 +276,7 @@ export const stopSuspiciousRequests = HttpMiddleware.make(app =>
     )
 
     if (Option.isSome(isRequestSuspicious)) {
-      return yield* HttpServerResponse.empty({ status: StatusCodes.NOT_FOUND })
+      return yield* HttpServerResponse.empty({ status: StatusCodes.NotFound })
     }
 
     return yield* app

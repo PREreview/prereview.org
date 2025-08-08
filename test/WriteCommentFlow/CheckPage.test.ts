@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Equal } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/CheckPage/index.js'
 import * as EffectTest from '../EffectTest.js'
@@ -53,7 +53,7 @@ describe('CheckPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -76,7 +76,7 @@ describe('CheckPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -99,7 +99,7 @@ describe('CheckPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -121,7 +121,7 @@ describe('CheckPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -147,7 +147,7 @@ describe('CheckPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -169,7 +169,7 @@ describe('CheckPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -221,7 +221,7 @@ describe('CheckPageSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            status: StatusCodes.SeeOther,
             location: Routes.WriteCommentPublishing.href({ commentId }),
           })
 
@@ -247,7 +247,7 @@ describe('CheckPageSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -275,7 +275,7 @@ describe('CheckPageSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -299,7 +299,7 @@ describe('CheckPageSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -319,7 +319,7 @@ describe('CheckPageSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -342,7 +342,7 @@ describe('CheckPageSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -369,7 +369,7 @@ describe('CheckPageSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -392,7 +392,7 @@ describe('CheckPageSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',

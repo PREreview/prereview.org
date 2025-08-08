@@ -3,10 +3,10 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/connect-orcid/disconnect-orcid.js'
 import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token.js'
 import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 
@@ -63,7 +63,7 @@ describe('disconnectOrcid', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
+              status: StatusCodes.ServiceUnavailable,
               title: expect.anything(),
               main: expect.anything(),
               skipToLabel: 'main',
@@ -113,7 +113,7 @@ describe('disconnectOrcid', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: format(myDetailsMatch.formatter, {}),
         })
         expect(getOrcidToken).toHaveBeenCalledWith(user.orcid)
@@ -132,7 +132,7 @@ describe('disconnectOrcid', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

@@ -1,8 +1,8 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Context, Data, Effect, flow, identity, Match, pipe, Redacted, Schema } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { URL } from 'url'
 import { Html, rawHtml, sanitizeHtml } from '../html.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
@@ -36,7 +36,7 @@ export const getPage = (id: string) =>
       Effect.mapError(
         flow(
           Match.value,
-          Match.when({ status: StatusCodes.NOT_FOUND }, () => new GhostPageNotFound()),
+          Match.when({ status: StatusCodes.NotFound }, () => new GhostPageNotFound()),
           Match.orElse(() => new GhostPageUnavailable()),
         ),
       ),

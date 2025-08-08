@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, identity } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
 import * as Prereview from '../../src/Prereview.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/WriteCommentPage/index.js'
 import * as EffectTest from '../EffectTest.js'
@@ -52,7 +52,7 @@ describe('WriteCommentPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
-            status: StatusCodes.SEE_OTHER,
+            status: StatusCodes.SeeOther,
             location: Routes.WriteCommentStartNow.href({ id: prereview.id }),
           })
         }).pipe(
@@ -98,7 +98,7 @@ describe('WriteCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -121,7 +121,7 @@ describe('WriteCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -144,7 +144,7 @@ describe('WriteCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

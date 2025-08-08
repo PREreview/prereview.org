@@ -1,11 +1,11 @@
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
+import * as StatusCodes from '../StatusCodes.js'
 
 export const createHavingProblemsPage = (locale: SupportedLocale): PageResponse =>
   PageResponse({
-    status: StatusCodes.SERVICE_UNAVAILABLE,
+    status: StatusCodes.ServiceUnavailable,
     title: plainText(translate(locale, 'having-problems-page', 'havingProblemsTitle')()),
     main: html`
       <h1>${translate(locale, 'having-problems-page', 'havingProblemsTitle')()}</h1>

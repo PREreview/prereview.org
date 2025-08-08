@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, pipe, Schema } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { RecentReviewRequestsAreUnavailable } from '../review-requests-page/index.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { Field, Iso639, Subfield, Temporal } from '../types/index.js'
 import * as PreprintId from '../types/preprint-id.js'
 

@@ -1,6 +1,6 @@
 import { HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, flow } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../../StatusCodes.js'
 import { UnsubmittedDeposition } from '../Deposition.js'
 
 export const HandleResponse = flow(

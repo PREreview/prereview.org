@@ -1,11 +1,11 @@
 import { HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../Context.js'
 import { OrcidOauth } from '../OrcidOauth.js'
 import { PublicUrl } from '../public-url.js'
 import * as Routes from '../routes.js'
+import * as StatusCodes from '../StatusCodes.js'
 import { OrcidLocale } from '../types/index.js'
 
 export const forceLogIn = Effect.gen(function* () {
@@ -17,7 +17,7 @@ export const forceLogIn = Effect.gen(function* () {
     state: new URL(`${publicUrl.origin}${request.url}`).href,
   })
 
-  return yield* HttpServerResponse.redirect(location, { status: StatusCodes.MOVED_TEMPORARILY })
+  return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
 })
 
 function generateAuthorizationRequestUrl({

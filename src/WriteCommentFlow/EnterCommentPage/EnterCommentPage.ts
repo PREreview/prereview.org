@@ -1,11 +1,11 @@
 import { absurd, Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { StatusCodes } from 'http-status-codes'
 import { type Html, html, plainText } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import { errorPrefix } from '../../shared-translation-elements.js'
+import * as StatusCodes from '../../StatusCodes.js'
 import type { Uuid } from '../../types/index.js'
 import type * as EnterCommentForm from './EnterCommentForm.js'
 import { Turndown } from './Turndown.js'
@@ -22,7 +22,7 @@ export const EnterCommentPage = ({
   prereviewId: number
 }) =>
   StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BAD_REQUEST : StatusCodes.OK,
+    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(
       translate(locale, 'write-comment-flow', 'enterYourCommentTitle')(),
       errorPrefix(locale, form._tag === 'InvalidForm'),

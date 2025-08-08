@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, Equal, Option } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/CompetingInterestsPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
@@ -54,7 +54,7 @@ describe('CompetingInterestsPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -77,7 +77,7 @@ describe('CompetingInterestsPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -96,7 +96,7 @@ describe('CompetingInterestsPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -122,7 +122,7 @@ describe('CompetingInterestsPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -144,7 +144,7 @@ describe('CompetingInterestsPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -207,7 +207,7 @@ describe('CompetingInterestsSubmission', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
-              status: StatusCodes.SEE_OTHER,
+              status: StatusCodes.SeeOther,
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
@@ -244,7 +244,7 @@ describe('CompetingInterestsSubmission', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
+              status: StatusCodes.ServiceUnavailable,
               title: expect.anything(),
               main: expect.anything(),
               skipToLabel: 'main',
@@ -290,7 +290,7 @@ describe('CompetingInterestsSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
             canonical: Routes.WriteCommentCompetingInterests.href({ commentId }),
-            status: StatusCodes.BAD_REQUEST,
+            status: StatusCodes.BadRequest,
             title: expect.anything(),
             nav: expect.anything(),
             main: expect.anything(),
@@ -321,7 +321,7 @@ describe('CompetingInterestsSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -347,7 +347,7 @@ describe('CompetingInterestsSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -368,7 +368,7 @@ describe('CompetingInterestsSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -397,7 +397,7 @@ describe('CompetingInterestsSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -421,7 +421,7 @@ describe('CompetingInterestsSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',

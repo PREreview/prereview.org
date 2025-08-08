@@ -2,7 +2,6 @@ import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as FeatureFlags from '../../src/FeatureFlags.js'
 import { rawHtml } from '../../src/html.js'
@@ -10,6 +9,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import * as OrcidOauth from '../../src/OrcidOauth.js'
 import { PublicUrl } from '../../src/public-url.js'
 import * as _ from '../../src/Router/LegacyRouter.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { TemplatePage } from '../../src/TemplatePage.js'
 import * as EffectTest from '../EffectTest.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -47,7 +47,7 @@ describe('LegacyRouter', () => {
 
       const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
 
-      expect(response).toStrictEqual(HttpServerResponse.redirect(expected, { status: StatusCodes.MOVED_PERMANENTLY }))
+      expect(response).toStrictEqual(HttpServerResponse.redirect(expected, { status: StatusCodes.MovedPermanently }))
     }).pipe(
       Effect.provideService(TemplatePage, shouldNotBeCalled),
       Effect.provideService(Locale, DefaultLocale),
@@ -89,7 +89,7 @@ describe('LegacyRouter', () => {
 
       const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
 
-      expect(response.status).toStrictEqual(StatusCodes.NOT_FOUND)
+      expect(response.status).toStrictEqual(StatusCodes.NotFound)
     }).pipe(
       Effect.provideService(TemplatePage, () => rawHtml('page-content')),
       Effect.provideService(Locale, DefaultLocale),
@@ -120,7 +120,7 @@ describe('LegacyRouter', () => {
 
       const response = yield* Effect.provideService(_.LegacyRouter, HttpServerRequest.HttpServerRequest, request)
 
-      expect(response.status).toStrictEqual(StatusCodes.GONE)
+      expect(response.status).toStrictEqual(StatusCodes.Gone)
     }).pipe(
       Effect.provideService(TemplatePage, () => rawHtml('page-content')),
       Effect.provideService(Locale, DefaultLocale),

@@ -2,7 +2,7 @@ import type { HttpClientError } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../../../src/StatusCodes.js'
 import * as _ from '../../../src/Zenodo/PublishDeposition/HandleResponse.js'
 import * as EffectTest from '../../EffectTest.js'
 import * as fc from '../fc.js'
@@ -14,7 +14,7 @@ describe('HandleResponse', () => {
       test.prop([
         fc.httpClientResponse({
           json: fc.constant(submittedDeposition),
-          status: fc.constant(StatusCodes.ACCEPTED),
+          status: fc.constant(StatusCodes.Accepted),
         }),
       ])('decodes the response', response =>
         Effect.gen(function* () {
@@ -29,7 +29,7 @@ describe('HandleResponse', () => {
       test.prop([
         fc.httpClientResponse({
           json: fc.json(),
-          status: fc.constant(StatusCodes.ACCEPTED),
+          status: fc.constant(StatusCodes.Accepted),
         }),
       ])('returns an error', response =>
         Effect.gen(function* () {
@@ -43,7 +43,7 @@ describe('HandleResponse', () => {
     describe('with an unknown body', () => {
       test.prop([
         fc.httpClientResponse({
-          status: fc.constant(StatusCodes.ACCEPTED),
+          status: fc.constant(StatusCodes.Accepted),
           text: fc.lorem(),
         }),
       ])('returns an error', response =>
@@ -58,7 +58,7 @@ describe('HandleResponse', () => {
   })
 
   describe('with another status code', () => {
-    test.prop([fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.ACCEPTED) })])(
+    test.prop([fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.Accepted) })])(
       'returns an error',
       response =>
         Effect.gen(function* () {

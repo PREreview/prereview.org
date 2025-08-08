@@ -1,14 +1,14 @@
-import { StatusCodes } from 'http-status-codes'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
+import * as StatusCodes from '../../StatusCodes.js'
 
 export const failureMessage = (locale: SupportedLocale) => {
   const t = translate(locale, 'write-review')
 
   return StreamlinePageResponse({
     title: plainText(t('havingProblems')()),
-    status: StatusCodes.SERVICE_UNAVAILABLE,
+    status: StatusCodes.ServiceUnavailable,
     main: html`
       <h1>${t('havingProblems')()}</h1>
 

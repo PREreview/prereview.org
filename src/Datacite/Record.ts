@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, Function, pipe, Schema, String } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../StatusCodes.js'
 import { Doi, Temporal } from '../types/index.js'
 
 const EmptyStringAsUndefinedSchema = Schema.transform(
@@ -105,7 +105,7 @@ export const getRecord = (
     Effect.andThen(
       HttpClientResponse.matchStatus({
         [StatusCodes.OK]: response => Effect.succeed(response),
-        [StatusCodes.NOT_FOUND]: response => new RecordIsNotFound({ cause: response }),
+        [StatusCodes.NotFound]: response => new RecordIsNotFound({ cause: response }),
         orElse: response => new RecordIsUnavailable({ cause: response }),
       }),
     ),

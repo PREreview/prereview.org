@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../src/Context.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
 import * as _ from '../src/LogInDemoUser.js'
+import * as StatusCodes from '../src/StatusCodes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -31,7 +31,7 @@ describe('LogInDemoUser', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.NOT_FOUND,
+        status: StatusCodes.NotFound,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

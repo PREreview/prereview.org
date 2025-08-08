@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page/index.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
 import type { AddToSessionEnv, PopFromSessionEnv } from '../../src/session.js'
 import type { EditSlackUserIdEnv } from '../../src/slack-user-id.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import type { GenerateUuidEnv } from '../../src/types/uuid.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
@@ -37,7 +37,7 @@ describe('connectSlack', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: format(connectSlackStartMatch.formatter, {}),
       })
     })
@@ -49,7 +49,7 @@ describe('connectSlack', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -86,7 +86,7 @@ describe('connectSlackStart', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
-        status: StatusCodes.SEE_OTHER,
+        status: StatusCodes.SeeOther,
         location: new URL(
           `?${new URLSearchParams({
             client_id: slackOauth.clientId,
@@ -203,7 +203,7 @@ describe('connectSlackCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -227,7 +227,7 @@ describe('connectSlackCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -242,7 +242,7 @@ describe('connectSlackCode', () => {
     fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
-    fc.integer({ min: 200, max: 599 }).filter(status => ![StatusCodes.OK, StatusCodes.NOT_FOUND].includes(status)),
+    fc.integer({ min: 200, max: 599 }).filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
     fc.lorem(),
   ])(
     'when the response has a non-200/404 status code',
@@ -263,7 +263,7 @@ describe('connectSlackCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -289,7 +289,7 @@ describe('connectSlackCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: StatusCodes.SERVICE_UNAVAILABLE,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -306,7 +306,7 @@ describe('connectSlackError', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: StatusCodes.FORBIDDEN,
+      status: StatusCodes.Forbidden,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -319,7 +319,7 @@ describe('connectSlackError', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: StatusCodes.SERVICE_UNAVAILABLE,
+      status: StatusCodes.ServiceUnavailable,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',

@@ -1,5 +1,5 @@
 import { HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, flow } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../../StatusCodes.js'
 
-export const HandleResponse = flow(HttpClientResponse.filterStatus(Equal.equals(StatusCodes.CREATED)), Effect.asVoid)
+export const HandleResponse = flow(HttpClientResponse.filterStatus(Equal.equals(StatusCodes.Created)), Effect.asVoid)

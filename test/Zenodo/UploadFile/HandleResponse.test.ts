@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import { StatusCodes } from 'http-status-codes'
+import * as StatusCodes from '../../../src/StatusCodes.js'
 import * as _ from '../../../src/Zenodo/UploadFile/HandleResponse.js'
 import * as EffectTest from '../../EffectTest.js'
 import * as fc from '../fc.js'
@@ -13,10 +13,10 @@ describe('HandleResponse', () => {
       fc.oneof(
         fc.httpClientResponse({
           json: fc.constant(uploadedFile),
-          status: fc.constant(StatusCodes.CREATED),
+          status: fc.constant(StatusCodes.Created),
         }),
         fc.httpClientResponse({
-          status: fc.constant(StatusCodes.CREATED),
+          status: fc.constant(StatusCodes.Created),
         }),
       ),
     ])('return nothing', response =>
@@ -29,7 +29,7 @@ describe('HandleResponse', () => {
   })
 
   describe('with another status code', () => {
-    test.prop([fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.CREATED) })])(
+    test.prop([fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.Created) })])(
       'returns an error',
       response =>
         Effect.gen(function* () {

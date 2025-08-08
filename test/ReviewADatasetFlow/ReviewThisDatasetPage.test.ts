@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Layer } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/ReviewThisDatasetPage/index.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -38,7 +38,7 @@ describe('ReviewThisDatasetPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.ReviewThisDatasetStartNow,
         })
       }).pipe(
@@ -84,7 +84,7 @@ describe('ReviewThisDatasetPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.SERVICE_UNAVAILABLE,
+          status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',

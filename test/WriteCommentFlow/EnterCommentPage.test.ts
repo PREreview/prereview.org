@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, Equal } from 'effect'
-import { StatusCodes } from 'http-status-codes'
 import * as Comments from '../../src/Comments/index.js'
 import { Locale } from '../../src/Context.js'
 import * as Routes from '../../src/routes.js'
+import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as _ from '../../src/WriteCommentFlow/EnterCommentPage/index.js'
 import { RouteForCommand } from '../../src/WriteCommentFlow/Routes.js'
@@ -54,7 +54,7 @@ describe('EnterCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -77,7 +77,7 @@ describe('EnterCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -96,7 +96,7 @@ describe('EnterCommentPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -122,7 +122,7 @@ describe('EnterCommentPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -144,7 +144,7 @@ describe('EnterCommentPage', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -207,7 +207,7 @@ describe('EnterCommentSubmission', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'RedirectResponse',
-              status: StatusCodes.SEE_OTHER,
+              status: StatusCodes.SeeOther,
               location: RouteForCommand(nextCommand).href({ commentId }),
             })
 
@@ -237,7 +237,7 @@ describe('EnterCommentSubmission', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
-              status: StatusCodes.SERVICE_UNAVAILABLE,
+              status: StatusCodes.ServiceUnavailable,
               title: expect.anything(),
               main: expect.anything(),
               skipToLabel: 'main',
@@ -271,7 +271,7 @@ describe('EnterCommentSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
             canonical: Routes.WriteCommentEnterComment.href({ commentId }),
-            status: StatusCodes.BAD_REQUEST,
+            status: StatusCodes.BadRequest,
             title: expect.anything(),
             nav: expect.anything(),
             main: expect.anything(),
@@ -302,7 +302,7 @@ describe('EnterCommentSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublished.href({ commentId }),
         })
       }).pipe(
@@ -328,7 +328,7 @@ describe('EnterCommentSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: StatusCodes.SEE_OTHER,
+          status: StatusCodes.SeeOther,
           location: Routes.WriteCommentPublishing.href({ commentId }),
         })
       }).pipe(
@@ -349,7 +349,7 @@ describe('EnterCommentSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.NOT_FOUND,
+            status: StatusCodes.NotFound,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -378,7 +378,7 @@ describe('EnterCommentSubmission', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: StatusCodes.NOT_FOUND,
+          status: StatusCodes.NotFound,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
@@ -402,7 +402,7 @@ describe('EnterCommentSubmission', () => {
 
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
-            status: StatusCodes.SERVICE_UNAVAILABLE,
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
