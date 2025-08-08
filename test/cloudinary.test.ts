@@ -5,7 +5,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import { P, isMatching } from 'ts-pattern'
 import * as _ from '../src/cloudinary.js'
 import * as fc from './fc.js'
@@ -91,7 +91,7 @@ describe('saveAvatarOnCloudinary', () => {
       const fetch = fetchMock.sandbox().postOnce(
         {
           url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
-          headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           matcher: (url, request) =>
             isMatching(
               {
@@ -105,7 +105,7 @@ describe('saveAvatarOnCloudinary', () => {
               Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
             ),
         },
-        { status: Status.OK, body: { public_id: `prereview-profile/${imageId}` } },
+        { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
       )
       const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
       const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
@@ -151,7 +151,7 @@ describe('saveAvatarOnCloudinary', () => {
         .postOnce(
           {
             url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
-            headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             matcher: (url, request) =>
               isMatching(
                 {
@@ -165,12 +165,12 @@ describe('saveAvatarOnCloudinary', () => {
                 Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
               ),
           },
-          { status: Status.OK, body: { public_id: `prereview-profile/${imageId}` } },
+          { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
         )
         .postOnce(
           {
             url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
-            headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             matcher: (url, request) =>
               isMatching(
                 {
@@ -182,7 +182,7 @@ describe('saveAvatarOnCloudinary', () => {
                 Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
               ),
           },
-          { status: Status.OK, body: { result: 'ok' } },
+          { status: StatusCodes.OK, body: { result: 'ok' } },
         )
       const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
       const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
@@ -230,7 +230,7 @@ describe('saveAvatarOnCloudinary', () => {
         const fetch = fetchMock
           .sandbox()
           .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, {
-            status: Status.OK,
+            status: StatusCodes.OK,
             body: { public_id: `prereview-profile/${imageId}` },
           })
           .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`, response)
@@ -283,7 +283,7 @@ describe('saveAvatarOnCloudinary', () => {
       const fetch = fetchMock
         .sandbox()
         .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, {
-          status: Status.OK,
+          status: StatusCodes.OK,
           body: { public_id: `prereview-profile/${imageId}` },
         })
       const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
@@ -366,7 +366,7 @@ describe('removeAvatarFromCloudinary', () => {
     const fetch = fetchMock.sandbox().postOnce(
       {
         url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
-        headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         matcher: (url, request) =>
           isMatching(
             {
@@ -378,7 +378,7 @@ describe('removeAvatarFromCloudinary', () => {
             Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
           ),
       },
-      { status: Status.OK, body: { result: 'ok' } },
+      { status: StatusCodes.OK, body: { result: 'ok' } },
     )
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({

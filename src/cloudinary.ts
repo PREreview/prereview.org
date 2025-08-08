@@ -9,7 +9,7 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
@@ -156,13 +156,13 @@ export const saveAvatarOnCloudinary = (
                 UrlParams.set('file', `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`),
                 UrlParams.toString,
               ),
-              MediaType.applicationFormURLEncoded,
+              'application/x-www-form-urlencoded',
             ),
           ),
         ),
         RTE.chainW(F.send),
         RTE.mapLeft(() => 'network-error' as const),
-        RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+        RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
         RTE.chainTaskEitherKW(flow(F.decode(UploadResponseD), TE.mapLeft(D.draw))),
         RTE.orElseFirstW(
           RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to upload image to Cloudinary'))),
@@ -226,14 +226,14 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
               ),
               UrlParams.toString,
             ),
-            MediaType.applicationFormURLEncoded,
+            'application/x-www-form-urlencoded',
           ),
         ),
       ),
     ),
     RTE.chainW(F.send),
     RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
     RTE.chainTaskEitherKW(flow(F.decode(DestroyResponseD), TE.mapLeft(D.draw))),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(flow(error => ({ error, publicId }), L.errorP('Failed to destroy image on Cloudinary'))),

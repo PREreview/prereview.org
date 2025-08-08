@@ -7,7 +7,7 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
@@ -68,13 +68,13 @@ const exchangeAuthorizationCode = (code: string) =>
               }),
               UrlParams.toString,
             ),
-            MediaType.applicationFormURLEncoded,
+            'application/x-www-form-urlencoded',
           ),
         ),
       ),
     ),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
     RTE.chainTaskEitherKW(F.decode(SlackUserTokenD)),
   )
 

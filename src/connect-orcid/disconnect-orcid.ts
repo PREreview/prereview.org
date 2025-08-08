@@ -4,7 +4,7 @@ import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
@@ -81,10 +81,10 @@ const revokeAccessToken = (token: string) =>
             }),
             UrlParams.toString,
           ),
-          MediaType.applicationFormURLEncoded,
+          'application/x-www-form-urlencoded',
         ),
       ),
     ),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   )

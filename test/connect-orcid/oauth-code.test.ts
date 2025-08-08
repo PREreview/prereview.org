@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-orcid/oauth-code.js'
 import type { EditOrcidTokenEnv } from '../../src/orcid-token.js'
@@ -40,11 +40,11 @@ describe('connectOrcidCode', () => {
                   code,
                 }).toString(),
               headers: {
-                'Content-Type': MediaType.applicationFormURLEncoded,
+                'Content-Type': 'application/x-www-form-urlencoded',
               },
             },
             {
-              status: Status.OK,
+              status: StatusCodes.OK,
               body: {
                 access_token: accessToken,
                 orcid: user.orcid,
@@ -65,10 +65,10 @@ describe('connectOrcidCode', () => {
                   token_type_hint: 'access_token',
                 }).toString(),
               headers: {
-                'Content-Type': MediaType.applicationFormURLEncoded,
+                'Content-Type': 'application/x-www-form-urlencoded',
               },
             },
-            { status: Status.OK },
+            { status: StatusCodes.OK },
           )
         const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
 
@@ -112,11 +112,11 @@ describe('connectOrcidCode', () => {
               code,
             }).toString(),
           headers: {
-            'Content-Type': MediaType.applicationFormURLEncoded,
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
         },
         {
-          status: Status.OK,
+          status: StatusCodes.OK,
           body: {
             access_token: accessToken,
             orcid: user.orcid,
@@ -150,7 +150,7 @@ describe('connectOrcidCode', () => {
     async (code, user, locale, orcidOauth, publicUrl, accessToken) => {
       const orcidUserIdStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-        status: Status.OK,
+        status: StatusCodes.OK,
         body: accessToken,
       })
 
@@ -164,7 +164,7 @@ describe('connectOrcidCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.SERVICE_UNAVAILABLE,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',
@@ -181,11 +181,13 @@ describe('connectOrcidCode', () => {
     fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
-    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+    fc
+      .integer({ min: 200, max: 599 })
+      .filter(status => status !== (StatusCodes.OK as number) && status !== (StatusCodes.NOT_FOUND as number)),
   ])('when the response has a non-200/404 status code', async (code, user, locale, oauth, publicUrl, accessToken) => {
     const orcidUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-      status: Status.OK,
+      status: StatusCodes.OK,
       body: accessToken,
     })
 
@@ -199,7 +201,7 @@ describe('connectOrcidCode', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.SERVICE_UNAVAILABLE,
       title: expect.anything(),
       main: expect.anything(),
       skipToLabel: 'main',
@@ -224,7 +226,7 @@ describe('connectOrcidCode', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
+        status: StatusCodes.SERVICE_UNAVAILABLE,
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'main',

@@ -5,7 +5,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Orcid } from 'orcid-id-ts'
 import type { SupportedLocale } from '../locales/index.js'
@@ -66,13 +66,13 @@ const exchangeAuthorizationCode = ({ code, user }: { code: string; user: User })
               }),
               UrlParams.toString,
             ),
-            MediaType.applicationFormURLEncoded,
+            'application/x-www-form-urlencoded',
           ),
         ),
       ),
     ),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
     RTE.chainTaskEitherKW(F.decode(OrcidUserTokenD(user.orcid))),
   )
 
@@ -91,12 +91,12 @@ const revokeAccessToken = (token: string) =>
             }),
             UrlParams.toString,
           ),
-          MediaType.applicationFormURLEncoded,
+          'application/x-www-form-urlencoded',
         ),
       ),
     ),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
   )
 
 const JsonD = {

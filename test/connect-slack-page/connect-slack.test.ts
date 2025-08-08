@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { StatusCodes } from 'http-status-codes'
-import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as _ from '../../src/connect-slack-page/index.js'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../src/routes.js'
@@ -154,7 +153,7 @@ describe('connectSlackCode', () => {
                 code,
               }).toString(),
             headers: {
-              'Content-Type': MediaType.applicationFormURLEncoded,
+              'Content-Type': 'application/x-www-form-urlencoded',
             },
           },
           {
@@ -250,7 +249,7 @@ describe('connectSlackCode', () => {
     async (code, user, locale, oauth, publicUrl, accessToken, state) => {
       const slackUserIdStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-        status: Status.OK,
+        status: StatusCodes.OK,
         body: accessToken,
       })
 

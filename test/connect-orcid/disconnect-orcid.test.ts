@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType, Status } from 'hyper-ts'
+import { StatusCodes } from 'http-status-codes'
 import * as _ from '../../src/connect-orcid/disconnect-orcid.js'
 import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token.js'
 import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
@@ -29,9 +29,9 @@ describe('disconnectOrcid', () => {
                     token: orcidToken.accessToken,
                     token_type_hint: 'access_token',
                   }).toString(),
-                headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               },
-              { status: Status.OK },
+              { status: StatusCodes.OK },
             )
 
             const actual = await _.disconnectOrcid({ locale, method: 'POST', user })({
@@ -63,7 +63,7 @@ describe('disconnectOrcid', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
-              status: Status.ServiceUnavailable,
+              status: StatusCodes.SERVICE_UNAVAILABLE,
               title: expect.anything(),
               main: expect.anything(),
               skipToLabel: 'main',
@@ -90,7 +90,7 @@ describe('disconnectOrcid', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           canonical: format(disconnectOrcidMatch.formatter, {}),
-          status: Status.OK,
+          status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
@@ -113,7 +113,7 @@ describe('disconnectOrcid', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
-          status: Status.SeeOther,
+          status: StatusCodes.SEE_OTHER,
           location: format(myDetailsMatch.formatter, {}),
         })
         expect(getOrcidToken).toHaveBeenCalledWith(user.orcid)
@@ -132,7 +132,7 @@ describe('disconnectOrcid', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
+          status: StatusCodes.SERVICE_UNAVAILABLE,
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'main',
