@@ -22,7 +22,7 @@ export const home = ({
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 1237, servers: 30, users: 3453 })),
+    RT.let('statistics', () => ({ prereviews: 1306, servers: 30, users: 3619 })),
     RT.let('locale', () => locale),
     RT.let('canSeeDesignTweaks', () => canSeeDesignTweaks),
     RT.let('canSeeHomePageChanges', () => canSeeHomePageChanges),
