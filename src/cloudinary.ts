@@ -12,6 +12,8 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
+import type { Readable } from 'stream'
+import { buffer } from 'stream/consumers'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { EnvFor } from './Fpts.js'
@@ -33,7 +35,7 @@ export interface CloudinaryApiEnv {
 }
 
 export interface ReadFileEnv {
-  readFile: (path: string) => TE.TaskEither<unknown, NonSharedBuffer>
+  readFile: (path: string) => Readable
 }
 
 export interface GetCloudinaryAvatarEnv {
@@ -78,8 +80,8 @@ const DestroyResponseD = pipe(
 
 const readFile = (path: string) =>
   pipe(
-    RTE.ask<ReadFileEnv>(),
-    RTE.chainTaskEitherK(({ readFile }) => readFile(path)),
+    R.ask<ReadFileEnv>(),
+    R.map(({ readFile }) => readFile(path)),
   )
 
 const getCloudinaryAvatar = (orcid: Orcid) =>
@@ -142,7 +144,10 @@ export const saveAvatarOnCloudinary = (
   pipe(
     RTE.Do,
     RTE.apS('now', RTE.rightReaderIO(now)),
-    RTE.apSW('buffer', readFile(avatar.path)),
+    RTE.apSW(
+      'buffer',
+      pipe(RTE.fromReader(readFile(avatar.path)), RTE.chainTaskEitherKW(TE.tryCatchK(buffer, E.toError))),
+    ),
     RTE.bindW('upload', ({ buffer, now }) =>
       pipe(
         RTE.asks(({ cloudinaryApi, publicUrl }: CloudinaryApiEnv & PublicUrlEnv) =>

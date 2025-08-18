@@ -6,7 +6,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as fs from 'fs'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -213,7 +212,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           saveAvatar: withEnv(saveAvatarOnCloudinary, {
             ...env,
             getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
-            readFile: TE.taskify(fs.readFile),
+            readFile: fs.createReadStream,
             saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env),
           }),
         })),

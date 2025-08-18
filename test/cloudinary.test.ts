@@ -5,6 +5,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { Readable } from 'stream'
 import { P, isMatching } from 'ts-pattern'
 import * as _ from '../src/cloudinary.js'
 import * as StatusCodes from '../src/StatusCodes.js'
@@ -121,7 +122,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
-        readFile: () => TE.right(avatar.buffer),
+        readFile: () => Readable.from(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -200,7 +201,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
-        readFile: () => TE.right(avatar.buffer),
+        readFile: () => Readable.from(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -254,7 +255,7 @@ describe('saveAvatarOnCloudinary', () => {
           getCloudinaryAvatar,
           logger: () => IO.of(undefined),
           publicUrl,
-          readFile: () => TE.right(avatar.buffer),
+          readFile: () => Readable.from(avatar.buffer),
           saveCloudinaryAvatar,
         })()
 
@@ -307,7 +308,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
-        readFile: () => TE.right(avatar.buffer),
+        readFile: () => Readable.from(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -349,7 +350,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
-        readFile: () => TE.right(avatar.buffer),
+        readFile: () => Readable.from(avatar.buffer),
         saveCloudinaryAvatar: shouldNotBeCalled,
       })()
 
@@ -372,9 +373,12 @@ describe('saveAvatarOnCloudinary', () => {
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
       path: fc.string(),
     }),
-    fc.anything(),
+    fc.error(),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])('when the avatar cannot be loaded', async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, error) => {
+    const stream = new Readable()
+    stream.destroy(error)
+
     const actual = await _.saveAvatarOnCloudinary(
       orcid,
       avatar,
@@ -385,7 +389,7 @@ describe('saveAvatarOnCloudinary', () => {
       getCloudinaryAvatar: () => TE.fromEither(existing),
       logger: () => IO.of(undefined),
       publicUrl,
-      readFile: () => TE.left(error),
+      readFile: () => stream,
       saveCloudinaryAvatar: shouldNotBeCalled,
     })()
 
