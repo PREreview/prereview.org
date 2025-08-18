@@ -27,8 +27,6 @@ import { ProfileId } from '../types/index.js'
 import { isPseudonym } from '../types/Pseudonym.js'
 import type { User } from '../user.js'
 
-export type { Prereview } from '../Prereview.js'
-
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>
 }
