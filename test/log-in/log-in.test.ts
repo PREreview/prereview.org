@@ -12,7 +12,7 @@ import { MediaType } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as _ from '../../src/log-in/index.js'
 import type { TemplatePageEnv } from '../../src/page.js'
-import { homeMatch, writeReviewMatch } from '../../src/routes.js'
+import { homeMatch } from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { OrcidLocale } from '../../src/types/index.js'
 import { UserC } from '../../src/user.js'
@@ -83,42 +83,6 @@ describe('logIn', () => {
     },
   )
 })
-
-test.prop([fc.oauth(), fc.preprintId(), fc.supportedLocale(), fc.origin(), fc.connection()])(
-  'logInAndRedirect',
-  async (orcidOauth, preprintId, locale, publicUrl, connection) => {
-    const actual = await runMiddleware(
-      _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
-        locale,
-        orcidOauth,
-        publicUrl,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: StatusCodes.Found },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: new URL(
-            `?${new URLSearchParams({
-              lang: OrcidLocale.fromSupportedLocale(locale),
-              client_id: orcidOauth.clientId,
-              response_type: 'code',
-              redirect_uri: new URL('/orcid', publicUrl).toString(),
-              scope: '/authenticate',
-              state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
-            }).toString()}`,
-            orcidOauth.authorizeUrl,
-          ).href,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  },
-)
 
 describe('logOut', () => {
   test.prop([

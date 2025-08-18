@@ -55,17 +55,6 @@ export const logIn = pipe(
   R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv & { locale: SupportedLocale }>()),
 )
 
-export const logInAndRedirect = flow(
-  RM.fromReaderK(toUrl),
-  RM.bindTo('url'),
-  RM.apSW(
-    'lang',
-    RM.asks(({ locale }: { locale: SupportedLocale }) => OrcidLocale.fromSupportedLocale(locale)),
-  ),
-  RM.ichainW(({ url, lang }) => requestAuthorizationCode('/authenticate')(url.href, { lang })),
-  R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv & { locale: SupportedLocale }>()),
-)
-
 export const logOut = pipe(
   RM.redirect(format(homeMatch.formatter, {})),
   RM.ichainFirst(() => endSession),
