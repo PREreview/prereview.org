@@ -62,12 +62,14 @@ const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale:
               .returnType<
                 E.Either<
                   TooBigE | MissingE | WrongTypeE,
-                  { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' }
+                  { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' }
                 >
               >()
               .with('TOO_BIG', () => E.left(tooBigE()))
               .with('ERROR', () => E.left(missingE()))
-              .with({ mimetype: P.union('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp') }, E.right)
+              .with({ mimetype: P.union('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp') }, file =>
+                E.right({ mimetype: file.mimetype, path: file.path }),
+              )
               .with({ mimetype: P.string }, () => E.left(wrongTypeE()))
               .exhaustive(),
         ),
@@ -91,10 +93,8 @@ const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale:
     ),
   )
 
-const BufferD = D.fromRefinement((value): value is Buffer => value instanceof Buffer, 'Buffer')
-
 const FileD = D.struct({
-  buffer: BufferD,
+  path: D.string,
   mimetype: D.string,
 })
 

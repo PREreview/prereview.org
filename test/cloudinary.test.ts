@@ -85,6 +85,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
         mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+        path: fc.constant('/'),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
@@ -120,6 +121,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
+        readFile: () => TE.right(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -143,6 +145,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
         mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+        path: fc.string(),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, imageId) => {
@@ -197,6 +200,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
+        readFile: () => TE.right(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -221,6 +225,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
         mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+        path: fc.string(),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
@@ -249,6 +254,7 @@ describe('saveAvatarOnCloudinary', () => {
           getCloudinaryAvatar,
           logger: () => IO.of(undefined),
           publicUrl,
+          readFile: () => TE.right(avatar.buffer),
           saveCloudinaryAvatar,
         })()
 
@@ -275,6 +281,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+      path: fc.string(),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])(
@@ -300,6 +307,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
+        readFile: () => TE.right(avatar.buffer),
         saveCloudinaryAvatar,
       })()
 
@@ -321,6 +329,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+      path: fc.string(),
     }),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])(
@@ -340,6 +349,7 @@ describe('saveAvatarOnCloudinary', () => {
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
+        readFile: () => TE.right(avatar.buffer),
         saveCloudinaryAvatar: shouldNotBeCalled,
       })()
 
@@ -347,6 +357,40 @@ describe('saveAvatarOnCloudinary', () => {
       expect(fetch.done()).toBeTruthy()
     },
   )
+
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+      secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
+    }),
+    fc.origin(),
+    fc.orcid(),
+    fc.either(fc.constant('not-found'), fc.nonEmptyString()),
+    fc.record({
+      mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
+      path: fc.string(),
+    }),
+    fc.anything(),
+    fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
+  ])('when the avatar cannot be loaded', async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, error) => {
+    const actual = await _.saveAvatarOnCloudinary(
+      orcid,
+      avatar,
+    )({
+      clock: FixedClock(date),
+      cloudinaryApi,
+      fetch: shouldNotBeCalled,
+      getCloudinaryAvatar: () => TE.fromEither(existing),
+      logger: () => IO.of(undefined),
+      publicUrl,
+      readFile: () => TE.left(error),
+      saveCloudinaryAvatar: shouldNotBeCalled,
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })
 
 describe('removeAvatarFromCloudinary', () => {

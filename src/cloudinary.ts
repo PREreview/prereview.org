@@ -32,6 +32,10 @@ export interface CloudinaryApiEnv {
   }
 }
 
+export interface ReadFileEnv {
+  readFile: (path: string) => TE.TaskEither<unknown, NonSharedBuffer>
+}
+
 export interface GetCloudinaryAvatarEnv {
   getCloudinaryAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
 }
@@ -71,6 +75,12 @@ const DestroyResponseD = pipe(
     }),
   ),
 )
+
+const readFile = (path: string) =>
+  pipe(
+    RTE.ask<ReadFileEnv>(),
+    RTE.chainTaskEitherK(({ readFile }) => readFile(path)),
+  )
 
 const getCloudinaryAvatar = (orcid: Orcid) =>
   pipe(
@@ -127,12 +137,13 @@ export const getAvatarFromCloudinary = flow(
 
 export const saveAvatarOnCloudinary = (
   orcid: Orcid,
-  avatar: { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
+  avatar: { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
 ) =>
   pipe(
     RTE.Do,
     RTE.apS('now', RTE.rightReaderIO(now)),
-    RTE.bindW('upload', ({ now }) =>
+    RTE.apSW('buffer', readFile(avatar.path)),
+    RTE.bindW('upload', ({ buffer, now }) =>
       pipe(
         RTE.asks(({ cloudinaryApi, publicUrl }: CloudinaryApiEnv & PublicUrlEnv) =>
           pipe(
@@ -153,7 +164,7 @@ export const saveAvatarOnCloudinary = (
                     { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
                   ),
                 ),
-                UrlParams.set('file', `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`),
+                UrlParams.set('file', `data:${avatar.mimetype};base64,${buffer.toString('base64')}`),
                 UrlParams.toString,
               ),
               'application/x-www-form-urlencoded',

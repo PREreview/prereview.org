@@ -11,7 +11,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 describe('changeAvatar', () => {
   test.prop([
     fc.record({
-      buffer: fc.string().map(string => Buffer.from(string)),
+      path: fc.string(),
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.user(),
@@ -30,7 +30,7 @@ describe('changeAvatar', () => {
 
   test.prop([
     fc.record({
-      buffer: fc.string().map(string => Buffer.from(string)),
+      path: fc.string(),
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.user(),
@@ -55,7 +55,7 @@ describe('changeAvatar', () => {
 
   test.prop([
     fc.record({
-      buffer: fc.string().map(string => Buffer.from(string)),
+      path: fc.string(),
       mimetype: fc
         .string()
         .filter(string => !['image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'].includes(string)),

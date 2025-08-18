@@ -6,6 +6,8 @@ import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as fs from 'fs'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
@@ -124,7 +126,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
 
 const maybeGetUser = RM.asks((env: RouterEnv) => env.user)
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
+const upload = multer({ storage: multer.diskStorage({}), limits: { fileSize: 5_242_880 } })
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -211,6 +213,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           saveAvatar: withEnv(saveAvatarOnCloudinary, {
             ...env,
             getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
+            readFile: TE.taskify(fs.readFile),
             saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env),
           }),
         })),
