@@ -370,7 +370,7 @@ export function publishForm(
   })
 }
 
-export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
     return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a

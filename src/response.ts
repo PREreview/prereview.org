@@ -340,7 +340,7 @@ const handleRedirectResponse = ({
     M.ichain(() => M.end()),
   )
 
-export const handleFlashMessageResponse = ({
+const handleFlashMessageResponse = ({
   response,
 }: {
   response: FlashMessageResponse

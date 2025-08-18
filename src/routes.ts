@@ -161,7 +161,7 @@ const IntegerFromStringC = C.make(
 
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
 // Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
-export const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
+const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
   C.make(
     D.union(
       codec,
