@@ -1,0 +1,65 @@
+{
+  "date_type": "submitted",
+  "dir": "disk0\/00\/00\/83\/39",
+  "eprintid": 8339,
+  "datestamp": "2010-10-16 15:07:55",
+  "title": "Is More Different?  Emergent Properties in Physics",
+  "status_changed": "2010-10-16 15:07:55",
+  "rev_number": 11,
+  "metadata_visibility": "show",
+  "full_text_status": "public",
+  "creators": [
+    {
+      "id": "paul.mainwood@gmail.com",
+      "name": { "lineage": null, "family": "Mainwood", "honourific": null, "given": "Paul" }
+    }
+  ],
+  "uri": "https:\/\/philsci-archive.pitt.edu\/id\/eprint\/8339",
+  "date": 2006,
+  "userid": 5594,
+  "keywords": "Emergence, Condensed matter, Renormalisation, Renormalization",
+  "lastmod": "2010-10-16 15:07:55",
+  "abstract": "This thesis gives a philosophical assessment of a contemporary movement, influential amongst physicists, about the status of microscopic and macroscopic properties.  The fountainhead for the movement was a short 1972 paper `More is Different', written by the condensed-matter physicist, Philip Anderson.  Each of the chapters is concerned with themes mentioned in that paper, or subsequently expounded by Anderson and his followers.\r\n\r\nIn Chapter 1, I aim to locate Anderson's existence claims for `emergent properties' within the metaphysical, epistemological and methodological doctrines that identify themselves as `emergentist'.  I argue, against the commentators' consensus, that the New Emergentists make claims about the metaphysical status of physical properties, and should not be read as concerned only with matters of research methodology for physics.\r\n\r\nIn Chapter 2, I look at the physical examples that the New Emergentists appeal to, and propose a way of formulating their main claims within modern analytic metaphysics.  I argue that it is possible to view their thesis as an updated version of `British Emergentism' a movement popular in the early years of the twentieth century.  I support this contention by comparing examples of emergent properties put forward by the British and the New Emergentists.\r\n\r\nChapter 3 is a discussion of the significance of renormalisation techniques.  I attack a set of claims by Robert Batterman, who presents renormalisation as an explanatory strategy unrecognised by the philosophy of science.  I separate several different methods of renormalisation analysis, and argue that he has conflated them.  \r\n\r\nIn Chapter 4, I discuss the theoretical representation of phase transitions in condensed matter physics; in particular, their appeal to the limit of an infinite system.  I examine and refute various claims to the effect that the ineliminability of this limit in modelling phase transitions is of great metaphysical significance.  I suggest a definition of phase transitions for finite systems that dissolves this illusion, and gives us reason to trust the results of the theories that only apply in the infinite limit.  %I then comment on the significance of these results for a suggestion of Laura Ruetsche, that quantum statistical mechanics should be used as a guide to the interpretation of quantum field theory.\r\n\r\nChapter 5 revisits the doctrines of the New Emergentists in order to place their views within some wider philosophical debates.  I look at how their doctrines bear on issues in the interpretation of quantum mechanics, in the philosophy of mind and the philosophy of science.  I close by returning to the context within physics, in which the New Emergentists originally made their presence felt: the controversy over whether elementary particle physics should enjoy greater status than other areas. ",
+  "type": "published_article",
+  "eprint_status": "archive",
+  "documents": [
+    {
+      "format": "application\/pdf",
+      "uri": "https:\/\/philsci-archive.pitt.edu\/id\/document\/7432",
+      "files": [
+        {
+          "hash": "7b3230900da3350dba8e212884f7f792",
+          "uri": "https:\/\/philsci-archive.pitt.edu\/id\/file\/11918",
+          "filesize": 1843369,
+          "mime_type": "application\/pdf",
+          "objectid": 7432,
+          "hash_type": "MD5",
+          "mtime": "2010-10-15 17:50:56",
+          "fileid": 11918,
+          "datasetid": "document",
+          "filename": "Is_more_different_2006.pdf"
+        }
+      ],
+      "relation": [
+        { "uri": "\/id\/document\/7433", "type": "http:\/\/eprints.org\/relation\/hasVolatileVersion" },
+        { "uri": "\/id\/document\/7433", "type": "http:\/\/eprints.org\/relation\/hasVersion" },
+        { "uri": "\/id\/document\/7433", "type": "http:\/\/eprints.org\/relation\/haspreviewThumbnailVersion" },
+        { "uri": "\/id\/document\/7434", "type": "http:\/\/eprints.org\/relation\/hasVolatileVersion" },
+        { "uri": "\/id\/document\/7434", "type": "http:\/\/eprints.org\/relation\/hasVersion" },
+        { "uri": "\/id\/document\/7434", "type": "http:\/\/eprints.org\/relation\/hasIndexCodesVersion" }
+      ],
+      "security": "public",
+      "mime_type": "application\/pdf",
+      "eprintid": 8339,
+      "placement": 1,
+      "pos": 1,
+      "language": "en",
+      "rev_number": 5,
+      "docid": 7432,
+      "content": "submitted",
+      "main": "Is_more_different_2006.pdf"
+    }
+  ],
+  "item_issues_count": 0,
+  "subjects": ["condensed-matter", "quantum-field-theory", "statistical-mechanics-thermodynamics"]
+}

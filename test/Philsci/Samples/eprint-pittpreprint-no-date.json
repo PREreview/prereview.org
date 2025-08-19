@@ -1,0 +1,67 @@
+{
+  "publisher": "n\/a",
+  "dir": "disk0\/00\/00\/85\/90",
+  "eprintid": 8590,
+  "datestamp": "2011-05-04 11:24:56",
+  "title": "Translation of: W. Heisenberg, ‘Ist eine deterministische Ergänzung der Quantenmechanik möglich?’",
+  "status_changed": "2011-05-04 11:24:56",
+  "rev_number": 9,
+  "metadata_visibility": "show",
+  "full_text_status": "public",
+  "publication": "n\/a",
+  "creators": [
+    { "id": "ecrull@nd.edu", "name": { "lineage": null, "family": "Crull", "honourific": null, "given": "Elise" } },
+    {
+      "id": "g.bacciagaluppi@abdn.ac.uk",
+      "name": { "lineage": null, "family": "Bacciagaluppi", "honourific": null, "given": "Guido" }
+    }
+  ],
+  "uri": "https:\/\/philsci-archive.pitt.edu\/id\/eprint\/8590",
+  "userid": 414,
+  "keywords": "Heisenberg, hidden variables, EPR, quantum mechanics",
+  "lastmod": "2011-05-04 11:24:56",
+  "abstract": "The publication of the EPR paper in 1935 prompted Heisenberg to draft a manuscript on the question of the completability of quantum mechanics (which was published only posthumously). We give here the English translation of this manuscript with a brief introduction and bibliography.\r\n",
+  "type": "pittpreprint",
+  "eprint_status": "archive",
+  "documents": [
+    {
+      "format": "application\/pdf",
+      "uri": "https:\/\/philsci-archive.pitt.edu\/id\/document\/8031",
+      "files": [
+        {
+          "hash": "dea1ae2ecc82de81ac476d12146ddfc5",
+          "uri": "https:\/\/philsci-archive.pitt.edu\/id\/file\/14482",
+          "filesize": 184473,
+          "mime_type": "application\/pdf",
+          "objectid": 8031,
+          "hash_type": "MD5",
+          "mtime": "2011-05-02 19:09:39",
+          "fileid": 14482,
+          "datasetid": "document",
+          "filename": "Heis1935_EPR_Final_translation.pdf"
+        }
+      ],
+      "relation": [
+        { "uri": "\/id\/document\/8032", "type": "http:\/\/eprints.org\/relation\/hasVolatileVersion" },
+        { "uri": "\/id\/document\/8032", "type": "http:\/\/eprints.org\/relation\/hasVersion" },
+        { "uri": "\/id\/document\/8032", "type": "http:\/\/eprints.org\/relation\/haspreviewThumbnailVersion" },
+        { "uri": "\/id\/document\/8033", "type": "http:\/\/eprints.org\/relation\/hasVolatileVersion" },
+        { "uri": "\/id\/document\/8033", "type": "http:\/\/eprints.org\/relation\/hasVersion" },
+        { "uri": "\/id\/document\/8033", "type": "http:\/\/eprints.org\/relation\/hasIndexCodesVersion" }
+      ],
+      "security": "public",
+      "mime_type": "application\/pdf",
+      "eprintid": 8590,
+      "placement": 1,
+      "pos": 1,
+      "language": "en",
+      "rev_number": 5,
+      "docid": 8031,
+      "content": "other",
+      "main": "Heis1935_EPR_Final_translation.pdf"
+    }
+  ],
+  "note": "To be included in a planned book for CUP with the title '\"The Einstein Paradox\": The debate on nonlocality and incompleteness in 1935'. ",
+  "item_issues_count": 0,
+  "subjects": ["quantum-mechanics"]
+}

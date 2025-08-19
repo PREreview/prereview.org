@@ -1,0 +1,68 @@
+{
+  "dir": "disk0\/00\/02\/32\/54",
+  "eprintid": 23254,
+  "datestamp": "2024-04-05 06:43:17",
+  "title": "The Qualitative Study of Scientific Imagination",
+  "status_changed": "2024-04-05 06:43:17",
+  "rev_number": 18,
+  "metadata_visibility": "show",
+  "full_text_status": "public",
+  "creators": [
+    {
+      "id": "mike.stuart.post@gmail.com",
+      "orcid": "0000-0002-4165-2641",
+      "name": { "lineage": null, "family": "Stuart", "honourific": null, "given": "Michael T." }
+    }
+  ],
+  "uri": "https:\/\/philsci-archive.pitt.edu\/id\/eprint\/23254",
+  "date": 2024,
+  "userid": 27167,
+  "lastmod": "2024-04-05 06:43:17",
+  "keywords": "scientific imagination; imagination; qualitative methods; empirical philosophy of science; internalism; externalism; consequentialism; virtue epistemology; deontology; ethics of science",
+  "abstract": "Imagination is extremely important for science, yet very little is known about how scientists actually use it. Are scientists taught to imagine? What do they value imagination for? How do social and disciplinary factors shape it? How is the labor of imagining distributed? These questions should be high priority for anyone who studies or practices science, and this paper argues that the best methods for addressing them are qualitative. I summarize a few preliminary findings derived from recent interview-based and observational qualitative studies that I have performed. These finding include: (i) imagination is only valued for use in addressing maximally specific problems, and only when all else fails; (ii) younger scientists and scientists who are members of underrepresented groups express less positive views about imagination in general, and have less confidence in their own imaginations; (iii) while scientists seem to employ various epistemological frameworks to evaluate imaginings, overall they appear to be epistemic consequentialists about imagination, and this holds also for their evaluations of the tools they use to extend the power of their imaginations. I close by discussing the epistemic and ethical consequences of these findings, and then suggesting a few research avenues that could be explored next as we move forward in the study of scientific imagination.",
+  "type": "pittpreprint",
+  "eprint_status": "archive",
+  "documents": [
+    {
+      "format": "text",
+      "uri": "https:\/\/philsci-archive.pitt.edu\/id\/document\/80655",
+      "files": [
+        {
+          "hash": "6bcf2f0b4e13b346fc4476f18b8bfdae",
+          "uri": "https:\/\/philsci-archive.pitt.edu\/id\/file\/210365",
+          "filesize": 386692,
+          "mime_type": "application\/pdf",
+          "objectid": 80655,
+          "hash_type": "MD5",
+          "mtime": "2024-04-02 16:18:49",
+          "fileid": 210365,
+          "datasetid": "document",
+          "filename": "Final Preprint Qualitative Study of Scientific Imagination.pdf"
+        }
+      ],
+      "security": "public",
+      "mime_type": "application\/pdf",
+      "eprintid": 23254,
+      "placement": 1,
+      "pos": 1,
+      "language": "en",
+      "rev_number": 2,
+      "docid": 80655,
+      "main": "Final Preprint Qualitative Study of Scientific Imagination.pdf"
+    }
+  ],
+  "note": "Forthcoming in Qualitative Psychology",
+  "subjects": [
+    "biology",
+    "earth-sciences",
+    "ethical-issues",
+    "experimentation",
+    "mathematics",
+    "models-and-idealization",
+    "physics",
+    "science-education",
+    "social-epistemology-of-science",
+    "sociology",
+    "thought-experiments"
+  ]
+}
