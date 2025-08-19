@@ -6,7 +6,7 @@ import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDataci
 import * as Datacite from '../Datacite/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import * as JapanLinkCenter from '../JapanLinkCenter/index.js'
-import { getPreprintFromPhilsci } from '../philsci.js'
+import * as Philsci from '../Philsci/index.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PhilsciPreprintId, PreprintId } from '../types/preprint-id.js'
 
@@ -39,9 +39,7 @@ export const layer = Layer.effect(
 
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
-      Match.when({ _tag: 'PhilsciPreprintId' }, id =>
-        FptsToEffect.readerTaskEither(getPreprintFromPhilsci(id), { fetch }),
-      ),
+      Match.when({ _tag: 'PhilsciPreprintId' }, Philsci.getPreprintFromPhilsci),
       Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
         FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch }),
       ),
