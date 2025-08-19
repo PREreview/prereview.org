@@ -1220,6 +1220,21 @@ export const plainDate = (): fc.Arbitrary<Temporal.PlainDate> =>
     })
     .map(args => Temporal.PlainDate.from(args))
 
+export const plainTime = (): fc.Arbitrary<Temporal.PlainTime> =>
+  fc
+    .record({
+      hour: fc.integer({ min: 0, max: 23 }),
+      minute: fc.integer({ min: 0, max: 59 }),
+      second: fc.integer({ min: 0, max: 59 }),
+      millisecond: fc.integer({ min: 0, max: 999 }),
+      microsecond: fc.integer({ min: 0, max: 999 }),
+      nanosecond: fc.integer({ min: 0, max: 999 }),
+    })
+    .map(args => Temporal.PlainTime.from(args))
+
+export const plainDateTime = (): fc.Arbitrary<Temporal.PlainDateTime> =>
+  fc.tuple(plainDate(), plainTime()).map(([plainDate, plainTime]) => plainDate.toPlainDateTime(plainTime))
+
 export const instant = (): fc.Arbitrary<Temporal.Instant> =>
   fc.date().map(date => Temporal.Instant.from(date.toISOString()))
 
