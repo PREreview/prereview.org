@@ -1,20 +1,17 @@
 import { Array, Schema, Struct, flow, pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import { type HeadersOpen, MediaType, type ResponseEnded, type StatusOpen } from 'hyper-ts'
-import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message.js'
+import { deleteFlashMessage, getFlashMessage } from './flash-message.js'
 import { type Html, html, rawHtml } from './html.js'
 import { type SupportedLocale, translate } from './locales/index.js'
-import type { OrcidOAuthEnv } from './log-in/index.js'
 import { showNotificationBanner } from './notification-banner.js'
 import { type Page, type TemplatePageEnv, templatePage } from './page.js'
-import { type PublicUrlEnv, toUrl } from './public-url.js'
+import type { PublicUrlEnv } from './public-url.js'
 import type * as Router from './Router/index.js'
-import { orcidCodeMatch } from './routes.js'
 import * as StatusCodes from './StatusCodes.js'
 import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.js'
 import type { User } from './user.js'
@@ -142,21 +139,13 @@ export function handleResponse({
   user,
   locale,
 }: {
-  response: PageResponse | RedirectResponse | FlashMessageResponse | LogInResponse
+  response: PageResponse | RedirectResponse
   user?: User
   locale: SupportedLocale
-}): RM.ReaderMiddleware<
-  GetUserOnboardingEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
-  StatusOpen,
-  ResponseEnded,
-  never,
-  void
-> {
+}): RM.ReaderMiddleware<GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> {
   return match({ response, user, locale })
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
-    .with({ response: { _tag: 'FlashMessageResponse' } }, RM.fromMiddlewareK(handleFlashMessageResponse))
-    .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
     .exhaustive()
 }
 
@@ -254,7 +243,7 @@ export const handlePageResponse = ({
   user,
   locale,
 }: {
-  response: PageResponse | StreamlinePageResponse
+  response: PageResponse
   user?: User
   locale: SupportedLocale
 }): RM.ReaderMiddleware<
@@ -338,31 +327,6 @@ const handleRedirectResponse = ({
     M.ichain(() => M.header('Location', response.location.toString())),
     M.ichain(() => M.closeHeaders()),
     M.ichain(() => M.end()),
-  )
-
-const handleFlashMessageResponse = ({
-  response,
-}: {
-  response: FlashMessageResponse
-}): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
-  pipe(
-    M.status(StatusCodes.SeeOther),
-    M.ichain(() => M.header('Location', response.location)),
-    M.ichain(() => M.header('Cache-Control', 'no-store, must-revalidate')),
-    M.ichain(() => setFlashMessage(response.message)),
-    M.ichain(() => M.closeHeaders()),
-    M.ichain(() => M.end()),
-  )
-
-const handleLogInResponse = ({
-  response,
-}: {
-  response: LogInResponse
-}): RM.ReaderMiddleware<OrcidOAuthEnv & PublicUrlEnv, StatusOpen, ResponseEnded, never, void> =>
-  pipe(
-    RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(`${publicUrl.origin}${response.location}`).href),
-    RM.ichainW(requestAuthorizationCode('/authenticate')),
-    R.local(addRedirectUri()),
   )
 
 function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: SupportedLocale) {
@@ -459,20 +423,6 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: Suppo
       }),
     )
     .exhaustive()
-}
-
-function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
-  return env => ({
-    ...env,
-    oauth: {
-      ...env.orcidOauth,
-      redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
-        url.search = ''
-
-        return url
-      }),
-    },
-  })
 }
 
 function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, never, void> {
