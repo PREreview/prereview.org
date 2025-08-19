@@ -16,6 +16,6 @@ export class Eprint extends Schema.Class<Eprint>('Eprint')({
     }),
   ),
   title: Schema.compose(Schema.Trim, Schema.NonEmptyString),
-  abstract: Schema.optional(Schema.String),
+  abstract: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
   uri: Schema.URL,
 }) {}
