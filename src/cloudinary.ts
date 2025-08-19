@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
 import { now } from 'clock-ts'
 import { v2 as cloudinary } from 'cloudinary'
-import { Context, Function, type Redacted, String, flow, pipe } from 'effect'
+import { Function, String, flow, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -20,11 +20,6 @@ import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
 import * as StatusCodes from './StatusCodes.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-
-export class CloudinaryApiConfig extends Context.Tag('CloudinaryApiConfig')<
-  CloudinaryApiConfig,
-  { cloudName: string; key: Redacted.Redacted; secret: Redacted.Redacted }
->() {}
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {

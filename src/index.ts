@@ -4,7 +4,7 @@ import { PgClient } from '@effect/sql-pg'
 import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
-import { CloudinaryApiConfig } from './cloudinary.js'
+import * as Cloudinary from './Cloudinary/index.js'
 import { isAClubLead } from './club-details.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
@@ -102,7 +102,7 @@ pipe(
         }),
       ),
       Layer.effect(
-        CloudinaryApiConfig,
+        Cloudinary.CloudinaryApi,
         Config.all({
           cloudName: Config.succeed('prereview'),
           key: Config.redacted('CLOUDINARY_API_KEY'),

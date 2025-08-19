@@ -28,7 +28,8 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.js'
-import { CloudinaryApiConfig, getAvatarFromCloudinary } from '../../cloudinary.js'
+import { getAvatarFromCloudinary } from '../../cloudinary.js'
+import * as Cloudinary from '../../Cloudinary/index.js'
 import { clubProfile } from '../../club-profile-page/index.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
@@ -84,7 +85,7 @@ export const nonEffectRouter: Effect.Effect<
   | FetchHttpClient.Fetch
   | ExpressConfig
   | SlackApiConfig
-  | CloudinaryApiConfig
+  | Cloudinary.CloudinaryApi
   | PrereviewCoarNotifyConfig
   | Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
@@ -124,7 +125,7 @@ export const nonEffectRouter: Effect.Effect<
   const sessionId = yield* Effect.serviceOption(SessionId)
 
   const slackApiConfig = yield* SlackApiConfig
-  const cloudinaryApiConfig = yield* CloudinaryApiConfig
+  const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const orcidOauth = yield* OrcidOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
@@ -252,7 +253,7 @@ export interface Env {
     clientSecret: Redacted.Redacted
     tokenUrl: URL
   }
-  cloudinaryApiConfig: typeof CloudinaryApiConfig.Service
+  cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
   orcidApiConfig: {
     url: URL
     token?: Redacted.Redacted
