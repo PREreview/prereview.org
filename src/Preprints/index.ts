@@ -39,7 +39,7 @@ export const layer = Layer.effect(
 
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
-      Match.when({ _tag: 'PhilsciPreprintId' }, Philsci.getPreprintFromPhilsci),
+      Match.tag('PhilsciPreprintId', Philsci.getPreprintFromPhilsci),
       Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
         FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch }),
       ),
