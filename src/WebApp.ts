@@ -1,5 +1,5 @@
-import { HttpServer } from '@effect/platform'
-import { Effect, flow, Layer, pipe } from 'effect'
+import { FileSystem, HttpServer, Multipart } from '@effect/platform'
+import { Effect, flow, Layer, Option, pipe } from 'effect'
 import { Express } from './Context.js'
 import { ExpressHttpApp } from './ExpressHttpApp.js'
 import { expressServer } from './ExpressServer.js'
@@ -10,6 +10,7 @@ import * as TemplatePage from './TemplatePage.js'
 export const WebApp = pipe(
   Router,
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
+  Multipart.withMaxFileSize(Option.some(FileSystem.MiB(5))),
   HttpMiddleware.removeLocaleFromPathForRouting,
   HttpMiddleware.serveStaticFiles,
   HttpMiddleware.removeTrailingSlashes,

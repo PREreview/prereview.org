@@ -1,13 +1,13 @@
-import { pipe } from 'effect'
+import { Multipart } from '@effect/platform'
+import { Match, Schema, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import { saveAvatar } from '../avatar.js'
-import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form.js'
+import { missingE, tooBigE, wrongTypeE } from '../form.js'
 import { havingProblemsPage } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { FlashMessageResponse, LogInResponse } from '../response.js'
@@ -54,24 +54,34 @@ const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale:
     RTE.Do,
     RTE.let('avatar', () =>
       pipe(
-        AvatarFieldD.decode(body),
-        E.matchW(
-          () => E.left(missingE()),
-          avatar =>
-            match(avatar)
-              .returnType<
-                E.Either<
-                  TooBigE | MissingE | WrongTypeE,
-                  { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' }
-                >
-              >()
-              .with('TOO_BIG', () => E.left(tooBigE()))
-              .with('ERROR', () => E.left(missingE()))
-              .with({ mimetype: P.union('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp') }, file =>
-                E.right({ mimetype: file.mimetype, path: file.path }),
-              )
-              .with({ mimetype: P.string }, () => E.left(wrongTypeE()))
-              .exhaustive(),
+        body,
+        Schema.decodeUnknownEither(
+          Schema.EitherFromSelf({
+            left: Multipart.MultipartError,
+            right: Schema.Struct({ avatar: Multipart.SingleFileSchema }),
+          }),
+        ),
+        E.mapLeft(() => missingE()),
+        E.chain(
+          flow(
+            E.mapLeft(error =>
+              pipe(
+                Match.value(error.reason),
+                Match.whenOr('FileTooLarge', 'FieldTooLarge', 'BodyTooLarge', 'InternalError', () => tooBigE()),
+                Match.whenOr('TooManyParts', 'Parse', () => missingE()),
+                Match.exhaustive,
+              ),
+            ),
+          ),
+        ),
+        E.chainW(({ avatar }) =>
+          pipe(
+            Match.value(avatar.contentType),
+            Match.whenOr('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp', contentType =>
+              E.right({ path: avatar.path, mimetype: contentType }),
+            ),
+            Match.orElse(() => E.left(wrongTypeE())),
+          ),
         ),
       ),
     ),
@@ -92,21 +102,3 @@ const handleChangeAvatarForm = ({ body, locale, user }: { body: unknown; locale:
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-changed' }),
     ),
   )
-
-const FileD = D.struct({
-  path: D.string,
-  mimetype: D.string,
-})
-
-const AvatarFieldD = pipe(
-  D.struct({
-    avatar: D.union(
-      pipe(
-        D.tuple(FileD),
-        D.map(avatar => avatar[0]),
-      ),
-      D.literal('TOO_BIG', 'ERROR'),
-    ),
-  }),
-  D.map(({ avatar }) => avatar),
-)

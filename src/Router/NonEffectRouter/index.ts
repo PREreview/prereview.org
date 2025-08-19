@@ -1,13 +1,28 @@
 import {
   FetchHttpClient,
+  FileSystem,
   Headers,
   type HttpClient,
   HttpMethod,
   HttpServerError,
   HttpServerRequest,
   type HttpServerResponse,
+  type Path,
 } from '@effect/platform'
-import { Effect, Either, flow, Match, Option, pipe, Record, Redacted, type Runtime, String, Tuple } from 'effect'
+import {
+  Effect,
+  Either,
+  flow,
+  Match,
+  Option,
+  pipe,
+  Record,
+  Redacted,
+  type Runtime,
+  type Scope,
+  String,
+  Tuple,
+} from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -73,6 +88,9 @@ export const nonEffectRouter: Effect.Effect<
   | PrereviewCoarNotifyConfig
   | Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
+  | FileSystem.FileSystem
+  | Path.Path
+  | Scope.Scope
 > = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest
 
@@ -99,6 +117,7 @@ export const nonEffectRouter: Effect.Effect<
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
   const nodemailer = yield* Nodemailer
+  const fileSystem = yield* FileSystem.FileSystem
 
   const locale = yield* Locale
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
@@ -133,6 +152,7 @@ export const nonEffectRouter: Effect.Effect<
         Match.when(String.includes('application/x-www-form-urlencoded'), () =>
           Effect.andThen(request.urlParamsBody, Record.fromEntries),
         ),
+        Match.when(String.includes('multipart/form-data'), () => Effect.either(request.multipart)),
         Match.orElse(() => Effect.void),
       ),
     onFalse: () => Effect.void,
@@ -147,6 +167,7 @@ export const nonEffectRouter: Effect.Effect<
     sessionId: Option.getOrUndefined(sessionId),
     featureFlags,
     method: request.method,
+    fileSystem,
     runtime,
     logger,
     fetch,
@@ -194,6 +215,7 @@ export interface Env {
   featureFlags: typeof FeatureFlags.FeatureFlags.Service
   publicUrl: typeof PublicUrl.Service
   method: HttpMethod.HttpMethod
+  fileSystem: FileSystem.FileSystem
   runtime: Runtime.Runtime<
     | CachingHttpClient.HttpCache
     | GenerateUuid

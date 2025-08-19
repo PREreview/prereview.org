@@ -6,15 +6,12 @@ import * as E from 'fp-ts/lib/Either.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as fs from 'fs'
 import httpErrors from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
-import { fromRequestHandler } from 'hyper-ts/lib/express.js'
 import type * as L from 'logger-fp-ts'
-import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type * as CachingHttpClient from './CachingHttpClient/index.js'
@@ -25,7 +22,7 @@ import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
 import * as StatusCodes from './StatusCodes.js'
 import type * as Zenodo from './Zenodo/index.js'
-import { type CloudinaryApiEnv, saveAvatarOnCloudinary } from './cloudinary.js'
+import type { CloudinaryApiEnv } from './cloudinary.js'
 import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid/index.js'
 import type { SlackOAuthEnv } from './connect-slack-page/index.js'
 import type { SendEmailEnv } from './email.js'
@@ -45,17 +42,14 @@ import {
   logIn,
   logOut,
 } from './log-in/index.js'
-import { changeAvatar } from './my-details-page/index.js'
 import type { OrcidApiEnv } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import type { PrereviewCoarNotifyEnv } from './prereview-coar-notify/index.js'
 import type { PublicUrlEnv } from './public-url.js'
-import { handleResponse } from './response.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
-  changeAvatarMatch,
   logInMatch,
   logOutMatch,
   orcidCodeMatch,
@@ -123,10 +117,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   WasPrereviewRemovedEnv &
   FetchEnv
 
-const maybeGetUser = RM.asks((env: RouterEnv) => env.user)
-
-const upload = multer({ storage: multer.diskStorage({}), limits: { fileSize: 5_242_880 } })
-
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
@@ -171,51 +161,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ),
           RM.ichainW(authenticateError),
         ),
-      ),
-    ),
-    pipe(
-      changeAvatarMatch.parser,
-      P.map(() =>
-        pipe(
-          RM.of({}),
-          RM.apS(
-            'body',
-            pipe(
-              RM.fromMiddleware(
-                fromRequestHandler(
-                  upload.fields([{ name: 'avatar', maxCount: 1 }]),
-                  req => E.right(req.files),
-                  error => ({
-                    avatar: error instanceof MulterError && error.code === 'LIMIT_FILE_SIZE' ? 'TOO_BIG' : 'ERROR',
-                  }),
-                ),
-              ),
-              RM.orElseW(RM.right),
-            ),
-          ),
-          RM.apS(
-            'method',
-            RM.gets(c => c.getMethod()),
-          ),
-          RM.apS('user', maybeGetUser),
-          RM.apSW(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.bindW('response', RM.fromReaderTaskK(changeAvatar)),
-          RM.ichainW(handleResponse),
-        ),
-      ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          saveAvatar: withEnv(saveAvatarOnCloudinary, {
-            ...env,
-            getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
-            readFile: fs.createReadStream,
-            saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env),
-          }),
-        })),
       ),
     ),
     pipe(

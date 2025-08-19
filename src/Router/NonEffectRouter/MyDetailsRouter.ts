@@ -1,3 +1,4 @@
+import { NodeStream } from '@effect/platform-node'
 import { flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
@@ -7,6 +8,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import * as Cloudinary from '../../cloudinary.js'
 import { getAvatarFromCloudinary, removeAvatarFromCloudinary } from '../../cloudinary.js'
 import {
   connectOrcid,
@@ -22,6 +24,7 @@ import { sendContactEmailAddressVerificationEmail } from '../../email.js'
 import { withEnv } from '../../Fpts.js'
 import * as Keyv from '../../keyv.js'
 import {
+  changeAvatar,
   changeCareerStage,
   changeCareerStageVisibility,
   changeContactEmailAddress,
@@ -113,6 +116,18 @@ export const MyDetailsRouter = pipe(
     pipe(
       Routes.disconnectSlackMatch.parser,
       P.map(() => (env: Env) => disconnectSlack({ locale: env.locale, method: env.method, user: env.loggedInUser })),
+    ),
+    pipe(
+      Routes.changeAvatarMatch.parser,
+      P.map(
+        () => (env: Env) =>
+          changeAvatar({
+            body: env.body,
+            locale: env.locale,
+            method: env.method,
+            user: env.loggedInUser,
+          }),
+      ),
     ),
     pipe(
       Routes.removeAvatarMatch.parser,
@@ -389,6 +404,19 @@ export const MyDetailsRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         publicUrl: env.publicUrl,
+        saveAvatar: withEnv(Cloudinary.saveAvatarOnCloudinary, {
+          cloudinaryApi: {
+            cloudName: env.cloudinaryApiConfig.cloudName,
+            key: Redacted.value(env.cloudinaryApiConfig.key),
+            secret: Redacted.value(env.cloudinaryApiConfig.secret),
+          },
+          fetch: env.fetch,
+          getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
+          readFile: flow(env.fileSystem.stream, NodeStream.toReadableNever),
+          saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
+          publicUrl: env.publicUrl,
+          ...env.logger,
+        }),
         saveCareerStage: withEnv(Keyv.saveCareerStage, {
           careerStageStore: env.users.careerStageStore,
           ...env.logger,
