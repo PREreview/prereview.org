@@ -5,14 +5,15 @@ import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
 import { Doi } from '../../../src/types/index.js'
 
-test('DatasetReviewToDepositMetadata', () => {
-  const datasetReview = {
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-  } satisfies _.DatasetReview
-
-  const expected = {
-    creators: [{ name: 'A PREreviewer' }],
-    description: rawHtml(`
+const cases = [
+  [
+    'all questions answered',
+    {
+      answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+    },
+    {
+      creators: [{ name: 'A PREreviewer' }],
+      description: rawHtml(`
     <dl>
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
       <dd>
@@ -20,20 +21,23 @@ test('DatasetReviewToDepositMetadata', () => {
       </dd>
     </dl>
   `),
-    title: 'Dataset review',
-    communities: [{ identifier: 'prereview-reviews' }],
-    relatedIdentifiers: [
-      {
-        identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
-        relation: 'reviews',
-        resourceType: 'dataset',
-        scheme: 'doi',
-      },
-    ],
-    uploadType: 'publication',
-    publicationType: 'peerreview',
-  } satisfies DepositMetadata
+      title: 'Dataset review',
+      communities: [{ identifier: 'prereview-reviews' }],
+      relatedIdentifiers: [
+        {
+          identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
+          relation: 'reviews',
+          resourceType: 'dataset',
+          scheme: 'doi',
+        },
+      ],
+      uploadType: 'publication',
+      publicationType: 'peerreview',
+    },
+  ],
+] satisfies ReadonlyArray<[string, _.DatasetReview, DepositMetadata]>
 
+test.each(cases)('DatasetReviewToDepositMetadata (%s)', (_name, datasetReview, expected) => {
   const actual = _.DatasetReviewToDepositMetadata(datasetReview)
 
   expect(actual).toStrictEqual(expected)
