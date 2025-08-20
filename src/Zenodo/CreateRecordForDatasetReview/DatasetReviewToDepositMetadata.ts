@@ -1,4 +1,4 @@
-import { Match, pipe } from 'effect'
+import { Match, type Option, pipe } from 'effect'
 import type * as Events from '../../Events.js'
 import { html } from '../../html.js'
 import { Doi } from '../../types/index.js'
@@ -6,6 +6,7 @@ import type { DepositMetadata } from '../Deposition.js'
 
 export interface DatasetReview {
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
+  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({

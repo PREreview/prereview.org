@@ -14,6 +14,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -41,6 +44,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
     fc.constantFrom(
@@ -73,6 +79,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+      ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>
     Effect.gen(function* () {

@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Predicate, Tuple } from 'effect'
+import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -46,6 +46,7 @@ describe('GetDataForZenodoRecord', () => {
           .map(events =>
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
+              answerToIfTheDatasetHasEnoughMetadata: Option.none(),
             }),
           ),
       ],
@@ -61,6 +62,7 @@ describe('GetDataForZenodoRecord', () => {
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                answerToIfTheDatasetHasEnoughMetadata: Option.none(),
               },
             ],
           ], // with answer
@@ -75,6 +77,7 @@ describe('GetDataForZenodoRecord', () => {
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                answerToIfTheDatasetHasEnoughMetadata: Option.none(),
               },
             ],
           ], // with multiple answers
@@ -88,6 +91,7 @@ describe('GetDataForZenodoRecord', () => {
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                answerToIfTheDatasetHasEnoughMetadata: Option.none(),
               },
             ],
           ], // different order
@@ -102,6 +106,7 @@ describe('GetDataForZenodoRecord', () => {
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                answerToIfTheDatasetHasEnoughMetadata: Option.none(),
               },
             ],
           ], // already has a record
