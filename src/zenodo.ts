@@ -58,6 +58,7 @@ import { reviewMatch } from './routes.js'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
 import * as StatusCodes from './StatusCodes.js'
 import type { ClubId } from './types/club-id.js'
+import { isDomainId } from './types/domain.js'
 import { type FieldId, isFieldId } from './types/field.js'
 import { ProfileId } from './types/index.js'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
@@ -977,6 +978,18 @@ function isPeerReview(record: Record) {
 function isOpen(record: Record) {
   return record.metadata.access_right === 'open'
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getReviewDomains = flow(
+  (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
+  Array.filterMap(
+    flow(
+      Struct.get('identifier'),
+      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/domains\/(.+)$/.exec(identifier) ?? [])[1]),
+      Option.filter(isDomainId),
+    ),
+  ),
+)
 
 const getReviewFields = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
