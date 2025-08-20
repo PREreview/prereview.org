@@ -1,4 +1,4 @@
-import { Match, type Option, pipe } from 'effect'
+import { Match, Option, pipe } from 'effect'
 import type * as Events from '../../Events.js'
 import { html } from '../../html.js'
 import { Doi } from '../../types/index.js'
@@ -24,6 +24,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           Match.exhaustive,
         )}
       </dd>
+      ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+          <dt>Does the dataset have enough metadata?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetHasEnoughMetadata),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
     </dl>
   `,
   title: 'Dataset review',

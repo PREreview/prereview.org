@@ -21,6 +21,12 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
+          <dt>Does the dataset have enough metadata?</dt>
+          <dd>
+            Partly
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -51,6 +57,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
     </dl>
   `),
       title: 'Dataset review',
