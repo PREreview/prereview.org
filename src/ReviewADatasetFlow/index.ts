@@ -1,5 +1,6 @@
 export * from './CheckYourReviewPage/index.js'
 export * from './FollowsFairAndCarePrinciplesQuestion/index.js'
+export * from './HasEnoughMetadataQuestion/index.js'
 export * from './ReviewBeingPublishedPage/index.js'
 export * from './ReviewPublishedPage/index.js'
 export * from './ReviewThisDatasetPage/index.js'
