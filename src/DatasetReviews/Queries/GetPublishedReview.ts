@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, Struct } from 'effect'
 import type { Doi, Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -41,6 +41,11 @@ export const GetPublishedReview = (
     datasetReviewWasStarted: Array.findLast(events, hasTag('DatasetReviewWasStarted')),
   })
 
+  const answerToIfTheDatasetHasEnoughMetadata = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -54,7 +59,7 @@ export const GetPublishedReview = (
         questions: {
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
-          answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+          answerToIfTheDatasetHasEnoughMetadata,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

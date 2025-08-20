@@ -16,6 +16,15 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples1 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes', datasetReviewId })
+const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  datasetReviewId,
+})
+
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -71,6 +80,7 @@ describe('GetPublishedReview', () => {
                 [
                   datasetReviewWasStarted,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                  answeredIfTheDatasetHasEnoughMetadata1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -84,7 +94,7 @@ describe('GetPublishedReview', () => {
                   questions: {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
-                    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                    answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -96,6 +106,8 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasStarted,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples1,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+                  answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasEnoughMetadata2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -111,7 +123,7 @@ describe('GetPublishedReview', () => {
                   questions: {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
-                    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                    answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
