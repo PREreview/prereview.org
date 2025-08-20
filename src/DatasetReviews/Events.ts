@@ -15,6 +15,11 @@ export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.Tag
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<AnsweredIfTheDatasetHasEnoughMetadata>()(
+  'AnsweredIfTheDatasetHasEnoughMetadata',
+  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -54,6 +59,7 @@ export class DatasetReviewDoiWasActivated extends Schema.TaggedClass<DatasetRevi
 export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
+  AnsweredIfTheDatasetHasEnoughMetadata,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
