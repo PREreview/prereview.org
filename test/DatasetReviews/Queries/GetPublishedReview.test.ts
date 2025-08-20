@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Predicate, Tuple } from 'effect'
+import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -58,6 +58,7 @@ describe('GetPublishedReview', () => {
                 id: events[0].datasetReviewId,
                 questions: {
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -83,6 +84,7 @@ describe('GetPublishedReview', () => {
                   questions: {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -109,6 +111,7 @@ describe('GetPublishedReview', () => {
                   questions: {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -132,6 +135,7 @@ describe('GetPublishedReview', () => {
                   questions: {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

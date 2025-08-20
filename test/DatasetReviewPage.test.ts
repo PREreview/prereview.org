@@ -25,6 +25,7 @@ describe('DatasetReviewPage', () => {
       id: fc.uuid(),
       questions: fc.record({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
       }),
       published: fc.plainDate(),
     }),

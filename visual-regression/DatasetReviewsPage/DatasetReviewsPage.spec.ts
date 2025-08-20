@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array } from 'effect'
+import { Array, Option } from 'effect'
 import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import { createDatasetReviewsPage } from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
 import { Doi, Orcid, Uuid } from '../../src/types/index.js'
@@ -34,6 +34,7 @@ const prereview1: DatasetReviews.PublishedReview = {
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+    answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
@@ -46,6 +47,7 @@ const prereview2: DatasetReviews.PublishedReview = {
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
+    answerToIfTheDatasetHasEnoughMetadata: Option.none(),
   },
   published: Temporal.PlainDate.from('2025-08-02'),
 }

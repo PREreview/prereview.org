@@ -13,6 +13,7 @@ export interface PublishedReview {
   id: Uuid.Uuid
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
+    answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -53,6 +54,7 @@ export const GetPublishedReview = (
         questions: {
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
+          answerToIfTheDatasetHasEnoughMetadata: Option.none(),
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),
