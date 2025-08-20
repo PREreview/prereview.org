@@ -1,4 +1,4 @@
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, Struct } from 'effect'
 import type * as Zenodo from '../../Zenodo/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -26,12 +26,14 @@ export const GetDataForZenodoRecord = (
     hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
   )
 
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
-        answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+        answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
       }),
   })
 }

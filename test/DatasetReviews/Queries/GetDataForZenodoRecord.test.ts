@@ -16,6 +16,14 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes', datasetReviewId })
+const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  datasetReviewId,
+})
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -40,13 +48,16 @@ describe('GetDataForZenodoRecord', () => {
               fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
           .map(events =>
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
-              answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+              answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
             }),
           ),
       ],
@@ -72,12 +83,14 @@ describe('GetDataForZenodoRecord', () => {
                 datasetReviewWasStarted,
                 answeredIfTheDatasetFollowsFairAndCarePrinciples,
                 answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasEnoughMetadata2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
-                answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
               },
             ],
           ], // with multiple answers
