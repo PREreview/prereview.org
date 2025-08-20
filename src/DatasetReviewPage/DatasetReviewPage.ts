@@ -1,4 +1,4 @@
-import { Match, pipe } from 'effect'
+import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../DatasetReviews/index.js'
 import { html, plainText } from '../html.js'
@@ -60,6 +60,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             Match.exhaustive,
           )}
         </dd>
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetHasEnoughMetadata, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+            <dt>Does the dataset have enough metadata?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetHasEnoughMetadata),
+                Match.when('yes', () => 'Yes'),
+                Match.when('partly', () => 'Partly'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',
