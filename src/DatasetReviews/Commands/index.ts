@@ -4,6 +4,7 @@ import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import type * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
@@ -19,6 +20,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     answerIfTheDatasetFollowsFairAndCarePrinciples: CommandHandler<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Command,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
+    >
+    answerIfTheDatasetHasEnoughMetadata: CommandHandler<
+      AnswerIfTheDatasetHasEnoughMetadata.Command,
+      AnswerIfTheDatasetHasEnoughMetadata.Error
     >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
@@ -44,6 +49,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 export const {
   startDatasetReview,
   answerIfTheDatasetFollowsFairAndCarePrinciples,
+  answerIfTheDatasetHasEnoughMetadata,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -113,6 +119,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
+      answerIfTheDatasetHasEnoughMetadata: () => new UnableToHandleCommand({ cause: 'not implemented' }),
       markRecordCreatedOnZenodo: handleCommand(
         command => ({
           types: Events.DatasetReviewEventTypes,
