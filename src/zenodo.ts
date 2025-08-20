@@ -892,6 +892,9 @@ function recordToScietyPrereview(
       club: pipe(getReviewClub(record), Option.getOrUndefined),
       live: record.metadata.keywords?.includes('Live Review') === true,
       requested: record.metadata.keywords?.includes('Requested PREreview') === true,
+      domains: getReviewDomains(record),
+      fields: getReviewFields(record),
+      subfields: getReviewSubfields(record),
     })),
   )
 }
@@ -979,7 +982,6 @@ function isOpen(record: Record) {
   return record.metadata.access_right === 'open'
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getReviewDomains = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
   Array.filterMap(

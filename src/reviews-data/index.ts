@@ -12,8 +12,11 @@ import safeStableStringify from 'safe-stable-stringify'
 import { match, P } from 'ts-pattern'
 import type { ScietyListEnv } from '../sciety-list/index.js'
 import type { ClubId } from '../types/club-id.js'
+import type { DomainId } from '../types/domain.js'
+import type { FieldId } from '../types/field.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { isPseudonym } from '../types/Pseudonym.js'
+import type { SubfieldId } from '../types/subfield.js'
 
 import PlainDate = Temporal.PlainDate
 
@@ -27,6 +30,9 @@ export interface Prereview {
   club?: ClubId
   live: boolean
   requested: boolean
+  domains: ReadonlyArray<DomainId>
+  fields: ReadonlyArray<FieldId>
+  subfields: ReadonlyArray<SubfieldId>
 }
 
 export interface GetPrereviewsEnv {
@@ -62,6 +68,9 @@ const PrereviewE = pipe(
     type: StringE,
     live: E.id(),
     requested: E.id(),
+    domains: ReadonlyArrayE(StringE),
+    fields: ReadonlyArrayE(StringE),
+    subfields: ReadonlyArrayE(StringE),
   }),
   E.intersect(
     E.partial({
@@ -115,6 +124,9 @@ interface TransformedPrereview {
   club?: ClubId
   live: boolean
   requested: boolean
+  domains: ReadonlyArray<string>
+  fields: ReadonlyArray<string>
+  subfields: ReadonlyArray<string>
 }
 
 const PrereviewsE = ReadonlyArrayE(PrereviewE)
@@ -183,6 +195,9 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
   club: prereview.club,
   live: prereview.live,
   requested: prereview.requested,
+  domains: prereview.domains,
+  fields: prereview.fields,
+  subfields: prereview.subfields,
 })
 
 export const reviewsData = (
