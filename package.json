@@ -91,7 +91,7 @@
     "@types/mjml": "^4.7.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.17.2",
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "^7.0.0",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.15.0",
     "@types/turndown": "^5.0.5",
