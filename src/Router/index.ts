@@ -9,6 +9,7 @@ import { DatasetReviewsPage } from '../DatasetReviewsPage/index.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
@@ -70,6 +71,8 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.FollowsFairAndCarePrinciplesSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.ReviewADatasetHasEnoughMetadata, () => HavingProblemsPage),
+  MakeRoute('POST', Routes.ReviewADatasetHasEnoughMetadata, () => HavingProblemsPage),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
   MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
   MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),

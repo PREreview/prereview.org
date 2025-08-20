@@ -56,6 +56,12 @@ export const ReviewADatasetFollowsFairAndCarePrinciples: Route<{ datasetReviewId
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetHasEnoughMetadata: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/has-enough-metadata',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/has-enough-metadata`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,
