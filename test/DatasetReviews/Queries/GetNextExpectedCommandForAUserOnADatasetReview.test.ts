@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, identity, Option, Predicate } from 'effect'
+import { type Array, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -52,7 +52,13 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   describe('when it is in progress', () => {
     it.failing.prop(
       [
-        fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>),
+        fc
+          .tuple(
+            fc.datasetReviewWasStarted(),
+            fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
+            fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
+          )
+          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
       ],
       {
