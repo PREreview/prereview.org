@@ -3,7 +3,13 @@ import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
-export const CarryOnPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) =>
+export const CarryOnPage = ({
+  datasetReviewId,
+  nextRoute,
+}: {
+  datasetReviewId: Uuid.Uuid
+  nextRoute: Routes.Route<{ datasetReviewId: Uuid.Uuid }>
+}) =>
   PageResponse({
     title: plainText`Review a dataset`,
     main: html`
@@ -15,12 +21,7 @@ export const CarryOnPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid })
         next step so you can carry&nbsp;on.
       </p>
 
-      <a
-        href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}"
-        role="button"
-        draggable="false"
-        >Continue</a
-      >
+      <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false">Continue</a>
     `,
     canonical: Routes.ReviewThisDatasetStartNow,
   })

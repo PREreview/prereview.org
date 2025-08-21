@@ -30,7 +30,8 @@ export const StartNow: Effect.Effect<
           location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: reviewId }),
         })
       }),
-      onSome: datasetReviewId => Effect.succeed(CarryOnPage({ datasetReviewId })),
+      onSome: datasetReviewId =>
+        Effect.succeed(CarryOnPage({ datasetReviewId, nextRoute: Routes.ReviewADatasetFollowsFairAndCarePrinciples })),
     })
   },
   Effect.catchTags({
