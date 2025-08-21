@@ -8,6 +8,8 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import * as HasEnoughMetadataForm from './HasEnoughMetadataForm.js'
+import { HasEnoughMetadataQuestion as MakeResponse } from './HasEnoughMetadataQuestion.js'
 
 export const HasEnoughMetadataQuestion = ({
   datasetReviewId,
@@ -24,7 +26,12 @@ export const HasEnoughMetadataQuestion = ({
 
     yield* DatasetReviews.checkIfReviewIsInProgress(datasetReviewId)
 
-    return yield* HavingProblemsPage
+    const form = yield* Effect.andThen(
+      DatasetReviews.getAnswerToIfTheDatasetHasEnoughMetadata(datasetReviewId),
+      HasEnoughMetadataForm.fromAnswer,
+    )
+
+    return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () =>

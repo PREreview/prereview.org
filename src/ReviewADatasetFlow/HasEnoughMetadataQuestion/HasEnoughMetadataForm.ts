@@ -1,4 +1,4 @@
-import { Data, type Either } from 'effect'
+import { Data, Option, type Either } from 'effect'
 
 export type HasEnoughMetadataForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -13,3 +13,9 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   hasEnoughMetadata: 'yes' | 'partly' | 'no' | 'unsure'
 }> {}
+
+export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => HasEnoughMetadataForm =
+  Option.match({
+    onNone: () => new EmptyForm(),
+    onSome: answer => new CompletedForm({ hasEnoughMetadata: answer }),
+  })
