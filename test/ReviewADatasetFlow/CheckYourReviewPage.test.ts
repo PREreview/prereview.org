@@ -54,10 +54,16 @@ describe('CheckYourReviewPage', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.constantFrom(
-        Tuple.make<
+      fc.constantFrom<
+        Array<
           [DatasetReviews.DatasetReviewNotReadyToBePublished['missing'], Routes.Route<{ datasetReviewId: Uuid.Uuid }>]
-        >(['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'], Routes.ReviewADatasetFollowsFairAndCarePrinciples),
+        >
+      >(
+        Tuple.make(
+          ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+          Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+        ),
+        Tuple.make(['AnsweredIfTheDatasetHasEnoughMetadata'], Routes.ReviewADatasetHasEnoughMetadata),
       ),
     ])("when the dataset review isn't ready to be published", (datasetReviewId, locale, user, [missing, expected]) =>
       Effect.gen(function* () {
