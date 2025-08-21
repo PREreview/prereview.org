@@ -1,4 +1,4 @@
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, Struct } from 'effect'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
@@ -33,6 +33,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
   )
 
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -43,7 +45,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
-        answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+        answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
       }),
   })
 }
