@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Option, Predicate } from 'effect'
+import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/PublishDatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -33,14 +33,26 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started]], // was started
+  test.prop(
+    [
+      fc
+        .datasetReviewWasStarted()
+        .map(event =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NotReady['missing']]>(
+            Array.of(event),
+            ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+          ),
+        ),
     ],
-  })('not ready', events => {
+    {
+      examples: [
+        [[[started], ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples']]], // was started
+      ],
+    },
+  )('not ready', ([events, expected]) => {
     const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotReady({ missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] }))
+    expect(state).toStrictEqual(new _.NotReady({ missing: expected }))
   })
 
   test.prop(
