@@ -7,6 +7,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { Doi, Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
 export const StartNow: Effect.Effect<
@@ -36,7 +37,7 @@ export const StartNow: Effect.Effect<
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
           )
 
-          return CarryOnPage({ datasetReviewId, nextRoute: routeForCommand[nextExpectedCommand] })
+          return CarryOnPage({ datasetReviewId, nextRoute: RouteForCommand(nextExpectedCommand) })
         },
         Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
       ),
@@ -48,9 +49,3 @@ export const StartNow: Effect.Effect<
     UnableToQuery: () => HavingProblemsPage,
   }),
 )()
-
-const routeForCommand = {
-  AnswerIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
-  AnswerIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
-  PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
-} satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>
