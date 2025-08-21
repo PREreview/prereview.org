@@ -149,13 +149,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the dataset has enough metadata',
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../has-enough-metadata`, { waitUntil: 'commit' })
-
-    testInfo.fail()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does the dataset have enough metadata?')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 

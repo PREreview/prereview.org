@@ -207,7 +207,7 @@ describe('HasEnoughMetadataSubmission', () => {
     ),
   )
 
-  test.failing.prop([
+  test.prop([
     fc.uuid(),
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'hasEnoughMetadata'))),
