@@ -29,9 +29,10 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
-const requirementToBeReady = ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] satisfies ReadonlyArray<
-  NotReady['missing'][number]
->
+const requirementToBeReady = [
+  'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+  'AnsweredIfTheDatasetHasEnoughMetadata',
+] satisfies ReadonlyArray<NotReady['missing'][number]>
 
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
   if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {

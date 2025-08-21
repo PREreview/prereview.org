@@ -38,7 +38,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .datasetReviewWasStarted()
