@@ -76,7 +76,9 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
             datasetReviewId,
           })
 
-          return Response.RedirectResponse({ location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }) })
+          return Response.RedirectResponse({
+            location: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
+          })
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),

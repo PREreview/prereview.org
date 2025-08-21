@@ -184,7 +184,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }),
+          location: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
         })
       }).pipe(
         Effect.provide(
