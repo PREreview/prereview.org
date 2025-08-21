@@ -9,7 +9,9 @@ export class DatasetReviewIsBeingPublished extends Data.TaggedError('DatasetRevi
 export class DatasetReviewIsInProgress extends Data.TaggedError('DatasetReviewIsInProgress') {}
 
 export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('DatasetReviewNotReadyToBePublished')<{
-  missing: Array.NonEmptyReadonlyArray<'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'>
+  missing: Array.NonEmptyReadonlyArray<
+    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples' | 'AnsweredIfTheDatasetHasEnoughMetadata'
+  >
 }> {}
 
 export class PublicationOfDatasetReviewWasNotRequested extends Data.TaggedError(

@@ -1,11 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer, Struct } from 'effect'
+import { Effect, Equal, Layer, Struct, Tuple } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/CheckYourReviewPage/index.js'
 import * as Routes from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
+import type { Uuid } from '../../src/types/index.js'
 import { LoggedInUser } from '../../src/user.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from '../fc.js'
@@ -49,31 +50,36 @@ describe('CheckYourReviewPage', () => {
       ),
     )
 
-    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
-      "when the dataset review isn't ready to be published",
-      (datasetReviewId, locale, user) =>
-        Effect.gen(function* () {
-          const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        Tuple.make<
+          [DatasetReviews.DatasetReviewNotReadyToBePublished['missing'], Routes.Route<{ datasetReviewId: Uuid.Uuid }>]
+        >(['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'], Routes.ReviewADatasetFollowsFairAndCarePrinciples),
+      ),
+    ])("when the dataset review isn't ready to be published", (datasetReviewId, locale, user, [missing, expected]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getAuthor: () => Effect.succeed(user.orcid),
-              getPreviewForAReviewReadyToBePublished: () =>
-                new DatasetReviews.DatasetReviewNotReadyToBePublished({
-                  missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-                }),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: expected.href({ datasetReviewId }),
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getAuthor: () => Effect.succeed(user.orcid),
+            getPreviewForAReviewReadyToBePublished: () =>
+              new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing }),
+          }),
         ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
     )
 
     test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(

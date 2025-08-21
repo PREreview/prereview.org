@@ -79,6 +79,7 @@ export const CheckYourReviewSubmission = ({
 
 const routeForMissing = {
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+  AnsweredIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
 } satisfies Record<
   DatasetReviews.DatasetReviewNotReadyToBePublished['missing'][number],
   Routes.Route<{ datasetReviewId: Uuid.Uuid }>
