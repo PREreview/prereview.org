@@ -8,6 +8,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import * as HasEnoughMetadataForm from './HasEnoughMetadataForm.js'
 import { HasEnoughMetadataQuestion as MakeResponse } from './HasEnoughMetadataQuestion.js'
 
@@ -76,7 +77,13 @@ export const HasEnoughMetadataSubmission = ({
             datasetReviewId,
           })
 
-          return Response.RedirectResponse({ location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }) })
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),

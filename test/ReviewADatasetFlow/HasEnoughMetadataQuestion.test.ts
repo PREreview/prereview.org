@@ -5,6 +5,7 @@ import { Effect, Equal, Layer, Option, Struct } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/index.js'
+import { RouteForCommand } from '../../src/ReviewADatasetFlow/RouteForCommand.js'
 import * as Routes from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { LoggedInUser } from '../../src/user.js'
@@ -180,34 +181,84 @@ describe('HasEnoughMetadataQuestion', () => {
 
 describe('HasEnoughMetadataSubmission', () => {
   describe('when there is an answer', () => {
-    test.prop([
-      fc.uuid(),
-      fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
-      fc.supportedLocale(),
-      fc.user(),
-    ])('when the answer can be saved', (datasetReviewId, body, locale, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.HasEnoughMetadataSubmission({ body, datasetReviewId })
-
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }),
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, {
-              answerIfTheDatasetHasEnoughMetadata: () => Effect.void,
-            }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
-          ),
+    describe('when the answer can be saved', () => {
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.constantFrom(
+          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
+          'AnswerIfTheDatasetHasEnoughMetadata',
+          'PublishDatasetReview',
         ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
-    )
+      ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
+        Effect.gen(function* () {
+          const actual = yield* _.HasEnoughMetadataSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mergeAll(
+              Layer.mock(DatasetReviews.DatasetReviewCommands, {
+                answerIfTheDatasetHasEnoughMetadata: () => Effect.void,
+              }),
+              Layer.mock(DatasetReviews.DatasetReviewQueries, {
+                getAuthor: () => Effect.succeed(user.orcid),
+                getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+              }),
+            ),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.oneof(
+          fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+          fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
+          fc.constant(Effect.succeedNone),
+        ),
+      ])("the next expected command can't be found", (datasetReviewId, body, locale, user, result) =>
+        Effect.gen(function* () {
+          const actual = yield* _.HasEnoughMetadataSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mergeAll(
+              Layer.mock(DatasetReviews.DatasetReviewCommands, {
+                answerIfTheDatasetHasEnoughMetadata: () => Effect.void,
+              }),
+              Layer.mock(DatasetReviews.DatasetReviewQueries, {
+                getAuthor: () => Effect.succeed(user.orcid),
+                getNextExpectedCommandForAUserOnADatasetReview: () => result,
+              }),
+            ),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+    })
 
     test.prop([
       fc.uuid(),
