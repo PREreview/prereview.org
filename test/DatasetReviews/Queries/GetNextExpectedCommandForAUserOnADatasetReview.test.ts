@@ -1,0 +1,147 @@
+import { it } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
+import { Array, identity, Option, Predicate } from 'effect'
+import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.js'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
+import * as Datasets from '../../../src/Datasets/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import * as fc from '../../fc.js'
+
+const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
+const authorId = Orcid.Orcid('0000-0002-1825-0097')
+const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
+const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples1 =
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes', datasetReviewId })
+const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  datasetReviewId,
+})
+const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+  datasetReviewId,
+})
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
+
+describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
+  describe('when it has not been started', () => {
+    it.failing.prop(
+      [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+      {
+        examples: [
+          [[]], // no events
+          [[answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // with events
+        ],
+      },
+    )('returns nothing to do', events => {
+      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+
+      expect(actual).toStrictEqual(Option.none())
+    })
+  })
+
+  describe('when it is in progress', () => {
+    it.failing.prop(
+      [
+        fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>),
+        fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
+      ],
+      {
+        examples: [
+          [[datasetReviewWasStarted], 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'], // was started
+          [
+            [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1],
+            'AnswerIfTheDatasetHasEnoughMetadata',
+          ], // 1 question answered
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+            ],
+            'PublishDatasetReview',
+          ], // all questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata2,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+            ],
+            'PublishDatasetReview',
+          ], // different order
+        ],
+      },
+    )('returns the next expected command', (events, expected) => {
+      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+
+      expect(actual).toStrictEqual(Option.some(expected))
+    })
+  })
+
+  describe('when it is being published', () => {
+    it.failing.prop(
+      [
+        fc
+          .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
+          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+      ],
+      {
+        examples: [
+          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested]], // was requested
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              publicationOfDatasetReviewWasRequested,
+            ],
+          ], // also answered
+          [
+            [
+              datasetReviewWasStarted,
+              publicationOfDatasetReviewWasRequested,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+            ],
+          ], // different order
+        ],
+      },
+    )('returns nothing to do', events => {
+      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+
+      expect(actual).toStrictEqual(Option.none())
+    })
+  })
+
+  describe('when it has been published', () => {
+    it.failing.prop(
+      [
+        fc
+          .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+      ],
+      {
+        examples: [
+          [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // was published
+          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
+          [[datasetReviewWasStarted, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples1]], // different order
+        ],
+      },
+    )('returns nothing to do', events => {
+      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+
+      expect(actual).toStrictEqual(Option.none())
+    })
+  })
+})

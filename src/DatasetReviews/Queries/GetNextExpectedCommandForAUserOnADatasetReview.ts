@@ -1,8 +1,14 @@
 import type { Option } from 'effect'
 import type * as Events from '../Events.js'
 
-export declare const GetNextExpectedCommandForAUserOnADatasetReview: (
+export type NextExpectedCommand =
+  | 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'
+  | 'AnswerIfTheDatasetHasEnoughMetadata'
+  | 'PublishDatasetReview'
+
+export const GetNextExpectedCommandForAUserOnADatasetReview = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-) => Option.Option<
-  'AnswerIfTheDatasetFollowsFairAndCarePrinciples' | 'AnswerIfTheDatasetHasEnoughMetadata' | 'PublishDatasetReview'
->
+): Option.Option<NextExpectedCommand> => {
+  throw new Error('not implemented')
+}
