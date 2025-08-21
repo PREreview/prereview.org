@@ -53,7 +53,11 @@ export const HasEnoughMetadataSubmission = ({
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -65,7 +69,17 @@ export const HasEnoughMetadataSubmission = ({
     const form = yield* HasEnoughMetadataForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fn(
+        function* (form: HasEnoughMetadataForm.CompletedForm) {
+          yield* DatasetReviews.answerIfTheDatasetHasEnoughMetadata({
+            answer: form.hasEnoughMetadata,
+            datasetReviewId,
+          })
+
+          return Response.RedirectResponse({ location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }) })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
     })
   }).pipe(

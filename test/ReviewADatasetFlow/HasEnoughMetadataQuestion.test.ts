@@ -178,34 +178,72 @@ describe('HasEnoughMetadataQuestion', () => {
 })
 
 describe('HasEnoughMetadataSubmission', () => {
-  test.prop([
-    fc.uuid(),
-    fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
-    fc.supportedLocale(),
-    fc.user(),
-  ])('when there is an answer', (datasetReviewId, body, locale, user) =>
-    Effect.gen(function* () {
-      const actual = yield* _.HasEnoughMetadataSubmission({ datasetReviewId, body })
+  describe('when there is an answer', () => {
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.supportedLocale(),
+      fc.user(),
+    ])('when the answer can be saved', (datasetReviewId, body, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.HasEnoughMetadataSubmission({ body, datasetReviewId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          getAuthor: () => Effect.succeed(user.orcid),
-        }),
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId }),
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mergeAll(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              answerIfTheDatasetHasEnoughMetadata: () => Effect.void,
+            }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+          ),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
       ),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
-  )
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(fc.record({ hasEnoughMetadata: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewIsBeingPublished(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+      ),
+    ])("when the answer can't be saved", (datasetReviewId, body, locale, user, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.HasEnoughMetadataSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mergeAll(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, { answerIfTheDatasetHasEnoughMetadata: () => error }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+          ),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+  })
 
   test.prop([
     fc.uuid(),
@@ -233,7 +271,12 @@ describe('HasEnoughMetadataSubmission', () => {
         js: ['error-summary.js'],
       })
     }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provide(
+        Layer.mergeAll(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
+        ),
+      ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
@@ -261,9 +304,12 @@ describe('HasEnoughMetadataSubmission', () => {
       })
     }).pipe(
       Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          getAuthor: () => Effect.succeed(datasetReviewAuthor),
-        }),
+        Layer.mergeAll(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getAuthor: () => Effect.succeed(datasetReviewAuthor),
+          }),
+        ),
       ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
@@ -287,9 +333,12 @@ describe('HasEnoughMetadataSubmission', () => {
         })
       }).pipe(
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
-          }),
+          Layer.mergeAll(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
+            }),
+          ),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -313,9 +362,12 @@ describe('HasEnoughMetadataSubmission', () => {
         })
       }).pipe(
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnableToQuery({}),
-          }),
+          Layer.mergeAll(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => new DatasetReviews.UnableToQuery({}),
+            }),
+          ),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
