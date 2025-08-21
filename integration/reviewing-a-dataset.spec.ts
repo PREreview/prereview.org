@@ -135,6 +135,52 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText('Does the dataset have enough metadata? I don’t know')
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('I don’t know')).toBeChecked()
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Yes')).toBeChecked()
+
+  await page.goBack()
+
+  await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
+})
+
+test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }, testInfo) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  testInfo.fail()
+  await expect(page.getByRole('link', { name: 'Back' })).toBeVisible()
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('I don’t know')).toBeChecked()
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
+})
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the dataset follows FAIR and CARE principles',
   async ({ javaScriptEnabled, page }) => {
