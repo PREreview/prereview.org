@@ -1,4 +1,4 @@
-import { Array, Data, Either, Function, Match, Option } from 'effect'
+import { Array, Data, Either, Function, Match, Option, pipe } from 'effect'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import * as Events from '../Events.js'
@@ -29,6 +29,10 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
+const requirementToBeReady = ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] satisfies ReadonlyArray<
+  NotReady['missing'][number]
+>
+
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
   if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
     return new NotStarted()
@@ -42,11 +46,16 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): Sta
     return new IsBeingPublished()
   }
 
-  if (!Array.some(events, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))) {
-    return new NotReady({ missing: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] })
-  }
-
-  return new IsReady()
+  return pipe(
+    Array.map(requirementToBeReady, requirement =>
+      Either.fromOption(Array.findLast(events, hasTag(requirement)), () => requirement),
+    ),
+    Array.getLefts,
+    Array.match({
+      onNonEmpty: missing => new NotReady({ missing }),
+      onEmpty: () => new IsReady(),
+    }),
+  )
 }
 
 export const decide: {
