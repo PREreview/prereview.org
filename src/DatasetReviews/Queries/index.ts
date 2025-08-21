@@ -11,7 +11,7 @@ import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswer
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
-import type { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
+import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 import { GetPublishedDoi } from './GetPublishedDoi.js'
 import { GetPublishedReview } from './GetPublishedReview.js'
@@ -188,7 +188,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      getNextExpectedCommandForAUserOnADatasetReview: () => new UnableToQuery({ cause: 'not implemented' }),
+      getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return GetNextExpectedCommandForAUserOnADatasetReview(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
       getPreviewForAReviewReadyToBePublished: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
