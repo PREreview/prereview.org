@@ -11,53 +11,66 @@ import {
 
 const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
 
-test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+test.extend(canLogIn).extend(willPublishADatasetReview)(
+  'can review a dataset',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
 
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
-  await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Does this dataset follow FAIR and CARE principles?',
+    )
 
-  await page.getByLabel('Partly', { exact: true }).check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+    testInfo.fail()
 
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does the dataset have enough metadata?')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
-    await page.getByRole('link', { name: 'Continue' }).click()
-  } else {
-    await expect(async () => {
-      await page.getByRole('link', { name: 'Reload page' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-      await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
-    }).toPass()
-  }
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible()
 
-  await page.getByRole('link', { name: 'See your review' }).click()
+      await page.getByRole('link', { name: 'Continue' }).click()
+    } else {
+      await expect(async () => {
+        await page.getByRole('link', { name: 'Reload page' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
-  )
-  await expect(page.getByRole('main')).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+        await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
+      }).toPass()
+    }
 
-  await page.getByRole('link', { name: 'Back to all reviews' }).click()
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'PREreviews of Metadata collected from 500 articles in the field of ecology and evolution',
-  )
-  await expect(page.getByRole('article', { name: 'PREreview by A PREreviewer' })).toBeVisible()
-})
+    await page.getByRole('link', { name: 'See your review' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+    )
+    await expect(page.getByRole('main')).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+    await expect(page.getByRole('main')).toContainText('Does the dataset have enough metadata? Yes')
+
+    await page.getByRole('link', { name: 'Back to all reviews' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'PREreviews of Metadata collected from 500 articles in the field of ecology and evolution',
+    )
+    await expect(page.getByRole('article', { name: 'PREreview by A PREreviewer' })).toBeVisible()
+  },
+)
 
 test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
@@ -88,7 +101,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     testInfo.fail()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does the dataset have enough metadata?')
   },
 )
 
@@ -109,9 +122,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  testInfo.fail()
+  await expect(page.getByLabel('Partly')).toBeVisible()
+
+  await page.getByLabel('Partly').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   const review = page.getByRole('region', { name: 'Your review' })
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+  await expect(review).toContainText('Does the dataset have enough metadata? Partly')
 
   testInfo.fail()
   await expect(page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' })).toBeVisible()
@@ -122,6 +142,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? I don’t know')
+
+  await page.getByRole('link', { name: 'Change if the dataset has enough metadata' }).click()
+
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('Does the dataset have enough metadata? I don’t know')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
