@@ -12,7 +12,8 @@ const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answered = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples =
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -25,7 +26,7 @@ describe('foldState', () => {
   test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
     examples: [
       [[]], // no events
-      [[answered, datasetReviewWasPublished]], // with events
+      [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
     ],
   })('not started', () => {
     const state = _.foldState([])
@@ -63,8 +64,8 @@ describe('foldState', () => {
     ],
     {
       examples: [
-        [[started, answered]], // answered
-        [[answered, started]], // different order
+        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // answered
+        [[answeredIfTheDatasetFollowsFairAndCarePrinciples, started]], // different order
       ],
     },
   )('is ready', events => {
@@ -82,8 +83,8 @@ describe('foldState', () => {
     {
       examples: [
         [[started, publicationOfDatasetReviewWasRequested]], // was requested
-        [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
-        [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
+        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, publicationOfDatasetReviewWasRequested]], // also answered
+        [[started, publicationOfDatasetReviewWasRequested, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
       ],
     },
   )('is being published', events => {
@@ -100,9 +101,16 @@ describe('foldState', () => {
     ],
     {
       examples: [
-        [[started, answered, datasetReviewWasPublished]], // was published
-        [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
-        [[started, datasetReviewWasPublished, answered]], // different order
+        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // was published
+        [
+          [
+            started,
+            answeredIfTheDatasetFollowsFairAndCarePrinciples,
+            publicationOfDatasetReviewWasRequested,
+            datasetReviewWasPublished,
+          ],
+        ], // also requested
+        [[started, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
       ],
     },
   )('has been published', events => {
