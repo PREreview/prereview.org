@@ -1,4 +1,4 @@
-import { Effect, Equal, pipe } from 'effect'
+import { Array, Effect, Equal, pipe } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -35,10 +35,10 @@ export const CheckYourReviewPage = ({
         Effect.succeed(
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
         ),
-      DatasetReviewNotReadyToBePublished: () =>
+      DatasetReviewNotReadyToBePublished: error =>
         Effect.succeed(
           Response.RedirectResponse({
-            location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
+            location: routeForMissing[Array.headNonEmpty(error.missing)].href({ datasetReviewId }),
           }),
         ),
       UnableToQuery: () => HavingProblemsPage,
@@ -76,3 +76,10 @@ export const CheckYourReviewSubmission = ({
       UnknownDatasetReview: () => PageNotFound,
     }),
   )
+
+const routeForMissing = {
+  AnsweredIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+} satisfies Record<
+  DatasetReviews.DatasetReviewNotReadyToBePublished['missing'][number],
+  Routes.Route<{ datasetReviewId: Uuid.Uuid }>
+>
