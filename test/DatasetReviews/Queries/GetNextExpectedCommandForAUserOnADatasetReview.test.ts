@@ -34,15 +34,12 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   describe('when it has not been started', () => {
-    it.failing.prop(
-      [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
-      {
-        examples: [
-          [[]], // no events
-          [[answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // with events
-        ],
-      },
-    )('returns nothing to do', events => {
+    it.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
+      examples: [
+        [[]], // no events
+        [[answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // with events
+      ],
+    })('returns nothing to do', events => {
       const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
       expect(actual).toStrictEqual(Option.none())
@@ -50,7 +47,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   })
 
   describe('when it is in progress', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(
@@ -96,7 +93,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   })
 
   describe('when it is being published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
@@ -131,7 +128,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   })
 
   describe('when it has been published', () => {
-    it.failing.prop(
+    it.prop(
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
