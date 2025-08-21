@@ -129,9 +129,7 @@ describe('decide', () => {
 
       expect(result).toStrictEqual(
         Either.right(
-          Option.some(
-            new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: answer2, datasetReviewId }),
-          ),
+          Option.some(new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({ answer: answer2, datasetReviewId })),
         ),
       )
     })

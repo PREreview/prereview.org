@@ -20,7 +20,7 @@ export class NotStarted extends Data.TaggedClass('NotStarted') {}
 export class NotAnswered extends Data.TaggedClass('NotAnswered') {}
 
 export class HasBeenAnswered extends Data.TaggedClass('HasBeenAnswered')<{
-  answer: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
+  answer: Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']
 }> {}
 
 export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
