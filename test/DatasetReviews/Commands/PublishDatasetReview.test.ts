@@ -14,6 +14,10 @@ const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.ws
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const answeredIfTheDatasetHasEnoughMetadata = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -34,20 +38,21 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.prop(
+  test.failing.prop(
     [
       fc
         .datasetReviewWasStarted()
         .map(event =>
           Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NotReady['missing']]>(
             Array.of(event),
-            ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+            ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
           ),
         ),
     ],
     {
       examples: [
-        [[[started], ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples']]], // was started
+        [[[started], ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata']]], // was started
+        [[[started, answeredIfTheDatasetFollowsFairAndCarePrinciples], ['AnsweredIfTheDatasetHasEnoughMetadata']]], // one question answered
       ],
     },
   )('not ready', ([events, expected]) => {
@@ -59,13 +64,17 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples())
+        .tuple(
+          fc.datasetReviewWasStarted(),
+          fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
+          fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
+        )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
     {
       examples: [
-        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // answered
-        [[answeredIfTheDatasetFollowsFairAndCarePrinciples, started]], // different order
+        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, answeredIfTheDatasetHasEnoughMetadata]], // answered
+        [[answeredIfTheDatasetHasEnoughMetadata, answeredIfTheDatasetFollowsFairAndCarePrinciples, started]], // different order
       ],
     },
   )('is ready', events => {

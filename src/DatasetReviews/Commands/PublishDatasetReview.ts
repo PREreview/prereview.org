@@ -18,7 +18,9 @@ export type State = NotStarted | NotReady | IsReady | IsBeingPublished | HasBeen
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
 export class NotReady extends Data.TaggedClass('NotReady')<{
-  missing: Array.NonEmptyReadonlyArray<'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'>
+  missing: Array.NonEmptyReadonlyArray<
+    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples' | 'AnsweredIfTheDatasetHasEnoughMetadata'
+  >
 }> {}
 
 export class IsReady extends Data.TaggedClass('IsReady') {}
