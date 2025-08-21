@@ -33,6 +33,7 @@ describe('CheckYourReviewPage', () => {
           _tag: 'StreamlinePageResponse',
           status: StatusCodes.OK,
           title: expect.anything(),
+          nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
           js: ['single-use-form.js'],

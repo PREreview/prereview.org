@@ -16,6 +16,11 @@ export const HasEnoughMetadataQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does the dataset have enough metadata?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}" class="back">
+        <span>Back</span>
+      </a>
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'

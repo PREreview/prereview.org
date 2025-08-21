@@ -158,7 +158,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Yes').check()
@@ -167,9 +167,6 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
-
-  testInfo.fail()
-  await expect(page.getByRole('link', { name: 'Back' })).toBeVisible()
 
   await page.getByRole('link', { name: 'Back' }).click()
 

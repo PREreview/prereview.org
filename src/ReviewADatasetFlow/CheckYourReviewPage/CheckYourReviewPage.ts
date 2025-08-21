@@ -14,6 +14,9 @@ export const CheckYourReviewPage = ({
 }) => {
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
+    nav: html`
+      <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <single-use-form>
         <form method="post" action="${Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId })}" novalidate>
