@@ -102,13 +102,13 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
-  test.failing.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been started', answer => {
+  test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been started', answer => {
     const result = _.decide(new _.NotStarted(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.failing.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been answered', answer => {
+  test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been answered', answer => {
     const result = _.decide(new _.NotAnswered(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -117,7 +117,7 @@ describe('decide', () => {
   })
 
   describe('has been answered', () => {
-    test.failing.prop([
+    test.prop([
       fc
         .tuple(fc.constantFrom('yes', 'partly', 'no', 'unsure'), fc.constantFrom('yes', 'partly', 'no', 'unsure'))
         .filter(([answer1, answer2]) => !Equal.equals(answer1, answer2)),
@@ -131,20 +131,20 @@ describe('decide', () => {
       )
     })
 
-    test.failing.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('with the same answer', answer => {
+    test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('with the same answer', answer => {
       const result = _.decide(new _.HasBeenAnswered({ answer }), { answer, datasetReviewId })
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
   })
 
-  test.failing.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('is being published', answer => {
+  test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('is being published', answer => {
     const result = _.decide(new _.IsBeingPublished(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
-  test.failing.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has been published', answer => {
+  test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has been published', answer => {
     const result = _.decide(new _.HasBeenPublished(), { answer, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
