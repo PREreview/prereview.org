@@ -8,6 +8,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import * as FollowsFairAndCarePrinciplesForm from './FollowsFairAndCarePrinciplesForm.js'
 import { FollowsFairAndCarePrinciplesQuestion as MakeResponse } from './FollowsFairAndCarePrinciplesQuestion.js'
 
@@ -76,8 +77,12 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
             datasetReviewId,
           })
 
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
           return Response.RedirectResponse({
-            location: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
           })
         },
         Effect.catchAll(() => HavingProblemsPage),

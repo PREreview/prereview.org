@@ -105,7 +105,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Partly').check()
@@ -122,8 +122,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  testInfo.fail()
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? I don’t know')
 
