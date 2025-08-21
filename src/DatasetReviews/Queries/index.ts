@@ -8,6 +8,7 @@ import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
+import type { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
@@ -31,6 +32,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
     getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples>,
+      Errors.UnknownDatasetReview
+    >
+    getAnswerToIfTheDatasetHasEnoughMetadata: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasEnoughMetadata>,
       Errors.UnknownDatasetReview
     >
     getPreviewForAReviewReadyToBePublished: Query<
@@ -73,6 +78,7 @@ export const {
   findPublishedReviewsForADataset,
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
+  getAnswerToIfTheDatasetHasEnoughMetadata,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
   getZenodoRecordId,
@@ -163,6 +169,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      getAnswerToIfTheDatasetHasEnoughMetadata: () => new UnableToQuery({ cause: 'not implemented' }),
       getPreviewForAReviewReadyToBePublished: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
