@@ -94,6 +94,8 @@ export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublis
 
 export type { PublishedReview } from './GetPublishedReview.js'
 
+export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
+
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
     const context = yield* Effect.context<EventStore.EventStore>()

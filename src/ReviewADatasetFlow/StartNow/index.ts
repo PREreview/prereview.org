@@ -30,8 +30,16 @@ export const StartNow: Effect.Effect<
           location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: reviewId }),
         })
       }),
-      onSome: datasetReviewId =>
-        Effect.succeed(CarryOnPage({ datasetReviewId, nextRoute: Routes.ReviewADatasetFollowsFairAndCarePrinciples })),
+      onSome: Effect.fn(
+        function* (datasetReviewId) {
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return CarryOnPage({ datasetReviewId, nextRoute: routeForCommand[nextExpectedCommand] })
+        },
+        Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
+      ),
     })
   },
   Effect.catchTags({
@@ -40,3 +48,9 @@ export const StartNow: Effect.Effect<
     UnableToQuery: () => HavingProblemsPage,
   }),
 )()
+
+const routeForCommand = {
+  AnswerIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
+  AnswerIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
+  PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
+} satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>

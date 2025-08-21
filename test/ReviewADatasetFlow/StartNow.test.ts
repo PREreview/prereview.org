@@ -72,32 +72,79 @@ describe('StartNow', () => {
     )
   })
 
-  test.prop([fc.supportedLocale(), fc.user(), fc.uuid()])('a review has been started', (locale, user, reviewId) =>
-    Effect.gen(function* () {
-      const actual = yield* _.StartNow
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: Routes.ReviewThisDatasetStartNow,
-        status: StatusCodes.OK,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-      Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
-        }),
+  describe('a review has been started', () => {
+    test.prop([
+      fc.supportedLocale(),
+      fc.user(),
+      fc.uuid(),
+      fc.constantFrom(
+        'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
+        'AnswerIfTheDatasetHasEnoughMetadata',
+        'PublishDatasetReview',
       ),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-      EffectTest.run,
-    ),
-  )
+    ])('the next expected command can be found', (locale, user, reviewId, nextExpectedCommand) =>
+      Effect.gen(function* () {
+        const actual = yield* _.StartNow
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: Routes.ReviewThisDatasetStartNow,
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
+            getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        EffectTest.run,
+      ),
+    )
+    test.prop([
+      fc.supportedLocale(),
+      fc.user(),
+      fc.uuid(),
+      fc.oneof(
+        fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+        fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
+        fc.constant(Effect.succeedNone),
+      ),
+    ])("the next expected command can't be found", (locale, user, reviewId, result) =>
+      Effect.gen(function* () {
+        const actual = yield* _.StartNow
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
+            getNextExpectedCommandForAUserOnADatasetReview: () => result,
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        EffectTest.run,
+      ),
+    )
+  })
 
   test.prop([fc.supportedLocale(), fc.user(), fc.anything()])("a review can't be queried", (locale, user, cause) =>
     Effect.gen(function* () {

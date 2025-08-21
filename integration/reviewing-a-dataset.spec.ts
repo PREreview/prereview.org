@@ -75,7 +75,7 @@ test.extend(canChooseLocale)('can choose a locale before starting', async ({ pag
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Yes').check()
@@ -89,8 +89,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('main')).toContainText('carry on')
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    testInfo.fail()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does the dataset have enough metadata?')
   },
