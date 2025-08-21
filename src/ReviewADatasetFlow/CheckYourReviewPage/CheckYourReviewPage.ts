@@ -1,4 +1,4 @@
-import { Match, pipe } from 'effect'
+import { Match, Option, pipe } from 'effect'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import { html, plainText } from '../../html.js'
 import { StreamlinePageResponse } from '../../response.js'
@@ -58,6 +58,24 @@ export const CheckYourReviewPage = ({
                     )}
                   </dd>
                 </div>
+                ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+                    <div>
+                      <dt><span>Does the dataset have enough metadata?</span></dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetHasEnoughMetadata),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>
