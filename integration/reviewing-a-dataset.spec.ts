@@ -118,13 +118,12 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
 
-  testInfo.fail()
-  await expect(page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' })).toBeVisible()
-
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
 
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  testInfo.fail()
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? I don’t know')
 

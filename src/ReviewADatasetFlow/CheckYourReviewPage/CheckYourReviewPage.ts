@@ -57,6 +57,11 @@ export const CheckYourReviewPage = ({
                       Match.exhaustive,
                     )}
                   </dd>
+                  <dd>
+                    <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}">
+                      Change <span class="visually-hidden">if the dataset follows FAIR and CARE principles</span>
+                    </a>
+                  </dd>
                 </div>
                 ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
                   onNone: () => '',
@@ -72,6 +77,11 @@ export const CheckYourReviewPage = ({
                           Match.when('unsure', () => 'I don’t know'),
                           Match.exhaustive,
                         )}
+                      </dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">if the dataset has enough metadata</span>
+                        </a>
                       </dd>
                     </div>
                   `,
