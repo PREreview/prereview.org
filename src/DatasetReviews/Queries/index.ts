@@ -11,6 +11,7 @@ import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswer
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
+import type { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.js'
 import { GetPublishedDoi } from './GetPublishedDoi.js'
 import { GetPublishedReview } from './GetPublishedReview.js'
@@ -36,6 +37,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     >
     getAnswerToIfTheDatasetHasEnoughMetadata: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasEnoughMetadata>,
+      Errors.UnknownDatasetReview
+    >
+    getNextExpectedCommandForAUserOnADatasetReview: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetNextExpectedCommandForAUserOnADatasetReview>,
       Errors.UnknownDatasetReview
     >
     getPreviewForAReviewReadyToBePublished: Query<
@@ -79,6 +84,7 @@ export const {
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
   getAnswerToIfTheDatasetHasEnoughMetadata,
+  getNextExpectedCommandForAUserOnADatasetReview,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
   getZenodoRecordId,
@@ -182,6 +188,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      getNextExpectedCommandForAUserOnADatasetReview: () => new UnableToQuery({ cause: 'not implemented' }),
       getPreviewForAReviewReadyToBePublished: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
