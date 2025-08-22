@@ -84,11 +84,8 @@ pipe(
         ),
         canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
         canReviewDatasets: Config.withDefault(Config.boolean('CAN_REVIEW_DATASETS'), false),
-        canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),
-        canSeeHomePageChanges: pipe(
-          Config.withDefault(Config.boolean('CAN_SEE_HOME_PAGE_CHANGES'), false),
-          Config.map(canSeeHomePageChanges => () => canSeeHomePageChanges),
-        ),
+        canSeeDesignTweaks: Config.succeed(true),
+        canSeeHomePageChanges: Config.succeed(Function.constTrue),
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
       SqlClient,
