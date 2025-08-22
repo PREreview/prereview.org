@@ -10,8 +10,8 @@ export { type RecentPrereview } from './recent-prereviews.js'
 export { type RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
-  canSeeDesignTweaks = false,
-  canSeeHomePageChanges = false,
+  canSeeDesignTweaks = true,
+  canSeeHomePageChanges = true,
   locale,
 }: {
   canSeeDesignTweaks?: boolean

@@ -23,8 +23,8 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
-  canSeeDesignTweaks = false,
-  canSeeHomePageChanges = false,
+  canSeeDesignTweaks = true,
+  canSeeHomePageChanges = true,
   locale,
   recentPrereviews,
   recentReviewRequests,

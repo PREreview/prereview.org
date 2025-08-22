@@ -57,7 +57,7 @@ export const page = ({
   publicUrl,
   canLogInAsDemoUser = false,
   useCrowdinInContext,
-  canSeeDesignTweaks = false,
+  canSeeDesignTweaks = true,
 }: {
   page: Page
   environmentLabel?: 'dev' | 'sandbox'

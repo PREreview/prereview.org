@@ -144,7 +144,7 @@ const featureFlagsLayer = FeatureFlags.layer({
   canAddMultipleAuthors: shouldNotBeCalled,
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
-  canSeeDesignTweaks: false,
+  canSeeDesignTweaks: true,
   canSeeHomePageChanges: shouldNotBeCalled,
   useCrowdinInContext: false,
 })
