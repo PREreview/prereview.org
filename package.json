@@ -30,7 +30,7 @@
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
     "fetch-fp-ts": "^0.1.6",
-    "fp-ts": "^2.16.10",
+    "fp-ts": "^2.16.11",
     "fp-ts-routing": "^0.7.0",
     "html-entities": "^2.6.0",
     "http-errors": "^2.0.0",
