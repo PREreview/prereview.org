@@ -22,8 +22,6 @@ test('content looks right', async ({ showPage }) => {
     ],
     statistics,
     locale: DefaultLocale,
-    canSeeDesignTweaks: true,
-    canSeeHomePageChanges: true,
   })
 
   const content = await showPage(response)
@@ -37,8 +35,6 @@ test('content looks right when empty', async ({ showPage }) => {
     recentReviewRequests: [],
     statistics,
     locale: DefaultLocale,
-    canSeeDesignTweaks: true,
-    canSeeHomePageChanges: true,
   })
 
   const content = await showPage(response)

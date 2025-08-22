@@ -10,12 +10,8 @@ export { type RecentPrereview } from './recent-prereviews.js'
 export { type RecentReviewRequest } from './recent-review-requests.js'
 
 export const home = ({
-  canSeeDesignTweaks = true,
-  canSeeHomePageChanges = true,
   locale,
 }: {
-  canSeeDesignTweaks?: boolean
-  canSeeHomePageChanges?: boolean
   locale: SupportedLocale
 }): RT.ReaderTask<GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv, PageResponse> =>
   pipe(
@@ -24,7 +20,5 @@ export const home = ({
     RT.apSW('recentReviewRequests', getRecentReviewRequests()),
     RT.let('statistics', () => ({ prereviews: 1237, servers: 30, users: 3453 })),
     RT.let('locale', () => locale),
-    RT.let('canSeeDesignTweaks', () => canSeeDesignTweaks),
-    RT.let('canSeeHomePageChanges', () => canSeeHomePageChanges),
     RT.map(createPage),
   )
