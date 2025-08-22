@@ -145,7 +145,7 @@
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.1",
-    "webpack": "^5.101.0",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
     "webpack-remove-empty-scripts": "^1.1.1"
