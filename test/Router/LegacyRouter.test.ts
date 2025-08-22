@@ -142,7 +142,6 @@ const featureFlagsLayer = FeatureFlags.layer({
   aiReviewsAsCc0: shouldNotBeCalled,
   askAiReviewEarly: shouldNotBeCalled,
   canAddMultipleAuthors: shouldNotBeCalled,
-  canChooseLocale: true,
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
   canSeeDesignTweaks: false,

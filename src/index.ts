@@ -82,7 +82,6 @@ pipe(
               canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
           ),
         ),
-        canChooseLocale: Config.succeed(true),
         canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
         canReviewDatasets: Config.withDefault(Config.boolean('CAN_REVIEW_DATASETS'), false),
         canSeeDesignTweaks: Config.withDefault(Config.boolean('CAN_SEE_DESIGN_TWEAKS'), false),

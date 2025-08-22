@@ -1318,7 +1318,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               aiReviewsAsCc0: () => false,
               askAiReviewEarly: () => false,
               canAddMultipleAuthors,
-              canChooseLocale: true,
               canLogInAsDemoUser,
               canReviewDatasets,
               canSeeDesignTweaks: false,

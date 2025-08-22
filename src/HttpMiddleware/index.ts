@@ -209,15 +209,10 @@ export const removeLocaleFromPathForRouting = HttpMiddleware.make(
 
 export const getLocale = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const canChooseLocale = yield* FeatureFlags.canChooseLocale
     const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
 
     if (useCrowdinInContext) {
       return yield* Effect.provideService(app, Locale, CrowdinInContextLocale)
-    }
-
-    if (!canChooseLocale) {
-      return yield* Effect.provideService(app, Locale, DefaultLocale)
     }
 
     const localeFromPath = yield* pipe(

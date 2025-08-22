@@ -3,7 +3,6 @@ import cookieSignature from 'cookie-signature'
 import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Redacted, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
-import * as FeatureFlags from '../FeatureFlags.js'
 import { OrcidOauth } from '../OrcidOauth.js'
 import { PublicUrl } from '../public-url.js'
 import { toPage, type ForceLogInResponse, type Response } from '../response.js'
@@ -20,11 +19,7 @@ export type { Response } from '../response.js'
 
 export const toHttpServerResponse = (
   response: Response,
-): Effect.Effect<
-  HttpServerResponse.HttpServerResponse,
-  never,
-  Locale | TemplatePage | OrcidOauth | PublicUrl | FeatureFlags.FeatureFlags
-> => {
+): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | OrcidOauth | PublicUrl> => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.redirect(response.location, { status: response.status })
@@ -63,13 +58,11 @@ export const toHttpServerResponse = (
 
     const pageUrls = ConstructPageUrls.constructPageUrls(response, publicUrl.origin, locale)
 
-    const canChooseLocale = yield* FeatureFlags.canChooseLocale
-
     const links = Option.match(pageUrls, {
       onNone: Array.empty,
       onSome: pageUrls =>
         pipe(
-          canChooseLocale ? pageUrls.localeUrls : HashMap.empty(),
+          pageUrls.localeUrls,
           HashMap.reduce(Array.empty<(typeof Http.LinkHeaderSchema.Type)[number]>(), (links, url, locale) =>
             Array.append(links, { uri: url.href, rel: 'alternate', hreflang: locale }),
           ),

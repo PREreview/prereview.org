@@ -7,7 +7,6 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     aiReviewsAsCc0: (user?: User) => boolean
     askAiReviewEarly: (user?: User) => boolean
     canAddMultipleAuthors: (user?: User) => boolean
-    canChooseLocale: boolean
     canLogInAsDemoUser: boolean
     canReviewDatasets: boolean
     canSeeDesignTweaks: boolean
@@ -24,19 +23,12 @@ export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct
 
 export const canSeeHomePageChanges = Effect.serviceFunction(FeatureFlags, Struct.get('canSeeHomePageChanges'))
 
-export const { canChooseLocale, canLogInAsDemoUser, canReviewDatasets, canSeeDesignTweaks, useCrowdinInContext } =
+export const { canLogInAsDemoUser, canReviewDatasets, canSeeDesignTweaks, useCrowdinInContext } =
   Effect.serviceConstants(FeatureFlags)
-
-export class CannotChooseLocale extends Data.TaggedError('CannotChooseLocale') {}
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 
 export class CannotReviewDatasets extends Data.TaggedError('CannotReviewDatasets') {}
-
-export const EnsureCanChooseLocale = Effect.if(canChooseLocale, {
-  onTrue: () => Effect.void,
-  onFalse: () => new CannotChooseLocale(),
-})
 
 export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
   onTrue: () => Effect.void,
