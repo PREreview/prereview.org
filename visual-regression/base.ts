@@ -87,6 +87,8 @@ export const test = baseTest.extend<ShowPage>({
     })
   },
   templatePage: async ({ baseURL }, use) => {
-    await use(page => templatePage({ page, publicUrl: new URL(String(baseURL)), useCrowdinInContext: false }))
+    await use(page =>
+      templatePage({ page, publicUrl: new URL(String(baseURL)), useCrowdinInContext: false, canSeeDesignTweaks: true }),
+    )
   },
 })
