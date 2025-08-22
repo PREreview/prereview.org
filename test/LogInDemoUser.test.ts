@@ -46,7 +46,7 @@ const featureFlagsLayer = (canLogInAsDemoUser: boolean) =>
     aiReviewsAsCc0: shouldNotBeCalled,
     askAiReviewEarly: shouldNotBeCalled,
     canAddMultipleAuthors: shouldNotBeCalled,
-    canChooseLocale: false,
+    canChooseLocale: true,
     canLogInAsDemoUser,
     canReviewDatasets: false,
     canSeeDesignTweaks: false,

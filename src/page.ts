@@ -56,7 +56,7 @@ export const page = ({
   fathomId,
   publicUrl,
   canLogInAsDemoUser = false,
-  canChooseLocale = false,
+  canChooseLocale = true,
   useCrowdinInContext,
   canSeeDesignTweaks = false,
 }: {
