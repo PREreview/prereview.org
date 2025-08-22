@@ -115,7 +115,6 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
-  canChooseLocale: (typeof FeatureFlags.FeatureFlags.Service)['canChooseLocale']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
   nodemailer: typeof Nodemailer.Nodemailer.Service
@@ -131,9 +130,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => false)
-  },
-  canChooseLocale: async ({}, use) => {
-    await use(false)
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(false)
@@ -1257,7 +1253,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorInviteStore,
         nodemailer,
         canAddMultipleAuthors,
-        canChooseLocale,
         canLogInAsDemoUser,
         canReviewDatasets,
         sqlClientLayer,
@@ -1323,7 +1318,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               aiReviewsAsCc0: () => false,
               askAiReviewEarly: () => false,
               canAddMultipleAuthors,
-              canChooseLocale,
+              canChooseLocale: true,
               canLogInAsDemoUser,
               canReviewDatasets,
               canSeeDesignTweaks: false,
@@ -2301,17 +2296,6 @@ export const canAddMultipleAuthors: Fixtures<
 > = {
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => true)
-  },
-}
-
-export const canChooseLocale: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canChooseLocale'>,
-  Record<never, never>
-> = {
-  canChooseLocale: async ({}, use) => {
-    await use(true)
   },
 }
 

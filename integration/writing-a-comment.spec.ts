@@ -5,7 +5,6 @@ import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import {
   areLoggedIn,
   test as baseTest,
-  canChooseLocale,
   canLogIn,
   expect,
   hasAnUnverifiedEmailAddress,
@@ -130,7 +129,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
   },
 )
 
-test.extend(canChooseLocale)('can choose a locale before starting', async ({ fetch, page }) => {
+test('can choose a locale before starting', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,

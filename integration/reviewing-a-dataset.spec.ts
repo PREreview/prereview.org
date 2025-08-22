@@ -1,7 +1,6 @@
 import {
   areLoggedIn,
   test as baseTest,
-  canChooseLocale,
   canLogIn,
   canReviewDatasets,
   expect,
@@ -63,7 +62,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('article', { name: 'PREreview by A PREreviewer' })).toBeVisible()
 })
 
-test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }, testInfo) => {
+test('can choose a locale before starting', async ({ page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()

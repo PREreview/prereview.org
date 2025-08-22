@@ -1,5 +1,4 @@
 import {
-  canChooseLocale,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -29,7 +28,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   },
 )
 
-test.extend(invitedToBeAnAuthor).extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
+test.extend(invitedToBeAnAuthor)('can choose a locale before starting', async ({ page }) => {
   const opener = page.waitForEvent('popup')
   await page.getByRole('link', { name: 'Be listed as an author' }).click()
   page = await opener
@@ -70,16 +69,13 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   },
 )
 
-test.extend(canChooseLocale).extend(invitedToBeAnAuthor)(
-  'can choose a locale before declining an invite',
-  async ({ page }) => {
-    await page.getByRole('link', { name: 'declining this invitation' }).click()
+test.extend(invitedToBeAnAuthor)('can choose a locale before declining an invite', async ({ page }) => {
+  await page.getByRole('link', { name: 'declining this invitation' }).click()
 
-    await page.getByRole('link', { name: 'português (Brasil)' }).click()
+  await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recusar o convite')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recusar o convite')
+})
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'can change the name after previewing',

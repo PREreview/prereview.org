@@ -1,5 +1,5 @@
 import * as StatusCodes from '../src/StatusCodes.js'
-import { areLoggedIn, canChooseLocale, canLogIn, expect, test } from './base.js'
+import { areLoggedIn, canLogIn, expect, test } from './base.js'
 
 test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await page.goto('/', { waitUntil: 'commit' })
@@ -24,7 +24,7 @@ test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
 })
 
-test.extend(canChooseLocale)('can choose a locale before starting', async ({ page }) => {
+test('can choose a locale before starting', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
 
   await page.getByRole('link', { name: 'português (Brasil)' }).click()

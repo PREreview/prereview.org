@@ -1,6 +1,6 @@
-import { canChooseLocale, expect, test } from './base.js'
+import { expect, test } from './base.js'
 
-test.extend(canChooseLocale)('can choose a locale through picker and path', async ({ fetch, page }) => {
+test('can choose a locale through picker and path', async ({ fetch, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
@@ -49,7 +49,7 @@ test.extend(canChooseLocale)('can choose a locale through picker and path', asyn
   await expect(page.getByRole('main')).toContainText('Some information about us.')
 })
 
-test.extend(canChooseLocale).extend({ locale: 'pt-BR' })('with a Brazilian-Portuguese browser', async ({ page }) => {
+test.extend({ locale: 'pt-BR' })('with a Brazilian-Portuguese browser', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
@@ -59,7 +59,7 @@ test.extend(canChooseLocale).extend({ locale: 'pt-BR' })('with a Brazilian-Portu
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 })
 
-test.extend(canChooseLocale).extend({ locale: 'pt-PT' })('with a European-Portuguese browser', async ({ page }) => {
+test.extend({ locale: 'pt-PT' })('with a European-Portuguese browser', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
@@ -70,7 +70,7 @@ test.extend(canChooseLocale).extend({ locale: 'pt-PT' })('with a European-Portug
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 })
 
-test.extend(canChooseLocale).extend({ locale: 'is' })('with an Icelandic browser', async ({ page }) => {
+test.extend({ locale: 'is' })('with an Icelandic browser', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
