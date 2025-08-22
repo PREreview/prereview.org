@@ -56,7 +56,6 @@ export const page = ({
   fathomId,
   publicUrl,
   canLogInAsDemoUser = false,
-  canChooseLocale = true,
   useCrowdinInContext,
   canSeeDesignTweaks = false,
 }: {
@@ -65,7 +64,6 @@ export const page = ({
   fathomId?: string
   publicUrl: URL
   canLogInAsDemoUser?: boolean
-  canChooseLocale?: boolean
   useCrowdinInContext: boolean
   canSeeDesignTweaks?: boolean
 }): Html => {
@@ -162,7 +160,7 @@ export const page = ({
                         <span>${translate(locale, 'header', 'menu')()}</span>
                       </button>
                     </expander-button>
-                    ${canChooseLocale && pageUrls
+                    ${pageUrls
                       ? html`
                           <expander-button>
                             <a
@@ -329,7 +327,7 @@ export const page = ({
                     </div>
                   </div>
 
-                  ${canChooseLocale && pageUrls
+                  ${pageUrls
                     ? html`
                         <div id="locale" class="menu" hidden>
                           <div class="locales">
@@ -385,7 +383,7 @@ export const page = ({
                   <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                 </div>
 
-                ${canChooseLocale && pageUrls
+                ${pageUrls
                   ? html`
                       <div>
                         <span>${translate(locale, 'footer', 'chooseLanguage')()}</span>
