@@ -60,21 +60,6 @@
     "message": "Learn more about our mission",
     "description": "Text of a link to find out more about PREreview and its mission."
   },
-  "overviewUnderservedResearchersTitle": {
-    "message": "For underserved researchers"
-  },
-  "overviewUnderservedResearchersText": {
-    "message": "We support and empower diverse and historically excluded communities of researchers (particularly those at early stages of their career) to find a voice, train, and engage in peer review."
-  },
-  "overviewBetterWayTitle": {
-    "message": "A better way"
-  },
-  "overviewBetterWayText": {
-    "message": "Making science and scholarship more equitable, transparent, and collaborative."
-  },
-  "overviewBetterWayLink": {
-    "message": "Our mission"
-  },
   "requestsTitle": {
     "message": "Recent review requests"
   },
