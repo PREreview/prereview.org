@@ -12,12 +12,12 @@ test('can read about us', async ({ fetch, javaScriptEnabled, page }) => {
     { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
   )
 
-  await page.getByRole('link', { name: 'about' }).click()
+  await page.getByRole('link', { name: 'About', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about us.')
   if (javaScriptEnabled) {
     await menu.click()
-    await expect(page.getByRole('link', { name: 'about' })).toHaveAttribute('aria-current', 'page')
+    await expect(page.getByRole('link', { name: 'About', exact: true })).toHaveAttribute('aria-current', 'page')
   }
 })
 

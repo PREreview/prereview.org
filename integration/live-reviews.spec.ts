@@ -12,7 +12,7 @@ test('can read about Live Reviews', async ({ fetch, javaScriptEnabled, page }) =
   )
 
   await menu.click()
-  await page.getByRole('link', { name: 'Live Reviews' }).click()
+  await page.getByRole('link', { name: 'Live Reviews', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about Live Reviews.')
 

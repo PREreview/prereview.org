@@ -12,7 +12,7 @@ test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
   )
 
   await menu.click()
-  await page.getByRole('link', { name: 'Clubs' }).click()
+  await page.getByRole('link', { name: 'Clubs', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about clubs.')
 

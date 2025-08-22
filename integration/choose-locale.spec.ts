@@ -22,7 +22,7 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
     )
 
   await menu.click()
-  await page.getByRole('link', { name: 'Sobre nós' }).click()
+  await page.getByRole('link', { name: 'Sobre nós', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Algumas informações sobre nós.')
 
@@ -31,7 +31,7 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Open preprint reviews.')
 
   await menu.click()
-  await page.getByRole('link', { name: 'About' }).click()
+  await page.getByRole('link', { name: 'About', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about us.')
 
@@ -40,7 +40,7 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
   await menu.click()
-  await page.getByRole('link', { name: 'Sobre nós' }).click()
+  await page.getByRole('link', { name: 'Sobre nós', exact: true }).click()
 
   await expect(page.getByRole('main')).toContainText('Algumas informações sobre nós.')
 
