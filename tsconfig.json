@@ -8,7 +8,8 @@
     "noPropertyAccessFromIndexSignature": true,
     "plugins": [{ "name": "@effect/language-service" }],
     "resolveJsonModule": true,
-    "types": ["mocha"]
+    "types": ["mocha"],
+    "verbatimModuleSyntax": true
   },
   "include": ["assets", "integration", "src", "test", "visual-regression", "*.ts"]
 }
