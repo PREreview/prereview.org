@@ -8,6 +8,8 @@ size = "shared-cpu-2x"
 strategy = "bluegreen"
 
 [env]
+AI_REVIEWS_AS_CC0 = "true"
+ASK_AI_REVIEW_EARLY = "true"
 CAN_CHOOSE_LOCALE = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
 ENVIRONMENT_LABEL = "sandbox"
