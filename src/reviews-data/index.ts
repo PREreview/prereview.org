@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import { Array, flow, Function, Match, pipe } from 'effect'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -18,11 +18,9 @@ import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.j
 import { isPseudonym } from '../types/Pseudonym.js'
 import type { SubfieldId } from '../types/subfield.js'
 
-import PlainDate = Temporal.PlainDate
-
 export interface Prereview {
   preprint: PreprintId
-  createdAt: PlainDate
+  createdAt: Temporal.PlainDate
   doi: Doi
   authors: ReadonlyArray<{ name: string; orcid?: Orcid }>
   language?: LanguageCode
@@ -48,7 +46,7 @@ const StringE: E.Encoder<string, string | { toString: () => string }> = { encode
 
 const DoiE: E.Encoder<string, Doi> = StringE
 
-const PlainDateE: E.Encoder<string, PlainDate> = StringE
+const PlainDateE: E.Encoder<string, Temporal.PlainDate> = StringE
 
 const PreprintIdE = {
   encode: id =>
@@ -116,7 +114,7 @@ type Server =
 interface TransformedPrereview {
   preprint: IndeterminatePreprintId
   server: Server
-  createdAt: PlainDate
+  createdAt: Temporal.PlainDate
   doi: Doi
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
   language?: LanguageCode

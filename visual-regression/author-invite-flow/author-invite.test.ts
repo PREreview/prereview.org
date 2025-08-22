@@ -12,8 +12,6 @@ import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = await authorInvite({ id: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'), locale: DefaultLocale })({
     getAuthorInvite: () =>
@@ -42,7 +40,7 @@ test('content looks right', async ({ showPage }) => {
             language: 'en',
             url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
           },
-          published: PlainDate.from('2022-07-05'),
+          published: Temporal.PlainDate.from('2022-07-05'),
           requested: false,
           structured: false,
           text: html`<p>
@@ -105,7 +103,7 @@ test('content looks right when logged in', async ({ showPage }) => {
             language: 'en',
             url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
           },
-          published: PlainDate.from('2022-07-05'),
+          published: Temporal.PlainDate.from('2022-07-05'),
           requested: false,
           structured: false,
           text: html`<p>

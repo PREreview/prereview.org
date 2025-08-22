@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import { flow, Function, pipe } from 'effect'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -11,15 +11,13 @@ import { match, P } from 'ts-pattern'
 import type { NonEmptyString } from '../types/NonEmptyString.js'
 import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
-import PlainDate = Temporal.PlainDate
-
 export interface ScietyListEnv {
   scietyListToken: NonEmptyString
 }
 
 export interface Prereview {
   preprint: IndeterminatePreprintId
-  createdAt: PlainDate
+  createdAt: Temporal.PlainDate
   doi: Doi
   authors: ReadonlyArray<{ name: string }>
 }
@@ -37,7 +35,7 @@ const StringE: E.Encoder<string, string | { toString: () => string }> = { encode
 
 const DoiE: E.Encoder<string, Doi> = StringE
 
-const PlainDateE: E.Encoder<string, PlainDate> = StringE
+const PlainDateE: E.Encoder<string, Temporal.PlainDate> = StringE
 
 const PreprintIdE = {
   encode: id =>

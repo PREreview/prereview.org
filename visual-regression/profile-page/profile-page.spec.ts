@@ -10,8 +10,6 @@ import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = createPage(
     {
@@ -97,7 +95,7 @@ test('content looks right with a pseudonym when empty', async ({ showPage }) => 
 const prereview1 = {
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
-  published: PlainDate.from('2024-04-25'),
+  published: Temporal.PlainDate.from('2024-04-25'),
   fields: ['16'],
   subfields: ['1607'],
   preprint: {
@@ -110,7 +108,7 @@ const prereview1 = {
 const prereview2 = {
   id: 10888905,
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
-  published: PlainDate.from('2024-03-28'),
+  published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
   subfields: [],
   preprint: {
@@ -144,7 +142,7 @@ const prereview3 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-25'),
+  published: Temporal.PlainDate.from('2024-03-25'),
   fields: ['27'],
   subfields: ['2746'],
   preprint: {
@@ -170,7 +168,7 @@ const prereview4 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   fields: ['27', '23'],
   subfields: ['2725', '2303'],
   preprint: {
@@ -194,7 +192,7 @@ const prereview5 = {
     ],
     anonymous: 0,
   },
-  published: PlainDate.from('2023-12-20'),
+  published: Temporal.PlainDate.from('2023-12-20'),
   fields: ['12', '33'],
   subfields: ['1211', '3310', '1208'],
   preprint: {

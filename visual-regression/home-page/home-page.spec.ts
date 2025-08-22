@@ -8,8 +8,6 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
@@ -45,7 +43,7 @@ test('content looks right when empty', async ({ showPage }) => {
 const recentPrereview1 = {
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
-  published: PlainDate.from('2024-04-25'),
+  published: Temporal.PlainDate.from('2024-04-25'),
   fields: ['16'],
   subfields: ['1607'],
   preprint: {
@@ -59,7 +57,7 @@ const recentPrereview2 = {
   id: 10888905,
   club: 'reviewing-dental-articles-club',
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
-  published: PlainDate.from('2024-03-28'),
+  published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
   subfields: [],
   preprint: {
@@ -93,7 +91,7 @@ const recentPrereview3 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-25'),
+  published: Temporal.PlainDate.from('2024-03-25'),
   fields: ['27'],
   subfields: ['2746'],
   preprint: {
@@ -120,7 +118,7 @@ const recentPrereview4 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   fields: ['27', '23'],
   subfields: ['2725', '2303'],
   preprint: {
@@ -145,7 +143,7 @@ const recentPrereview5 = {
     ],
     anonymous: 0,
   },
-  published: PlainDate.from('2023-12-20'),
+  published: Temporal.PlainDate.from('2023-12-20'),
   fields: ['12', '33'],
   subfields: ['1211', '3310', '1208'],
   preprint: {
@@ -156,7 +154,7 @@ const recentPrereview5 = {
 } satisfies RecentPrereview
 
 const recentReviewRequest1 = {
-  published: PlainDate.from('2024-04-24'),
+  published: Temporal.PlainDate.from('2024-04-24'),
   fields: ['33'],
   subfields: ['3304'],
   preprint: {
@@ -167,7 +165,7 @@ const recentReviewRequest1 = {
 } satisfies RecentReviewRequest
 
 const recentReviewRequest2 = {
-  published: PlainDate.from('2024-04-24'),
+  published: Temporal.PlainDate.from('2024-04-24'),
   fields: [],
   subfields: [],
   preprint: {
@@ -178,7 +176,7 @@ const recentReviewRequest2 = {
 } satisfies RecentReviewRequest
 
 const recentReviewRequest3 = {
-  published: PlainDate.from('2024-04-23'),
+  published: Temporal.PlainDate.from('2024-04-23'),
   fields: ['23', '13'],
   subfields: ['2303', '1312'],
   preprint: {
@@ -189,7 +187,7 @@ const recentReviewRequest3 = {
 } satisfies RecentReviewRequest
 
 const recentReviewRequest4 = {
-  published: PlainDate.from('2024-04-23'),
+  published: Temporal.PlainDate.from('2024-04-23'),
   fields: ['23', '36', '33'],
   subfields: ['2307', '3600', '3308'],
   preprint: {
@@ -200,7 +198,7 @@ const recentReviewRequest4 = {
 } satisfies RecentReviewRequest
 
 const recentReviewRequest5 = {
-  published: PlainDate.from('2024-04-22'),
+  published: Temporal.PlainDate.from('2024-04-22'),
   fields: ['32'],
   subfields: ['3204'],
   preprint: {

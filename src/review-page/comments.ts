@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { type Array, Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,8 +6,6 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
-
-import PlainDate = Temporal.PlainDate
 
 export interface Comment {
   authors: {
@@ -17,7 +15,7 @@ export interface Comment {
   id: number
   language?: LanguageCode
   license: 'CC-BY-4.0'
-  published: PlainDate
+  published: Temporal.PlainDate
   text: Html
 }
 

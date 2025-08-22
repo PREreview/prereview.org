@@ -7,8 +7,6 @@ import { createEmptyPage, createPage } from '../../src/review-requests-page/revi
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     currentPage: 1,
@@ -101,7 +99,7 @@ test('content looks on the last page', async ({ showPage }) => {
 })
 
 const reviewRequest1 = {
-  published: PlainDate.from('2024-04-24'),
+  published: Temporal.PlainDate.from('2024-04-24'),
   fields: ['33'],
   subfields: ['3304'],
   preprint: {
@@ -112,7 +110,7 @@ const reviewRequest1 = {
 } satisfies ReviewRequests['reviewRequests'][number]
 
 const reviewRequest2 = {
-  published: PlainDate.from('2024-04-24'),
+  published: Temporal.PlainDate.from('2024-04-24'),
   fields: [],
   subfields: [],
   preprint: {
@@ -123,7 +121,7 @@ const reviewRequest2 = {
 } satisfies ReviewRequests['reviewRequests'][number]
 
 const reviewRequest3 = {
-  published: PlainDate.from('2024-04-23'),
+  published: Temporal.PlainDate.from('2024-04-23'),
   fields: ['23', '13'],
   subfields: ['2303', '1312'],
   preprint: {
@@ -134,7 +132,7 @@ const reviewRequest3 = {
 } satisfies ReviewRequests['reviewRequests'][number]
 
 const reviewRequest4 = {
-  published: PlainDate.from('2024-04-23'),
+  published: Temporal.PlainDate.from('2024-04-23'),
   fields: ['23', '36', '33'],
   subfields: ['2307', '3600', '3308'],
   preprint: {
@@ -145,7 +143,7 @@ const reviewRequest4 = {
 } satisfies ReviewRequests['reviewRequests'][number]
 
 const reviewRequest5 = {
-  published: PlainDate.from('2024-04-22'),
+  published: Temporal.PlainDate.from('2024-04-22'),
   fields: ['32'],
   subfields: ['3204'],
   preprint: {

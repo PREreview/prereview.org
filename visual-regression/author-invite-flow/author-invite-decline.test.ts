@@ -10,8 +10,6 @@ import { Prereview } from '../../src/Prereview.js'
 import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right before declining', async ({ showPage }) => {
   const response = declinePage({
     locale: DefaultLocale,
@@ -38,7 +36,7 @@ test('content looks right before declining', async ({ showPage }) => {
         language: 'en',
         url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
       },
-      published: PlainDate.from('2022-07-05'),
+      published: Temporal.PlainDate.from('2022-07-05'),
       requested: false,
       structured: false,
       text: html`<p>

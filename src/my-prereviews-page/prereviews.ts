@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { type Array, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
@@ -11,8 +11,6 @@ import type { SubfieldId } from '../types/subfield.js'
 import type { User } from '../user.js'
 import { UnableToLoadPrereviews } from './unable-to-load-prereviews.js'
 
-import PlainDate = Temporal.PlainDate
-
 export interface Prereview {
   readonly id: number
   readonly club?: ClubId
@@ -20,7 +18,7 @@ export interface Prereview {
     readonly named: Array.NonEmptyReadonlyArray<string>
     readonly anonymous: number
   }
-  readonly published: PlainDate
+  readonly published: Temporal.PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>
   readonly preprint: {

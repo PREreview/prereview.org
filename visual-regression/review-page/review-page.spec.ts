@@ -9,8 +9,6 @@ import { createPage } from '../../src/review-page/review-page.js'
 import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = createPage({
     id: 1234,
@@ -149,7 +147,7 @@ const review = new Prereview({
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   preprint: {
     id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,
@@ -236,7 +234,7 @@ const structuredReview = new Prereview({
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
-  published: PlainDate.from('2024-03-03'),
+  published: Temporal.PlainDate.from('2024-03-03'),
   preprint: {
     id: new EdarxivPreprintId({ value: Doi('10.35542/osf.io/hsnke') }),
     title: html`A population perspective on international students in Australian universities`,
@@ -291,7 +289,7 @@ const comment1 = {
   language: 'en',
   license: 'CC-BY-4.0',
   id: 10779310,
-  published: PlainDate.from('2024-03-09'),
+  published: Temporal.PlainDate.from('2024-03-09'),
   text: html`<p>This is a comment.</p>`,
 } satisfies Comment
 
@@ -303,6 +301,6 @@ const comment2 = {
   language: 'is',
   license: 'CC-BY-4.0',
   id: 10779310,
-  published: PlainDate.from('2024-04-15'),
+  published: Temporal.PlainDate.from('2024-04-15'),
   text: html`<p>Þetta er athugasemd.</p>`,
 } satisfies Comment

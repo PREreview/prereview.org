@@ -37,8 +37,6 @@ import * as _ from '../src/zenodo.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
-import PlainDate = Temporal.PlainDate
-
 describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([
     fc.integer({ min: 1 }),
@@ -703,7 +701,7 @@ describe('getPrereviewFromZenodo', () => {
             language: 'en',
             license: expectedLicense,
             live,
-            published: PlainDate.from('2022-07-05'),
+            published: Temporal.PlainDate.from('2022-07-05'),
             preprint: {
               id: preprint.id,
               title: preprint.title.text,

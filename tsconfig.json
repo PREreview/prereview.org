@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
+    "erasableSyntaxOnly": true,
     "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,

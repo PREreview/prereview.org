@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { type Array, Context, Data, type Effect } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
@@ -6,8 +6,6 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import type { PreprintId } from './types/preprint-id.js'
-
-import PlainDate = Temporal.PlainDate
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
 
@@ -26,7 +24,7 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   id: number
   language?: LanguageCode
   license: 'CC0-1.0' | 'CC-BY-4.0'
-  published: PlainDate
+  published: Temporal.PlainDate
   preprint: {
     id: PreprintId
     language: LanguageCode

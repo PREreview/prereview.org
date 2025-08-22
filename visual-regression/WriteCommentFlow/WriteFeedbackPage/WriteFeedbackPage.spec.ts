@@ -10,8 +10,6 @@ import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteCommentFlow/WriteCommentPage/WriteCommentPage.js'
 import { expect, test } from '../../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = _.WriteCommentPage({ prereview, locale: DefaultLocale })
 
@@ -48,7 +46,7 @@ const prereview = new Prereview.Prereview({
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   preprint: {
     id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,

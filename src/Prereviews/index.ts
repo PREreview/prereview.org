@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
@@ -28,8 +28,6 @@ import {
 } from '../zenodo.js'
 import * as Zenodo from '../Zenodo/index.js'
 
-import PlainDate = Temporal.PlainDate
-
 export interface RecentPrereview {
   readonly id: number
   readonly club?: ClubId
@@ -37,7 +35,7 @@ export interface RecentPrereview {
     readonly named: Array.NonEmptyReadonlyArray<string>
     readonly anonymous: number
   }
-  readonly published: PlainDate
+  readonly published: Temporal.PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>
   readonly preprint: {

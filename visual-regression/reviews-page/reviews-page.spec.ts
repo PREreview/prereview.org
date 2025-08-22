@@ -8,8 +8,6 @@ import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = createPage(
     {
@@ -138,7 +136,7 @@ test('content looks on the last page', async ({ showPage }) => {
 const recentPrereview1 = {
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
-  published: PlainDate.from('2024-04-25'),
+  published: Temporal.PlainDate.from('2024-04-25'),
   fields: ['16'],
   subfields: ['1607'],
   preprint: {
@@ -152,7 +150,7 @@ const recentPrereview2 = {
   id: 10888905,
   club: 'reviewing-dental-articles-club',
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
-  published: PlainDate.from('2024-03-28'),
+  published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
   subfields: [],
   preprint: {
@@ -186,7 +184,7 @@ const recentPrereview3 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-25'),
+  published: Temporal.PlainDate.from('2024-03-25'),
   fields: ['27'],
   subfields: ['2746'],
   preprint: {
@@ -213,7 +211,7 @@ const recentPrereview4 = {
     ],
     anonymous: 3,
   },
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   fields: ['27', '23'],
   subfields: ['2725', '2303'],
   preprint: {
@@ -238,7 +236,7 @@ const recentPrereview5 = {
     ],
     anonymous: 0,
   },
-  published: PlainDate.from('2023-12-20'),
+  published: Temporal.PlainDate.from('2023-12-20'),
   fields: ['12', '33', '12'],
   subfields: ['1211', '3310', '1208'],
   preprint: {

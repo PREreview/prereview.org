@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Temporal } from '@js-temporal/polyfill'
+import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, flow, Layer, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
@@ -18,10 +18,8 @@ import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
 
-import PlainDate = Temporal.PlainDate
-
 export interface ReviewRequest {
-  readonly published: PlainDate
+  readonly published: Temporal.PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>
   readonly preprint: {

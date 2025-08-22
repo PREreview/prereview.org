@@ -9,8 +9,6 @@ import { Preprint } from '../../src/preprint.js'
 import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showTwoUpPage }) => {
   const response = createPage({
     locale: DefaultLocale,
@@ -60,7 +58,7 @@ const preprint = Preprint({
     { name: 'Roberta Croce', orcid: Orcid('0000-0003-3469-834X') },
   ],
   id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
-  posted: PlainDate.from('2022-01-14'),
+  posted: Temporal.PlainDate.from('2022-01-14'),
   abstract: {
     text: html`<p>
       Non-photochemical quenching (NPQ) is the process that protects photosynthetic organisms from photodamage by

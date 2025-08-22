@@ -10,8 +10,6 @@ import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
 import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.js'
 import { expect, test } from '../../base.js'
 
-import PlainDate = Temporal.PlainDate
-
 test('content looks right', async ({ showPage }) => {
   const response = _.CarryOnPage({
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
@@ -45,7 +43,7 @@ const prereview = new Prereview.Prereview({
   language: 'en',
   license: 'CC-BY-4.0',
   live: false,
-  published: PlainDate.from('2024-03-04'),
+  published: Temporal.PlainDate.from('2024-03-04'),
   preprint: {
     id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
     title: html`Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants`,

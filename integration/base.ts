@@ -88,15 +88,13 @@ import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import { BiorxivPreprintId } from '../src/types/preprint-id.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
 import * as Zenodo from '../src/Zenodo/index.js'
-import Logger = L.Logger
-import LogEntry = L.LogEntry
 
 export { expect } from '@playwright/test'
 
 interface AppFixtures {
   sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
   fetch: fetchMock.FetchMockSandbox
-  logger: Logger
+  logger: L.Logger
   oauthServer: OAuth2Server
   port: number
   server: Fiber.RuntimeFiber<never>
@@ -1181,8 +1179,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   logger: async ({}, use, testInfo) => {
-    const logs: Array<LogEntry> = []
-    const logger: Logger = entry => () => logs.push(entry)
+    const logs: Array<L.LogEntry> = []
+    const logger: L.Logger = entry => () => logs.push(entry)
 
     await use(logger)
 

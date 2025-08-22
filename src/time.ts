@@ -2,10 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Match, pipe } from 'effect'
 import { html } from './html.js'
 
-import PlainDate = Temporal.PlainDate
-import PlainYearMonth = Temporal.PlainYearMonth
-
-export type PartialDate = PlainDate | PlainYearMonth | number
+export type PartialDate = Temporal.PlainDate | Temporal.PlainYearMonth | number
 
 export const renderDate = (locale: string) =>
   pipe(
@@ -13,7 +10,9 @@ export const renderDate = (locale: string) =>
     Match.when(
       Match.number,
       year =>
-        html`<time datetime="${year}">${new PlainDate(year, 1, 1).toLocaleString(locale, { year: 'numeric' })}</time>`,
+        html`<time datetime="${year}"
+          >${new Temporal.PlainDate(year, 1, 1).toLocaleString(locale, { year: 'numeric' })}</time
+        >`,
     ),
     Match.when(
       isPlainYearMonth,
@@ -29,10 +28,10 @@ export const renderDate = (locale: string) =>
     Match.exhaustive,
   )
 
-function isPlainDate(value: unknown): value is PlainDate {
+function isPlainDate(value: unknown): value is Temporal.PlainDate {
   return typeof value === 'object' && value?.constructor.name === 'PlainDate'
 }
 
-function isPlainYearMonth(value: unknown): value is PlainYearMonth {
+function isPlainYearMonth(value: unknown): value is Temporal.PlainYearMonth {
   return typeof value === 'object' && value?.constructor.name === 'PlainYearMonth'
 }
