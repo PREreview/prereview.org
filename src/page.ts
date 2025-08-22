@@ -125,7 +125,7 @@ export const page = ({
         <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
         <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
       </head>
-      <body class="tweaked${type === 'two-up' ? ` ${type}` : ''}">
+      <body class="${type === 'two-up' ? type : ''}">
         ${skipLinks.length > 0
           ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
           : ''}

@@ -564,11 +564,7 @@ header {
   }
 
   section & {
-    margin-block-start: var(--space-l-xl);
-
-    .tweaked & {
-      margin-block-start: var(--space-2xl-3xl);
-    }
+    margin-block-start: var(--space-2xl-3xl);
 
     &:has(+ :--list) {
       border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
@@ -1250,9 +1246,10 @@ label {
 
   .hero & {
     display: inline-flex;
+    margin-block-start: var(--space-m-l);
   }
 
-  :not(.hero) > p + & {
+  p + & {
     margin-block-start: var(--space-xs);
   }
 
@@ -2628,7 +2625,7 @@ skip-link {
   }
 }
 
-.tweaked .hero {
+.hero {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -2683,10 +2680,6 @@ skip-link {
 
   & :any-link:not(.button) {
     background-color: var(--color-background);
-  }
-
-  & .button-group {
-    margin-block-start: var(--space-m-l);
   }
 
   & :--button {
