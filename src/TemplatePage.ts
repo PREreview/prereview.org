@@ -21,7 +21,6 @@ export const make = Effect.gen(function* () {
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
-  const canSeeDesignTweaks = yield* FeatureFlags.canSeeDesignTweaks
 
   return (page: Page) =>
     templatePage({
@@ -31,7 +30,6 @@ export const make = Effect.gen(function* () {
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),
       publicUrl,
-      canSeeDesignTweaks,
     })
 })
 

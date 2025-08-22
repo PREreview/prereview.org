@@ -48,7 +48,5 @@ const featureFlagsLayer = (canLogInAsDemoUser: boolean) =>
     canAddMultipleAuthors: shouldNotBeCalled,
     canLogInAsDemoUser,
     canReviewDatasets: false,
-    canSeeDesignTweaks: true,
-    canSeeHomePageChanges: shouldNotBeCalled,
     useCrowdinInContext: false,
   })

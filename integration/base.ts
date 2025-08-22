@@ -1320,8 +1320,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               canAddMultipleAuthors,
               canLogInAsDemoUser,
               canReviewDatasets,
-              canSeeDesignTweaks: true,
-              canSeeHomePageChanges: () => true,
               useCrowdinInContext: false,
             }),
             Nodemailer.layer(nodemailer),
