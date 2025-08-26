@@ -24,6 +24,14 @@ const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheD
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'partly',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'unsure',
+  datasetReviewId,
+})
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -51,6 +59,9 @@ describe('GetDataForZenodoRecord', () => {
               fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
@@ -58,7 +69,7 @@ describe('GetDataForZenodoRecord', () => {
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
-              answerToIfTheDatasetHasTrackedChanges: Option.none(),
+              answerToIfTheDatasetHasTrackedChanges: Option.some(events[3].answer),
             }),
           ),
       ],
@@ -87,13 +98,15 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetFollowsFairAndCarePrinciples2,
                 answeredIfTheDatasetHasEnoughMetadata1,
                 answeredIfTheDatasetHasEnoughMetadata2,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasTrackedChanges2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
-                answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
               },
             ],
           ], // with multiple answers
