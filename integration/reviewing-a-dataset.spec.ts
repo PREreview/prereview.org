@@ -173,7 +173,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('No')).toBeChecked()
+  await expect(page.getByLabel('No', { exact: true })).toBeChecked()
 
   await page.goBack()
 
@@ -206,7 +206,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  await expect(page.getByLabel('No')).toBeChecked()
+  await expect(page.getByLabel('No', { exact: true })).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 
