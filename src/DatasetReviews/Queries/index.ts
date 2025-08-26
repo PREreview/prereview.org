@@ -9,7 +9,7 @@ import { FindInProgressReviewForADataset } from './FindInProgressReviewForADatas
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
-import type { GetAnswerToIfTheDatasetHasTrackedChanges } from './GetAnswerToIfTheDatasetHasTrackedChanges.js'
+import { GetAnswerToIfTheDatasetHasTrackedChanges } from './GetAnswerToIfTheDatasetHasTrackedChanges.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
@@ -196,7 +196,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      getAnswerToIfTheDatasetHasTrackedChanges: () => new UnableToQuery({ cause: 'not implemented' }),
+      getAnswerToIfTheDatasetHasTrackedChanges: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return GetAnswerToIfTheDatasetHasTrackedChanges(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
       getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
