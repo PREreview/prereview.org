@@ -4,6 +4,7 @@ import type * as Events from '../Events.js'
 export type NextExpectedCommand =
   | 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'
   | 'AnswerIfTheDatasetHasEnoughMetadata'
+  | 'AnswerIfTheDatasetHasTrackedChanges'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
