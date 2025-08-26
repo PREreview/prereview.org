@@ -24,7 +24,14 @@ const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheD
   answer: 'yes',
   datasetReviewId,
 })
-
+const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'partly',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'unsure',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -82,6 +89,7 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasStarted,
                   answeredIfTheDatasetFollowsFairAndCarePrinciples1,
                   answeredIfTheDatasetHasEnoughMetadata1,
+                  answeredIfTheDatasetHasTrackedChanges1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -96,7 +104,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
-                    answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                    answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -110,6 +118,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2,
                   answeredIfTheDatasetHasEnoughMetadata1,
                   answeredIfTheDatasetHasEnoughMetadata2,
+                  answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasTrackedChanges2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -126,7 +136,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
-                    answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                    answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },

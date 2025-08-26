@@ -47,6 +47,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetHasTrackedChanges = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -61,7 +66,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
           answerToIfTheDatasetHasEnoughMetadata,
-          answerToIfTheDatasetHasTrackedChanges: Option.none(),
+          answerToIfTheDatasetHasTrackedChanges,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),
