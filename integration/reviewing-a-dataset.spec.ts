@@ -222,3 +222,33 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes')).toBeFocused()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the dataset has tracked changes',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../has-tracked-changes`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page
+      .getByRole('link', { name: 'Select if the dataset has a way to list or track changes or versions' })
+      .click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
+  },
+)
