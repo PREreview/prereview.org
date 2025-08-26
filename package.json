@@ -156,6 +156,9 @@
     },
     "@web/test-runner": {
       "@web/test-runner-chrome": "npm:dry-uninstall"
+    },
+    "jest": {
+      "babel-jest": "npm:dry-uninstall"
     }
   },
   "scripts": {
