@@ -53,6 +53,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
+              answerToIfTheDatasetHasTrackedChanges: Option.none(),
             }),
           ),
       ],
@@ -65,6 +66,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                answerToIfTheDatasetHasTrackedChanges: Option.none(),
               },
             ],
           ], // with answer
@@ -81,6 +83,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
+                answerToIfTheDatasetHasTrackedChanges: Option.none(),
               },
             ],
           ], // with multiple answers

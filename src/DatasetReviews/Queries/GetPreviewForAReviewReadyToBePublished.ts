@@ -5,6 +5,7 @@ import type * as Events from '../Events.js'
 export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
+  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -46,6 +47,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       Either.right({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
+        answerToIfTheDatasetHasTrackedChanges: Option.none(),
       }),
   })
 }

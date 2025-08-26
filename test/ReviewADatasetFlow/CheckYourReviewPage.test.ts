@@ -24,6 +24,9 @@ describe('CheckYourReviewPage', () => {
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
           fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
         ),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        ),
       }),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {
