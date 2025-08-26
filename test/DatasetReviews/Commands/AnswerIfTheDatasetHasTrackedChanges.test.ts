@@ -23,21 +23,18 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.failing.prop(
-    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
-    {
-      examples: [
-        [[]], // no events
-        [[answered1, datasetReviewWasPublished]], // with events
-      ],
-    },
-  )('not started', () => {
+  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
+    examples: [
+      [[]], // no events
+      [[answered1, datasetReviewWasPublished]], // with events
+    ],
+  })('not started', () => {
     const state = _.foldState([])
 
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.failing.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
     examples: [
       [[started]], // was started
     ],
@@ -47,7 +44,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotAnswered())
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges())
@@ -65,7 +62,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.HasBeenAnswered({ answer: expected }))
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
@@ -84,7 +81,7 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.IsBeingPublished())
   })
 
-  test.failing.prop(
+  test.prop(
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
