@@ -24,6 +24,14 @@ const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheD
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'partly',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'unsure',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -47,13 +55,16 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
             ),
           )
           .map(events =>
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
-              answerToIfTheDatasetHasTrackedChanges: Option.none(),
+              answerToIfTheDatasetHasTrackedChanges: Option.some(events[3].answer),
             }),
           ),
       ],
@@ -78,12 +89,14 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetFollowsFairAndCarePrinciples2,
                 answeredIfTheDatasetHasEnoughMetadata1,
                 answeredIfTheDatasetHasEnoughMetadata2,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasTrackedChanges2,
               ],
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
-                answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
               },
             ],
           ], // with multiple answers

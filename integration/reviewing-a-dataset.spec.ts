@@ -110,7 +110,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Partly').check()
@@ -124,7 +124,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
-  testInfo.fail()
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly',
   )
