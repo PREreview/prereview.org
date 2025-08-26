@@ -5,7 +5,7 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.js'
-import type * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTrackedChanges.js'
+import * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTrackedChanges.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
@@ -133,7 +133,14 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetHasEnoughMetadata.foldState,
         AnswerIfTheDatasetHasEnoughMetadata.decide,
       ),
-      answerIfTheDatasetHasTrackedChanges: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      answerIfTheDatasetHasTrackedChanges: handleCommand(
+        command => ({
+          types: Events.DatasetReviewEventTypes,
+          predicates: { datasetReviewId: command.datasetReviewId },
+        }),
+        AnswerIfTheDatasetHasTrackedChanges.foldState,
+        AnswerIfTheDatasetHasTrackedChanges.decide,
+      ),
       markRecordCreatedOnZenodo: handleCommand(
         command => ({
           types: Events.DatasetReviewEventTypes,
