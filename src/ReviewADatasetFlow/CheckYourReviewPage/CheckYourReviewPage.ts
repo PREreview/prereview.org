@@ -89,6 +89,37 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetHasTrackedChanges, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetHasTrackedChanges => html`
+                    <div>
+                      <dt>
+                        <span
+                          >Does this dataset include a way to list or track changes or versions? If so, does it seem
+                          accurate?</span
+                        >
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetHasTrackedChanges),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}">
+                          Change
+                          <span class="visually-hidden"
+                            >if the dataset includes a way to list or track changes or versions</span
+                          >
+                        </a>
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>
