@@ -28,6 +28,12 @@ const cases = [
             Partly
           </dd>
         
+      
+          <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
+          <dd>
+            No
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -59,6 +65,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
     </dl>
   `),

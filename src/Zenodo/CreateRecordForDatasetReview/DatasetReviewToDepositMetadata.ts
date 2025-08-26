@@ -41,6 +41,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           </dd>
         `,
       })}
+      ${Option.match(review.answerToIfTheDatasetHasTrackedChanges, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetHasTrackedChanges => html`
+          <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetHasTrackedChanges),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
     </dl>
   `,
   title: 'Dataset review',
