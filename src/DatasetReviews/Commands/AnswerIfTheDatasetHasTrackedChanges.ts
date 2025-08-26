@@ -1,7 +1,7 @@
-import { Array, Data, type Either, Function, Option } from 'effect'
+import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
 import type { Uuid } from '../../types/index.js'
-import type * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Errors from '../Errors.js'
+import * as Events from '../Events.js'
 
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'
@@ -51,10 +51,34 @@ export const decide: {
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
 } = Function.dual(
   2,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> => {
-    throw new Error('not implemented')
-  },
+  (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error> =>
+    Match.valueTags(state, {
+      NotStarted: () => Either.left(new Errors.DatasetReviewHasNotBeenStarted()),
+      IsBeingPublished: () => Either.left(new Errors.DatasetReviewIsBeingPublished()),
+      HasBeenPublished: () => Either.left(new Errors.DatasetReviewHasBeenPublished()),
+      NotAnswered: () =>
+        Either.right(
+          Option.some(
+            new Events.AnsweredIfTheDatasetHasTrackedChanges({
+              answer: command.answer,
+              datasetReviewId: command.datasetReviewId,
+            }),
+          ),
+        ),
+      HasBeenAnswered: ({ answer }) =>
+        Boolean.match(Equal.equals(command.answer, answer), {
+          onTrue: () => Either.right(Option.none()),
+          onFalse: () =>
+            Either.right(
+              Option.some(
+                new Events.AnsweredIfTheDatasetHasTrackedChanges({
+                  answer: command.answer,
+                  datasetReviewId: command.datasetReviewId,
+                }),
+              ),
+            ),
+        }),
+    }),
 )
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
