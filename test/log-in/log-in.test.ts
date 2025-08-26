@@ -11,7 +11,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as _ from '../../src/log-in/index.js'
-import type { TemplatePageEnv } from '../../src/page.js'
 import { homeMatch } from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { OrcidLocale } from '../../src/types/index.js'
@@ -389,69 +388,31 @@ describe('authenticate', () => {
 })
 
 describe('authenticateError', () => {
-  test.prop([fc.connection(), fc.supportedLocale(), fc.html()])(
-    'with an access_denied error',
-    async (connection, locale, page) => {
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+  test.prop([fc.supportedLocale()])('with an access_denied error', locale => {
+    const actual = _.authenticateError({ error: 'access_denied', locale })
 
-      const actual = await runMiddleware(
-        _.authenticateError({ error: 'access_denied', locale })({
-          getUserOnboarding: shouldNotBeCalled,
-          publicUrl: new URL('http://example.com'),
-          templatePage,
-        }),
-        connection,
-      )()
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: StatusCodes.Forbidden,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: StatusCodes.Forbidden },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
-        title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main']],
-        js: [],
-        locale,
-      })
-    },
-  )
+  test.prop([fc.string(), fc.supportedLocale()])('with an unknown error', (error, locale) => {
+    const actual = _.authenticateError({ error, locale })
 
-  test.prop([fc.string(), fc.connection(), fc.supportedLocale(), fc.html()])(
-    'with an unknown error',
-    async (error, connection, locale, page) => {
-      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
-
-      const actual = await runMiddleware(
-        _.authenticateError({ error, locale })({
-          getUserOnboarding: shouldNotBeCalled,
-          publicUrl: new URL('http://example.com'),
-          templatePage,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: StatusCodes.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: page.toString() },
-        ]),
-      )
-      expect(templatePage).toHaveBeenCalledWith({
-        title: expect.anything(),
-        content: expect.anything(),
-        skipLinks: [[expect.anything(), '#main']],
-        js: [],
-        locale,
-      })
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: StatusCodes.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 })
 
 function all<A>(iterable: AsyncIterable<A>): Promise<ReadonlyArray<A>> {

@@ -48,6 +48,7 @@ import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePrep
 import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import type { PrereviewCoarNotifyEnv } from './prereview-coar-notify/index.js'
 import type { PublicUrlEnv } from './public-url.js'
+import { handleResponse } from './response.js'
 import { reviewsData } from './reviews-data/index.js'
 import {
   logInMatch,
@@ -159,7 +160,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             'locale',
             RM.asks((env: RouterEnv) => env.locale),
           ),
-          RM.ichainW(authenticateError),
+          RM.bind('response', args => RM.of(authenticateError(args))),
+          RM.ichainW(handleResponse),
         ),
       ),
     ),
