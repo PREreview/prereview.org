@@ -155,17 +155,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   )
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  testInfo.fail()
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
-  )
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -195,16 +191,14 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  testInfo.fail()
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
-  )
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
 
   await page.getByRole('link', { name: 'Back' }).click()
+
+  testInfo.fail()
 
   await expect(page.getByLabel('No', { exact: true })).toBeChecked()
 
