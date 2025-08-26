@@ -9,7 +9,6 @@ import { DatasetReviewsPage } from '../DatasetReviewsPage/index.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { HowToUsePage } from '../HowToUsePage.js'
 import * as HttpMiddleware from '../HttpMiddleware/index.js'
 import { LiveReviewsPage } from '../LiveReviewsPage.js'
@@ -81,8 +80,16 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.HasEnoughMetadataSubmission),
     ),
   ),
-  MakeRoute('GET', Routes.ReviewADatasetHasTrackedChanges, () => HavingProblemsPage),
-  MakeRoute('POST', Routes.ReviewADatasetHasTrackedChanges, () => HavingProblemsPage),
+  MakeRoute('GET', Routes.ReviewADatasetHasTrackedChanges, ReviewADatasetFlow.HasTrackedChangesQuestion),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetHasTrackedChanges,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.HasTrackedChangesSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
   MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
   MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),
