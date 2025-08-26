@@ -126,7 +126,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
   testInfo.fail()
   await expect(page.getByRole('main')).toContainText(
-    'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? No',
+    'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly',
   )
 
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
