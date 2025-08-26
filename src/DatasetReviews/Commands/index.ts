@@ -5,6 +5,7 @@ import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.js'
+import type * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTrackedChanges.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
@@ -24,6 +25,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     answerIfTheDatasetHasEnoughMetadata: CommandHandler<
       AnswerIfTheDatasetHasEnoughMetadata.Command,
       AnswerIfTheDatasetHasEnoughMetadata.Error
+    >
+    answerIfTheDatasetHasTrackedChanges: CommandHandler<
+      AnswerIfTheDatasetHasTrackedChanges.Command,
+      AnswerIfTheDatasetHasTrackedChanges.Error
     >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
@@ -50,6 +55,7 @@ export const {
   startDatasetReview,
   answerIfTheDatasetFollowsFairAndCarePrinciples,
   answerIfTheDatasetHasEnoughMetadata,
+  answerIfTheDatasetHasTrackedChanges,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -127,6 +133,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetHasEnoughMetadata.foldState,
         AnswerIfTheDatasetHasEnoughMetadata.decide,
       ),
+      answerIfTheDatasetHasTrackedChanges: () => new UnableToHandleCommand({ cause: 'not implemented' }),
       markRecordCreatedOnZenodo: handleCommand(
         command => ({
           types: Events.DatasetReviewEventTypes,
