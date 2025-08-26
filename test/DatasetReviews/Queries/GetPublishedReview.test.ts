@@ -68,6 +68,7 @@ describe('GetPublishedReview', () => {
                 questions: {
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -95,6 +96,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
+                    answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -124,6 +126,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
+                    answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -148,6 +151,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                    answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

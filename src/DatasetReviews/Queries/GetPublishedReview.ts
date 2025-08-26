@@ -14,6 +14,7 @@ export interface PublishedReview {
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -60,6 +61,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
           answerToIfTheDatasetHasEnoughMetadata,
+          answerToIfTheDatasetHasTrackedChanges: Option.none(),
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

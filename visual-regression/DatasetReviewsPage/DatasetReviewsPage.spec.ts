@@ -35,6 +35,7 @@ const prereview1: DatasetReviews.PublishedReview = {
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
+    answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
@@ -48,6 +49,7 @@ const prereview2: DatasetReviews.PublishedReview = {
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+    answerToIfTheDatasetHasTrackedChanges: Option.none(),
   },
   published: Temporal.PlainDate.from('2025-08-02'),
 }

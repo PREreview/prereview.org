@@ -25,6 +25,7 @@ const datasetReview: DatasetReviews.PublishedReview = {
   questions: {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
+    answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
