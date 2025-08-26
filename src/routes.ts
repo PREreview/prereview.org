@@ -62,6 +62,12 @@ export const ReviewADatasetHasEnoughMetadata: Route<{ datasetReviewId: Uuid.Uuid
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetHasTrackedChanges: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/has-tracked-changes',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/has-tracked-changes`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,
