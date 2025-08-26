@@ -1,6 +1,7 @@
+import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer, Struct } from 'effect'
+import { Effect, Equal, Layer, Option, Struct } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/index.js'
@@ -177,30 +178,66 @@ describe('HasTrackedChangesQuestion', () => {
 })
 
 describe('HasTrackedChangesSubmission', () => {
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-    'when the dataset review is by the user',
-    (datasetReviewId, body, locale, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.HasTrackedChangesSubmission({ datasetReviewId, body })
+  test.prop([
+    fc.uuid(),
+    fc.urlParams(fc.record({ hasTrackedChanges: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+    fc.supportedLocale(),
+    fc.user(),
+  ])('when there is an answer', (datasetReviewId, body, locale, user) =>
+    Effect.gen(function* () {
+      const actual = yield* _.HasTrackedChangesSubmission({ datasetReviewId, body })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => Effect.succeed(user.orcid),
-          }),
-        ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(
+      Effect.provide(
+        Layer.mock(DatasetReviews.DatasetReviewQueries, {
+          getAuthor: () => Effect.succeed(user.orcid),
+        }),
       ),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
+  )
+
+  test.failing.prop([
+    fc.uuid(),
+    fc.oneof(
+      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'hasTrackedChanges'))),
+      fc.urlParams(
+        fc.record({
+          hasTrackedChanges: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+        }),
+      ),
+    ),
+    fc.supportedLocale(),
+    fc.user(),
+  ])("when there isn't an answer", (datasetReviewId, body, locale, user) =>
+    Effect.gen(function* () {
+      const actual = yield* _.HasTrackedChangesSubmission({ body, datasetReviewId })
+
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId }),
+        status: StatusCodes.BadRequest,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    }).pipe(
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
   )
 
   test.prop([
