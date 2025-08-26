@@ -8,6 +8,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import * as HasTrackedChangesForm from './HasTrackedChangesForm.js'
 import { HasTrackedChangesQuestion as MakeResponse } from './HasTrackedChangesQuestion.js'
 
@@ -53,7 +54,11 @@ export const HasTrackedChangesSubmission = ({
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -65,7 +70,20 @@ export const HasTrackedChangesSubmission = ({
     const form = yield* HasTrackedChangesForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fn(
+        function* (form: HasTrackedChangesForm.CompletedForm) {
+          yield* DatasetReviews.answerIfTheDatasetHasTrackedChanges({ answer: form.hasTrackedChanges, datasetReviewId })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
     })
   }).pipe(
