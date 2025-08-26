@@ -8,6 +8,8 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import * as HasTrackedChangesForm from './HasTrackedChangesForm.js'
+import { HasTrackedChangesQuestion as MakeResponse } from './HasTrackedChangesQuestion.js'
 
 export const HasTrackedChangesQuestion = ({
   datasetReviewId,
@@ -24,7 +26,12 @@ export const HasTrackedChangesQuestion = ({
 
     yield* DatasetReviews.checkIfReviewIsInProgress(datasetReviewId)
 
-    return yield* HavingProblemsPage
+    const form = yield* Effect.andThen(
+      DatasetReviews.getAnswerToIfTheDatasetHasTrackedChanges(datasetReviewId),
+      HasTrackedChangesForm.fromAnswer,
+    )
+
+    return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () =>

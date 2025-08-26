@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer } from 'effect'
+import { Effect, Equal, Layer, Struct } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/index.js'
@@ -12,31 +12,36 @@ import * as fc from '../fc.js'
 
 describe('HasTrackedChangesQuestion', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
-      'when the dataset review is in progress',
-      (datasetReviewId, locale, user) =>
-        Effect.gen(function* () {
-          const actual = yield* _.HasTrackedChangesQuestion({ datasetReviewId })
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.maybe(fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer'))),
+    ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
+      Effect.gen(function* () {
+        const actual = yield* _.HasTrackedChangesQuestion({ datasetReviewId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => Effect.void,
-              getAuthor: () => Effect.succeed(user.orcid),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            checkIfReviewIsInProgress: () => Effect.void,
+            getAuthor: () => Effect.succeed(user.orcid),
+            getAnswerToIfTheDatasetHasTrackedChanges: () => Effect.succeed(answer),
+          }),
         ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
     )
 
     test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
