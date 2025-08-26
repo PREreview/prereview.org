@@ -34,6 +34,7 @@ export const GetDataForZenodoRecord = (
       Either.right({
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
+        answerToIfTheDatasetHasTrackedChanges: Option.none(),
       }),
   })
 }

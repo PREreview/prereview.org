@@ -17,6 +17,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -46,6 +49,9 @@ describe('CreateRecordOnZenodo', () => {
         .map(Struct.get('answer')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -81,6 +87,9 @@ describe('CreateRecordOnZenodo', () => {
         .map(Struct.get('answer')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>

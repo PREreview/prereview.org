@@ -7,6 +7,7 @@ import type { DepositMetadata } from '../Deposition.js'
 export interface DatasetReview {
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
+  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({

@@ -12,6 +12,7 @@ const cases = [
     {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
+      answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -48,6 +49,7 @@ const cases = [
     {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+      answerToIfTheDatasetHasTrackedChanges: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
