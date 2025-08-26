@@ -151,6 +151,9 @@
     "webpack-remove-empty-scripts": "^1.1.1"
   },
   "overrides": {
+    "@types/nodemailer": {
+      "@aws-sdk/client-sesv2": "npm:dry-uninstall"
+    },
     "@web/test-runner": {
       "@web/test-runner-chrome": "npm:dry-uninstall"
     }
