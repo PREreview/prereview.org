@@ -1624,6 +1624,18 @@ export const datasetReviewAnsweredIfTheDatasetHasEnoughMetadata = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetHasEnoughMetadata(data))
 
+export const datasetReviewAnsweredIfTheDatasetHasTrackedChanges = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetHasTrackedChanges['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetHasTrackedChanges> =>
+  fc
+    .record({
+      answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetHasTrackedChanges(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1691,6 +1703,7 @@ export const datasetReviewEvent = (
     datasetReviewWasStarted(args),
     datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
     datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(args),
+    datasetReviewAnsweredIfTheDatasetHasTrackedChanges(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
