@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Equal } from 'effect'
+import { Effect, Equal, Match } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -48,7 +48,6 @@ export const HasTrackedChangesQuestion = ({
   )
 
 export const HasTrackedChangesSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
   datasetReviewId,
 }: {
@@ -63,7 +62,12 @@ export const HasTrackedChangesSubmission = ({
       return yield* PageNotFound
     }
 
-    return yield* HavingProblemsPage
+    const form = yield* HasTrackedChangesForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: () => HavingProblemsPage,
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
+    })
   }).pipe(
     Effect.catchTags({
       UnableToQuery: () => HavingProblemsPage,
