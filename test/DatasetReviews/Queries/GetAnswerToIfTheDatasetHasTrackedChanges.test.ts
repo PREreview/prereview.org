@@ -30,7 +30,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('GetAnswerToIfTheDatasetHasTrackedChanges', () => {
   describe('when the question has been answered', () => {
-    test.failing.prop(
+    test.prop(
       [
         fc
           .tuple(fc.array(fc.datasetReviewEvent()), fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges())

@@ -198,8 +198,6 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  testInfo.fail()
-
   await expect(page.getByLabel('No', { exact: true })).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
