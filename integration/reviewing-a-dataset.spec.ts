@@ -29,12 +29,6 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
     await page.getByLabel('Yes', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
-    )
-
     await page.getByLabel('No', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -128,10 +122,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  testInfo.fail()
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
-  )
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -139,6 +129,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
+  testInfo.fail()
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? No',
   )

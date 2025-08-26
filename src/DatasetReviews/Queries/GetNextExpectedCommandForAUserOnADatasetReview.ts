@@ -26,6 +26,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
     return Option.some('AnswerIfTheDatasetHasEnoughMetadata')
   }
 
+  if (!hasEvent(events, 'AnsweredIfTheDatasetHasTrackedChanges')) {
+    return Option.some('AnswerIfTheDatasetHasTrackedChanges')
+  }
+
   return Option.some('PublishDatasetReview')
 }
 

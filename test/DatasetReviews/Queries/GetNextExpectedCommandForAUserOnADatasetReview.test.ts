@@ -24,6 +24,14 @@ const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheD
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'yes',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -54,6 +62,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.datasetReviewWasStarted(),
             fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
             fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
+            fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -71,13 +80,24 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetHasEnoughMetadata1,
             ],
+            'AnswerIfTheDatasetHasTrackedChanges',
+          ], // 2 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
             [
               datasetReviewWasStarted,
+              answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasTrackedChanges2,
               answeredIfTheDatasetHasEnoughMetadata2,
               answeredIfTheDatasetFollowsFairAndCarePrinciples2,
             ],
@@ -107,6 +127,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               datasetReviewWasStarted,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
               publicationOfDatasetReviewWasRequested,
             ],
           ], // also answered
@@ -114,6 +135,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             [
               datasetReviewWasStarted,
               publicationOfDatasetReviewWasRequested,
+              answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
             ],
