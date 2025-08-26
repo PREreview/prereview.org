@@ -49,6 +49,7 @@ const pageIds = {
   People: {
     'en-US': '6154aa157741400e8722bb0a',
     'es-419': '68835d1e07fb34a92c7fb394',
+    'pt-BR': '68ac5bb407fb34a92c7fb3dd',
   },
   PrivacyPolicy: {
     'en-US': '6154aa157741400e8722bb0f',
