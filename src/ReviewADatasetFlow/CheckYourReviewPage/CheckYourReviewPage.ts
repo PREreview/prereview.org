@@ -15,7 +15,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}" class="back"><span>Back</span></a>
     `,
     main: html`
       <single-use-form>

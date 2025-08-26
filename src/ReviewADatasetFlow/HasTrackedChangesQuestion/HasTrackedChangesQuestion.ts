@@ -16,6 +16,11 @@ export const HasTrackedChangesQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back">
+        <span>Back</span>
+      </a>
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'
