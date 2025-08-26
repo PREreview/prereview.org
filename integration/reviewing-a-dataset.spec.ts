@@ -184,7 +184,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Yes').check()
