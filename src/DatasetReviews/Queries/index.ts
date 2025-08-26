@@ -9,6 +9,7 @@ import { FindInProgressReviewForADataset } from './FindInProgressReviewForADatas
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
+import type { GetAnswerToIfTheDatasetHasTrackedChanges } from './GetAnswerToIfTheDatasetHasTrackedChanges.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
@@ -37,6 +38,10 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     >
     getAnswerToIfTheDatasetHasEnoughMetadata: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasEnoughMetadata>,
+      Errors.UnknownDatasetReview
+    >
+    getAnswerToIfTheDatasetHasTrackedChanges: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasTrackedChanges>,
       Errors.UnknownDatasetReview
     >
     getNextExpectedCommandForAUserOnADatasetReview: Query<
@@ -84,6 +89,7 @@ export const {
   getAuthor,
   getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
   getAnswerToIfTheDatasetHasEnoughMetadata,
+  getAnswerToIfTheDatasetHasTrackedChanges,
   getNextExpectedCommandForAUserOnADatasetReview,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
@@ -190,6 +196,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      getAnswerToIfTheDatasetHasTrackedChanges: () => new UnableToQuery({ cause: 'not implemented' }),
       getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
