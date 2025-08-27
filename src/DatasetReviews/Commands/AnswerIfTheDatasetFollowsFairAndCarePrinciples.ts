@@ -56,6 +56,14 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, data
   })
 }
 
+export const authorize: {
+  (state: State, command: Command): boolean
+  (command: Command): (state: State) => boolean
+} = Function.dual(
+  2,
+  (state: State, { userId }: Command): boolean => state._tag === 'NotStarted' || Equal.equals(state.authorId, userId),
+)
+
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
   (command: Command): (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>

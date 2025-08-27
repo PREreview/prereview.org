@@ -123,7 +123,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
-        () => () => true,
+        AnswerIfTheDatasetFollowsFairAndCarePrinciples.authorize,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
       answerIfTheDatasetHasEnoughMetadata: handleCommand(

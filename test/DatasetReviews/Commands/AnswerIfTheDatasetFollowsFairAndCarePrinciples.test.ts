@@ -160,6 +160,76 @@ describe('foldState', () => {
   })
 })
 
+describe('authorize', () => {
+  test.prop([command()])('has not been started', command => {
+    const result = _.authorize(new _.NotStarted(), command)
+
+    expect(result).toBeTruthy()
+  })
+
+  describe('has not been answered', () => {
+    test.prop([command()])('with the same user', command => {
+      const result = _.authorize(new _.NotAnswered({ authorId: command.userId }), command)
+
+      expect(result).toBeTruthy()
+    })
+
+    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+      const result = _.authorize(new _.NotAnswered({ authorId }), command)
+
+      expect(result).toBeFalsy()
+    })
+  })
+
+  describe('has been answered', () => {
+    test.prop([command(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
+      'with the same user',
+      (command, answer) => {
+        const result = _.authorize(new _.HasBeenAnswered({ answer, authorId: command.userId }), command)
+
+        expect(result).toBeTruthy()
+      },
+    )
+
+    test.prop([command(), fc.orcid(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
+      'with a different user',
+      (command, authorId, answer) => {
+        const result = _.authorize(new _.HasBeenAnswered({ answer, authorId }), command)
+
+        expect(result).toBeFalsy()
+      },
+    )
+  })
+
+  describe('is being published', () => {
+    test.prop([command()])('with the same user', command => {
+      const result = _.authorize(new _.IsBeingPublished({ authorId: command.userId }), command)
+
+      expect(result).toBeTruthy()
+    })
+
+    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+      const result = _.authorize(new _.IsBeingPublished({ authorId }), command)
+
+      expect(result).toBeFalsy()
+    })
+  })
+
+  describe('is being published', () => {
+    test.prop([command()])('with the same user', command => {
+      const result = _.authorize(new _.HasBeenPublished({ authorId: command.userId }), command)
+
+      expect(result).toBeTruthy()
+    })
+
+    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+      const result = _.authorize(new _.HasBeenPublished({ authorId }), command)
+
+      expect(result).toBeFalsy()
+    })
+  })
+})
+
 describe('decide', () => {
   test.prop([command()])('has not been started', command => {
     const result = _.decide(new _.NotStarted(), command)
