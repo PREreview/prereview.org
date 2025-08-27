@@ -75,6 +75,7 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
           yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples({
             answer: form.followsFairAndCarePrinciples,
             datasetReviewId,
+            userId: user.orcid,
           })
 
           const nextExpectedCommand = yield* Effect.flatten(

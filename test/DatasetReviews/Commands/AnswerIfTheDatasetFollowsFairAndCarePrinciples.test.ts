@@ -30,6 +30,7 @@ const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
     datasetReviewId: fc.uuid(),
+    userId: fc.orcid(),
   })
 
 describe('foldState', () => {

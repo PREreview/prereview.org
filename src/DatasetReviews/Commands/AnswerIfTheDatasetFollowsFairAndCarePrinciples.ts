@@ -6,6 +6,7 @@ import * as Errors from '../Errors.js'
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'
   readonly datasetReviewId: Uuid.Uuid
+  readonly userId: Orcid.Orcid
 }
 
 export type Error =
