@@ -8,7 +8,6 @@ import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
-import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
 import { GetAnswerToIfTheDatasetHasTrackedChanges } from './GetAnswerToIfTheDatasetHasTrackedChanges.js'
 import { GetAuthor } from './GetAuthor.js'
@@ -38,10 +37,6 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
-    getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples>,
-      Errors.UnknownDatasetReview
-    >
     getAnswerToIfTheDatasetHasEnoughMetadata: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasEnoughMetadata>,
       Errors.UnknownDatasetReview
@@ -94,7 +89,6 @@ export const {
   findInProgressReviewForADataset,
   findPublishedReviewsForADataset,
   getAuthor,
-  getAnswerToIfTheDatasetFollowsFairAndCarePrinciples,
   getAnswerToIfTheDatasetHasEnoughMetadata,
   getAnswerToIfTheDatasetHasTrackedChanges,
   getNextExpectedCommandForAUserOnADatasetReview,
@@ -189,19 +183,6 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      ),
-      getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
-        function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
-
-          return GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples(events)
-        },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       getAnswerToIfTheDatasetHasEnoughMetadata: Effect.fn(
