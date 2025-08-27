@@ -31,6 +31,7 @@ const pageIds = {
   },
   EdiaStatement: {
     'en-US': '6154aa157741400e8722bb17',
+    'pt-BR': '68adc69607fb34a92c7fb409',
   },
   Funding: {
     'en-US': '6154aa157741400e8722bb12',
@@ -39,6 +40,7 @@ const pageIds = {
   },
   HowToUse: {
     'en-US': '651d895e07fb34a92c7f8d28',
+    'es-419': '68adc7e307fb34a92c7fb418',
     'pt-BR': '68753dc807fb34a92c7fb27a',
   },
   LiveReviews: {
