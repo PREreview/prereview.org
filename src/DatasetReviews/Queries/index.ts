@@ -5,6 +5,7 @@ import * as Errors from '../Errors.js'
 import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
+import type * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -28,6 +29,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfReviewIsBeingPublished: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>,
       Errors.UnknownDatasetReview
+    >
+    checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Result
     >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
@@ -82,6 +88,7 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 export const {
   checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
+  checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -133,6 +140,8 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
+      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
+        new UnableToQuery({ cause: 'not implemented' }),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
           const { events } = yield* EventStore.query({
