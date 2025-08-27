@@ -26,6 +26,7 @@ describe('MarkDatasetReviewAsPublished', () => {
       new DatasetReviews.DatasetReviewHasNotBeenStarted(),
       new DatasetReviews.PublicationOfDatasetReviewWasNotRequested(),
       new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing: ['DatasetReviewWasAssignedADoi'] }),
+      new DatasetReviews.NotAuthorizedToRunCommand({}),
       new DatasetReviews.UnableToHandleCommand({}),
     ),
   ])("when the command can't be completed", (datasetReviewId, error) =>

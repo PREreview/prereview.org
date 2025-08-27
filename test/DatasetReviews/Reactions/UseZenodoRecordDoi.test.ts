@@ -33,6 +33,7 @@ describe('UseZenodoRecordDoi', () => {
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenStarted(),
       new DatasetReviews.DatasetReviewAlreadyHasADoi({}),
+      new DatasetReviews.NotAuthorizedToRunCommand({}),
       new DatasetReviews.UnableToHandleCommand({}),
     ),
   ])("when the command can't be completed", (datasetReviewId, recordId, doi, error) =>

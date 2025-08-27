@@ -47,7 +47,9 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
 
 type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
   command: Command,
-) => Effect.Effect<void, UnableToHandleCommand | Error>
+) => Effect.Effect<void, NotAuthorizedToRunCommand | UnableToHandleCommand | Error>
+
+export class NotAuthorizedToRunCommand extends Data.TaggedError('NotAuthorizedToRunCommand')<{ cause?: unknown }> {}
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
@@ -90,7 +92,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
 
           yield* pipe(
             Effect.succeed(foldState(events, command.datasetReviewId)),
-            Effect.filterOrElse(authorize(command), () => new UnableToHandleCommand({ cause: 'not authorized' })),
+            Effect.filterOrElse(authorize(command), () => new NotAuthorizedToRunCommand({})),
             Effect.andThen(decide(command)),
             Effect.tap(
               Option.match({

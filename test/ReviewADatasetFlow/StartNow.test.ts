@@ -42,6 +42,7 @@ describe('StartNow', () => {
       fc.user(),
       fc.uuid(),
       fc.constantFrom(
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
         new DatasetReviews.UnableToHandleCommand({}),
         new DatasetReviews.DatasetReviewWasAlreadyStarted(),
       ),

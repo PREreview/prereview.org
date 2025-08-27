@@ -58,6 +58,7 @@ describe('CreateRecordOnZenodo', () => {
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenStarted(),
       new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({}),
+      new DatasetReviews.NotAuthorizedToRunCommand({}),
       new DatasetReviews.UnableToHandleCommand({}),
     ),
   ])("when the command can't be completed", (datasetReviewId, preview, recordId, error) =>

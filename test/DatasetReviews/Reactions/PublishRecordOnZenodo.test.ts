@@ -35,6 +35,7 @@ describe('PublishRecordOnZenodo', () => {
       new DatasetReviews.DatasetReviewHasNotBeenStarted(),
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
       new DatasetReviews.DatasetReviewHasNotBeenAssignedADoi({}),
+      new DatasetReviews.NotAuthorizedToRunCommand({}),
       new DatasetReviews.UnableToHandleCommand({}),
     ),
   ])("when the activated-DOI command can't be completed", (datasetReviewId, recordId, error) =>
@@ -64,6 +65,7 @@ describe('PublishRecordOnZenodo', () => {
       new DatasetReviews.DatasetReviewHasNotBeenStarted(),
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
       new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({}),
+      new DatasetReviews.NotAuthorizedToRunCommand({}),
       new DatasetReviews.UnableToHandleCommand({}),
     ),
   ])("when the publish-record command can't be completed", (datasetReviewId, recordId, error) =>

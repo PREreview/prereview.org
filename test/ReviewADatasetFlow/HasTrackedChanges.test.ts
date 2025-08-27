@@ -266,6 +266,7 @@ describe('HasTrackedChangesSubmission', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
         new DatasetReviews.UnableToHandleCommand({}),
         new DatasetReviews.DatasetReviewHasNotBeenStarted(),
         new DatasetReviews.DatasetReviewIsBeingPublished(),

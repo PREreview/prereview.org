@@ -45,6 +45,7 @@ export const StartNow: Effect.Effect<
   },
   Effect.catchTags({
     DatasetReviewWasAlreadyStarted: () => HavingProblemsPage,
+    NotAuthorizedToRunCommand: () => HavingProblemsPage,
     UnableToHandleCommand: () => HavingProblemsPage,
     UnableToQuery: () => HavingProblemsPage,
   }),
