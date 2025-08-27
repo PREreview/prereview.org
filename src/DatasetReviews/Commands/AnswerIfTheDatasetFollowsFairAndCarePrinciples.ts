@@ -30,7 +30,12 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ aut
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: Orcid.Orcid }> {}
 
 export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
-  types: Events.DatasetReviewEventTypes,
+  types: [
+    'DatasetReviewWasStarted',
+    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+    'PublicationOfDatasetReviewWasRequested',
+    'DatasetReviewWasPublished',
+  ],
   predicates: { datasetReviewId },
 })
 

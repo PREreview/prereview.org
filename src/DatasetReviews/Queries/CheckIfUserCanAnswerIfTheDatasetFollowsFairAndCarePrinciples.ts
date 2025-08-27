@@ -18,7 +18,12 @@ export type Result = Either.Either<
 >
 
 export const createFilter = ({ datasetReviewId }: Input): EventFilter<Events.DatasetReviewEvent['_tag']> => ({
-  types: Events.DatasetReviewEventTypes,
+  types: [
+    'DatasetReviewWasStarted',
+    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+    'PublicationOfDatasetReviewWasRequested',
+    'DatasetReviewWasPublished',
+  ],
   predicates: { datasetReviewId },
 })
 
