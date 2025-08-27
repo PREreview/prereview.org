@@ -74,7 +74,7 @@
     "@playwright/test": "^1.55.0",
     "@prettier/plugin-xml": "^3.4.2",
     "@rollup/plugin-url": "^8.0.2",
-    "@swc/core": "^1.13.3",
+    "@swc/core": "^1.13.5",
     "@swc/jest": "^0.2.39",
     "@tiptap/core": "^3.2.0",
     "@tiptap/extension-subscript": "^3.2.0",
