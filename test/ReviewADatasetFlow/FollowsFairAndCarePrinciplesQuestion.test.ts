@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer, Option } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/index.js'
@@ -203,7 +203,6 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           ),
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getAuthor: () => Effect.succeed(user.orcid),
               getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
             }),
           ),
@@ -243,7 +242,6 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
           ),
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getAuthor: () => Effect.succeed(user.orcid),
               getNextExpectedCommandForAUserOnADatasetReview: () => result,
             }),
           ),
@@ -284,9 +282,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
             answerIfTheDatasetFollowsFairAndCarePrinciples: () => error,
           }),
         ),
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) }),
-        ),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -323,92 +319,10 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(user.orcid) })),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
     ),
-  )
-
-  test.prop([
-    fc.uuid(),
-    fc.urlParams(),
-    fc.supportedLocale(),
-    fc
-      .tuple(fc.user(), fc.orcid())
-      .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
-  ])('when the dataset review is by a different user', (datasetReviewId, body, locale, [user, datasetReviewAuthor]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-      Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
-      ),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
-  )
-
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-    "when the dataset review hasn't been started",
-    (datasetReviewId, body, locale, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
-
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.NotFound,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
-          }),
-        ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
-  )
-
-  test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-    "when the dataset review can't been queried",
-    (datasetReviewId, body, locale, user) =>
-      Effect.gen(function* () {
-        const actual = yield* _.FollowsFairAndCarePrinciplesSubmission({ body, datasetReviewId })
-
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
-        ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
   )
 })
