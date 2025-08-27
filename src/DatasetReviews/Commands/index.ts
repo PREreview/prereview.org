@@ -118,10 +118,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         StartDatasetReview.decide,
       ),
       answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
-        command => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId: command.datasetReviewId },
-        }),
+        command => AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter(command.datasetReviewId),
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),

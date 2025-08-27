@@ -27,11 +27,13 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
+export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
+  types: Events.DatasetReviewEventTypes,
+  predicates: { datasetReviewId },
+})
+
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, datasetReviewId: Uuid.Uuid): State => {
-  const filteredEvents = Array.filter(
-    events,
-    Events.matches({ types: Events.DatasetReviewEventTypes, predicates: { datasetReviewId } }),
-  )
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(datasetReviewId)))
 
   if (!Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
     return new NotStarted()
