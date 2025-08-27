@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, PubSub, Schema, Struct, flow, pipe } from 'effect'
+import { Array, Context, Effect, Function, Layer, PubSub, Record, Schema, Struct, flow, pipe } from 'effect'
 import * as CommentEvents from './Comments/Events.js' // eslint-disable-line import/no-internal-modules
 import * as DatasetReviewEvents from './DatasetReviews/Events.js' // eslint-disable-line import/no-internal-modules
 
@@ -18,6 +18,20 @@ export interface EventFilter<T extends Event['_tag']> {
 }
 
 export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
+
+export const matches: {
+  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }>
+  <T extends Event['_tag']>(filter: EventFilter<T>): (event: Event) => event is Extract<Event, { _tag: T }>
+} = Function.dual(
+  2,
+  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }> => {
+    if (!Array.contains(filter.types, event._tag)) {
+      return false
+    }
+
+    return Record.isSubrecord(filter.predicates ?? Record.empty(), event as never)
+  },
+)
 
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
 
