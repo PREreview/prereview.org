@@ -37,11 +37,11 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
       return yield* Either.left(new Errors.DatasetReviewWasStartedByAnotherUser())
     }
 
-    if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
+    if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
       return yield* Either.left(new Errors.DatasetReviewHasBeenPublished())
     }
 
-    if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+    if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
       return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
     }
   })
