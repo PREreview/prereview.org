@@ -1,4 +1,4 @@
-import { Array, Either, Equal } from 'effect'
+import { Array, Either, Equal, Option, Struct } from 'effect'
 import type { EventFilter } from '../../Events.js'
 import * as Events from '../../Events.js'
 import type { Orcid, Uuid } from '../../types/index.js'
@@ -10,7 +10,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  void,
+  Option.Option<Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -44,6 +44,11 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
     if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
       return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
     }
+
+    return Option.map(
+      Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples')),
+      Struct.get('answer'),
+    )
   })
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

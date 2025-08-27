@@ -32,7 +32,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.void,
+              checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeed(answer),
               getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeed(answer),
             }),
           ),

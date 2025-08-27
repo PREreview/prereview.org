@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -82,7 +82,7 @@ describe('query', () => {
   )('not answered', ([events, datasetReviewId, userId]) => {
     const actual = _.query(events, { datasetReviewId, userId })
 
-    expect(actual).toStrictEqual(Either.void)
+    expect(actual).toStrictEqual(Either.right(Option.none()))
   })
 
   test.prop(
@@ -98,19 +98,19 @@ describe('query', () => {
           ),
         )
         .map(([started, answered]) =>
-          Tuple.make(Array.make(started, answered), started.datasetReviewId, started.authorId),
+          Tuple.make(Array.make(started, answered), started.datasetReviewId, started.authorId, answered.answer),
         ),
     ],
     {
       examples: [
-        [[[started, answered1], datasetReviewId, authorId]], // one answer
-        [[[started, answered1, answered2], datasetReviewId, authorId]], // two answers
+        [[[started, answered1], datasetReviewId, authorId, answered1.answer]], // one answer
+        [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer]], // two answers
       ],
     },
-  )('has been answered', ([events, datasetReviewId, userId]) => {
+  )('has been answered', ([events, datasetReviewId, userId, expectedAnswer]) => {
     const actual = _.query(events, { datasetReviewId, userId })
 
-    expect(actual).toStrictEqual(Either.void)
+    expect(actual).toStrictEqual(Either.right(Option.some(expectedAnswer)))
   })
 
   test.prop(
