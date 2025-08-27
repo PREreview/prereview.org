@@ -31,8 +31,8 @@ describe('foldState', () => {
       [[]], // no events
       [[answered, datasetReviewWasPublished]], // with events
     ],
-  })('not started', () => {
-    const state = _.foldState([])
+  })('not started', events => {
+    const state = _.foldState(events)
 
     expect(state).toStrictEqual(new _.NotStarted())
   })

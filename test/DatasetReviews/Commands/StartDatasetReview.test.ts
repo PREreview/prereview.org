@@ -1,19 +1,32 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Either, Option } from 'effect'
+import { Temporal } from '@js-temporal/polyfill'
+import { Either, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/StartDatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
 import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples =
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+  datasetReviewId,
+  publicationDate: Temporal.PlainDate.from('2025-01-01'),
+})
 
 describe('foldState', () => {
-  test('not yet started', () => {
-    const state = _.foldState([])
+  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
+    examples: [
+      [[]], // no events
+      [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
+    ],
+  })('not yet started', events => {
+    const state = _.foldState(events)
 
     expect(state).toStrictEqual(new _.NotStarted())
   })
