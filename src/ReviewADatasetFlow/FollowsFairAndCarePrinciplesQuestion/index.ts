@@ -20,15 +20,12 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
   Effect.gen(function* () {
     const user = yield* LoggedInUser
 
-    yield* DatasetReviews.checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples({
+    const currentAnswer = yield* DatasetReviews.checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples({
       datasetReviewId,
       userId: user.orcid,
     })
 
-    const form = yield* Effect.andThen(
-      DatasetReviews.getAnswerToIfTheDatasetFollowsFairAndCarePrinciples(datasetReviewId),
-      FollowsFairAndCarePrinciplesForm.fromAnswer,
-    )
+    const form = FollowsFairAndCarePrinciplesForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form })
   }).pipe(
@@ -44,7 +41,6 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
         ),
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
-      UnknownDatasetReview: () => PageNotFound,
     }),
   )
 
