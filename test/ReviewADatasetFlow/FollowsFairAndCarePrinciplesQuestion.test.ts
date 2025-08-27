@@ -32,8 +32,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => Effect.void,
-              getAuthor: () => Effect.succeed(user.orcid),
+              checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.void,
               getAnswerToIfTheDatasetFollowsFairAndCarePrinciples: () => Effect.succeed(answer),
             }),
           ),
@@ -57,7 +56,8 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
+              checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
+                new DatasetReviews.DatasetReviewIsBeingPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
@@ -81,7 +81,8 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
+              checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
+                new DatasetReviews.DatasetReviewHasBeenPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
@@ -92,32 +93,31 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
     )
   })
 
-  test.prop([
-    fc.uuid(),
-    fc.supportedLocale(),
-    fc
-      .tuple(fc.user(), fc.orcid())
-      .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
-  ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+    'when the dataset review is by a different user',
+    (datasetReviewId, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.FollowsFairAndCarePrinciplesQuestion({ datasetReviewId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
+              new DatasetReviews.DatasetReviewWasStartedByAnotherUser(),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
       ),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
   )
 
   test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
@@ -137,7 +137,8 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
       }).pipe(
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
+            checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
+              new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           }),
         ),
         Effect.provideService(Locale, locale),
@@ -162,7 +163,9 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
         })
       }).pipe(
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () => new DatasetReviews.UnableToQuery({}),
+          }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
