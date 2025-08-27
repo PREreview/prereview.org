@@ -9,6 +9,7 @@ import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
+const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
@@ -26,13 +27,18 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[answered1, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  test.prop(
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))), fc.uuid()],
+    {
+      examples: [
+        [[], datasetReviewId], // no events
+        [[answered1, datasetReviewWasPublished], datasetReviewId], // with events
+        [[started], datasetReviewId2], // with events for other dataset review
+        [[started, datasetReviewWasPublished], datasetReviewId2], // with multiple events for other dataset review
+      ],
+    },
+  )('not started', (events, datasetReviewId) => {
+    const state = _.foldState(events, datasetReviewId)
 
     expect(state).toStrictEqual(new _.NotStarted())
   })
@@ -42,7 +48,7 @@ describe('foldState', () => {
       [[started]], // was started
     ],
   })('not answered', events => {
-    const state = _.foldState(events)
+    const state = _.foldState(events, events[0].datasetReviewId)
 
     expect(state).toStrictEqual(new _.NotAnswered())
   })
@@ -50,8 +56,16 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples())
-        .map(([started, answered]) => Tuple.make([started, answered], answered.answer)),
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              datasetReviewId: fc.constant(datasetReviewId),
+            }),
+          ),
+        )
+        .map(([started, answered]) => Tuple.make(Array.make(started, answered), answered.answer)),
     ],
     {
       examples: [
@@ -60,7 +74,7 @@ describe('foldState', () => {
       ],
     },
   )('has been answered', ([events, expected]) => {
-    const state = _.foldState(events)
+    const state = _.foldState(events, events[0].datasetReviewId)
 
     expect(state).toStrictEqual(new _.HasBeenAnswered({ answer: expected }))
   })
@@ -68,7 +82,13 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
+          ),
+        )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
     {
@@ -79,7 +99,7 @@ describe('foldState', () => {
       ],
     },
   )('is being published', events => {
-    const state = _.foldState(events)
+    const state = _.foldState(events, events[0].datasetReviewId)
 
     expect(state).toStrictEqual(new _.IsBeingPublished())
   })
@@ -87,7 +107,13 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
+        .uuid()
+        .chain(datasetReviewId =>
+          fc.tuple(
+            fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+            fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
+          ),
+        )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
     {
@@ -98,7 +124,7 @@ describe('foldState', () => {
       ],
     },
   )('has been published', events => {
-    const state = _.foldState(events)
+    const state = _.foldState(events, events[0].datasetReviewId)
 
     expect(state).toStrictEqual(new _.HasBeenPublished())
   })

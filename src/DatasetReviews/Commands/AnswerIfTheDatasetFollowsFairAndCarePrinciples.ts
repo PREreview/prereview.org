@@ -1,7 +1,7 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import * as Events from '../../Events.js'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import * as Events from '../Events.js'
 
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'
@@ -27,20 +27,25 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
-export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
-  if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
+export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, datasetReviewId: Uuid.Uuid): State => {
+  const filteredEvents = Array.filter(
+    events,
+    Events.matches({ types: Events.DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+  )
+
+  if (!Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
     return new NotStarted()
   }
 
-  if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
+  if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
     return new HasBeenPublished()
   }
 
-  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+  if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
     return new IsBeingPublished()
   }
 
-  return Option.match(Array.findLast(events, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples')), {
+  return Option.match(Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples')), {
     onNone: () => new NotAnswered(),
     onSome: ({ answer }) => new HasBeenAnswered({ answer }),
   })

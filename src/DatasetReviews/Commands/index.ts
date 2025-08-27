@@ -75,7 +75,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       Error,
     >(
       createFilter: (command: Command) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => State,
+      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, datasetReviewId: Uuid.Uuid) => State,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>
       Effect.fn(
@@ -88,7 +88,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           )
 
           yield* pipe(
-            foldState(events),
+            foldState(events, command.datasetReviewId),
             decide(command),
             Effect.tap(
               Option.match({
