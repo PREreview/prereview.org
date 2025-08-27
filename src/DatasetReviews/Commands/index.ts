@@ -76,6 +76,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
     >(
       createFilter: (datasetReviewId: Uuid.Uuid) => Events.EventFilter<Event>,
       foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, datasetReviewId: Uuid.Uuid) => State,
+      authorize: (command: Command) => (state: State) => boolean,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>
       Effect.fn(
@@ -88,8 +89,9 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           )
 
           yield* pipe(
-            foldState(events, command.datasetReviewId),
-            decide(command),
+            Effect.succeed(foldState(events, command.datasetReviewId)),
+            Effect.filterOrElse(authorize(command), () => new UnableToHandleCommand({ cause: 'not authorized' })),
+            Effect.andThen(decide(command)),
             Effect.tap(
               Option.match({
                 onNone: () => Effect.void,
@@ -115,11 +117,13 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         StartDatasetReview.foldState,
+        () => () => true,
         StartDatasetReview.decide,
       ),
       answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
+        () => () => true,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
       answerIfTheDatasetHasEnoughMetadata: handleCommand(
@@ -128,6 +132,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         AnswerIfTheDatasetHasEnoughMetadata.foldState,
+        () => () => true,
         AnswerIfTheDatasetHasEnoughMetadata.decide,
       ),
       answerIfTheDatasetHasTrackedChanges: handleCommand(
@@ -136,6 +141,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         AnswerIfTheDatasetHasTrackedChanges.foldState,
+        () => () => true,
         AnswerIfTheDatasetHasTrackedChanges.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
@@ -144,6 +150,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         MarkRecordCreatedOnZenodo.foldState,
+        () => () => true,
         MarkRecordCreatedOnZenodo.decide,
       ),
       markRecordAsPublishedOnZenodo: handleCommand(
@@ -152,6 +159,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         MarkRecordAsPublishedOnZenodo.foldState,
+        () => () => true,
         MarkRecordAsPublishedOnZenodo.decide,
       ),
       markDoiAsAssigned: handleCommand(
@@ -160,6 +168,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         MarkDoiAsAssigned.foldState,
+        () => () => true,
         MarkDoiAsAssigned.decide,
       ),
       markDoiAsActivated: handleCommand(
@@ -168,6 +177,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         MarkDoiAsActivated.foldState,
+        () => () => true,
         MarkDoiAsActivated.decide,
       ),
       publishDatasetReview: handleCommand(
@@ -176,6 +186,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         PublishDatasetReview.foldState,
+        () => () => true,
         PublishDatasetReview.decide,
       ),
       markDatasetReviewAsPublished: handleCommand(
@@ -184,6 +195,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
           predicates: { datasetReviewId },
         }),
         MarkDatasetReviewAsPublished.foldState,
+        () => () => true,
         MarkDatasetReviewAsPublished.decide,
       ),
     }
