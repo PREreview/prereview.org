@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -25,6 +25,12 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
+
+const command = (): fc.Arbitrary<_.Command> =>
+  fc.record({
+    answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+    datasetReviewId: fc.uuid(),
+  })
 
 describe('foldState', () => {
   test.prop(
@@ -154,71 +160,64 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
-  test.prop([fc.constantFrom('yes', 'partly', 'no', 'unsure')])('has not been started', answer => {
-    const result = _.decide(new _.NotStarted(), { answer, datasetReviewId })
+  test.prop([command()])('has not been started', command => {
+    const result = _.decide(new _.NotStarted(), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.orcid(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
-    'has not been answered',
-    (authorId, answer) => {
-      const result = _.decide(new _.NotAnswered({ authorId }), { answer, datasetReviewId })
+  test.prop([fc.orcid(), command()])('has not been answered', (authorId, command) => {
+    const result = _.decide(new _.NotAnswered({ authorId }), command)
 
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer, datasetReviewId })),
+    expect(result).toStrictEqual(
+      Either.right(
+        Option.some(
+          new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+            answer: command.answer,
+            datasetReviewId: command.datasetReviewId,
+          }),
         ),
-      )
-    },
-  )
+      ),
+    )
+  })
 
   describe('has been answered', () => {
     test.prop([
       fc.orcid(),
       fc
-        .tuple(fc.constantFrom('yes', 'partly', 'no', 'unsure'), fc.constantFrom('yes', 'partly', 'no', 'unsure'))
-        .filter(([answer1, answer2]) => !Equal.equals(answer1, answer2)),
-    ])('with a different answer', (authorId, [answer1, answer2]) => {
-      const result = _.decide(new _.HasBeenAnswered({ answer: answer1, authorId }), {
-        answer: answer2,
-        datasetReviewId,
-      })
+        .tuple(command(), fc.constantFrom('yes', 'partly', 'no', 'unsure'))
+        .filter(([command, answer]) => command.answer !== answer),
+    ])('with a different answer', (authorId, [command, answer]) => {
+      const result = _.decide(new _.HasBeenAnswered({ answer, authorId }), command)
 
       expect(result).toStrictEqual(
         Either.right(
           Option.some(
-            new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: answer2, datasetReviewId }),
+            new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              answer: command.answer,
+              datasetReviewId: command.datasetReviewId,
+            }),
           ),
         ),
       )
     })
 
-    test.prop([fc.orcid(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
-      'with the same answer',
-      (authorId, answer) => {
-        const result = _.decide(new _.HasBeenAnswered({ answer, authorId }), { answer, datasetReviewId })
+    test.prop([fc.orcid(), command()])('with the same answer', (authorId, command) => {
+      const result = _.decide(new _.HasBeenAnswered({ answer: command.answer, authorId }), command)
 
-        expect(result).toStrictEqual(Either.right(Option.none()))
-      },
-    )
+      expect(result).toStrictEqual(Either.right(Option.none()))
+    })
   })
 
-  test.prop([fc.orcid(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
-    'is being published',
-    (authorId, answer) => {
-      const result = _.decide(new _.IsBeingPublished({ authorId }), { answer, datasetReviewId })
+  test.prop([fc.orcid(), command()])('is being published', (authorId, command) => {
+    const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
-      expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
-    },
-  )
+    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
+  })
 
-  test.prop([fc.orcid(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
-    'has been published',
-    (authorId, answer) => {
-      const result = _.decide(new _.HasBeenPublished({ authorId }), { answer, datasetReviewId })
+  test.prop([fc.orcid(), command()])('has been published', (authorId, command) => {
+    const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
-      expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
-    },
-  )
+    expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+  })
 })
