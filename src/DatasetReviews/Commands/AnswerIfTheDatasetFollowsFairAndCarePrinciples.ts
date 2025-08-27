@@ -1,6 +1,6 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.js'
-import type { Uuid } from '../../types/index.js'
+import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 
 export interface Command {
@@ -17,15 +17,16 @@ export type State = NotStarted | NotAnswered | HasBeenAnswered | IsBeingPublishe
 
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
-export class NotAnswered extends Data.TaggedClass('NotAnswered') {}
+export class NotAnswered extends Data.TaggedClass('NotAnswered')<{ authorId: Orcid.Orcid }> {}
 
 export class HasBeenAnswered extends Data.TaggedClass('HasBeenAnswered')<{
   answer: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
+  authorId: Orcid.Orcid
 }> {}
 
-export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
+export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ authorId: Orcid.Orcid }> {}
 
-export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: Orcid.Orcid }> {}
 
 export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
   types: Events.DatasetReviewEventTypes,
@@ -35,21 +36,22 @@ export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Eve
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, datasetReviewId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(datasetReviewId)))
 
-  if (!Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
-    return new NotStarted()
-  }
+  return Option.match(Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')), {
+    onNone: () => new NotStarted(),
+    onSome: ({ authorId }) => {
+      if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
+        return new HasBeenPublished({ authorId })
+      }
 
-  if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
-    return new HasBeenPublished()
-  }
+      if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+        return new IsBeingPublished({ authorId })
+      }
 
-  if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
-    return new IsBeingPublished()
-  }
-
-  return Option.match(Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples')), {
-    onNone: () => new NotAnswered(),
-    onSome: ({ answer }) => new HasBeenAnswered({ answer }),
+      return Option.match(Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples')), {
+        onNone: () => new NotAnswered({ authorId }),
+        onSome: ({ answer }) => new HasBeenAnswered({ answer, authorId }),
+      })
+    },
   })
 }
 
