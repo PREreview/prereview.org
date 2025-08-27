@@ -1,11 +1,11 @@
-import { Array, Context, Data, Effect, type Either, Layer } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
 import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
-import type * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples } from './GetAnswerToIfTheDatasetFollowsFairAndCarePrinciples.js'
@@ -140,8 +140,20 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: () =>
-        new UnableToQuery({ cause: 'not implemented' }),
+      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
+        function* (input) {
+          const filter = CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
           const { events } = yield* EventStore.query({
