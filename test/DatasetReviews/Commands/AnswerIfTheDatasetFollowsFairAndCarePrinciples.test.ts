@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, identity, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
@@ -43,12 +43,12 @@ describe('foldState', () => {
     expect(state).toStrictEqual(new _.NotStarted())
   })
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
+  test.prop([fc.datasetReviewWasStarted().map(event => Tuple.make(Array.make(event), event.datasetReviewId))], {
     examples: [
-      [[started]], // was started
+      [[[started], datasetReviewId]], // was started
     ],
-  })('not answered', events => {
-    const state = _.foldState(events, events[0].datasetReviewId)
+  })('not answered', ([events, datasetReviewId]) => {
+    const state = _.foldState(events, datasetReviewId)
 
     expect(state).toStrictEqual(new _.NotAnswered())
   })
@@ -65,16 +65,18 @@ describe('foldState', () => {
             }),
           ),
         )
-        .map(([started, answered]) => Tuple.make(Array.make(started, answered), answered.answer)),
+        .map(([started, answered]) =>
+          Tuple.make(Array.make(started, answered), answered.answer, started.datasetReviewId),
+        ),
     ],
     {
       examples: [
-        [[[started, answered1], answered1.answer]], // one answer
-        [[[started, answered1, answered2], answered2.answer]], // two answers
+        [[[started, answered1], answered1.answer, datasetReviewId]], // one answer
+        [[[started, answered1, answered2], answered2.answer, datasetReviewId]], // two answers
       ],
     },
-  )('has been answered', ([events, expected]) => {
-    const state = _.foldState(events, events[0].datasetReviewId)
+  )('has been answered', ([events, expected, datasetReviewId]) => {
+    const state = _.foldState(events, datasetReviewId)
 
     expect(state).toStrictEqual(new _.HasBeenAnswered({ answer: expected }))
   })
@@ -89,17 +91,22 @@ describe('foldState', () => {
             fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
           ),
         )
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(events =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid]>(
+            events,
+            events[0].datasetReviewId,
+          ),
+        ),
     ],
     {
       examples: [
-        [[started, publicationOfDatasetReviewWasRequested]], // was requested
-        [[started, answered1, publicationOfDatasetReviewWasRequested]], // also answered
-        [[started, publicationOfDatasetReviewWasRequested, answered1]], // different order
+        [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId]], // was requested
+        [[[started, answered1, publicationOfDatasetReviewWasRequested], datasetReviewId]], // also answered
+        [[[publicationOfDatasetReviewWasRequested, started, answered1], datasetReviewId]], // different order
       ],
     },
-  )('is being published', events => {
-    const state = _.foldState(events, events[0].datasetReviewId)
+  )('is being published', ([events, datasetReviewId]) => {
+    const state = _.foldState(events, datasetReviewId)
 
     expect(state).toStrictEqual(new _.IsBeingPublished())
   })
@@ -114,17 +121,22 @@ describe('foldState', () => {
             fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
           ),
         )
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(events =>
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid]>(
+            events,
+            events[0].datasetReviewId,
+          ),
+        ),
     ],
     {
       examples: [
-        [[started, answered1, datasetReviewWasPublished]], // was published
-        [[started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
-        [[started, datasetReviewWasPublished, answered1]], // different order
+        [[[started, answered1, datasetReviewWasPublished], datasetReviewId]], // was published
+        [[[started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished], datasetReviewId]], // also requested
+        [[[started, datasetReviewWasPublished, answered1], datasetReviewId]], // different order
       ],
     },
-  )('has been published', events => {
-    const state = _.foldState(events, events[0].datasetReviewId)
+  )('has been published', ([events, datasetReviewId]) => {
+    const state = _.foldState(events, datasetReviewId)
 
     expect(state).toStrictEqual(new _.HasBeenPublished())
   })
