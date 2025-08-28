@@ -284,3 +284,29 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes')).toBeFocused()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the dataset has data censored or deleted',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../has-data-censored-or-deleted`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select if the dataset shows signs of alteration' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
+  },
+)
