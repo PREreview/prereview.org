@@ -6,6 +6,7 @@ import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
@@ -33,6 +34,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (
         input: CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Result
+    >
+    checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.Result
     >
     checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Query<
       (
@@ -86,6 +92,7 @@ export const {
   checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
   checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples,
+  checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted,
   checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata,
   checkIfUserCanAnswerIfTheDatasetHasTrackedChanges,
   getPublishedDoi,
@@ -146,6 +153,20 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
           )
 
           return yield* CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: Effect.fn(
+        function* (input) {
+          const filter = CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.query(events, input)
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
