@@ -13,6 +13,7 @@ const cases = [
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -32,6 +33,15 @@ const cases = [
           <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
           <dd>
             No
+          </dd>
+        
+      
+          <dt>
+            Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
+            deletion, or redaction, that are not accounted for otherwise?
+          </dt>
+          <dd>
+            I don’t know
           </dd>
         
     </dl>
@@ -56,6 +66,7 @@ const cases = [
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
       answerToIfTheDatasetHasTrackedChanges: Option.none(),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -65,6 +76,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
     </dl>

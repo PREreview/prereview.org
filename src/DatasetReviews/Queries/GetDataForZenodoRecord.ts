@@ -30,6 +30,11 @@ export const GetDataForZenodoRecord = (
 
   const answerToIfTheDatasetHasTrackedChanges = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges'))
 
+  const answerToIfTheDatasetHasDataCensoredOrDeleted = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted'),
+  )
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
@@ -37,6 +42,10 @@ export const GetDataForZenodoRecord = (
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
+        answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+          answerToIfTheDatasetHasDataCensoredOrDeleted,
+          Struct.get('answer'),
+        ),
       }),
   })
 }

@@ -20,6 +20,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -52,6 +55,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -91,6 +97,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
+        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>

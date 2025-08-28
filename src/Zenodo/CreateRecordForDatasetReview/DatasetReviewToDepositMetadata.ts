@@ -8,6 +8,9 @@ export interface DatasetReview {
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
+  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
+    Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
+  >
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -48,6 +51,25 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           <dd>
             ${pipe(
               Match.value(answerToIfTheDatasetHasTrackedChanges),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetHasDataCensoredOrDeleted, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetHasDataCensoredOrDeleted => html`
+          <dt>
+            Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
+            deletion, or redaction, that are not accounted for otherwise?
+          </dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetHasDataCensoredOrDeleted),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),

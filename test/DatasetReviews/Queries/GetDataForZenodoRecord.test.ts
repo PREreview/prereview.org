@@ -32,6 +32,14 @@ const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheD
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'yes',
+  datasetReviewId,
+})
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -62,6 +70,9 @@ describe('GetDataForZenodoRecord', () => {
               fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
@@ -70,6 +81,7 @@ describe('GetDataForZenodoRecord', () => {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[3].answer),
+              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[4].answer),
             }),
           ),
       ],
@@ -87,6 +99,7 @@ describe('GetDataForZenodoRecord', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
               },
             ],
           ], // with answer
@@ -100,6 +113,8 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetHasEnoughMetadata2,
                 answeredIfTheDatasetHasTrackedChanges1,
                 answeredIfTheDatasetHasTrackedChanges2,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
@@ -107,6 +122,9 @@ describe('GetDataForZenodoRecord', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
+                  answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                ),
               },
             ],
           ], // with multiple answers
@@ -122,6 +140,7 @@ describe('GetDataForZenodoRecord', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
               },
             ],
           ], // different order
@@ -138,6 +157,7 @@ describe('GetDataForZenodoRecord', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
               },
             ],
           ], // already has a record
