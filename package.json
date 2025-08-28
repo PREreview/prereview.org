@@ -90,7 +90,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/mjml": "^4.7.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.17.2",
+    "@types/node": "^22.18.0",
     "@types/nodemailer": "^7.0.1",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.15.0",
