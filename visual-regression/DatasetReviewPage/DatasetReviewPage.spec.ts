@@ -26,6 +26,7 @@ const datasetReview: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
+    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }

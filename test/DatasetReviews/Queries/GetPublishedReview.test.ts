@@ -32,6 +32,14 @@ const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheD
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'unsure',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'no',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -76,6 +84,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -90,6 +99,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples1,
                   answeredIfTheDatasetHasEnoughMetadata1,
                   answeredIfTheDatasetHasTrackedChanges1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -105,6 +115,9 @@ describe('GetPublishedReview', () => {
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
+                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
+                      answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    ),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -120,6 +133,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetHasEnoughMetadata2,
                   answeredIfTheDatasetHasTrackedChanges1,
                   answeredIfTheDatasetHasTrackedChanges2,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetHasDataCensoredOrDeleted2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -137,6 +152,9 @@ describe('GetPublishedReview', () => {
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
+                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
+                      answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                    ),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -162,6 +180,7 @@ describe('GetPublishedReview', () => {
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                     answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

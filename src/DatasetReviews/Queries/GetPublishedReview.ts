@@ -15,6 +15,7 @@ export interface PublishedReview {
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -52,6 +53,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetHasDataCensoredOrDeleted = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -67,6 +73,7 @@ export const GetPublishedReview = (
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
           answerToIfTheDatasetHasEnoughMetadata,
           answerToIfTheDatasetHasTrackedChanges,
+          answerToIfTheDatasetHasDataCensoredOrDeleted,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),
