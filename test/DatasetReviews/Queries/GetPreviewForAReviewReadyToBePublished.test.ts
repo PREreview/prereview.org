@@ -32,6 +32,14 @@ const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheD
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'partly',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -58,6 +66,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
             ),
           )
           .map(events =>
@@ -65,6 +76,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[3].answer),
+              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[4].answer),
             }),
           ),
       ],
@@ -78,6 +90,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
               },
             ],
           ], // with answer
@@ -91,12 +104,17 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetHasEnoughMetadata2,
                 answeredIfTheDatasetHasTrackedChanges1,
                 answeredIfTheDatasetHasTrackedChanges2,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted2,
               ],
               {
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
+                  answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                ),
               },
             ],
           ], // with multiple answers

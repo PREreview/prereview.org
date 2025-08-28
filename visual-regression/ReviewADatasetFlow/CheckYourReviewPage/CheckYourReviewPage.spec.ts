@@ -22,4 +22,5 @@ const review = {
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
+  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
 } satisfies DatasetReviews.DatasetReviewPreview

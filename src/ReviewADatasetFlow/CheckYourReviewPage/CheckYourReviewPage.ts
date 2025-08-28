@@ -120,6 +120,29 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetHasDataCensoredOrDeleted, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetHasDataCensoredOrDeleted => html`
+                    <div>
+                      <dt>
+                        <span
+                          >Does this dataset show signs of alteration beyond instances of likely human error, such as
+                          censorship, deletion, or redaction, that are not accounted for otherwise?</span
+                        >
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetHasDataCensoredOrDeleted),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>

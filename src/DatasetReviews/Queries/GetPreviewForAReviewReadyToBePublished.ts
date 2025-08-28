@@ -6,6 +6,9 @@ export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
+  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
+    Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
+  >
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -38,6 +41,11 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const answerToIfTheDatasetHasTrackedChanges = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges'))
 
+  const answerToIfTheDatasetHasDataCensoredOrDeleted = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted'),
+  )
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -50,6 +58,10 @@ export const GetPreviewForAReviewReadyToBePublished = (
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
+        answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
+          answerToIfTheDatasetHasDataCensoredOrDeleted,
+          Struct.get('answer'),
+        ),
       }),
   })
 }
