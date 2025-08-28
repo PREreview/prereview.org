@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Equal, Match } from 'effect'
+import { Effect, Match } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -57,11 +57,6 @@ export const HasTrackedChangesSubmission = ({
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
-    const author = yield* DatasetReviews.getAuthor(datasetReviewId)
-
-    if (!Equal.equals(user.orcid, author)) {
-      return yield* PageNotFound
-    }
 
     const form = yield* HasTrackedChangesForm.fromBody(body)
 
@@ -86,9 +81,4 @@ export const HasTrackedChangesSubmission = ({
       ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
     })
-  }).pipe(
-    Effect.catchTags({
-      UnableToQuery: () => HavingProblemsPage,
-      UnknownDatasetReview: () => PageNotFound,
-    }),
-  )
+  })
