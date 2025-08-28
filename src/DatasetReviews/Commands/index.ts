@@ -135,12 +135,9 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetHasEnoughMetadata.decide,
       ),
       answerIfTheDatasetHasTrackedChanges: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        AnswerIfTheDatasetHasTrackedChanges.createFilter,
         AnswerIfTheDatasetHasTrackedChanges.foldState,
-        () => () => true,
+        AnswerIfTheDatasetHasTrackedChanges.authorize,
         AnswerIfTheDatasetHasTrackedChanges.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
