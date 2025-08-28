@@ -25,6 +25,11 @@ export class AnsweredIfTheDatasetHasTrackedChanges extends Schema.TaggedClass<An
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedClass<AnsweredIfTheDatasetHasDataCensoredOrDeleted>()(
+  'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -66,6 +71,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
   AnsweredIfTheDatasetHasEnoughMetadata,
   AnsweredIfTheDatasetHasTrackedChanges,
+  AnsweredIfTheDatasetHasDataCensoredOrDeleted,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,

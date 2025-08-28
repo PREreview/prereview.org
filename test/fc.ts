@@ -1636,6 +1636,18 @@ export const datasetReviewAnsweredIfTheDatasetHasTrackedChanges = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetHasTrackedChanges(data))
 
+export const datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted> =>
+  fc
+    .record({
+      answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1704,6 +1716,7 @@ export const datasetReviewEvent = (
     datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
     datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(args),
     datasetReviewAnsweredIfTheDatasetHasTrackedChanges(args),
+    datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
