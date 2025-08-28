@@ -71,6 +71,7 @@ export const HasEnoughMetadataSubmission = ({
           yield* DatasetReviews.answerIfTheDatasetHasEnoughMetadata({
             answer: form.hasEnoughMetadata,
             datasetReviewId,
+            userId: user.orcid,
           })
 
           const nextExpectedCommand = yield* Effect.flatten(

@@ -68,7 +68,11 @@ export const HasTrackedChangesSubmission = ({
     return yield* Match.valueTags(form, {
       CompletedForm: Effect.fn(
         function* (form: HasTrackedChangesForm.CompletedForm) {
-          yield* DatasetReviews.answerIfTheDatasetHasTrackedChanges({ answer: form.hasTrackedChanges, datasetReviewId })
+          yield* DatasetReviews.answerIfTheDatasetHasTrackedChanges({
+            answer: form.hasTrackedChanges,
+            datasetReviewId,
+            userId: user.orcid,
+          })
 
           const nextExpectedCommand = yield* Effect.flatten(
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),

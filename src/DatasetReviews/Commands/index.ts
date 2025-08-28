@@ -129,12 +129,9 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
       ),
       answerIfTheDatasetHasEnoughMetadata: handleCommand(
-        datasetReviewId => ({
-          types: Events.DatasetReviewEventTypes,
-          predicates: { datasetReviewId },
-        }),
+        AnswerIfTheDatasetHasEnoughMetadata.createFilter,
         AnswerIfTheDatasetHasEnoughMetadata.foldState,
-        () => () => true,
+        AnswerIfTheDatasetHasEnoughMetadata.authorize,
         AnswerIfTheDatasetHasEnoughMetadata.decide,
       ),
       answerIfTheDatasetHasTrackedChanges: handleCommand(

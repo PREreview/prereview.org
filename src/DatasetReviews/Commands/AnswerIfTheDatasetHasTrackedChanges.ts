@@ -1,11 +1,12 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
-import type { Uuid } from '../../types/index.js'
+import * as Events from '../../Events.js'
+import type { Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
-import * as Events from '../Events.js'
 
 export interface Command {
   readonly answer: 'yes' | 'partly' | 'no' | 'unsure'
   readonly datasetReviewId: Uuid.Uuid
+  readonly userId: Orcid.Orcid
 }
 
 export type Error =
@@ -17,34 +18,56 @@ export type State = NotStarted | NotAnswered | HasBeenAnswered | IsBeingPublishe
 
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
-export class NotAnswered extends Data.TaggedClass('NotAnswered') {}
+export class NotAnswered extends Data.TaggedClass('NotAnswered')<{ authorId: Orcid.Orcid }> {}
 
 export class HasBeenAnswered extends Data.TaggedClass('HasBeenAnswered')<{
   answer: Events.AnsweredIfTheDatasetHasTrackedChanges['answer']
+  authorId: Orcid.Orcid
 }> {}
 
-export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
+export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ authorId: Orcid.Orcid }> {}
 
-export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: Orcid.Orcid }> {}
 
-export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {
-  if (!Array.some(events, hasTag('DatasetReviewWasStarted'))) {
-    return new NotStarted()
-  }
+export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
+  types: [
+    'DatasetReviewWasStarted',
+    'AnsweredIfTheDatasetHasTrackedChanges',
+    'PublicationOfDatasetReviewWasRequested',
+    'DatasetReviewWasPublished',
+  ],
+  predicates: { datasetReviewId },
+})
 
-  if (Array.some(events, hasTag('DatasetReviewWasPublished'))) {
-    return new HasBeenPublished()
-  }
+export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, datasetReviewId: Uuid.Uuid): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(datasetReviewId)))
 
-  if (Array.some(events, hasTag('PublicationOfDatasetReviewWasRequested'))) {
-    return new IsBeingPublished()
-  }
+  return Option.match(Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')), {
+    onNone: () => new NotStarted(),
+    onSome: ({ authorId }) => {
+      if (Array.some(filteredEvents, hasTag('DatasetReviewWasPublished'))) {
+        return new HasBeenPublished({ authorId })
+      }
 
-  return Option.match(Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges')), {
-    onNone: () => new NotAnswered(),
-    onSome: ({ answer }) => new HasBeenAnswered({ answer }),
+      if (Array.some(filteredEvents, hasTag('PublicationOfDatasetReviewWasRequested'))) {
+        return new IsBeingPublished({ authorId })
+      }
+
+      return Option.match(Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasTrackedChanges')), {
+        onNone: () => new NotAnswered({ authorId }),
+        onSome: ({ answer }) => new HasBeenAnswered({ answer, authorId }),
+      })
+    },
   })
 }
+
+export const authorize: {
+  (state: State, command: Command): boolean
+  (command: Command): (state: State) => boolean
+} = Function.dual(
+  2,
+  (state: State, { userId }: Command): boolean => state._tag === 'NotStarted' || Equal.equals(state.authorId, userId),
+)
 
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>
