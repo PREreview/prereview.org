@@ -6,6 +6,8 @@ import { DatasetReviewEventTypes } from '../Events.js'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.js'
 import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.js'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.js'
+import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
@@ -33,6 +35,16 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (
         input: CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.Result
+    >
+    checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.Result
+    >
+    checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Result
     >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
@@ -84,6 +96,8 @@ export const {
   checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
   checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples,
+  checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata,
+  checkIfUserCanAnswerIfTheDatasetHasTrackedChanges,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -144,6 +158,34 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
           )
 
           return yield* CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Effect.fn(
+        function* (input) {
+          const filter = CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: Effect.fn(
+        function* (input) {
+          const filter = CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.query(events, input)
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
