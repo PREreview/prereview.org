@@ -4,6 +4,7 @@ import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import type * as Errors from '../Errors.js'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.js'
+import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.js'
 import * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.js'
 import * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTrackedChanges.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
@@ -21,6 +22,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     answerIfTheDatasetFollowsFairAndCarePrinciples: CommandHandler<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Command,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
+    >
+    answerIfTheDatasetHasDataCensoredOrDeleted: CommandHandler<
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.Command,
+      AnswerIfTheDatasetHasDataCensoredOrDeleted.Error
     >
     answerIfTheDatasetHasEnoughMetadata: CommandHandler<
       AnswerIfTheDatasetHasEnoughMetadata.Command,
@@ -56,6 +61,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 export const {
   startDatasetReview,
   answerIfTheDatasetFollowsFairAndCarePrinciples,
+  answerIfTheDatasetHasDataCensoredOrDeleted,
   answerIfTheDatasetHasEnoughMetadata,
   answerIfTheDatasetHasTrackedChanges,
   markRecordCreatedOnZenodo,
@@ -127,6 +133,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.foldState,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.authorize,
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.decide,
+      ),
+      answerIfTheDatasetHasDataCensoredOrDeleted: handleCommand(
+        AnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
+        AnswerIfTheDatasetHasDataCensoredOrDeleted.foldState,
+        AnswerIfTheDatasetHasDataCensoredOrDeleted.authorize,
+        AnswerIfTheDatasetHasDataCensoredOrDeleted.decide,
       ),
       answerIfTheDatasetHasEnoughMetadata: handleCommand(
         AnswerIfTheDatasetHasEnoughMetadata.createFilter,
