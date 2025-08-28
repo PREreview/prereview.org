@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer, Option, Struct } from 'effect'
+import { Effect, Equal, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/index.js'
@@ -14,37 +14,32 @@ import * as fc from '../fc.js'
 
 describe('HasEnoughMetadataQuestion', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([
-      fc.uuid(),
-      fc.supportedLocale(),
-      fc.user(),
-      fc.maybe(fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer'))),
-    ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
-      Effect.gen(function* () {
-        const actual = yield* _.HasEnoughMetadataQuestion({ datasetReviewId })
+    test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure'))])(
+      'when the dataset review is in progress',
+      (datasetReviewId, locale, user, answer) =>
+        Effect.gen(function* () {
+          const actual = yield* _.HasEnoughMetadataQuestion({ datasetReviewId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          canonical: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          nav: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'form',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            checkIfReviewIsInProgress: () => Effect.void,
-            getAuthor: () => Effect.succeed(user.orcid),
-            getAnswerToIfTheDatasetHasEnoughMetadata: () => Effect.succeed(answer),
-          }),
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () => Effect.succeed(answer),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
         ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
     )
 
     test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
@@ -61,7 +56,8 @@ describe('HasEnoughMetadataQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
+              checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
+                new DatasetReviews.DatasetReviewIsBeingPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
@@ -85,7 +81,8 @@ describe('HasEnoughMetadataQuestion', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfReviewIsInProgress: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
+              checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
+                new DatasetReviews.DatasetReviewHasBeenPublished(),
               getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
@@ -96,34 +93,31 @@ describe('HasEnoughMetadataQuestion', () => {
     )
   })
 
-  test.prop([
-    fc.uuid(),
-    fc.supportedLocale(),
-    fc
-      .tuple(fc.user(), fc.orcid())
-      .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
-  ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
-    Effect.gen(function* () {
-      const actual = yield* _.HasEnoughMetadataQuestion({ datasetReviewId })
+  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+    'when the dataset review is by a different user',
+    (datasetReviewId, locale, user) =>
+      Effect.gen(function* () {
+        const actual = yield* _.HasEnoughMetadataQuestion({ datasetReviewId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(
-        Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          getAuthor: () => Effect.succeed(datasetReviewAuthor),
-        }),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
+              new DatasetReviews.DatasetReviewWasStartedByAnotherUser(),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
       ),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
   )
 
   test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
@@ -143,7 +137,8 @@ describe('HasEnoughMetadataQuestion', () => {
       }).pipe(
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
+            checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
+              new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           }),
         ),
         Effect.provideService(Locale, locale),
@@ -169,7 +164,7 @@ describe('HasEnoughMetadataQuestion', () => {
       }).pipe(
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getAuthor: () => new DatasetReviews.UnableToQuery({}),
+            checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () => new DatasetReviews.UnableToQuery({}),
           }),
         ),
         Effect.provideService(Locale, locale),

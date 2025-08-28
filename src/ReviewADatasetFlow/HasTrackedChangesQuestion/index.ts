@@ -19,22 +19,18 @@ export const HasTrackedChangesQuestion = ({
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
-    const author = yield* DatasetReviews.getAuthor(datasetReviewId)
 
-    if (!Equal.equals(user.orcid, author)) {
-      return yield* PageNotFound
-    }
+    const currentAnswer = yield* DatasetReviews.checkIfUserCanAnswerIfTheDatasetHasTrackedChanges({
+      datasetReviewId,
+      userId: user.orcid,
+    })
 
-    yield* DatasetReviews.checkIfReviewIsInProgress(datasetReviewId)
-
-    const form = yield* Effect.andThen(
-      DatasetReviews.getAnswerToIfTheDatasetHasTrackedChanges(datasetReviewId),
-      HasTrackedChangesForm.fromAnswer,
-    )
+    const form = HasTrackedChangesForm.fromAnswer(currentAnswer)
 
     return MakeResponse({ datasetReviewId, form })
   }).pipe(
     Effect.catchTags({
+      DatasetReviewHasNotBeenStarted: () => PageNotFound,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
@@ -43,8 +39,8 @@ export const HasTrackedChangesQuestion = ({
         Effect.succeed(
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
         ),
+      DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
-      UnknownDatasetReview: () => PageNotFound,
     }),
   )
 
