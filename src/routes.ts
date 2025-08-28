@@ -68,6 +68,12 @@ export const ReviewADatasetHasTrackedChanges: Route<{ datasetReviewId: Uuid.Uuid
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetHasDataCensoredOrDeleted: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/has-data-censored-or-deleted',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/has-data-censored-or-deleted`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,
