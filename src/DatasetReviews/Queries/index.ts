@@ -10,8 +10,6 @@ import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUse
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
-import { GetAnswerToIfTheDatasetHasEnoughMetadata } from './GetAnswerToIfTheDatasetHasEnoughMetadata.js'
-import { GetAnswerToIfTheDatasetHasTrackedChanges } from './GetAnswerToIfTheDatasetHasTrackedChanges.js'
 import { GetAuthor } from './GetAuthor.js'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.js'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.js'
@@ -49,14 +47,6 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
-    getAnswerToIfTheDatasetHasEnoughMetadata: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasEnoughMetadata>,
-      Errors.UnknownDatasetReview
-    >
-    getAnswerToIfTheDatasetHasTrackedChanges: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAnswerToIfTheDatasetHasTrackedChanges>,
-      Errors.UnknownDatasetReview
-    >
     getNextExpectedCommandForAUserOnADatasetReview: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetNextExpectedCommandForAUserOnADatasetReview>,
       Errors.UnknownDatasetReview
@@ -103,8 +93,6 @@ export const {
   findInProgressReviewForADataset,
   findPublishedReviewsForADataset,
   getAuthor,
-  getAnswerToIfTheDatasetHasEnoughMetadata,
-  getAnswerToIfTheDatasetHasTrackedChanges,
   getNextExpectedCommandForAUserOnADatasetReview,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
@@ -225,32 +213,6 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      ),
-      getAnswerToIfTheDatasetHasEnoughMetadata: Effect.fn(
-        function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
-
-          return GetAnswerToIfTheDatasetHasEnoughMetadata(events)
-        },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      ),
-      getAnswerToIfTheDatasetHasTrackedChanges: Effect.fn(
-        function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
-
-          return GetAnswerToIfTheDatasetHasTrackedChanges(events)
-        },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
