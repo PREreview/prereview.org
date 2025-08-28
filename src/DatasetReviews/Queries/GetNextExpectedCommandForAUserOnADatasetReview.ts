@@ -5,6 +5,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'
   | 'AnswerIfTheDatasetHasEnoughMetadata'
   | 'AnswerIfTheDatasetHasTrackedChanges'
+  | 'AnswerIfTheDatasetHasDataCensoredOrDeleted'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -28,6 +29,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetHasTrackedChanges')) {
     return Option.some('AnswerIfTheDatasetHasTrackedChanges')
+  }
+
+  if (!hasEvent(events, 'AnsweredIfTheDatasetHasDataCensoredOrDeleted')) {
+    return Option.some('AnswerIfTheDatasetHasDataCensoredOrDeleted')
   }
 
   return Option.some('PublishDatasetReview')

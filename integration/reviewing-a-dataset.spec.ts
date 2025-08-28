@@ -28,6 +28,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await page.getByLabel('I don’t know', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -58,6 +61,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('main')).toContainText('Does the dataset have enough metadata? Yes')
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? No',
+  )
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? I don’t know',
   )
 
   await page.getByRole('link', { name: 'Back to all reviews' }).click()
@@ -119,6 +125,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Partly').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   const review = page.getByRole('region', { name: 'Your review' })
 
@@ -126,6 +134,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly',
+  )
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly',
   )
 
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
@@ -152,6 +163,15 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? I don’t know',
   )
+
+  await page.getByRole('link', { name: 'Change if the dataset shows signs of alteration' }).click()
+
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? I don’t know',
+  )
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
@@ -163,8 +183,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
 
   await page.goBack()
 
@@ -192,8 +218,14 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('Partly')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 

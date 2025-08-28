@@ -32,6 +32,14 @@ const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheD
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'partly',
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'unsure',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -63,6 +71,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
             fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
             fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges(),
+            fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -89,14 +98,26 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetHasTrackedChanges1,
             ],
+            'AnswerIfTheDatasetHasDataCensoredOrDeleted',
+          ], // 3 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
             [
               datasetReviewWasStarted,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted2,
               answeredIfTheDatasetHasTrackedChanges2,
               answeredIfTheDatasetHasEnoughMetadata2,
               answeredIfTheDatasetFollowsFairAndCarePrinciples2,

@@ -16,6 +16,11 @@ export const HasDataCensoredOrDeletedQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}" class="back">
+        <span>Back</span>
+      </a>
+    `,
     main: html`
       <form
         method="post"
