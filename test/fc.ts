@@ -1600,7 +1600,7 @@ export const datasetReviewWasStarted = ({
     })
     .map(data => new Events.DatasetReviewWasStarted(data))
 
-export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples = ({
+export const answeredIfTheDatasetFollowsFairAndCarePrinciples = ({
   datasetReviewId,
 }: {
   datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['datasetReviewId']>
@@ -1612,7 +1612,7 @@ export const datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples(data))
 
-export const datasetReviewAnsweredIfTheDatasetHasEnoughMetadata = ({
+export const answeredIfTheDatasetHasEnoughMetadata = ({
   datasetReviewId,
 }: {
   datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetHasEnoughMetadata['datasetReviewId']>
@@ -1624,7 +1624,7 @@ export const datasetReviewAnsweredIfTheDatasetHasEnoughMetadata = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetHasEnoughMetadata(data))
 
-export const datasetReviewAnsweredIfTheDatasetHasTrackedChanges = ({
+export const answeredIfTheDatasetHasTrackedChanges = ({
   datasetReviewId,
 }: {
   datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetHasTrackedChanges['datasetReviewId']>
@@ -1636,7 +1636,7 @@ export const datasetReviewAnsweredIfTheDatasetHasTrackedChanges = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetHasTrackedChanges(data))
 
-export const datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted = ({
+export const answeredIfTheDatasetHasDataCensoredOrDeleted = ({
   datasetReviewId,
 }: {
   datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['datasetReviewId']>
@@ -1713,10 +1713,10 @@ export const datasetReviewEvent = (
 ): fc.Arbitrary<Events.DatasetReviewEvent> =>
   fc.oneof(
     datasetReviewWasStarted(args),
-    datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(args),
-    datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(args),
-    datasetReviewAnsweredIfTheDatasetHasTrackedChanges(args),
-    datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted(args),
+    answeredIfTheDatasetFollowsFairAndCarePrinciples(args),
+    answeredIfTheDatasetHasEnoughMetadata(args),
+    answeredIfTheDatasetHasTrackedChanges(args),
+    answeredIfTheDatasetHasDataCensoredOrDeleted(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),

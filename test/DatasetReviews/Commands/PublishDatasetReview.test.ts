@@ -66,8 +66,8 @@ describe('foldState', () => {
       fc
         .tuple(
           fc.datasetReviewWasStarted(),
-          fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
-          fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
+          fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
+          fc.answeredIfTheDatasetHasEnoughMetadata(),
         )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],

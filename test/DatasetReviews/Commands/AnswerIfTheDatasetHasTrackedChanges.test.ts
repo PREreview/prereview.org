@@ -67,7 +67,7 @@ describe('foldState', () => {
         .chain(datasetReviewId =>
           fc.tuple(
             fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
-            fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
+            fc.answeredIfTheDatasetHasTrackedChanges({
               datasetReviewId: fc.constant(datasetReviewId),
             }),
           ),

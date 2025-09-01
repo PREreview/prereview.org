@@ -68,7 +68,7 @@ describe('GetPublishedReview', () => {
           fc
             .tuple(
               fc.datasetReviewWasStarted(),
-              fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
+              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
               fc.datasetReviewWasAssignedADoi(),
               fc.datasetReviewWasPublished(),
             )
@@ -201,7 +201,7 @@ describe('GetPublishedReview', () => {
           fc
             .tuple(
               fc.datasetReviewWasStarted(),
-              fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
+              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
               fc.datasetReviewWasPublished(),
             )
             .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),

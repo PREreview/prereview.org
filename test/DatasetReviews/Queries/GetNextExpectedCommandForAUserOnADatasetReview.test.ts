@@ -68,10 +68,10 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
         fc
           .tuple(
             fc.datasetReviewWasStarted(),
-            fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples(),
-            fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata(),
-            fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges(),
-            fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted(),
+            fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
+            fc.answeredIfTheDatasetHasEnoughMetadata(),
+            fc.answeredIfTheDatasetHasTrackedChanges(),
+            fc.answeredIfTheDatasetHasDataCensoredOrDeleted(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),

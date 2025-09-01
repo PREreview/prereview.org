@@ -57,16 +57,16 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           .chain(datasetReviewId =>
             fc.tuple(
               fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
-              fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
-              fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata({
+              fc.answeredIfTheDatasetHasEnoughMetadata({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
-              fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges({
+              fc.answeredIfTheDatasetHasTrackedChanges({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
-              fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted({
+              fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
             ),

@@ -92,7 +92,7 @@ describe('query', () => {
         .chain(datasetReviewId =>
           fc.tuple(
             fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
-            fc.datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+            fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({
               datasetReviewId: fc.constant(datasetReviewId),
             }),
           ),

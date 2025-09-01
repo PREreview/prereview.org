@@ -89,7 +89,7 @@ describe('query', () => {
         .chain(datasetReviewId =>
           fc.tuple(
             fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
-            fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted({
+            fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
               datasetReviewId: fc.constant(datasetReviewId),
             }),
           ),

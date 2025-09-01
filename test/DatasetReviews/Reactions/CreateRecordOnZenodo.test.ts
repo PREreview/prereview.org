@@ -12,16 +12,16 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record({
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-        .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -48,16 +48,16 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record({
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-        .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -90,16 +90,16 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record({
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-        .datasetReviewAnsweredIfTheDatasetFollowsFairAndCarePrinciples()
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-        fc.datasetReviewAnsweredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>
