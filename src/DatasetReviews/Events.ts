@@ -10,8 +10,8 @@ export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWas
   datasetReviewId: Uuid.UuidSchema,
 }) {}
 
-export class RatedTheQualityOfADataset extends Schema.TaggedClass<RatedTheQualityOfADataset>()(
-  'RatedTheQualityOfADataset',
+export class RatedTheQualityOfTheDataset extends Schema.TaggedClass<RatedTheQualityOfTheDataset>()(
+  'RatedTheQualityOfTheDataset',
   { rating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
@@ -73,7 +73,7 @@ export class DatasetReviewDoiWasActivated extends Schema.TaggedClass<DatasetRevi
 
 export const DatasetReviewEvent = Schema.Union(
   DatasetReviewWasStarted,
-  RatedTheQualityOfADataset,
+  RatedTheQualityOfTheDataset,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
   AnsweredIfTheDatasetHasEnoughMetadata,
   AnsweredIfTheDatasetHasTrackedChanges,
