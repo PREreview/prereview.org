@@ -12,5 +12,6 @@ const commandRoutes = {
   AnswerIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
   AnswerIfTheDatasetHasTrackedChanges: Routes.ReviewADatasetHasTrackedChanges,
   AnswerIfTheDatasetHasDataCensoredOrDeleted: Routes.ReviewADatasetHasDataCensoredOrDeleted,
+  AnswerIfTheDatasetIsAppropriateForThisKindOfResearch: Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
 } satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>

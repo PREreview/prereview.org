@@ -7,6 +7,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetHasEnoughMetadata'
   | 'AnswerIfTheDatasetHasTrackedChanges'
   | 'AnswerIfTheDatasetHasDataCensoredOrDeleted'
+  | 'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -38,6 +39,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetHasDataCensoredOrDeleted')) {
     return Option.some('AnswerIfTheDatasetHasDataCensoredOrDeleted')
+  }
+
+  if (!hasEvent(events, 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')) {
+    return Option.some('AnswerIfTheDatasetIsAppropriateForThisKindOfResearch')
   }
 
   return Option.some('PublishDatasetReview')

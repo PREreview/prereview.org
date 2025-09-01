@@ -42,6 +42,16 @@ const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.Answere
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'unsure',
+    datasetReviewId,
+  })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'no',
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -75,6 +85,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetHasEnoughMetadata(),
             fc.answeredIfTheDatasetHasTrackedChanges(),
             fc.answeredIfTheDatasetHasDataCensoredOrDeleted(),
+            fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -115,16 +126,30 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasDataCensoredOrDeleted1,
             ],
+            'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
+          ], // 5 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
             [
               datasetReviewWasStarted,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
               answeredIfTheDatasetHasDataCensoredOrDeleted1,
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
               answeredIfTheDatasetHasDataCensoredOrDeleted2,
               answeredIfTheDatasetHasTrackedChanges2,
               answeredIfTheDatasetHasEnoughMetadata2,

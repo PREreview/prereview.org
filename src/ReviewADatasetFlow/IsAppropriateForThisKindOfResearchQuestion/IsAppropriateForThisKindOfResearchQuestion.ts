@@ -16,6 +16,11 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is the dataset well-suited to support its stated research purpose?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}" class="back"
+        ><span>Back</span></a
+      >
+    `,
     main: html`
       <form
         method="post"
