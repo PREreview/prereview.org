@@ -1,4 +1,5 @@
 import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
+import type * as Events from '../../Events.js'
 import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
@@ -121,6 +122,28 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
   Effect.gen(function* () {
     const context = yield* Effect.context<EventStore.EventStore>()
 
+    const handleQuery = <Event extends Events.DatasetReviewEvent['_tag'], Input, Result, Error>(
+      createFilter: (input: Input) => Events.EventFilter<Event>,
+      query: (
+        events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
+        input: Input,
+      ) => Either.Either<Result, Error>,
+    ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
+      Effect.fn(
+        function* (input) {
+          const filter = createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      )
+
     return {
       checkIfReviewIsInProgress: Effect.fn(
         function* (datasetReviewId) {
@@ -148,75 +171,25 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      checkIfUserCanRateTheQuality: Effect.fn(
-        function* (input) {
-          const filter = CheckIfUserCanRateTheQuality.createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* CheckIfUserCanRateTheQuality.query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
+      checkIfUserCanRateTheQuality: handleQuery(
+        CheckIfUserCanRateTheQuality.createFilter,
+        CheckIfUserCanRateTheQuality.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
-        function* (input) {
-          const filter = CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
+      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: Effect.fn(
-        function* (input) {
-          const filter = CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
+      checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: Effect.fn(
-        function* (input) {
-          const filter = CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
+      checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: Effect.fn(
-        function* (input) {
-          const filter = CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
+      checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
