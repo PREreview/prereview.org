@@ -1660,6 +1660,18 @@ export const answeredIfTheDatasetHasDataCensoredOrDeleted = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted(data))
 
+export const answeredIfTheDatasetIsAppropriateForThisKindOfResearch = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch> =>
+  fc
+    .record({
+      answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1730,6 +1742,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetHasEnoughMetadata(args),
     answeredIfTheDatasetHasTrackedChanges(args),
     answeredIfTheDatasetHasDataCensoredOrDeleted(args),
+    answeredIfTheDatasetIsAppropriateForThisKindOfResearch(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),

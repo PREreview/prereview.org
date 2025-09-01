@@ -35,6 +35,11 @@ export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedC
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Schema.TaggedClass<AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch>()(
+  'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -78,6 +83,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetHasEnoughMetadata,
   AnsweredIfTheDatasetHasTrackedChanges,
   AnsweredIfTheDatasetHasDataCensoredOrDeleted,
+  AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
