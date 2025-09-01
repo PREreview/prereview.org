@@ -21,7 +21,7 @@ describe('StartNow', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: uuid }),
+          location: Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId: uuid }),
         })
       }).pipe(
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { startDatasetReview: () => Effect.void })),
