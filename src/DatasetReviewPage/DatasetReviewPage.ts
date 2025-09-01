@@ -143,6 +143,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetSupportsRelatedConclusions, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetSupportsRelatedConclusions => html`
+            <dt>Does this dataset support the researcher's stated conclusions?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
+                Match.when('yes', () => 'Yes'),
+                Match.when('partly', () => 'Partly'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',

@@ -39,6 +39,7 @@ const prereview1: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
+    answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
@@ -56,6 +57,7 @@ const prereview2: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetHasTrackedChanges: Option.none(),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+    answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
   },
   published: Temporal.PlainDate.from('2025-08-02'),
 }

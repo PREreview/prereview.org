@@ -18,6 +18,7 @@ export interface PublishedReview {
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -67,6 +68,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetSupportsRelatedConclusions = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -85,6 +91,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,
           answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+          answerToIfTheDatasetSupportsRelatedConclusions,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

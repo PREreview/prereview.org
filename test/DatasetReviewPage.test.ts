@@ -32,6 +32,7 @@ describe('DatasetReviewPage', () => {
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
           fc.constantFrom('yes', 'partly', 'no', 'unsure'),
         ),
+        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
       }),
       published: fc.plainDate(),
     }),
