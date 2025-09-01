@@ -9,6 +9,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from '.
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
+import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
 import { GetAuthor } from './GetAuthor.js'
@@ -29,6 +30,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfReviewIsBeingPublished: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>,
       Errors.UnknownDatasetReview
+    >
+    checkIfUserCanRateTheQuality: Query<
+      (input: CheckIfUserCanRateTheQuality.Input) => CheckIfUserCanRateTheQuality.Result
     >
     checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Query<
       (
@@ -91,6 +95,7 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 export const {
   checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
+  checkIfUserCanRateTheQuality,
   checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples,
   checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted,
   checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata,
@@ -141,6 +146,20 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         },
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      checkIfUserCanRateTheQuality: Effect.fn(
+        function* (input) {
+          const filter = CheckIfUserCanRateTheQuality.createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* CheckIfUserCanRateTheQuality.query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: Effect.fn(
