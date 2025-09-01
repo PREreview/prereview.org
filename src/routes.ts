@@ -50,6 +50,12 @@ export const ReviewThisDataset = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-t
 
 export const ReviewThisDatasetStartNow = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset/start-now'
 
+export const ReviewADatasetRateTheQuality: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/rate-the-quality',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/rate-the-quality`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetFollowsFairAndCarePrinciples: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/follows-fair-and-care-principles',
   href: params => `/review-a-dataset/${params.datasetReviewId}/follows-fair-and-care-principles`,

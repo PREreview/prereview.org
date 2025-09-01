@@ -61,6 +61,16 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     Routes.ReviewADatasetFollowsFairAndCarePrinciples,
     ReviewADatasetFlow.FollowsFairAndCarePrinciplesQuestion,
   ),
+  MakeRoute('GET', Routes.ReviewADatasetRateTheQuality, ReviewADatasetFlow.RateTheQualityQuestion),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetRateTheQuality,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.RateTheQualitySubmission),
+    ),
+  ),
   MakeRoute(
     'POST',
     Routes.ReviewADatasetFollowsFairAndCarePrinciples,
