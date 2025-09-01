@@ -40,6 +40,11 @@ export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Sche
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetSupportsRelatedConclusions extends Schema.TaggedClass<AnsweredIfTheDatasetSupportsRelatedConclusions>()(
+  'AnsweredIfTheDatasetSupportsRelatedConclusions',
+  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -84,6 +89,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetHasTrackedChanges,
   AnsweredIfTheDatasetHasDataCensoredOrDeleted,
   AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch,
+  AnsweredIfTheDatasetSupportsRelatedConclusions,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
