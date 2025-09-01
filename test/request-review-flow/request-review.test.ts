@@ -38,7 +38,7 @@ describe('requestReview', () => {
           js: [],
           allowRobots: false,
         })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
         expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
       })
 

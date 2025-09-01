@@ -42,9 +42,12 @@ describe('requestReviewPersona', () => {
             status: StatusCodes.SeeOther,
             location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
           })
-          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
           expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { ...reviewRequest, persona })
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
+            ...reviewRequest,
+            persona,
+          })
         })
 
         test.prop([
@@ -71,7 +74,10 @@ describe('requestReviewPersona', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { ...reviewRequest, persona })
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
+            ...reviewRequest,
+            persona,
+          })
         })
       })
 
@@ -131,7 +137,7 @@ describe('requestReviewPersona', () => {
             skipToLabel: 'form',
             js: [],
           })
-          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
           expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
         },
       )

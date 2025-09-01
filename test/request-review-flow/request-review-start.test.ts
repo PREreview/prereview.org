@@ -31,8 +31,8 @@ describe('requestReviewStart', () => {
         status: StatusCodes.SeeOther,
         location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
-      expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'incomplete' })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
+      expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'incomplete' })
     })
 
     test.prop([
@@ -55,7 +55,7 @@ describe('requestReviewStart', () => {
         status: StatusCodes.SeeOther,
         location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
     })
 
     test.prop([
@@ -83,7 +83,7 @@ describe('requestReviewStart', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
     })
   })
 

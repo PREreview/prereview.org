@@ -77,7 +77,7 @@ describe('requestReviewPublished', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
     })
   })
 

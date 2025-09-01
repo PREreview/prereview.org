@@ -60,7 +60,7 @@ describe('authorInvite', () => {
           status: StatusCodes.SeeOther,
           location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
         })
-        expect(addAuthorToPrereview).toHaveBeenCalledWith(invite.review, user, invite.persona)
+        expect(addAuthorToPrereview).toHaveBeenCalledWith(invite.review, user, invite.persona as never)
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
         expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {

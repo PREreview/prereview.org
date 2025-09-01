@@ -45,8 +45,8 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual(
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }) }),
           )
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id as never, user, reviewRequest.persona as never)
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'completed' })
         })
 
         test.prop([
@@ -79,8 +79,8 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id as never, user, reviewRequest.persona as never)
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'completed' })
         })
 
         test.prop([
@@ -112,7 +112,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id as never, user, reviewRequest.persona as never)
         })
       })
 
@@ -235,7 +235,7 @@ describe('requestReviewCheck', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
     })
 
     test.prop([
@@ -267,7 +267,7 @@ describe('requestReviewCheck', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
     })
   })
 

@@ -120,7 +120,7 @@ describe('writeReviewPublish', () => {
       })
       expect(addToSession).toHaveBeenCalledWith('published-review', {
         doi: reviewDoi,
-        form: CompletedFormC.encode(newReview),
+        form: CompletedFormC.encode(newReview) as never,
         id: reviewId,
       })
       expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)

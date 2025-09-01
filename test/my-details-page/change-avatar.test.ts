@@ -76,7 +76,7 @@ describe('changeAvatar', () => {
       skipToLabel: 'main',
       js: [],
     })
-    expect(saveAvatar).toHaveBeenCalledWith(user.orcid, { path: file.path, mimetype: file.contentType })
+    expect(saveAvatar).toHaveBeenCalledWith(user.orcid, { path: file.path, mimetype: file.contentType as never })
   })
 
   test.prop([
