@@ -3,6 +3,7 @@ import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DatasetReviewPreview {
+  readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
@@ -32,6 +33,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     return Either.left(new Errors.DatasetReviewIsBeingPublished())
   }
 
+  const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
+
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
     events,
     hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
@@ -55,6 +58,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
+        qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),

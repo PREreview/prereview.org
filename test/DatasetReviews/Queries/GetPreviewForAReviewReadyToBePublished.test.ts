@@ -12,6 +12,11 @@ const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({
+  rating: 'excellent',
+  datasetReviewId,
+})
+const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'fair', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
@@ -57,6 +62,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           .chain(datasetReviewId =>
             fc.tuple(
               fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.ratedTheQualityOfTheDataset({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
               fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
@@ -73,10 +81,11 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           )
           .map(events =>
             Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
-              answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
-              answerToIfTheDatasetHasEnoughMetadata: Option.some(events[2].answer),
-              answerToIfTheDatasetHasTrackedChanges: Option.some(events[3].answer),
-              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[4].answer),
+              qualityRating: Option.some(events[1].rating),
+              answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
+              answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
+              answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
+              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
             }),
           ),
       ],
@@ -86,6 +95,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             [
               [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples],
               {
+                qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
@@ -98,6 +108,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             [
               [
                 datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                ratedTheQualityOfTheDataset2,
                 answeredIfTheDatasetFollowsFairAndCarePrinciples,
                 answeredIfTheDatasetFollowsFairAndCarePrinciples2,
                 answeredIfTheDatasetHasEnoughMetadata1,
@@ -108,6 +120,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetHasDataCensoredOrDeleted2,
               ],
               {
+                qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),

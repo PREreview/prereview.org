@@ -19,6 +19,7 @@ test('content looks right', async ({ showPage }) => {
 const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
 const review = {
+  qualityRating: Option.some('excellent'),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),

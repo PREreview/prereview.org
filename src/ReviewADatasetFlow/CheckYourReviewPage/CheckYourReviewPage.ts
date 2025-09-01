@@ -50,6 +50,24 @@ export const CheckYourReviewPage = ({
 
             <div aria-labelledby="review-label" role="region">
               <dl class="summary-list">
+                ${Option.match(review.qualityRating, {
+                  onNone: () => '',
+                  onSome: qualityRating => html`
+                    <div>
+                      <dt><span>How would you rate the quality of this data set?</span></dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(qualityRating),
+                          Match.when('excellent', () => 'Excellent'),
+                          Match.when('fair', () => 'Fair'),
+                          Match.when('poor', () => 'Poor'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
                 <div>
                   <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
                   <dd>
