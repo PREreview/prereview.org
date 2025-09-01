@@ -1,4 +1,5 @@
-import { Data, type Either, Option } from 'effect'
+import { UrlParams } from '@effect/platform'
+import { Data, Effect, Either, Option, Schema } from 'effect'
 
 export type RateTheQualityForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -10,6 +11,15 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
   qualityRating: Either.Either<never, Missing>
 }> {}
 
+export const fromBody = Effect.fn(
+  function* (body: UrlParams.UrlParams) {
+    const { qualityRating } = yield* Schema.decode(QualityRatingSchema)(body)
+
+    return new CompletedForm({ qualityRating })
+  },
+  Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ qualityRating: Either.left(new Missing()) }))),
+)
+
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   qualityRating: 'excellent' | 'fair' | 'poor' | 'unsure'
 }> {}
@@ -19,3 +29,9 @@ export const fromAnswer: (answer: Option.Option<'excellent' | 'fair' | 'poor' | 
     onNone: () => new EmptyForm(),
     onSome: answer => new CompletedForm({ qualityRating: answer }),
   })
+
+const QualityRatingSchema = UrlParams.schemaRecord(
+  Schema.Struct({
+    qualityRating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'),
+  }),
+)

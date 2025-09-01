@@ -241,6 +241,28 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('have to rate the quality', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.goto(`${page.url()}/../rate-the-quality`, { waitUntil: 'commit' })
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByRole('group', { name: 'How would you rate the quality of this data set?' })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
+
+  await page.getByRole('link', { name: 'Select how you rate the quality' }).click()
+
+  await expect(page.getByLabel('Excellent')).toBeFocused()
+})
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the dataset follows FAIR and CARE principles',
   async ({ javaScriptEnabled, page }) => {
