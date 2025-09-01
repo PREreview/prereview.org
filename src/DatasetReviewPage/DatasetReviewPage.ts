@@ -127,6 +127,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetIsAppropriateForThisKindOfResearch, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetIsAppropriateForThisKindOfResearch => html`
+            <dt>Is the dataset well-suited to support its stated research purpose?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetIsAppropriateForThisKindOfResearch),
+                Match.when('yes', () => 'Yes'),
+                Match.when('partly', () => 'Partly'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',

@@ -45,6 +45,16 @@ const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.Answere
   answer: 'no',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'yes',
+    datasetReviewId,
+  })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'partly',
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -91,6 +101,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -107,6 +118,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetHasEnoughMetadata1,
                   answeredIfTheDatasetHasTrackedChanges1,
                   answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -125,6 +137,9 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                       answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                    ),
+                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
+                      answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
                     ),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
@@ -145,6 +160,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetHasTrackedChanges2,
                   answeredIfTheDatasetHasDataCensoredOrDeleted1,
                   answeredIfTheDatasetHasDataCensoredOrDeleted2,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -165,6 +182,9 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                       answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                    ),
+                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
+                      answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
                     ),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
@@ -193,6 +213,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                     answerToIfTheDatasetHasTrackedChanges: Option.none(),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

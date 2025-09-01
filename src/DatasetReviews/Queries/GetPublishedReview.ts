@@ -17,6 +17,7 @@ export interface PublishedReview {
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -61,6 +62,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -78,6 +84,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetHasEnoughMetadata,
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

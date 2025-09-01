@@ -29,6 +29,9 @@ describe('DatasetReviewPage', () => {
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+          fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+        ),
       }),
       published: fc.plainDate(),
     }),
