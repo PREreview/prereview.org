@@ -12,6 +12,9 @@ export interface DatasetReview {
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
     Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
   >
+  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
+    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
+  >
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -87,6 +90,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           <dd>
             ${pipe(
               Match.value(answerToIfTheDatasetHasDataCensoredOrDeleted),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetIsAppropriateForThisKindOfResearch, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetIsAppropriateForThisKindOfResearch => html`
+          <dt>Is the dataset well-suited to support its stated research purpose?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetIsAppropriateForThisKindOfResearch),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),

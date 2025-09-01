@@ -15,6 +15,7 @@ const cases = [
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -51,6 +52,12 @@ const cases = [
             I don’t know
           </dd>
         
+      
+          <dt>Is the dataset well-suited to support its stated research purpose?</dt>
+          <dd>
+            Yes
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -75,6 +82,7 @@ const cases = [
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
       answerToIfTheDatasetHasTrackedChanges: Option.none(),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -85,6 +93,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       

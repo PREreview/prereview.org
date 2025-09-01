@@ -42,6 +42,16 @@ const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.Answere
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'partly',
+    datasetReviewId,
+  })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'unsure',
+    datasetReviewId,
+  })
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -76,6 +86,9 @@ describe('GetDataForZenodoRecord', () => {
               fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
@@ -86,6 +99,7 @@ describe('GetDataForZenodoRecord', () => {
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
+              answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
             }),
           ),
       ],
@@ -105,6 +119,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
               },
             ],
           ], // with answer
@@ -122,6 +137,8 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetHasTrackedChanges2,
                 answeredIfTheDatasetHasDataCensoredOrDeleted1,
                 answeredIfTheDatasetHasDataCensoredOrDeleted2,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
@@ -132,6 +149,9 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                   answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                ),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
                 ),
               },
             ],
@@ -150,6 +170,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
               },
             ],
           ], // different order
@@ -168,6 +189,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
               },
             ],
           ], // already has a record

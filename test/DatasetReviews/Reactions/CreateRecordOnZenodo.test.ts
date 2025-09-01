@@ -24,6 +24,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+        fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -60,6 +63,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+        fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -103,6 +109,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+        fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
       ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>
