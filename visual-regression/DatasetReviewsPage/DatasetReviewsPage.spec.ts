@@ -33,6 +33,7 @@ const prereview1: DatasetReviews.PublishedReview = {
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
+    qualityRating: Option.some('excellent'),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
@@ -48,6 +49,7 @@ const prereview2: DatasetReviews.PublishedReview = {
   doi: Doi.Doi('10.5281/zenodo.10779311'),
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {
+    qualityRating: Option.none(),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
     answerToIfTheDatasetHasTrackedChanges: Option.none(),

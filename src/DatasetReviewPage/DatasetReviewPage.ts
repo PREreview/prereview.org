@@ -49,6 +49,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
       </header>
 
       <dl>
+        ${Option.match(datasetReview.questions.qualityRating, {
+          onNone: () => '',
+          onSome: qualityRating => html`
+            <dt>How would you rate the quality of this data set?</dt>
+            <dd>
+              ${pipe(
+                Match.value(qualityRating),
+                Match.when('excellent', () => 'Excellent'),
+                Match.when('fair', () => 'Fair'),
+                Match.when('poor', () => 'Poor'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
         <dt>Does this dataset follow FAIR and CARE principles?</dt>
         <dd>
           ${pipe(

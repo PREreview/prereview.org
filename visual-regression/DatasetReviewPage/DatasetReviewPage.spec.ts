@@ -23,6 +23,7 @@ const datasetReview: DatasetReviews.PublishedReview = {
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
+    qualityRating: Option.some('excellent'),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),

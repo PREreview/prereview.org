@@ -12,6 +12,7 @@ export interface PublishedReview {
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {
+    qualityRating: Option.Option<'excellent' | 'fair' | 'poor' | 'unsure'>
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -43,6 +44,8 @@ export const GetPublishedReview = (
     datasetReviewWasStarted: Array.findLast(events, hasTag('DatasetReviewWasStarted')),
   })
 
+  const qualityRating = Option.map(Array.findLast(events, hasTag('RatedTheQualityOfTheDataset')), Struct.get('rating'))
+
   const answerToIfTheDatasetHasEnoughMetadata = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata')),
     Struct.get('answer'),
@@ -69,6 +72,7 @@ export const GetPublishedReview = (
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {
+          qualityRating,
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
           answerToIfTheDatasetHasEnoughMetadata,
