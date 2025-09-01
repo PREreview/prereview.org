@@ -13,12 +13,14 @@ import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
 import * as MarkRecordAsPublishedOnZenodo from './MarkRecordAsPublishedOnZenodo.js'
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.js'
 import * as PublishDatasetReview from './PublishDatasetReview.js'
+import * as RateTheQuality from './RateTheQuality.js'
 import * as StartDatasetReview from './StartDatasetReview.js'
 
 export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
   DatasetReviewCommands,
   {
     startDatasetReview: CommandHandler<StartDatasetReview.StartDatasetReview, Errors.DatasetReviewWasAlreadyStarted>
+    rateTheQuality: CommandHandler<RateTheQuality.Command, RateTheQuality.Error>
     answerIfTheDatasetFollowsFairAndCarePrinciples: CommandHandler<
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Command,
       AnswerIfTheDatasetFollowsFairAndCarePrinciples.Error
@@ -60,6 +62,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 
 export const {
   startDatasetReview,
+  rateTheQuality,
   answerIfTheDatasetFollowsFairAndCarePrinciples,
   answerIfTheDatasetHasDataCensoredOrDeleted,
   answerIfTheDatasetHasEnoughMetadata,
@@ -127,6 +130,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         StartDatasetReview.foldState,
         () => () => true,
         StartDatasetReview.decide,
+      ),
+      rateTheQuality: handleCommand(
+        RateTheQuality.createFilter,
+        RateTheQuality.foldState,
+        RateTheQuality.authorize,
+        RateTheQuality.decide,
       ),
       answerIfTheDatasetFollowsFairAndCarePrinciples: handleCommand(
         AnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
