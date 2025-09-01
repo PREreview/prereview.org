@@ -59,7 +59,6 @@ describe('RateTheQualityQuestion', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanRateTheQuality: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -83,7 +82,6 @@ describe('RateTheQualityQuestion', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanRateTheQuality: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),

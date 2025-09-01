@@ -58,7 +58,6 @@ describe('HasTrackedChangesQuestion', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: () =>
                 new DatasetReviews.DatasetReviewIsBeingPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -83,7 +82,6 @@ describe('HasTrackedChangesQuestion', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: () =>
                 new DatasetReviews.DatasetReviewHasBeenPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),

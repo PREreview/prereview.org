@@ -58,7 +58,6 @@ describe('HasEnoughMetadataQuestion', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
                 new DatasetReviews.DatasetReviewIsBeingPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -83,7 +82,6 @@ describe('HasEnoughMetadataQuestion', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: () =>
                 new DatasetReviews.DatasetReviewHasBeenPublished(),
-              getAuthor: () => Effect.succeed(user.orcid),
             }),
           ),
           Effect.provideService(Locale, locale),
