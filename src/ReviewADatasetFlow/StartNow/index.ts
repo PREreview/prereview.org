@@ -28,7 +28,7 @@ export const StartNow: Effect.Effect<
         yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
 
         return Response.RedirectResponse({
-          location: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId: reviewId }),
+          location: Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId: reviewId }),
         })
       }),
       onSome: Effect.fn(

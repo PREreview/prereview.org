@@ -7,6 +7,7 @@ export const RouteForCommand = (
 ): Routes.Route<{ datasetReviewId: Uuid.Uuid }> => commandRoutes[command]
 
 const commandRoutes = {
+  RateTheQuality: Routes.ReviewADatasetRateTheQuality,
   AnswerIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
   AnswerIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
   AnswerIfTheDatasetHasTrackedChanges: Routes.ReviewADatasetHasTrackedChanges,

@@ -65,6 +65,11 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">how you rate the quality</span>
+                        </a>
+                      </dd>
                     </div>
                   `,
                 })}

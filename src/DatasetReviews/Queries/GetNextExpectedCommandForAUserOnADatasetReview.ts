@@ -2,6 +2,7 @@ import { Array, Option } from 'effect'
 import type * as Events from '../Events.js'
 
 export type NextExpectedCommand =
+  | 'RateTheQuality'
   | 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'
   | 'AnswerIfTheDatasetHasEnoughMetadata'
   | 'AnswerIfTheDatasetHasTrackedChanges'
@@ -17,6 +18,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (hasEvent(events, 'DatasetReviewWasPublished', 'PublicationOfDatasetReviewWasRequested')) {
     return Option.none()
+  }
+
+  if (!hasEvent(events, 'RatedTheQualityOfTheDataset')) {
+    return Option.some('RateTheQuality')
   }
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples')) {

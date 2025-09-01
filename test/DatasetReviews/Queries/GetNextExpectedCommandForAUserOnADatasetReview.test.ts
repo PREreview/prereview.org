@@ -12,6 +12,8 @@ const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'poor', datasetReviewId })
+const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'fair', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples1 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
@@ -68,6 +70,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
         fc
           .tuple(
             fc.datasetReviewWasStarted(),
+            fc.ratedTheQualityOfTheDataset(),
             fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
             fc.answeredIfTheDatasetHasEnoughMetadata(),
             fc.answeredIfTheDatasetHasTrackedChanges(),
@@ -78,31 +81,35 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
       ],
       {
         examples: [
-          [[datasetReviewWasStarted], 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'], // was started
+          [[datasetReviewWasStarted], 'RateTheQuality'], // was started
+          [[datasetReviewWasStarted, ratedTheQualityOfTheDataset1], 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'], // 1 question answered
           [
-            [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1],
+            [datasetReviewWasStarted, ratedTheQualityOfTheDataset1, answeredIfTheDatasetFollowsFairAndCarePrinciples1],
             'AnswerIfTheDatasetHasEnoughMetadata',
-          ], // 1 question answered
-          [
-            [
-              datasetReviewWasStarted,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-            ],
-            'AnswerIfTheDatasetHasTrackedChanges',
           ], // 2 questions answered
           [
             [
               datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+            ],
+            'AnswerIfTheDatasetHasTrackedChanges',
+          ], // 3 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetHasTrackedChanges1,
             ],
             'AnswerIfTheDatasetHasDataCensoredOrDeleted',
-          ], // 3 questions answered
+          ], // 4 questions answered
           [
             [
               datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetHasTrackedChanges1,
@@ -117,10 +124,12 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetHasDataCensoredOrDeleted2,
               answeredIfTheDatasetHasTrackedChanges2,
               answeredIfTheDatasetHasEnoughMetadata2,
               answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+              ratedTheQualityOfTheDataset2,
             ],
             'PublishDatasetReview',
           ], // different order
@@ -146,6 +155,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
           [
             [
               datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetHasTrackedChanges1,
@@ -159,6 +169,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              ratedTheQualityOfTheDataset1,
             ],
           ], // different order
         ],

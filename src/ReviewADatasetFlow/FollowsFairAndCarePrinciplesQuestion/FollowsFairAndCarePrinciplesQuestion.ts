@@ -16,6 +16,11 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset follow FAIR and CARE principles?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" class="back">
+        <span>Back</span>
+      </a>
+    `,
     main: html`
       <form
         method="post"

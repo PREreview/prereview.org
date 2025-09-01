@@ -17,7 +17,8 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
 
   await page.getByRole('button', { name: 'Start now' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
+  await page.getByLabel('Fair', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -57,6 +58,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
   )
+  await expect(page.getByRole('main')).toContainText('How would you rate the quality of this data set? Fair')
   await expect(page.getByRole('main')).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(page.getByRole('main')).toContainText('Does the dataset have enough metadata? Yes')
   await expect(page.getByRole('main')).toContainText(
@@ -89,7 +91,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByLabel('Fair').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
 
@@ -101,7 +103,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does the dataset have enough metadata?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Does this dataset follow FAIR and CARE principles?',
+    )
   },
 )
 
@@ -113,12 +117,14 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 
   await page.getByRole('button', { name: 'Start now' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Does this dataset follow FAIR and CARE principles?')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you rate the quality of this data set?')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Fair').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
@@ -130,6 +136,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   const review = page.getByRole('region', { name: 'Your review' })
 
+  await expect(review).toContainText('How would you rate the quality of this data set? Fair')
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
   await expect(page.getByRole('main')).toContainText(
@@ -138,6 +145,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly',
   )
+
+  await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
+
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('How would you rate the quality of this data set? I don’t know')
 
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
 
@@ -177,6 +191,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Fair').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
@@ -206,12 +222,18 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
+  await expect(page.getByLabel('Fair')).toBeChecked()
+
+  await page.goBack()
+
   await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Fair').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
@@ -238,6 +260,10 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Yes')).toBeChecked()
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('Fair')).toBeChecked()
   await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
 })
 
@@ -268,6 +294,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../follows-fair-and-care-principles`, { waitUntil: 'commit' })
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
