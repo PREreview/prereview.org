@@ -111,7 +111,7 @@ describe('writeToRedis', () => {
 
         expect(result).toStrictEqual(Either.right(undefined))
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redis.set).toHaveBeenCalledWith(
+        expect(redis.set as unknown).toHaveBeenCalledWith(
           _.keyForRequest(response.request),
           expect.stringContaining(JSON.stringify(body)),
         )

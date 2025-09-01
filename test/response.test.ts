@@ -50,7 +50,7 @@ describe('handleResponse', () => {
           expect(templatePage).toHaveBeenCalledWith({
             title: response.title,
             description: response.description,
-            content: expect.htmlContaining(response.main),
+            content: expect.htmlContaining(response.main) as never,
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
@@ -92,7 +92,7 @@ describe('handleResponse', () => {
           expect(templatePage).toHaveBeenCalledWith({
             title: response.title,
             description: response.description,
-            content: expect.htmlContaining(response.main),
+            content: expect.htmlContaining(response.main) as never,
             skipLinks: [[expect.anything(), '#main']],
             current: response.current,
             js: response.js,
