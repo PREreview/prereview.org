@@ -18,6 +18,7 @@ import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   fromPreprintDoi,
+  type IndeterminatePreprintId,
   MedrxivPreprintId,
   OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
@@ -50,7 +51,14 @@ describe('reviewAPreprint', () => {
       [
         fc.supportedLocale(),
         fc.oneof(
-          fc.preprintDoi().map(doi => Tuple.make(doi.toString(), Array.of(fromPreprintDoi(doi)))),
+          fc
+            .preprintDoi()
+            .map(doi =>
+              Tuple.make<[string, Array.NonEmptyReadonlyArray<IndeterminatePreprintId>]>(
+                doi.toString(),
+                Array.of(fromPreprintDoi(doi)),
+              ),
+            ),
           fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
         ),
         fc.preprintId(),
