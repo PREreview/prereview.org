@@ -1600,6 +1600,18 @@ export const datasetReviewWasStarted = ({
     })
     .map(data => new Events.DatasetReviewWasStarted(data))
 
+export const ratedTheQualityOfADataset = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.RatedTheQualityOfADataset['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.RatedTheQualityOfADataset> =>
+  fc
+    .record({
+      rating: constantFrom('excellent', 'fair', 'poor', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.RatedTheQualityOfADataset(data))
+
 export const answeredIfTheDatasetFollowsFairAndCarePrinciples = ({
   datasetReviewId,
 }: {
@@ -1713,6 +1725,7 @@ export const datasetReviewEvent = (
 ): fc.Arbitrary<Events.DatasetReviewEvent> =>
   fc.oneof(
     datasetReviewWasStarted(args),
+    ratedTheQualityOfADataset(args),
     answeredIfTheDatasetFollowsFairAndCarePrinciples(args),
     answeredIfTheDatasetHasEnoughMetadata(args),
     answeredIfTheDatasetHasTrackedChanges(args),
