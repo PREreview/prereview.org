@@ -10,6 +10,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from '.
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
+import * as CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
@@ -54,6 +55,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (
         input: CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.Result
+    >
+    checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Result
     >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
@@ -101,6 +107,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted,
   checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata,
   checkIfUserCanAnswerIfTheDatasetHasTrackedChanges,
+  checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -190,6 +197,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.createFilter,
         CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.query,
+      ),
+      checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
