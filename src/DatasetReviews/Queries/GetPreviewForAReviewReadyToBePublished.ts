@@ -10,6 +10,9 @@ export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
     Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
   >
+  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
+    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
+  >
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -49,6 +52,11 @@ export const GetPreviewForAReviewReadyToBePublished = (
     hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted'),
   )
 
+  const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'),
+  )
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -64,6 +72,10 @@ export const GetPreviewForAReviewReadyToBePublished = (
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
           answerToIfTheDatasetHasDataCensoredOrDeleted,
+          Struct.get('answer'),
+        ),
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
           Struct.get('answer'),
         ),
       }),

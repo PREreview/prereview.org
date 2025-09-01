@@ -45,6 +45,16 @@ const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.Answere
   answer: 'partly',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'unsure',
+    datasetReviewId,
+  })
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'yes',
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -77,6 +87,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.answeredIfTheDatasetHasDataCensoredOrDeleted({
                 datasetReviewId: fc.constant(datasetReviewId),
               }),
+              fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch({
+                datasetReviewId: fc.constant(datasetReviewId),
+              }),
             ),
           )
           .map(events =>
@@ -86,6 +99,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
+              answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
             }),
           ),
       ],
@@ -101,6 +115,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
               },
             ],
           ], // with answer
@@ -118,6 +133,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetHasTrackedChanges2,
                 answeredIfTheDatasetHasDataCensoredOrDeleted1,
                 answeredIfTheDatasetHasDataCensoredOrDeleted2,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
               ],
               {
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
@@ -127,6 +144,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                   answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                ),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
+                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
                 ),
               },
             ],

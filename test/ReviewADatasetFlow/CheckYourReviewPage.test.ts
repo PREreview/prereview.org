@@ -31,6 +31,9 @@ describe('CheckYourReviewPage', () => {
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
           fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
         ),
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+          fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+        ),
       }),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {

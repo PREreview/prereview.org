@@ -173,6 +173,26 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetIsAppropriateForThisKindOfResearch, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsAppropriateForThisKindOfResearch => html`
+                    <div>
+                      <dt>
+                        <span>Is the dataset well-suited to support its stated research purpose?</span>
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetIsAppropriateForThisKindOfResearch),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>
