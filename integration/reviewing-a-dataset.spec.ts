@@ -391,3 +391,27 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes')).toBeFocused()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the dataset is appropriate for this kind of research',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../is-appropriate-for-this-kind-of-research`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Is the dataset well-suited to support its stated research purpose?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select if the dataset is well-suited' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
+  },
+)
