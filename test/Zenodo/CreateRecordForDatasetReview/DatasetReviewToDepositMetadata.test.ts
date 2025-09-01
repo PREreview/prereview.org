@@ -10,6 +10,7 @@ const cases = [
   [
     'all questions answered',
     {
+      qualityRating: Option.some('excellent'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
@@ -19,6 +20,12 @@ const cases = [
       creators: [{ name: 'A PREreviewer' }],
       description: rawHtml(`
     <dl>
+      
+          <dt>How would you rate the quality of this data set?</dt>
+          <dd>
+            Excellent
+          </dd>
+        
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
       <dd>
         Yes
@@ -63,6 +70,7 @@ const cases = [
   [
     'minimal questions answered',
     {
+      qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
       answerToIfTheDatasetHasTrackedChanges: Option.none(),
@@ -72,6 +80,7 @@ const cases = [
       creators: [{ name: 'A PREreviewer' }],
       description: rawHtml(`
     <dl>
+      
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
       <dd>
         Yes

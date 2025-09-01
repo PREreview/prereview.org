@@ -5,6 +5,7 @@ import { Doi } from '../../types/index.js'
 import type { DepositMetadata } from '../Deposition.js'
 
 export interface DatasetReview {
+  readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
@@ -17,6 +18,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
   creators: [{ name: 'A PREreviewer' }],
   description: html`
     <dl>
+      ${Option.match(review.qualityRating, {
+        onNone: () => '',
+        onSome: qualityRating => html`
+          <dt>How would you rate the quality of this data set?</dt>
+          <dd>
+            ${pipe(
+              Match.value(qualityRating),
+              Match.when('excellent', () => 'Excellent'),
+              Match.when('fair', () => 'Fair'),
+              Match.when('poor', () => 'Poor'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
       <dd>
         ${pipe(

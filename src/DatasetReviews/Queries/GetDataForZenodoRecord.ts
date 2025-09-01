@@ -21,6 +21,8 @@ export const GetDataForZenodoRecord = (
     return Either.left(new Errors.DatasetReviewIsInProgress())
   }
 
+  const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
+
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
     events,
     hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
@@ -39,6 +41,7 @@ export const GetDataForZenodoRecord = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
+        qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
