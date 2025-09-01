@@ -4,7 +4,6 @@ import * as DatasetReviews from '../../DatasetReviews/index.js'
 import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
 import { Doi, Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { RouteForCommand } from '../RouteForCommand.js'
@@ -22,15 +21,22 @@ export const StartNow: Effect.Effect<
     const reviewId = yield* DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId)
 
     return yield* Option.match(reviewId, {
-      onNone: Effect.fn(function* () {
-        const reviewId = yield* Uuid.generateUuid
+      onNone: Effect.fn(
+        function* () {
+          const reviewId = yield* Uuid.generateUuid
 
-        yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
+          yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
 
-        return Response.RedirectResponse({
-          location: Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId: reviewId }),
-        })
-      }),
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(reviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId: reviewId }),
+          })
+        },
+        Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
+      ),
       onSome: Effect.fn(
         function* (datasetReviewId) {
           const nextExpectedCommand = yield* Effect.flatten(
