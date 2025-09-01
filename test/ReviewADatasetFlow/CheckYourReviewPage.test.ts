@@ -17,7 +17,7 @@ describe('CheckYourReviewPage', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.record({
+      fc.record<DatasetReviews.DatasetReviewPreview>({
         qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()

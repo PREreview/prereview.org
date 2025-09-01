@@ -13,7 +13,7 @@ describe('DatasetReviewPage', () => {
   test.prop([
     fc.supportedLocale(),
     fc.uuid(),
-    fc.record({
+    fc.record<DatasetReviews.PublishedReview>({
       author: fc.record(
         {
           name: fc.string(),

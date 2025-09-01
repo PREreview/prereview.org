@@ -10,7 +10,7 @@ import * as fc from '../../fc.js'
 describe('CreateRecordOnZenodo', () => {
   test.prop([
     fc.uuid(),
-    fc.record({
+    fc.record<Zenodo.DatasetReview>({
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -50,7 +50,7 @@ describe('CreateRecordOnZenodo', () => {
 
   test.prop([
     fc.uuid(),
-    fc.record({
+    fc.record<Zenodo.DatasetReview>({
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -96,7 +96,7 @@ describe('CreateRecordOnZenodo', () => {
 
   test.prop([
     fc.uuid(),
-    fc.record({
+    fc.record<Zenodo.DatasetReview>({
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()

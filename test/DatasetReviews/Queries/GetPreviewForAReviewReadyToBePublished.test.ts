@@ -93,7 +93,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             ),
           )
           .map(events =>
-            Tuple.make(events as ReadonlyArray<DatasetReviews.DatasetReviewEvent>, {
+            Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
