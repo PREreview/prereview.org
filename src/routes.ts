@@ -86,6 +86,12 @@ export const ReviewADatasetIsAppropriateForThisKindOfResearch: Route<{ datasetRe
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetSupportsRelatedConclusions: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/supports-related-conclusions',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/supports-related-conclusions`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,
