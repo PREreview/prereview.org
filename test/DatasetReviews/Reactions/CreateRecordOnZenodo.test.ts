@@ -27,6 +27,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
         fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
+        fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
+      ),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -66,6 +69,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
         fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
+        fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
       ),
     }),
     fc.integer(),
@@ -112,6 +118,9 @@ describe('CreateRecordOnZenodo', () => {
       ),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
         fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+      ),
+      answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
+        fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
       ),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>

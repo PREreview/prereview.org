@@ -42,6 +42,11 @@ export const GetDataForZenodoRecord = (
     hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'),
   )
 
+  const answerToIfTheDatasetSupportsRelatedConclusions = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions'),
+  )
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
@@ -56,6 +61,10 @@ export const GetDataForZenodoRecord = (
         ),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
           answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
+          Struct.get('answer'),
+        ),
+        answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
+          answerToIfTheDatasetSupportsRelatedConclusions,
           Struct.get('answer'),
         ),
       }),

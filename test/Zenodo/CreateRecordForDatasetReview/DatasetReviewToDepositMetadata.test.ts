@@ -16,6 +16,7 @@ const cases = [
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
+      answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -58,6 +59,12 @@ const cases = [
             Yes
           </dd>
         
+      
+          <dt>Does this dataset support the researcher’s stated conclusions?</dt>
+          <dd>
+            Partly
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -83,6 +90,7 @@ const cases = [
       answerToIfTheDatasetHasTrackedChanges: Option.none(),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -93,6 +101,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       
