@@ -146,7 +146,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
         ${Option.match(datasetReview.questions.answerToIfTheDatasetSupportsRelatedConclusions, {
           onNone: () => '',
           onSome: answerToIfTheDatasetSupportsRelatedConclusions => html`
-            <dt>Does this dataset support the researcher's stated conclusions?</dt>
+            <dt>Does this dataset support the researcher’s stated conclusions?</dt>
             <dd>
               ${pipe(
                 Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
