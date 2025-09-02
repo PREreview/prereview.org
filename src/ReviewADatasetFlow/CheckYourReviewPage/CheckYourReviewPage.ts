@@ -223,6 +223,26 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetIsDetailedEnough, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsDetailedEnough => html`
+                    <div>
+                      <dt>
+                        <span>Is the dataset granular enough to be a reliable standard of measurement?</span>
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetIsDetailedEnough),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>

@@ -16,6 +16,7 @@ export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
     Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
   >
+  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -65,6 +66,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions'),
   )
 
+  const answerToIfTheDatasetIsDetailedEnough = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsDetailedEnough'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -90,6 +93,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
           answerToIfTheDatasetSupportsRelatedConclusions,
           Struct.get('answer'),
         ),
+        answerToIfTheDatasetIsDetailedEnough: Option.map(answerToIfTheDatasetIsDetailedEnough, Struct.get('answer')),
       }),
   })
 }

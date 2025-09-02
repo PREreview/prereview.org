@@ -37,6 +37,9 @@ describe('CheckYourReviewPage', () => {
         answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
           fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
         ),
+        answerToIfTheDatasetIsDetailedEnough: fc.maybe(
+          fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
+        ),
       }),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {
