@@ -16,6 +16,11 @@ export const SupportsRelatedConclusionsQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset support the researcher’s stated conclusions?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}" class="back"
+        ><span>Back</span></a
+      >
+    `,
     main: html`
       <form
         method="post"

@@ -35,6 +35,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await page.getByLabel('Yes', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -72,6 +75,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   )
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset well-suited to support its stated research purpose? Partly',
+  )
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset support the researcher’s stated conclusions? Yes',
   )
 
   await page.getByRole('link', { name: 'Back to all reviews' }).click()
@@ -141,6 +147,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Partly').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   const review = page.getByRole('region', { name: 'Your review' })
 
@@ -155,6 +163,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   )
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset well-suited to support its stated research purpose? Partly',
+  )
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset support the researcher’s stated conclusions? Partly',
   )
 
   await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
@@ -206,6 +217,15 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset well-suited to support its stated research purpose? I don’t know',
   )
+
+  await page.getByRole('link', { name: 'Change if the dataset supports the conclusions' }).click()
+
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset support the researcher’s stated conclusions? I don’t know',
+  )
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
@@ -223,8 +243,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I don’t know', { exact: true }).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('I don’t know', { exact: true })).toBeChecked()
 
   await page.goBack()
 
@@ -270,8 +296,14 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I don’t know').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('I don’t know')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 

@@ -8,6 +8,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetHasTrackedChanges'
   | 'AnswerIfTheDatasetHasDataCensoredOrDeleted'
   | 'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch'
+  | 'AnswerIfTheDatasetSupportsRelatedConclusions'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -43,6 +44,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')) {
     return Option.some('AnswerIfTheDatasetIsAppropriateForThisKindOfResearch')
+  }
+
+  if (!hasEvent(events, 'AnsweredIfTheDatasetSupportsRelatedConclusions')) {
+    return Option.some('AnswerIfTheDatasetSupportsRelatedConclusions')
   }
 
   return Option.some('PublishDatasetReview')
