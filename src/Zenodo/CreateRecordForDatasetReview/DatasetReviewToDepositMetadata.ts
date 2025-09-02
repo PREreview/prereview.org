@@ -18,6 +18,7 @@ export interface DatasetReview {
   readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
     Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
   >
+  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -125,6 +126,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           <dd>
             ${pipe(
               Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetIsDetailedEnough, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetIsDetailedEnough => html`
+          <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetIsDetailedEnough),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),

@@ -47,6 +47,8 @@ export const GetDataForZenodoRecord = (
     hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions'),
   )
 
+  const answerToIfTheDatasetIsDetailedEnough = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsDetailedEnough'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
@@ -67,6 +69,7 @@ export const GetDataForZenodoRecord = (
           answerToIfTheDatasetSupportsRelatedConclusions,
           Struct.get('answer'),
         ),
+        answerToIfTheDatasetIsDetailedEnough: Option.map(answerToIfTheDatasetIsDetailedEnough, Struct.get('answer')),
       }),
   })
 }

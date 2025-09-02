@@ -17,6 +17,7 @@ const cases = [
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
+      answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -65,6 +66,12 @@ const cases = [
             Partly
           </dd>
         
+      
+          <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
+          <dd>
+            No
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -91,6 +98,7 @@ const cases = [
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+      answerToIfTheDatasetIsDetailedEnough: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -101,6 +109,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       
