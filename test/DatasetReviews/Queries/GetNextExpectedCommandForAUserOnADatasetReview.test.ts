@@ -105,6 +105,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetHasDataCensoredOrDeleted(),
             fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch(),
             fc.answeredIfTheDatasetSupportsRelatedConclusions(),
+            fc.answeredIfTheDatasetIsDetailedEnough(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
