@@ -198,6 +198,26 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetSupportsRelatedConclusions, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetSupportsRelatedConclusions => html`
+                    <div>
+                      <dt>
+                        <span>Does this dataset support the researcher’s stated conclusions?</span>
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>

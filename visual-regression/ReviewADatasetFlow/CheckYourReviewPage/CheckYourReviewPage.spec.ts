@@ -25,4 +25,5 @@ const review = {
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
   answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
+  answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
 } satisfies DatasetReviews.DatasetReviewPreview
