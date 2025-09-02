@@ -62,6 +62,14 @@ const answeredIfTheDatasetSupportsRelatedConclusions2 =
     answer: 'yes',
     datasetReviewId,
   })
+const answeredIfTheDatasetIsDetailedEnough1 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+  answer: 'partly',
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+  answer: 'yes',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -162,6 +170,20 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
               answeredIfTheDatasetSupportsRelatedConclusions1,
             ],
+            'AnswerIfTheDatasetIsDetailedEnough',
+          ], // 7 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
@@ -173,6 +195,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasTrackedChanges1,
               answeredIfTheDatasetHasEnoughMetadata1,
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetSupportsRelatedConclusions2,
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
@@ -180,6 +203,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetHasTrackedChanges2,
               answeredIfTheDatasetHasEnoughMetadata2,
               answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+              answeredIfTheDatasetIsDetailedEnough2,
               ratedTheQualityOfTheDataset2,
             ],
             'PublishDatasetReview',

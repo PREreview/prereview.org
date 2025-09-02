@@ -1787,6 +1787,7 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'AnswerIfTheDatasetHasDataCensoredOrDeleted',
     'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
     'AnswerIfTheDatasetSupportsRelatedConclusions',
+    'AnswerIfTheDatasetIsDetailedEnough',
     'PublishDatasetReview',
   )
 

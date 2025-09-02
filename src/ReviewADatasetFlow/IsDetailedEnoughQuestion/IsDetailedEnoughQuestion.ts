@@ -16,6 +16,11 @@ export const IsDetailedEnoughQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is the dataset granular enough to be a reliable standard of measurement?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}" class="back"
+        ><span>Back</span></a
+      >
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'
