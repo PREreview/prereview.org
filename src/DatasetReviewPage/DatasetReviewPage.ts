@@ -159,6 +159,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetIsDetailedEnough, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetIsDetailedEnough => html`
+            <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetIsDetailedEnough),
+                Match.when('yes', () => 'Yes'),
+                Match.when('partly', () => 'Partly'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',

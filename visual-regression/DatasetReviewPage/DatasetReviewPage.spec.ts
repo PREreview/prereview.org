@@ -30,6 +30,7 @@ const datasetReview: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
     answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
+    answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
