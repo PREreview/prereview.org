@@ -1006,7 +1006,7 @@ describe('getSlackUserId', () => {
       logger: () => IO.of(undefined),
     })()
 
-    expect(actual).toStrictEqual(E.right(getSlackUserId))
+    expect(actual).toStrictEqual(SlackUserIdC.decode(SlackUserIdC.encode(getSlackUserId)))
   })
 
   test.prop([fc.orcid(), fc.anything()])(
