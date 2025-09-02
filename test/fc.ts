@@ -1685,6 +1685,18 @@ export const answeredIfTheDatasetSupportsRelatedConclusions = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetSupportsRelatedConclusions(data))
 
+export const answeredIfTheDatasetIsDetailedEnough = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetIsDetailedEnough['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetIsDetailedEnough> =>
+  fc
+    .record({
+      answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetIsDetailedEnough(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1757,6 +1769,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetHasDataCensoredOrDeleted(args),
     answeredIfTheDatasetIsAppropriateForThisKindOfResearch(args),
     answeredIfTheDatasetSupportsRelatedConclusions(args),
+    answeredIfTheDatasetIsDetailedEnough(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
