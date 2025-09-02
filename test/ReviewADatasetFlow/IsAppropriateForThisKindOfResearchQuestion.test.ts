@@ -183,14 +183,7 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
         ),
         fc.supportedLocale(),
         fc.user(),
-        fc.constantFrom(
-          'RateTheQuality',
-          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-          'AnswerIfTheDatasetHasEnoughMetadata',
-          'AnswerIfTheDatasetHasTrackedChanges',
-          'AnswerIfTheDatasetHasDataCensoredOrDeleted',
-          'PublishDatasetReview',
-        ),
+        fc.datasetReviewNextExpectedCommand(),
       ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
         Effect.gen(function* () {
           const actual = yield* _.IsAppropriateForThisKindOfResearchSubmission({ body, datasetReviewId })

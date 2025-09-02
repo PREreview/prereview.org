@@ -16,37 +16,30 @@ import { shouldNotBeCalled } from '../should-not-be-called.js'
 describe('StartNow', () => {
   describe("a review hasn't been started", () => {
     describe('the review can be started', () => {
-      test.prop([
-        fc.supportedLocale(),
-        fc.user(),
-        fc.uuid(),
-        fc.constantFrom(
-          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-          'AnswerIfTheDatasetHasEnoughMetadata',
-          'PublishDatasetReview',
-        ),
-      ])('the next expected command can be found', (locale, user, uuid, nextExpectedCommand) =>
-        Effect.gen(function* () {
-          const actual = yield* _.StartNow
+      test.prop([fc.supportedLocale(), fc.user(), fc.uuid(), fc.datasetReviewNextExpectedCommand()])(
+        'the next expected command can be found',
+        (locale, user, uuid, nextExpectedCommand) =>
+          Effect.gen(function* () {
+            const actual = yield* _.StartNow
 
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId: uuid }),
-          })
-        }).pipe(
-          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { startDatasetReview: () => Effect.void })),
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              findInProgressReviewForADataset: () => Effect.succeedNone,
-              getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
-            }),
+            expect(actual).toStrictEqual({
+              _tag: 'RedirectResponse',
+              status: StatusCodes.SeeOther,
+              location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId: uuid }),
+            })
+          }).pipe(
+            Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { startDatasetReview: () => Effect.void })),
+            Effect.provide(
+              Layer.mock(DatasetReviews.DatasetReviewQueries, {
+                findInProgressReviewForADataset: () => Effect.succeedNone,
+                getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+              }),
+            ),
+            Effect.provideService(Locale, locale),
+            Effect.provideService(LoggedInUser, user),
+            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+            EffectTest.run,
           ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
-          EffectTest.run,
-        ),
       )
 
       test.prop([
@@ -123,41 +116,34 @@ describe('StartNow', () => {
   })
 
   describe('a review has been started', () => {
-    test.prop([
-      fc.supportedLocale(),
-      fc.user(),
-      fc.uuid(),
-      fc.constantFrom(
-        'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-        'AnswerIfTheDatasetHasEnoughMetadata',
-        'PublishDatasetReview',
-      ),
-    ])('the next expected command can be found', (locale, user, reviewId, nextExpectedCommand) =>
-      Effect.gen(function* () {
-        const actual = yield* _.StartNow
+    test.prop([fc.supportedLocale(), fc.user(), fc.uuid(), fc.datasetReviewNextExpectedCommand()])(
+      'the next expected command can be found',
+      (locale, user, reviewId, nextExpectedCommand) =>
+        Effect.gen(function* () {
+          const actual = yield* _.StartNow
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          canonical: Routes.ReviewThisDatasetStartNow,
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
-            getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
-          }),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            canonical: Routes.ReviewThisDatasetStartNow,
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              findInProgressReviewForADataset: () => Effect.succeedSome(reviewId),
+              getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          EffectTest.run,
         ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
-        EffectTest.run,
-      ),
     )
     test.prop([
       fc.supportedLocale(),

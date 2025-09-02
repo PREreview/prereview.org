@@ -178,13 +178,7 @@ describe('RateTheQualitySubmission', () => {
         fc.urlParams(fc.record({ qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure') })),
         fc.supportedLocale(),
         fc.user(),
-        fc.constantFrom(
-          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-          'AnswerIfTheDatasetHasEnoughMetadata',
-          'AnswerIfTheDatasetHasTrackedChanges',
-          'AnswerIfTheDatasetHasDataCensoredOrDeleted',
-          'PublishDatasetReview',
-        ),
+        fc.datasetReviewNextExpectedCommand(),
       ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
         Effect.gen(function* () {
           const actual = yield* _.RateTheQualitySubmission({ body, datasetReviewId })

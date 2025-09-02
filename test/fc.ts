@@ -48,6 +48,7 @@ import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/cros
 import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
+import type * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as Datasets from '../src/Datasets/index.js'
 import type { Email } from '../src/email.js'
 import * as Events from '../src/Events.js'
@@ -1762,6 +1763,18 @@ export const datasetReviewEvent = (
     datasetReviewWasPublished(args),
     zenodoRecordForDatasetReviewWasPublished(args),
     datasetReviewDoiWasActivated(args),
+  )
+
+export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.NextExpectedCommand> =>
+  fc.constantFrom(
+    'RateTheQuality',
+    'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
+    'AnswerIfTheDatasetHasEnoughMetadata',
+    'AnswerIfTheDatasetHasTrackedChanges',
+    'AnswerIfTheDatasetHasDataCensoredOrDeleted',
+    'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
+    'AnswerIfTheDatasetSupportsRelatedConclusions',
+    'PublishDatasetReview',
   )
 
 export const event = (): fc.Arbitrary<Events.Event> => fc.oneof(commentEvent(), datasetReviewEvent())

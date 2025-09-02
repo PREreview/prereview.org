@@ -180,11 +180,7 @@ describe('HasTrackedChangesSubmission', () => {
         fc.urlParams(fc.record({ hasTrackedChanges: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
         fc.supportedLocale(),
         fc.user(),
-        fc.constantFrom(
-          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-          'AnswerIfTheDatasetHasEnoughMetadata',
-          'PublishDatasetReview',
-        ),
+        fc.datasetReviewNextExpectedCommand(),
       ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
         Effect.gen(function* () {
           const actual = yield* _.HasTrackedChangesSubmission({ body, datasetReviewId })

@@ -180,15 +180,7 @@ describe('SupportsRelatedConclusionsSubmission', () => {
         fc.urlParams(fc.record({ supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
         fc.supportedLocale(),
         fc.user(),
-        fc.constantFrom(
-          'RateTheQuality',
-          'AnswerIfTheDatasetFollowsFairAndCarePrinciples',
-          'AnswerIfTheDatasetHasEnoughMetadata',
-          'AnswerIfTheDatasetHasTrackedChanges',
-          'AnswerIfTheDatasetHasDataCensoredOrDeleted',
-          'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
-          'PublishDatasetReview',
-        ),
+        fc.datasetReviewNextExpectedCommand(),
       ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
         Effect.gen(function* () {
           const actual = yield* _.SupportsRelatedConclusionsSubmission({ body, datasetReviewId })
