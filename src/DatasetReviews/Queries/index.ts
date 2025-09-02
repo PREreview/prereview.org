@@ -11,6 +11,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './Che
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.js'
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
+import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
@@ -61,6 +62,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
         input: CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Result
     >
+    checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.Result
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -108,6 +114,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata,
   checkIfUserCanAnswerIfTheDatasetHasTrackedChanges,
   checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch,
+  checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -201,6 +208,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.query,
+      ),
+      checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
