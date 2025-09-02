@@ -31,6 +31,7 @@ const pageIds = {
   },
   EdiaStatement: {
     'en-US': '6154aa157741400e8722bb17',
+    'es-419': '68b6dea907fb34a92c7fb426',
     'pt-BR': '68adc69607fb34a92c7fb409',
   },
   Funding: {
