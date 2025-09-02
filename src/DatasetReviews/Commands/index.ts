@@ -8,6 +8,7 @@ import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatase
 import * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.js'
 import * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTrackedChanges.js'
 import * as AnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
+import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
@@ -42,6 +43,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Command,
       AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.Error
     >
+    answerIfTheDatasetSupportsRelatedConclusions: CommandHandler<
+      AnswerIfTheDatasetSupportsRelatedConclusions.Command,
+      AnswerIfTheDatasetSupportsRelatedConclusions.Error
+    >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
       MarkRecordAsPublishedOnZenodo.Command,
@@ -73,6 +78,7 @@ export const {
   answerIfTheDatasetHasEnoughMetadata,
   answerIfTheDatasetHasTrackedChanges,
   answerIfTheDatasetIsAppropriateForThisKindOfResearch,
+  answerIfTheDatasetSupportsRelatedConclusions,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -172,6 +178,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.foldState,
         AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.authorize,
         AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.decide,
+      ),
+      answerIfTheDatasetSupportsRelatedConclusions: handleCommand(
+        AnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
+        AnswerIfTheDatasetSupportsRelatedConclusions.foldState,
+        AnswerIfTheDatasetSupportsRelatedConclusions.authorize,
+        AnswerIfTheDatasetSupportsRelatedConclusions.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
         datasetReviewId => ({
