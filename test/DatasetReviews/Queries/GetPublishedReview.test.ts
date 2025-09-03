@@ -5,7 +5,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -83,6 +83,14 @@ const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheD
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -134,6 +142,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsDetailedEnough: Option.none(),
                   answerToIfTheDatasetIsErrorFree: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -155,6 +164,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsDetailedEnough1,
                   answeredIfTheDatasetIsErrorFree1,
                   answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsMissingAnything1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -183,6 +193,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough1.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree1.answer),
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared1.answer),
+                    answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -212,6 +223,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsErrorFree2,
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsReadyToBeShared2,
+                  answeredIfTheDatasetIsMissingAnything1,
+                  answeredIfTheDatasetIsMissingAnything2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -242,6 +255,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
+                    answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -274,6 +288,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsDetailedEnough: Option.none(),
                     answerToIfTheDatasetIsErrorFree: Option.none(),
                     answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                    answerToIfTheDatasetIsMissingAnything: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

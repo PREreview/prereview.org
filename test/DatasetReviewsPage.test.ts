@@ -36,6 +36,7 @@ describe('DatasetReviewsPage', () => {
         answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
+        answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
       }),
       published: fc.plainDate(),
     }),

@@ -206,6 +206,16 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetIsMissingAnything, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetIsMissingAnything => html`
+            <dt>
+              What else, if anything, would it be helpful for the researcher to include with this dataset to make it
+              easier to find, understand and reuse in ethical and responsible ways?
+            </dt>
+            <dd>${answerToIfTheDatasetIsMissingAnything}</dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',

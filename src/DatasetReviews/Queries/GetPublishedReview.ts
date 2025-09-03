@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Struct } from 'effect'
-import type { Doi, Orcid, Uuid } from '../../types/index.js'
+import type { Doi, NonEmptyString, Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
@@ -22,6 +22,7 @@ export interface PublishedReview {
     answerToIfTheDatasetIsDetailedEnough: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsErrorFree: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsReadyToBeShared: Option.Option<'yes' | 'no' | 'unsure'>
+    answerToIfTheDatasetIsMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
   }
   published: Temporal.PlainDate
 }
@@ -91,6 +92,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetIsMissingAnything = Option.andThen(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -113,6 +119,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetIsDetailedEnough,
           answerToIfTheDatasetIsErrorFree,
           answerToIfTheDatasetIsReadyToBeShared,
+          answerToIfTheDatasetIsMissingAnything,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

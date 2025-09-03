@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
 import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import { createDatasetReviewsPage } from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
-import { Doi, Orcid, Uuid } from '../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showTwoUpPage }) => {
@@ -43,6 +43,9 @@ const prereview1: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
     answerToIfTheDatasetIsErrorFree: Option.some('yes'),
     answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+    answerToIfTheDatasetIsMissingAnything: Option.some(
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    ),
   },
   published: Temporal.PlainDate.from('2025-08-06'),
 }
@@ -64,6 +67,7 @@ const prereview2: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetIsDetailedEnough: Option.none(),
     answerToIfTheDatasetIsErrorFree: Option.none(),
     answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+    answerToIfTheDatasetIsMissingAnything: Option.none(),
   },
   published: Temporal.PlainDate.from('2025-08-02'),
 }
