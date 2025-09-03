@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Match } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -8,6 +8,7 @@ import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import * as IsErrorFreeForm from './IsErrorFreeForm.js'
 import { IsErrorFreeQuestion as MakeResponse } from './IsErrorFreeQuestion.js'
 
@@ -44,9 +45,7 @@ export const IsErrorFreeQuestion = ({
   )
 
 export const IsErrorFreeSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   body: UrlParams.UrlParams
@@ -55,4 +54,31 @@ export const IsErrorFreeSubmission = ({
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> => HavingProblemsPage
+> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+
+    const form = yield* IsErrorFreeForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: Effect.fn(
+        function* (form: IsErrorFreeForm.CompletedForm) {
+          yield* DatasetReviews.answerIfTheDatasetIsErrorFree({
+            answer: form.isErrorFree,
+            datasetReviewId,
+            userId: user.orcid,
+          })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
+    })
+  })
