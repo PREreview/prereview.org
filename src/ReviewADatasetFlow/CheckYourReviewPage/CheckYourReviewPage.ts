@@ -15,7 +15,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"><span>Back</span></a>
     `,
     main: html`
       <single-use-form>
@@ -306,6 +306,11 @@ export const CheckYourReviewPage = ({
                         </span>
                       </dt>
                       <dd>${Option.getOrElse(answerToIfTheDatasetIsMissingAnything, () => html`<i>No answer</i>`)}</dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">if the dataset is missing anything</span>
+                        </a>
+                      </dd>
                     </div>
                   `,
                 })}

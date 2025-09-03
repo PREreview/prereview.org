@@ -17,5 +17,6 @@ const commandRoutes = {
   AnswerIfTheDatasetIsDetailedEnough: Routes.ReviewADatasetIsDetailedEnough,
   AnswerIfTheDatasetIsErrorFree: Routes.ReviewADatasetIsErrorFree,
   AnswerIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
+  AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
 } satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>

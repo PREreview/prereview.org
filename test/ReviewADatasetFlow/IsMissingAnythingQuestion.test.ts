@@ -25,6 +25,7 @@ describe('IsMissingAnythingQuestion', () => {
             canonical: Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId }),
             status: StatusCodes.OK,
             title: expect.anything(),
+            nav: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'form',
             js: [],
