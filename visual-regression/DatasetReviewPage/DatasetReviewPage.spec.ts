@@ -32,6 +32,7 @@ const datasetReview: DatasetReviews.PublishedReview = {
     answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
     answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
     answerToIfTheDatasetIsErrorFree: Option.some('yes'),
+    answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
     answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
     answerToIfTheDatasetIsMissingAnything: Option.some(
       NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),

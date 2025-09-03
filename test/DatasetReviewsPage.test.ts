@@ -35,6 +35,9 @@ describe('DatasetReviewsPage', () => {
         answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
+          fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+        ),
         answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
         answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
       }),
