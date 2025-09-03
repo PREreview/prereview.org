@@ -75,6 +75,14 @@ const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDataset
   answer: 'no',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+  answer: 'unsure',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -125,6 +133,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                   answerToIfTheDatasetIsDetailedEnough: Option.none(),
                   answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -145,6 +154,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetSupportsRelatedConclusion1,
                   answeredIfTheDatasetIsDetailedEnough1,
                   answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsReadyToBeShared1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -172,6 +182,7 @@ describe('GetPublishedReview', () => {
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough1.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree1.answer),
+                    answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared1.answer),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -199,6 +210,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsDetailedEnough2,
                   answeredIfTheDatasetIsErrorFree1,
                   answeredIfTheDatasetIsErrorFree2,
+                  answeredIfTheDatasetIsReadyToBeShared1,
+                  answeredIfTheDatasetIsReadyToBeShared2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -228,6 +241,7 @@ describe('GetPublishedReview', () => {
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
+                    answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -259,6 +273,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                     answerToIfTheDatasetIsDetailedEnough: Option.none(),
                     answerToIfTheDatasetIsErrorFree: Option.none(),
+                    answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

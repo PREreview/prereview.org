@@ -21,6 +21,7 @@ export interface PublishedReview {
     answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsDetailedEnough: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsErrorFree: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetIsReadyToBeShared: Option.Option<'yes' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -85,6 +86,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetIsReadyToBeShared = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -106,6 +112,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetSupportsRelatedConclusions,
           answerToIfTheDatasetIsDetailedEnough,
           answerToIfTheDatasetIsErrorFree,
+          answerToIfTheDatasetIsReadyToBeShared,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

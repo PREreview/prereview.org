@@ -191,6 +191,21 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetIsReadyToBeShared, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetIsReadyToBeShared => html`
+            <dt>Is this dataset ready to be shared?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetIsReadyToBeShared),
+                Match.when('yes', () => 'Yes'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',
