@@ -12,6 +12,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUse
 import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough from './CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.js'
+import * as CheckIfUserCanAnswerIfTheDatasetIsErrorFree from './CheckIfUserCanAnswerIfTheDatasetIsErrorFree.js'
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
@@ -73,6 +74,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
         input: CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.Result
     >
+    checkIfUserCanAnswerIfTheDatasetIsErrorFree: Query<
+      (input: CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Input) => CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Result
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -122,6 +126,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch,
   checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions,
   checkIfUserCanAnswerIfTheDatasetIsDetailedEnough,
+  checkIfUserCanAnswerIfTheDatasetIsErrorFree,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -223,6 +228,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.query,
+      ),
+      checkIfUserCanAnswerIfTheDatasetIsErrorFree: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetIsErrorFree.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetIsErrorFree.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
