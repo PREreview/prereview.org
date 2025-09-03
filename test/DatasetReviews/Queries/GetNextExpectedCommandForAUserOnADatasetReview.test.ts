@@ -132,6 +132,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsDetailedEnough(),
             fc.answeredIfTheDatasetIsErrorFree(),
             fc.answeredIfTheDatasetIsReadyToBeShared(),
+            fc.answeredIfTheDatasetIsMissingAnything(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
