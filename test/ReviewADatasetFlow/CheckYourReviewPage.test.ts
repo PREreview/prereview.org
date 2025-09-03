@@ -41,6 +41,9 @@ describe('CheckYourReviewPage', () => {
           fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
         ),
         answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
+        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
+          fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
+        ),
       }),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {

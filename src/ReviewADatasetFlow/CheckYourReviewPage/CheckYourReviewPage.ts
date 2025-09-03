@@ -271,6 +271,25 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetIsReadyToBeShared, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsReadyToBeShared => html`
+                    <div>
+                      <dt>
+                        <span>Is this dataset ready to be shared?</span>
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetIsReadyToBeShared),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>
