@@ -33,6 +33,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsDetailedEnough: fc.maybe(
         fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -79,6 +80,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsDetailedEnough: fc.maybe(
         fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
     }),
     fc.integer(),
     fc.constantFrom(
@@ -131,6 +133,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsDetailedEnough: fc.maybe(
         fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>
     Effect.gen(function* () {

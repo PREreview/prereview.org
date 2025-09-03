@@ -19,6 +19,7 @@ export interface DatasetReview {
     Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
   >
   readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
+  readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -142,6 +143,22 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
           <dd>
             ${pipe(
               Match.value(answerToIfTheDatasetIsDetailedEnough),
+              Match.when('yes', () => 'Yes'),
+              Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetIsErrorFree, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetIsErrorFree => html`
+          <dt>Is the dataset relatively error-free?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetIsErrorFree),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),

@@ -18,6 +18,7 @@ const cases = [
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
       answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
+      answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -72,6 +73,12 @@ const cases = [
             No
           </dd>
         
+      
+          <dt>Is the dataset relatively error-free?</dt>
+          <dd>
+            I don’t know
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -99,6 +106,7 @@ const cases = [
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
       answerToIfTheDatasetIsDetailedEnough: Option.none(),
+      answerToIfTheDatasetIsErrorFree: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -109,6 +117,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       
