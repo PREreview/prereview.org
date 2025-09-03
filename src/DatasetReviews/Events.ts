@@ -55,6 +55,11 @@ export class AnsweredIfTheDatasetIsDetailedEnough extends Schema.TaggedClass<Ans
   { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetIsReadyToBeShared extends Schema.TaggedClass<AnsweredIfTheDatasetIsReadyToBeShared>()(
+  'AnsweredIfTheDatasetIsReadyToBeShared',
+  { answer: Schema.Literal('yes', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -102,6 +107,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetSupportsRelatedConclusions,
   AnsweredIfTheDatasetIsDetailedEnough,
   AnsweredIfTheDatasetIsErrorFree,
+  AnsweredIfTheDatasetIsReadyToBeShared,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
