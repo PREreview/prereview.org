@@ -246,6 +246,26 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetIsErrorFree, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsErrorFree => html`
+                    <div>
+                      <dt>
+                        <span>Is the dataset relatively error-free?</span>
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetIsErrorFree),
+                          Match.when('yes', () => 'Yes'),
+                          Match.when('partly', () => 'Partly'),
+                          Match.when('no', () => 'No'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>

@@ -27,4 +27,5 @@ const review = {
   answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
   answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
   answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
+  answerToIfTheDatasetIsErrorFree: Option.some('yes'),
 } satisfies DatasetReviews.DatasetReviewPreview

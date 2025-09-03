@@ -73,6 +73,14 @@ const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDa
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'yes',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -110,6 +118,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               }),
               fc.answeredIfTheDatasetSupportsRelatedConclusions({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsDetailedEnough({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfTheDatasetIsErrorFree({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
           .map(events =>
@@ -122,6 +131,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
               answerToIfTheDatasetSupportsRelatedConclusions: Option.some(events[7].answer),
               answerToIfTheDatasetIsDetailedEnough: Option.some(events[8].answer),
+              answerToIfTheDatasetIsErrorFree: Option.some(events[9].answer),
             }),
           ),
       ],
@@ -140,6 +150,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
                 answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                 answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                answerToIfTheDatasetIsErrorFree: Option.none(),
               },
             ],
           ], // with answer
@@ -163,6 +174,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetSupportsRelatedConclusions2,
                 answeredIfTheDatasetIsDetailedEnough1,
                 answeredIfTheDatasetIsDetailedEnough2,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetIsErrorFree2,
               ],
               {
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
@@ -180,6 +193,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answeredIfTheDatasetSupportsRelatedConclusions2.answer,
                 ),
                 answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
+                answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
               },
             ],
           ], // with multiple answers
