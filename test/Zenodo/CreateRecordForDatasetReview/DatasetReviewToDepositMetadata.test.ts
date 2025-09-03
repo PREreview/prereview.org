@@ -4,7 +4,7 @@ import { Option } from 'effect'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
 import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
-import { Doi } from '../../../src/types/index.js'
+import { Doi, NonEmptyString } from '../../../src/types/index.js'
 
 const cases = [
   [
@@ -20,6 +20,9 @@ const cases = [
       answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
       answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
       answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+      answerToIfTheDatasetIsMissingAnything: Option.some(
+        NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+      ),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -86,6 +89,13 @@ const cases = [
             Yes
           </dd>
         
+      
+          <dt>
+            What else, if anything, would it be helpful for the researcher to include with this dataset to make it
+            easier to find, understand and reuse in ethical and responsible ways?
+          </dt>
+          <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -115,6 +125,7 @@ const cases = [
       answerToIfTheDatasetIsDetailedEnough: Option.none(),
       answerToIfTheDatasetIsErrorFree: Option.none(),
       answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+      answerToIfTheDatasetIsMissingAnything: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -125,6 +136,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       

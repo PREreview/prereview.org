@@ -6,7 +6,7 @@ import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.j
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
 import type * as Zenodo from '../../../src/Zenodo/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -87,6 +87,14 @@ const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheD
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  datasetReviewId,
+})
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -128,6 +136,7 @@ describe('GetDataForZenodoRecord', () => {
               fc.answeredIfTheDatasetIsDetailedEnough({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsErrorFree({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
@@ -143,6 +152,7 @@ describe('GetDataForZenodoRecord', () => {
               answerToIfTheDatasetIsDetailedEnough: Option.some(events[8].answer),
               answerToIfTheDatasetIsErrorFree: Option.some(events[9].answer),
               answerToIfTheDatasetIsReadyToBeShared: Option.some(events[10].answer),
+              answerToIfTheDatasetIsMissingAnything: events[11].answer,
             }),
           ),
       ],
@@ -167,6 +177,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetIsDetailedEnough: Option.none(),
                 answerToIfTheDatasetIsErrorFree: Option.none(),
                 answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                answerToIfTheDatasetIsMissingAnything: Option.none(),
               },
             ],
           ], // with answer
@@ -194,6 +205,8 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetIsErrorFree2,
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsReadyToBeShared2,
+                answeredIfTheDatasetIsMissingAnything1,
+                answeredIfTheDatasetIsMissingAnything2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
@@ -214,6 +227,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
                 answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
                 answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
+                answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
               },
             ],
           ], // with multiple answers
@@ -236,6 +250,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetIsDetailedEnough: Option.none(),
                 answerToIfTheDatasetIsErrorFree: Option.none(),
                 answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                answerToIfTheDatasetIsMissingAnything: Option.none(),
               },
             ],
           ], // different order
@@ -259,6 +274,7 @@ describe('GetDataForZenodoRecord', () => {
                 answerToIfTheDatasetIsDetailedEnough: Option.none(),
                 answerToIfTheDatasetIsErrorFree: Option.none(),
                 answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                answerToIfTheDatasetIsMissingAnything: Option.none(),
               },
             ],
           ], // already has a record
