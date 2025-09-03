@@ -1721,6 +1721,18 @@ export const answeredIfTheDatasetIsReadyToBeShared = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetIsReadyToBeShared(data))
 
+export const answeredIfTheDatasetIsMissingAnything = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetIsMissingAnything['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetIsMissingAnything> =>
+  fc
+    .record({
+      answer: maybe(nonEmptyString()),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetIsMissingAnything(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1796,6 +1808,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetIsDetailedEnough(args),
     answeredIfTheDatasetIsErrorFree(args),
     answeredIfTheDatasetIsReadyToBeShared(args),
+    answeredIfTheDatasetIsMissingAnything(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),

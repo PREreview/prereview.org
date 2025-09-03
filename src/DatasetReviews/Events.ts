@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.js'
-import { Doi, Orcid, Temporal, Uuid } from '../types/index.js'
+import { Doi, NonEmptyString, Orcid, Temporal, Uuid } from '../types/index.js'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
@@ -60,6 +60,11 @@ export class AnsweredIfTheDatasetIsReadyToBeShared extends Schema.TaggedClass<An
   { answer: Schema.Literal('yes', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class AnsweredIfTheDatasetIsMissingAnything extends Schema.TaggedClass<AnsweredIfTheDatasetIsMissingAnything>()(
+  'AnsweredIfTheDatasetIsMissingAnything',
+  { answer: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema), datasetReviewId: Uuid.UuidSchema },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -108,6 +113,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetIsDetailedEnough,
   AnsweredIfTheDatasetIsErrorFree,
   AnsweredIfTheDatasetIsReadyToBeShared,
+  AnsweredIfTheDatasetIsMissingAnything,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   DatasetReviewWasAssignedADoi,
