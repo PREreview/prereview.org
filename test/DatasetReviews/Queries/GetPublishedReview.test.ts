@@ -67,6 +67,14 @@ const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDa
   answer: 'unsure',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'yes',
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'no',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -116,6 +124,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
                   answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                   answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
                 },
                 published: events[3].publicationDate,
               }),
@@ -135,6 +144,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
                   answeredIfTheDatasetSupportsRelatedConclusion1,
                   answeredIfTheDatasetIsDetailedEnough1,
+                  answeredIfTheDatasetIsErrorFree1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -161,6 +171,7 @@ describe('GetPublishedReview', () => {
                       answeredIfTheDatasetSupportsRelatedConclusion1.answer,
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough1.answer),
+                    answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree1.answer),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },
@@ -186,6 +197,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetSupportsRelatedConclusion2,
                   answeredIfTheDatasetIsDetailedEnough1,
                   answeredIfTheDatasetIsDetailedEnough2,
+                  answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetIsErrorFree2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -214,6 +227,7 @@ describe('GetPublishedReview', () => {
                       answeredIfTheDatasetSupportsRelatedConclusion2.answer,
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
+                    answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
                   },
                   published: datasetReviewWasPublished2.publicationDate,
                 },
@@ -244,6 +258,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
                     answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                     answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                    answerToIfTheDatasetIsErrorFree: Option.none(),
                   },
                   published: datasetReviewWasPublished1.publicationDate,
                 },

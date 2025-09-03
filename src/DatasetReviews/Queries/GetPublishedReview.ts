@@ -20,6 +20,7 @@ export interface PublishedReview {
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsDetailedEnough: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetIsErrorFree: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
   }
   published: Temporal.PlainDate
 }
@@ -79,6 +80,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetIsErrorFree = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsErrorFree')),
+    Struct.get('answer'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -99,6 +105,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
           answerToIfTheDatasetSupportsRelatedConclusions,
           answerToIfTheDatasetIsDetailedEnough,
+          answerToIfTheDatasetIsErrorFree,
         },
         published: data.datasetReviewWasPublished.publicationDate,
       }),

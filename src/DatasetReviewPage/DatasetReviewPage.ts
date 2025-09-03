@@ -175,6 +175,22 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetIsErrorFree, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetIsErrorFree => html`
+            <dt>Is the dataset relatively error-free?</dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetIsErrorFree),
+                Match.when('yes', () => 'Yes'),
+                Match.when('partly', () => 'Partly'),
+                Match.when('no', () => 'No'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
       </dl>
     `,
     skipToLabel: 'prereview',
