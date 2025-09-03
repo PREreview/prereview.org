@@ -10,6 +10,7 @@ import * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTra
 import * as AnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as AnswerIfTheDatasetIsDetailedEnough from './AnswerIfTheDatasetIsDetailedEnough.js'
 import * as AnswerIfTheDatasetIsErrorFree from './AnswerIfTheDatasetIsErrorFree.js'
+import * as AnswerIfTheDatasetIsReadyToBeShared from './AnswerIfTheDatasetIsReadyToBeShared.js'
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
@@ -57,6 +58,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsErrorFree.Command,
       AnswerIfTheDatasetIsErrorFree.Error
     >
+    answerIfTheDatasetIsReadyToBeShared: CommandHandler<
+      AnswerIfTheDatasetIsReadyToBeShared.Command,
+      AnswerIfTheDatasetIsReadyToBeShared.Error
+    >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
       MarkRecordAsPublishedOnZenodo.Command,
@@ -91,6 +96,7 @@ export const {
   answerIfTheDatasetSupportsRelatedConclusions,
   answerIfTheDatasetIsDetailedEnough,
   answerIfTheDatasetIsErrorFree,
+  answerIfTheDatasetIsReadyToBeShared,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -208,6 +214,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetIsErrorFree.foldState,
         AnswerIfTheDatasetIsErrorFree.authorize,
         AnswerIfTheDatasetIsErrorFree.decide,
+      ),
+      answerIfTheDatasetIsReadyToBeShared: handleCommand(
+        AnswerIfTheDatasetIsReadyToBeShared.createFilter,
+        AnswerIfTheDatasetIsReadyToBeShared.foldState,
+        AnswerIfTheDatasetIsReadyToBeShared.authorize,
+        AnswerIfTheDatasetIsReadyToBeShared.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
         datasetReviewId => ({
