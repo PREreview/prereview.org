@@ -25,9 +25,9 @@ export const IsMissingAnythingQuestion = ({
           </h1>
 
           ${Match.valueTags(form, {
-            EmptyForm: () => html`<textarea id="is-missing-anything" name="is-missing-anything" rows="20"></textarea>`,
+            EmptyForm: () => html`<textarea id="is-missing-anything" name="is-missing-anything" rows="5"></textarea>`,
             CompletedForm: form =>
-              html`<textarea id="is-missing-anything" name="is-missing-anything" rows="20">
+              html`<textarea id="is-missing-anything" name="is-missing-anything" rows="5">
 ${Option.getOrElse(form.isMissingAnything, () => String.empty)}</textarea
               >`,
           })}
