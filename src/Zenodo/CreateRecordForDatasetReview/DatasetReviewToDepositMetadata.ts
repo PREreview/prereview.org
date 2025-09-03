@@ -20,6 +20,7 @@ export interface DatasetReview {
   >
   readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
   readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
+  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -161,6 +162,21 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
               Match.value(answerToIfTheDatasetIsErrorFree),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
+              Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetIsReadyToBeShared, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetIsReadyToBeShared => html`
+          <dt>Is this dataset ready to be shared?</dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetIsReadyToBeShared),
+              Match.when('yes', () => 'Yes'),
               Match.when('no', () => 'No'),
               Match.when('unsure', () => 'I don’t know'),
               Match.exhaustive,

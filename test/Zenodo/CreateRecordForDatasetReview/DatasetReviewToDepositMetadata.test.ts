@@ -19,6 +19,7 @@ const cases = [
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
       answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
       answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
+      answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -79,6 +80,12 @@ const cases = [
             I don’t know
           </dd>
         
+      
+          <dt>Is this dataset ready to be shared?</dt>
+          <dd>
+            Yes
+          </dd>
+        
     </dl>
   `),
       title: 'Dataset review',
@@ -107,6 +114,7 @@ const cases = [
       answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
       answerToIfTheDatasetIsDetailedEnough: Option.none(),
       answerToIfTheDatasetIsErrorFree: Option.none(),
+      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
     },
     {
       creators: [{ name: 'A PREreviewer' }],
@@ -117,6 +125,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       
