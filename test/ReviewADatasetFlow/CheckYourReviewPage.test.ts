@@ -44,6 +44,9 @@ describe('CheckYourReviewPage', () => {
         answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
           fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
         ),
+        answerToIfTheDatasetIsMissingAnything: fc.maybe(
+          fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
+        ),
       }),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, preview) =>
       Effect.gen(function* () {

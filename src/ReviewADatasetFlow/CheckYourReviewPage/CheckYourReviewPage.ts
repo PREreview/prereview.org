@@ -295,6 +295,20 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetIsMissingAnything, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsMissingAnything => html`
+                    <div>
+                      <dt>
+                        <span
+                          >What else, if anything, would it be helpful for the researcher to include with this dataset
+                          to make it easier to find, understand and reuse in ethical and responsible ways?
+                        </span>
+                      </dt>
+                      <dd>${Option.getOrElse(answerToIfTheDatasetIsMissingAnything, () => html`<i>No answer</i>`)}</dd>
+                    </div>
+                  `,
+                })}
               </dl>
             </div>
           </div>
