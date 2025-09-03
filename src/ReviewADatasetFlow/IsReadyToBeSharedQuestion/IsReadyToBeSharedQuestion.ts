@@ -16,6 +16,9 @@ export const IsReadyToBeSharedQuestion = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is this dataset ready to be shared?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'

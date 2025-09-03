@@ -11,6 +11,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetSupportsRelatedConclusions'
   | 'AnswerIfTheDatasetIsDetailedEnough'
   | 'AnswerIfTheDatasetIsErrorFree'
+  | 'AnswerIfTheDatasetIsReadyToBeShared'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -58,6 +59,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetIsErrorFree')) {
     return Option.some('AnswerIfTheDatasetIsErrorFree')
+  }
+
+  if (!hasEvent(events, 'AnsweredIfTheDatasetIsReadyToBeShared')) {
+    return Option.some('AnswerIfTheDatasetIsReadyToBeShared')
   }
 
   return Option.some('PublishDatasetReview')
