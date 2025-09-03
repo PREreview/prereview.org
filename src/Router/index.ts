@@ -148,6 +148,16 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.IsDetailedEnoughSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.ReviewADatasetIsErrorFree, ReviewADatasetFlow.IsErrorFreeQuestion),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetIsErrorFree,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.IsErrorFreeSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
   MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
   MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),
