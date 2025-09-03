@@ -10,6 +10,9 @@ export const IsErrorFreeQuestion = ({ datasetReviewId, form }: { datasetReviewId
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is the dataset relatively error-free?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'

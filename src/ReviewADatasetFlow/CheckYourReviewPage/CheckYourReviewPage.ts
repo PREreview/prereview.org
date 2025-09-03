@@ -15,7 +15,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"><span>Back</span></a>
     `,
     main: html`
       <single-use-form>
@@ -262,6 +262,11 @@ export const CheckYourReviewPage = ({
                           Match.when('unsure', () => 'I don’t know'),
                           Match.exhaustive,
                         )}
+                      </dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">if the dataset is relatively error-free</span>
+                        </a>
                       </dd>
                     </div>
                   `,

@@ -1801,6 +1801,7 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
     'AnswerIfTheDatasetSupportsRelatedConclusions',
     'AnswerIfTheDatasetIsDetailedEnough',
+    'AnswerIfTheDatasetIsErrorFree',
     'PublishDatasetReview',
   )
 

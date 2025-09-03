@@ -10,6 +10,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch'
   | 'AnswerIfTheDatasetSupportsRelatedConclusions'
   | 'AnswerIfTheDatasetIsDetailedEnough'
+  | 'AnswerIfTheDatasetIsErrorFree'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -53,6 +54,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetIsDetailedEnough')) {
     return Option.some('AnswerIfTheDatasetIsDetailedEnough')
+  }
+
+  if (!hasEvent(events, 'AnsweredIfTheDatasetIsErrorFree')) {
+    return Option.some('AnswerIfTheDatasetIsErrorFree')
   }
 
   return Option.some('PublishDatasetReview')

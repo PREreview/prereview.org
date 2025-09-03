@@ -70,6 +70,14 @@ const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDa
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'no',
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'partly',
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -106,6 +114,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch(),
             fc.answeredIfTheDatasetSupportsRelatedConclusions(),
             fc.answeredIfTheDatasetIsDetailedEnough(),
+            fc.answeredIfTheDatasetIsErrorFree(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -185,11 +194,27 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetSupportsRelatedConclusions1,
               answeredIfTheDatasetIsDetailedEnough1,
             ],
+            'AnswerIfTheDatasetIsErrorFree',
+          ], // 8 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
             [
               datasetReviewWasStarted,
+              answeredIfTheDatasetIsErrorFree1,
               answeredIfTheDatasetSupportsRelatedConclusions1,
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
               answeredIfTheDatasetHasDataCensoredOrDeleted1,
@@ -198,6 +223,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetIsErrorFree2,
               answeredIfTheDatasetSupportsRelatedConclusions2,
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
               answeredIfTheDatasetHasDataCensoredOrDeleted2,
