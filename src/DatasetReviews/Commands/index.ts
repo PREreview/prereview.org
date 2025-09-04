@@ -12,6 +12,7 @@ import * as AnswerIfTheDatasetIsDetailedEnough from './AnswerIfTheDatasetIsDetai
 import * as AnswerIfTheDatasetIsErrorFree from './AnswerIfTheDatasetIsErrorFree.js'
 import * as AnswerIfTheDatasetIsMissingAnything from './AnswerIfTheDatasetIsMissingAnything.js'
 import * as AnswerIfTheDatasetIsReadyToBeShared from './AnswerIfTheDatasetIsReadyToBeShared.js'
+import * as AnswerIfTheDatasetMattersToItsAudience from './AnswerIfTheDatasetMattersToItsAudience.js'
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
@@ -59,6 +60,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsErrorFree.Command,
       AnswerIfTheDatasetIsErrorFree.Error
     >
+    answerIfTheDatasetMattersToItsAudience: CommandHandler<
+      AnswerIfTheDatasetMattersToItsAudience.Command,
+      AnswerIfTheDatasetMattersToItsAudience.Error
+    >
     answerIfTheDatasetIsReadyToBeShared: CommandHandler<
       AnswerIfTheDatasetIsReadyToBeShared.Command,
       AnswerIfTheDatasetIsReadyToBeShared.Error
@@ -101,6 +106,7 @@ export const {
   answerIfTheDatasetSupportsRelatedConclusions,
   answerIfTheDatasetIsDetailedEnough,
   answerIfTheDatasetIsErrorFree,
+  answerIfTheDatasetMattersToItsAudience,
   answerIfTheDatasetIsReadyToBeShared,
   answerIfTheDatasetIsMissingAnything,
   markRecordCreatedOnZenodo,
@@ -220,6 +226,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetIsErrorFree.foldState,
         AnswerIfTheDatasetIsErrorFree.authorize,
         AnswerIfTheDatasetIsErrorFree.decide,
+      ),
+      answerIfTheDatasetMattersToItsAudience: handleCommand(
+        AnswerIfTheDatasetMattersToItsAudience.createFilter,
+        AnswerIfTheDatasetMattersToItsAudience.foldState,
+        AnswerIfTheDatasetMattersToItsAudience.authorize,
+        AnswerIfTheDatasetMattersToItsAudience.decide,
       ),
       answerIfTheDatasetIsReadyToBeShared: handleCommand(
         AnswerIfTheDatasetIsReadyToBeShared.createFilter,
