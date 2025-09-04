@@ -693,6 +693,32 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the dataset matters to its audience',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../matters-to-its-audience`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select how consequential is it likely to seem' }).click()
+
+    await expect(page.getByLabel('Very consequential')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if the dataset is ready to be shared',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
