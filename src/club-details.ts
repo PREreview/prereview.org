@@ -349,7 +349,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2023-11-14'),
     leads: [
       { name: 'Anna Hatch', orcid: Orcid('0000-0002-2111-3237') },
-      { name: 'Michele Avissar-Whiting', orcid: Orcid('0000-0003-0030-3135') },
+      { name: 'Darian Carroll', orcid: Orcid('0000-0002-7815-8698') },
     ],
   },
   'iib-mar-del-plata': {
