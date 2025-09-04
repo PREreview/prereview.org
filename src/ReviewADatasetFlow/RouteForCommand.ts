@@ -16,6 +16,7 @@ const commandRoutes = {
   AnswerIfTheDatasetSupportsRelatedConclusions: Routes.ReviewADatasetSupportsRelatedConclusions,
   AnswerIfTheDatasetIsDetailedEnough: Routes.ReviewADatasetIsDetailedEnough,
   AnswerIfTheDatasetIsErrorFree: Routes.ReviewADatasetIsErrorFree,
+  AnswerIfTheDatasetMattersToItsAudience: Routes.ReviewADatasetMattersToItsAudience,
   AnswerIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
   AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,

@@ -78,6 +78,14 @@ const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDataset
   answer: 'partly',
   datasetReviewId,
 })
+const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'unsure',
+  datasetReviewId,
+})
+const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'not-consequential',
+  datasetReviewId,
+})
 const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'yes',
   datasetReviewId,
@@ -131,6 +139,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetSupportsRelatedConclusions(),
             fc.answeredIfTheDatasetIsDetailedEnough(),
             fc.answeredIfTheDatasetIsErrorFree(),
+            fc.answeredIfTheDatasetMattersToItsAudience(),
             fc.answeredIfTheDatasetIsReadyToBeShared(),
             fc.answeredIfTheDatasetIsMissingAnything(),
           )
@@ -227,7 +236,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsDetailedEnough1,
               answeredIfTheDatasetIsErrorFree1,
             ],
-            'AnswerIfTheDatasetIsReadyToBeShared',
+            'AnswerIfTheDatasetMattersToItsAudience',
           ], // 9 questions answered
           [
             [
@@ -241,9 +250,9 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetSupportsRelatedConclusions1,
               answeredIfTheDatasetIsDetailedEnough1,
               answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetMattersToItsAudience1,
             ],
-            'AnswerIfTheDatasetIsMissingAnything',
+            'AnswerIfTheDatasetIsReadyToBeShared',
           ], // 10 questions answered
           [
             [
@@ -257,6 +266,24 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetSupportsRelatedConclusions1,
               answeredIfTheDatasetIsDetailedEnough1,
               answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetMattersToItsAudience1,
+              answeredIfTheDatasetIsReadyToBeShared1,
+            ],
+            'AnswerIfTheDatasetIsMissingAnything',
+          ], // 11 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetMattersToItsAudience1,
               answeredIfTheDatasetIsReadyToBeShared1,
               answeredIfTheDatasetIsMissingAnything1,
             ],
@@ -267,6 +294,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               datasetReviewWasStarted,
               answeredIfTheDatasetIsMissingAnything1,
               answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetMattersToItsAudience1,
               answeredIfTheDatasetIsErrorFree1,
               answeredIfTheDatasetSupportsRelatedConclusions1,
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
@@ -278,6 +306,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               ratedTheQualityOfTheDataset1,
               answeredIfTheDatasetIsMissingAnything2,
               answeredIfTheDatasetIsReadyToBeShared2,
+              answeredIfTheDatasetMattersToItsAudience2,
               answeredIfTheDatasetIsErrorFree2,
               answeredIfTheDatasetSupportsRelatedConclusions2,
               answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
