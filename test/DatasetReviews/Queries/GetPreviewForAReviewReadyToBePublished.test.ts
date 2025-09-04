@@ -81,6 +81,14 @@ const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDataset
   answer: 'yes',
   datasetReviewId,
 })
+const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'unsure',
+  datasetReviewId,
+})
+const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'very-consequential',
+  datasetReviewId,
+})
 const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'unsure',
   datasetReviewId,
@@ -135,6 +143,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.answeredIfTheDatasetSupportsRelatedConclusions({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsDetailedEnough({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsErrorFree({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfTheDatasetMattersToItsAudience({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
@@ -150,8 +159,9 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               answerToIfTheDatasetSupportsRelatedConclusions: Option.some(events[7].answer),
               answerToIfTheDatasetIsDetailedEnough: Option.some(events[8].answer),
               answerToIfTheDatasetIsErrorFree: Option.some(events[9].answer),
-              answerToIfTheDatasetIsReadyToBeShared: Option.some(events[10].answer),
-              answerToIfTheDatasetIsMissingAnything: Option.some(events[11].answer),
+              answerToIfTheDatasetMattersToItsAudience: Option.some(events[10].answer),
+              answerToIfTheDatasetIsReadyToBeShared: Option.some(events[11].answer),
+              answerToIfTheDatasetIsMissingAnything: Option.some(events[12].answer),
             }),
           ),
       ],
@@ -171,6 +181,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                 answerToIfTheDatasetIsDetailedEnough: Option.none(),
                 answerToIfTheDatasetIsErrorFree: Option.none(),
+                answerToIfTheDatasetMattersToItsAudience: Option.none(),
                 answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                 answerToIfTheDatasetIsMissingAnything: Option.none(),
               },
@@ -198,6 +209,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetIsDetailedEnough2,
                 answeredIfTheDatasetIsErrorFree1,
                 answeredIfTheDatasetIsErrorFree2,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetMattersToItsAudience2,
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsReadyToBeShared2,
                 answeredIfTheDatasetIsMissingAnything1,
@@ -220,6 +233,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 ),
                 answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
                 answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
+                answerToIfTheDatasetMattersToItsAudience: Option.some(answeredIfTheDatasetMattersToItsAudience2.answer),
                 answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
                 answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything2.answer),
               },

@@ -271,6 +271,30 @@ export const CheckYourReviewPage = ({
                     </div>
                   `,
                 })}
+                ${Option.match(review.answerToIfTheDatasetMattersToItsAudience, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetMattersToItsAudience => html`
+                    <div>
+                      <dt>
+                        <span
+                          >Is this dataset likely to be of interest to researchers in its corresponding field of study,
+                          to most researchers, or to the general public? How consequential is it likely to seem to that
+                          audience or those audiences?</span
+                        >
+                      </dt>
+                      <dd>
+                        ${pipe(
+                          Match.value(answerToIfTheDatasetMattersToItsAudience),
+                          Match.when('very-consequential', () => 'Very consequential'),
+                          Match.when('somewhat-consequential', () => 'Somewhat consequential'),
+                          Match.when('not-consequential', () => 'Not consequential'),
+                          Match.when('unsure', () => 'I don’t know'),
+                          Match.exhaustive,
+                        )}
+                      </dd>
+                    </div>
+                  `,
+                })}
                 ${Option.match(review.answerToIfTheDatasetIsReadyToBeShared, {
                   onNone: () => '',
                   onSome: answerToIfTheDatasetIsReadyToBeShared => html`

@@ -41,6 +41,9 @@ describe('CheckYourReviewPage', () => {
           fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
         ),
         answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
+        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
+          fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
+        ),
         answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
           fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
         ),
