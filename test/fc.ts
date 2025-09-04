@@ -1709,6 +1709,18 @@ export const answeredIfTheDatasetIsErrorFree = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetIsErrorFree(data))
 
+export const answeredIfTheDatasetMattersToItsAudience = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.AnsweredIfTheDatasetMattersToItsAudience['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.AnsweredIfTheDatasetMattersToItsAudience> =>
+  fc
+    .record({
+      answer: constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+      datasetReviewId: datasetReviewId ?? uuid(),
+    })
+    .map(data => new Events.AnsweredIfTheDatasetMattersToItsAudience(data))
+
 export const answeredIfTheDatasetIsReadyToBeShared = ({
   datasetReviewId,
 }: {
@@ -1807,6 +1819,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetSupportsRelatedConclusions(args),
     answeredIfTheDatasetIsDetailedEnough(args),
     answeredIfTheDatasetIsErrorFree(args),
+    answeredIfTheDatasetMattersToItsAudience(args),
     answeredIfTheDatasetIsReadyToBeShared(args),
     answeredIfTheDatasetIsMissingAnything(args),
     publicationOfDatasetReviewWasRequested(args),

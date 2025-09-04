@@ -21,6 +21,9 @@ export interface PublishedReview {
     answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsDetailedEnough: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsErrorFree: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetMattersToItsAudience: Option.Option<
+      'very-consequential' | 'somewhat-consequential' | 'not-consequential' | 'unsure'
+    >
     answerToIfTheDatasetIsReadyToBeShared: Option.Option<'yes' | 'no' | 'unsure'>
     answerToIfTheDatasetIsMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
   }
@@ -87,6 +90,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const answerToIfTheDatasetMattersToItsAudience = Option.map(
+    Array.findLast(events, hasTag('AnsweredIfTheDatasetMattersToItsAudience')),
+    Struct.get('answer'),
+  )
+
   const answerToIfTheDatasetIsReadyToBeShared = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
     Struct.get('answer'),
@@ -118,6 +126,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetSupportsRelatedConclusions,
           answerToIfTheDatasetIsDetailedEnough,
           answerToIfTheDatasetIsErrorFree,
+          answerToIfTheDatasetMattersToItsAudience,
           answerToIfTheDatasetIsReadyToBeShared,
           answerToIfTheDatasetIsMissingAnything,
         },

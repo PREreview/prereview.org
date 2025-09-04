@@ -21,6 +21,7 @@ export interface DatasetReview {
   readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
   readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
   readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
+  readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
@@ -182,6 +183,16 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
               Match.exhaustive,
             )}
           </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetIsMissingAnything, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetIsMissingAnything => html`
+          <dt>
+            What else, if anything, would it be helpful for the researcher to include with this dataset to make it
+            easier to find, understand and reuse in ethical and responsible ways?
+          </dt>
+          <dd>${answerToIfTheDatasetIsMissingAnything}</dd>
         `,
       })}
     </dl>

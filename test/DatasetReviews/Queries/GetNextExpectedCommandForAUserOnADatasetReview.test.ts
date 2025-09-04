@@ -5,7 +5,7 @@ import { type Array, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -86,6 +86,14 @@ const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheD
   answer: 'no',
   datasetReviewId,
 })
+const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -124,6 +132,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsDetailedEnough(),
             fc.answeredIfTheDatasetIsErrorFree(),
             fc.answeredIfTheDatasetIsReadyToBeShared(),
+            fc.answeredIfTheDatasetIsMissingAnything(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -234,11 +243,29 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsErrorFree1,
               answeredIfTheDatasetIsReadyToBeShared1,
             ],
+            'AnswerIfTheDatasetIsMissingAnything',
+          ], // 10 questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetIsMissingAnything1,
+            ],
             'PublishDatasetReview',
           ], // all questions answered
           [
             [
               datasetReviewWasStarted,
+              answeredIfTheDatasetIsMissingAnything1,
               answeredIfTheDatasetIsReadyToBeShared1,
               answeredIfTheDatasetIsErrorFree1,
               answeredIfTheDatasetSupportsRelatedConclusions1,
@@ -249,6 +276,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetIsMissingAnything2,
               answeredIfTheDatasetIsReadyToBeShared2,
               answeredIfTheDatasetIsErrorFree2,
               answeredIfTheDatasetSupportsRelatedConclusions2,

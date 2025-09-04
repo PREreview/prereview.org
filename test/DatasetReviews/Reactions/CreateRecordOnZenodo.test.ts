@@ -37,6 +37,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
         fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsMissingAnything: fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     }),
     fc.integer(),
   ])('when the command can be completed', (datasetReviewId, preview, recordId) =>
@@ -87,6 +88,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
         fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsMissingAnything: fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     }),
     fc.integer(),
     fc.constantFrom(
@@ -143,6 +145,7 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
         fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
       ),
+      answerToIfTheDatasetIsMissingAnything: fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
     }),
   ])("when the record can't be created", (datasetReviewId, preview) =>
     Effect.gen(function* () {

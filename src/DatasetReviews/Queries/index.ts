@@ -13,6 +13,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges from './CheckIfUse
 import * as CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough from './CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsErrorFree from './CheckIfUserCanAnswerIfTheDatasetIsErrorFree.js'
+import * as CheckIfUserCanAnswerIfTheDatasetIsMissingAnything from './CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared from './CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.js'
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
@@ -83,6 +84,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
         input: CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.Result
     >
+    checkIfUserCanAnswerIfTheDatasetIsMissingAnything: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Result
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -134,6 +140,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetIsDetailedEnough,
   checkIfUserCanAnswerIfTheDatasetIsErrorFree,
   checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared,
+  checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -243,6 +250,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.query,
+      ),
+      checkIfUserCanAnswerIfTheDatasetIsMissingAnything: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {

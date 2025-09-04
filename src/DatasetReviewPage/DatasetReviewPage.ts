@@ -191,6 +191,26 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dd>
           `,
         })}
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetMattersToItsAudience, {
+          onNone: () => '',
+          onSome: answerToIfTheDatasetMattersToItsAudience => html`
+            <dt>
+              Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
+              researchers, or to the general public? How consequential is it likely to seem to that audience or those
+              audiences?
+            </dt>
+            <dd>
+              ${pipe(
+                Match.value(answerToIfTheDatasetMattersToItsAudience),
+                Match.when('very-consequential', () => 'Very consequential'),
+                Match.when('somewhat-consequential', () => 'Somewhat consequential'),
+                Match.when('not-consequential', () => 'Not consequential'),
+                Match.when('unsure', () => 'I don’t know'),
+                Match.exhaustive,
+              )}
+            </dd>
+          `,
+        })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsReadyToBeShared, {
           onNone: () => '',
           onSome: answerToIfTheDatasetIsReadyToBeShared => html`

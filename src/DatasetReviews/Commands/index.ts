@@ -10,6 +10,7 @@ import * as AnswerIfTheDatasetHasTrackedChanges from './AnswerIfTheDatasetHasTra
 import * as AnswerIfTheDatasetIsAppropriateForThisKindOfResearch from './AnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as AnswerIfTheDatasetIsDetailedEnough from './AnswerIfTheDatasetIsDetailedEnough.js'
 import * as AnswerIfTheDatasetIsErrorFree from './AnswerIfTheDatasetIsErrorFree.js'
+import * as AnswerIfTheDatasetIsMissingAnything from './AnswerIfTheDatasetIsMissingAnything.js'
 import * as AnswerIfTheDatasetIsReadyToBeShared from './AnswerIfTheDatasetIsReadyToBeShared.js'
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
@@ -62,6 +63,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsReadyToBeShared.Command,
       AnswerIfTheDatasetIsReadyToBeShared.Error
     >
+    answerIfTheDatasetIsMissingAnything: CommandHandler<
+      AnswerIfTheDatasetIsMissingAnything.Command,
+      AnswerIfTheDatasetIsMissingAnything.Error
+    >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
       MarkRecordAsPublishedOnZenodo.Command,
@@ -97,6 +102,7 @@ export const {
   answerIfTheDatasetIsDetailedEnough,
   answerIfTheDatasetIsErrorFree,
   answerIfTheDatasetIsReadyToBeShared,
+  answerIfTheDatasetIsMissingAnything,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -220,6 +226,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         AnswerIfTheDatasetIsReadyToBeShared.foldState,
         AnswerIfTheDatasetIsReadyToBeShared.authorize,
         AnswerIfTheDatasetIsReadyToBeShared.decide,
+      ),
+      answerIfTheDatasetIsMissingAnything: handleCommand(
+        AnswerIfTheDatasetIsMissingAnything.createFilter,
+        AnswerIfTheDatasetIsMissingAnything.foldState,
+        AnswerIfTheDatasetIsMissingAnything.authorize,
+        AnswerIfTheDatasetIsMissingAnything.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
         datasetReviewId => ({

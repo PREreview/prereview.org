@@ -15,7 +15,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"><span>Back</span></a>
     `,
     main: html`
       <single-use-form>
@@ -290,6 +290,25 @@ export const CheckYourReviewPage = ({
                       <dd>
                         <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset is ready to be shared</span>
+                        </a>
+                      </dd>
+                    </div>
+                  `,
+                })}
+                ${Option.match(review.answerToIfTheDatasetIsMissingAnything, {
+                  onNone: () => '',
+                  onSome: answerToIfTheDatasetIsMissingAnything => html`
+                    <div>
+                      <dt>
+                        <span
+                          >What else, if anything, would it be helpful for the researcher to include with this dataset
+                          to make it easier to find, understand and reuse in ethical and responsible ways?
+                        </span>
+                      </dt>
+                      <dd>${Option.getOrElse(answerToIfTheDatasetIsMissingAnything, () => html`<i>No answer</i>`)}</dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">if the dataset is missing anything</span>
                         </a>
                       </dd>
                     </div>

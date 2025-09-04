@@ -19,6 +19,7 @@ export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
   readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
   readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
+  readonly answerToIfTheDatasetIsMissingAnything: Option.Option<Events.AnsweredIfTheDatasetIsMissingAnything['answer']>
 }
 
 export const GetPreviewForAReviewReadyToBePublished = (
@@ -74,6 +75,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const answerToIfTheDatasetIsReadyToBeShared = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared'))
 
+  const answerToIfTheDatasetIsMissingAnything = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -102,6 +105,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
         answerToIfTheDatasetIsDetailedEnough: Option.map(answerToIfTheDatasetIsDetailedEnough, Struct.get('answer')),
         answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.get('answer')),
         answerToIfTheDatasetIsReadyToBeShared: Option.map(answerToIfTheDatasetIsReadyToBeShared, Struct.get('answer')),
+        answerToIfTheDatasetIsMissingAnything: Option.map(answerToIfTheDatasetIsMissingAnything, Struct.get('answer')),
       }),
   })
 }

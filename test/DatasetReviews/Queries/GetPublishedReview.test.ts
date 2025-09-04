@@ -75,6 +75,14 @@ const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDataset
   answer: 'no',
   datasetReviewId,
 })
+const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'not-consequential',
+  datasetReviewId,
+})
+const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'very-consequential',
+  datasetReviewId,
+})
 const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'no',
   datasetReviewId,
@@ -141,6 +149,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                   answerToIfTheDatasetIsDetailedEnough: Option.none(),
                   answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
@@ -163,6 +172,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetSupportsRelatedConclusion1,
                   answeredIfTheDatasetIsDetailedEnough1,
                   answeredIfTheDatasetIsErrorFree1,
+                  answeredIfTheDatasetMattersToItsAudience1,
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   datasetReviewWasAssignedADoi1,
@@ -192,6 +202,9 @@ describe('GetPublishedReview', () => {
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough1.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree1.answer),
+                    answerToIfTheDatasetMattersToItsAudience: Option.some(
+                      answeredIfTheDatasetMattersToItsAudience1.answer,
+                    ),
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared1.answer),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                   },
@@ -221,6 +234,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsDetailedEnough2,
                   answeredIfTheDatasetIsErrorFree1,
                   answeredIfTheDatasetIsErrorFree2,
+                  answeredIfTheDatasetMattersToItsAudience1,
+                  answeredIfTheDatasetMattersToItsAudience2,
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsReadyToBeShared2,
                   answeredIfTheDatasetIsMissingAnything1,
@@ -254,6 +269,9 @@ describe('GetPublishedReview', () => {
                     ),
                     answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
                     answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
+                    answerToIfTheDatasetMattersToItsAudience: Option.some(
+                      answeredIfTheDatasetMattersToItsAudience2.answer,
+                    ),
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                   },
@@ -287,6 +305,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
                     answerToIfTheDatasetIsDetailedEnough: Option.none(),
                     answerToIfTheDatasetIsErrorFree: Option.none(),
+                    answerToIfTheDatasetMattersToItsAudience: Option.none(),
                     answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                     answerToIfTheDatasetIsMissingAnything: Option.none(),
                   },

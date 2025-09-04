@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import type * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.js'
-import { Uuid } from '../../../src/types/index.js'
+import { NonEmptyString, Uuid } from '../../../src/types/index.js'
 
 import { expect, test } from '../../base.js'
 
@@ -29,4 +29,7 @@ const review = {
   answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
   answerToIfTheDatasetIsErrorFree: Option.some('yes'),
   answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+  answerToIfTheDatasetIsMissingAnything: Option.some(
+    Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  ),
 } satisfies DatasetReviews.DatasetReviewPreview
