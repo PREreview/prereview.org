@@ -15,6 +15,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough from './CheckIfUser
 import * as CheckIfUserCanAnswerIfTheDatasetIsErrorFree from './CheckIfUserCanAnswerIfTheDatasetIsErrorFree.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsMissingAnything from './CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.js'
 import * as CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared from './CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.js'
+import * as CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience from './CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.js'
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
@@ -79,6 +80,11 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfUserCanAnswerIfTheDatasetIsErrorFree: Query<
       (input: CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Input) => CheckIfUserCanAnswerIfTheDatasetIsErrorFree.Result
     >
+    checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: Query<
+      (
+        input: CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.Input,
+      ) => CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.Result
+    >
     checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: Query<
       (
         input: CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.Input,
@@ -139,6 +145,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions,
   checkIfUserCanAnswerIfTheDatasetIsDetailedEnough,
   checkIfUserCanAnswerIfTheDatasetIsErrorFree,
+  checkIfUserCanAnswerIfTheDatasetMattersToItsAudience,
   checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared,
   checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
   getPublishedDoi,
@@ -246,6 +253,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetIsErrorFree: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsErrorFree.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsErrorFree.query,
+      ),
+      checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: handleQuery(
+        CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.createFilter,
+        CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.query,
       ),
       checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.createFilter,
