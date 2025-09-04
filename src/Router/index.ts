@@ -158,6 +158,16 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.IsErrorFreeSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.ReviewADatasetMattersToItsAudience, ReviewADatasetFlow.MattersToItsAudienceQuestion),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetMattersToItsAudience,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.MattersToItsAudienceSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.ReviewADatasetIsReadyToBeShared, ReviewADatasetFlow.IsReadyToBeSharedQuestion),
   MakeRoute(
     'POST',

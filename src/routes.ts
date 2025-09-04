@@ -104,6 +104,12 @@ export const ReviewADatasetIsErrorFree: Route<{ datasetReviewId: Uuid.Uuid }> = 
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetMattersToItsAudience: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/matters-to-its-audience',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/matters-to-its-audience`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetIsReadyToBeShared: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/is-ready-to-be-shared',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-ready-to-be-shared`,
