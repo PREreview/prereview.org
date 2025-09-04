@@ -51,6 +51,11 @@ export const GetDataForZenodoRecord = (
 
   const answerToIfTheDatasetIsErrorFree = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsErrorFree'))
 
+  const answerToIfTheDatasetMattersToItsAudience = Array.findLast(
+    events,
+    hasTag('AnsweredIfTheDatasetMattersToItsAudience'),
+  )
+
   const answerToIfTheDatasetIsReadyToBeShared = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared'))
 
   const answerToIfTheDatasetIsMissingAnything = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything'))
@@ -77,6 +82,10 @@ export const GetDataForZenodoRecord = (
         ),
         answerToIfTheDatasetIsDetailedEnough: Option.map(answerToIfTheDatasetIsDetailedEnough, Struct.get('answer')),
         answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.get('answer')),
+        answerToIfTheDatasetMattersToItsAudience: Option.map(
+          answerToIfTheDatasetMattersToItsAudience,
+          Struct.get('answer'),
+        ),
         answerToIfTheDatasetIsReadyToBeShared: Option.map(answerToIfTheDatasetIsReadyToBeShared, Struct.get('answer')),
         answerToIfTheDatasetIsMissingAnything: Option.andThen(
           answerToIfTheDatasetIsMissingAnything,

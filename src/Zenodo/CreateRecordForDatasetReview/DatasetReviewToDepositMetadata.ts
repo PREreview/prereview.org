@@ -20,6 +20,9 @@ export interface DatasetReview {
   >
   readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
   readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
+  readonly answerToIfTheDatasetMattersToItsAudience: Option.Option<
+    Events.AnsweredIfTheDatasetMattersToItsAudience['answer']
+  >
   readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
   readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
 }
@@ -164,6 +167,26 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMe
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),
+              Match.when('unsure', () => 'I don’t know'),
+              Match.exhaustive,
+            )}
+          </dd>
+        `,
+      })}
+      ${Option.match(review.answerToIfTheDatasetMattersToItsAudience, {
+        onNone: () => '',
+        onSome: answerToIfTheDatasetMattersToItsAudience => html`
+          <dt>
+            Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
+            researchers, or to the general public? How consequential is it likely to seem to that audience or those
+            audiences?
+          </dt>
+          <dd>
+            ${pipe(
+              Match.value(answerToIfTheDatasetMattersToItsAudience),
+              Match.when('very-consequential', () => 'Very consequential'),
+              Match.when('somewhat-consequential', () => 'Somewhat consequential'),
+              Match.when('not-consequential', () => 'Not consequential'),
               Match.when('unsure', () => 'I don’t know'),
               Match.exhaustive,
             )}

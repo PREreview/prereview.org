@@ -19,6 +19,7 @@ const cases = [
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
       answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
       answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
+      answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
       answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
       answerToIfTheDatasetIsMissingAnything: Option.some(
         NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
@@ -84,6 +85,16 @@ const cases = [
           </dd>
         
       
+          <dt>
+            Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
+            researchers, or to the general public? How consequential is it likely to seem to that audience or those
+            audiences?
+          </dt>
+          <dd>
+            Very consequential
+          </dd>
+        
+      
           <dt>Is this dataset ready to be shared?</dt>
           <dd>
             Yes
@@ -124,6 +135,7 @@ const cases = [
       answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
       answerToIfTheDatasetIsDetailedEnough: Option.none(),
       answerToIfTheDatasetIsErrorFree: Option.none(),
+      answerToIfTheDatasetMattersToItsAudience: Option.none(),
       answerToIfTheDatasetIsReadyToBeShared: Option.none(),
       answerToIfTheDatasetIsMissingAnything: Option.none(),
     },
@@ -136,6 +148,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       
