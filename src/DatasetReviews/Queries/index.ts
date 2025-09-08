@@ -17,6 +17,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetIsMissingAnything from './CheckIfUse
 import * as CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared from './CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.js'
 import * as CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience from './CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.js'
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
+import * as CheckIfUserCanChoosePersona from './CheckIfUserCanChoosePersona.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
@@ -95,6 +96,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
         input: CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Input,
       ) => CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Result
     >
+    checkIfUserCanChoosePersona: Query<(input: CheckIfUserCanChoosePersona.Input) => CheckIfUserCanChoosePersona.Result>
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -148,6 +150,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetMattersToItsAudience,
   checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared,
   checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
+  checkIfUserCanChoosePersona,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -265,6 +268,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanAnswerIfTheDatasetIsMissingAnything: handleQuery(
         CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.query,
+      ),
+      checkIfUserCanChoosePersona: handleQuery(
+        CheckIfUserCanChoosePersona.createFilter,
+        CheckIfUserCanChoosePersona.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
