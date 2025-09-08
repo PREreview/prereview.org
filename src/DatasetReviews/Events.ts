@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Temporal, Uuid } from '../types/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym, Temporal, Uuid } from '../types/index.js'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
@@ -73,6 +73,24 @@ export class AnsweredIfTheDatasetIsMissingAnything extends Schema.TaggedClass<An
   { answer: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
+export class PersonaForDatasetReviewWasChosen extends Schema.TaggedClass<PersonaForDatasetReviewWasChosen>()(
+  'PersonaForDatasetReviewWasChosen',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    persona: Schema.Union(
+      Schema.Struct({
+        type: Schema.tag('public'),
+        name: NonEmptyString.NonEmptyStringSchema,
+        orcidId: Orcid.OrcidSchema,
+      }),
+      Schema.Struct({
+        type: Schema.tag('pseudonym'),
+        pseudonym: Pseudonym.PseudonymSchema,
+      }),
+    ),
+  },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -125,6 +143,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetIsMissingAnything,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
+  PersonaForDatasetReviewWasChosen,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
   ZenodoRecordForDatasetReviewWasPublished,

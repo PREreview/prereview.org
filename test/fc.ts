@@ -1745,6 +1745,21 @@ export const answeredIfTheDatasetIsMissingAnything = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetIsMissingAnything(data))
 
+export const personaForDatasetReviewWasChosen = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.PersonaForDatasetReviewWasChosen['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.PersonaForDatasetReviewWasChosen> =>
+  fc
+    .record({
+      datasetReviewId: datasetReviewId ?? uuid(),
+      persona: fc.oneof(
+        fc.record({ type: constant('public'), name: nonEmptyString(), orcidId: orcid() }),
+        fc.record({ type: constant('pseudonym'), pseudonym: pseudonym() }),
+      ),
+    })
+    .map(data => new Events.PersonaForDatasetReviewWasChosen(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1822,6 +1837,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetMattersToItsAudience(args),
     answeredIfTheDatasetIsReadyToBeShared(args),
     answeredIfTheDatasetIsMissingAnything(args),
+    personaForDatasetReviewWasChosen(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),
