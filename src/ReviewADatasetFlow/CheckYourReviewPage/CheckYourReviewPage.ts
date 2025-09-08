@@ -377,9 +377,11 @@ export const CheckYourReviewPage = ({
   })
 }
 
-function displayAuthor({ name, orcid }: { name: NonEmptyString.NonEmptyString; orcid?: Orcid.Orcid }) {
-  if (orcid) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+function displayAuthor({ name, orcidId }: { name: NonEmptyString.NonEmptyString; orcidId?: Orcid.Orcid }) {
+  if (orcidId) {
+    return html`<a
+      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}"
+      class="orcid"
       >${name}</a
     >`
   }

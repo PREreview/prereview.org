@@ -21,7 +21,7 @@ const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 const review = {
   author: Option.some({
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcid: Orcid.Orcid('0000-0002-1825-0097'),
+    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
   }),
   qualityRating: Option.some('excellent'),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
