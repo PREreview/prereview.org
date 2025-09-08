@@ -1,4 +1,5 @@
 export * from './CheckYourReviewPage/index.js'
+export * from './ChooseYourPersonaPage/index.js'
 export * from './FollowsFairAndCarePrinciplesQuestion/index.js'
 export * from './HasDataCensoredOrDeletedQuestion/index.js'
 export * from './HasEnoughMetadataQuestion/index.js'
