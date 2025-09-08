@@ -1,19 +1,47 @@
 import type { UrlParams } from '@effect/platform'
-import type { Effect } from 'effect'
+import { Effect, Option, Struct } from 'effect'
 import type { Locale } from '../../Context.js'
-import type * as DatasetReviews from '../../DatasetReviews/index.js'
+import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import type * as Response from '../../response.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
+import * as Response from '../../response.js'
+import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
-import type { LoggedInUser } from '../../user.js'
+import { LoggedInUser } from '../../user.js'
+import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.js'
+import { ChooseYourPersonaPage as MakeResponse } from './ChooseYourPersonaPage.js'
 
 export const ChooseYourPersonaPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  HavingProblemsPage
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+
+    const currentPersona = yield* DatasetReviews.checkIfUserCanChoosePersona({
+      datasetReviewId,
+      userId: user.orcid,
+    })
+
+    const form = ChooseYourPersonaForm.fromPersona(Option.map(currentPersona, Struct.get('type')))
+
+    return MakeResponse({ datasetReviewId, form, user })
+  }).pipe(
+    Effect.catchTags({
+      DatasetReviewHasNotBeenStarted: () => PageNotFound,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
+      UnableToQuery: () => HavingProblemsPage,
+    }),
+  )
 
 export const ChooseYourPersonaSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
