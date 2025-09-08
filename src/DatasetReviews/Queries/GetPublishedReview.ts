@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Struct } from 'effect'
+import { Array, Either, Match, Option, pipe, Struct } from 'effect'
 import type { Doi, NonEmptyString, Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -52,6 +52,8 @@ export const GetPublishedReview = (
     datasetReviewWasPublished: Array.findLast(events, hasTag('DatasetReviewWasPublished')),
     datasetReviewWasStarted: Array.findLast(events, hasTag('DatasetReviewWasStarted')),
   })
+
+  const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
   const qualityRating = Option.map(Array.findLast(events, hasTag('RatedTheQualityOfTheDataset')), Struct.get('rating'))
 
@@ -109,10 +111,21 @@ export const GetPublishedReview = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
       Either.right({
-        author: {
-          name: 'A PREreviewer',
-          orcid: data.datasetReviewWasStarted.authorId,
-        },
+        author: Option.match(author, {
+          onSome: pipe(
+            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
+            Match.when({ persona: { type: 'public' } }, author => ({
+              name: author.persona.name,
+              orcid: author.persona.orcidId,
+            })),
+            Match.when({ persona: { type: 'pseudonym' } }, author => ({ name: author.persona.pseudonym })),
+            Match.orElseAbsurd,
+          ),
+          onNone: () => ({
+            name: 'A PREreviewer',
+            orcid: data.datasetReviewWasStarted.authorId,
+          }),
+        }),
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {

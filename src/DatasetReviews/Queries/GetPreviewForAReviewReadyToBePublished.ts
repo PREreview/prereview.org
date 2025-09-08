@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct } from 'effect'
+import { Array, Either, Match, Option, pipe, Struct } from 'effect'
 import type { NonEmptyString, Orcid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -51,6 +51,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
     return Either.left(new Errors.DatasetReviewIsBeingPublished())
   }
 
+  const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
+
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
@@ -99,7 +101,18 @@ export const GetPreviewForAReviewReadyToBePublished = (
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
-        author: Option.none(),
+        author: Option.map(
+          author,
+          pipe(
+            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
+            Match.when({ persona: { type: 'public' } }, author => ({
+              name: author.persona.name,
+              orcidId: author.persona.orcidId,
+            })),
+            Match.when({ persona: { type: 'pseudonym' } }, author => ({ name: author.persona.pseudonym })),
+            Match.orElseAbsurd,
+          ),
+        ),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

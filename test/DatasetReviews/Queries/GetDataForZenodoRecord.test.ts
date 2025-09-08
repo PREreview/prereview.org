@@ -6,7 +6,7 @@ import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.j
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
 import type * as Zenodo from '../../../src/Zenodo/index.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -103,6 +103,21 @@ const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheD
   answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
   datasetReviewId,
 })
+const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'public',
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+  },
+  datasetReviewId,
+})
+const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'pseudonym',
+    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+  },
+  datasetReviewId,
+})
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -146,12 +161,16 @@ describe('GetDataForZenodoRecord', () => {
               fc.answeredIfTheDatasetMattersToItsAudience({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, Zenodo.DatasetReview]>(events, {
-              author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
+              author:
+                events[13].persona.type === 'public'
+                  ? { name: events[13].persona.name, orcidId: events[13].persona.orcidId }
+                  : { name: events[13].persona.pseudonym },
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -222,10 +241,12 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetIsReadyToBeShared2,
                 answeredIfTheDatasetIsMissingAnything1,
                 answeredIfTheDatasetIsMissingAnything2,
+                personaForDatasetReviewWasChosen1,
+                personaForDatasetReviewWasChosen2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
-                author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
+                author: { name: NonEmptyString.NonEmptyString('Orange Panda') },
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,

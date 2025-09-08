@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct } from 'effect'
+import { Array, Either, Match, Option, pipe, Struct } from 'effect'
 import { NonEmptyString } from '../../types/index.js'
 import type * as Zenodo from '../../Zenodo/index.js'
 import * as Errors from '../Errors.js'
@@ -21,6 +21,8 @@ export const GetDataForZenodoRecord = (
   if (!hasEvent(events, 'PublicationOfDatasetReviewWasRequested')) {
     return Either.left(new Errors.DatasetReviewIsInProgress())
   }
+
+  const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
@@ -65,7 +67,18 @@ export const GetDataForZenodoRecord = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
-        author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
+        author: Option.match(author, {
+          onSome: pipe(
+            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
+            Match.when({ persona: { type: 'public' } }, author => ({
+              name: author.persona.name,
+              orcidId: author.persona.orcidId,
+            })),
+            Match.when({ persona: { type: 'pseudonym' } }, author => ({ name: author.persona.pseudonym })),
+            Match.orElseAbsurd,
+          ),
+          onNone: () => ({ name: NonEmptyString.NonEmptyString('A PREreviewer') }),
+        }),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

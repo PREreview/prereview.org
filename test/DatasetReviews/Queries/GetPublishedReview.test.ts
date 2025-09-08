@@ -5,7 +5,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -99,6 +99,21 @@ const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheD
   answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
   datasetReviewId,
 })
+const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'public',
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+  },
+  datasetReviewId,
+})
+const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'pseudonym',
+    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+  },
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -128,16 +143,17 @@ describe('GetPublishedReview', () => {
             .tuple(
               fc.datasetReviewWasStarted(),
               fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
+              fc.personaForDatasetReviewWasChosen(),
               fc.datasetReviewWasAssignedADoi(),
               fc.datasetReviewWasPublished(),
             )
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
-                author: {
-                  name: 'A PREreviewer',
-                  orcid: events[0].authorId,
-                },
-                doi: events[2].doi,
+                author:
+                  events[2].persona.type === 'public'
+                    ? { name: events[2].persona.name, orcid: events[2].persona.orcidId }
+                    : { name: events[2].persona.pseudonym },
+                doi: events[3].doi,
                 id: events[0].datasetReviewId,
                 questions: {
                   qualityRating: Option.none(),
@@ -153,7 +169,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
-                published: events[3].publicationDate,
+                published: events[4].publicationDate,
               }),
             ),
         ],
@@ -175,13 +191,14 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetMattersToItsAudience1,
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
+                  personaForDatasetReviewWasChosen1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
                 {
                   author: {
-                    name: 'A PREreviewer',
-                    orcid: datasetReviewWasStarted.authorId,
+                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+                    orcid: Orcid.Orcid('0000-0002-1825-0097'),
                   },
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
@@ -240,16 +257,15 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsReadyToBeShared2,
                   answeredIfTheDatasetIsMissingAnything1,
                   answeredIfTheDatasetIsMissingAnything2,
+                  personaForDatasetReviewWasChosen1,
+                  personaForDatasetReviewWasChosen2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
                   datasetReviewWasPublished2,
                 ],
                 {
-                  author: {
-                    name: 'A PREreviewer',
-                    orcid: datasetReviewWasStarted.authorId,
-                  },
+                  author: { name: NonEmptyString.NonEmptyString('Orange Panda') },
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,
                   questions: {
