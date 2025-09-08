@@ -1,4 +1,5 @@
 import { Array, Either, Option, Struct } from 'effect'
+import { NonEmptyString } from '../../types/index.js'
 import type * as Zenodo from '../../Zenodo/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -64,6 +65,7 @@ export const GetDataForZenodoRecord = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
+        author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

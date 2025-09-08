@@ -151,6 +151,7 @@ describe('GetDataForZenodoRecord', () => {
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, Zenodo.DatasetReview]>(events, {
+              author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -176,6 +177,7 @@ describe('GetDataForZenodoRecord', () => {
                 publicationOfDatasetReviewWasRequested,
               ],
               {
+                author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -223,6 +225,7 @@ describe('GetDataForZenodoRecord', () => {
                 publicationOfDatasetReviewWasRequested,
               ],
               {
+                author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
@@ -253,6 +256,7 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetFollowsFairAndCarePrinciples,
               ],
               {
+                author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -278,6 +282,7 @@ describe('GetDataForZenodoRecord', () => {
                 zenodoRecordForDatasetReviewWasCreated,
               ],
               {
+                author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,

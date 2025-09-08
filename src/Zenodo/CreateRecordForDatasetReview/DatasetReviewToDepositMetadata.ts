@@ -1,10 +1,14 @@
 import { Match, Option, pipe } from 'effect'
 import type * as Events from '../../Events.js'
 import { html } from '../../html.js'
-import { Doi } from '../../types/index.js'
+import { Doi, type NonEmptyString, type Orcid } from '../../types/index.js'
 import type { DepositMetadata } from '../Deposition.js'
 
 export interface DatasetReview {
+  readonly author: {
+    name: NonEmptyString.NonEmptyString
+    orcidId?: Orcid.Orcid
+  }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -28,7 +32,7 @@ export interface DatasetReview {
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
-  creators: [{ name: 'A PREreviewer' }],
+  creators: [{ name: review.author.name, orcid: review.author.orcidId }],
   description: html`
     <dl>
       ${Option.match(review.qualityRating, {

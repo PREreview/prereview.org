@@ -4,12 +4,13 @@ import { Option } from 'effect'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
 import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
-import { Doi, NonEmptyString } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid } from '../../../src/types/index.js'
 
 const cases = [
   [
     'all questions answered',
     {
+      author: { name: NonEmptyString.NonEmptyString('Josiah Carberry'), orcidId: Orcid.Orcid('0000-0002-1825-0097') },
       qualityRating: Option.some('excellent'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
@@ -26,7 +27,7 @@ const cases = [
       ),
     },
     {
-      creators: [{ name: 'A PREreviewer' }],
+      creators: [{ name: 'Josiah Carberry', orcid: Orcid.Orcid('0000-0002-1825-0097') }],
       description: rawHtml(`
     <dl>
       
@@ -126,6 +127,7 @@ const cases = [
   [
     'minimal questions answered',
     {
+      author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
       qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
@@ -140,7 +142,7 @@ const cases = [
       answerToIfTheDatasetIsMissingAnything: Option.none(),
     },
     {
-      creators: [{ name: 'A PREreviewer' }],
+      creators: [{ name: 'A PREreviewer', orcid: undefined }],
       description: rawHtml(`
     <dl>
       
