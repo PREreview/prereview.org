@@ -19,6 +19,9 @@ export const ChooseYourPersonaPage = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}What name would you like to use?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" novalidate>
         ${form._tag === 'InvalidForm'

@@ -17,7 +17,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"><span>Back</span></a>
     `,
     main: html`
       <single-use-form>
@@ -48,15 +48,22 @@ export const CheckYourReviewPage = ({
             onSome: author =>
               html` <div class="summary-card">
                 <div>
-                  <h2>Your details</h2>
+                  <h2 id="details-label">Your details</h2>
                 </div>
 
-                <dl class="summary-list">
-                  <div>
-                    <dt><span>Published name</span></dt>
-                    <dd>${displayAuthor(author)}</dd>
-                  </div>
-                </dl>
+                <div aria-labelledby="details-label" role="region">
+                  <dl class="summary-list">
+                    <div>
+                      <dt><span>Published name</span></dt>
+                      <dd>${displayAuthor(author)}</dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">your published name</span>
+                        </a>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
               </div>`,
           })}
 

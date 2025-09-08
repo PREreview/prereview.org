@@ -57,6 +57,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
     .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -83,6 +86,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
   )
+  await expect(page.getByRole('main')).toContainText('by Josiah Carberry')
   await expect(page.getByRole('main')).toContainText('How would you rate the quality of this data set? Fair')
   await expect(page.getByRole('main')).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(page.getByRole('main')).toContainText('Does the dataset have enough metadata? Yes')
@@ -115,7 +119,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'PREreviews of Metadata collected from 500 articles in the field of ecology and evolution',
   )
-  await expect(page.getByRole('article', { name: 'PREreview by A PREreviewer' })).toBeVisible()
+  await expect(page.getByRole('article', { name: 'PREreview by Josiah Carberry' })).toBeVisible()
 })
 
 test('can choose a locale before starting', async ({ page }, testInfo) => {
@@ -188,9 +192,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  const details = page.getByRole('region', { name: 'Your details' })
   const review = page.getByRole('region', { name: 'Your review' })
 
+  await expect(details).toContainText('Published name Josiah Carberry')
   await expect(review).toContainText('How would you rate the quality of this data set? Fair')
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
@@ -217,6 +225,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(page.getByRole('main')).toContainText(
     'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? No answer',
   )
+
+  await page.getByRole('link', { name: 'Change your published name' }).click()
+
+  await page.getByLabel('Orange Panda').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(details).toContainText('Published name Orange Panda')
 
   await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
 
@@ -354,8 +369,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
     )
     .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
   await page.goBack()
 
@@ -445,8 +466,14 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
     )
     .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 

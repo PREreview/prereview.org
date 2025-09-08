@@ -5,7 +5,7 @@ import { type Array, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -102,6 +102,21 @@ const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheD
   answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
   datasetReviewId,
 })
+const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'public',
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+  },
+  datasetReviewId,
+})
+const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: {
+    type: 'pseudonym',
+    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+  },
+  datasetReviewId,
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -142,6 +157,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetMattersToItsAudience(),
             fc.answeredIfTheDatasetIsReadyToBeShared(),
             fc.answeredIfTheDatasetIsMissingAnything(),
+            fc.personaForDatasetReviewWasChosen(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -287,8 +303,27 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsReadyToBeShared1,
               answeredIfTheDatasetIsMissingAnything1,
             ],
-            'PublishDatasetReview',
+            'ChoosePersona',
           ], // all questions answered
+          [
+            [
+              datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetMattersToItsAudience1,
+              answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetIsMissingAnything1,
+              personaForDatasetReviewWasChosen1,
+            ],
+            'PublishDatasetReview',
+          ], // persona chosen
           [
             [
               datasetReviewWasStarted,
@@ -304,6 +339,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetFollowsFairAndCarePrinciples1,
               answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
+              personaForDatasetReviewWasChosen1,
               answeredIfTheDatasetIsMissingAnything2,
               answeredIfTheDatasetIsReadyToBeShared2,
               answeredIfTheDatasetMattersToItsAudience2,
@@ -316,6 +352,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetFollowsFairAndCarePrinciples2,
               answeredIfTheDatasetIsDetailedEnough2,
               ratedTheQualityOfTheDataset2,
+              personaForDatasetReviewWasChosen2,
             ],
             'PublishDatasetReview',
           ], // different order

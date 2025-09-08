@@ -14,6 +14,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetMattersToItsAudience'
   | 'AnswerIfTheDatasetIsReadyToBeShared'
   | 'AnswerIfTheDatasetIsMissingAnything'
+  | 'ChoosePersona'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -73,6 +74,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'AnsweredIfTheDatasetIsMissingAnything')) {
     return Option.some('AnswerIfTheDatasetIsMissingAnything')
+  }
+
+  if (!hasEvent(events, 'PersonaForDatasetReviewWasChosen')) {
+    return Option.some('ChoosePersona')
   }
 
   return Option.some('PublishDatasetReview')
