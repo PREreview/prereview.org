@@ -150,6 +150,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
+              author: Option.none(),
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -171,6 +172,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             [
               [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples],
               {
+                author: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -217,6 +219,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetIsMissingAnything2,
               ],
               {
+                author: Option.none(),
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,

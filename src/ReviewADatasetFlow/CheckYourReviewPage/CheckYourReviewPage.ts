@@ -1,8 +1,10 @@
 import { Match, Option, pipe } from 'effect'
+import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import { html, plainText } from '../../html.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import { ProfileId, Pseudonym, type NonEmptyString, type Orcid } from '../../types/index.js'
 import type { Uuid } from '../../types/uuid.js'
 
 export const CheckYourReviewPage = ({
@@ -40,6 +42,23 @@ export const CheckYourReviewPage = ({
               </div>
             </dl>
           </div>
+
+          ${Option.match(review.author, {
+            onNone: () => '',
+            onSome: author =>
+              html` <div class="summary-card">
+                <div>
+                  <h2>Your details</h2>
+                </div>
+
+                <dl class="summary-list">
+                  <div>
+                    <dt><span>Published name</span></dt>
+                    <dd>${displayAuthor(author)}</dd>
+                  </div>
+                </dl>
+              </div>`,
+          })}
 
           <div class="summary-card">
             <div>
@@ -356,4 +375,20 @@ export const CheckYourReviewPage = ({
     skipToLabel: 'form',
     js: ['single-use-form.js'],
   })
+}
+
+function displayAuthor({ name, orcid }: { name: NonEmptyString.NonEmptyString; orcid?: Orcid.Orcid }) {
+  if (orcid) {
+    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (Pseudonym.isPseudonym(name)) {
+    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}"
+      >${name}</a
+    >`
+  }
+
+  return name
 }

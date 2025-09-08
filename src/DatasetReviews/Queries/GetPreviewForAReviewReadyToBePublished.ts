@@ -1,8 +1,13 @@
 import { Array, Either, Option, Struct } from 'effect'
+import type { NonEmptyString, Orcid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DatasetReviewPreview {
+  readonly author: Option.Option<{
+    name: NonEmptyString.NonEmptyString
+    orcidId?: Orcid.Orcid
+  }>
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -94,6 +99,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
+        author: Option.none(),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
