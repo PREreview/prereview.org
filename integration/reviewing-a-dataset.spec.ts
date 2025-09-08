@@ -774,3 +774,25 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes')).toBeFocused()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn)('have to choose a persona', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.goto(`${page.url()}/../choose-name`, { waitUntil: 'commit' })
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
+
+  await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
+
+  await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
+})

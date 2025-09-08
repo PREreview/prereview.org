@@ -1,13 +1,14 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Option, Struct } from 'effect'
+import { Effect, Match, Option, pipe, Struct } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import { NonEmptyString, type Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
+import { RouteForCommand } from '../RouteForCommand.js'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.js'
 import { ChooseYourPersonaPage as MakeResponse } from './ChooseYourPersonaPage.js'
 
@@ -44,9 +45,7 @@ export const ChooseYourPersonaPage = ({
   )
 
 export const ChooseYourPersonaSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   body: UrlParams.UrlParams
@@ -55,4 +54,40 @@ export const ChooseYourPersonaSubmission = ({
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> => HavingProblemsPage
+> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+
+    const form = yield* ChooseYourPersonaForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: Effect.fn(
+        function* (form: ChooseYourPersonaForm.CompletedForm) {
+          yield* DatasetReviews.choosePersona({
+            persona: pipe(
+              Match.value(form.chooseYourPersona),
+              Match.when('public', type => ({
+                type,
+                name: NonEmptyString.NonEmptyString(user.name),
+                orcidId: user.orcid,
+              })),
+              Match.when('pseudonym', type => ({ type, pseudonym: user.pseudonym })),
+              Match.exhaustive,
+            ),
+            datasetReviewId,
+            userId: user.orcid,
+          })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, user })),
+    })
+  })
