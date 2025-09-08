@@ -68,7 +68,9 @@ export const ChooseYourPersonaSubmission = ({
               Match.value(form.chooseYourPersona),
               Match.when('public', type => ({
                 type,
-                name: NonEmptyString.NonEmptyString(user.name),
+                name: NonEmptyString.isNonEmptyString(user.name)
+                  ? user.name
+                  : NonEmptyString.NonEmptyString('A PREreviewer'),
                 orcidId: user.orcid,
               })),
               Match.when('pseudonym', type => ({ type, pseudonym: user.pseudonym })),
