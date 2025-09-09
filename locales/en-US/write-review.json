@@ -219,8 +219,11 @@
   "shareYourReview": {
     "message": "Share your review"
   },
+  "letAuthorsKnow": {
+    "message": "Please let the authors know that you published your review. They may have contact details on the preprint."
+  },
   "letCommunityKnow": {
-    "message": "Let the community know that you published your review."
+    "message": "Also, why not let the wider community know:"
   },
   "shareOnBluesky": {
     "message": "Share it on Bluesky"
