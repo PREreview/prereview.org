@@ -28,6 +28,23 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when using a pseudonym', async ({ showPage }) => {
+  const response = publishedPage({
+    review: {
+      doi: Doi('10.5281/zenodo.10779310'),
+      id: 10779310,
+      form: { ...form, persona: 'pseudonym' },
+    },
+    preprint,
+    url: new URL('http://example.com/review'),
+    locale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 test('content looks right when the preprint is not on Sciety', async ({ showPage }) => {
   const response = publishedPage({
     review: {

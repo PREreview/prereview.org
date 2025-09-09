@@ -88,6 +88,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    await expect(page.getByRole('main')).toContainText('Share your review')
   },
 )
 
@@ -824,6 +825,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    await expect(page.getByRole('main')).not.toContainText('Share your review')
   },
 )
 
