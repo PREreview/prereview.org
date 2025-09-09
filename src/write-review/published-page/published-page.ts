@@ -67,7 +67,11 @@ export const publishedPage = ({
         ? html`
             <h2>${t('write-review', 'shareYourReview')()}</h2>
 
-            <p>${t('write-review', 'letCommunityKnow')()}</p>
+            <p lang="en" dir="ltr">
+              Please let the authors know that you published your review. They may have contact details on the preprint.
+            </p>
+
+            <p lang="en" dir="ltr">Also, why not let the wider community know:</p>
 
             <div class="button-group" role="group">
               <a
