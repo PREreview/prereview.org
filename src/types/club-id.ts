@@ -33,6 +33,7 @@ export const clubIds = [
   'open-science-community-iraqi',
   'open-science-community-uruguay',
   'oxplants',
+  'plant-biotechnology',
   'prosac',
   'review-curate-network',
   'reviewing-dental-articles-club',

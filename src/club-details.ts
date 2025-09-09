@@ -594,6 +594,17 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2024-11-04'),
     leads: [{ name: 'Kornelija Aleksejeva', orcid: Orcid('0009-0004-3328-1862') }],
   },
+  'plant-biotechnology': {
+    name: 'Plant Biotechnology Club',
+    description: html`
+      <p>
+        We are a group of scientists at the University of Yaounde 1 / Faculty of Science / Department of Plant Biology.
+      </p>
+      <p>Our main purpose is to contribute to the improvement of science through the practice of Plant breeding.</p>
+    `,
+    added: Temporal.PlainDate.from('2025-09-09'),
+    leads: [{ name: 'Lessa Tchohou Fabrice', orcid: Orcid('0000-0002-5644-7632') }],
+  },
   prosac: {
     name: 'Proteostasis and Cancer Team INSERM U1242',
     description: html`
