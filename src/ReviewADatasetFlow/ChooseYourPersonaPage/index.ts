@@ -4,6 +4,7 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
+import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import { NonEmptyString, type Uuid } from '../../types/index.js'
@@ -27,7 +28,10 @@ export const ChooseYourPersonaPage = ({
 
     const form = ChooseYourPersonaForm.fromPersona(Option.map(currentPersona, Struct.get('type')))
 
-    return MakeResponse({ datasetReviewId, form, user })
+    const publicPersona = new Personas.PublicPersona({ orcidId: user.orcid, name: user.name })
+    const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: user.pseudonym })
+
+    return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
@@ -90,6 +94,12 @@ export const ChooseYourPersonaSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, user })),
+      InvalidForm: form =>
+        Effect.sync(() => {
+          const publicPersona = new Personas.PublicPersona({ orcidId: user.orcid, name: user.name })
+          const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: user.pseudonym })
+
+          return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
+        }),
     })
   })

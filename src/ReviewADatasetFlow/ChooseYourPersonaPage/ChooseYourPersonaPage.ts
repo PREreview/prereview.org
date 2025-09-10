@@ -1,20 +1,22 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../html.js'
+import type * as Personas from '../../Personas/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import * as StatusCodes from '../../StatusCodes.js'
 import type { Uuid } from '../../types/index.js'
-import type { User } from '../../user.js'
 import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.js'
 
 export const ChooseYourPersonaPage = ({
   datasetReviewId,
   form,
-  user,
+  publicPersona,
+  pseudonymPersona,
 }: {
   datasetReviewId: Uuid.Uuid
   form: ChooseYourPersonaForm.ChooseYourPersonaForm
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
 }) => {
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
@@ -72,7 +74,7 @@ export const ChooseYourPersonaPage = ({
                 <p>
                   A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your real&nbsp;name.
                   It is unique and combines a random color and animal. Your pseudonym is
-                  ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}’.
+                  ‘${rawHtml(pseudonymPersona.pseudonym.replace(' ', '&nbsp;'))}’.
                 </p>
 
                 <p>
@@ -114,7 +116,7 @@ export const ChooseYourPersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.name}</span>
+                  <span>${publicPersona.name}</span>
                 </label>
                 <p id="choose-your-persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
               </li>
@@ -134,7 +136,7 @@ export const ChooseYourPersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.pseudonym}</span>
+                  <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="choose-your-persona-tip-pseudonym" role="note">
                   We’ll only link your PREreview to others that also use your pseudonym.
