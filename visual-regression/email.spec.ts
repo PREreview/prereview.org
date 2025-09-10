@@ -19,7 +19,7 @@ import { expect, test } from './base.js'
 test('email-verification HTML looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -38,7 +38,7 @@ test('email-verification HTML looks right', async ({ page }) => {
 test('email-verification text looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -57,7 +57,7 @@ test('email-verification text looks right', async ({ page }) => {
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -76,7 +76,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
 test('email-verification text for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -95,7 +95,7 @@ test('email-verification text for an invited author looks right', async ({ page 
 test('email-verification HTML for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -115,7 +115,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
 test('email-verification text for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },

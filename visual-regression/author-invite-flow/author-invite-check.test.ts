@@ -3,6 +3,7 @@ import { Uuid } from 'uuid-ts'
 import { checkPage } from '../../src/author-invite-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -11,7 +12,7 @@ test('content looks right', async ({ showPage }) => {
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     persona: 'public',
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -28,7 +29,7 @@ test('content looks right when using a pseudonym', async ({ showPage }) => {
     inviteId: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     persona: 'pseudonym',
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },

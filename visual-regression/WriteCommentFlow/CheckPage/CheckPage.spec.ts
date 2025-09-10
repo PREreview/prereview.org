@@ -56,7 +56,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
 })
 
 const user = {
-  name: 'Josiah Carberry',
+  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
   orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

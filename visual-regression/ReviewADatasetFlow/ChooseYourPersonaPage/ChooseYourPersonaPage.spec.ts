@@ -3,6 +3,7 @@ import * as ChooseYourPersonaForm from '../../../src/ReviewADatasetFlow/ChooseYo
 import * as _ from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.js'
 import { Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 
+import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
 import type { User } from '../../../src/user.js'
 import { expect, test } from '../../base.js'
 
@@ -47,7 +48,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
 const datasetReviewId = Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f')
 
 const user = {
-  name: 'Josiah Carberry',
+  name: NonEmptyString('Josiah Carberry'),
   orcid: Orcid.Orcid('0000-0002-1825-0097'),
   pseudonym: Pseudonym.Pseudonym('Orange Panda'),
 } satisfies User

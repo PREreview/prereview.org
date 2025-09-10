@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import { Array, Effect, Redacted } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Doi } from '../../src/types/index.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
@@ -14,7 +15,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
       const prereviewId = 12345
       const preprintId = new BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
       const user = {
-        name: 'Josiah Carberry',
+        name: NonEmptyString('Josiah Carberry'),
         orcid: Orcid('0000-0002-1825-0097'),
         pseudonym: Pseudonym('Orange Panda'),
       }

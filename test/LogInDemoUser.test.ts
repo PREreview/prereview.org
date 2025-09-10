@@ -5,6 +5,7 @@ import { Locale } from '../src/Context.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
 import * as _ from '../src/LogInDemoUser.js'
 import * as StatusCodes from '../src/StatusCodes.js'
+import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
@@ -17,7 +18,7 @@ describe('LogInDemoUser', () => {
       expect(actual).toStrictEqual({
         _tag: 'ForceLogInResponse',
         user: {
-          name: 'Josiah Carberry',
+          name: NonEmptyString('Josiah Carberry'),
           orcid: '0000-0002-1825-0097',
           pseudonym: 'Orange Panda',
         },

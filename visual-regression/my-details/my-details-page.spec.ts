@@ -115,7 +115,7 @@ test('content looks right when empty', async ({ showPage }) => {
 })
 
 const user = {
-  name: 'Josiah Carberry',
+  name: NonEmptyString('Josiah Carberry'),
   orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

@@ -4,7 +4,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { isOrcid } from 'orcid-id-ts'
 import * as FptsToEffect from './FptsToEffect.js'
-import { Orcid, Pseudonym } from './types/index.js'
+import { NonEmptyString, Orcid, Pseudonym } from './types/index.js'
 
 export type User = C.TypeOf<typeof UserC>
 
@@ -15,13 +15,13 @@ export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 export const UserC = C.struct({
-  name: C.string,
+  name: NonEmptyString.NonEmptyStringC,
   orcid: OrcidC,
   pseudonym: Pseudonym.PseudonymC,
 })
 
 export const UserSchema = Schema.Struct({
-  name: Schema.String,
+  name: NonEmptyString.NonEmptyStringSchema,
   orcid: Orcid.OrcidSchema,
   pseudonym: Pseudonym.PseudonymSchema,
 })

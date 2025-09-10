@@ -4,6 +4,7 @@ import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import * as Prereview from '../../../src/Prereview.js'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
 import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
 import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
@@ -124,7 +125,7 @@ const prereview = new Prereview.Prereview({
 })
 
 const user = {
-  name: 'Josiah Carberry',
+  name: NonEmptyString('Josiah Carberry'),
   orcid: Orcid('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

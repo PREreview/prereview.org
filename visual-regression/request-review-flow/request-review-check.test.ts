@@ -4,6 +4,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { checkPage } from '../../src/request-review-flow/check-page/check-page.js'
 import { failureMessage } from '../../src/request-review-flow/check-page/failure-message.js'
 import type { ReviewRequestPreprintId } from '../../src/review-request.js'
+import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
@@ -20,7 +21,7 @@ test('content looks right', async ({ showPage }) => {
       persona: 'public',
     },
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
@@ -40,7 +41,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
       persona: 'pseudonym',
     },
     user: {
-      name: 'Josiah Carberry',
+      name: NonEmptyString('Josiah Carberry'),
       orcid: Orcid('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
