@@ -21,6 +21,7 @@ import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid } from './orcid.js'
+import * as Personas from './Personas/index.js'
 import * as Preprints from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
 import * as Prereviews from './Prereviews/index.js'
@@ -318,6 +319,7 @@ export const Program = pipe(
   ),
   Layer.provide(
     Layer.mergeAll(
+      Personas.layer,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
