@@ -68,6 +68,7 @@ import {
 import type { Location } from '../src/location.js'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
+import * as Personas from '../src/Personas/index.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
 import { Prereview } from '../src/Prereview.js'
 import type { ResearchInterests } from '../src/research-interests.js'
@@ -1398,6 +1399,23 @@ export const ghostPage = (): fc.Arbitrary<GhostPage> =>
     html: html(),
     locale: supportedLocale(),
   })
+
+export const publicPersona = (): fc.Arbitrary<Personas.PublicPersona> =>
+  fc
+    .record({
+      orcidId: orcid(),
+      name: nonEmptyString(),
+    })
+    .map(args => new Personas.PublicPersona(args))
+
+export const pseudonymPersona = (): fc.Arbitrary<Personas.PseudonymPersona> =>
+  fc
+    .record({
+      pseudonym: pseudonym(),
+    })
+    .map(args => new Personas.PseudonymPersona(args))
+
+export const persona = (): fc.Arbitrary<Personas.Persona> => fc.oneof(publicPersona(), pseudonymPersona())
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({
