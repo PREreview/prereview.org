@@ -5,7 +5,6 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import type * as Zenodo from '../../../src/Zenodo/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
@@ -166,7 +165,7 @@ describe('GetDataForZenodoRecord', () => {
             ),
           )
           .map(events =>
-            Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, Zenodo.DatasetReview]>(events, {
+            Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DataForZenodoRecord]>(events, {
               author:
                 events[13].persona.type === 'public'
                   ? { name: events[13].persona.name, orcidId: events[13].persona.orcidId }

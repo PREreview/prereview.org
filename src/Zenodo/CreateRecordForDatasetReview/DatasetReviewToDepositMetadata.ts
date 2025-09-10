@@ -1,35 +1,10 @@
 import { Match, Option, pipe } from 'effect'
-import type * as Events from '../../Events.js'
+import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import { html } from '../../html.js'
-import { Doi, type NonEmptyString, type Orcid } from '../../types/index.js'
+import { Doi } from '../../types/index.js'
 import type { DepositMetadata } from '../Deposition.js'
 
-export interface DatasetReview {
-  readonly author: {
-    name: NonEmptyString.NonEmptyString
-    orcidId?: Orcid.Orcid
-  }
-  readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
-  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
-  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
-  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
-  readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
-    Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
-  >
-  readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
-    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
-  >
-  readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
-    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
-  >
-  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
-  readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
-  readonly answerToIfTheDatasetMattersToItsAudience: Option.Option<
-    Events.AnsweredIfTheDatasetMattersToItsAudience['answer']
-  >
-  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
-  readonly answerToIfTheDatasetIsMissingAnything: Events.AnsweredIfTheDatasetIsMissingAnything['answer']
-}
+export type DatasetReview = DatasetReviews.DataForZenodoRecord
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
   creators: [{ name: review.author.name, orcid: review.author.orcidId }],

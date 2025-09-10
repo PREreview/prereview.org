@@ -16,7 +16,7 @@ import { PublishRecord } from './PublishRecord/index.js'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.js'
 import type { ZenodoApi } from './ZenodoApi.js'
 
-export { FailedToCreateRecordForDatasetReview, type DatasetReview } from './CreateRecordForDatasetReview/index.js'
+export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.js'
 
 export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecord/index.js'
 

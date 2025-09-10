@@ -3,8 +3,6 @@ import { CreateDeposition } from '../CreateDeposition/index.js'
 import { UploadFile } from '../UploadFile/index.js'
 import { DatasetReviewToDepositMetadata, type DatasetReview } from './DatasetReviewToDepositMetadata.js'
 
-export type { DatasetReview } from './DatasetReviewToDepositMetadata.js'
-
 export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('FailedToCreateRecordForDatasetReview')<{
   cause?: unknown
 }> {}

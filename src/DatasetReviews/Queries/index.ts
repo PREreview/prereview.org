@@ -162,6 +162,8 @@ export const {
   getZenodoRecordId,
 } = Effect.serviceFunctions(DatasetReviewQueries)
 
+export type { DataForZenodoRecord } from './GetDataForZenodoRecord.js'
+
 export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublished.js'
 
 export type { PublishedReview } from './GetPublishedReview.js'
