@@ -20,7 +20,7 @@ import type { SupportedLocale } from '../locales/index.js'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import { homeMatch, orcidCodeMatch } from '../routes.js'
-import { OrcidLocale } from '../types/index.js'
+import { NonEmptyString, OrcidLocale } from '../types/index.js'
 import type { Pseudonym } from '../types/Pseudonym.js'
 import { newSessionForUser } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
@@ -135,7 +135,13 @@ export const authenticate = flow(
     RM.ichainFirstW(({ referer }) => RM.redirect(referer)),
     RM.ichainFirstW(
       flow(
-        ({ user, pseudonym }) => ({ ...user, pseudonym }),
+        ({ user, pseudonym }) => ({
+          ...user,
+          name: NonEmptyString.isNonEmptyString(user.name)
+            ? user.name
+            : NonEmptyString.NonEmptyString(`PREreviewer ${user.orcid}`),
+          pseudonym,
+        }),
         newSessionForUser,
         storeSession,
         orElseFirstW(RM.fromReaderIOK(error => L.errorP('Unable to store new session')({ error: error.message }))),

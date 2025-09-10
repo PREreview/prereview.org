@@ -134,70 +134,140 @@ describe('logOut', () => {
 })
 
 describe('authenticate', () => {
-  test.prop([
-    fc.string(),
-    fc.url().chain(url => fc.tuple(fc.constant(url))),
-    fc.oauth(),
-    fc.supportedLocale(),
-    fc.record({
-      access_token: fc.string(),
-      token_type: fc.string(),
-      name: fc.string(),
-      orcid: fc.orcid(),
-    }),
-    fc.pseudonym(),
-    fc.string(),
-    fc.cookieName(),
-    fc.connection(),
-  ])(
-    'when the state contains a valid referer',
-    async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
-      const sessionStore = new Keyv()
+  describe('when the state contains a valid referer', () => {
+    test.prop([
+      fc.string(),
+      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.oauth(),
+      fc.supportedLocale(),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.nonEmptyString(),
+        orcid: fc.orcid(),
+      }),
+      fc.pseudonym(),
+      fc.string(),
+      fc.cookieName(),
+      fc.connection(),
+    ])(
+      'when there is a name',
+      async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
+        const sessionStore = new Keyv()
 
-      const actual = await runMiddleware(
-        _.authenticate(
-          code,
-          referer.href,
-        )({
-          clock: SystemClock,
-          fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-            status: StatusCodes.OK,
-            body: accessToken,
+        const actual = await runMiddleware(
+          _.authenticate(
+            code,
+            referer.href,
+          )({
+            clock: SystemClock,
+            fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
+              status: StatusCodes.OK,
+              body: accessToken,
+            }),
+            getPseudonym: () => TE.right(pseudonym),
+            getUserOnboarding: shouldNotBeCalled,
+            isUserBlocked: () => false,
+            locale,
+            logger: () => IO.of(undefined),
+            orcidOauth,
+            publicUrl: new URL('/', referer),
+            secret,
+            sessionCookie,
+            sessionStore,
+            templatePage: shouldNotBeCalled,
           }),
-          getPseudonym: () => TE.right(pseudonym),
-          getUserOnboarding: shouldNotBeCalled,
-          isUserBlocked: () => false,
-          locale,
-          logger: () => IO.of(undefined),
-          orcidOauth,
-          publicUrl: new URL('/', referer),
-          secret,
-          sessionCookie,
-          sessionStore,
-          templatePage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-      const sessions = await all(sessionStore.iterator!(undefined))
+          connection,
+        )()
+        const sessions = await all(sessionStore.iterator!(undefined))
 
-      expect(sessions).toStrictEqual([
-        [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
-      ])
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: StatusCodes.Found },
-          { type: 'setHeader', name: 'Location', value: referer.href },
-          {
-            type: 'setCookie',
-            name: sessionCookie,
-            options: expect.anything(),
-            value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+        expect(sessions).toStrictEqual([
+          [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
+        ])
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: StatusCodes.Found },
+            { type: 'setHeader', name: 'Location', value: referer.href },
+            {
+              type: 'setCookie',
+              name: sessionCookie,
+              options: expect.anything(),
+              value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.string(),
+      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.oauth(),
+      fc.supportedLocale(),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string({ unit: fc.whiteSpaceCharacter() }),
+        orcid: fc.orcid(),
+      }),
+      fc.pseudonym(),
+      fc.string(),
+      fc.cookieName(),
+      fc.connection(),
+    ])(
+      "when there isn't a name",
+      async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
+        const sessionStore = new Keyv()
+
+        const actual = await runMiddleware(
+          _.authenticate(
+            code,
+            referer.href,
+          )({
+            clock: SystemClock,
+            fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
+              status: StatusCodes.OK,
+              body: accessToken,
+            }),
+            getPseudonym: () => TE.right(pseudonym),
+            getUserOnboarding: shouldNotBeCalled,
+            isUserBlocked: () => false,
+            locale,
+            logger: () => IO.of(undefined),
+            orcidOauth,
+            publicUrl: new URL('/', referer),
+            secret,
+            sessionCookie,
+            sessionStore,
+            templatePage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
+        const sessions = await all(sessionStore.iterator!(undefined))
+
+        expect(sessions).toStrictEqual([
+          [
+            expect.anything(),
+            { user: { name: `PREreviewer ${accessToken.orcid}`, orcid: accessToken.orcid, pseudonym } },
+          ],
+        ])
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: StatusCodes.Found },
+            { type: 'setHeader', name: 'Location', value: referer.href },
+            {
+              type: 'setCookie',
+              name: sessionCookie,
+              options: expect.anything(),
+              value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
+  })
 
   test.prop([
     fc.string(),
@@ -367,7 +437,7 @@ describe('authenticate', () => {
       const sessions = await all(sessionStore.iterator!(undefined))
 
       expect(sessions).toStrictEqual([
-        [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
+        [expect.anything(), { user: { name: expect.anything(), orcid: accessToken.orcid, pseudonym } }],
       ])
       expect(actual).toStrictEqual(
         E.right([
