@@ -16,7 +16,7 @@ describe('writeReviewPersona', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.persona().map(persona => Tuple.make(persona, { persona })),
+    fc.personaType().map(persona => Tuple.make(persona, { persona })),
     fc.user(),
     fc.supportedLocale(),
     fc.completedForm(),
@@ -40,7 +40,7 @@ describe('writeReviewPersona', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.persona().map(persona => Tuple.make(persona, { persona })),
+    fc.personaType().map(persona => Tuple.make(persona, { persona })),
     fc.user(),
     fc.supportedLocale(),
     fc.incompleteForm(),
