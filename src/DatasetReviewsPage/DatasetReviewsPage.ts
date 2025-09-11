@@ -1,6 +1,7 @@
-import { Array } from 'effect'
+import { Array, Struct } from 'effect'
 import type * as DatasetReviews from '../DatasetReviews/index.js'
 import { html, plainText } from '../html.js'
+import * as Personas from '../Personas/index.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 
@@ -76,16 +77,17 @@ The submitted dataset contains the metadata collected from 500 articles in the f
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        PREreview by ${datasetReview.author.name}
+                        PREreview by ${displayAuthor(datasetReview.author)}
                       </h3>
 
                       <div class="byline">
-                        <span class="visually-hidden">Authored</span> by ${datasetReview.author.name}
+                        <span class="visually-hidden">Authored</span> by ${displayAuthor(datasetReview.author)}
                       </div>
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      Read <span class="visually-hidden">the PREreview by ${datasetReview.author.name}</span>
+                      Read
+                      <span class="visually-hidden">the PREreview by ${displayAuthor(datasetReview.author)}</span>
                     </a>
                   </article>
                 </li>
@@ -99,3 +101,8 @@ The submitted dataset contains the metadata collected from 500 articles in the f
     type: 'dataset',
   })
 }
+
+const displayAuthor = Personas.match({
+  onPublic: Struct.get('name'),
+  onPseudonym: Struct.get('pseudonym'),
+})

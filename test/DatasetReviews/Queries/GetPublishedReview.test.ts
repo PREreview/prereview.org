@@ -2,9 +2,10 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
-import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
+import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as Datasets from '../../../src/Datasets/index.js'
+import * as Personas from '../../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
@@ -151,8 +152,8 @@ describe('GetPublishedReview', () => {
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
                 author:
                   events[2].persona.type === 'public'
-                    ? { name: events[2].persona.name, orcid: events[2].persona.orcidId }
-                    : { name: events[2].persona.pseudonym },
+                    ? new Personas.PublicPersona({ name: events[2].persona.name, orcidId: events[2].persona.orcidId })
+                    : new Personas.PseudonymPersona({ pseudonym: events[2].persona.pseudonym }),
                 doi: events[3].doi,
                 id: events[0].datasetReviewId,
                 questions: {
@@ -196,10 +197,10 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasPublished1,
                 ],
                 {
-                  author: {
+                  author: new Personas.PublicPersona({
                     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-                    orcid: Orcid.Orcid('0000-0002-1825-0097'),
-                  },
+                    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+                  }),
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {
@@ -265,7 +266,7 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasPublished2,
                 ],
                 {
-                  author: { name: NonEmptyString.NonEmptyString('Orange Panda') },
+                  author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,
                   questions: {
@@ -304,10 +305,10 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasStarted,
                 ],
                 {
-                  author: {
-                    name: 'A PREreviewer',
-                    orcid: datasetReviewWasStarted.authorId,
-                  },
+                  author: new Personas.PublicPersona({
+                    name: NonEmptyString.NonEmptyString('A PREreviewer'),
+                    orcidId: datasetReviewWasStarted.authorId,
+                  }),
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {

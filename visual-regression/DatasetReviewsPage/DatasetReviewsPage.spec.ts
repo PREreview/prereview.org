@@ -2,7 +2,8 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
 import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
+import * as Personas from '../../src/Personas/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showTwoUpPage }) => {
@@ -26,10 +27,10 @@ test('content looks right when empty', async ({ showTwoUpPage }) => {
 })
 
 const prereview1: DatasetReviews.PublishedReview = {
-  author: {
-    name: 'Josiah Carberry',
-    orcid: Orcid.Orcid('0000-0002-1825-0097'),
-  },
+  author: new Personas.PublicPersona({
+    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+  }),
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
@@ -52,9 +53,7 @@ const prereview1: DatasetReviews.PublishedReview = {
 }
 
 const prereview2: DatasetReviews.PublishedReview = {
-  author: {
-    name: 'Orange Panda',
-  },
+  author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
   doi: Doi.Doi('10.5281/zenodo.10779311'),
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {

@@ -4,6 +4,7 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../src/Context.js'
 import * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as _ from '../src/DatasetReviewsPage/index.js'
+import * as Personas from '../src/Personas/index.js'
 import * as Routes from '../src/routes.js'
 import * as StatusCodes from '../src/StatusCodes.js'
 import * as EffectTest from './EffectTest.js'
@@ -14,13 +15,7 @@ describe('DatasetReviewsPage', () => {
     fc.supportedLocale(),
     fc.array(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record(
-        {
-          name: fc.string(),
-          orcid: fc.orcid(),
-        },
-        { requiredKeys: ['name'] },
-      ),
+      author: fc.persona(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -64,6 +59,7 @@ describe('DatasetReviewsPage', () => {
           getPublishedReview: () => Effect.succeed(datasetReview),
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),
@@ -96,6 +92,7 @@ describe('DatasetReviewsPage', () => {
           getPublishedReview: () => error,
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),
@@ -119,6 +116,7 @@ describe('DatasetReviewsPage', () => {
           findPublishedReviewsForADataset: () => new DatasetReviews.UnableToQuery({}),
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),

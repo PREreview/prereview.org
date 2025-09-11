@@ -3,15 +3,16 @@ import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../DatasetReviews/index.js'
 import { html, plainText } from '../html.js'
 import { DefaultLocale } from '../locales/index.js'
+import * as Personas from '../Personas/index.js'
 import { PageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 import { renderDate } from '../time.js'
-import { Doi, type Orcid, ProfileId, Pseudonym } from '../types/index.js'
+import { Doi, ProfileId } from '../types/index.js'
 
 export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReview }) => {
   return PageResponse({
     title: plainText`Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”`,
-    description: plainText`Authored by ${datasetReview.author.name}`,
+    description: plainText`Authored by ${displayAuthor(datasetReview.author)}`,
     nav: html`
       <a href="${Routes.DatasetReviews}" class="back"><span>Back to all reviews</span></a>
       <a href="https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3" class="forward"
@@ -243,18 +244,13 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid.Orcid }) {
-  if (orcid) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+const displayAuthor = Personas.match({
+  onPublic: ({ name, orcidId }) =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
       >${name}</a
-    >`
-  }
-
-  if (Pseudonym.isPseudonym(name)) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}"
-      >${name}</a
-    >`
-  }
-
-  return name
-}
+    >`,
+  onPseudonym: ({ pseudonym }) =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}"
+      >${pseudonym}</a
+    >`,
+})

@@ -14,13 +14,7 @@ describe('DatasetReviewPage', () => {
     fc.supportedLocale(),
     fc.uuid(),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record(
-        {
-          name: fc.string(),
-          orcid: fc.orcid(),
-        },
-        { requiredKeys: ['name'] },
-      ),
+      author: fc.persona(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({

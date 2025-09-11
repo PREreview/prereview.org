@@ -1,14 +1,12 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Match, Option, pipe, Struct } from 'effect'
-import type { Doi, NonEmptyString, Orcid, Uuid } from '../../types/index.js'
+import * as Personas from '../../Personas/index.js'
+import { NonEmptyString, type Doi, type Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface PublishedReview {
-  author: {
-    name: string
-    orcid?: Orcid.Orcid
-  }
+  author: Personas.Persona
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {
@@ -114,17 +112,25 @@ export const GetPublishedReview = (
         author: Option.match(author, {
           onSome: pipe(
             Match.type<Events.PersonaForDatasetReviewWasChosen>(),
-            Match.when({ persona: { type: 'public' } }, author => ({
-              name: author.persona.name,
-              orcid: author.persona.orcidId,
-            })),
-            Match.when({ persona: { type: 'pseudonym' } }, author => ({ name: author.persona.pseudonym })),
+            Match.when(
+              { persona: { type: 'public' } },
+              author =>
+                new Personas.PublicPersona({
+                  name: author.persona.name,
+                  orcidId: author.persona.orcidId,
+                }),
+            ),
+            Match.when(
+              { persona: { type: 'pseudonym' } },
+              author => new Personas.PseudonymPersona({ pseudonym: author.persona.pseudonym }),
+            ),
             Match.orElseAbsurd,
           ),
-          onNone: () => ({
-            name: 'A PREreviewer',
-            orcid: data.datasetReviewWasStarted.authorId,
-          }),
+          onNone: () =>
+            new Personas.PublicPersona({
+              name: NonEmptyString.NonEmptyString('A PREreviewer'),
+              orcidId: data.datasetReviewWasStarted.authorId,
+            }),
         }),
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
