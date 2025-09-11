@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import { createDatasetReviewPage } from '../../src/DatasetReviewPage/DatasetReviewPage.js'
+import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.js'
 import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
-  const response = createDatasetReviewPage({
+  const response = _.createDatasetReviewPage({
     datasetReview,
   })
 

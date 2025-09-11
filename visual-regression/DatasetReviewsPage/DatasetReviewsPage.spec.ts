@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
 import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
-import { createDatasetReviewsPage } from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
+import * as _ from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
 import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showTwoUpPage }) => {
-  const response = createDatasetReviewsPage({
+  const response = _.createDatasetReviewsPage({
     datasetReviews: [prereview1, prereview2],
   })
 
@@ -17,7 +17,7 @@ test('content looks right', async ({ showTwoUpPage }) => {
 })
 
 test('content looks right when empty', async ({ showTwoUpPage }) => {
-  const response = createDatasetReviewsPage({ datasetReviews: Array.empty() })
+  const response = _.createDatasetReviewsPage({ datasetReviews: Array.empty() })
 
   const [content, aside] = await showTwoUpPage(response)
 
