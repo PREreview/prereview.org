@@ -42,7 +42,7 @@ import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
 import { Nodemailer } from '../../nodemailer.js'
 import type * as OpenAlex from '../../OpenAlex/index.js'
-import { getNameFromOrcid } from '../../orcid.js'
+import { getNameFromOrcid, OrcidApi } from '../../orcid.js'
 import { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
@@ -127,6 +127,7 @@ export const nonEffectRouter: Effect.Effect<
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
+  const orcidApi = yield* OrcidApi
   const orcidOauth = yield* OrcidOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
@@ -183,10 +184,7 @@ export const nonEffectRouter: Effect.Effect<
     scietyListToken: Redacted.make(expressConfig.scietyListToken),
     slackApiConfig,
     cloudinaryApiConfig,
-    orcidApiConfig: {
-      url: expressConfig.orcidApiUrl,
-      token: typeof expressConfig.orcidApiToken === 'string' ? Redacted.make(expressConfig.orcidApiToken) : undefined,
-    },
+    orcidApiConfig: orcidApi,
     zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
     legacyPrereviewApiConfig: {
@@ -222,6 +220,7 @@ export interface Env {
     | GenerateUuid
     | HttpClient.HttpClient
     | OpenAlex.GetCategories
+    | OrcidApi
     | Preprints.Preprints
     | PrereviewCoarNotifyConfig
     | Prereviews.Prereviews
@@ -254,10 +253,7 @@ export interface Env {
     tokenUrl: URL
   }
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
-  orcidApiConfig: {
-    url: URL
-    token?: Redacted.Redacted
-  }
+  orcidApiConfig: typeof OrcidApi.Service
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
@@ -375,8 +371,8 @@ const routerWithoutHyperTs = pipe(
               }),
               getName: withEnv(getNameFromOrcid, {
                 fetch: env.fetch,
-                orcidApiToken: env.orcidApiConfig.token ? Redacted.value(env.orcidApiConfig.token) : undefined,
-                orcidApiUrl: env.orcidApiConfig.url,
+                orcidApiToken: Option.getOrUndefined(Option.map(env.orcidApiConfig.token, Redacted.value)),
+                orcidApiUrl: env.orcidApiConfig.origin,
                 ...env.logger,
               }),
               getPrereviews: EffectToFpts.toTaskEitherK(

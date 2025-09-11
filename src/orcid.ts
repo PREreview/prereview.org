@@ -1,4 +1,4 @@
-import { String, flow, identity, pipe } from 'effect'
+import { Context, type Option, type Redacted, String, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -14,7 +14,12 @@ import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
 
-export interface OrcidApiEnv {
+export class OrcidApi extends Context.Tag('OrcidApi')<
+  OrcidApi,
+  { origin: URL; token: Option.Option<Redacted.Redacted> }
+>() {}
+
+interface OrcidApiEnv {
   readonly orcidApiUrl: URL
   readonly orcidApiToken?: string
 }

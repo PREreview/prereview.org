@@ -76,6 +76,7 @@ import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
+import { OrcidApi } from '../src/orcid.js'
 import { OrcidOauth } from '../src/OrcidOauth.js'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
 import { Program } from '../src/Program.js'
@@ -1282,7 +1283,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             update: updatesLegacyPrereview,
           },
           locationStore,
-          orcidApiUrl: new URL('http://api.orcid.test/'),
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',
@@ -1328,6 +1328,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               cloudName: 'prereview',
               key: Redacted.make('key'),
               secret: Redacted.make('app'),
+            }),
+            Layer.succeed(OrcidApi, {
+              origin: new URL('http://api.orcid.test/'),
+              token: Option.none(),
             }),
             Layer.succeed(OrcidOauth, {
               authorizeUrl: new URL('/authorize', oauthServer.issuer.url),

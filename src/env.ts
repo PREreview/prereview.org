@@ -63,7 +63,6 @@ const EnvD = pipe(
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
     LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
-    ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),
     SLACK_API_TOKEN: D.string,
@@ -74,7 +73,6 @@ const EnvD = pipe(
   D.intersect(
     D.partial({
       LOG_FORMAT: D.literal('json'),
-      ORCID_API_READ_PUBLIC_TOKEN: D.string,
     }),
   ),
 )

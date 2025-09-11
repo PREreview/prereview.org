@@ -20,7 +20,7 @@ import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
-import { getNameFromOrcid } from './orcid.js'
+import { getNameFromOrcid, OrcidApi } from './orcid.js'
 import * as Personas from './Personas/index.js'
 import * as Preprints from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
@@ -164,18 +164,19 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const { legacyPrereviewApi, orcidApiUrl, orcidApiToken } = yield* ExpressConfig
+    const { legacyPrereviewApi } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
+    const orcidApi = yield* OrcidApi
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
     const env = {
       fetch,
       legacyPrereviewApi,
-      orcidApiUrl,
-      orcidApiToken,
+      orcidApiUrl: orcidApi.origin,
+      orcidApiToken: Option.getOrUndefined(Option.map(orcidApi.token, Redacted.value)),
       publicUrl,
       zenodoApiKey: Redacted.value(zenodoApi.key),
       zenodoUrl: zenodoApi.origin,

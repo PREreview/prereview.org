@@ -13,6 +13,7 @@ import * as FeatureFlags from './FeatureFlags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage/index.js'
 import * as Nodemailer from './nodemailer.js'
+import * as Orcid from './orcid.js'
 import * as OrcidOauth from './OrcidOauth.js'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
 import { Program } from './Program.js'
@@ -111,6 +112,13 @@ pipe(
         }),
       ),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
+      Layer.effect(
+        Orcid.OrcidApi,
+        Config.all({
+          origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
+          token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
+        }),
+      ),
       OrcidOauth.layerConfig({
         url: Config.withDefault(Config.url('ORCID_URL'), new URL('https://orcid.org/')),
         clientId: Config.string('ORCID_CLIENT_ID'),

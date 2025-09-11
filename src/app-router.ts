@@ -42,7 +42,7 @@ import {
   logIn,
   logOut,
 } from './log-in/index.js'
-import type { OrcidApiEnv } from './orcid.js'
+import type { OrcidApi } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
@@ -77,6 +77,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | OpenAlex.GetCategories
     | GenerateUuid
     | HttpClient.HttpClient
+    | OrcidApi
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
     | Zenodo.ZenodoApi
   > &
@@ -97,7 +98,6 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   Keyv.LanguagesStoreEnv &
   LegacyPrereviewApiEnv &
   Keyv.LocationStoreEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
-  OrcidApiEnv &
   Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
   PrereviewCoarNotifyEnv &

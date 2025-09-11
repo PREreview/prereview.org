@@ -74,8 +74,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     },
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
-    orcidApiUrl: env.ORCID_API_URL,
-    orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
     orcidOauth: {
       ...orcidOauth,
       clientSecret: Redacted.value(orcidOauth.clientSecret),
