@@ -2,17 +2,22 @@ import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import { html, plainText } from '../../html.js'
+import * as Personas from '../../Personas/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
-import { ProfileId, Pseudonym, type NonEmptyString, type Orcid } from '../../types/index.js'
+import { ProfileId } from '../../types/index.js'
 import type { Uuid } from '../../types/uuid.js'
+
+export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author'> & {
+  readonly author: Option.Option<Personas.Persona>
+}
 
 export const CheckYourReviewPage = ({
   datasetReviewId,
   review,
 }: {
   datasetReviewId: Uuid
-  review: DatasetReviews.DatasetReviewPreview
+  review: DatasetReviewPreview
 }) => {
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
@@ -384,20 +389,13 @@ export const CheckYourReviewPage = ({
   })
 }
 
-function displayAuthor({ name, orcidId }: { name: NonEmptyString.NonEmptyString; orcidId?: Orcid.Orcid }) {
-  if (orcidId) {
-    return html`<a
-      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}"
-      class="orcid"
+const displayAuthor = Personas.match({
+  onPublic: ({ name, orcidId }) =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
       >${name}</a
-    >`
-  }
-
-  if (Pseudonym.isPseudonym(name)) {
-    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}"
-      >${name}</a
-    >`
-  }
-
-  return name
-}
+    >`,
+  onPseudonym: ({ pseudonym }) =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}"
+      >${pseudonym}</a
+    >`,
+})

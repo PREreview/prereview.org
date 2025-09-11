@@ -1,13 +1,10 @@
 import { Array, Either, Match, Option, pipe, Struct } from 'effect'
-import type { NonEmptyString, Orcid } from '../../types/index.js'
+import * as Personas from '../../Personas/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DatasetReviewPreview {
-  readonly author: Option.Option<{
-    name: NonEmptyString.NonEmptyString
-    orcidId?: Orcid.Orcid
-  }>
+  readonly author: Option.Option<Personas.Persona>
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -39,6 +36,12 @@ export const GetPreviewForAReviewReadyToBePublished = (
   | Errors.DatasetReviewHasBeenPublished
   | Errors.UnexpectedSequenceOfEvents
 > => {
+  const started = Option.getOrUndefined(Array.findLast(events, hasTag('DatasetReviewWasStarted')))
+
+  if (!started) {
+    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+  }
+
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
     return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
@@ -105,11 +108,14 @@ export const GetPreviewForAReviewReadyToBePublished = (
           author,
           pipe(
             Match.type<Events.PersonaForDatasetReviewWasChosen>(),
-            Match.when({ persona: { type: 'public' } }, author => ({
-              name: author.persona.name,
-              orcidId: author.persona.orcidId,
-            })),
-            Match.when({ persona: { type: 'pseudonym' } }, author => ({ name: author.persona.pseudonym })),
+            Match.when(
+              { persona: { type: 'public' } },
+              author => new Personas.PublicPersona({ name: author.persona.name, orcidId: author.persona.orcidId }),
+            ),
+            Match.when(
+              { persona: { type: 'pseudonym' } },
+              author => new Personas.PseudonymPersona({ pseudonym: author.persona.pseudonym }),
+            ),
             Match.orElseAbsurd,
           ),
         ),

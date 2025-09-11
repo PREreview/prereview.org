@@ -5,6 +5,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviewForAReviewReadyToBePublished.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
+import * as Personas from '../../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
@@ -168,8 +169,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
               author: Option.some(
                 events[13].persona.type === 'public'
-                  ? { name: events[13].persona.name, orcidId: events[13].persona.orcidId }
-                  : { name: events[13].persona.pseudonym },
+                  ? new Personas.PublicPersona({ name: events[13].persona.name, orcidId: events[13].persona.orcidId })
+                  : new Personas.PseudonymPersona({ pseudonym: events[13].persona.pseudonym }),
               ),
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
@@ -241,7 +242,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 personaForDatasetReviewWasChosen2,
               ],
               {
-                author: Option.some({ name: NonEmptyString.NonEmptyString('Orange Panda') }),
+                author: Option.some(new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })),
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
