@@ -16,6 +16,47 @@ describe('getNameFromOrcid', () => {
         fc.origin(),
         fc.orcid(),
         fc
+          .tuple(fc.nonEmptyString(), fc.nonEmptyString(), fc.nonEmptyString())
+          .map(([creditName, givenName, familyName]) => [creditName, givenName, familyName, creditName.trim()]),
+      ],
+      {
+        examples: [
+          [
+            new URL('https://pub.orcid.org'),
+            Orcid('0000-0002-1825-0097'),
+            ['J. S. Carberry', 'Josiah', 'Carberry', 'J. S. Carberry'],
+          ],
+          [
+            new URL('https://pub.orcid.org'),
+            Orcid('0000-0002-1825-0097'),
+            [' J. S. Carberry ', ' Josiah ', ' Carberry ', 'J. S. Carberry'],
+          ],
+        ],
+      },
+    )('with a credit name', async (url, orcid, [creditName, givenName, familyName, expected]) => {
+      const actual = await _.getNameFromOrcid(orcid)({
+        fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
+          body: {
+            name: {
+              'given-names': { value: givenName },
+              'family-name': { value: familyName },
+              'credit-name': { value: creditName },
+            },
+          },
+        }),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+        orcidApiUrl: url,
+      })()
+
+      expect(actual).toStrictEqual(E.right(expected))
+    })
+
+    test.prop(
+      [
+        fc.origin(),
+        fc.orcid(),
+        fc
           .tuple(fc.nonEmptyString(), fc.nonEmptyString())
           .map(([givenName, familyName]) => [givenName, familyName, `${givenName.trim()} ${familyName.trim()}`]),
       ],
@@ -32,7 +73,9 @@ describe('getNameFromOrcid', () => {
     )('with a family name', async (url, orcid, [givenName, familyName, expected]) => {
       const actual = await _.getNameFromOrcid(orcid)({
         fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
-          body: { name: { 'given-names': { value: givenName }, 'family-name': { value: familyName } } },
+          body: {
+            name: { 'given-names': { value: givenName }, 'family-name': { value: familyName }, 'credit-name': null },
+          },
         }),
         clock: SystemClock,
         logger: () => IO.of(undefined),
@@ -51,7 +94,7 @@ describe('getNameFromOrcid', () => {
       const actual = await _.getNameFromOrcid(orcid)({
         clock: SystemClock,
         fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
-          body: { name: { 'given-names': { value: givenName }, 'family-name': null } },
+          body: { name: { 'given-names': { value: givenName }, 'family-name': null, 'credit-name': null } },
         }),
         logger: () => IO.of(undefined),
         orcidApiUrl: url,

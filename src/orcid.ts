@@ -42,6 +42,11 @@ const PersonalDetailsD = D.struct({
           value: pipe(D.string, D.map(String.trim), D.compose(NonEmptyStringC)),
         }),
       ),
+      'credit-name': D.nullable(
+        D.struct({
+          value: pipe(D.string, D.map(String.trim), D.compose(NonEmptyStringC)),
+        }),
+      ),
     }),
   ),
 })
@@ -70,6 +75,7 @@ export const getNameFromOrcid = flow(
     () => 'unavailable' as const,
     personalDetails =>
       match(personalDetails)
+        .with({ name: { 'credit-name': { value: P.string } } }, ({ name }) => name['credit-name'].value)
         .with({ name: { 'given-names': { value: P.string }, 'family-name': { value: P.string } } }, ({ name }) =>
           NonEmptyString(`${name['given-names'].value} ${name['family-name'].value}`),
         )
