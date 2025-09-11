@@ -11,7 +11,7 @@ describe('CreateRecordOnZenodo', () => {
   test.prop([
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
-      author: fc.record({ name: fc.nonEmptyString(), orcidId: fc.orcid() }, { requiredKeys: ['name'] }),
+      author: fc.persona(),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -66,7 +66,7 @@ describe('CreateRecordOnZenodo', () => {
   test.prop([
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
-      author: fc.record({ name: fc.nonEmptyString(), orcidId: fc.orcid() }, { requiredKeys: ['name'] }),
+      author: fc.persona(),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -127,7 +127,7 @@ describe('CreateRecordOnZenodo', () => {
   test.prop([
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
-      author: fc.record({ name: fc.nonEmptyString(), orcidId: fc.orcid() }, { requiredKeys: ['name'] }),
+      author: fc.persona(),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()

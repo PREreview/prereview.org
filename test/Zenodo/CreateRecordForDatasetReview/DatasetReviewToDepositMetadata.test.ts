@@ -1,16 +1,20 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Option } from 'effect'
+import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
 import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
-import { Doi, NonEmptyString, Orcid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Pseudonym } from '../../../src/types/index.js'
 
 const cases = [
   [
     'all questions answered',
     {
-      author: { name: NonEmptyString.NonEmptyString('Josiah Carberry'), orcidId: Orcid.Orcid('0000-0002-1825-0097') },
+      author: new Personas.PublicPersona({
+        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+      }),
       qualityRating: Option.some('excellent'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
@@ -127,7 +131,7 @@ const cases = [
   [
     'minimal questions answered',
     {
-      author: { name: NonEmptyString.NonEmptyString('A PREreviewer') },
+      author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
       qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
@@ -142,7 +146,7 @@ const cases = [
       answerToIfTheDatasetIsMissingAnything: Option.none(),
     },
     {
-      creators: [{ name: 'A PREreviewer', orcid: undefined }],
+      creators: [{ name: 'Orange Panda' }],
       description: rawHtml(`
     <dl>
       

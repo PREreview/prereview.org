@@ -1,13 +1,19 @@
 import { Match, Option, pipe } from 'effect'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import { html } from '../../html.js'
+import * as Personas from '../../Personas/index.js'
 import { Doi } from '../../types/index.js'
 import type { DepositMetadata } from '../Deposition.js'
 
 export type DatasetReview = DatasetReviews.DataForZenodoRecord
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
-  creators: [{ name: review.author.name, orcid: review.author.orcidId }],
+  creators: [
+    Personas.match(review.author, {
+      onPublic: author => ({ name: author.name, orcid: author.orcidId }),
+      onPseudonym: author => ({ name: author.pseudonym }),
+    }),
+  ],
   description: html`
     <dl>
       ${Option.match(review.qualityRating, {
