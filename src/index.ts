@@ -12,6 +12,7 @@ import { ExpressConfigLive } from './ExpressServer.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage/index.js'
+import { LegacyPrereviewApi } from './legacy-prereview.js'
 import * as Nodemailer from './nodemailer.js'
 import * as Orcid from './orcid.js'
 import * as OrcidOauth from './OrcidOauth.js'
@@ -109,6 +110,15 @@ pipe(
         Config.all({
           coarNotifyToken: Config.redacted('COAR_NOTIFY_TOKEN'),
           coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
+        }),
+      ),
+      Layer.effect(
+        LegacyPrereviewApi,
+        Config.all({
+          app: Config.string('LEGACY_PREREVIEW_API_APP'),
+          key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
+          origin: Config.url('LEGACY_PREREVIEW_URL'),
+          update: Config.withDefault(Config.boolean('LEGACY_PREREVIEW_UPDATE'), false),
         }),
       ),
       Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),

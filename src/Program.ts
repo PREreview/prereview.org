@@ -15,7 +15,7 @@ import * as FptsToEffect from './FptsToEffect.js'
 import * as GhostPage from './GhostPage/index.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
-import { getPseudonymFromLegacyPrereview } from './legacy-prereview.js'
+import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from './legacy-prereview.js'
 import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
@@ -164,7 +164,7 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const { legacyPrereviewApi } = yield* ExpressConfig
+    const legacyPrereviewApi = yield* LegacyPrereviewApi
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
@@ -174,7 +174,12 @@ const createRecordOnZenodoForComment = Layer.effect(
 
     const env = {
       fetch,
-      legacyPrereviewApi,
+      legacyPrereviewApi: {
+        app: legacyPrereviewApi.app,
+        key: Redacted.value(legacyPrereviewApi.key),
+        url: legacyPrereviewApi.origin,
+        update: legacyPrereviewApi.update,
+      },
       orcidApiUrl: orcidApi.origin,
       orcidApiToken: Option.getOrUndefined(Option.map(orcidApi.token, Redacted.value)),
       publicUrl,

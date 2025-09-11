@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Boolean, Function, Option, Struct, flow, identity, pipe } from 'effect'
+import { Array, Boolean, Context, Function, Option, type Redacted, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -24,6 +24,11 @@ import {
 import { PseudonymC, isPseudonym } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 import type { NewPrereview } from './write-review/index.js'
+
+export class LegacyPrereviewApi extends Context.Tag('LegacyPrereviewApi')<
+  LegacyPrereviewApi,
+  { app: string; key: Redacted.Redacted; origin: URL; update: boolean }
+>() {}
 
 export interface LegacyPrereviewApiEnv {
   legacyPrereviewApi: {

@@ -490,7 +490,7 @@ export const WriteReviewRouter = pipe(
           legacyPrereviewApi: {
             app: env.legacyPrereviewApiConfig.app,
             key: Redacted.value(env.legacyPrereviewApiConfig.key),
-            url: env.legacyPrereviewApiConfig.url,
+            url: env.legacyPrereviewApiConfig.origin,
             update: env.legacyPrereviewApiConfig.update,
           },
           publicUrl: env.publicUrl,

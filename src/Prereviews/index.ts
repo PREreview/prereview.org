@@ -6,7 +6,11 @@ import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
-import { getRapidPreviewsFromLegacyPrereview, isLegacyCompatiblePreprint } from '../legacy-prereview.js'
+import {
+  getRapidPreviewsFromLegacyPrereview,
+  isLegacyCompatiblePreprint,
+  LegacyPrereviewApi,
+} from '../legacy-prereview.js'
 import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
 import * as Preprints from '../Preprints/index.js'
 import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
@@ -87,8 +91,9 @@ export const {
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const { legacyPrereviewApi, wasPrereviewRemoved } = yield* ExpressConfig
+    const { wasPrereviewRemoved } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
+    const legacyPrereviewApi = yield* LegacyPrereviewApi
     const logger = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
@@ -156,7 +161,12 @@ export const layer = Layer.effect(
           Effect.andThen(id =>
             FptsToEffect.readerTaskEither(getRapidPreviewsFromLegacyPrereview(id), {
               fetch,
-              legacyPrereviewApi,
+              legacyPrereviewApi: {
+                app: legacyPrereviewApi.app,
+                key: Redacted.value(legacyPrereviewApi.key),
+                url: legacyPrereviewApi.origin,
+                update: legacyPrereviewApi.update,
+              },
             }),
           ),
           Effect.catchAll(

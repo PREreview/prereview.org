@@ -38,6 +38,7 @@ import { withEnv } from '../../Fpts.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import { home } from '../../home-page/index.js'
 import * as Keyv from '../../keyv.js'
+import { LegacyPrereviewApi } from '../../legacy-prereview.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { myPrereviews } from '../../my-prereviews-page/index.js'
 import { Nodemailer } from '../../nodemailer.js'
@@ -127,6 +128,7 @@ export const nonEffectRouter: Effect.Effect<
   const slackApiConfig = yield* SlackApiConfig
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
+  const legacyPrereviewApi = yield* LegacyPrereviewApi
   const orcidApi = yield* OrcidApi
   const orcidOauth = yield* OrcidOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
@@ -187,12 +189,7 @@ export const nonEffectRouter: Effect.Effect<
     orcidApiConfig: orcidApi,
     zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
-    legacyPrereviewApiConfig: {
-      app: expressConfig.legacyPrereviewApi.app,
-      key: Redacted.make(expressConfig.legacyPrereviewApi.key),
-      url: expressConfig.legacyPrereviewApi.url,
-      update: expressConfig.legacyPrereviewApi.update,
-    },
+    legacyPrereviewApiConfig: legacyPrereviewApi,
     users,
     authorInviteStore: expressConfig.authorInviteStore,
     formStore: expressConfig.formStore,
@@ -219,6 +216,7 @@ export interface Env {
     | CachingHttpClient.HttpCache
     | GenerateUuid
     | HttpClient.HttpClient
+    | LegacyPrereviewApi
     | OpenAlex.GetCategories
     | OrcidApi
     | Preprints.Preprints
@@ -257,12 +255,7 @@ export interface Env {
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
-  legacyPrereviewApiConfig: {
-    app: string
-    key: Redacted.Redacted
-    url: URL
-    update: boolean
-  }
+  legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
   nodemailer: typeof Nodemailer.Service
 }

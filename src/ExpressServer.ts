@@ -6,6 +6,7 @@ import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import * as FeatureFlags from './FeatureFlags.js'
+import { LegacyPrereviewApi } from './legacy-prereview.js'
 import { Nodemailer } from './nodemailer.js'
 import { OrcidOauth } from './OrcidOauth.js'
 import { PublicUrl } from './public-url.js'
@@ -23,11 +24,18 @@ export const expressServer = Effect.gen(function* () {
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
+  const legacyPrereviewApi = yield* LegacyPrereviewApi
 
   return app({
     clock,
     fetch,
     generateUuid,
+    legacyPrereviewApi: {
+      app: legacyPrereviewApi.app,
+      key: Redacted.value(legacyPrereviewApi.key),
+      url: legacyPrereviewApi.origin,
+      update: legacyPrereviewApi.update,
+    },
     nodemailer,
     publicUrl,
     secret: Redacted.value(secret),
@@ -66,12 +74,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       store: createKeyvStore(),
     }),
     isUserBlocked: user => env.BLOCKED_USERS.includes(user),
-    legacyPrereviewApi: {
-      app: env.LEGACY_PREREVIEW_API_APP,
-      key: env.LEGACY_PREREVIEW_API_KEY,
-      url: env.LEGACY_PREREVIEW_URL,
-      update: env.LEGACY_PREREVIEW_UPDATE,
-    },
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
     orcidOauth: {

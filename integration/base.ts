@@ -72,7 +72,7 @@ import type {
   ReviewRequestStoreEnv,
   UserOnboardingStoreEnv,
 } from '../src/keyv.js'
-import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview.js'
+import { LegacyPrereviewApi } from '../src/legacy-prereview.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
@@ -99,7 +99,7 @@ interface AppFixtures {
   oauthServer: OAuth2Server
   port: number
   server: Fiber.RuntimeFiber<never>
-  updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
+  updatesLegacyPrereview: (typeof LegacyPrereviewApi.Service)['update']
   formStore: Keyv
   careerStageStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
@@ -1276,12 +1276,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           isOpenForRequestsStore,
           isUserBlocked,
           languagesStore,
-          legacyPrereviewApi: {
-            app: 'app',
-            key: 'key',
-            url: new URL('http://prereview.test'),
-            update: updatesLegacyPrereview,
-          },
           locationStore,
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
@@ -1328,6 +1322,12 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               cloudName: 'prereview',
               key: Redacted.make('key'),
               secret: Redacted.make('app'),
+            }),
+            Layer.succeed(LegacyPrereviewApi, {
+              app: 'app',
+              key: Redacted.make('key'),
+              origin: new URL('http://prereview.test'),
+              update: updatesLegacyPrereview,
             }),
             Layer.succeed(OrcidApi, {
               origin: new URL('http://api.orcid.test/'),
