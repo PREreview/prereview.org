@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.js'
-import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as Personas from '../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
@@ -16,7 +15,7 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const datasetReview: DatasetReviews.PublishedReview = {
+const datasetReview: _.DatasetReview = {
   author: new Personas.PublicPersona({
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
     orcidId: Orcid.Orcid('0000-0002-1825-0097'),

@@ -5,11 +5,9 @@ import * as Personas from '../Personas/index.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 
-export const createDatasetReviewsPage = ({
-  datasetReviews,
-}: {
-  datasetReviews: ReadonlyArray<DatasetReviews.PublishedReview>
-}) => {
+export type DatasetReview = DatasetReviews.PublishedReview
+
+export const createDatasetReviewsPage = ({ datasetReviews }: { datasetReviews: ReadonlyArray<DatasetReview> }) => {
   return TwoUpPageResponse({
     title: plainText`PREreviews of “Metadata collected from 500 articles in the field of ecology and evolution”`,
     description: plainText`Authored by Jesse Wolf, Layla MacKay, Sarah Haworth, Morgan Dedato, Kiana Young, Marie-Laurence Cossette, Colin Elliott and Rebekah Oomen

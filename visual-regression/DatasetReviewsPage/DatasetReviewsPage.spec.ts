@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
-import type * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
 import * as Personas from '../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../src/types/index.js'
@@ -26,7 +25,7 @@ test('content looks right when empty', async ({ showTwoUpPage }) => {
   await expect(aside).toHaveScreenshot()
 })
 
-const prereview1: DatasetReviews.PublishedReview = {
+const prereview1: _.DatasetReview = {
   author: new Personas.PublicPersona({
     orcidId: Orcid.Orcid('0000-0002-1825-0097'),
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
@@ -52,7 +51,7 @@ const prereview1: DatasetReviews.PublishedReview = {
   published: Temporal.PlainDate.from('2025-08-06'),
 }
 
-const prereview2: DatasetReviews.PublishedReview = {
+const prereview2: _.DatasetReview = {
   author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
   doi: Doi.Doi('10.5281/zenodo.10779311'),
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),

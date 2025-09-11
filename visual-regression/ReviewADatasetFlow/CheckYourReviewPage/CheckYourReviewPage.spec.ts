@@ -1,5 +1,4 @@
 import { Option } from 'effect'
-import type * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.js'
 import { NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
@@ -40,4 +39,4 @@ const review = {
   answerToIfTheDatasetIsMissingAnything: Option.some(
     Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
   ),
-} satisfies DatasetReviews.DatasetReviewPreview
+} satisfies _.DatasetReviewPreview
