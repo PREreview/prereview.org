@@ -68,7 +68,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
   await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-2695-5951/personal-details', {
-    body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' } } },
+    body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' }, 'credit-name': null } },
   })
   fetch.get(
     {
@@ -223,7 +223,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
-    body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
+    body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null } },
   })
   fetch.get(
     {
@@ -455,7 +455,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
 
 test('the list might be empty', async ({ fetch, page }) => {
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-6109-0367/personal-details', {
-    body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+    body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' }, 'credit-name': null } },
   })
   fetch.get(
     {
