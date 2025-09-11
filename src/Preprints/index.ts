@@ -1,4 +1,4 @@
-import type { FetchHttpClient, HttpClient } from '@effect/platform'
+import { FetchHttpClient, type HttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from '../crossref.js'
 import * as Crossref from '../Crossref/index.js'
@@ -32,6 +32,7 @@ export const layer = Layer.effect(
   Preprints,
   Effect.gen(function* () {
     const context = yield* Effect.context<FetchHttpClient.Fetch | HttpClient.HttpClient>()
+    const fetch = Context.get(context, FetchHttpClient.Fetch)
 
     const isCrossrefPreprintIdHandledByLegacyAdapter = (
       id: Exclude<IndeterminatePreprintId, PhilsciPreprintId>,
