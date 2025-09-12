@@ -326,6 +326,24 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2025-01-27'),
     leads: [{ name: 'Marcel LaFlamme', orcid: Orcid('0000-0002-7489-4233') }],
   },
+  force11: {
+    name: 'FORCE11',
+    description: html`
+      <p>
+        The PREreview Club at Future of Research Communication and e-Scholarship (FORCE11) publishes reviews of
+        preprints in metascience, metaresearch, scholarly communication, and related fields.
+      </p>
+      <p>
+        The FORCE11 PREreview Club is part of the FORCE11 Community Engagement Committee, providing an ongoing way for
+        people to become and stay engaged with FORCE11.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2025-09-12'),
+    leads: [{ name: 'Jennifer Miller', orcid: Orcid('0000-0001-5459-6733') }],
+    joinLink: new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLSfm0bn9zb5s-SGUbXtbtBvpivrXpz0mDEIESauypvl5h6cveA/viewform?usp=sharing&ouid=111181003877743877144',
+    ),
+  },
   'etymos-analytica': {
     name: 'Etymos Analytica',
     description: html`<p>A research consortium for students of Government Medical college.</p>`,

@@ -21,6 +21,7 @@ export const clubIds = [
   'elife-ambassadors',
   'emerge',
   'etymos-analytica',
+  'force11',
   'hhmi-training-pilot',
   'iib-mar-del-plata',
   'intersectional-feminist',
