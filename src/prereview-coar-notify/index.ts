@@ -1,6 +1,19 @@
 import type { HttpClient } from '@effect/platform'
 import type { Doi } from 'doi-ts'
-import { Array, Boolean, Context, Effect, identity, Option, pipe, type Redacted, Stream, Struct, Tuple } from 'effect'
+import {
+  Array,
+  Boolean,
+  Chunk,
+  Context,
+  Effect,
+  identity,
+  Option,
+  pipe,
+  type Redacted,
+  Stream,
+  Struct,
+  Tuple,
+} from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -119,9 +132,18 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 > =>
   pipe(
     Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
-    Effect.andThen(getPageOfReviewRequests),
-    Effect.andThen(field ? Array.filter(request => request.fields.includes(field)) : identity),
-    Effect.andThen(language ? Array.filter(request => request.language === language) : identity),
+    Effect.andThen(baseUrl =>
+      Stream.runCollect(
+        Stream.paginateChunkEffect(1, page =>
+          Effect.andThen(getPageOfReviewRequests(baseUrl, page), requests => [
+            Chunk.fromIterable(requests),
+            Option.andThen(Option.fromIterable(requests), page + 1),
+          ]),
+        ),
+      ),
+    ),
+    Effect.andThen(field ? Chunk.filter(request => request.fields.includes(field)) : identity),
+    Effect.andThen(language ? Chunk.filter(request => request.language === language) : identity),
     Effect.andThen(Array.chunksOf(5)),
     Effect.andThen(pages =>
       pipe(
