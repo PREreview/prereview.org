@@ -39,6 +39,6 @@ const makeDatasetReviewReactions: Effect.Effect<
 export const reactionsWorker = Layer.scopedDiscard(
   Effect.acquireReleaseInterruptible(
     pipe(Effect.logDebug('DatasetReviews worker started'), Effect.andThen(makeDatasetReviewReactions)),
-    () => Effect.logDebug('DatasetReviews worker started'),
+    () => Effect.logDebug('DatasetReviews worker stopped'),
   ),
 )
