@@ -1,22 +1,42 @@
-import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, pipe, Schema, Tuple } from 'effect'
-import * as _ from '../../src/prereview-coar-notify/GetRecentReviewRequests.js'
+import * as _ from '../../src/prereview-coar-notify/GetPageOfReviewRequests.js'
 import * as EffectTest from '../EffectTest.js'
 import * as fc from './fc.js'
 
-describe('getRecentReviewRequests', () => {
-  test.prop([fc.origin().map(origin => Tuple.make(origin, new URL('requests', origin).href))], {
-    examples: [[[new URL('http://example.com'), 'http://example.com/requests']]],
-  })('calls the work API', ([origin, expectedUrl]) =>
+describe('getPageOfReviewRequests', () => {
+  test.prop(
+    [
+      fc
+        .tuple(fc.origin(), fc.integer({ min: 1 }))
+        .map(([origin, page]) =>
+          Tuple.make<[URL, number | undefined, string, UrlParams.UrlParams]>(
+            origin,
+            page,
+            new URL('requests', origin).href,
+            UrlParams.fromInput({ page }),
+          ),
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('http://example.com'), undefined, 'http://example.com/requests', UrlParams.fromInput({ page: 1 })]],
+        [[new URL('http://example.com'), 2, 'http://example.com/requests', UrlParams.fromInput({ page: 2 })]],
+      ],
+    },
+  )('calls the work API', ([origin, page, expectedUrl, expectedUrlParams]) =>
     Effect.gen(function* () {
       const clientSpy = jest.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
       const client = stubbedClient(clientSpy)
 
-      yield* pipe(Effect.flip(_.getRecentReviewRequests(origin)), Effect.provideService(HttpClient.HttpClient, client))
+      yield* pipe(
+        Effect.flip(_.getPageOfReviewRequests(origin, page)),
+        Effect.provideService(HttpClient.HttpClient, client),
+      )
 
-      expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
+      expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl, { urlParams: expectedUrlParams }))
     }).pipe(EffectTest.run),
   )
 
@@ -55,7 +75,7 @@ describe('getRecentReviewRequests', () => {
             const client = stubbedClient(() => new Response(body, { status: 200 }))
 
             const actual = yield* pipe(
-              _.getRecentReviewRequests(origin),
+              _.getPageOfReviewRequests(origin),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -70,7 +90,7 @@ describe('getRecentReviewRequests', () => {
             const client = stubbedClient(() => new Response(body, { status: 200 }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getRecentReviewRequests(origin)),
+              Effect.flip(_.getPageOfReviewRequests(origin)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -91,7 +111,7 @@ describe('getRecentReviewRequests', () => {
             const client = stubbedClient(() => new Response(null, { status }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getRecentReviewRequests(origin)),
+              Effect.flip(_.getPageOfReviewRequests(origin)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -109,7 +129,7 @@ describe('getRecentReviewRequests', () => {
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(
-          Effect.flip(_.getRecentReviewRequests(origin)),
+          Effect.flip(_.getPageOfReviewRequests(origin)),
           Effect.provideService(HttpClient.HttpClient, client),
         )
 
@@ -124,7 +144,7 @@ describe('getRecentReviewRequests', () => {
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(
-          Effect.flip(_.getRecentReviewRequests(origin)),
+          Effect.flip(_.getPageOfReviewRequests(origin)),
           Effect.provideService(HttpClient.HttpClient, client),
         )
 

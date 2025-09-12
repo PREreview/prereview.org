@@ -21,7 +21,7 @@ import { type PreprintId, PreprintIdEquivalence } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import type { NewPrereview } from '../write-review/index.js'
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
-import { getRecentReviewRequests } from './GetRecentReviewRequests.js'
+import { getPageOfReviewRequests } from './GetPageOfReviewRequests.js'
 import { postNewPrereview } from './new-prereview.js'
 import { sendReviewActionOffer } from './SendReviewActionOffer.js'
 
@@ -60,7 +60,7 @@ export const publishReviewRequest = Effect.fn(function* (
 export const isReviewRequested = (id: PreprintId) =>
   pipe(
     Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
-    Effect.andThen(getRecentReviewRequests),
+    Effect.andThen(getPageOfReviewRequests),
     Effect.andThen(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
@@ -79,7 +79,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
 > =>
   pipe(
     Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
-    Effect.andThen(getRecentReviewRequests),
+    Effect.andThen(getPageOfReviewRequests),
     Effect.andThen(field ? Array.filter(request => request.fields.includes(field)) : identity),
     Effect.andThen(language ? Array.filter(request => request.language === language) : identity),
     Effect.andThen(Array.chunksOf(5)),

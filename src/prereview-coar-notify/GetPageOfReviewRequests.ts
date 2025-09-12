@@ -17,15 +17,16 @@ export const RecentReviewRequestsSchema = Schema.Array(
 
 export type RecentReviewRequestFromPrereviewCoarNotify = (typeof RecentReviewRequestsSchema.Type)[number]
 
-export const getRecentReviewRequests = (
+export const getPageOfReviewRequests = (
   baseUrl: URL,
+  page = 1,
 ): Effect.Effect<
   ReadonlyArray<RecentReviewRequestFromPrereviewCoarNotify>,
   RecentReviewRequestsAreUnavailable,
   HttpClient.HttpClient
 > =>
   pipe(
-    HttpClient.get(new URL('/requests', baseUrl)),
+    HttpClient.get(new URL(`/requests?page=${page}`, baseUrl)),
     Effect.mapError(error => new RecentReviewRequestsAreUnavailable({ cause: error })),
     Effect.andThen(HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK))),
     Effect.andThen(HttpClientResponse.schemaBodyJson(RecentReviewRequestsSchema)),
