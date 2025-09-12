@@ -64,6 +64,34 @@ export const isReviewRequested = (id: PreprintId) =>
     Effect.andThen(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
   )
 
+export const getFirstPageOfReviewRequestsFromPrereviewCoarNotify: Effect.Effect<
+  ReadonlyArray<ReviewRequests['reviewRequests'][number]>,
+  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
+  HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig
+> = pipe(
+  Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
+  Effect.andThen(getPageOfReviewRequests),
+  Effect.andThen(Array.take(5)),
+  Effect.andThen(
+    Effect.forEach(
+      ({ timestamp, preprint, fields, subfields }) =>
+        pipe(
+          Effect.Do,
+          Effect.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
+          Effect.bind('preprint', () =>
+            Effect.mapError(
+              Preprints.getPreprintTitle(preprint),
+              cause => new RecentReviewRequestsAreUnavailable({ cause }),
+            ),
+          ),
+          Effect.let('fields', () => fields),
+          Effect.let('subfields', () => subfields),
+        ),
+      { concurrency: 'inherit' },
+    ),
+  ),
+)
+
 export const getReviewRequestsFromPrereviewCoarNotify = ({
   field,
   language,

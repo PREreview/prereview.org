@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, flow, Layer, pipe, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type * as Preprints from '../Preprints/index.js'
@@ -53,8 +53,8 @@ export const layer = Layer.effect(
 
     return {
       getFiveMostRecent: pipe(
-        getReviewRequestsFromPrereviewCoarNotify({ page: 1 }),
-        Effect.match({ onSuccess: Struct.get('reviewRequests'), onFailure: Array.empty }),
+        PrereviewCoarNotify.getFirstPageOfReviewRequestsFromPrereviewCoarNotify,
+        Effect.orElseSucceed(Array.empty),
         Effect.provide(context),
       ),
       isReviewRequested: flow(
