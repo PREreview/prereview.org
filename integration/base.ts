@@ -1143,7 +1143,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       body: { data: [] },
     })
 
-    fetch.get('http://coar-notify.prereview.test/requests', {
+    fetch.get('http://coar-notify.prereview.test/requests?page=1', {
       body: [
         {
           timestamp: '2024-04-26T08:25:54.526Z',
