@@ -1162,6 +1162,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       ],
     })
 
+    fetch.get('http://coar-notify.prereview.test/requests?page=2', {
+      body: [],
+    })
+
     await use(fetch)
   },
   formStore: async ({}, use) => {

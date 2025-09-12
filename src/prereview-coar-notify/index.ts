@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type { Doi } from 'doi-ts'
-import { Array, Context, Effect, identity, pipe, type Redacted, Struct } from 'effect'
+import { Array, Boolean, Context, Effect, identity, Option, pipe, type Redacted, Stream, Struct, Tuple } from 'effect'
 import type * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -57,12 +57,24 @@ export const publishReviewRequest = Effect.fn(function* (
   )
 })
 
-export const isReviewRequested = (id: PreprintId) =>
-  pipe(
-    Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
-    Effect.andThen(getPageOfReviewRequests),
-    Effect.andThen(Array.some(request => PreprintIdEquivalence(request.preprint, id))),
-  )
+export const isReviewRequested = Effect.fn(function* (id: PreprintId) {
+  const baseUrl = yield* Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl'))
+
+  return yield* Stream.paginateEffect(1, page =>
+    pipe(
+      getPageOfReviewRequests(baseUrl, page),
+      Effect.bindTo('requests'),
+      Effect.let('isAMatch', ({ requests }) =>
+        Array.some(requests, request => PreprintIdEquivalence(request.preprint, id)),
+      ),
+      Effect.andThen(({ isAMatch, requests }) =>
+        isAMatch
+          ? Tuple.make(true, Option.none<number>())
+          : Tuple.make(false, Option.andThen(Option.fromIterable(requests), page + 1)),
+      ),
+    ),
+  ).pipe(Stream.runCollect, Effect.andThen(Boolean.some))
+})
 
 export const getFirstPageOfReviewRequestsFromPrereviewCoarNotify: Effect.Effect<
   ReadonlyArray<ReviewRequests['reviewRequests'][number]>,
