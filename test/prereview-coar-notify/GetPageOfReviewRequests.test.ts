@@ -68,7 +68,7 @@ describe('getPageOfReviewRequests', () => {
               }),
             )
             .map(requests =>
-              Tuple.make(requests, Schema.encodeSync(Schema.parseJson(_.RecentReviewRequestsSchema))(requests)),
+              Tuple.make(requests, Schema.encodeSync(Schema.parseJson(_.ReviewRequestsSchema))(requests)),
             ),
         ])('returns the list', async (origin, [requests, body]) =>
           Effect.gen(function* () {
@@ -94,7 +94,7 @@ describe('getPageOfReviewRequests', () => {
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
-            expect(actual._tag).toStrictEqual('RecentReviewRequestsAreUnavailable')
+            expect(actual._tag).toStrictEqual('ReviewRequestsAreUnavailable')
             expect(actual.cause).toStrictEqual(
               expect.objectContaining({ _tag: expect.stringMatching(/^ParseError|ResponseError$/) }),
             )
@@ -115,7 +115,7 @@ describe('getPageOfReviewRequests', () => {
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
-            expect(actual._tag).toStrictEqual('RecentReviewRequestsAreUnavailable')
+            expect(actual._tag).toStrictEqual('ReviewRequestsAreUnavailable')
             expect(actual.cause).toStrictEqual(
               expect.objectContaining({ message: expect.stringContaining('invalid status code') }),
             )
@@ -133,7 +133,7 @@ describe('getPageOfReviewRequests', () => {
           Effect.provideService(HttpClient.HttpClient, client),
         )
 
-        expect(actual._tag).toStrictEqual('RecentReviewRequestsAreUnavailable')
+        expect(actual._tag).toStrictEqual('ReviewRequestsAreUnavailable')
         expect(actual.cause).toStrictEqual(error)
       }).pipe(EffectTest.run),
     )
@@ -148,7 +148,7 @@ describe('getPageOfReviewRequests', () => {
           Effect.provideService(HttpClient.HttpClient, client),
         )
 
-        expect(actual._tag).toStrictEqual('RecentReviewRequestsAreUnavailable')
+        expect(actual._tag).toStrictEqual('ReviewRequestsAreUnavailable')
         expect(actual.cause).toStrictEqual(error)
       }).pipe(EffectTest.run),
     )

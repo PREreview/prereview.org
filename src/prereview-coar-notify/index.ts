@@ -23,9 +23,9 @@ import * as Preprints from '../Preprints/index.js'
 import { type PublicUrlEnv, toUrl } from '../public-url.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
 import {
-  RecentReviewRequestsAreUnavailable,
-  RecentReviewRequestsNotFound,
   type ReviewRequests,
+  ReviewRequestsAreUnavailable,
+  ReviewRequestsNotFound,
 } from '../review-requests-page/index.js'
 import { reviewMatch } from '../routes.js'
 import type { FieldId } from '../types/field.js'
@@ -91,7 +91,7 @@ export const isReviewRequested = Effect.fn(function* (id: PreprintId) {
 
 export const getFirstPageOfReviewRequestsFromPrereviewCoarNotify: Effect.Effect<
   ReadonlyArray<ReviewRequests['reviewRequests'][number]>,
-  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
+  ReviewRequestsNotFound | ReviewRequestsAreUnavailable,
   HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig
 > = pipe(
   Effect.andThen(PrereviewCoarNotifyConfig, Struct.get('coarNotifyUrl')),
@@ -104,10 +104,7 @@ export const getFirstPageOfReviewRequestsFromPrereviewCoarNotify: Effect.Effect<
           Effect.Do,
           Effect.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
           Effect.bind('preprint', () =>
-            Effect.mapError(
-              Preprints.getPreprintTitle(preprint),
-              cause => new RecentReviewRequestsAreUnavailable({ cause }),
-            ),
+            Effect.mapError(Preprints.getPreprintTitle(preprint), cause => new ReviewRequestsAreUnavailable({ cause })),
           ),
           Effect.let('fields', () => fields),
           Effect.let('subfields', () => subfields),
@@ -127,7 +124,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
   page: number
 }): Effect.Effect<
   ReviewRequests,
-  RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable,
+  ReviewRequestsNotFound | ReviewRequestsAreUnavailable,
   HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig
 > =>
   pipe(
@@ -154,7 +151,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
         Effect.let('language', () => language),
         Effect.bind('reviewRequests', () =>
           pipe(
-            Effect.mapError(Array.get(pages, page - 1), () => new RecentReviewRequestsNotFound({})),
+            Effect.mapError(Array.get(pages, page - 1), () => new ReviewRequestsNotFound({})),
             Effect.andThen(
               Effect.forEach(
                 ({ timestamp, preprint, fields, subfields }) =>
@@ -164,7 +161,7 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
                     Effect.bind('preprint', () =>
                       Effect.mapError(
                         Preprints.getPreprintTitle(preprint),
-                        cause => new RecentReviewRequestsAreUnavailable({ cause }),
+                        cause => new ReviewRequestsAreUnavailable({ cause }),
                       ),
                     ),
                     Effect.let('fields', () => fields),

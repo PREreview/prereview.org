@@ -11,8 +11,8 @@ import { createEmptyPage, createPage } from './review-requests-page.js'
 import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.js'
 
 export {
-  RecentReviewRequestsAreUnavailable,
-  RecentReviewRequestsNotFound,
+  ReviewRequestsAreUnavailable,
+  ReviewRequestsNotFound,
   type GetReviewRequestsEnv,
   type ReviewRequests,
 } from './review-requests.js'
@@ -34,10 +34,10 @@ export const reviewRequests = ({
     RTE.matchW(
       error =>
         match(error._tag)
-          .with('RecentReviewRequestsNotFound', () =>
+          .with('ReviewRequestsNotFound', () =>
             page === 1 ? createEmptyPage({ field, language, locale }) : pageNotFound(locale),
           )
-          .with('RecentReviewRequestsAreUnavailable', () => havingProblemsPage(locale))
+          .with('ReviewRequestsAreUnavailable', () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),

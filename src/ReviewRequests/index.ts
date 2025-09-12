@@ -11,8 +11,8 @@ import {
 } from '../prereview-coar-notify/index.js'
 import type {
   ReviewRequests as PageOfReviewRequests,
-  RecentReviewRequestsAreUnavailable,
-  RecentReviewRequestsNotFound,
+  ReviewRequestsAreUnavailable,
+  ReviewRequestsNotFound,
 } from '../review-requests-page/index.js'
 import type { FieldId } from '../types/field.js'
 import type { PreprintId } from '../types/preprint-id.js'
@@ -38,7 +38,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
       field?: FieldId
       language?: LanguageCode
       page: number
-    }) => Effect.Effect<PageOfReviewRequests, RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable>
+    }) => Effect.Effect<PageOfReviewRequests, ReviewRequestsNotFound | ReviewRequestsAreUnavailable>
   }
 >() {}
 

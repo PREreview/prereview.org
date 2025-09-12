@@ -30,14 +30,14 @@ export interface GetReviewRequestsEnv {
     field?: FieldId
     language?: LanguageCode
     page: number
-  }) => TE.TaskEither<RecentReviewRequestsNotFound | RecentReviewRequestsAreUnavailable, ReviewRequests>
+  }) => TE.TaskEither<ReviewRequestsNotFound | ReviewRequestsAreUnavailable, ReviewRequests>
 }
 
-export class RecentReviewRequestsNotFound extends Data.TaggedError('RecentReviewRequestsNotFound')<{
+export class ReviewRequestsNotFound extends Data.TaggedError('ReviewRequestsNotFound')<{
   cause?: unknown
 }> {}
 
-export class RecentReviewRequestsAreUnavailable extends Data.TaggedError('RecentReviewRequestsAreUnavailable')<{
+export class ReviewRequestsAreUnavailable extends Data.TaggedError('ReviewRequestsAreUnavailable')<{
   cause?: unknown
 }> {}
 
