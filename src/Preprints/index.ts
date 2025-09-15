@@ -6,9 +6,9 @@ import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDataci
 import * as Datacite from '../Datacite/index.js'
 import type { Philsci } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
-import * as JapanLinkCenter from '../JapanLinkCenter/index.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PhilsciPreprintId, PreprintId } from '../types/preprint-id.js'
+import * as JapanLinkCenter from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './Philsci/index.js'
 
 export class Preprints extends Context.Tag('Preprints')<

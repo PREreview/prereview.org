@@ -1,9 +1,9 @@
 import type { HttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import * as Preprint from '../preprint.js'
+import { JapanLinkCenter } from '../../ExternalApis/index.js'
+import * as Preprint from '../../preprint.js'
 import { recordToPreprint } from './Preprint.js'
 import type { JapanLinkCenterPreprintId } from './PreprintId.js'
-import { getRecord } from './Record.js'
 
 export { isJapanLinkCenterPreprintId, type JapanLinkCenterPreprintId } from './PreprintId.js'
 
@@ -15,7 +15,7 @@ export const getPreprintFromJapanLinkCenter: (
   HttpClient.HttpClient
 > = id =>
   pipe(
-    getRecord(id.value),
+    JapanLinkCenter.getRecord(id.value),
     Effect.andThen(recordToPreprint),
     Effect.catchTags({
       RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),

@@ -3,12 +3,12 @@ import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Either } from 'effect'
-import { rawHtml } from '../../src/html.js'
-import * as _ from '../../src/JapanLinkCenter/Preprint.js'
-import { Record } from '../../src/JapanLinkCenter/Record.js'
-import { Preprint } from '../../src/preprint.js'
-import { JxivPreprintId } from '../../src/types/preprint-id.js'
-import * as fc from '../fc.js'
+import { JapanLinkCenter } from '../../../src/ExternalApis/index.js'
+import { rawHtml } from '../../../src/html.js'
+import { Preprint } from '../../../src/preprint.js'
+import * as _ from '../../../src/Preprints/JapanLinkCenter/Preprint.js'
+import { JxivPreprintId } from '../../../src/types/preprint-id.js'
+import * as fc from '../../fc.js'
 
 describe('recordToPreprint', () => {
   test('can be transformed', () => {
@@ -35,7 +35,7 @@ describe('recordToPreprint', () => {
   })
 
   test.prop([fc.constantFrom('JA', 'BK', 'RD', 'EL')])('not a preprint', contentType => {
-    const record = new Record({
+    const record = new JapanLinkCenter.Record({
       ...stubRecord,
       content_type: contentType,
     })
@@ -47,7 +47,7 @@ describe('recordToPreprint', () => {
   })
 
   test.prop([fc.nonPreprintDoi()])('not a Japan Link Center preprint ID', doi => {
-    const record = new Record({
+    const record = new JapanLinkCenter.Record({
       ...stubRecord,
       doi,
     })
@@ -101,4 +101,4 @@ const stubRecord = {
     },
   ],
   publication_date: Temporal.PlainDate.from('2025-01-28'),
-} satisfies typeof Record.Type
+} satisfies typeof JapanLinkCenter.Record.Type

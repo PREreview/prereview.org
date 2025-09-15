@@ -55,7 +55,6 @@ import * as Events from '../src/Events.js'
 import type { GhostPage } from '../src/GhostPage/index.js'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
-import type { JapanLinkCenterPreprintId } from '../src/JapanLinkCenter/PreprintId.js'
 import type { Languages } from '../src/languages.js'
 import {
   type SupportedLocale,
@@ -70,6 +69,7 @@ import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import * as Personas from '../src/Personas/index.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
+import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.js'
 import { Prereview } from '../src/Prereview.js'
 import type { ResearchInterests } from '../src/research-interests.js'
 import {

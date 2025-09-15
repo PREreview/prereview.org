@@ -1,12 +1,12 @@
 import { Array, Either, Option, pipe } from 'effect'
-import { html } from '../html.js'
-import * as Preprint from '../preprint.js'
-import { JxivPreprintId } from '../types/preprint-id.js'
+import type { JapanLinkCenter } from '../../ExternalApis/index.js'
+import { html } from '../../html.js'
+import * as Preprint from '../../preprint.js'
+import { JxivPreprintId } from '../../types/preprint-id.js'
 import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.js'
-import type { Record } from './Record.js'
 
 const determineJapanLinkCenterPreprintId = (
-  record: Record,
+  record: JapanLinkCenter.Record,
 ): Either.Either<JapanLinkCenterPreprintId, Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const doi = record.doi
@@ -19,7 +19,7 @@ const determineJapanLinkCenterPreprintId = (
   })
 
 export const recordToPreprint = (
-  record: Record,
+  record: JapanLinkCenter.Record,
 ): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     if (record.content_type !== 'GD') {
