@@ -7,7 +7,7 @@ import * as _ from '../../../src/ExternalApis/Crossref/Work.js'
 import * as EffectTest from '../../EffectTest.js'
 import * as fc from '../../fc.js'
 
-describe('getWork', () => {
+describe('GetWork', () => {
   test.prop(
     [fc.doi().map(doi => Tuple.make(doi, new URL(encodeURIComponent(doi), 'https://api.crossref.org/works/').href))],
     {
@@ -26,7 +26,7 @@ describe('getWork', () => {
       const clientSpy = jest.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
       const client = stubbedClient(clientSpy)
 
-      yield* pipe(Effect.flip(_.getWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
+      yield* pipe(Effect.flip(_.GetWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
       expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
     }).pipe(EffectTest.run),
@@ -40,7 +40,7 @@ describe('getWork', () => {
             const client = stubbedClient(() => new Response(body, { status: 200 }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getWork(doi)),
+              Effect.flip(_.GetWork(doi)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -58,7 +58,7 @@ describe('getWork', () => {
         Effect.gen(function* () {
           const client = stubbedClient(() => new Response(null, { status: 404 }))
 
-          const actual = yield* pipe(Effect.flip(_.getWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
+          const actual = yield* pipe(Effect.flip(_.GetWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
           expect(actual._tag).toStrictEqual('WorkIsNotFound')
           expect(actual.cause).toStrictEqual(expect.objectContaining({ status: 404 }))
@@ -74,7 +74,7 @@ describe('getWork', () => {
             const client = stubbedClient(() => new Response(null, { status }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getWork(doi)),
+              Effect.flip(_.GetWork(doi)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -89,7 +89,7 @@ describe('getWork', () => {
     test.prop([fc.doi(), fc.httpClientRequestError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
-        const actual = yield* pipe(Effect.flip(_.getWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
+        const actual = yield* pipe(Effect.flip(_.GetWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('WorkIsUnavailable')
         expect(actual.cause).toStrictEqual(error)
@@ -101,7 +101,7 @@ describe('getWork', () => {
     test.prop([fc.doi(), fc.httpClientResponseError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
-        const actual = yield* pipe(Effect.flip(_.getWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
+        const actual = yield* pipe(Effect.flip(_.GetWork(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('WorkIsUnavailable')
         expect(actual.cause).toStrictEqual(error)

@@ -9,7 +9,7 @@ import * as DatasetReviews from './DatasetReviews/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as Events from './Events.js'
-import { JapanLinkCenter, Philsci } from './ExternalApis/index.js'
+import { Crossref, JapanLinkCenter, Philsci } from './ExternalApis/index.js'
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -357,6 +357,7 @@ export const Program = pipe(
   ),
   Layer.provide(
     Layer.mergeAll(
+      Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
     ),

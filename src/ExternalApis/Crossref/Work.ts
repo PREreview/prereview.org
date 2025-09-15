@@ -84,7 +84,7 @@ class WorkIsNotFound extends Data.TaggedError('WorkIsNotFound')<{ cause?: unknow
 
 class WorkIsUnavailable extends Data.TaggedError('WorkIsUnavailable')<{ cause?: unknown }> {}
 
-export const getWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | WorkIsUnavailable, HttpClient.HttpClient> =>
+export const GetWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | WorkIsUnavailable, HttpClient.HttpClient> =>
   pipe(
     HttpClient.get(`https://api.crossref.org/works/${encodeURIComponent(doi)}`),
     Effect.mapError(error => new WorkIsUnavailable({ cause: error })),
