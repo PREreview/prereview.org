@@ -5,7 +5,7 @@ import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanChoosePersona.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
@@ -15,18 +15,11 @@ const authorId2 = Orcid.Orcid('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'public',
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
-  },
+  persona: 'public',
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'pseudonym',
-    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
-  },
+  persona: 'pseudonym',
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
@@ -106,7 +99,7 @@ describe('query', () => {
           ),
         )
         .map(([started, chosen]) =>
-          Tuple.make(Array.make(started, chosen), started.datasetReviewId, started.authorId, chosen.persona.type),
+          Tuple.make(Array.make(started, chosen), started.datasetReviewId, started.authorId, chosen.persona),
         ),
     ],
     {
@@ -116,7 +109,7 @@ describe('query', () => {
             [started, personaForDatasetReviewWasChosen1],
             datasetReviewId,
             authorId,
-            personaForDatasetReviewWasChosen1.persona.type,
+            personaForDatasetReviewWasChosen1.persona,
           ],
         ], // chosen once
         [
@@ -124,7 +117,7 @@ describe('query', () => {
             [started, personaForDatasetReviewWasChosen1, personaForDatasetReviewWasChosen2],
             datasetReviewId,
             authorId,
-            personaForDatasetReviewWasChosen2.persona.type,
+            personaForDatasetReviewWasChosen2.persona,
           ],
         ], // chosen twice
       ],

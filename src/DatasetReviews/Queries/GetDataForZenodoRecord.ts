@@ -4,7 +4,7 @@ import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DataForZenodoRecord {
-  readonly author: { orcidId: Orcid.Orcid; persona: Events.PersonaForDatasetReviewWasChosen['persona']['type'] }
+  readonly author: { orcidId: Orcid.Orcid; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -98,10 +98,7 @@ export const GetDataForZenodoRecord = (
       Either.right({
         author: {
           orcidId: started.authorId,
-          persona: Option.match(chosenPersona, {
-            onSome: chosenPersona => chosenPersona.persona.type,
-            onNone: () => 'public',
-          }),
+          persona: Option.match(chosenPersona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,

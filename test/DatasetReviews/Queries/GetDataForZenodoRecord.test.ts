@@ -5,7 +5,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -103,18 +103,11 @@ const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheD
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'public',
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
-  },
+  persona: 'public',
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'pseudonym',
-    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
-  },
+  persona: 'pseudonym',
   datasetReviewId,
 })
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
@@ -166,7 +159,7 @@ describe('GetDataForZenodoRecord', () => {
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DataForZenodoRecord]>(events, {
-              author: { orcidId: events[0].authorId, persona: events[13].persona.type },
+              author: { orcidId: events[0].authorId, persona: events[13].persona },
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -244,7 +237,7 @@ describe('GetDataForZenodoRecord', () => {
               {
                 author: {
                   orcidId: datasetReviewWasStarted.authorId,
-                  persona: personaForDatasetReviewWasChosen2.persona.type,
+                  persona: personaForDatasetReviewWasChosen2.persona,
                 },
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:

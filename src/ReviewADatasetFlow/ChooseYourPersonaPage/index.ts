@@ -73,10 +73,7 @@ export const ChooseYourPersonaSubmission = ({
       CompletedForm: Effect.fn(
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           yield* DatasetReviews.choosePersona({
-            persona:
-              form.chooseYourPersona === 'public'
-                ? { type: 'public', orcidId: user.orcid, name: user.name }
-                : { type: 'pseudonym', pseudonym: user.pseudonym },
+            persona: form.chooseYourPersona,
             datasetReviewId,
             userId: user.orcid,
           })

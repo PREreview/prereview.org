@@ -5,7 +5,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -100,18 +100,11 @@ const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheD
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'public',
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
-  },
+  persona: 'public',
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'pseudonym',
-    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
-  },
+  persona: 'pseudonym',
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
@@ -149,7 +142,7 @@ describe('GetPublishedReview', () => {
             )
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
-                author: { orcidId: events[0].authorId, persona: events[2].persona.type },
+                author: { orcidId: events[0].authorId, persona: events[2].persona },
                 doi: events[3].doi,
                 id: events[0].datasetReviewId,
                 questions: {
@@ -195,7 +188,7 @@ describe('GetPublishedReview', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: personaForDatasetReviewWasChosen1.persona.type,
+                    persona: personaForDatasetReviewWasChosen1.persona,
                   },
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
@@ -264,7 +257,7 @@ describe('GetPublishedReview', () => {
                 {
                   author: {
                     orcidId: datasetReviewWasStarted.authorId,
-                    persona: personaForDatasetReviewWasChosen2.persona.type,
+                    persona: personaForDatasetReviewWasChosen2.persona,
                   },
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,

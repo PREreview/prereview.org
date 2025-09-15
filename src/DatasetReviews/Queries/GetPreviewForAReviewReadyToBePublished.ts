@@ -6,7 +6,7 @@ import type * as Events from '../Events.js'
 export interface DatasetReviewPreview {
   readonly author: {
     readonly orcidId: Orcid.Orcid
-    readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']['type']>
+    readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
   }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
@@ -107,7 +107,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
-        author: { orcidId: started.authorId, persona: Option.map(author, author => author.persona.type) },
+        author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

@@ -110,7 +110,7 @@ export const GetPublishedReview = (
       Either.right({
         author: {
           orcidId: data.datasetReviewWasStarted.authorId,
-          persona: Option.match(author, { onSome: author => author.persona.type, onNone: () => 'public' }),
+          persona: Option.match(author, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,

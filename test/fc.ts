@@ -1771,10 +1771,7 @@ export const personaForDatasetReviewWasChosen = ({
   fc
     .record({
       datasetReviewId: datasetReviewId ?? uuid(),
-      persona: fc.oneof(
-        fc.record({ type: constant('public'), name: nonEmptyString(), orcidId: orcid() }),
-        fc.record({ type: constant('pseudonym'), pseudonym: pseudonym() }),
-      ),
+      persona: constantFrom('public', 'pseudonym'),
     })
     .map(data => new Events.PersonaForDatasetReviewWasChosen(data))
 

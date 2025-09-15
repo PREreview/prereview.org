@@ -5,7 +5,7 @@ import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/ChoosePersona.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
+import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
@@ -14,18 +14,11 @@ const authorId = Orcid.Orcid('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'public',
-    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
-  },
+  persona: 'public',
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
-  persona: {
-    type: 'pseudonym',
-    pseudonym: Pseudonym.Pseudonym('Orange Panda'),
-  },
+  persona: 'pseudonym',
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
@@ -36,11 +29,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
 
-const persona = (): fc.Arbitrary<_.Command['persona']> =>
-  fc.oneof(
-    fc.record({ type: fc.constant('public'), name: fc.nonEmptyString(), orcidId: fc.orcid() }),
-    fc.record({ type: fc.constant('pseudonym'), pseudonym: fc.pseudonym() }),
-  )
+const persona = (): fc.Arbitrary<_.Command['persona']> => fc.constantFrom('public', 'pseudonym')
 
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
