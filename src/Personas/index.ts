@@ -1,11 +1,11 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Context, Data, Effect, Layer, Option, pipe, Redacted } from 'effect'
+import { Context, Data, Effect, Layer, Match, Option, pipe, Redacted } from 'effect'
 import { DeprecatedLoggerEnv } from '../Context.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.js'
 import { getNameFromOrcid, OrcidApi } from '../orcid.js'
 import type { Orcid } from '../types/index.js'
-import { PseudonymPersona, PublicPersona } from './Persona.js'
+import { PseudonymPersona, PublicPersona, type Persona } from './Persona.js'
 
 export * from './Persona.js'
 
@@ -20,6 +20,14 @@ export class Personas extends Context.Tag('Personas')<
 >() {}
 
 export const { getPublicPersona, getPseudonymPersona } = Effect.serviceFunctions(Personas)
+
+export const getPersona = pipe(
+  Match.type<{ orcidId: Orcid.Orcid; persona: 'public' | 'pseudonym' }>(),
+  Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Personas>>(),
+  Match.when({ persona: 'public' }, ({ orcidId }) => getPublicPersona(orcidId)),
+  Match.when({ persona: 'pseudonym' }, ({ orcidId }) => getPseudonymPersona(orcidId)),
+  Match.exhaustive,
+)
 
 const make: Effect.Effect<
   typeof Personas.Service,

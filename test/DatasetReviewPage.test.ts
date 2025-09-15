@@ -4,17 +4,138 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../src/Context.js'
 import * as _ from '../src/DatasetReviewPage/index.js'
 import * as DatasetReviews from '../src/DatasetReviews/index.js'
+import * as Personas from '../src/Personas/index.js'
 import * as Routes from '../src/routes.js'
 import * as StatusCodes from '../src/StatusCodes.js'
 import * as EffectTest from './EffectTest.js'
 import * as fc from './fc.js'
 
 describe('DatasetReviewPage', () => {
+  describe('when the review can be loaded', () => {
+    test.prop([
+      fc.supportedLocale(),
+      fc.uuid(),
+      fc.record<DatasetReviews.PublishedReview>({
+        author: fc.record({ orcidId: fc.orcid(), persona: fc.constant('public') }),
+        doi: fc.doi(),
+        id: fc.uuid(),
+        questions: fc.record({
+          qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+          answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+            fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          ),
+          answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetMattersToItsAudience: fc.maybe(
+            fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+          ),
+          answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
+          answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
+        }),
+        published: fc.plainDate(),
+      }),
+      fc.publicPersona(),
+    ])('with a public persona', (locale, datasetReviewId, publishedReview, publicPersona) =>
+      Effect.gen(function* () {
+        const actual = yield* _.DatasetReviewPage({ datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: Routes.DatasetReview.href({ datasetReviewId: publishedReview.id }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          description: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'prereview',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        EffectTest.run,
+      ),
+    )
+
+    test.prop([
+      fc.supportedLocale(),
+      fc.uuid(),
+      fc.record<DatasetReviews.PublishedReview>({
+        author: fc.record({ orcidId: fc.orcid(), persona: fc.constant('pseudonym') }),
+        doi: fc.doi(),
+        id: fc.uuid(),
+        questions: fc.record({
+          qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+          answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+            fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          ),
+          answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+          answerToIfTheDatasetMattersToItsAudience: fc.maybe(
+            fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+          ),
+          answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
+          answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
+        }),
+        published: fc.plainDate(),
+      }),
+      fc.pseudonymPersona(),
+    ])('with a public persona', (locale, datasetReviewId, publishedReview, pseudonymPersona) =>
+      Effect.gen(function* () {
+        const actual = yield* _.DatasetReviewPage({ datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: Routes.DatasetReview.href({ datasetReviewId: publishedReview.id }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          description: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'prereview',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(Personas.Personas, {
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        EffectTest.run,
+      ),
+    )
+  })
+
   test.prop([
     fc.supportedLocale(),
     fc.uuid(),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.persona(),
+      author: fc.record({ orcidId: fc.orcid(), persona: fc.constantFrom('public', 'pseudonym') }),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -37,25 +158,29 @@ describe('DatasetReviewPage', () => {
       }),
       published: fc.plainDate(),
     }),
-  ])('when the review can be loaded', (locale, datasetReviewId, publishedReview) =>
+    fc.anything(),
+  ])("when the persona can't be loaded", (locale, datasetReviewId, publishedReview, error) =>
     Effect.gen(function* () {
       const actual = yield* _.DatasetReviewPage({ datasetReviewId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        canonical: Routes.DatasetReview.href({ datasetReviewId: publishedReview.id }),
-        status: StatusCodes.OK,
+        status: StatusCodes.ServiceUnavailable,
         title: expect.anything(),
-        nav: expect.anything(),
-        description: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'prereview',
+        skipToLabel: 'main',
         js: [],
       })
     }).pipe(
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
           getPublishedReview: () => Effect.succeed(publishedReview),
+        }),
+      ),
+      Effect.provide(
+        Layer.mock(Personas.Personas, {
+          getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
         }),
       ),
       Effect.provideService(Locale, locale),
@@ -81,6 +206,7 @@ describe('DatasetReviewPage', () => {
           getPublishedReview: () => new DatasetReviews.UnknownDatasetReview({}),
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),
@@ -104,6 +230,7 @@ describe('DatasetReviewPage', () => {
           getPublishedReview: () => new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),
@@ -127,6 +254,7 @@ describe('DatasetReviewPage', () => {
           getPublishedReview: () => new DatasetReviews.UnableToQuery({}),
         }),
       ),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),

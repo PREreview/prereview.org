@@ -5,7 +5,9 @@ import * as Personas from '../Personas/index.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 
-export type DatasetReview = DatasetReviews.PublishedReview
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author'> & {
+  readonly author: Personas.Persona
+}
 
 export const createDatasetReviewsPage = ({ datasetReviews }: { datasetReviews: ReadonlyArray<DatasetReview> }) => {
   return TwoUpPageResponse({

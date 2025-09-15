@@ -2307,11 +2307,20 @@ export const canAddMultipleAuthors: Fixtures<
 export const canReviewDatasets: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canReviewDatasets'>,
+  Pick<AppFixtures, 'canReviewDatasets' | 'fetch'>,
   Record<never, never>
 > = {
   canReviewDatasets: async ({}, use) => {
     await use(true)
+  },
+  fetch: async ({ fetch }, use) => {
+    fetch.get('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
+      body: {
+        name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null },
+      },
+    })
+
+    await use(fetch)
   },
 }
 

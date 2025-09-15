@@ -5,7 +5,6 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import * as Personas from '../../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
@@ -150,10 +149,7 @@ describe('GetPublishedReview', () => {
             )
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
-                author:
-                  events[2].persona.type === 'public'
-                    ? new Personas.PublicPersona({ name: events[2].persona.name, orcidId: events[2].persona.orcidId })
-                    : new Personas.PseudonymPersona({ pseudonym: events[2].persona.pseudonym }),
+                author: { orcidId: events[0].authorId, persona: events[2].persona.type },
                 doi: events[3].doi,
                 id: events[0].datasetReviewId,
                 questions: {
@@ -197,10 +193,10 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasPublished1,
                 ],
                 {
-                  author: new Personas.PublicPersona({
-                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-                    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
-                  }),
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: personaForDatasetReviewWasChosen1.persona.type,
+                  },
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {
@@ -266,7 +262,10 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasPublished2,
                 ],
                 {
-                  author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+                  author: {
+                    orcidId: datasetReviewWasStarted.authorId,
+                    persona: personaForDatasetReviewWasChosen2.persona.type,
+                  },
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,
                   questions: {
@@ -305,10 +304,7 @@ describe('GetPublishedReview', () => {
                   datasetReviewWasStarted,
                 ],
                 {
-                  author: new Personas.PublicPersona({
-                    name: NonEmptyString.NonEmptyString('A PREreviewer'),
-                    orcidId: datasetReviewWasStarted.authorId,
-                  }),
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {

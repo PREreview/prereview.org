@@ -1,12 +1,11 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Match, Option, pipe, Struct } from 'effect'
-import * as Personas from '../../Personas/index.js'
-import { NonEmptyString, type Doi, type Uuid } from '../../types/index.js'
+import { Array, Either, Option, Struct } from 'effect'
+import type { Doi, NonEmptyString, Orcid, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface PublishedReview {
-  author: Personas.Persona
+  author: { orcidId: Orcid.Orcid; persona: 'public' | 'pseudonym' }
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {
@@ -109,29 +108,10 @@ export const GetPublishedReview = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
       Either.right({
-        author: Option.match(author, {
-          onSome: pipe(
-            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
-            Match.when(
-              { persona: { type: 'public' } },
-              author =>
-                new Personas.PublicPersona({
-                  name: author.persona.name,
-                  orcidId: author.persona.orcidId,
-                }),
-            ),
-            Match.when(
-              { persona: { type: 'pseudonym' } },
-              author => new Personas.PseudonymPersona({ pseudonym: author.persona.pseudonym }),
-            ),
-            Match.orElseAbsurd,
-          ),
-          onNone: () =>
-            new Personas.PublicPersona({
-              name: NonEmptyString.NonEmptyString('A PREreviewer'),
-              orcidId: data.datasetReviewWasStarted.authorId,
-            }),
-        }),
+        author: {
+          orcidId: data.datasetReviewWasStarted.authorId,
+          persona: Option.match(author, { onSome: author => author.persona.type, onNone: () => 'public' }),
+        },
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {

@@ -9,9 +9,11 @@ import * as Routes from '../routes.js'
 import { renderDate } from '../time.js'
 import { Doi, ProfileId } from '../types/index.js'
 
-export type DatasetReview = DatasetReviews.PublishedReview
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author'> & {
+  readonly author: Personas.Persona
+}
 
-export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReview }) => {
+export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReview }) => {
   return PageResponse({
     title: plainText`Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”`,
     description: plainText`Authored by ${displayAuthor(datasetReview.author)}`,
