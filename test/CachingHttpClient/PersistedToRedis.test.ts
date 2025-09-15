@@ -1,7 +1,7 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Cause, DateTime, Effect, Either, Schema } from 'effect'
+import { DateTime, Effect, Either, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import {
   CacheValueFromStringSchema,
@@ -77,7 +77,7 @@ describe('getFromRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.httpClientRequest(), fc.anything()])('returns an error', (request, error) =>
+    it.prop([fc.httpClientRequest(), fc.error()])('returns an error', (request, error) =>
       Effect.gen(function* () {
         const redis = {
           get: (() => Promise.reject(error)) satisfies IoRedis['get'],
@@ -85,9 +85,7 @@ describe('getFromRedis', () => {
 
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
-        expect(result).toStrictEqual(
-          Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
-        )
+        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
       }).pipe(EffectTest.run),
     )
   })
@@ -139,20 +137,16 @@ describe('writeToRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.httpClientResponse(), fc.dateTimeUtc(), fc.anything()])(
-      'returns an error',
-      (response, staleAt, error) =>
-        Effect.gen(function* () {
-          const redis = {
-            set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
-          } as unknown as IoRedis
+    it.prop([fc.httpClientResponse(), fc.dateTimeUtc(), fc.error()])('returns an error', (response, staleAt, error) =>
+      Effect.gen(function* () {
+        const redis = {
+          set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
+        } as unknown as IoRedis
 
-          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+        const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
-          expect(result).toStrictEqual(
-            Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
-          )
-        }).pipe(EffectTest.run),
+        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
+      }).pipe(EffectTest.run),
     )
   })
 })
@@ -191,7 +185,7 @@ describe('deleteFromRedis', () => {
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.url(), fc.anything()])('returns an error', (url, error) =>
+    it.prop([fc.url(), fc.error()])('returns an error', (url, error) =>
       Effect.gen(function* () {
         const redis = {
           del: (() => Promise.reject(error)) satisfies IoRedis['del'],
@@ -199,9 +193,7 @@ describe('deleteFromRedis', () => {
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
-        expect(result).toStrictEqual(
-          Either.left(new InternalHttpCacheFailure({ cause: new Cause.UnknownException(error) })),
-        )
+        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
       }).pipe(EffectTest.run),
     )
   })
