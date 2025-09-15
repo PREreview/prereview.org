@@ -13,12 +13,12 @@ import * as Keyv from '../../keyv.js'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../legacy-prereview.js'
 import { sendEmailWithNodemailer } from '../../nodemailer.js'
 import * as OpenAlex from '../../OpenAlex/index.js'
+import type { PreprintId } from '../../Preprints/index.js'
 import * as Preprints from '../../Preprints/index.js'
 import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.js'
 import * as ReviewRequests from '../../ReviewRequests/index.js'
 import * as Routes from '../../routes.js'
 import { Uuid } from '../../types/index.js'
-import type { PreprintId } from '../../types/preprint-id.js'
 import { generateUuidIO } from '../../types/uuid.js'
 import {
   type NewPrereview,

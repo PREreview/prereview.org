@@ -4,7 +4,7 @@ import { invalidE, missingE } from '../../../src/form.js'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { PreprintTitle } from '../../../src/preprint.js'
-import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
+import { BiorxivPreprintId } from '../../../src/Preprints/index.js'
 import { writeReviewForm } from '../../../src/write-review/write-review-page/write-review-form.js'
 import { expect, test } from '../../base.js'
 

@@ -13,6 +13,7 @@ import {
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
+import type { IndeterminatePreprintId } from '../../Preprints/index.js'
 import {
   FlashMessageResponse,
   type PageResponse,
@@ -24,7 +25,6 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../../routes.js'
-import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
 import { type FormStoreEnv, getForm, nextFormMatch } from '../form.js'
 import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.js'

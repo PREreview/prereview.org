@@ -13,14 +13,14 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import { timeoutRequest, useStaleCache } from './fetch.js'
-import * as StatusCodes from './StatusCodes.js'
-import { ProfileId } from './types/index.js'
 import {
   type IndeterminatePreprintIdWithDoi,
   type PreprintId,
   type PreprintIdWithDoi,
   parsePreprintDoi,
-} from './types/preprint-id.js'
+} from './Preprints/index.js'
+import * as StatusCodes from './StatusCodes.js'
+import { ProfileId } from './types/index.js'
 import { PseudonymC, isPseudonym } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 import type { NewPrereview } from './write-review/index.js'

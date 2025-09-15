@@ -4,8 +4,8 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
+import type { PreprintId } from '../Preprints/index.js'
 import type { FieldId } from '../types/field.js'
-import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
 
 export interface RecentReviewRequest {

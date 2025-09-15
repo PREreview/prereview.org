@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi, toUrl } from 'doi-ts'
-import * as _ from '../../src/types/preprint-id.js'
+import * as _ from '../../src/Preprints/PreprintId.js'
 import * as fc from '../fc.js'
 
 describe('PreprintIdEquivalence', () => {

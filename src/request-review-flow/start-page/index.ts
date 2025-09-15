@@ -6,6 +6,7 @@ import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
+import type { IndeterminatePreprintId } from '../../Preprints/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../../response.js'
 import {
   type GetReviewRequestEnv,
@@ -15,7 +16,6 @@ import {
   saveReviewRequest,
 } from '../../review-request.js'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes.js'
-import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
 import { carryOnPage } from './carry-on-page.js'
 

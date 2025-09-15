@@ -6,9 +6,9 @@ import { createPage } from '../../src/club-profile-page/club-profile-page.js'
 import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
 import { html, rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import type { ClubId } from '../../src/types/club-id.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

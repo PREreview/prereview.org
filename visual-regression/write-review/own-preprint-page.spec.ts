@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { writeReviewMatch } from '../../src/routes.js'
-import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { ownPreprintPage } from '../../src/write-review/own-preprint-page.js'
 import { expect, test } from '../base.js'
 

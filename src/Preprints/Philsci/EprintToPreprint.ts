@@ -3,7 +3,7 @@ import { Array, Either } from 'effect'
 import type { Philsci } from '../../ExternalApis/index.js'
 import { sanitizeHtml } from '../../html.js'
 import * as Preprint from '../../preprint.js'
-import { PhilsciPreprintId } from '../../types/preprint-id.js'
+import { PhilsciPreprintId } from '../PreprintId.js'
 
 export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint.Preprint, Preprint.NotAPreprint> =>
   Either.gen(function* () {

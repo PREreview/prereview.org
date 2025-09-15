@@ -1,10 +1,10 @@
 import { format, type Formatter } from 'fp-ts-routing'
+import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.js'
 import * as StatusCodes from '../StatusCodes.js'
 import { html, plainText, rawHtml } from '../html.js'
 import { translate, type SupportedLocale } from '../locales/index.js'
 import { PageResponse } from '../response.js'
 import { preprintReviewsMatch } from '../routes.js'
-import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 
 export const ownPreprintPage = (
   preprint: PreprintId,

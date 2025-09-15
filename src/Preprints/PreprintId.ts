@@ -4,7 +4,7 @@ import { Array, Data, Either, type Equivalence, Option, ParseResult, Predicate, 
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import * as FptsToEffect from '../FptsToEffect.js'
-import { DoiSchema, RegistrantDoiSchema } from './Doi.js'
+import { DoiSchema, RegistrantDoiSchema } from '../types/Doi.js'
 
 export type PreprintId = typeof PreprintId.Type
 

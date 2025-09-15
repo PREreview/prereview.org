@@ -3,10 +3,10 @@ import { Effect, pipe } from 'effect'
 import { Crossref } from '../../ExternalApis/index.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
 import * as Preprint from '../../preprint.js'
-import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
+import type { IndeterminatePreprintId } from '../PreprintId.js'
+import * as LegacyCrossref from './legacy-crossref.js'
 import { workToPreprint } from './Preprint.js'
 import { type IndeterminateCrossrefPreprintId, isCrossrefPreprintId as isCrossrefPreprintId_ } from './PreprintId.js'
-import * as LegacyCrossref from './legacy-crossref.js'
 
 export const isCrossrefPreprintId = (
   id: IndeterminatePreprintId,

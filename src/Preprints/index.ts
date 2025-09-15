@@ -2,11 +2,13 @@ import type { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
 import * as Preprint from '../preprint.js'
-import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.js'
 import { getPreprintFromDatacite, isDatacitePreprintId } from './Datacite/index.js'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './Philsci/index.js'
+import type { IndeterminatePreprintId, PreprintId } from './PreprintId.js'
+
+export * from './PreprintId.js'
 
 export class Preprints extends Context.Tag('Preprints')<
   Preprints,

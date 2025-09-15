@@ -5,7 +5,7 @@ import type { RecentPrereview } from '../../src/home-page/index.js'
 import type { RecentReviewRequest } from '../../src/home-page/recent-review-requests.js'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

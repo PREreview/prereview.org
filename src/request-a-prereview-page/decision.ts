@@ -1,5 +1,5 @@
+import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.js'
 import type { ReviewRequestPreprintId } from '../review-request.js'
-import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import type * as Form from './form.js'
 
 export type Decision =

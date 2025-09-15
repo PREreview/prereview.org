@@ -9,6 +9,7 @@ import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.js'
+import type { PreprintId } from '../Preprints/index.js'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -30,7 +31,6 @@ import {
 } from '../routes.js'
 import { EmailAddressC } from '../types/EmailAddress.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
-import type { PreprintId } from '../types/preprint-id.js'
 
 export type Form = C.TypeOf<typeof FormC>
 

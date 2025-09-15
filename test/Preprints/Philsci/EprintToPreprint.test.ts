@@ -7,9 +7,9 @@ import { Effect, pipe, Schema } from 'effect'
 import { Philsci } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
 import { Preprint } from '../../../src/preprint.js'
+import { PhilsciPreprintId } from '../../../src/Preprints/index.js'
 import * as _ from '../../../src/Preprints/Philsci/EprintToPreprint.js'
 import { Orcid } from '../../../src/types/index.js'
-import { PhilsciPreprintId } from '../../../src/types/preprint-id.js'
 import * as EffectTest from '../../EffectTest.js'
 
 test.each([

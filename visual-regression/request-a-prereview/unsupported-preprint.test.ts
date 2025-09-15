@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { unsupportedPreprintPage } from '../../src/request-a-prereview-page/unsupported-preprint-page.js'
-import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

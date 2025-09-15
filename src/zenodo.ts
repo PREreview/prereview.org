@@ -49,6 +49,13 @@ import {
   getPreprintId,
   getPreprintTitle,
 } from './preprint.js'
+import {
+  type IndeterminatePreprintId,
+  PreprintDoiD,
+  type PreprintId,
+  fromPreprintDoi,
+  fromUrl,
+} from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import type { Comment as PrereviewComment } from './review-page/index.js'
@@ -63,13 +70,6 @@ import { type FieldId, isFieldId } from './types/field.js'
 import { ProfileId } from './types/index.js'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
 import type { NonEmptyString } from './types/NonEmptyString.js'
-import {
-  type IndeterminatePreprintId,
-  PreprintDoiD,
-  type PreprintId,
-  fromPreprintDoi,
-  fromUrl,
-} from './types/preprint-id.js'
 import { isSubfieldId } from './types/subfield.js'
 import type { User } from './user.js'
 import type { NewPrereview } from './write-review/index.js'

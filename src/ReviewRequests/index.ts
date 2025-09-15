@@ -4,6 +4,7 @@ import { Array, Context, Effect, flow, Layer, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type * as Preprints from '../Preprints/index.js'
+import type { PreprintId } from '../Preprints/index.js'
 import * as PrereviewCoarNotify from '../prereview-coar-notify/index.js'
 import {
   getReviewRequestsFromPrereviewCoarNotify,
@@ -15,7 +16,6 @@ import type {
   ReviewRequestsNotFound,
 } from '../review-requests-page/index.js'
 import type { FieldId } from '../types/field.js'
-import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
 
 export interface ReviewRequest {

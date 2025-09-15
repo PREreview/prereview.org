@@ -5,8 +5,8 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../Fpts.js'
 import * as Preprint from '../preprint.js'
+import * as Preprints from '../Preprints/index.js'
 import * as ReviewRequest from '../review-request.js'
-import * as PreprintId from '../types/preprint-id.js'
 import * as Decision from './decision.js'
 import * as Form from './form.js'
 
@@ -32,11 +32,11 @@ export const makeDecision = ({
   )
 
 const resolvePreprintId = (
-  preprintIds: Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>,
+  preprintIds: Array.NonEmptyReadonlyArray<Preprints.IndeterminatePreprintId>,
 ): RTE.ReaderTaskEither<
   Preprint.ResolvePreprintIdEnv,
   Decision.ShowNotAPreprint | Decision.ShowUnknownPreprint | Decision.ShowError,
-  PreprintId.PreprintId
+  Preprints.PreprintId
 > =>
   pipe(
     Preprint.resolvePreprintId(...preprintIds),
@@ -53,7 +53,7 @@ const extractPreprintId: (
   body: unknown,
 ) => E.Either<
   Decision.ShowFormWithErrors | Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl,
-  Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>
+  Array.NonEmptyReadonlyArray<Preprints.IndeterminatePreprintId>
 > = flow(
   Form.fromBody,
   E.mapLeft(Decision.ShowFormWithErrors),
@@ -62,17 +62,17 @@ const extractPreprintId: (
       .returnType<
         E.Either<
           Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl,
-          Array.NonEmptyReadonlyArray<PreprintId.IndeterminatePreprintId>
+          Array.NonEmptyReadonlyArray<Preprints.IndeterminatePreprintId>
         >
       >()
       .with(
         P.string,
-        E.fromOptionK(() => Decision.ShowUnsupportedDoi)(flow(PreprintId.parsePreprintDoi, Option.andThen(Array.of))),
+        E.fromOptionK(() => Decision.ShowUnsupportedDoi)(flow(Preprints.parsePreprintDoi, Option.andThen(Array.of))),
       )
       .with(
         P.instanceOf(URL),
         flow(
-          PreprintId.fromUrl,
+          Preprints.fromUrl,
           Array.match({ onEmpty: () => Either.left(Decision.ShowUnsupportedUrl), onNonEmpty: Either.right }),
         ),
       )

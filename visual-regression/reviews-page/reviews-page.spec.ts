@@ -2,10 +2,10 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import type { RecentPrereviews } from '../../src/reviews-page/index.js'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

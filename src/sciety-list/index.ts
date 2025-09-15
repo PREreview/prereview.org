@@ -8,8 +8,8 @@ import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import safeStableStringify from 'safe-stable-stringify'
 import { match, P } from 'ts-pattern'
+import type { IndeterminatePreprintId } from '../Preprints/index.js'
 import type { NonEmptyString } from '../types/NonEmptyString.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 
 export interface ScietyListEnv {
   scietyListToken: NonEmptyString

@@ -4,8 +4,8 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
+import type { PreprintId } from '../Preprints/index.js'
 import type { FieldId } from '../types/field.js'
-import type { PreprintId } from '../types/preprint-id.js'
 import type { SubfieldId } from '../types/subfield.js'
 
 export interface ReviewRequests {

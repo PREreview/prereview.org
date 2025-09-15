@@ -1,6 +1,6 @@
 import { Url, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
-import type { PreprintId } from '../types/preprint-id.js'
+import type { PreprintId } from '../Preprints/index.js'
 import type { User } from '../user.js'
 import { toExternalIdentifier } from '../zenodo.js'
 import { ZenodoApi } from './ZenodoApi.js'

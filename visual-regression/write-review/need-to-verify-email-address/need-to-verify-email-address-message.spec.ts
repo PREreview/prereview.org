@@ -2,8 +2,8 @@ import { UnverifiedContactEmailAddress } from '../../../src/contact-email-addres
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import type { PreprintTitle } from '../../../src/preprint.js'
+import { BiorxivPreprintId } from '../../../src/Preprints/index.js'
 import { Doi, EmailAddress, Uuid } from '../../../src/types/index.js'
-import { BiorxivPreprintId } from '../../../src/types/preprint-id.js'
 import { needToVerifyEmailAddressMessage } from '../../../src/write-review/need-to-verify-email-address/need-to-verify-email-address-message.js'
 import { expect, test } from '../../base.js'
 

@@ -15,9 +15,9 @@ import {
 import { havingProblemsPage, pageNotFound } from '../http-error.js'
 import type { SupportedLocale } from '../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
+import type { IndeterminatePreprintId } from '../Preprints/index.js'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../routes.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
 import type { User } from '../user.js'
 import { type FormStoreEnv, getForm, nextFormMatch } from './form.js'
 

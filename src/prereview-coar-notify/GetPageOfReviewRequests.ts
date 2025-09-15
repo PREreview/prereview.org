@@ -1,14 +1,14 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, pipe, Schema } from 'effect'
+import * as Preprints from '../Preprints/index.js'
 import { ReviewRequestsAreUnavailable } from '../review-requests-page/index.js'
 import * as StatusCodes from '../StatusCodes.js'
 import { Field, Iso639, Subfield, Temporal } from '../types/index.js'
-import * as PreprintId from '../types/preprint-id.js'
 
 export const ReviewRequestsSchema = Schema.Array(
   Schema.Struct({
     timestamp: Temporal.InstantSchema,
-    preprint: PreprintId.IndeterminatePreprintIdFromDoiSchema,
+    preprint: Preprints.IndeterminatePreprintIdFromDoiSchema,
     fields: Schema.Array(Field.FieldIdSchema),
     subfields: Schema.Array(Subfield.SubfieldIdSchema),
     language: Schema.NullOr(Iso639.Iso6391Schema),

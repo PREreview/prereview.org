@@ -1,5 +1,5 @@
 import * as Doi from 'doi-ts'
-import type { IndeterminatePreprintId, PreprintId } from '../../types/preprint-id.js'
+import type { IndeterminatePreprintId, PreprintId } from '../PreprintId.js'
 
 const japanLinkCenterDoiPrefixes = ['51094'] as const
 

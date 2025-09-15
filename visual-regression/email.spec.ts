@@ -10,9 +10,9 @@ import {
 } from '../src/email.js'
 import { html } from '../src/html.js'
 import { DefaultLocale } from '../src/locales/index.js'
+import { BiorxivPreprintId } from '../src/Preprints/index.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
 import { NonEmptyString } from '../src/types/NonEmptyString.js'
-import { BiorxivPreprintId } from '../src/types/preprint-id.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { expect, test } from './base.js'
 

@@ -20,7 +20,7 @@ import {
   type IndeterminatePreprintId,
   type PreprintId,
   PsychArchivesPreprintId,
-} from '../../types/preprint-id.js'
+} from '../PreprintId.js'
 
 const dataciteDoiPrefixes = ['6084', '23668', '57844', '60763'] as const
 

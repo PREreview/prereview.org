@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.js'
 import { unknownPreprintPage } from '../../src/request-a-prereview-page/unknown-preprint-page.js'
-import { BiorxivPreprintId, PhilsciPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right with a DOI ID', async ({ showPage }) => {

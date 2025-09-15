@@ -1,5 +1,5 @@
 import { Match } from 'effect'
-import type { PreprintId } from '../types/preprint-id.js'
+import type { PreprintId } from '../Preprints/index.js'
 
 export const getName = Match.typeTags<PreprintId, string>()({
   AdvancePreprintId: () => 'Advance',

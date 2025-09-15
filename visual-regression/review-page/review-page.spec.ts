@@ -3,10 +3,10 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/Preprints/index.js'
 import { Prereview } from '../../src/Prereview.js'
 import type { Comment } from '../../src/review-page/index.js'
 import { createPage } from '../../src/review-page/review-page.js'
-import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

@@ -22,7 +22,7 @@ import {
   SocarxivPreprintId,
   SsrnPreprintId,
   VerixivPreprintId,
-} from '../../../src/types/preprint-id.js'
+} from '../../../src/Preprints/index.js'
 import * as EffectTest from '../../EffectTest.js'
 
 test.each([

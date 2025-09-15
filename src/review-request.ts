@@ -29,7 +29,7 @@ import type {
   SocarxivPreprintId,
   TechrxivPreprintId,
   ZenodoPreprintId,
-} from './types/preprint-id.js'
+} from './Preprints/index.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 

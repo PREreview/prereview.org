@@ -2,9 +2,9 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import type { ReviewRequests } from '../../src/review-requests-page/index.js'
 import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page.js'
-import { BiorxivPreprintId, ScieloPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

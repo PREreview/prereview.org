@@ -8,6 +8,7 @@ import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
 import { type Html, html, mjmlToHtml, plainText, rawHtml } from './html.js'
 import { type SupportedLocale, translate } from './locales/index.js'
 import type { PreprintTitle } from './preprint.js'
+import type { IndeterminatePreprintId } from './Preprints/index.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
 import * as Routes from './routes.js'
 import {
@@ -19,7 +20,6 @@ import {
 } from './routes.js'
 import { EmailAddress } from './types/EmailAddress.js'
 import type { NonEmptyString } from './types/NonEmptyString.js'
-import type { IndeterminatePreprintId } from './types/preprint-id.js'
 import type { User } from './user.js'
 
 export interface SendEmailEnv {

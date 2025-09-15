@@ -1,6 +1,6 @@
 import { DefaultLocale } from '../../src/locales/index.js'
+import { PhilsciPreprintId } from '../../src/Preprints/index.js'
 import { createUnknownPhilsciPreprintPage } from '../../src/review-a-preprint-page/unknown-philsci-preprint-page.js'
-import { PhilsciPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {

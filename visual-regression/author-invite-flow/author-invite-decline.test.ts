@@ -6,8 +6,8 @@ import { declinePage } from '../../src/author-invite-flow/decline-page/decline-p
 import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
+import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { Prereview } from '../../src/Prereview.js'
-import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
 import { expect, test } from '../base.js'
 
 test('content looks right before declining', async ({ showPage }) => {

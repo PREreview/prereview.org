@@ -4,6 +4,16 @@ import { Doi } from 'doi-ts'
 import { Array, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import {
+  BiorxivOrMedrxivPreprintId,
+  BiorxivPreprintId,
+  fromPreprintDoi,
+  type IndeterminatePreprintId,
+  MedrxivPreprintId,
+  OsfOrLifecycleJournalPreprintId,
+  OsfPreprintId,
+  OsfPreprintsPreprintId,
+} from '../../src/Preprints/index.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import {
@@ -14,16 +24,6 @@ import {
 } from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
-import {
-  BiorxivOrMedrxivPreprintId,
-  BiorxivPreprintId,
-  fromPreprintDoi,
-  type IndeterminatePreprintId,
-  MedrxivPreprintId,
-  OsfOrLifecycleJournalPreprintId,
-  OsfPreprintId,
-  OsfPreprintsPreprintId,
-} from '../../src/types/preprint-id.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

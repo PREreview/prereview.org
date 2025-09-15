@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
 import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
 import { Preprint } from '../../src/preprint.js'
-import { BiorxivPreprintId } from '../../src/types/preprint-id.js'
+import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showTwoUpPage }) => {

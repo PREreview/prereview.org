@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi, toUrl } from 'doi-ts'
+import { BiorxivPreprintId } from '../src/Preprints/index.js'
 import * as _ from '../src/sciety.js'
-import { BiorxivPreprintId } from '../src/types/preprint-id.js'
 import * as fc from './fc.js'
 
 describe('isScietyPreprint', () => {

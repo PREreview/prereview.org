@@ -69,32 +69,6 @@ import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Prep
 import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Preprints/Datacite/legacy-datacite.js'
 import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.js'
-import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.js'
-import { Prereview } from '../src/Prereview.js'
-import type { ResearchInterests } from '../src/research-interests.js'
-import {
-  type FlashMessageResponse,
-  FlashMessageSchema,
-  type LogInResponse,
-  type PageResponse,
-  type RedirectResponse,
-  type StreamlinePageResponse,
-  type TwoUpPageResponse,
-} from '../src/response.js'
-import type {
-  CompletedReviewRequest,
-  IncompleteReviewRequest,
-  ReviewRequest,
-  ReviewRequestPreprintId,
-} from '../src/review-request.js'
-import type { SlackUserId } from '../src/slack-user-id.js'
-import type { SlackUser } from '../src/slack-user.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import { type ClubId, clubIds } from '../src/types/club-id.js'
-import { EmailAddress } from '../src/types/EmailAddress.js'
-import { type FieldId, fieldIds } from '../src/types/field.js'
-import { OrcidLocale, ProfileId } from '../src/types/index.js'
-import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
 import {
   AdvancePreprintId,
   AfricarxivFigsharePreprintId,
@@ -139,7 +113,33 @@ import {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
   isPreprintDoi,
-} from '../src/types/preprint-id.js'
+} from '../src/Preprints/index.js'
+import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.js'
+import { Prereview } from '../src/Prereview.js'
+import type { ResearchInterests } from '../src/research-interests.js'
+import {
+  type FlashMessageResponse,
+  FlashMessageSchema,
+  type LogInResponse,
+  type PageResponse,
+  type RedirectResponse,
+  type StreamlinePageResponse,
+  type TwoUpPageResponse,
+} from '../src/response.js'
+import type {
+  CompletedReviewRequest,
+  IncompleteReviewRequest,
+  ReviewRequest,
+  ReviewRequestPreprintId,
+} from '../src/review-request.js'
+import type { SlackUserId } from '../src/slack-user-id.js'
+import type { SlackUser } from '../src/slack-user.js'
+import * as StatusCodes from '../src/StatusCodes.js'
+import { type ClubId, clubIds } from '../src/types/club-id.js'
+import { EmailAddress } from '../src/types/EmailAddress.js'
+import { type FieldId, fieldIds } from '../src/types/field.js'
+import { OrcidLocale, ProfileId } from '../src/types/index.js'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'

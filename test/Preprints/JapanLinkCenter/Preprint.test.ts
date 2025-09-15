@@ -6,8 +6,8 @@ import { Either } from 'effect'
 import { JapanLinkCenter } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
 import { Preprint } from '../../../src/preprint.js'
+import { JxivPreprintId } from '../../../src/Preprints/index.js'
 import * as _ from '../../../src/Preprints/JapanLinkCenter/Preprint.js'
-import { JxivPreprintId } from '../../../src/types/preprint-id.js'
 import * as fc from '../../fc.js'
 
 describe('recordToPreprint', () => {

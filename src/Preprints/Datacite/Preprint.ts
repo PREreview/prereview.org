@@ -13,7 +13,7 @@ import {
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../../types/preprint-id.js'
+} from '../PreprintId.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 
 export const recordToPreprint = (

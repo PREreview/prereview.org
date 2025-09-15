@@ -9,6 +9,7 @@ import { missingE } from '../../form.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
+import type { IndeterminatePreprintId } from '../../Preprints/index.js'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   type GetReviewRequestEnv,
@@ -20,7 +21,6 @@ import {
   saveReviewRequest,
 } from '../../review-request.js'
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../routes.js'
-import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import type { User } from '../../user.js'
 import { personaForm } from './persona-form.js'
 

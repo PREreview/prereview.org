@@ -9,7 +9,6 @@ import {
   PreprintIsUnavailable,
   type ResolvePreprintIdEnv,
 } from '../../src/preprint.js'
-import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
@@ -19,7 +18,8 @@ import {
   OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
-} from '../../src/types/preprint-id.js'
+} from '../../src/Preprints/index.js'
+import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

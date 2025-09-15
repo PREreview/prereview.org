@@ -1,7 +1,7 @@
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { Orcid } from 'orcid-id-ts'
-import type { PreprintId } from '../types/preprint-id.js'
+import type { PreprintId } from '../Preprints/index.js'
 
 export interface RapidPrereview {
   author: {
