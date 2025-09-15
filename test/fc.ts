@@ -44,8 +44,6 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Crossref/legacy-crossref.js'
-import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Datacite/legacy-datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
 import type * as DatasetReviews from '../src/DatasetReviews/index.js'
@@ -69,6 +67,8 @@ import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import * as Personas from '../src/Personas/index.js'
 import type { Preprint, PreprintTitle } from '../src/preprint.js'
+import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.js'
+import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.js'
 import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.js'
 import { Prereview } from '../src/Prereview.js'
 import type { ResearchInterests } from '../src/research-interests.js'

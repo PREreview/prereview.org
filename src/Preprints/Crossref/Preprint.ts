@@ -2,15 +2,17 @@ import { Url } from '@effect/platform'
 import * as Doi from 'doi-ts'
 import { Array, Either, flow, Match, Option, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
-import { type Html, sanitizeHtml } from '../html.js'
-import { transformJatsToHtml } from '../jats.js'
-import * as Preprint from '../preprint.js'
-import { BiorxivPreprintId, fromPreprintDoi, MedrxivPreprintId } from '../types/preprint-id.js'
+import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
+import type { Crossref } from '../../ExternalApis/index.js'
+import { type Html, sanitizeHtml } from '../../html.js'
+import { transformJatsToHtml } from '../../jats.js'
+import * as Preprint from '../../preprint.js'
+import { BiorxivPreprintId, fromPreprintDoi, MedrxivPreprintId } from '../../types/preprint-id.js'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
-import type { Work } from './Work.js'
 
-const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprintId, Preprint.PreprintIsUnavailable> =>
+const determineCrossrefPreprintId = (
+  work: Crossref.Work,
+): Either.Either<CrossrefPreprintId, Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const doi = work.DOI
 
@@ -42,7 +44,7 @@ const determineCrossrefPreprintId = (work: Work): Either.Either<CrossrefPreprint
   })
 
 export const workToPreprint = (
-  work: Work,
+  work: Crossref.Work,
 ): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     if (work.type !== 'posted-content' || work.subtype !== 'preprint') {

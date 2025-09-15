@@ -1,10 +1,10 @@
 import type { FetchHttpClient, HttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
-import * as Crossref from '../Crossref/index.js'
 import * as Datacite from '../Datacite/index.js'
 import type { JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
+import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.js'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './Philsci/index.js'
 
@@ -36,7 +36,7 @@ export const layer = Layer.effect(
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
       Match.tag('PhilsciPreprintId', getPreprintFromPhilsci),
-      Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
+      Match.when(isCrossrefPreprintId, getPreprintFromCrossref),
       Match.when(Datacite.isDatacitePreprintId, Datacite.getPreprintFromDatacite),
       Match.when(isJapanLinkCenterPreprintId, getPreprintFromJapanLinkCenter),
       Match.exhaustive,

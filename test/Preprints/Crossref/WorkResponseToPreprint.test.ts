@@ -6,10 +6,10 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Struct } from 'effect'
 import { Orcid } from 'orcid-id-ts'
-import { workToPreprint } from '../../src/Crossref/Preprint.js'
-import { ResponseSchema, Work } from '../../src/Crossref/Work.js'
-import { rawHtml } from '../../src/html.js'
-import { Preprint } from '../../src/preprint.js'
+import { Crossref } from '../../../src/ExternalApis/index.js'
+import { rawHtml } from '../../../src/html.js'
+import { Preprint } from '../../../src/preprint.js'
+import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.js'
 import {
   BiorxivPreprintId,
   MedrxivPreprintId,
@@ -22,8 +22,8 @@ import {
   SocarxivPreprintId,
   SsrnPreprintId,
   VerixivPreprintId,
-} from '../../src/types/preprint-id.js'
-import * as EffectTest from '../EffectTest.js'
+} from '../../../src/types/preprint-id.js'
+import * as EffectTest from '../../EffectTest.js'
 
 test.each([
   {
@@ -422,8 +422,8 @@ test.each([
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/Crossref/WorkSamples/${response}`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Work)))),
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.ResponseSchema(Crossref.Work)))),
       Effect.andThen(Struct.get('message')),
       Effect.andThen(workToPreprint),
     )
@@ -438,8 +438,8 @@ test.each(['csh-press-journal.json', 'f1000.json', 'scielo-journal.json', 'wellc
     Effect.gen(function* () {
       const actual = yield* pipe(
         FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/Crossref/WorkSamples/${response}`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Work)))),
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.ResponseSchema(Crossref.Work)))),
         Effect.andThen(Struct.get('message')),
         Effect.andThen(workToPreprint),
         Effect.flip,

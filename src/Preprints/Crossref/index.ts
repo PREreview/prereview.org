@@ -1,11 +1,11 @@
 import { FetchHttpClient, type HttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import * as FptsToEffect from '../FptsToEffect.js'
-import * as Preprint from '../preprint.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import { Crossref } from '../../ExternalApis/index.js'
+import * as FptsToEffect from '../../FptsToEffect.js'
+import * as Preprint from '../../preprint.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import { workToPreprint } from './Preprint.js'
 import { type IndeterminateCrossrefPreprintId, isCrossrefPreprintId as isCrossrefPreprintId_ } from './PreprintId.js'
-import { getWork } from './Work.js'
 import * as LegacyCrossref from './legacy-crossref.js'
 
 export const isCrossrefPreprintId = (
@@ -29,7 +29,7 @@ export const getPreprintFromCrossref = (
       }),
     onFalse: () =>
       pipe(
-        getWork(id.value),
+        Crossref.getWork(id.value),
         Effect.andThen(workToPreprint),
         Effect.catchTags({
           WorkIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),

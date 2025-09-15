@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Either } from 'effect'
-import * as _ from '../../src/Crossref/Preprint.js'
-import { Work } from '../../src/Crossref/Work.js'
-import { Doi } from '../../src/types/Doi.js'
-import * as fc from '../fc.js'
+import { Crossref } from '../../../src/ExternalApis/index.js'
+import * as _ from '../../../src/Preprints/Crossref/Preprint.js'
+import { Doi } from '../../../src/types/Doi.js'
+import * as fc from '../../fc.js'
 
 describe('workToPreprint', () => {
   test.prop([fc.lorem(), fc.option(fc.lorem(), { nil: undefined })], {
@@ -15,7 +15,7 @@ describe('workToPreprint', () => {
       ['posted-content', 'other'],
     ],
   })('not a preprint', (type, subtype) => {
-    const work = new Work({
+    const work = new Crossref.Work({
       ...stubWork,
       type,
       subtype,
@@ -30,7 +30,7 @@ describe('workToPreprint', () => {
   test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
     'not a Crossref preprint ID',
     doi => {
-      const work = new Work({
+      const work = new Crossref.Work({
         ...stubWork,
         DOI: doi,
       })
@@ -43,7 +43,7 @@ describe('workToPreprint', () => {
   )
 
   test('no authors', () => {
-    const work = new Work({
+    const work = new Crossref.Work({
       ...stubWork,
       author: [],
     })
@@ -55,7 +55,7 @@ describe('workToPreprint', () => {
   })
 
   test('no title', () => {
-    const work = new Work({
+    const work = new Crossref.Work({
       ...stubWork,
       title: [],
     })
@@ -90,4 +90,4 @@ const stubWork = {
   'group-title': 'SSRN',
   type: 'posted-content',
   subtype: 'preprint',
-} satisfies typeof Work.Type
+} satisfies typeof Crossref.Work.Type

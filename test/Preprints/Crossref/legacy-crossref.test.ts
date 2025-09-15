@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import * as _ from '../../src/Crossref/legacy-crossref.js'
-import { rawHtml } from '../../src/html.js'
-import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as fc from '../fc.js'
+import { rawHtml } from '../../../src/html.js'
+import { NotAPreprint, PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/preprint.js'
+import * as _ from '../../../src/Preprints/Crossref/legacy-crossref.js'
+import * as StatusCodes from '../../../src/StatusCodes.js'
+import * as fc from '../../fc.js'
 
 describe('isCrossrefPreprintDoi', () => {
   test.prop([fc.legacyCrossrefPreprintDoi()])('with a Crossref DOI', doi => {
