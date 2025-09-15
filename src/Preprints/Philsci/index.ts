@@ -1,12 +1,12 @@
 import type { HttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
+import * as Philsci from '../../Philsci/index.js'
 import * as Preprint from '../../preprint.js'
 import * as StatusCodes from '../../StatusCodes.js'
 import type { PhilsciPreprintId } from '../../types/preprint-id.js'
-import { GetEprint } from '../GetEprint/index.js'
 import { EprintToPreprint } from './EprintToPreprint.js'
 
-export const GetPreprint = (
+export const getPreprintFromPhilsci = (
   id: PhilsciPreprintId,
 ): Effect.Effect<
   Preprint.Preprint,
@@ -14,7 +14,7 @@ export const GetPreprint = (
   HttpClient.HttpClient
 > =>
   pipe(
-    GetEprint(id.value),
+    Philsci.GetEprint(id.value),
     Effect.andThen(EprintToPreprint),
     Effect.catchIf(
       error =>

@@ -1,3 +1,2 @@
-import { GetPreprint } from './GetPreprint/index.js'
-
-export const getPreprintFromPhilsci = GetPreprint
+export { Eprint } from './Eprint.js'
+export { GetEprint } from './GetEprint/index.js'

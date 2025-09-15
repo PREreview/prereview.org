@@ -1,11 +1,11 @@
 import { Url } from '@effect/platform'
 import { Array, Either } from 'effect'
 import { sanitizeHtml } from '../../html.js'
+import type * as Philsci from '../../Philsci/index.js'
 import * as Preprint from '../../preprint.js'
 import { PhilsciPreprintId } from '../../types/preprint-id.js'
-import type { Eprint } from '../Eprint.js'
 
-export const EprintToPreprint = (eprint: Eprint): Either.Either<Preprint.Preprint, Preprint.NotAPreprint> =>
+export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint.Preprint, Preprint.NotAPreprint> =>
   Either.gen(function* () {
     if (eprint.type !== 'pittpreprint') {
       yield* Either.left(new Preprint.NotAPreprint({ cause: { type: eprint.type } }))
