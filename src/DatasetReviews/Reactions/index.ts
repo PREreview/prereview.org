@@ -1,5 +1,6 @@
 import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
 import * as Events from '../../Events.js'
+import type * as Personas from '../../Personas/index.js'
 import type { Zenodo } from '../../Zenodo/index.js'
 import type { DatasetReviewCommands } from '../Commands/index.js'
 import type { DatasetReviewQueries } from '../Queries/index.js'
@@ -11,7 +12,7 @@ import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.js'
 const makeDatasetReviewReactions: Effect.Effect<
   never,
   never,
-  DatasetReviewCommands | DatasetReviewQueries | Events.Events | Scope.Scope | Zenodo
+  DatasetReviewCommands | DatasetReviewQueries | Events.Events | Personas.Personas | Scope.Scope | Zenodo
 > = Effect.gen(function* () {
   const events = yield* Events.Events
   const dequeue = yield* PubSub.subscribe(events)

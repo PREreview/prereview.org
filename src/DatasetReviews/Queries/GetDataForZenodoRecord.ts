@@ -1,11 +1,10 @@
-import { Array, Either, Match, Option, pipe, Struct } from 'effect'
-import * as Personas from '../../Personas/index.js'
-import { NonEmptyString } from '../../types/index.js'
+import { Array, Either, Option, Struct } from 'effect'
+import type { Orcid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DataForZenodoRecord {
-  readonly author: Personas.Persona
+  readonly author: { orcidId: Orcid.Orcid; persona: Events.PersonaForDatasetReviewWasChosen['persona']['type'] }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -40,6 +39,10 @@ export const GetDataForZenodoRecord = (
     return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
+  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
+    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+  }
+
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
     return Either.left(new Errors.DatasetReviewHasBeenPublished())
   }
@@ -48,7 +51,7 @@ export const GetDataForZenodoRecord = (
     return Either.left(new Errors.DatasetReviewIsInProgress())
   }
 
-  const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
+  const chosenPersona = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
@@ -93,29 +96,13 @@ export const GetDataForZenodoRecord = (
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
-        author: Option.match(author, {
-          onSome: pipe(
-            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
-            Match.when(
-              { persona: { type: 'public' } },
-              author =>
-                new Personas.PublicPersona({
-                  name: author.persona.name,
-                  orcidId: author.persona.orcidId,
-                }),
-            ),
-            Match.when(
-              { persona: { type: 'pseudonym' } },
-              author => new Personas.PseudonymPersona({ pseudonym: author.persona.pseudonym }),
-            ),
-            Match.orElseAbsurd,
-          ),
-          onNone: () =>
-            new Personas.PublicPersona({
-              name: NonEmptyString.NonEmptyString('A PREreviewer'),
-              orcidId: started.authorId,
-            }),
-        }),
+        author: {
+          orcidId: started.authorId,
+          persona: Option.match(chosenPersona, {
+            onSome: chosenPersona => chosenPersona.persona.type,
+            onNone: () => 'public',
+          }),
+        },
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

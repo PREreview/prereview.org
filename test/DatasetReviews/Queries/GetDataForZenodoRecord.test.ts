@@ -5,7 +5,6 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import * as Personas from '../../../src/Personas/index.js'
 import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
@@ -167,10 +166,7 @@ describe('GetDataForZenodoRecord', () => {
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DataForZenodoRecord]>(events, {
-              author:
-                events[13].persona.type === 'public'
-                  ? new Personas.PublicPersona({ name: events[13].persona.name, orcidId: events[13].persona.orcidId })
-                  : new Personas.PseudonymPersona({ pseudonym: events[13].persona.pseudonym }),
+              author: { orcidId: events[0].authorId, persona: events[13].persona.type },
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -196,10 +192,7 @@ describe('GetDataForZenodoRecord', () => {
                 publicationOfDatasetReviewWasRequested,
               ],
               {
-                author: new Personas.PublicPersona({
-                  name: NonEmptyString.NonEmptyString('A PREreviewer'),
-                  orcidId: datasetReviewWasStarted.authorId,
-                }),
+                author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -249,7 +242,10 @@ describe('GetDataForZenodoRecord', () => {
                 publicationOfDatasetReviewWasRequested,
               ],
               {
-                author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+                author: {
+                  orcidId: datasetReviewWasStarted.authorId,
+                  persona: personaForDatasetReviewWasChosen2.persona.type,
+                },
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
@@ -280,10 +276,7 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetFollowsFairAndCarePrinciples,
               ],
               {
-                author: new Personas.PublicPersona({
-                  name: NonEmptyString.NonEmptyString('A PREreviewer'),
-                  orcidId: datasetReviewWasStarted.authorId,
-                }),
+                author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -309,10 +302,7 @@ describe('GetDataForZenodoRecord', () => {
                 zenodoRecordForDatasetReviewWasCreated,
               ],
               {
-                author: new Personas.PublicPersona({
-                  name: NonEmptyString.NonEmptyString('A PREreviewer'),
-                  orcidId: datasetReviewWasStarted.authorId,
-                }),
+                author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,

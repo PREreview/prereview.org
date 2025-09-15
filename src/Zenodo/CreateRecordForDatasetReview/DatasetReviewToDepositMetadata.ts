@@ -5,7 +5,9 @@ import * as Personas from '../../Personas/index.js'
 import { Doi } from '../../types/index.js'
 import type { DepositMetadata } from '../Deposition.js'
 
-export type DatasetReview = DatasetReviews.DataForZenodoRecord
+export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
+  readonly author: Personas.Persona
+}
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
   creators: [
