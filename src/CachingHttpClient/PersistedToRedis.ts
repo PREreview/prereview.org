@@ -30,7 +30,7 @@ export const getFromRedis =
   (redis: IoRedis): (typeof HttpCache.Service)['get'] =>
   request =>
     pipe(
-      Effect.tryPromise(() => redis.get(keyForRequest(request))),
+      Effect.tryPromise({ try: () => redis.get(keyForRequest(request)), catch: String }),
       Effect.andThen(Either.fromNullable(() => new NoCachedResponseFound({}))),
       Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
@@ -45,11 +45,14 @@ export const getFromRedis =
       })),
       Effect.catchTag('ParseError', cause =>
         pipe(
-          Effect.tryPromise(() => redis.del(keyForRequest(request))),
+          Effect.tryPromise({ try: () => redis.del(keyForRequest(request)), catch: String }),
           Effect.andThen(() => new NoCachedResponseFound({ cause })),
         ),
       ),
-      Effect.catchTag('UnknownException', cause => new InternalHttpCacheFailure({ cause })),
+      Effect.catchIf(
+        error => typeof error === 'string',
+        cause => new InternalHttpCacheFailure({ cause }),
+      ),
     )
 
 export const writeToRedis =
@@ -67,9 +70,12 @@ export const writeToRedis =
         }
       }),
       Effect.andThen(Schema.encode(CacheValueFromStringSchema)),
-      Effect.andThen(value => {
-        return redis.set(keyForRequest(response.request), value)
-      }),
+      Effect.andThen(value =>
+        Effect.tryPromise({
+          try: () => redis.set(keyForRequest(response.request), value),
+          catch: String,
+        }),
+      ),
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
@@ -78,7 +84,7 @@ export const deleteFromRedis =
   (redis: IoRedis): (typeof HttpCache.Service)['delete'] =>
   url =>
     pipe(
-      Effect.tryPromise(() => redis.del(normalizeUrl(url))),
+      Effect.tryPromise({ try: () => redis.del(normalizeUrl(url)), catch: String }),
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
     )
