@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,

@@ -12,8 +12,8 @@ import {
 } from '../../contact-email-address.js'
 import { havingProblemsPage, pageNotFound } from '../../http-error.js'
 import type { SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint.js'
-import type { IndeterminatePreprintId } from '../../Preprints/index.js'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
+import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.js'
 import {
   FlashMessageResponse,
   type PageResponse,

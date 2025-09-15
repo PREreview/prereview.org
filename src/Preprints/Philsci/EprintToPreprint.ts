@@ -2,7 +2,7 @@ import { Url } from '@effect/platform'
 import { Array, Either } from 'effect'
 import type { Philsci } from '../../ExternalApis/index.js'
 import { sanitizeHtml } from '../../html.js'
-import * as Preprint from '../../preprint.js'
+import * as Preprint from '../Preprint.js'
 import { PhilsciPreprintId } from '../PreprintId.js'
 
 export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint.Preprint, Preprint.NotAPreprint> =>

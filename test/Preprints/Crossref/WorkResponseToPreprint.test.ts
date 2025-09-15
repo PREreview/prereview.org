@@ -8,7 +8,6 @@ import { Effect, pipe, Schema, Struct } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Crossref } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
-import { Preprint } from '../../../src/preprint.js'
 import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.js'
 import {
   BiorxivPreprintId,
@@ -16,6 +15,7 @@ import {
   MetaarxivPreprintId,
   NeurolibrePreprintId,
   OsfPreprintsPreprintId,
+  Preprint,
   PreprintsorgPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,

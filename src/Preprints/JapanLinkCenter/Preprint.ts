@@ -1,7 +1,7 @@
 import { Array, Either, Option, pipe } from 'effect'
 import type { JapanLinkCenter } from '../../ExternalApis/index.js'
 import { html } from '../../html.js'
-import * as Preprint from '../../preprint.js'
+import * as Preprint from '../Preprint.js'
 import { JxivPreprintId } from '../PreprintId.js'
 import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.js'
 

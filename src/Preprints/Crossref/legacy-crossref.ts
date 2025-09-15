@@ -10,8 +10,8 @@ import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
 import { timeoutRequest, useStaleCache } from '../../fetch.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { transformJatsToHtml } from '../../jats.js'
-import * as Preprint from '../../preprint.js'
 import * as StatusCodes from '../../StatusCodes.js'
+import * as Preprint from '../Preprint.js'
 import {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,

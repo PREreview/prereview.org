@@ -64,7 +64,6 @@ import type { Location } from '../src/location.js'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.js'
 import * as Personas from '../src/Personas/index.js'
-import type { Preprint, PreprintTitle } from '../src/preprint.js'
 import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.js'
 import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.js'
 import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Preprints/Datacite/legacy-datacite.js'
@@ -98,8 +97,10 @@ import {
   OsfPreprintId,
   OsfPreprintsPreprintId,
   PhilsciPreprintId,
+  type Preprint,
   type PreprintId,
   type PreprintIdWithDoi,
+  type PreprintTitle,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,

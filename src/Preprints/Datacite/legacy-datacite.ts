@@ -11,8 +11,8 @@ import * as StatusCodes from '../../StatusCodes.js'
 import { detectLanguageFrom } from '../../detect-language.js'
 import { timeoutRequest, useStaleCache } from '../../fetch.js'
 import { sanitizeHtml } from '../../html.js'
-import * as Preprint from '../../preprint.js'
 import { Orcid } from '../../types/index.js'
+import * as Preprint from '../Preprint.js'
 import {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,

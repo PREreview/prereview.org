@@ -5,7 +5,7 @@ import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
 import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../preprint.js'
+import type { PreprintTitle } from '../../Preprints/index.js'
 import * as PreprintServers from '../../PreprintServers/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import {

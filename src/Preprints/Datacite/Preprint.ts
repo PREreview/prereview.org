@@ -5,8 +5,8 @@ import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
 import type { Datacite } from '../../ExternalApis/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'
-import * as Preprint from '../../preprint.js'
 import { Orcid } from '../../types/index.js'
+import * as Preprint from '../Preprint.js'
 import {
   AfricarxivZenodoPreprintId,
   fromPreprintDoi,

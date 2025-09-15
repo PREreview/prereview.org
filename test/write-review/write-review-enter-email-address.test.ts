@@ -9,7 +9,7 @@ import {
   type SaveContactEmailAddressEnv,
   type VerifyContactEmailAddressForReviewEnv,
 } from '../../src/contact-email-address.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/preprint.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.js'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { FormC, formKey } from '../../src/write-review/form.js'

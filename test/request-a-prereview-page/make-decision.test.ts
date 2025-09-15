@@ -3,21 +3,19 @@ import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Array, Tuple } from 'effect'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import {
-  NotAPreprint,
-  PreprintIsNotFound,
-  PreprintIsUnavailable,
-  type ResolvePreprintIdEnv,
-} from '../../src/preprint.js'
+import type { ResolvePreprintIdEnv } from '../../src/preprint.js'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   fromPreprintDoi,
   type IndeterminatePreprintId,
   MedrxivPreprintId,
+  NotAPreprint,
   OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
+  PreprintIsNotFound,
+  PreprintIsUnavailable,
 } from '../../src/Preprints/index.js'
 import * as _ from '../../src/request-a-prereview-page/make-decision.js'
 import * as fc from '../fc.js'

@@ -8,13 +8,13 @@ import { Effect, pipe, Schema, Struct } from 'effect'
 import { Orcid } from 'orcid-id-ts'
 import { Datacite } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
-import { Preprint } from '../../../src/preprint.js'
 import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.js'
 import {
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
   OsfPreprintId,
+  Preprint,
   ZenodoPreprintId,
 } from '../../../src/Preprints/index.js'
 import * as EffectTest from '../../EffectTest.js'

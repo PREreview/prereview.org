@@ -40,7 +40,6 @@ import { timeoutRequest, useStaleCache } from './fetch.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { type Html, plainText, sanitizeHtml } from './html.js'
 import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
-import type * as Preprint from './preprint.js'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -51,8 +50,11 @@ import {
 } from './preprint.js'
 import {
   type IndeterminatePreprintId,
+  type NotAPreprint,
   PreprintDoiD,
   type PreprintId,
+  type PreprintIsNotFound,
+  type PreprintIsUnavailable,
   fromPreprintDoi,
   fromUrl,
 } from './Preprints/index.js'
@@ -742,8 +744,8 @@ function recordToPrereview(
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
   | HttpError<404>
   | 'no reviewed preprint'
-  | Preprint.PreprintIsUnavailable
-  | Preprint.PreprintIsNotFound
+  | PreprintIsUnavailable
+  | PreprintIsNotFound
   | 'text-unavailable'
   | 'unknown-license',
   Prereview.Prereview
@@ -768,7 +770,7 @@ function recordToPrereview(
         ),
         authors: RTE.right<
           F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-          Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound | 'text-unavailable'
+          PreprintIsUnavailable | PreprintIsNotFound | 'text-unavailable'
         >(getAuthors(record) as never),
         club: RTE.right(pipe(getReviewClub(record), Option.getOrUndefined)),
         doi: RTE.right(record.metadata.doi),
@@ -872,7 +874,7 @@ function recordToScietyPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   L.LoggerEnv & GetPreprintIdEnv,
-  'no reviewed preprint' | Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
+  'no reviewed preprint' | NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable,
   ScietyPrereview & ReviewsDataPrereview
 > {
   return pipe(
@@ -903,7 +905,7 @@ function recordToRecentPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
-  'no reviewed preprint' | Preprint.PreprintIsUnavailable | Preprint.PreprintIsNotFound,
+  'no reviewed preprint' | PreprintIsUnavailable | PreprintIsNotFound,
   RecentPrereviews['recentPrereviews'][number]
 > {
   return pipe(

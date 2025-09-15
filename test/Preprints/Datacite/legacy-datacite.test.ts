@@ -4,8 +4,8 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../../src/html.js'
-import { NotAPreprint, PreprintIsUnavailable } from '../../../src/preprint.js'
 import * as _ from '../../../src/Preprints/Datacite/legacy-datacite.js'
+import { NotAPreprint, PreprintIsUnavailable } from '../../../src/Preprints/index.js'
 import * as fc from '../../fc.js'
 
 describe('isDatacitePreprintDoi', () => {

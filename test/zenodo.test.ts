@@ -28,7 +28,7 @@ import {
 } from 'zenodo-ts'
 import { getClubName } from '../src/club-details.js'
 import { plainText, rawHtml } from '../src/html.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/preprint.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.js'
 import * as Prereview from '../src/Prereview.js'
 import { reviewMatch } from '../src/routes.js'
 import { iso6391To3 } from '../src/types/iso639.js'

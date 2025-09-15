@@ -10,18 +10,16 @@ import {
   fromPreprintDoi,
   type IndeterminatePreprintId,
   MedrxivPreprintId,
+  NotAPreprint,
   OsfOrLifecycleJournalPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
+  PreprintIsNotFound,
+  PreprintIsUnavailable,
 } from '../../src/Preprints/index.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import { DefaultLocale } from '../../src/locales/index.js'
-import {
-  NotAPreprint,
-  PreprintIsNotFound,
-  PreprintIsUnavailable,
-  type ResolvePreprintIdEnv,
-} from '../../src/preprint.js'
+import type { ResolvePreprintIdEnv } from '../../src/preprint.js'
 import * as _ from '../../src/review-a-preprint-page/index.js'
 import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
 import * as fc from '../fc.js'

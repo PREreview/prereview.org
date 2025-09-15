@@ -1,7 +1,7 @@
 import { Effect, pipe } from 'effect'
 import { Philsci } from '../../ExternalApis/index.js'
-import * as Preprint from '../../preprint.js'
 import * as StatusCodes from '../../StatusCodes.js'
+import * as Preprint from '../Preprint.js'
 import type { PhilsciPreprintId } from '../PreprintId.js'
 import { EprintToPreprint } from './EprintToPreprint.js'
 

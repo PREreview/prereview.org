@@ -6,7 +6,7 @@ import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
 import type { Crossref } from '../../ExternalApis/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'
 import { transformJatsToHtml } from '../../jats.js'
-import * as Preprint from '../../preprint.js'
+import * as Preprint from '../Preprint.js'
 import { BiorxivPreprintId, fromPreprintDoi, MedrxivPreprintId } from '../PreprintId.js'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
 
