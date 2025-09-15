@@ -6,18 +6,18 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Struct } from 'effect'
 import { Orcid } from 'orcid-id-ts'
-import { recordToPreprint } from '../../src/Datacite/Preprint.js'
-import { Record, ResponseSchema } from '../../src/Datacite/Record.js'
-import { rawHtml } from '../../src/html.js'
-import { Preprint } from '../../src/preprint.js'
+import { Datacite } from '../../../src/ExternalApis/index.js'
+import { rawHtml } from '../../../src/html.js'
+import { Preprint } from '../../../src/preprint.js'
+import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.js'
 import {
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../../src/types/preprint-id.js'
-import * as EffectTest from '../EffectTest.js'
+} from '../../../src/types/preprint-id.js'
+import * as EffectTest from '../../EffectTest.js'
 
 test.each([
   {
@@ -254,8 +254,8 @@ test.each([
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
       Effect.andThen(Struct.get('data')),
       Effect.andThen(Struct.get('attributes')),
       Effect.andThen(recordToPreprint),
@@ -271,8 +271,8 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
     Effect.gen(function* () {
       const actual = yield* pipe(
         FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/Datacite/RecordSamples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(ResponseSchema(Record)))),
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
         Effect.andThen(Struct.get('data')),
         Effect.andThen(Struct.get('attributes')),
         Effect.andThen(recordToPreprint),

@@ -1,12 +1,12 @@
 import { FetchHttpClient, type HttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import * as FptsToEffect from '../FptsToEffect.js'
-import * as Preprint from '../preprint.js'
-import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import { Datacite } from '../../ExternalApis/index.js'
+import * as FptsToEffect from '../../FptsToEffect.js'
+import * as Preprint from '../../preprint.js'
+import type { IndeterminatePreprintId } from '../../types/preprint-id.js'
 import * as LegacyDatacite from './legacy-datacite.js'
 import { recordToPreprint } from './Preprint.js'
 import { type IndeterminateDatacitePreprintId, isDatacitePreprintId as isDatacitePreprintId_ } from './PreprintId.js'
-import { getRecord } from './Record.js'
 
 export const isDatacitePreprintId = (
   id: IndeterminatePreprintId,
@@ -29,7 +29,7 @@ export const getPreprintFromDatacite = (
       }),
     onFalse: () =>
       pipe(
-        getRecord(id.value),
+        Datacite.getRecord(id.value),
         Effect.andThen(recordToPreprint),
         Effect.catchTags({
           RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),

@@ -2,22 +2,22 @@ import { Url } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../detect-language.js'
-import { type Html, sanitizeHtml } from '../html.js'
-import * as Preprint from '../preprint.js'
-import { Orcid } from '../types/index.js'
+import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
+import type { Datacite } from '../../ExternalApis/index.js'
+import { type Html, sanitizeHtml } from '../../html.js'
+import * as Preprint from '../../preprint.js'
+import { Orcid } from '../../types/index.js'
 import {
   AfricarxivZenodoPreprintId,
   fromPreprintDoi,
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../types/preprint-id.js'
+} from '../../types/preprint-id.js'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
-import type { Record } from './Record.js'
 
 export const recordToPreprint = (
-  record: Record,
+  record: Datacite.Record,
 ): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const id = yield* determineDatacitePreprintId(record)
@@ -71,7 +71,7 @@ export const recordToPreprint = (
   })
 
 const determineDatacitePreprintId = (
-  record: Record,
+  record: Datacite.Record,
 ): Either.Either<DatacitePreprintId, Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const doi = record.doi
@@ -107,7 +107,7 @@ const determineDatacitePreprintId = (
     return indeterminateId
   })
 
-const findPublishedDate = (dates: Record['dates']) =>
+const findPublishedDate = (dates: Datacite.Record['dates']) =>
   pipe(
     Option.none(),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
@@ -117,7 +117,7 @@ const findPublishedDate = (dates: Record['dates']) =>
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
   )
 
-const findOrcid = (creator: Record['creators'][number]) =>
+const findOrcid = (creator: Datacite.Record['creators'][number]) =>
   pipe(
     Array.findFirst(creator.nameIdentifiers, ({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
     Option.andThen(({ nameIdentifier }) => Orcid.parse(nameIdentifier)),
@@ -125,7 +125,7 @@ const findOrcid = (creator: Record['creators'][number]) =>
   )
 
 const getTitle = (
-  titles: Record['titles'],
+  titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
@@ -143,7 +143,7 @@ const getTitle = (
   })
 
 const getAbstract = (
-  descriptions: Record['descriptions'],
+  descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {

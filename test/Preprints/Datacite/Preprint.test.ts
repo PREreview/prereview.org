@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
-import * as _ from '../../src/Datacite/Preprint.js'
-import { Record } from '../../src/Datacite/Record.js'
-import { Doi } from '../../src/types/Doi.js'
-import * as fc from '../fc.js'
+import { Datacite } from '../../../src/ExternalApis/index.js'
+import * as _ from '../../../src/Preprints/Datacite/Preprint.js'
+import { Doi } from '../../../src/types/Doi.js'
+import * as fc from '../../fc.js'
 
 describe('recordToPreprint', () => {
   test.prop([fc.option(fc.lorem(), { nil: undefined }), fc.option(fc.lorem(), { nil: undefined })], {
@@ -15,7 +15,7 @@ describe('recordToPreprint', () => {
       ['Journal contribution', 'Text'],
     ],
   })('not a preprint', (resourceType, resourceTypeGeneral) => {
-    const record = new Record({
+    const record = new Datacite.Record({
       ...stubRecord,
       types: {
         ...stubRecord.types,
@@ -33,7 +33,7 @@ describe('recordToPreprint', () => {
   test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
     'not a DataCite preprint ID',
     doi => {
-      const record = new Record({
+      const record = new Datacite.Record({
         ...stubRecord,
         doi,
       })
@@ -46,7 +46,7 @@ describe('recordToPreprint', () => {
   )
 
   test('no creators', () => {
-    const record = new Record({
+    const record = new Datacite.Record({
       ...stubRecord,
       creators: [],
     })
@@ -58,7 +58,7 @@ describe('recordToPreprint', () => {
   })
 
   test('title language unknown', () => {
-    const record = new Record({
+    const record = new Datacite.Record({
       ...stubRecord,
       titles: [{ title: '12345' }],
     })
@@ -70,7 +70,7 @@ describe('recordToPreprint', () => {
   })
 
   test('abstract language unknown', () => {
-    const record = new Record({
+    const record = new Datacite.Record({
       ...stubRecord,
       descriptions: [{ description: '12345', descriptionType: 'Abstract' }],
     })
@@ -86,7 +86,7 @@ describe('recordToPreprint', () => {
       fc.record({ date: fc.oneof(fc.year(), fc.plainYearMonth(), fc.plainDate()), dateType: fc.lorem() }),
     ),
   ])('no posted date', dates => {
-    const record = new Record({
+    const record = new Datacite.Record({
       ...stubRecord,
       dates,
     })
@@ -156,4 +156,4 @@ const stubRecord = {
     },
   ],
   url: new URL('https://osf.io/eq8bk/'),
-} satisfies typeof Record.Type
+} satisfies typeof Datacite.Record.Type
