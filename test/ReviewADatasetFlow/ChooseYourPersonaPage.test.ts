@@ -4,6 +4,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
+import * as Personas from '../../src/Personas/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/ChooseYourPersonaPage/index.js'
 import { RouteForCommand } from '../../src/ReviewADatasetFlow/RouteForCommand.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
@@ -14,41 +15,82 @@ import * as fc from '../fc.js'
 
 describe('ChooseYourPersonaPage', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([
-      fc.uuid(),
-      fc.supportedLocale(),
-      fc.user(),
-      fc.maybe(
-        fc.oneof(
-          fc.record({ type: fc.constant('public'), name: fc.nonEmptyString(), orcidId: fc.orcid() }),
-          fc.record({ type: fc.constant('pseudonym'), pseudonym: fc.pseudonym() }),
-        ),
-      ),
-    ])('when the dataset review is in progress', (datasetReviewId, locale, user, chosen) =>
-      Effect.gen(function* () {
-        const actual = yield* _.ChooseYourPersonaPage({ datasetReviewId })
+    describe('when the dataset review is in progress', () => {
+      test.prop([
+        fc.uuid(),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.maybe(fc.constantFrom('public', 'pseudonym')),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
+      ])('when the personas can be loaded', (datasetReviewId, locale, user, chosen, publicPersona, pseudonymPersona) =>
+        Effect.gen(function* () {
+          const actual = yield* _.ChooseYourPersonaPage({ datasetReviewId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          canonical: Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId }),
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          nav: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'form',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            checkIfUserCanChoosePersona: () => Effect.succeed(chosen),
-          }),
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfUserCanChoosePersona: () => Effect.succeed(chosen),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
         ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
-    )
+      )
+
+      test.prop([
+        fc.uuid(),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.maybe(fc.constantFrom('public', 'pseudonym')),
+        fc.anything(),
+      ])("when a persona can't be loaded", (datasetReviewId, locale, user, chosen, error) =>
+        Effect.gen(function* () {
+          const actual = yield* _.ChooseYourPersonaPage({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfUserCanChoosePersona: () => Effect.succeed(chosen),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+              getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+    })
 
     test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
       'when the dataset review is being published',
@@ -67,6 +109,7 @@ describe('ChooseYourPersonaPage', () => {
               checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
             }),
           ),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
@@ -90,6 +133,7 @@ describe('ChooseYourPersonaPage', () => {
               checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
             }),
           ),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
@@ -117,6 +161,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewWasStartedByAnotherUser(),
           }),
         ),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -143,6 +188,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           }),
         ),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -169,6 +215,7 @@ describe('ChooseYourPersonaPage', () => {
             checkIfUserCanChoosePersona: () => new DatasetReviews.UnableToQuery({}),
           }),
         ),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -201,6 +248,7 @@ describe('ChooseYourPersonaSubmission', () => {
               getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
             }),
           ),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
@@ -236,6 +284,7 @@ describe('ChooseYourPersonaSubmission', () => {
               getNextExpectedCommandForAUserOnADatasetReview: () => result,
             }),
           ),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
@@ -270,6 +319,7 @@ describe('ChooseYourPersonaSubmission', () => {
       }).pipe(
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { choosePersona: () => error })),
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
@@ -277,38 +327,88 @@ describe('ChooseYourPersonaSubmission', () => {
     )
   })
 
-  test.prop([
-    fc.uuid(),
-    fc.oneof(
-      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'chooseYourPersona'))),
-      fc.urlParams(
-        fc.record({
-          chooseYourPersona: fc.string().filter(string => !['public', 'pseudonym'].includes(string)),
-        }),
+  describe("when there isn't an choice", () => {
+    test.prop([
+      fc.uuid(),
+      fc.oneof(
+        fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'chooseYourPersona'))),
+        fc.urlParams(
+          fc.record({
+            chooseYourPersona: fc.string().filter(string => !['public', 'pseudonym'].includes(string)),
+          }),
+        ),
       ),
-    ),
-    fc.supportedLocale(),
-    fc.user(),
-  ])("when there isn't an choice", (datasetReviewId, body, locale, user) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ChooseYourPersonaSubmission({ body, datasetReviewId })
+      fc.supportedLocale(),
+      fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+    ])('when the personas can be loaded', (datasetReviewId, body, locale, user, publicPersona, pseudonymPersona) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ChooseYourPersonaSubmission({ body, datasetReviewId })
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId }),
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
-  )
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId }),
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['error-summary.js'],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.oneof(
+        fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'chooseYourPersona'))),
+        fc.urlParams(
+          fc.record({
+            chooseYourPersona: fc.string().filter(string => !['public', 'pseudonym'].includes(string)),
+          }),
+        ),
+      ),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.anything(),
+    ])("when the personas can't be loaded", (datasetReviewId, body, locale, user, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ChooseYourPersonaSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+  })
 })

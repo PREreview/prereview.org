@@ -106,7 +106,7 @@ describe('query', () => {
           ),
         )
         .map(([started, chosen]) =>
-          Tuple.make(Array.make(started, chosen), started.datasetReviewId, started.authorId, chosen.persona),
+          Tuple.make(Array.make(started, chosen), started.datasetReviewId, started.authorId, chosen.persona.type),
         ),
     ],
     {
@@ -116,7 +116,7 @@ describe('query', () => {
             [started, personaForDatasetReviewWasChosen1],
             datasetReviewId,
             authorId,
-            personaForDatasetReviewWasChosen1.persona,
+            personaForDatasetReviewWasChosen1.persona.type,
           ],
         ], // chosen once
         [
@@ -124,7 +124,7 @@ describe('query', () => {
             [started, personaForDatasetReviewWasChosen1, personaForDatasetReviewWasChosen2],
             datasetReviewId,
             authorId,
-            personaForDatasetReviewWasChosen2.persona,
+            personaForDatasetReviewWasChosen2.persona.type,
           ],
         ], // chosen twice
       ],

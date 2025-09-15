@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match, Option, pipe, Struct } from 'effect'
+import { Effect, Match } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
@@ -7,7 +7,7 @@ import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import { NonEmptyString, type Uuid } from '../../types/index.js'
+import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { RouteForCommand } from '../RouteForCommand.js'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.js'
@@ -17,7 +17,11 @@ export const ChooseYourPersonaPage = ({
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
 
@@ -26,10 +30,10 @@ export const ChooseYourPersonaPage = ({
       userId: user.orcid,
     })
 
-    const form = ChooseYourPersonaForm.fromPersona(Option.map(currentPersona, Struct.get('type')))
+    const form = ChooseYourPersonaForm.fromPersona(currentPersona)
 
-    const publicPersona = new Personas.PublicPersona({ orcidId: user.orcid, name: user.name })
-    const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: user.pseudonym })
+    const publicPersona = yield* Personas.getPublicPersona(user.orcid)
+    const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
     return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
   }).pipe(
@@ -44,6 +48,7 @@ export const ChooseYourPersonaPage = ({
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
         ),
       DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
     }),
   )
@@ -57,7 +62,7 @@ export const ChooseYourPersonaSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -68,18 +73,10 @@ export const ChooseYourPersonaSubmission = ({
       CompletedForm: Effect.fn(
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           yield* DatasetReviews.choosePersona({
-            persona: pipe(
-              Match.value(form.chooseYourPersona),
-              Match.when('public', type => ({
-                type,
-                name: NonEmptyString.isNonEmptyString(user.name)
-                  ? user.name
-                  : NonEmptyString.NonEmptyString('A PREreviewer'),
-                orcidId: user.orcid,
-              })),
-              Match.when('pseudonym', type => ({ type, pseudonym: user.pseudonym })),
-              Match.exhaustive,
-            ),
+            persona:
+              form.chooseYourPersona === 'public'
+                ? { type: 'public', orcidId: user.orcid, name: user.name }
+                : { type: 'pseudonym', pseudonym: user.pseudonym },
             datasetReviewId,
             userId: user.orcid,
           })
@@ -94,12 +91,14 @@ export const ChooseYourPersonaSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form =>
-        Effect.sync(() => {
-          const publicPersona = new Personas.PublicPersona({ orcidId: user.orcid, name: user.name })
-          const pseudonymPersona = new Personas.PseudonymPersona({ pseudonym: user.pseudonym })
+      InvalidForm: Effect.fn(
+        function* (form: ChooseYourPersonaForm.InvalidForm) {
+          const publicPersona = yield* Personas.getPublicPersona(user.orcid)
+          const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
           return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
-        }),
+        },
+        Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
+      ),
     })
   })
