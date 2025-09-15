@@ -1,4 +1,3 @@
-import type { HttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
 import { JapanLinkCenter } from '../../ExternalApis/index.js'
 import * as Preprint from '../../preprint.js'
@@ -12,7 +11,7 @@ export const getPreprintFromJapanLinkCenter: (
 ) => Effect.Effect<
   Preprint.Preprint,
   Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
-  HttpClient.HttpClient
+  JapanLinkCenter.JapanLinkCenter
 > = id =>
   pipe(
     JapanLinkCenter.getRecord(id.value),

@@ -4,11 +4,11 @@ import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossr
 import * as Crossref from '../Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from '../datacite.js'
 import * as Datacite from '../Datacite/index.js'
-import type { Philsci } from '../ExternalApis/index.js'
+import type { JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PhilsciPreprintId, PreprintId } from '../types/preprint-id.js'
-import * as JapanLinkCenter from './JapanLinkCenter/index.js'
+import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './Philsci/index.js'
 
 export class Preprints extends Context.Tag('Preprints')<
@@ -32,7 +32,9 @@ export const { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId }
 export const layer = Layer.effect(
   Preprints,
   Effect.gen(function* () {
-    const context = yield* Effect.context<FetchHttpClient.Fetch | HttpClient.HttpClient | Philsci.Philsci>()
+    const context = yield* Effect.context<
+      FetchHttpClient.Fetch | HttpClient.HttpClient | JapanLinkCenter.JapanLinkCenter | Philsci.Philsci
+    >()
     const fetch = Context.get(context, FetchHttpClient.Fetch)
 
     const isCrossrefPreprintIdHandledByLegacyAdapter = (
@@ -51,7 +53,7 @@ export const layer = Layer.effect(
         id => FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch }),
       ),
       Match.when(Datacite.isDatacitePreprintId, Datacite.getPreprintFromDatacite),
-      Match.when(JapanLinkCenter.isJapanLinkCenterPreprintId, JapanLinkCenter.getPreprintFromJapanLinkCenter),
+      Match.when(isJapanLinkCenterPreprintId, getPreprintFromJapanLinkCenter),
       Match.exhaustive,
     )
 

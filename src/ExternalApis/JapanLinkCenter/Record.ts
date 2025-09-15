@@ -62,7 +62,7 @@ class RecordIsNotFound extends Data.TaggedError('RecordIsNotFound')<{ cause?: un
 
 class RecordIsUnavailable extends Data.TaggedError('RecordIsUnavailable')<{ cause?: unknown }> {}
 
-export const getRecord = (
+export const GetRecord = (
   doi: Doi.Doi,
 ): Effect.Effect<Record, RecordIsNotFound | RecordIsUnavailable, HttpClient.HttpClient> =>
   pipe(
