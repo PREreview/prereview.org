@@ -1,10 +1,13 @@
-import { Array, Either, Match, Option, pipe, Struct } from 'effect'
-import * as Personas from '../../Personas/index.js'
+import { Array, Either, Option, Struct } from 'effect'
+import type { Orcid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DatasetReviewPreview {
-  readonly author: Option.Option<Personas.Persona>
+  readonly author: {
+    readonly orcidId: Orcid.Orcid
+    readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']['type']>
+  }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -104,21 +107,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
       ),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
-        author: Option.map(
-          author,
-          pipe(
-            Match.type<Events.PersonaForDatasetReviewWasChosen>(),
-            Match.when(
-              { persona: { type: 'public' } },
-              author => new Personas.PublicPersona({ name: author.persona.name, orcidId: author.persona.orcidId }),
-            ),
-            Match.when(
-              { persona: { type: 'pseudonym' } },
-              author => new Personas.PseudonymPersona({ pseudonym: author.persona.pseudonym }),
-            ),
-            Match.orElseAbsurd,
-          ),
-        ),
+        author: { orcidId: started.authorId, persona: Option.map(author, author => author.persona.type) },
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

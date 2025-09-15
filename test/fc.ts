@@ -179,7 +179,7 @@ export const hashSet = <A>(
 
 export const redacted = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Redacted.Redacted<A>> => arb.map(Redacted.make)
 
-const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
+export const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> => arb.map(Option.some)
 
 export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
   fc.oneof(some(someArb), fc.constant(Option.none()))

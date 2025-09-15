@@ -1,8 +1,9 @@
-import { Array, Effect, Equal, pipe } from 'effect'
+import { Array, Effect, Equal, Option, pipe } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
+import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
@@ -13,7 +14,11 @@ export const CheckYourReviewPage = ({
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
+> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -23,8 +28,12 @@ export const CheckYourReviewPage = ({
     }
 
     const review = yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
+    const authorPersona = yield* Option.match(review.author.persona, {
+      onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
+      onNone: () => Effect.succeedNone,
+    })
 
-    return MakeResponse({ datasetReviewId, review })
+    return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona } })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () =>
@@ -41,6 +50,7 @@ export const CheckYourReviewPage = ({
             location: routeForMissing[Array.headNonEmpty(error.missing)].href({ datasetReviewId }),
           }),
         ),
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,
     }),
