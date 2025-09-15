@@ -1,10 +1,8 @@
-import { FetchHttpClient, type HttpClient } from '@effect/platform'
+import type { FetchHttpClient, HttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
 import * as Crossref from '../Crossref/index.js'
-import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from '../datacite.js'
 import * as Datacite from '../Datacite/index.js'
 import type { JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
-import * as FptsToEffect from '../FptsToEffect.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.js'
@@ -34,16 +32,11 @@ export const layer = Layer.effect(
     const context = yield* Effect.context<
       FetchHttpClient.Fetch | HttpClient.HttpClient | JapanLinkCenter.JapanLinkCenter | Philsci.Philsci
     >()
-    const fetch = Context.get(context, FetchHttpClient.Fetch)
 
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
       Match.tag('PhilsciPreprintId', getPreprintFromPhilsci),
       Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
-      Match.when(
-        (id): id is IndeterminateDatacitePreprintId => isDatacitePreprintDoi(id.value),
-        id => FptsToEffect.readerTaskEither(getPreprintFromDatacite(id), { fetch }),
-      ),
       Match.when(Datacite.isDatacitePreprintId, Datacite.getPreprintFromDatacite),
       Match.when(isJapanLinkCenterPreprintId, getPreprintFromJapanLinkCenter),
       Match.exhaustive,

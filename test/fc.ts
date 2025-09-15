@@ -46,7 +46,7 @@ import {
 } from '../src/contact-email-address.js'
 import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Crossref/legacy-crossref.js'
 import type { CrossrefPreprintId } from '../src/Crossref/PreprintId.js'
-import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/datacite.js'
+import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Datacite/legacy-datacite.js'
 import type { DatacitePreprintId } from '../src/Datacite/PreprintId.js'
 import type * as DatasetReviews from '../src/DatasetReviews/index.js'
 import * as Datasets from '../src/Datasets/index.js'
