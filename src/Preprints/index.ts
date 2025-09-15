@@ -1,13 +1,12 @@
 import { FetchHttpClient, type HttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
-import { getPreprintFromCrossref, type IndeterminateCrossrefPreprintId, isCrossrefPreprintDoi } from '../crossref.js'
 import * as Crossref from '../Crossref/index.js'
 import { getPreprintFromDatacite, type IndeterminateDatacitePreprintId, isDatacitePreprintDoi } from '../datacite.js'
 import * as Datacite from '../Datacite/index.js'
 import type { JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import * as Preprint from '../preprint.js'
-import type { IndeterminatePreprintId, PhilsciPreprintId, PreprintId } from '../types/preprint-id.js'
+import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.js'
 import { getPreprintFromPhilsci } from './Philsci/index.js'
 
@@ -37,16 +36,9 @@ export const layer = Layer.effect(
     >()
     const fetch = Context.get(context, FetchHttpClient.Fetch)
 
-    const isCrossrefPreprintIdHandledByLegacyAdapter = (
-      id: Exclude<IndeterminatePreprintId, PhilsciPreprintId>,
-    ): id is IndeterminateCrossrefPreprintId => isCrossrefPreprintDoi(id.value)
-
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
       Match.tag('PhilsciPreprintId', getPreprintFromPhilsci),
-      Match.when(isCrossrefPreprintIdHandledByLegacyAdapter, id =>
-        FptsToEffect.readerTaskEither(getPreprintFromCrossref(id), { fetch }),
-      ),
       Match.when(Crossref.isCrossrefPreprintId, Crossref.getPreprintFromCrossref),
       Match.when(
         (id): id is IndeterminateDatacitePreprintId => isDatacitePreprintDoi(id.value),
