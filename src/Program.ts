@@ -22,6 +22,7 @@ import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
 import { getNameFromOrcid, OrcidApi } from './orcid.js'
 import * as Personas from './Personas/index.js'
+import * as Philsci from './Philsci/index.js'
 import * as Preprints from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
 import * as Prereviews from './Prereviews/index.js'
@@ -354,6 +355,7 @@ export const Program = pipe(
       Zenodo.layer,
     ),
   ),
+  Layer.provide(Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day'))),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue)),

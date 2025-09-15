@@ -31,7 +31,7 @@ export const { getPreprint, getPreprintId, getPreprintTitle, resolvePreprintId }
 export const layer = Layer.effect(
   Preprints,
   Effect.gen(function* () {
-    const context = yield* Effect.context<FetchHttpClient.Fetch | HttpClient.HttpClient>()
+    const context = yield* Effect.context<FetchHttpClient.Fetch | HttpClient.HttpClient | Philsci.Philsci>()
     const fetch = Context.get(context, FetchHttpClient.Fetch)
 
     const isCrossrefPreprintIdHandledByLegacyAdapter = (
