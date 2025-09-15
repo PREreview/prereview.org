@@ -1,1 +1,29 @@
-export { Record, ResponseSchema, getRecord } from './Record.js'
+import type { HttpClient } from '@effect/platform'
+import { Context, Effect, flow, Layer } from 'effect'
+import { GetRecord } from './Record.js'
+
+export { Record, ResponseSchema } from './Record.js'
+
+export class Datacite extends Context.Tag('Datacite')<
+  Datacite,
+  {
+    getRecord: (
+      ...args: Parameters<typeof GetRecord>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof GetRecord>>,
+      Effect.Effect.Error<ReturnType<typeof GetRecord>>
+    >
+  }
+>() {}
+
+export const { getRecord } = Effect.serviceFunctions(Datacite)
+
+const make: Effect.Effect<typeof Datacite.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
+  const context = yield* Effect.context<HttpClient.HttpClient>()
+
+  return {
+    getRecord: flow(GetRecord, Effect.provide(context)),
+  }
+})
+
+export const layer = Layer.effect(Datacite, make)

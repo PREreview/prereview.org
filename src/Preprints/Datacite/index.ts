@@ -1,4 +1,4 @@
-import { FetchHttpClient, type HttpClient } from '@effect/platform'
+import { FetchHttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
 import { Datacite } from '../../ExternalApis/index.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
@@ -18,7 +18,7 @@ export const getPreprintFromDatacite = (
 ): Effect.Effect<
   Preprint.Preprint,
   Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
-  HttpClient.HttpClient | FetchHttpClient.Fetch
+  Datacite.Datacite | FetchHttpClient.Fetch
 > =>
   Effect.if(LegacyDatacite.isDatacitePreprintDoi(id.value), {
     onTrue: () =>

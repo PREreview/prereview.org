@@ -1,6 +1,6 @@
-import type { FetchHttpClient, HttpClient } from '@effect/platform'
+import type { FetchHttpClient } from '@effect/platform'
 import { Array, Context, Effect, flow, Layer, Match, pipe, Struct } from 'effect'
-import type { Crossref, JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
+import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../ExternalApis/index.js'
 import * as Preprint from '../preprint.js'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id.js'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.js'
@@ -30,11 +30,7 @@ export const layer = Layer.effect(
   Preprints,
   Effect.gen(function* () {
     const context = yield* Effect.context<
-      | FetchHttpClient.Fetch
-      | HttpClient.HttpClient
-      | Crossref.Crossref
-      | JapanLinkCenter.JapanLinkCenter
-      | Philsci.Philsci
+      FetchHttpClient.Fetch | Crossref.Crossref | Datacite.Datacite | JapanLinkCenter.JapanLinkCenter | Philsci.Philsci
     >()
 
     const getPreprintFromSource = pipe(

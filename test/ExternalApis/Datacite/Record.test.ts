@@ -7,7 +7,7 @@ import * as _ from '../../../src/ExternalApis/Datacite/Record.js'
 import * as EffectTest from '../../EffectTest.js'
 import * as fc from '../../fc.js'
 
-describe('getRecord', () => {
+describe('GetRecord', () => {
   test.prop(
     [fc.doi().map(doi => Tuple.make(doi, new URL(encodeURIComponent(doi), 'https://api.datacite.org/dois/').href))],
     {
@@ -26,7 +26,7 @@ describe('getRecord', () => {
       const clientSpy = jest.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
       const client = stubbedClient(clientSpy)
 
-      yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+      yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
       expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
     }).pipe(EffectTest.run),
@@ -40,7 +40,7 @@ describe('getRecord', () => {
             const client = stubbedClient(() => new Response(body, { status: 200 }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getRecord(doi)),
+              Effect.flip(_.GetRecord(doi)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -59,7 +59,7 @@ describe('getRecord', () => {
           const client = stubbedClient(() => new Response(null, { status: 404 }))
 
           const actual = yield* pipe(
-            Effect.flip(_.getRecord(doi)),
+            Effect.flip(_.GetRecord(doi)),
             Effect.provideService(HttpClient.HttpClient, client),
           )
 
@@ -77,7 +77,7 @@ describe('getRecord', () => {
             const client = stubbedClient(() => new Response(null, { status }))
 
             const actual = yield* pipe(
-              Effect.flip(_.getRecord(doi)),
+              Effect.flip(_.GetRecord(doi)),
               Effect.provideService(HttpClient.HttpClient, client),
             )
 
@@ -92,7 +92,7 @@ describe('getRecord', () => {
     test.prop([fc.doi(), fc.httpClientRequestError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
-        const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+        const actual = yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(error)
@@ -104,7 +104,7 @@ describe('getRecord', () => {
     test.prop([fc.doi(), fc.httpClientResponseError()])('returns unavailable', (doi, error) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
-        const actual = yield* pipe(Effect.flip(_.getRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+        const actual = yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(error)
