@@ -5,8 +5,6 @@ import * as StatusCodes from '../../StatusCodes.js'
 import type { PhilsciPreprintId } from '../../types/preprint-id.js'
 import { EprintToPreprint } from './EprintToPreprint.js'
 
-export { Philsci } from '../../Philsci/index.js'
-
 export const getPreprintFromPhilsci = (
   id: PhilsciPreprintId,
 ): Effect.Effect<
