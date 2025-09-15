@@ -4,8 +4,8 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Schema } from 'effect'
+import { Philsci } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
-import * as Philsci from '../../../src/Philsci/index.js'
 import { Preprint } from '../../../src/preprint.js'
 import * as _ from '../../../src/Preprints/Philsci/EprintToPreprint.js'
 import { Orcid } from '../../../src/types/index.js'
@@ -57,7 +57,7 @@ test.each([
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/Philsci/Samples/${response}.json`)),
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Philsci/Samples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Philsci.Eprint))),
       Effect.andThen(_.EprintToPreprint),
     )
@@ -72,7 +72,7 @@ test.each(['eprint-other', 'eprint-published-article'])(
     Effect.gen(function* () {
       const actual = yield* pipe(
         FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/Philsci/Samples/${response}.json`)),
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Philsci/Samples/${response}.json`)),
         Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Philsci.Eprint))),
         Effect.andThen(_.EprintToPreprint),
         Effect.flip,

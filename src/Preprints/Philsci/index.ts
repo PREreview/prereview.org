@@ -1,5 +1,5 @@
 import { Effect, pipe } from 'effect'
-import * as Philsci from '../../Philsci/index.js'
+import { Philsci } from '../../ExternalApis/index.js'
 import * as Preprint from '../../preprint.js'
 import * as StatusCodes from '../../StatusCodes.js'
 import type { PhilsciPreprintId } from '../../types/preprint-id.js'

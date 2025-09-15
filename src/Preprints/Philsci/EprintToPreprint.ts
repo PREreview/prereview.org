@@ -1,7 +1,7 @@
 import { Url } from '@effect/platform'
 import { Array, Either } from 'effect'
+import type { Philsci } from '../../ExternalApis/index.js'
 import { sanitizeHtml } from '../../html.js'
-import type * as Philsci from '../../Philsci/index.js'
 import * as Preprint from '../../preprint.js'
 import { PhilsciPreprintId } from '../../types/preprint-id.js'
 

@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { Orcid, Temporal } from '../types/index.js'
+import { Orcid, Temporal } from '../../types/index.js'
 
 export class Eprint extends Schema.Class<Eprint>('Eprint')({
   type: Schema.compose(Schema.Trim, Schema.NonEmptyString),

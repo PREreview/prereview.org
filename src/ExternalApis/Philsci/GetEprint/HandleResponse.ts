@@ -1,6 +1,6 @@
 import { HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, flow } from 'effect'
-import * as StatusCodes from '../../StatusCodes.js'
+import * as StatusCodes from '../../../StatusCodes.js'
 import { Eprint } from '../Eprint.js'
 
 export const HandleResponse = flow(
