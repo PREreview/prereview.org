@@ -58,6 +58,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
+import { Orcid } from '../src/ExternalApis/index.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
 import * as Ghost from '../src/GhostPage/index.js'
 import { rawHtml } from '../src/html.js'
@@ -75,7 +76,6 @@ import { LegacyPrereviewApi } from '../src/legacy-prereview.js'
 import { DefaultLocale } from '../src/locales/index.js'
 import type { IsUserBlockedEnv } from '../src/log-in/index.js'
 import * as Nodemailer from '../src/nodemailer.js'
-import { OrcidApi } from '../src/orcid.js'
 import { OrcidOauth } from '../src/OrcidOauth.js'
 import { BiorxivPreprintId } from '../src/Preprints/index.js'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
@@ -1333,7 +1333,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               origin: new URL('http://prereview.test'),
               update: updatesLegacyPrereview,
             }),
-            Layer.succeed(OrcidApi, {
+            Layer.succeed(Orcid.OrcidApi, {
               origin: new URL('http://api.orcid.test/'),
               token: Option.none(),
             }),

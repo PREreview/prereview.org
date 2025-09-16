@@ -16,6 +16,7 @@ import { match } from 'ts-pattern'
 import type * as CachingHttpClient from './CachingHttpClient/index.js'
 import type { Locale } from './Context.js'
 import type { EffectEnv } from './EffectToFpts.js'
+import type { Orcid } from './ExternalApis/index.js'
 import type * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
 import type * as OpenAlex from './OpenAlex/index.js'
@@ -41,7 +42,6 @@ import {
   logIn,
   logOut,
 } from './log-in/index.js'
-import type { OrcidApi } from './orcid.js'
 import type { TemplatePageEnv } from './page.js'
 import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
 import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
@@ -77,7 +77,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
     | OpenAlex.GetCategories
     | GenerateUuid
     | HttpClient.HttpClient
-    | OrcidApi
+    | Orcid.OrcidApi
     | PrereviewCoarNotify.PrereviewCoarNotifyConfig
     | Zenodo.ZenodoApi
   > &

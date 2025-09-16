@@ -1,4 +1,4 @@
-import { Context, type Option, type Redacted, String, flow, identity, pipe } from 'effect'
+import { String, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -7,17 +7,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import * as StatusCodes from './StatusCodes.js'
-import { timeoutRequest, useStaleCache } from './fetch.js'
-import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { OrcidId } from './types/OrcidId.js'
-
-export class OrcidApi extends Context.Tag('OrcidApi')<
-  OrcidApi,
-  { origin: URL; token: Option.Option<Redacted.Redacted> }
->() {}
+import * as StatusCodes from '../../StatusCodes.js'
+import { timeoutRequest, useStaleCache } from '../../fetch.js'
+import { NonEmptyString, NonEmptyStringC } from '../../types/NonEmptyString.js'
 
 interface OrcidApiEnv {
   readonly orcidApiUrl: URL
@@ -59,7 +54,7 @@ const PersonalDetailsD = D.struct({
 const PersonDetailsResponseD = pipe(JsonD, D.compose(D.union(PersonalDetailsD, ProfileLockedD)))
 
 const getPersonalDetails = flow(
-  RTE.fromReaderK((orcid: OrcidId) => orcidApiUrl(`${orcid}/personal-details`)),
+  RTE.fromReaderK((orcid: Orcid) => orcidApiUrl(`${orcid}/personal-details`)),
   RTE.map(F.Request('GET')),
   RTE.chainReaderK(addOrcidApiHeaders),
   RTE.chainW(flow(F.setHeader('Accept', 'application/json'), F.send)),

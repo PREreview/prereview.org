@@ -9,7 +9,7 @@ import * as DatasetReviews from './DatasetReviews/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as Events from './Events.js'
-import { Crossref, Datacite, JapanLinkCenter, Philsci } from './ExternalApis/index.js'
+import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci } from './ExternalApis/index.js'
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -21,7 +21,6 @@ import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
 import * as OpenAlex from './OpenAlex/index.js'
-import { getNameFromOrcid, OrcidApi } from './orcid.js'
 import * as Personas from './Personas/index.js'
 import * as Preprints from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
@@ -169,7 +168,7 @@ const createRecordOnZenodoForComment = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
-    const orcidApi = yield* OrcidApi
+    const orcidApi = yield* Orcid.OrcidApi
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
@@ -208,7 +207,7 @@ const createRecordOnZenodoForComment = Layer.effect(
           Match.value(comment.persona),
           Match.when('public', () =>
             pipe(
-              FptsToEffect.readerTaskEither(getNameFromOrcid(comment.authorId), env),
+              FptsToEffect.readerTaskEither(Orcid.getNameFromOrcid(comment.authorId), env),
               Effect.filterOrFail(name => name !== undefined),
               Effect.mapBoth({
                 onFailure: () => new Comments.UnableToAssignADoi({}),

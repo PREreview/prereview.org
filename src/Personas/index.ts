@@ -1,9 +1,9 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Context, Data, Effect, Layer, Match, Option, pipe, Redacted } from 'effect'
 import { DeprecatedLoggerEnv } from '../Context.js'
+import { Orcid } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.js'
-import { getNameFromOrcid, OrcidApi } from '../orcid.js'
 import type { OrcidId } from '../types/index.js'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.js'
 
@@ -32,17 +32,17 @@ export const getPersona = pipe(
 const make: Effect.Effect<
   typeof Personas.Service,
   never,
-  FetchHttpClient.Fetch | LegacyPrereviewApi | OrcidApi | DeprecatedLoggerEnv
+  FetchHttpClient.Fetch | LegacyPrereviewApi | Orcid.OrcidApi | DeprecatedLoggerEnv
 > = Effect.gen(function* () {
   const fetch = yield* FetchHttpClient.Fetch
   const legacyPrereviewApi = yield* LegacyPrereviewApi
-  const orcidApi = yield* OrcidApi
+  const orcidApi = yield* Orcid.OrcidApi
   const loggerEnv = yield* DeprecatedLoggerEnv
 
   return {
     getPublicPersona: orcidId =>
       pipe(
-        FptsToEffect.readerTaskEither(getNameFromOrcid(orcidId), {
+        FptsToEffect.readerTaskEither(Orcid.getNameFromOrcid(orcidId), {
           fetch,
           orcidApiUrl: orcidApi.origin,
           orcidApiToken: Option.getOrUndefined(Option.map(orcidApi.token, Redacted.value)),

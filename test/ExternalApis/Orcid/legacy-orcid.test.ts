@@ -4,10 +4,10 @@ import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import * as _ from '../src/orcid.js'
-import { OrcidId } from '../src/types/OrcidId.js'
-import * as fc from './fc.js'
+import * as _ from '../../../src/ExternalApis/Orcid/legacy-orcid.js'
+import * as StatusCodes from '../../../src/StatusCodes.js'
+import { OrcidId } from '../../../src/types/OrcidId.js'
+import * as fc from '../../fc.js'
 
 describe('getNameFromOrcid', () => {
   describe('when the request succeeds', () => {
