@@ -1,0 +1,16 @@
+{
+  "last-modified-date": { "value": 1758020992807 },
+  "name": {
+    "created-date": { "value": 1464772510267 },
+    "last-modified-date": { "value": 1758020992807 },
+    "given-names": { "value": "Chris" },
+    "family-name": null,
+    "credit-name": null,
+    "source": null,
+    "visibility": "public",
+    "path": "0000-0003-4921-6155"
+  },
+  "other-names": { "last-modified-date": null, "other-name": [], "path": "/0000-0003-4921-6155/other-names" },
+  "biography": null,
+  "path": "/0000-0003-4921-6155/personal-details"
+}
