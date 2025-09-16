@@ -1,10 +1,10 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Context, Data, Effect, Layer, Match, Option, pipe, Redacted } from 'effect'
-import { DeprecatedLoggerEnv } from '../Context.js'
+import { Context, Data, Effect, Layer, Match, pipe, Redacted } from 'effect'
 import { Orcid } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.js'
 import type { OrcidId } from '../types/index.js'
+import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.js'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.js'
 
 export * from './Persona.js'
@@ -29,47 +29,38 @@ export const getPersona = pipe(
   Match.exhaustive,
 )
 
-const make: Effect.Effect<
-  typeof Personas.Service,
-  never,
-  FetchHttpClient.Fetch | LegacyPrereviewApi | Orcid.OrcidApi | DeprecatedLoggerEnv
-> = Effect.gen(function* () {
-  const fetch = yield* FetchHttpClient.Fetch
-  const legacyPrereviewApi = yield* LegacyPrereviewApi
-  const orcidApi = yield* Orcid.OrcidApi
-  const loggerEnv = yield* DeprecatedLoggerEnv
+const make: Effect.Effect<typeof Personas.Service, never, FetchHttpClient.Fetch | LegacyPrereviewApi | Orcid.Orcid> =
+  Effect.gen(function* () {
+    const context = yield* Effect.context<Orcid.Orcid>()
+    const fetch = yield* FetchHttpClient.Fetch
+    const legacyPrereviewApi = yield* LegacyPrereviewApi
 
-  return {
-    getPublicPersona: orcidId =>
-      pipe(
-        FptsToEffect.readerTaskEither(Orcid.getNameFromOrcid(orcidId), {
-          fetch,
-          orcidApiUrl: orcidApi.origin,
-          orcidApiToken: Option.getOrUndefined(Option.map(orcidApi.token, Redacted.value)),
-          ...loggerEnv,
-        }),
-        Effect.mapError(error => new UnableToGetPersona({ cause: error })),
-        Effect.filterOrElse(
-          name => typeof name === 'string',
-          () => new UnableToGetPersona({ cause: 'name is undefined' }),
+    return {
+      getPublicPersona: orcidId =>
+        pipe(
+          Orcid.getPersonalDetails(orcidId),
+          Effect.andThen(GetNameFromOrcidPersonalDetails),
+          Effect.mapBoth({
+            onSuccess: name => new PublicPersona({ name, orcidId }),
+            onFailure: error => new UnableToGetPersona({ cause: error }),
+          }),
+          Effect.provide(context),
         ),
-        Effect.andThen(name => new PublicPersona({ name, orcidId })),
-      ),
-    getPseudonymPersona: orcidId =>
-      pipe(
-        FptsToEffect.readerTaskEither(getPseudonymFromLegacyPrereview(orcidId), {
-          fetch,
-          legacyPrereviewApi: {
-            app: legacyPrereviewApi.app,
-            key: Redacted.value(legacyPrereviewApi.key),
-            url: legacyPrereviewApi.origin,
-            update: legacyPrereviewApi.update,
-          },
-        }),
-        Effect.mapError(error => new UnableToGetPersona({ cause: error })),
-        Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
-      ),
-  }
-})
+      getPseudonymPersona: orcidId =>
+        pipe(
+          FptsToEffect.readerTaskEither(getPseudonymFromLegacyPrereview(orcidId), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+              update: legacyPrereviewApi.update,
+            },
+          }),
+          Effect.mapError(error => new UnableToGetPersona({ cause: error })),
+          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+        ),
+    }
+  })
 
 export const layer = Layer.effect(Personas, make)

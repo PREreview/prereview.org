@@ -359,6 +359,7 @@ export const Program = pipe(
       Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
+      Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
     ),
   ),
