@@ -21,6 +21,7 @@ import {
   type Runtime,
   type Scope,
   String,
+  Struct,
   Tuple,
 } from 'effect'
 import * as P from 'fp-ts-routing'
@@ -33,7 +34,6 @@ import * as Cloudinary from '../../Cloudinary/index.js'
 import { clubProfile } from '../../club-profile-page/index.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
-import { Orcid } from '../../ExternalApis/index.js'
 import * as FeatureFlags from '../../FeatureFlags.js'
 import { withEnv } from '../../Fpts.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
@@ -46,6 +46,7 @@ import { Nodemailer } from '../../nodemailer.js'
 import type * as OpenAlex from '../../OpenAlex/index.js'
 import { OrcidOauth } from '../../OrcidOauth.js'
 import { partners } from '../../partners.js'
+import * as Personas from '../../Personas/index.js'
 import { preprintReviews } from '../../preprint-reviews-page/index.js'
 import * as Preprints from '../../Preprints/index.js'
 import { PrereviewCoarNotifyConfig } from '../../prereview-coar-notify/index.js'
@@ -129,7 +130,6 @@ export const nonEffectRouter: Effect.Effect<
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
-  const orcidApi = yield* Orcid.OrcidApi
   const orcidOauth = yield* OrcidOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
@@ -186,7 +186,6 @@ export const nonEffectRouter: Effect.Effect<
     scietyListToken: Redacted.make(expressConfig.scietyListToken),
     slackApiConfig,
     cloudinaryApiConfig,
-    orcidApiConfig: orcidApi,
     zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
     legacyPrereviewApiConfig: legacyPrereviewApi,
@@ -218,7 +217,7 @@ export interface Env {
     | HttpClient.HttpClient
     | LegacyPrereviewApi
     | OpenAlex.GetCategories
-    | Orcid.OrcidApi
+    | Personas.Personas
     | Preprints.Preprints
     | PrereviewCoarNotifyConfig
     | Prereviews.Prereviews
@@ -251,7 +250,6 @@ export interface Env {
     tokenUrl: URL
   }
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
-  orcidApiConfig: typeof Orcid.OrcidApi.Service
   slackApiConfig: typeof SlackApiConfig.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
@@ -362,12 +360,14 @@ const routerWithoutHyperTs = pipe(
                 locationStore: env.users.locationStore,
                 ...env.logger,
               }),
-              getName: withEnv(Orcid.getNameFromOrcid, {
-                fetch: env.fetch,
-                orcidApiToken: Option.getOrUndefined(Option.map(env.orcidApiConfig.token, Redacted.value)),
-                orcidApiUrl: env.orcidApiConfig.origin,
-                ...env.logger,
-              }),
+              getName: EffectToFpts.toTaskEitherK(
+                flow(
+                  Personas.getPublicPersona,
+                  Effect.andThen(Struct.get('name')),
+                  Effect.catchTag('UnableToGetPersona', () => Effect.fail('unavailable' as const)),
+                ),
+                env.runtime,
+              ),
               getPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
                   Prereviews.getForProfile,
