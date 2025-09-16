@@ -345,6 +345,7 @@ export const Program = pipe(
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
+      Zenodo.layer,
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),

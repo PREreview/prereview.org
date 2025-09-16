@@ -49,16 +49,15 @@ export class Zenodo extends Context.Tag('Zenodo')<
 export const { createRecordForDatasetReview, getDoiForDatasetReviewRecord, publishRecord } =
   Effect.serviceFunctions(Zenodo)
 
-export const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | ZenodoApi.ZenodoApi> =
-  Effect.gen(function* () {
-    const context = yield* Effect.context<HttpClient.HttpClient | ZenodoApi.ZenodoApi>()
+export const make: Effect.Effect<typeof Zenodo.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
+  const context = yield* Effect.context<ZenodoApi.Zenodo>()
 
-    return {
-      createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
-      getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
-      publishRecord: flow(PublishRecord, Effect.provide(context)),
-    }
-  })
+  return {
+    createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
+    getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
+    publishRecord: flow(PublishRecord, Effect.provide(context)),
+  }
+})
 
 export const layer = Layer.effect(Zenodo, make)
 
