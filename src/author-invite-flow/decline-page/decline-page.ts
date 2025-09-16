@@ -1,6 +1,5 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
@@ -12,6 +11,7 @@ import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../
 import * as StatusCodes from '../../StatusCodes.js'
 import { renderDate } from '../../time.js'
 import { ProfileId } from '../../types/index.js'
+import type { Orcid } from '../../types/Orcid.js'
 import { isPseudonym } from '../../types/Pseudonym.js'
 import type { Prereview } from './index.js'
 

@@ -3,7 +3,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import type { Orcid } from 'orcid-id-ts'
 import { match, P } from 'ts-pattern'
 import type {
   AdvancePreprintId,
@@ -30,6 +29,7 @@ import type {
   TechrxivPreprintId,
   ZenodoPreprintId,
 } from './Preprints/index.js'
+import type { Orcid } from './types/Orcid.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 

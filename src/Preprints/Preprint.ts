@@ -1,8 +1,8 @@
 import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 import type { PartialDate } from '../time.js'
+import type { Orcid } from '../types/Orcid.js'
 import type { PreprintId } from './PreprintId.js'
 
 export interface Preprint {

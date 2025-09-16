@@ -1,6 +1,5 @@
 import { Array, flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { Orcid } from 'orcid-id-ts'
 import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
@@ -28,6 +27,7 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
+import type { Orcid } from '../../types/Orcid.js'
 import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'

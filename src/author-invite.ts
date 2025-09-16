@@ -3,10 +3,10 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.js'
+import { type Orcid, isOrcid } from './types/Orcid.js'
 
 export type AuthorInvite = OpenAuthorInvite | DeclinedAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 

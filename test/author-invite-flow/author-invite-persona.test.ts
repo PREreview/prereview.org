@@ -2,7 +2,6 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/check-page/index.js'
 import * as _ from '../../src/author-invite-flow/index.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite.js'
@@ -14,6 +13,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
+import { Eq as eqOrcid } from '../../src/types/Orcid.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
 import { Duration } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
+import { Orcid } from '../src/types/Orcid.js'
 import { expect, test } from './base.js'
 
 test('can find and view a club', async ({ fetch, page }) => {

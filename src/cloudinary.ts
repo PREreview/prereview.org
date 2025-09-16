@@ -11,7 +11,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
-import type { Orcid } from 'orcid-id-ts'
 import type { Readable } from 'stream'
 import { buffer } from 'stream/consumers'
 import { P, match } from 'ts-pattern'
@@ -20,6 +19,7 @@ import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
 import * as StatusCodes from './StatusCodes.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
+import type { Orcid } from './types/Orcid.js'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {

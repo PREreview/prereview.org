@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../../src/html.js'
 import * as _ from '../../../src/Preprints/Datacite/legacy-datacite.js'
 import { NotAPreprint, PreprintIsUnavailable } from '../../../src/Preprints/index.js'
+import { Orcid } from '../../../src/types/Orcid.js'
 import * as fc from '../../fc.js'
 
 describe('isDatacitePreprintDoi', () => {

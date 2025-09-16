@@ -6,7 +6,6 @@ import { getAssignSemigroup } from 'fp-ts/lib/struct.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import type Keyv from 'keyv'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html.js'
 import type { PreprintId } from '../Preprints/index.js'
@@ -31,6 +30,7 @@ import {
 } from '../routes.js'
 import { EmailAddressC } from '../types/EmailAddress.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
+import type { Orcid } from '../types/Orcid.js'
 
 export type Form = C.TypeOf<typeof FormC>
 

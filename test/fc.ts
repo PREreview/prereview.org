@@ -27,7 +27,6 @@ import {
   createRequest,
   createResponse,
 } from 'node-mocks-http'
-import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import type {
   AssignedAuthorInvite,
@@ -141,6 +140,7 @@ import { EmailAddress } from '../src/types/EmailAddress.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
 import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
+import { type Orcid, isOrcid } from '../src/types/Orcid.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'

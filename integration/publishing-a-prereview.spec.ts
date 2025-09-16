@@ -1,10 +1,10 @@
 import { Doi } from 'doi-ts'
 import { Duration, Function } from 'effect'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import * as StatusCodes from '../src/StatusCodes.js'
+import { Orcid } from '../src/types/Orcid.js'
 import {
   areLoggedIn,
   canAddMultipleAuthors,

@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/club-details.js'
+import { Orcid } from '../src/types/Orcid.js'
 import * as fc from './fc.js'
 
 describe('getClubByName', () => {

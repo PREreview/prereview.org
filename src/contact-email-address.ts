@@ -2,12 +2,12 @@ import { Context, Data, type Effect, flow, Match, pipe, type Predicate } from 'e
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import type { Locale } from './Context.js'
 import type { IndeterminatePreprintId } from './Preprints/index.js'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.js'
+import type { Orcid } from './types/Orcid.js'
 import { UuidC } from './types/uuid.js'
 import type { User } from './user.js'
 

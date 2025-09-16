@@ -2,7 +2,7 @@ import { ParseResult, pipe, Schema } from 'effect'
 import * as Orcid from 'orcid-id-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
 
-export { Orcid, toUrl } from 'orcid-id-ts'
+export { Eq, isOrcid, Orcid, toUrl } from 'orcid-id-ts'
 
 export const OrcidSchema = pipe(Schema.String, Schema.filter(Orcid.isOrcid))
 

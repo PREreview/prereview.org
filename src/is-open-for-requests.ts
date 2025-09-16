@@ -4,8 +4,8 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
-import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import type { Orcid } from './types/Orcid.js'
 
 export type IsOpenForRequests =
   | {

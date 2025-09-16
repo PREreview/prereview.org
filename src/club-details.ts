@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
-import { Eq as eqOrcid, Orcid } from 'orcid-id-ts'
 import { type Html, html } from './html.js'
 import type { ClubId } from './types/club-id.js'
 import { EmailAddress } from './types/EmailAddress.js'
+import { Eq as eqOrcid, Orcid } from './types/Orcid.js'
 
 export interface Club {
   readonly name: string

@@ -7,12 +7,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
+import type { Orcid } from './types/Orcid.js'
 
 export class OrcidApi extends Context.Tag('OrcidApi')<
   OrcidApi,

@@ -1,8 +1,8 @@
 import type { Doi } from 'doi-ts'
 import { Data, type Option } from 'effect'
-import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
 import type { NonEmptyString, Uuid } from '../types/index.js'
+import type { Orcid } from '../types/Orcid.js'
 
 export class StartComment extends Data.TaggedClass('StartComment')<{
   prereviewId: number

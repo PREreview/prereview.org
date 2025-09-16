@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
 import { Duration } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
+import { Orcid } from '../src/types/Orcid.js'
 import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.js'
 
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, javaScriptEnabled, page }) => {

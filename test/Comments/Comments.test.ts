@@ -1,10 +1,10 @@
 import { describe, test } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Option } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import * as _ from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
 import { NonEmptyString, Uuid } from '../../src/types/index.js'
+import { Orcid } from '../../src/types/Orcid.js'
 import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
 
 const given = CommandHandlerSpecification.for({

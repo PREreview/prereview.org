@@ -7,7 +7,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
-import { type Orcid, toUrl } from 'orcid-id-ts'
 import { match, P } from 'ts-pattern'
 import { URL } from 'url'
 import * as StatusCodes from './StatusCodes.js'
@@ -15,6 +14,7 @@ import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
 import { NonEmptyStringC } from './types/NonEmptyString.js'
+import { type Orcid, toUrl } from './types/Orcid.js'
 
 export class SlackApiConfig extends Context.Tag('SlackApiConfig')<
   SlackApiConfig,

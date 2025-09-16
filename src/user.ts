@@ -2,9 +2,9 @@ import { Context, Data, Effect, flow, Option, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { isOrcid } from 'orcid-id-ts'
 import * as FptsToEffect from './FptsToEffect.js'
 import { NonEmptyString, Orcid, Pseudonym } from './types/index.js'
+import { isOrcid } from './types/Orcid.js'
 
 export type User = C.TypeOf<typeof UserC>
 

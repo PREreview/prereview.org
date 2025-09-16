@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
-import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText, rawHtml } from '../../html.js'
 import { type SupportedLocale, translate } from '../../locales/index.js'
 import { StreamlinePageResponse } from '../../response.js'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
+import type { Orcid } from '../../types/Orcid.js'
 import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 

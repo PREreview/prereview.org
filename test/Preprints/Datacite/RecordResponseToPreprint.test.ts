@@ -5,7 +5,6 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Struct } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { Datacite } from '../../../src/ExternalApis/index.js'
 import { rawHtml } from '../../../src/html.js'
 import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.js'
@@ -17,6 +16,7 @@ import {
   Preprint,
   ZenodoPreprintId,
 } from '../../../src/Preprints/index.js'
+import { Orcid } from '../../../src/types/Orcid.js'
 import * as EffectTest from '../../EffectTest.js'
 
 test.each([

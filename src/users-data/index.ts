@@ -5,11 +5,11 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
-import type { Orcid } from 'orcid-id-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import type { CareerStage } from '../career-stage.js'
 import type { Location } from '../location.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
+import type { Orcid } from '../types/Orcid.js'
 
 export interface User {
   orcid: Orcid

@@ -1,5 +1,5 @@
 import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
-import type { Orcid } from 'orcid-id-ts'
+import type { Orcid } from '../types/Orcid.js'
 import type { Uuid } from '../types/index.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'

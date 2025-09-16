@@ -1,8 +1,8 @@
 import { Array, Equivalence, Option, Predicate } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import { Eq as eqOrcid } from 'orcid-id-ts'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Preprint } from '../Preprints/index.js'
+import { Eq as eqOrcid } from '../types/Orcid.js'
 import type { User } from '../user.js'
 
 interface IsAuthor {

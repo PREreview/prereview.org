@@ -4,8 +4,8 @@ import { type Array, Context, Data, type Effect } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import type { Html } from '../html.js'
+import type { Orcid } from '../types/Orcid.js'
 
 export interface Comment {
   authors: {
