@@ -14,7 +14,7 @@ import { timeoutRequest } from './fetch.js'
 import type { SlackUserId } from './slack-user-id.js'
 import type { SlackUser } from './slack-user.js'
 import { NonEmptyStringC } from './types/NonEmptyString.js'
-import { type Orcid, toUrl } from './types/Orcid.js'
+import { type OrcidId, toUrl } from './types/OrcidId.js'
 
 export class SlackApiConfig extends Context.Tag('SlackApiConfig')<
   SlackApiConfig,
@@ -104,7 +104,7 @@ export const getUserFromSlack = (slackId: string) =>
     ),
   )
 
-export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
+export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: OrcidId) =>
   pipe(
     shouldUpdate,
     R.chainW(

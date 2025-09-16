@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
 import { Html, rawHtml } from '../html.js'
-import { Doi, Orcid } from '../types/index.js'
+import { Doi, OrcidId } from '../types/index.js'
 
 export type DepositMetadata = typeof DepositMetadata.Type
 
@@ -15,7 +15,7 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
 })
 
 export const DepositMetadata = Schema.Struct({
-  creators: Schema.Tuple(Schema.Struct({ name: Schema.String, orcid: Schema.optional(Orcid.OrcidSchema) })),
+  creators: Schema.Tuple(Schema.Struct({ name: Schema.String, orcid: Schema.optional(OrcidId.OrcidIdSchema) })),
   description: HtmlSchema,
   title: Schema.String,
   communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {

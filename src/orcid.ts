@@ -12,7 +12,7 @@ import { URL } from 'url'
 import * as StatusCodes from './StatusCodes.js'
 import { timeoutRequest, useStaleCache } from './fetch.js'
 import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export class OrcidApi extends Context.Tag('OrcidApi')<
   OrcidApi,
@@ -59,7 +59,7 @@ const PersonalDetailsD = D.struct({
 const PersonDetailsResponseD = pipe(JsonD, D.compose(D.union(PersonalDetailsD, ProfileLockedD)))
 
 const getPersonalDetails = flow(
-  RTE.fromReaderK((orcid: Orcid) => orcidApiUrl(`${orcid}/personal-details`)),
+  RTE.fromReaderK((orcid: OrcidId) => orcidApiUrl(`${orcid}/personal-details`)),
   RTE.map(F.Request('GET')),
   RTE.chainReaderK(addOrcidApiHeaders),
   RTE.chainW(flow(F.setHeader('Accept', 'application/json'), F.send)),

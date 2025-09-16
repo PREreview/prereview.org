@@ -5,7 +5,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { match } from 'ts-pattern'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export type IsOpenForRequests =
   | {
@@ -17,11 +17,11 @@ export type IsOpenForRequests =
     }
 
 export interface IsOpenForRequestsEnv {
-  isOpenForRequests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', IsOpenForRequests>
+  isOpenForRequests: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', IsOpenForRequests>
 }
 
 export interface EditOpenForRequestsEnv extends IsOpenForRequestsEnv {
-  saveOpenForRequests: (orcid: Orcid, isOpenForRequests: IsOpenForRequests) => TE.TaskEither<'unavailable', void>
+  saveOpenForRequests: (orcid: OrcidId, isOpenForRequests: IsOpenForRequests) => TE.TaskEither<'unavailable', void>
 }
 
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
@@ -39,7 +39,7 @@ export const IsOpenForRequestsC = C.make(
   E.id(),
 ) satisfies C.Codec<unknown, unknown, IsOpenForRequests>
 
-export const isOpenForRequests = (orcid: Orcid) =>
+export const isOpenForRequests = (orcid: OrcidId) =>
   pipe(
     RTE.ask<IsOpenForRequestsEnv>(),
     RTE.chainTaskEitherK(({ isOpenForRequests }) => isOpenForRequests(orcid)),
@@ -56,7 +56,7 @@ export const maybeIsOpenForRequests = flow(
 )
 
 export const saveOpenForRequests = (
-  orcid: Orcid,
+  orcid: OrcidId,
   isOpenForRequests: IsOpenForRequests,
 ): RTE.ReaderTaskEither<EditOpenForRequestsEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(

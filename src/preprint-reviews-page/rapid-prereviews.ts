@@ -1,12 +1,12 @@
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { PreprintId } from '../Preprints/index.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export interface RapidPrereview {
   author: {
     name: string
-    orcid?: Orcid
+    orcid?: OrcidId
   }
   questions: {
     availableCode: 'yes' | 'unsure' | 'na' | 'no'

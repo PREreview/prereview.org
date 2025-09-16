@@ -96,7 +96,7 @@ describe('ReviewBeingPublishedPage', () => {
     fc.uuid(),
     fc.supportedLocale(),
     fc
-      .tuple(fc.user(), fc.orcid())
+      .tuple(fc.user(), fc.orcidId())
       .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
   ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
     Effect.gen(function* () {

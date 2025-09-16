@@ -13,7 +13,7 @@ import { FlashMessageResponse } from '../response.js'
 import { connectOrcidMatch, myDetailsMatch } from '../routes.js'
 import * as StatusCodes from '../StatusCodes.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { User } from '../user.js'
 import { connectFailureMessage } from './failure-message.js'
 
@@ -112,7 +112,7 @@ const SpaceSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
 
 const HashSetD = <A>(item: D.Decoder<unknown, A>) => pipe(SpaceSeparatedListD(item), D.map(HashSet.fromIterable))
 
-const OrcidUserTokenD = (orcid: Orcid) =>
+const OrcidUserTokenD = (orcid: OrcidId) =>
   pipe(
     JsonD,
     D.compose(

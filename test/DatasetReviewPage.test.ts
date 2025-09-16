@@ -16,7 +16,7 @@ describe('DatasetReviewPage', () => {
       fc.supportedLocale(),
       fc.uuid(),
       fc.record<DatasetReviews.PublishedReview>({
-        author: fc.record({ orcidId: fc.orcid(), persona: fc.constant('public') }),
+        author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
         doi: fc.doi(),
         id: fc.uuid(),
         questions: fc.record({
@@ -75,7 +75,7 @@ describe('DatasetReviewPage', () => {
       fc.supportedLocale(),
       fc.uuid(),
       fc.record<DatasetReviews.PublishedReview>({
-        author: fc.record({ orcidId: fc.orcid(), persona: fc.constant('pseudonym') }),
+        author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
         doi: fc.doi(),
         id: fc.uuid(),
         questions: fc.record({
@@ -135,7 +135,7 @@ describe('DatasetReviewPage', () => {
     fc.supportedLocale(),
     fc.uuid(),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcid(), persona: fc.constantFrom('public', 'pseudonym') }),
+      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('public', 'pseudonym') }),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({

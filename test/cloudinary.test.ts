@@ -19,7 +19,7 @@ describe('getAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])('when the ORCID iD has an avatar', async (cloudinaryApi, orcid, imageId) => {
     const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(imageId))
@@ -45,7 +45,7 @@ describe('getAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
   ])("when the ORCID iD doesn't have an avatar", async (cloudinaryApi, orcid) => {
     const actual = await _.getAvatarFromCloudinary(orcid)({
       cloudinaryApi,
@@ -61,7 +61,7 @@ describe('getAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
   ])('when the avatar is unavailable', async (cloudinaryApi, orcid) => {
     const actual = await _.getAvatarFromCloudinary(orcid)({
       cloudinaryApi,
@@ -82,7 +82,7 @@ describe('saveAvatarOnCloudinary', () => {
         secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
-      fc.orcid(),
+      fc.orcidId(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
         mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
@@ -141,7 +141,7 @@ describe('saveAvatarOnCloudinary', () => {
         secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
-      fc.orcid(),
+      fc.orcidId(),
       fc.nonEmptyString(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
@@ -221,7 +221,7 @@ describe('saveAvatarOnCloudinary', () => {
         secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       }),
       fc.origin(),
-      fc.orcid(),
+      fc.orcidId(),
       fc.nonEmptyString(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
@@ -277,7 +277,7 @@ describe('saveAvatarOnCloudinary', () => {
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.origin(),
-    fc.orcid(),
+    fc.orcidId(),
     fc.either(fc.constant('not-found'), fc.nonEmptyString()),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
@@ -325,7 +325,7 @@ describe('saveAvatarOnCloudinary', () => {
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.origin(),
-    fc.orcid(),
+    fc.orcidId(),
     fc.either(fc.constant('not-found'), fc.nonEmptyString()),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
@@ -367,7 +367,7 @@ describe('saveAvatarOnCloudinary', () => {
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
     fc.origin(),
-    fc.orcid(),
+    fc.orcidId(),
     fc.either(fc.constant('not-found'), fc.nonEmptyString()),
     fc.record({
       mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
@@ -405,7 +405,7 @@ describe('removeAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
     fc.nonEmptyString(),
   ])('when the avatar can be removed', async (date, cloudinaryApi, orcid, avatar) => {
     const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
@@ -452,7 +452,7 @@ describe('removeAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
     fc.nonEmptyString(),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])('when the avatar cannot be removed from Cloudinary', async (date, cloudinaryApi, orcid, avatar, response) => {
@@ -486,7 +486,7 @@ describe('removeAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
     fc.nonEmptyString(),
   ])('when the avatar cannot be removed locally', async (date, cloudinaryApi, orcid, avatar) => {
     const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
@@ -513,7 +513,7 @@ describe('removeAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
   ])('when the avatar cannot be loaded locally', async (date, cloudinaryApi, orcid) => {
     const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('unavailable'))
 
@@ -537,7 +537,7 @@ describe('removeAvatarFromCloudinary', () => {
       key: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
       secret: fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     }),
-    fc.orcid(),
+    fc.orcidId(),
   ])('when there is no avatar', async (date, cloudinaryApi, orcid) => {
     const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
 

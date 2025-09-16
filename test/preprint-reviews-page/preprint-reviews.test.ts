@@ -21,7 +21,7 @@ describe('preprintReviews', () => {
             fc.record(
               {
                 name: fc.string(),
-                orcid: fc.orcid(),
+                orcid: fc.orcidId(),
               },
               { requiredKeys: ['name'] },
             ),
@@ -38,7 +38,7 @@ describe('preprintReviews', () => {
         author: fc.record(
           {
             name: fc.string(),
-            orcid: fc.orcid(),
+            orcid: fc.orcidId(),
           },
           { requiredKeys: ['name'] },
         ),
@@ -134,7 +134,7 @@ describe('preprintReviews', () => {
         author: fc.record(
           {
             name: fc.string(),
-            orcid: fc.orcid(),
+            orcid: fc.orcidId(),
           },
           { requiredKeys: ['name'] },
         ),
@@ -181,7 +181,7 @@ describe('preprintReviews', () => {
             fc.record(
               {
                 name: fc.string(),
-                orcid: fc.orcid(),
+                orcid: fc.orcidId(),
               },
               { requiredKeys: ['name'] },
             ),

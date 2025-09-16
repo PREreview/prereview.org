@@ -5,12 +5,12 @@ import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/RateTheQuality.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
-const authorId = Orcid.Orcid('0000-0002-1825-0097')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const rated1 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'poor', datasetReviewId })
@@ -27,7 +27,7 @@ const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
     datasetReviewId: fc.uuid(),
-    userId: fc.orcid(),
+    userId: fc.orcidId(),
   })
 
 describe('foldState', () => {
@@ -97,7 +97,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -128,7 +128,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -169,7 +169,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.NotRated({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -186,7 +186,7 @@ describe('authorize', () => {
       },
     )
 
-    test.prop([command(), fc.orcid(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure')])(
+    test.prop([command(), fc.orcidId(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure')])(
       'with a different user',
       (command, authorId, rating) => {
         const result = _.authorize(new _.HasBeenRated({ rating, authorId }), command)
@@ -203,7 +203,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.IsBeingPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -217,7 +217,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.HasBeenPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -232,7 +232,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.orcid(), command()])('has not been rated', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('has not been rated', (authorId, command) => {
     const result = _.decide(new _.NotRated({ authorId }), command)
 
     expect(result).toStrictEqual(
@@ -249,7 +249,7 @@ describe('decide', () => {
 
   describe('has been rated', () => {
     test.prop([
-      fc.orcid(),
+      fc.orcidId(),
       fc
         .tuple(command(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure'))
         .filter(([command, rating]) => command.rating !== rating),
@@ -268,20 +268,20 @@ describe('decide', () => {
       )
     })
 
-    test.prop([fc.orcid(), command()])('with the same rating', (authorId, command) => {
+    test.prop([fc.orcidId(), command()])('with the same rating', (authorId, command) => {
       const result = _.decide(new _.HasBeenRated({ rating: command.rating, authorId }), command)
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
   })
 
-  test.prop([fc.orcid(), command()])('is being published', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('is being published', (authorId, command) => {
     const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
-  test.prop([fc.orcid(), command()])('has been published', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('has been published', (authorId, command) => {
     const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))

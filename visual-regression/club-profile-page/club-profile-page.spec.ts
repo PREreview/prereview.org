@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Orcid } from 'orcid-id-ts'
 import type { Club } from '../../src/club-details.js'
 import { createPage } from '../../src/club-profile-page/club-profile-page.js'
 import type { Prereviews } from '../../src/club-profile-page/prereviews.js'
@@ -9,6 +8,7 @@ import { DefaultLocale } from '../../src/locales/index.js'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import type { ClubId } from '../../src/types/club-id.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
@@ -42,8 +42,8 @@ const club1 = {
   `,
   added: Temporal.PlainDate.from('2024-01-02'),
   leads: [
-    { name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') },
-    { name: 'Garima Jain', orcid: Orcid('0000-0002-8079-9611') },
+    { name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') },
+    { name: 'Garima Jain', orcid: OrcidId('0000-0002-8079-9611') },
   ],
   contact: EmailAddress('email@example.com'),
   joinLink: new URL(
@@ -60,7 +60,7 @@ const club2 = {
     </p>
   `,
   added: Temporal.PlainDate.from('2025-02-03'),
-  leads: [{ name: 'Arpita Ghosh', orcid: Orcid('0009-0003-2106-3270') }],
+  leads: [{ name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') }],
 } satisfies Club
 
 const id = 'asapbio-cancer-biology' satisfies ClubId

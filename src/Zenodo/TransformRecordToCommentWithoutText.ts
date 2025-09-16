@@ -1,6 +1,6 @@
 import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
 import type * as ReviewPage from '../review-page/index.js'
-import { Doi, Orcid, Temporal } from '../types/index.js'
+import { Doi, OrcidId, Temporal } from '../types/index.js'
 import * as Iso639 from '../types/iso639.js'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
@@ -20,7 +20,7 @@ export const ZenodoRecordForACommentSchema = Schema.Struct({
     creators: Schema.NonEmptyArray(
       Schema.Struct({
         name: Schema.String,
-        orcid: Schema.optionalWith(Orcid.OrcidSchema, { exact: true }),
+        orcid: Schema.optionalWith(OrcidId.OrcidIdSchema, { exact: true }),
       }),
     ),
     doi: Doi.DoiSchema,

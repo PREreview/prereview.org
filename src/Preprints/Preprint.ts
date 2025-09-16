@@ -2,7 +2,7 @@ import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type { PartialDate } from '../time.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { PreprintId } from './PreprintId.js'
 
 export interface Preprint {
@@ -12,7 +12,7 @@ export interface Preprint {
   }
   authors: Array.NonEmptyReadonlyArray<{
     name: string
-    orcid?: Orcid
+    orcid?: OrcidId
   }>
   id: PreprintId
   posted: PartialDate

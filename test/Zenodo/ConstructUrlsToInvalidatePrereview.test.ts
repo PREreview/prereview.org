@@ -3,7 +3,7 @@ import { Array, Effect, Redacted } from 'effect'
 import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { Doi } from '../../src/types/index.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { Orcid } from '../../src/types/Orcid.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
 import * as Zenodo from '../../src/Zenodo/index.js'
@@ -16,7 +16,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
       const preprintId = new BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
       const user = {
         name: NonEmptyString('Josiah Carberry'),
-        orcid: Orcid('0000-0002-1825-0097'),
+        orcid: OrcidId('0000-0002-1825-0097'),
         pseudonym: Pseudonym('Orange Panda'),
       }
 

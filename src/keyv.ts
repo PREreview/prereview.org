@@ -23,7 +23,7 @@ import { type ResearchInterests, ResearchInterestsC } from './research-interests
 import { ReviewRequestC } from './review-request.js'
 import { SlackUserIdC } from './slack-user-id.js'
 import { NonEmptyStringC } from './types/NonEmptyString.js'
-import { type Orcid, isOrcid } from './types/Orcid.js'
+import { isOrcidId, type OrcidId } from './types/OrcidId.js'
 import { UuidC } from './types/uuid.js'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.js'
 
@@ -81,9 +81,9 @@ interface KeyvEnv {
   keyv: Keyv
 }
 
-const OrcidD: Decoder<unknown, Orcid> = D.fromRefinement(isOrcid, 'ORCID')
+const OrcidD: Decoder<unknown, OrcidId> = D.fromRefinement(isOrcidId, 'ORCID')
 
-const OrcidE: Encoder<string, Orcid> = { encode: identity }
+const OrcidE: Encoder<string, OrcidId> = { encode: identity }
 
 const PreprintIdE: Encoder<string, PreprintId> = {
   encode: preprintId => `${preprintId._tag}-${preprintId.value}`,

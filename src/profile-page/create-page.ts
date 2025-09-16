@@ -20,7 +20,7 @@ export function createPage(profile: OrcidProfile | PseudonymProfile, locale: Sup
         .exhaustive(),
     ),
     main: match(profile)
-      .with({ type: 'orcid' }, profile => renderContentForOrcid(profile, locale))
+      .with({ type: 'orcid' }, profile => renderContentForOrcidId(profile, locale))
       .with({ type: 'pseudonym' }, profile => renderContentForPseudonym(profile, locale))
       .exhaustive(),
     canonical: format(profileMatch.formatter, {
@@ -33,7 +33,7 @@ export function createPage(profile: OrcidProfile | PseudonymProfile, locale: Sup
   })
 }
 
-function renderContentForOrcid(
+function renderContentForOrcidId(
   {
     name,
     orcid,

@@ -11,7 +11,7 @@ import { maybeGetResearchInterests } from '../research-interests.js'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user.js'
 import type { ClubId } from '../types/club-id.js'
 import type { NonEmptyString } from '../types/NonEmptyString.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { OrcidProfileId } from '../types/profile-id.js'
 import { getName } from './name.js'
 import { type Prereviews, getPrereviews } from './prereviews.js'
@@ -19,7 +19,7 @@ import { type Prereviews, getPrereviews } from './prereviews.js'
 export interface OrcidProfile {
   type: 'orcid'
   name?: NonEmptyString
-  orcid: Orcid
+  orcid: OrcidId
   slackUser: SlackUser | undefined
   careerStage: 'early' | 'mid' | 'late' | undefined
   researchInterests: NonEmptyString | undefined

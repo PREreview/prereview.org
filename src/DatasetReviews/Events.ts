@@ -1,11 +1,11 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.js'
-import { Doi, NonEmptyString, Orcid, Temporal, Uuid } from '../types/index.js'
+import { Doi, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.js'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
 export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWasStarted>()('DatasetReviewWasStarted', {
-  authorId: Orcid.OrcidSchema,
+  authorId: OrcidId.OrcidIdSchema,
   datasetId: Datasets.DatasetIdFromString,
   datasetReviewId: Uuid.UuidSchema,
 }) {}

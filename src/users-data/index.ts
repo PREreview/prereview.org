@@ -9,10 +9,10 @@ import safeStableStringify from 'safe-stable-stringify'
 import type { CareerStage } from '../career-stage.js'
 import type { Location } from '../location.js'
 import type { ScietyListEnv } from '../sciety-list/index.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export interface User {
-  orcid: Orcid
+  orcid: OrcidId
   timestamp: Temporal.Instant
   careerStage?: CareerStage['value'] | undefined
   location?: Location['value'] | undefined
@@ -29,7 +29,7 @@ const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
 
 const StringE: E.Encoder<string, string | { toString: () => string }> = { encode: String }
 
-const OrcidE: E.Encoder<string, Orcid> = StringE
+const OrcidE: E.Encoder<string, OrcidId> = StringE
 
 const InstantE: E.Encoder<string, Temporal.Instant> = StringE
 

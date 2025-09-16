@@ -1,11 +1,11 @@
 import { Array, Either, Option, Struct } from 'effect'
-import type { Orcid } from '../../types/index.js'
+import type { OrcidId } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DatasetReviewPreview {
   readonly author: {
-    readonly orcidId: Orcid.Orcid
+    readonly orcidId: OrcidId.OrcidId
     readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
   }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>

@@ -71,7 +71,7 @@ import { type FieldId, isFieldId } from './types/field.js'
 import { ProfileId } from './types/index.js'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
 import type { NonEmptyString } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 import { isSubfieldId } from './types/subfield.js'
 import type { User } from './user.js'
 import type { NewPrereview } from './write-review/index.js'
@@ -503,7 +503,7 @@ export const addAuthorToRecordOnZenodo = (
   )
 
 interface CommentToPublish {
-  author: { name: NonEmptyString; orcid?: Orcid }
+  author: { name: NonEmptyString; orcid?: OrcidId }
   comment: Html
   prereview: {
     doi: Doi

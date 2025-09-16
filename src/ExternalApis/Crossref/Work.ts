@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, pipe, Schema, Tuple } from 'effect'
 import * as StatusCodes from '../../StatusCodes.js'
-import { Doi, Orcid, Temporal } from '../../types/index.js'
+import { Doi, OrcidId, Temporal } from '../../types/index.js'
 
 const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
   strict: true,
@@ -56,7 +56,7 @@ export class Work extends Schema.Class<Work>('Work')({
     Schema.Array(
       Schema.Union(
         Schema.Struct({
-          ORCID: Schema.optional(Orcid.OrcidFromUrlSchema),
+          ORCID: Schema.optional(OrcidId.OrcidIdFromUrlSchema),
           given: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
           family: Schema.compose(Schema.Trim, Schema.NonEmptyString),
         }),

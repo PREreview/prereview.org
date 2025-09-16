@@ -7,7 +7,7 @@ import * as IO from 'fp-ts/lib/IO.js'
 import { URL } from 'url'
 import * as StatusCodes from '../src/StatusCodes.js'
 import * as _ from '../src/slack.js'
-import { toUrl } from '../src/types/Orcid.js'
+import { toUrl } from '../src/types/OrcidId.js'
 import * as fc from './fc.js'
 import { shouldNotBeCalled } from './should-not-be-called.js'
 
@@ -133,7 +133,7 @@ describe('getUserFromSlack', () => {
 
 describe('addOrcidToSlackProfile', () => {
   describe('when Slack should be updated', () => {
-    test.prop([fc.string(), fc.slackUserId(), fc.orcid()])(
+    test.prop([fc.string(), fc.slackUserId(), fc.orcidId()])(
       'when the request is successful',
       async (slackApiToken, userId, orcid) => {
         const fetch = fetchMock
@@ -174,7 +174,7 @@ describe('addOrcidToSlackProfile', () => {
       },
     )
 
-    test.prop([fc.string(), fc.slackUserId(), fc.orcid(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
+    test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
       "when the response can't be decoded",
       async (slackApiToken, userId, orcid, response) => {
         const fetch = fetchMock.sandbox().postOnce(
@@ -202,7 +202,7 @@ describe('addOrcidToSlackProfile', () => {
       },
     )
 
-    test.prop([fc.string(), fc.slackUserId(), fc.orcid(), fc.nonEmptyString()])(
+    test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.nonEmptyString()])(
       'when the response has a Slack error',
       async (slackApiToken, userId, orcid, error) => {
         const fetch = fetchMock.sandbox().postOnce(
@@ -233,7 +233,7 @@ describe('addOrcidToSlackProfile', () => {
     test.prop([
       fc.string(),
       fc.slackUserId(),
-      fc.orcid(),
+      fc.orcidId(),
       fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
     ])('when the response has a non-200 status code', async (slackApiToken, userId, orcid, status) => {
       const fetch = fetchMock.sandbox().postOnce(
@@ -260,7 +260,7 @@ describe('addOrcidToSlackProfile', () => {
       expect(fetch.done()).toBeTruthy()
     })
 
-    test.prop([fc.string(), fc.slackUserId(), fc.orcid(), fc.error()])(
+    test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.error()])(
       'when fetch throws an error',
       async (slackApiToken, userId, orcid, error) => {
         const actual = await _.addOrcidToSlackProfile(
@@ -279,7 +279,7 @@ describe('addOrcidToSlackProfile', () => {
     )
   })
 
-  test.prop([fc.string(), fc.slackUserId(), fc.orcid()])(
+  test.prop([fc.string(), fc.slackUserId(), fc.orcidId()])(
     "when Slack shouldn't be updated",
     async (slackApiToken, userId, orcid) => {
       const actual = await _.addOrcidToSlackProfile(

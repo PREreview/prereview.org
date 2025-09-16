@@ -4,7 +4,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface Languages {
   readonly value: NonEmptyString
@@ -12,12 +12,12 @@ export interface Languages {
 }
 
 export interface GetLanguagesEnv {
-  getLanguages: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', Languages>
+  getLanguages: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', Languages>
 }
 
 export interface EditLanguagesEnv extends GetLanguagesEnv {
-  deleteLanguages: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-  saveLanguages: (orcid: Orcid, languages: Languages) => TE.TaskEither<'unavailable', void>
+  deleteLanguages: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
+  saveLanguages: (orcid: OrcidId, languages: Languages) => TE.TaskEither<'unavailable', void>
 }
 
 export const LanguagesC = C.struct({
@@ -26,7 +26,7 @@ export const LanguagesC = C.struct({
 }) satisfies C.Codec<unknown, unknown, Languages>
 
 export const getLanguages = (
-  orcid: Orcid,
+  orcid: OrcidId,
 ): RTE.ReaderTaskEither<GetLanguagesEnv, 'not-found' | 'unavailable', Languages> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLanguages }) => getLanguages(orcid)))
 
@@ -40,11 +40,11 @@ export const maybeGetLanguages = flow(
   ),
 )
 
-export const deleteLanguages = (orcid: Orcid) =>
+export const deleteLanguages = (orcid: OrcidId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteLanguages }: EditLanguagesEnv) => deleteLanguages(orcid)))
 
 export const saveLanguages = (
-  orcid: Orcid,
+  orcid: OrcidId,
   languages: Languages,
 ): RTE.ReaderTaskEither<EditLanguagesEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveLanguages }) => saveLanguages(orcid, languages)))

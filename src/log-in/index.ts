@@ -20,7 +20,7 @@ import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.js'
 import { handlePageResponse } from '../response.js'
 import { homeMatch, orcidCodeMatch } from '../routes.js'
 import { NonEmptyString, OrcidLocale } from '../types/index.js'
-import { type Orcid, isOrcid } from '../types/Orcid.js'
+import { type OrcidId, isOrcidId } from '../types/OrcidId.js'
 import type { Pseudonym } from '../types/Pseudonym.js'
 import { newSessionForUser } from '../user.js'
 import { accessDeniedMessage } from './access-denied-message.js'
@@ -35,7 +35,7 @@ export interface GetPseudonymEnv {
 }
 
 export interface IsUserBlockedEnv {
-  isUserBlocked: (user: Orcid) => boolean
+  isUserBlocked: (user: OrcidId) => boolean
 }
 
 export const logIn = pipe(
@@ -63,7 +63,7 @@ export const logOut = pipe(
   RM.ichain(() => RM.end()),
 )
 
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 const OrcidUserC = C.struct({
   name: C.string,
@@ -75,7 +75,7 @@ type OrcidUser = C.TypeOf<typeof OrcidUserC>
 const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
-const isUserBlocked = (user: Orcid): R.Reader<IsUserBlockedEnv, boolean> =>
+const isUserBlocked = (user: OrcidId): R.Reader<IsUserBlockedEnv, boolean> =>
   R.asks(({ isUserBlocked }) => isUserBlocked(user))
 
 const filterBlockedUsers = <T extends OrcidUser>(user: T): RE.ReaderEither<IsUserBlockedEnv, T, T> =>

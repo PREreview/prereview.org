@@ -5,13 +5,13 @@ import { Equal, identity, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/FindPublishedReviewsForADataset.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
 const otherDatasetReviewId = Uuid.Uuid('0b4aef08-494c-41dd-9a13-d6aaafea0733')
-const authorId = Orcid.Orcid('0000-0002-1825-0097')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const otherDatasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') })
 

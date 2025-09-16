@@ -1,6 +1,6 @@
 import { Array, Boolean, Equal, Match, Option, pipe, Record, Tuple } from 'effect'
 import type * as Datasets from '../../Datasets/index.js'
-import type { Orcid, Uuid } from '../../types/index.js'
+import type { OrcidId, Uuid } from '../../types/index.js'
 import type * as Events from '../Events.js'
 
 export const FindInProgressReviewForADataset =
@@ -9,7 +9,7 @@ export const FindInProgressReviewForADataset =
       Events.DatasetReviewWasStarted | Events.PublicationOfDatasetReviewWasRequested | Events.DatasetReviewWasPublished
     >,
   ) =>
-  (authorId: Orcid.Orcid, datasetId: Datasets.DatasetId): Option.Option<Uuid.Uuid> =>
+  (authorId: OrcidId.OrcidId, datasetId: Datasets.DatasetId): Option.Option<Uuid.Uuid> =>
     pipe(
       Array.reduce(events, Record.empty<Uuid.Uuid, boolean>(), (candidates, event) =>
         Match.valueTags(event, {

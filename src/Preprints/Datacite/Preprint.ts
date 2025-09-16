@@ -5,7 +5,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
 import type { Datacite } from '../../ExternalApis/index.js'
 import { type Html, sanitizeHtml } from '../../html.js'
-import { Orcid } from '../../types/index.js'
+import { OrcidId } from '../../types/index.js'
 import * as Preprint from '../Preprint.js'
 import {
   AfricarxivZenodoPreprintId,
@@ -120,7 +120,7 @@ const findPublishedDate = (dates: Datacite.Record['dates']) =>
 const findOrcid = (creator: Datacite.Record['creators'][number]) =>
   pipe(
     Array.findFirst(creator.nameIdentifiers, ({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
-    Option.andThen(({ nameIdentifier }) => Orcid.parse(nameIdentifier)),
+    Option.andThen(({ nameIdentifier }) => OrcidId.parse(nameIdentifier)),
     Option.getOrUndefined,
   )
 

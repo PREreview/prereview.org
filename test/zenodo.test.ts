@@ -3501,7 +3501,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 describe('createCommentOnZenodo', () => {
   test.prop([
     fc.record({
-      author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+      author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
       comment: fc.html(),
       prereview: fc.prereview(),
     }),
@@ -3613,7 +3613,7 @@ ${comment.comment.toString()}`,
 
   test.prop([
     fc.record({
-      author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+      author: fc.record({ name: fc.nonEmptyString(), orcid: fc.orcidId() }, { requiredKeys: ['name'] }),
       comment: fc.html(),
       prereview: fc.prereview(),
     }),

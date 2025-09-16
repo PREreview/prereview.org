@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import { createPage } from '../../src/profile-page/create-page.js'
 import type { Prereviews } from '../../src/profile-page/prereviews.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -15,7 +15,7 @@ test('content looks right', async ({ showPage }) => {
     {
       type: 'orcid',
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       slackUser: {
         name: 'jcarberry',
         image: new URL('https://placehold.co/48x48'),
@@ -43,7 +43,7 @@ test('content looks right when empty', async ({ showPage }) => {
     {
       type: 'orcid',
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       slackUser: undefined,
       careerStage: undefined,
       researchInterests: undefined,

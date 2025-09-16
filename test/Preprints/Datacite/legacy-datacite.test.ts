@@ -5,7 +5,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import { rawHtml } from '../../../src/html.js'
 import * as _ from '../../../src/Preprints/Datacite/legacy-datacite.js'
 import { NotAPreprint, PreprintIsUnavailable } from '../../../src/Preprints/index.js'
-import { Orcid } from '../../../src/types/Orcid.js'
+import { OrcidId } from '../../../src/types/OrcidId.js'
 import * as fc from '../../fc.js'
 
 describe('isDatacitePreprintDoi', () => {
@@ -662,14 +662,14 @@ describe('getPreprintFromDatacite', () => {
           E.right({
             abstract: undefined,
             authors: [
-              { name: 'Prachee Avasthi', orcid: Orcid('0000-0002-1688-722X') },
+              { name: 'Prachee Avasthi', orcid: OrcidId('0000-0002-1688-722X') },
               { name: 'Ben Braverman', orcid: undefined },
-              { name: 'Brae M. Bigge', orcid: Orcid('0000-0002-0907-4597') },
-              { name: 'Tara Essock-Burns', orcid: Orcid('0000-0003-4159-6974') },
-              { name: 'Ryan Lane', orcid: Orcid('0000-0002-5887-2069') },
-              { name: 'David G. Mets', orcid: Orcid('0000-0002-0803-0912') },
-              { name: 'Austin H. Patton', orcid: Orcid('0000-0003-1286-9005') },
-              { name: 'Ryan York', orcid: Orcid('0000-0002-1073-1494') },
+              { name: 'Brae M. Bigge', orcid: OrcidId('0000-0002-0907-4597') },
+              { name: 'Tara Essock-Burns', orcid: OrcidId('0000-0003-4159-6974') },
+              { name: 'Ryan Lane', orcid: OrcidId('0000-0002-5887-2069') },
+              { name: 'David G. Mets', orcid: OrcidId('0000-0002-0803-0912') },
+              { name: 'Austin H. Patton', orcid: OrcidId('0000-0003-1286-9005') },
+              { name: 'Ryan York', orcid: OrcidId('0000-0002-1073-1494') },
             ],
             id,
             posted,

@@ -5,12 +5,12 @@ import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/ChoosePersona.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
-const authorId = Orcid.Orcid('0000-0002-1825-0097')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
@@ -35,7 +35,7 @@ const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     persona: persona(),
     datasetReviewId: fc.uuid(),
-    userId: fc.orcid(),
+    userId: fc.orcidId(),
   })
 
 describe('foldState', () => {
@@ -121,7 +121,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -164,7 +164,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -210,7 +210,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.NotChosen({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -224,7 +224,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid(), persona()])('with a different user', (command, authorId, persona) => {
+    test.prop([command(), fc.orcidId(), persona()])('with a different user', (command, authorId, persona) => {
       const result = _.authorize(new _.HasBeenChosen({ persona, authorId }), command)
 
       expect(result).toBeFalsy()
@@ -238,7 +238,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.IsBeingPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -252,7 +252,7 @@ describe('authorize', () => {
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcid()])('with a different user', (command, authorId) => {
+    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
       const result = _.authorize(new _.HasBeenPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -267,7 +267,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.orcid(), command()])('has not been chosen', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('has not been chosen', (authorId, command) => {
     const result = _.decide(new _.NotChosen({ authorId }), command)
 
     expect(result).toStrictEqual(
@@ -284,7 +284,7 @@ describe('decide', () => {
 
   describe('has been chosen', () => {
     test.prop([
-      fc.orcid(),
+      fc.orcidId(),
       fc.tuple(command(), persona()).filter(([command, persona]) => !Equal.equals(command.persona, persona)),
     ])('with a different persona', (authorId, [command, persona]) => {
       const result = _.decide(new _.HasBeenChosen({ persona, authorId }), command)
@@ -301,20 +301,20 @@ describe('decide', () => {
       )
     })
 
-    test.prop([fc.orcid(), command()])('with the same persona', (authorId, command) => {
+    test.prop([fc.orcidId(), command()])('with the same persona', (authorId, command) => {
       const result = _.decide(new _.HasBeenChosen({ persona: command.persona, authorId }), command)
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
   })
 
-  test.prop([fc.orcid(), command()])('is being published', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('is being published', (authorId, command) => {
     const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
-  test.prop([fc.orcid(), command()])('has been published', (authorId, command) => {
+  test.prop([fc.orcidId(), command()])('has been published', (authorId, command) => {
     const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))

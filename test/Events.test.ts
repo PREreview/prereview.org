@@ -3,12 +3,12 @@ import { describe, expect } from '@jest/globals'
 import { Tuple } from 'effect'
 import * as Datasets from '../src/Datasets/index.js'
 import * as _ from '../src/Events.js'
-import { Doi, Orcid, Uuid } from '../src/types/index.js'
+import { Doi, OrcidId, Uuid } from '../src/types/index.js'
 import * as fc from './fc.js'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
-const authorId = Orcid.Orcid('0000-0002-1825-0097')
-const otherAuthorId = Orcid.Orcid('0000-0002-6109-0367')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
+const otherAuthorId = OrcidId.OrcidId('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const otherDatasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') })
 const datasetReviewWasStarted = new _.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })

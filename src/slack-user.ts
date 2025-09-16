@@ -2,7 +2,7 @@ import { flow, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface SlackUser {
   readonly name: string
@@ -11,20 +11,20 @@ export interface SlackUser {
 }
 
 export interface IsSlackUserEnv {
-  isSlackUser: (orcid: Orcid) => TE.TaskEither<'unavailable', boolean>
+  isSlackUser: (orcid: OrcidId) => TE.TaskEither<'unavailable', boolean>
 }
 
 export interface GetSlackUserEnv {
-  getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
+  getSlackUser: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
 }
 
-export const isSlackUser = (orcid: Orcid) =>
+export const isSlackUser = (orcid: OrcidId) =>
   pipe(
     RTE.ask<IsSlackUserEnv>(),
     RTE.chainTaskEitherK(({ isSlackUser }) => isSlackUser(orcid)),
   )
 
-export const getSlackUser = (orcid: Orcid) =>
+export const getSlackUser = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetSlackUserEnv>(),
     RTE.chainTaskEitherK(({ getSlackUser }) => getSlackUser(orcid)),

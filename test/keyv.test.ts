@@ -144,7 +144,7 @@ describe('saveAuthorInvite', () => {
 })
 
 describe('deleteCareerStage', () => {
-  test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
+  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
@@ -158,7 +158,7 @@ describe('deleteCareerStage', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than career stage',
     async (orcid, value) => {
       const store = new Keyv()
@@ -175,7 +175,7 @@ describe('deleteCareerStage', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteCareerStage(orcid)({
@@ -188,7 +188,7 @@ describe('deleteCareerStage', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -203,7 +203,7 @@ describe('deleteCareerStage', () => {
 })
 
 describe('getCareerStage', () => {
-  test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
+  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
@@ -216,7 +216,7 @@ describe('getCareerStage', () => {
     expect(actual).toStrictEqual(E.right(careerStage))
   })
 
-  test.prop([fc.orcid(), fc.careerStage().map(Struct.get('value'))])(
+  test.prop([fc.orcidId(), fc.careerStage().map(Struct.get('value'))])(
     'when the key contains a career stage as a string',
     async (orcid, careerStage) => {
       const store = new Keyv()
@@ -232,7 +232,7 @@ describe('getCareerStage', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than career stage',
     async (orcid, value) => {
       const store = new Keyv()
@@ -248,7 +248,7 @@ describe('getCareerStage', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getCareerStage(orcid)({
@@ -260,7 +260,7 @@ describe('getCareerStage', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -275,18 +275,21 @@ describe('getCareerStage', () => {
 })
 
 describe('getAllCareerStages', () => {
-  test.prop([fc.array(fc.tuple(fc.orcid(), fc.careerStage()))])('when there are career stages', async careerStages => {
-    const store = new Keyv()
-    await Promise.all(careerStages.map(([orcid, careerStage]) => store.set(orcid, careerStage)))
+  test.prop([fc.array(fc.tuple(fc.orcidId(), fc.careerStage()))])(
+    'when there are career stages',
+    async careerStages => {
+      const store = new Keyv()
+      await Promise.all(careerStages.map(([orcid, careerStage]) => store.set(orcid, careerStage)))
 
-    const actual = await _.getAllCareerStages({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = await _.getAllCareerStages({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
-    expect(actual).toStrictEqual(E.right(Object.fromEntries(careerStages)))
-  })
+      expect(actual).toStrictEqual(E.right(Object.fromEntries(careerStages)))
+    },
+  )
 
   test.prop([fc.anything()])('when the store cannot be accessed', async error => {
     const store = new Keyv()
@@ -305,7 +308,7 @@ describe('getAllCareerStages', () => {
 })
 
 describe('saveCareerStage', () => {
-  test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
+  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
@@ -322,7 +325,7 @@ describe('saveCareerStage', () => {
     expect(await store.get(orcid)).toStrictEqual(careerStage)
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.careerStage()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.careerStage()])(
     'when the key already contains something other than career stage',
     async (orcid, value, careerStage) => {
       const store = new Keyv()
@@ -342,7 +345,7 @@ describe('saveCareerStage', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.careerStage()])('when the key is not set', async (orcid, careerStage) => {
+  test.prop([fc.orcidId(), fc.careerStage()])('when the key is not set', async (orcid, careerStage) => {
     const store = new Keyv()
 
     const actual = await _.saveCareerStage(
@@ -358,7 +361,7 @@ describe('saveCareerStage', () => {
     expect(await store.get(orcid)).toStrictEqual(careerStage)
   })
 
-  test.prop([fc.orcid(), fc.careerStage(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.careerStage(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, careerStage, error) => {
       const store = new Keyv()
@@ -379,7 +382,7 @@ describe('saveCareerStage', () => {
 })
 
 describe('isOpenForRequests', () => {
-  test.prop([fc.orcid(), fc.isOpenForRequests()])(
+  test.prop([fc.orcidId(), fc.isOpenForRequests()])(
     'when the key contains open for requests',
     async (orcid, isOpenForRequests) => {
       const store = new Keyv()
@@ -395,7 +398,7 @@ describe('isOpenForRequests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.oneof(fc.constant(''), fc.anything())])(
+  test.prop([fc.orcidId(), fc.oneof(fc.constant(''), fc.anything())])(
     'when the key contains something other than open for requests',
     async (orcid, value) => {
       const store = new Keyv()
@@ -411,7 +414,7 @@ describe('isOpenForRequests', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.isOpenForRequests(orcid)({
@@ -423,7 +426,7 @@ describe('isOpenForRequests', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -438,7 +441,7 @@ describe('isOpenForRequests', () => {
 })
 
 describe('saveOpenForRequests', () => {
-  test.prop([fc.orcid(), fc.isOpenForRequests()])(
+  test.prop([fc.orcidId(), fc.isOpenForRequests()])(
     'when the key contains open for requests',
     async (orcid, isOpenForRequests) => {
       const store = new Keyv()
@@ -458,7 +461,7 @@ describe('saveOpenForRequests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything(), fc.isOpenForRequests()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.isOpenForRequests()])(
     'when the key already contains something other than open for requests',
     async (orcid, value, isOpenForRequests) => {
       const store = new Keyv()
@@ -478,7 +481,7 @@ describe('saveOpenForRequests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.isOpenForRequests()])('when the key is not set', async (orcid, isOpenForRequests) => {
+  test.prop([fc.orcidId(), fc.isOpenForRequests()])('when the key is not set', async (orcid, isOpenForRequests) => {
     const store = new Keyv()
 
     const actual = await _.saveOpenForRequests(
@@ -494,7 +497,7 @@ describe('saveOpenForRequests', () => {
     expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
   })
 
-  test.prop([fc.orcid(), fc.isOpenForRequests(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.isOpenForRequests(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, isOpenForRequests, error) => {
       const store = new Keyv()
@@ -515,7 +518,7 @@ describe('saveOpenForRequests', () => {
 })
 
 describe('deleteResearchInterests', () => {
-  test.prop([fc.orcid(), fc.researchInterests()])(
+  test.prop([fc.orcidId(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -532,7 +535,7 @@ describe('deleteResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than research interests',
     async (orcid, value) => {
       const store = new Keyv()
@@ -549,7 +552,7 @@ describe('deleteResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteResearchInterests(orcid)({
@@ -562,7 +565,7 @@ describe('deleteResearchInterests', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -577,7 +580,7 @@ describe('deleteResearchInterests', () => {
 })
 
 describe('getResearchInterests', () => {
-  test.prop([fc.orcid(), fc.researchInterests()])(
+  test.prop([fc.orcidId(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -593,7 +596,7 @@ describe('getResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.nonEmptyString()])(
+  test.prop([fc.orcidId(), fc.nonEmptyString()])(
     'when the key contains research interests without a visibility level',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -609,7 +612,7 @@ describe('getResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.nonEmptyString()])(
+  test.prop([fc.orcidId(), fc.nonEmptyString()])(
     'when the key contains research interests as a string',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -626,7 +629,7 @@ describe('getResearchInterests', () => {
   )
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.oneof(
       fc.constant(''),
       fc.anything().filter(value => typeof value !== 'string'),
@@ -644,7 +647,7 @@ describe('getResearchInterests', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getResearchInterests(orcid)({
@@ -656,7 +659,7 @@ describe('getResearchInterests', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -671,7 +674,7 @@ describe('getResearchInterests', () => {
 })
 
 describe('saveResearchInterests', () => {
-  test.prop([fc.orcid(), fc.researchInterests()])(
+  test.prop([fc.orcidId(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -691,7 +694,7 @@ describe('saveResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything(), fc.researchInterests()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.researchInterests()])(
     'when the key already contains something other than research interests',
     async (orcid, value, researchInterests) => {
       const store = new Keyv()
@@ -711,7 +714,7 @@ describe('saveResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.researchInterests()])('when the key is not set', async (orcid, researchInterests) => {
+  test.prop([fc.orcidId(), fc.researchInterests()])('when the key is not set', async (orcid, researchInterests) => {
     const store = new Keyv()
 
     const actual = await _.saveResearchInterests(
@@ -727,7 +730,7 @@ describe('saveResearchInterests', () => {
     expect(await store.get(orcid)).toStrictEqual(researchInterests)
   })
 
-  test.prop([fc.orcid(), fc.researchInterests(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.researchInterests(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, researchInterests, error) => {
       const store = new Keyv()
@@ -748,7 +751,7 @@ describe('saveResearchInterests', () => {
 })
 
 describe('deleteOrcidToken', () => {
-  test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
+  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(orcidToken))
 
@@ -762,7 +765,7 @@ describe('deleteOrcidToken', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than an ORCID token',
     async (orcid, value) => {
       const store = new Keyv()
@@ -779,7 +782,7 @@ describe('deleteOrcidToken', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteOrcidToken(orcid)({
@@ -792,7 +795,7 @@ describe('deleteOrcidToken', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -807,7 +810,7 @@ describe('deleteOrcidToken', () => {
 })
 
 describe('getOrcidToken', () => {
-  test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, getOrcidToken) => {
+  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, getOrcidToken) => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(getOrcidToken))
 
@@ -820,7 +823,7 @@ describe('getOrcidToken', () => {
     expect(actual).toStrictEqual(E.right(getOrcidToken))
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than an ORCID token',
     async (orcid, value) => {
       const store = new Keyv()
@@ -836,7 +839,7 @@ describe('getOrcidToken', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getOrcidToken(orcid)({
@@ -848,7 +851,7 @@ describe('getOrcidToken', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -863,7 +866,7 @@ describe('getOrcidToken', () => {
 })
 
 describe('saveOrcidToken', () => {
-  test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
+  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(orcidToken))
 
@@ -880,7 +883,7 @@ describe('saveOrcidToken', () => {
     expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.orcidToken()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.orcidToken()])(
     'when the key already contains something other than an ORCID token',
     async (orcid, value, orcidToken) => {
       const store = new Keyv()
@@ -900,7 +903,7 @@ describe('saveOrcidToken', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.orcidToken()])('when the key is not set', async (orcid, orcidToken) => {
+  test.prop([fc.orcidId(), fc.orcidToken()])('when the key is not set', async (orcid, orcidToken) => {
     const store = new Keyv()
 
     const actual = await _.saveOrcidToken(
@@ -916,7 +919,7 @@ describe('saveOrcidToken', () => {
     expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
   })
 
-  test.prop([fc.orcid(), fc.orcidToken(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.orcidToken(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, orcidToken, error) => {
       const store = new Keyv()
@@ -937,7 +940,7 @@ describe('saveOrcidToken', () => {
 })
 
 describe('deleteSlackUserId', () => {
-  test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
+  test.prop([fc.orcidId(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
     const store = new Keyv()
     await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
@@ -951,7 +954,7 @@ describe('deleteSlackUserId', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than a Slack user ID',
     async (orcid, value) => {
       const store = new Keyv()
@@ -968,7 +971,7 @@ describe('deleteSlackUserId', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteSlackUserId(orcid)({
@@ -981,7 +984,7 @@ describe('deleteSlackUserId', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -996,20 +999,23 @@ describe('deleteSlackUserId', () => {
 })
 
 describe('getSlackUserId', () => {
-  test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, getSlackUserId) => {
-    const store = new Keyv()
-    await store.set(orcid, SlackUserIdC.encode(getSlackUserId))
+  test.prop([fc.orcidId(), fc.slackUserId()])(
+    'when the key contains a Slack user ID',
+    async (orcid, getSlackUserId) => {
+      const store = new Keyv()
+      await store.set(orcid, SlackUserIdC.encode(getSlackUserId))
 
-    const actual = await _.getSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = await _.getSlackUserId(orcid)({
+        slackUserIdStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
-    expect(actual).toStrictEqual(SlackUserIdC.decode(SlackUserIdC.encode(getSlackUserId)))
-  })
+      expect(actual).toStrictEqual(SlackUserIdC.decode(SlackUserIdC.encode(getSlackUserId)))
+    },
+  )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than a Slack user ID',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1025,7 +1031,7 @@ describe('getSlackUserId', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getSlackUserId(orcid)({
@@ -1037,7 +1043,7 @@ describe('getSlackUserId', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1052,7 +1058,7 @@ describe('getSlackUserId', () => {
 })
 
 describe('saveSlackUserId', () => {
-  test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
+  test.prop([fc.orcidId(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
     const store = new Keyv()
     await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
@@ -1069,7 +1075,7 @@ describe('saveSlackUserId', () => {
     expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.slackUserId()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.slackUserId()])(
     'when the key already contains something other than a Slack user ID',
     async (orcid, value, slackUserId) => {
       const store = new Keyv()
@@ -1089,7 +1095,7 @@ describe('saveSlackUserId', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.slackUserId()])('when the key is not set', async (orcid, slackUserId) => {
+  test.prop([fc.orcidId(), fc.slackUserId()])('when the key is not set', async (orcid, slackUserId) => {
     const store = new Keyv()
 
     const actual = await _.saveSlackUserId(
@@ -1105,7 +1111,7 @@ describe('saveSlackUserId', () => {
     expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
   })
 
-  test.prop([fc.orcid(), fc.slackUserId(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.slackUserId(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, slackUserId, error) => {
       const store = new Keyv()
@@ -1126,7 +1132,7 @@ describe('saveSlackUserId', () => {
 })
 
 describe('deleteLocation', () => {
-  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
     const store = new Keyv()
     await store.set(orcid, location)
 
@@ -1140,7 +1146,7 @@ describe('deleteLocation', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than a location',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1157,7 +1163,7 @@ describe('deleteLocation', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteLocation(orcid)({
@@ -1170,7 +1176,7 @@ describe('deleteLocation', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1185,7 +1191,7 @@ describe('deleteLocation', () => {
 })
 
 describe('getLocation', () => {
-  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
     const store = new Keyv()
     await store.set(orcid, location)
 
@@ -1199,7 +1205,7 @@ describe('getLocation', () => {
   })
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.oneof(
       fc.constant(''),
       fc.anything().filter(value => typeof value !== 'string'),
@@ -1217,7 +1223,7 @@ describe('getLocation', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getLocation(orcid)({
@@ -1229,7 +1235,7 @@ describe('getLocation', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1244,7 +1250,7 @@ describe('getLocation', () => {
 })
 
 describe('getAllLocations', () => {
-  test.prop([fc.array(fc.tuple(fc.orcid(), fc.location()))])('when there are locations', async locations => {
+  test.prop([fc.array(fc.tuple(fc.orcidId(), fc.location()))])('when there are locations', async locations => {
     const store = new Keyv()
     await Promise.all(locations.map(([orcid, location]) => store.set(orcid, location)))
 
@@ -1274,7 +1280,7 @@ describe('getAllLocations', () => {
 })
 
 describe('saveLocation', () => {
-  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
     const store = new Keyv()
     await store.set(orcid, location)
 
@@ -1291,7 +1297,7 @@ describe('saveLocation', () => {
     expect(await store.get(orcid)).toStrictEqual(location)
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.location()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.location()])(
     'when the key already contains something other than a location',
     async (orcid, value, location) => {
       const store = new Keyv()
@@ -1311,7 +1317,7 @@ describe('saveLocation', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.location()])('when the key is not set', async (orcid, location) => {
+  test.prop([fc.orcidId(), fc.location()])('when the key is not set', async (orcid, location) => {
     const store = new Keyv()
 
     const actual = await _.saveLocation(
@@ -1327,7 +1333,7 @@ describe('saveLocation', () => {
     expect(await store.get(orcid)).toStrictEqual(location)
   })
 
-  test.prop([fc.orcid(), fc.location(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.location(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, location, error) => {
       const store = new Keyv()
@@ -1348,7 +1354,7 @@ describe('saveLocation', () => {
 })
 
 describe('deleteLanguages', () => {
-  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
@@ -1362,7 +1368,7 @@ describe('deleteLanguages', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than languages',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1379,7 +1385,7 @@ describe('deleteLanguages', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
     const actual = await _.deleteLanguages(orcid)({
@@ -1392,7 +1398,7 @@ describe('deleteLanguages', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1407,7 +1413,7 @@ describe('deleteLanguages', () => {
 })
 
 describe('getLanguages', () => {
-  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
@@ -1421,7 +1427,7 @@ describe('getLanguages', () => {
   })
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.oneof(
       fc.constant(''),
       fc.anything().filter(value => typeof value !== 'string'),
@@ -1439,7 +1445,7 @@ describe('getLanguages', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getLanguages(orcid)({
@@ -1451,7 +1457,7 @@ describe('getLanguages', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1466,7 +1472,7 @@ describe('getLanguages', () => {
 })
 
 describe('saveLanguages', () => {
-  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
@@ -1483,7 +1489,7 @@ describe('saveLanguages', () => {
     expect(await store.get(orcid)).toStrictEqual(languages)
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.languages()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.languages()])(
     'when the key already contains something other than languages',
     async (orcid, value, languages) => {
       const store = new Keyv()
@@ -1503,7 +1509,7 @@ describe('saveLanguages', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.languages()])('when the key is not set', async (orcid, languages) => {
+  test.prop([fc.orcidId(), fc.languages()])('when the key is not set', async (orcid, languages) => {
     const store = new Keyv()
 
     const actual = await _.saveLanguages(
@@ -1519,7 +1525,7 @@ describe('saveLanguages', () => {
     expect(await store.get(orcid)).toStrictEqual(languages)
   })
 
-  test.prop([fc.orcid(), fc.languages(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.languages(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, languages, error) => {
       const store = new Keyv()
@@ -1540,7 +1546,7 @@ describe('saveLanguages', () => {
 })
 
 describe('getContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.contactEmailAddress()])(
+  test.prop([fc.orcidId(), fc.contactEmailAddress()])(
     'when the key contains an email address',
     async (orcid, emailAddress) => {
       const store = new Keyv()
@@ -1556,7 +1562,7 @@ describe('getContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than an email address',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1572,7 +1578,7 @@ describe('getContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getContactEmailAddress(orcid)({
@@ -1584,7 +1590,7 @@ describe('getContactEmailAddress', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1599,7 +1605,7 @@ describe('getContactEmailAddress', () => {
 })
 
 describe('saveContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.contactEmailAddress()])(
+  test.prop([fc.orcidId(), fc.contactEmailAddress()])(
     'when the key contains an email address',
     async (orcid, emailAddress) => {
       const store = new Keyv()
@@ -1619,7 +1625,7 @@ describe('saveContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything(), fc.contactEmailAddress()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.contactEmailAddress()])(
     'when the key already contains something other than an email address',
     async (orcid, value, emailAddress) => {
       const store = new Keyv()
@@ -1639,7 +1645,7 @@ describe('saveContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.contactEmailAddress()])('when the key is not set', async (orcid, emailAddress) => {
+  test.prop([fc.orcidId(), fc.contactEmailAddress()])('when the key is not set', async (orcid, emailAddress) => {
     const store = new Keyv()
 
     const actual = await _.saveContactEmailAddress(
@@ -1655,7 +1661,7 @@ describe('saveContactEmailAddress', () => {
     expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
   })
 
-  test.prop([fc.orcid(), fc.contactEmailAddress(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.contactEmailAddress(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, emailAddress, error) => {
       const store = new Keyv()
@@ -1676,7 +1682,7 @@ describe('saveContactEmailAddress', () => {
 })
 
 describe('getUserOnboarding', () => {
-  test.prop([fc.orcid(), fc.userOnboarding()])(
+  test.prop([fc.orcidId(), fc.userOnboarding()])(
     'when the key contains user onboarding details',
     async (orcid, userOnboarding) => {
       const store = new Keyv()
@@ -1692,7 +1698,7 @@ describe('getUserOnboarding', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.anything()])(
     'when the key contains something other than user onboarding details',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1708,7 +1714,7 @@ describe('getUserOnboarding', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getUserOnboarding(orcid)({
@@ -1720,7 +1726,7 @@ describe('getUserOnboarding', () => {
     expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1735,7 +1741,7 @@ describe('getUserOnboarding', () => {
 })
 
 describe('saveUserOnboarding', () => {
-  test.prop([fc.orcid(), fc.userOnboarding()])(
+  test.prop([fc.orcidId(), fc.userOnboarding()])(
     'when the key contains user onboarding details',
     async (orcid, userOnboarding) => {
       const store = new Keyv()
@@ -1755,7 +1761,7 @@ describe('saveUserOnboarding', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything(), fc.userOnboarding()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.userOnboarding()])(
     'when the key already contains something other than user onboarding details',
     async (orcid, value, userOnboarding) => {
       const store = new Keyv()
@@ -1775,7 +1781,7 @@ describe('saveUserOnboarding', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.userOnboarding()])('when the key is not set', async (orcid, userOnboarding) => {
+  test.prop([fc.orcidId(), fc.userOnboarding()])('when the key is not set', async (orcid, userOnboarding) => {
     const store = new Keyv()
 
     const actual = await _.saveUserOnboarding(
@@ -1791,7 +1797,7 @@ describe('saveUserOnboarding', () => {
     expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
   })
 
-  test.prop([fc.orcid(), fc.userOnboarding(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.userOnboarding(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, userOnboarding, error) => {
       const store = new Keyv()
@@ -1812,7 +1818,7 @@ describe('saveUserOnboarding', () => {
 })
 
 describe('getAvatar', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
+  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
     const store = new Keyv()
     await store.set(orcid, avatar)
 
@@ -1825,7 +1831,7 @@ describe('getAvatar', () => {
     expect(actual).toStrictEqual(E.right(avatar))
   })
 
-  test.prop([fc.orcid(), fc.anything().filter(value => typeof value !== 'string' || !isNonEmptyString(value))])(
+  test.prop([fc.orcidId(), fc.anything().filter(value => typeof value !== 'string' || !isNonEmptyString(value))])(
     'when the key contains something other than an avatar',
     async (orcid, value) => {
       const store = new Keyv()
@@ -1841,7 +1847,7 @@ describe('getAvatar', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
     const actual = await _.getAvatar(orcid)({
@@ -1853,7 +1859,7 @@ describe('getAvatar', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1868,7 +1874,7 @@ describe('getAvatar', () => {
 })
 
 describe('saveAvatar', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
+  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
     const store = new Keyv()
     await store.set(orcid, NonEmptyStringC.encode(avatar))
 
@@ -1885,7 +1891,7 @@ describe('saveAvatar', () => {
     expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
   })
 
-  test.prop([fc.orcid(), fc.anything(), fc.nonEmptyString()])(
+  test.prop([fc.orcidId(), fc.anything(), fc.nonEmptyString()])(
     'when the key already contains something other than an avatar',
     async (orcid, value, avatar) => {
       const store = new Keyv()
@@ -1905,7 +1911,7 @@ describe('saveAvatar', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, avatar) => {
+  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key is not set', async (orcid, avatar) => {
     const store = new Keyv()
 
     const actual = await _.saveAvatar(
@@ -1921,7 +1927,7 @@ describe('saveAvatar', () => {
     expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
   })
 
-  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.nonEmptyString(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, avatar, error) => {
       const store = new Keyv()
@@ -1938,7 +1944,7 @@ describe('saveAvatar', () => {
 })
 
 describe('deleteAvatar', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains a avatar', async (orcid, avatar) => {
+  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains a avatar', async (orcid, avatar) => {
     const store = new Keyv()
     await store.set(orcid, avatar)
 
@@ -1952,9 +1958,25 @@ describe('deleteAvatar', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key contains something other than avatar', async (orcid, value) => {
+  test.prop([fc.orcidId(), fc.anything()])(
+    'when the key contains something other than avatar',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteAvatar(orcid)({
+        avatarStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
     const store = new Keyv()
-    await store.set(orcid, value)
 
     const actual = await _.deleteAvatar(orcid)({
       avatarStore: store,
@@ -1966,20 +1988,7 @@ describe('deleteAvatar', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
-    const store = new Keyv()
-
-    const actual = await _.deleteAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1994,7 +2003,7 @@ describe('deleteAvatar', () => {
 })
 
 describe('getReviewRequest', () => {
-  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest()])(
     'when the key contains a review request',
     async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
@@ -2010,7 +2019,7 @@ describe('getReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.preprintId(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.anything()])(
     'when the key contains something other than a review request',
     async (orcid, preprint, value) => {
       const store = new Keyv()
@@ -2026,7 +2035,7 @@ describe('getReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.preprintId()])('when the key is not found', async (orcid, preprint) => {
+  test.prop([fc.orcidId(), fc.preprintId()])('when the key is not found', async (orcid, preprint) => {
     const store = new Keyv()
 
     const actual = await _.getReviewRequest([orcid, preprint])({
@@ -2038,7 +2047,7 @@ describe('getReviewRequest', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.preprintId(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, preprint, error) => {
       const store = new Keyv()
@@ -2056,7 +2065,7 @@ describe('getReviewRequest', () => {
 })
 
 describe('saveReviewRequest', () => {
-  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest()])(
     'when the key contains a review request',
     async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
@@ -2076,7 +2085,7 @@ describe('saveReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.preprintId(), fc.anything(), fc.reviewRequest()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.anything(), fc.reviewRequest()])(
     'when the key already contains something other than a review request',
     async (orcid, preprint, value, reviewRequest) => {
       const store = new Keyv()
@@ -2096,7 +2105,7 @@ describe('saveReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest()])(
     'when the key is not set',
     async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
@@ -2115,7 +2124,7 @@ describe('saveReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest(), fc.anything()])(
+  test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, preprint, reviewRequest, error) => {
       const store = new Keyv()

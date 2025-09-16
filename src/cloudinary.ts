@@ -19,7 +19,7 @@ import type { EnvFor } from './Fpts.js'
 import type { PublicUrlEnv } from './public-url.js'
 import * as StatusCodes from './StatusCodes.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {
@@ -34,15 +34,15 @@ export interface ReadFileEnv {
 }
 
 export interface GetCloudinaryAvatarEnv {
-  getCloudinaryAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
+  getCloudinaryAvatar: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
 }
 
 export interface SaveCloudinaryAvatarEnv {
-  saveCloudinaryAvatar: (orcid: Orcid, id: NonEmptyString) => TE.TaskEither<'unavailable', void>
+  saveCloudinaryAvatar: (orcid: OrcidId, id: NonEmptyString) => TE.TaskEither<'unavailable', void>
 }
 
 export interface DeleteCloudinaryAvatarEnv {
-  deleteCloudinaryAvatar: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+  deleteCloudinaryAvatar: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
 }
 
 const JsonD = {
@@ -79,7 +79,7 @@ const readFile = (path: string) =>
     R.map(({ readFile }) => readFile(path)),
   )
 
-const getCloudinaryAvatar = (orcid: Orcid) =>
+const getCloudinaryAvatar = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetCloudinaryAvatarEnv>(),
     RTE.chainTaskEitherK(({ getCloudinaryAvatar }) => getCloudinaryAvatar(orcid)),
@@ -95,13 +95,13 @@ const maybeGetCloudinaryAvatar = flow(
   ),
 )
 
-const saveCloudinaryAvatar = (orcid: Orcid, id: NonEmptyString) =>
+const saveCloudinaryAvatar = (orcid: OrcidId, id: NonEmptyString) =>
   pipe(
     RTE.ask<SaveCloudinaryAvatarEnv>(),
     RTE.chainTaskEitherK(({ saveCloudinaryAvatar }) => saveCloudinaryAvatar(orcid, id)),
   )
 
-const deleteCloudinaryAvatar = (orcid: Orcid) =>
+const deleteCloudinaryAvatar = (orcid: OrcidId) =>
   pipe(
     RTE.ask<DeleteCloudinaryAvatarEnv>(),
     RTE.chainTaskEitherK(({ deleteCloudinaryAvatar }) => deleteCloudinaryAvatar(orcid)),
@@ -133,7 +133,7 @@ export const getAvatarFromCloudinary = flow(
 )
 
 export const saveAvatarOnCloudinary = (
-  orcid: Orcid,
+  orcid: OrcidId,
   avatar: { path: string; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
 ) =>
   pipe(
@@ -195,7 +195,7 @@ export const saveAvatarOnCloudinary = (
     RTE.bimap(() => 'unavailable' as const, Function.constVoid),
   )
 
-export const removeAvatarFromCloudinary = (orcid: Orcid) =>
+export const removeAvatarFromCloudinary = (orcid: OrcidId) =>
   pipe(
     RTE.Do,
     RTE.apS('publicId', getCloudinaryAvatar(orcid)),

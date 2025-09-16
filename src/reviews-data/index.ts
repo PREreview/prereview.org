@@ -14,7 +14,7 @@ import type { ScietyListEnv } from '../sciety-list/index.js'
 import type { ClubId } from '../types/club-id.js'
 import type { DomainId } from '../types/domain.js'
 import type { FieldId } from '../types/field.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import { isPseudonym } from '../types/Pseudonym.js'
 import type { SubfieldId } from '../types/subfield.js'
 
@@ -22,7 +22,7 @@ export interface Prereview {
   preprint: PreprintId
   createdAt: Temporal.PlainDate
   doi: Doi
-  authors: ReadonlyArray<{ name: string; orcid?: Orcid }>
+  authors: ReadonlyArray<{ name: string; orcid?: OrcidId }>
   language?: LanguageCode
   type: 'full' | 'structured'
   club?: ClubId

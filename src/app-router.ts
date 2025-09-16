@@ -61,7 +61,7 @@ import {
 import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
 import type { AddToSessionEnv, PopFromSessionEnv } from './session.js'
 import type { SlackApiEnv, SlackApiUpdateEnv } from './slack.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 import type { GenerateUuid, GenerateUuidEnv } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
 import type { User } from './user.js'
@@ -135,7 +135,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getPseudonym: withEnv(
-            (user: { orcid: Orcid; name: string }) =>
+            (user: { orcid: OrcidId; name: string }) =>
               pipe(
                 getPseudonymFromLegacyPrereview(user.orcid),
                 RTE.orElse(error =>

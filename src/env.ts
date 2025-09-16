@@ -5,7 +5,7 @@ import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { v4 } from 'uuid-ts'
 import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import { isOrcid } from './types/Orcid.js'
+import { isOrcidId } from './types/OrcidId.js'
 
 export type EnvVars = D.TypeOf<typeof EnvD>
 
@@ -32,7 +32,7 @@ const IntD = pipe(
   }),
 )
 
-const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+const OrcidD = D.fromRefinement(isOrcidId, 'ORCID')
 
 const UrlD = pipe(
   D.string,

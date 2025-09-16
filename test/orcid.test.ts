@@ -6,7 +6,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as StatusCodes from '../src/StatusCodes.js'
 import * as _ from '../src/orcid.js'
-import { Orcid } from '../src/types/Orcid.js'
+import { OrcidId } from '../src/types/OrcidId.js'
 import * as fc from './fc.js'
 
 describe('getNameFromOrcid', () => {
@@ -14,7 +14,7 @@ describe('getNameFromOrcid', () => {
     test.prop(
       [
         fc.origin(),
-        fc.orcid(),
+        fc.orcidId(),
         fc
           .tuple(fc.nonEmptyString(), fc.nonEmptyString(), fc.nonEmptyString())
           .map(([creditName, givenName, familyName]) => [creditName, givenName, familyName, creditName.trim()]),
@@ -23,12 +23,12 @@ describe('getNameFromOrcid', () => {
         examples: [
           [
             new URL('https://pub.orcid.org'),
-            Orcid('0000-0002-1825-0097'),
+            OrcidId('0000-0002-1825-0097'),
             ['J. S. Carberry', 'Josiah', 'Carberry', 'J. S. Carberry'],
           ],
           [
             new URL('https://pub.orcid.org'),
-            Orcid('0000-0002-1825-0097'),
+            OrcidId('0000-0002-1825-0097'),
             [' J. S. Carberry ', ' Josiah ', ' Carberry ', 'J. S. Carberry'],
           ],
         ],
@@ -55,17 +55,17 @@ describe('getNameFromOrcid', () => {
     test.prop(
       [
         fc.origin(),
-        fc.orcid(),
+        fc.orcidId(),
         fc
           .tuple(fc.nonEmptyString(), fc.nonEmptyString())
           .map(([givenName, familyName]) => [givenName, familyName, `${givenName.trim()} ${familyName.trim()}`]),
       ],
       {
         examples: [
-          [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), ['Josiah', 'Carberry', 'Josiah Carberry']],
+          [new URL('https://pub.orcid.org'), OrcidId('0000-0002-1825-0097'), ['Josiah', 'Carberry', 'Josiah Carberry']],
           [
             new URL('https://pub.orcid.org'),
-            Orcid('0000-0002-1825-0097'),
+            OrcidId('0000-0002-1825-0097'),
             [' Josiah ', ' Carberry ', 'Josiah Carberry'],
           ],
         ],
@@ -85,10 +85,10 @@ describe('getNameFromOrcid', () => {
       expect(actual).toStrictEqual(E.right(expected))
     })
 
-    test.prop([fc.origin(), fc.orcid(), fc.nonEmptyString().map(givenName => [givenName, givenName.trim()])], {
+    test.prop([fc.origin(), fc.orcidId(), fc.nonEmptyString().map(givenName => [givenName, givenName.trim()])], {
       examples: [
-        [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), ['Josiah', 'Josiah']],
-        [new URL('https://pub.orcid.org'), Orcid('0000-0002-1825-0097'), [' Josiah ', 'Josiah']],
+        [new URL('https://pub.orcid.org'), OrcidId('0000-0002-1825-0097'), ['Josiah', 'Josiah']],
+        [new URL('https://pub.orcid.org'), OrcidId('0000-0002-1825-0097'), [' Josiah ', 'Josiah']],
       ],
     })('without a family name', async (url, orcid, [givenName, expected]) => {
       const actual = await _.getNameFromOrcid(orcid)({
@@ -103,7 +103,7 @@ describe('getNameFromOrcid', () => {
       expect(actual).toStrictEqual(E.right(expected))
     })
 
-    test.prop([fc.origin(), fc.orcid()])('without a name', async (url, orcid) => {
+    test.prop([fc.origin(), fc.orcidId()])('without a name', async (url, orcid) => {
       const actual = await _.getNameFromOrcid(orcid)({
         clock: SystemClock,
         fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
@@ -117,7 +117,7 @@ describe('getNameFromOrcid', () => {
     })
   })
 
-  test.prop([fc.origin(), fc.orcid(), fc.constantFrom(9018, 9044)])(
+  test.prop([fc.origin(), fc.orcidId(), fc.constantFrom(9018, 9044)])(
     'when the profile is locked or deactivated',
     async (url, orcid, errorCode) => {
       const actual = await _.getNameFromOrcid(orcid)({
@@ -134,7 +134,7 @@ describe('getNameFromOrcid', () => {
     },
   )
 
-  test.prop([fc.origin(), fc.orcid(), fc.string()])('uses an API token', async (url, orcid, token) => {
+  test.prop([fc.origin(), fc.orcidId(), fc.string()])('uses an API token', async (url, orcid, token) => {
     const fetch = fetchMock
       .sandbox()
       .getOnce(
@@ -155,7 +155,7 @@ describe('getNameFromOrcid', () => {
 
   test.prop([
     fc.origin(),
-    fc.orcid(),
+    fc.orcidId(),
     fc.oneof(
       fc.record({
         status: fc
@@ -181,7 +181,7 @@ describe('getNameFromOrcid', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.origin(), fc.orcid()])('when the network fails', async (url, orcid) => {
+  test.prop([fc.origin(), fc.orcidId()])('when the network fails', async (url, orcid) => {
     const actual = await _.getNameFromOrcid(orcid)({
       clock: SystemClock,
       fetch: () => Promise.reject('network error'),

@@ -27,7 +27,7 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
-import type { Orcid } from '../../types/Orcid.js'
+import type { OrcidId } from '../../types/OrcidId.js'
 import { isPseudonym } from '../../types/Pseudonym.js'
 import type { User } from '../../user.js'
 import type { CompletedForm } from '../completed-form.js'
@@ -370,7 +370,7 @@ export function publishForm(
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
     return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a

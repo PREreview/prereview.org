@@ -3,7 +3,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface SlackUserId {
   readonly accessToken: NonEmptyString
@@ -12,15 +12,15 @@ export interface SlackUserId {
 }
 
 export interface GetSlackUserIdEnv {
-  getSlackUserId: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUserId>
+  getSlackUserId: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', SlackUserId>
 }
 
 export interface EditSlackUserIdEnv {
-  saveSlackUserId: (orcid: Orcid, slackUserId: SlackUserId) => TE.TaskEither<'unavailable', void>
+  saveSlackUserId: (orcid: OrcidId, slackUserId: SlackUserId) => TE.TaskEither<'unavailable', void>
 }
 
 export interface DeleteSlackUserIdEnv {
-  deleteSlackUserId: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+  deleteSlackUserId: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
 }
 
 const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
@@ -32,19 +32,19 @@ export const SlackUserIdC = C.struct({
   userId: NonEmptyStringC,
 }) satisfies C.Codec<unknown, unknown, SlackUserId>
 
-export const getSlackUserId = (orcid: Orcid) =>
+export const getSlackUserId = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetSlackUserIdEnv>(),
     RTE.chainTaskEitherK(({ getSlackUserId }) => getSlackUserId(orcid)),
   )
 
 export const saveSlackUserId = (
-  orcid: Orcid,
+  orcid: OrcidId,
   slackUserId: SlackUserId,
 ): RTE.ReaderTaskEither<EditSlackUserIdEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveSlackUserId }) => saveSlackUserId(orcid, slackUserId)))
 
-export const deleteSlackUserId = (orcid: Orcid) =>
+export const deleteSlackUserId = (orcid: OrcidId) =>
   pipe(
     RTE.ask<DeleteSlackUserIdEnv>(),
     RTE.chainTaskEitherK(({ deleteSlackUserId }) => deleteSlackUserId(orcid)),

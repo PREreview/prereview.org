@@ -4,7 +4,7 @@ import { DeprecatedLoggerEnv } from '../Context.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.js'
 import { getNameFromOrcid, OrcidApi } from '../orcid.js'
-import type { Orcid } from '../types/index.js'
+import type { OrcidId } from '../types/index.js'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.js'
 
 export * from './Persona.js'
@@ -14,15 +14,15 @@ export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{
 export class Personas extends Context.Tag('Personas')<
   Personas,
   {
-    getPublicPersona: (orcidId: Orcid.Orcid) => Effect.Effect<PublicPersona, UnableToGetPersona>
-    getPseudonymPersona: (orcidId: Orcid.Orcid) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
+    getPublicPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PublicPersona, UnableToGetPersona>
+    getPseudonymPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
   }
 >() {}
 
 export const { getPublicPersona, getPseudonymPersona } = Effect.serviceFunctions(Personas)
 
 export const getPersona = pipe(
-  Match.type<{ orcidId: Orcid.Orcid; persona: 'public' | 'pseudonym' }>(),
+  Match.type<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>(),
   Match.withReturnType<Effect.Effect<Persona, UnableToGetPersona, Personas>>(),
   Match.when({ persona: 'public' }, ({ orcidId }) => getPublicPersona(orcidId)),
   Match.when({ persona: 'pseudonym' }, ({ orcidId }) => getPseudonymPersona(orcidId)),

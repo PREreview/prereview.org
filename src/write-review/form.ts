@@ -30,7 +30,7 @@ import {
 } from '../routes.js'
 import { EmailAddressC } from '../types/EmailAddress.js'
 import { NonEmptyStringC } from '../types/NonEmptyString.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export type Form = C.TypeOf<typeof FormC>
 
@@ -38,7 +38,7 @@ export interface FormStoreEnv {
   formStore: Keyv
 }
 
-export function formKey(user: Orcid, preprint: PreprintId) {
+export function formKey(user: OrcidId, preprint: PreprintId) {
   return match(preprint)
     .with({ _tag: 'PhilsciPreprintId' }, preprint => `${user}_philsci_${preprint.value}`)
     .with({ value: P.when(isDoi) }, preprint => `${user}_${preprint.value}`)
@@ -46,7 +46,7 @@ export function formKey(user: Orcid, preprint: PreprintId) {
 }
 
 export function getForm(
-  user: Orcid,
+  user: OrcidId,
   preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
   return flow(
@@ -72,7 +72,7 @@ export function updateForm(originalForm: Form): (newForm: Form) => Form {
 }
 
 export function saveForm(
-  user: Orcid,
+  user: OrcidId,
   preprint: PreprintId,
 ): (form: Form) => ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return form =>
@@ -85,7 +85,7 @@ export function saveForm(
 }
 
 export function deleteForm(
-  user: Orcid,
+  user: OrcidId,
   preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return TE.tryCatchK(

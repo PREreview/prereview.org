@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, flow, identity, Match, pipe, Schema, Struct } from 'effect'
 import * as StatusCodes from '../../StatusCodes.js'
-import { Doi, Orcid, Temporal } from '../../types/index.js'
+import { Doi, OrcidId, Temporal } from '../../types/index.js'
 
 const PublicationDateSchema = Schema.transform(
   Schema.Struct({
@@ -45,7 +45,7 @@ export class Record extends Schema.Class<Record>('Record')({
         }),
       ),
       researcher_id_list: Schema.optionalWith(
-        Schema.Array(Schema.Struct({ id_code: Orcid.OrcidFromUrlSchema, type: Schema.Literal('ORCID') })),
+        Schema.Array(Schema.Struct({ id_code: OrcidId.OrcidIdFromUrlSchema, type: Schema.Literal('ORCID') })),
         { default: Array.empty },
       ),
     }),

@@ -12,7 +12,7 @@ import {
   authorInviteStartMatch,
 } from '../../src/routes.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
-import { Eq as eqOrcid } from '../../src/types/Orcid.js'
+import { Eq as eqOrcid } from '../../src/types/OrcidId.js'
 import * as fc from '../fc.js'
 import { shouldNotBeCalled } from '../should-not-be-called.js'
 

@@ -11,7 +11,7 @@ import * as StatusCodes from '../../StatusCodes.js'
 import { detectLanguageFrom } from '../../detect-language.js'
 import { timeoutRequest, useStaleCache } from '../../fetch.js'
 import { sanitizeHtml } from '../../html.js'
-import { Orcid } from '../../types/index.js'
+import { OrcidId } from '../../types/index.js'
 import * as Preprint from '../Preprint.js'
 import {
   AfricarxivFigsharePreprintId,
@@ -154,7 +154,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
 const findOrcid = flow(
   (person: Extract<Work['creators'][number], { nameIdentifiers: ReadonlyArray<unknown> }>) => person.nameIdentifiers,
   Array.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
-  Option.flatMap(({ nameIdentifier }) => Orcid.parse(nameIdentifier)),
+  Option.flatMap(({ nameIdentifier }) => OrcidId.parse(nameIdentifier)),
   Option.getOrUndefined,
 )
 

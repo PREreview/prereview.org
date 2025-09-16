@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
 import { Html, rawHtml } from '../html.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../types/index.js'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../types/index.js'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,
@@ -10,7 +10,7 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
 
 export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,
-  authorId: Orcid.OrcidSchema,
+  authorId: OrcidId.OrcidIdSchema,
   commentId: Uuid.UuidSchema,
 }) {}
 

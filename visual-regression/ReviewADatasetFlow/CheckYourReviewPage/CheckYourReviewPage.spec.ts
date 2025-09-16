@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.js'
-import { NonEmptyString, Orcid, Uuid } from '../../../src/types/index.js'
+import { NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.js'
 
 import { expect, test } from '../../base.js'
 
@@ -22,7 +22,7 @@ const review = {
   author: Option.some(
     new Personas.PublicPersona({
       name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-      orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+      orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     }),
   ),
   qualityRating: Option.some('excellent'),

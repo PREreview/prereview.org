@@ -4,7 +4,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface OrcidToken {
   readonly accessToken: NonEmptyString
@@ -12,15 +12,15 @@ export interface OrcidToken {
 }
 
 export interface GetOrcidTokenEnv {
-  getOrcidToken: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', OrcidToken>
+  getOrcidToken: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', OrcidToken>
 }
 
 export interface EditOrcidTokenEnv {
-  saveOrcidToken: (orcid: Orcid, orcidToken: OrcidToken) => TE.TaskEither<'unavailable', void>
+  saveOrcidToken: (orcid: OrcidId, orcidToken: OrcidToken) => TE.TaskEither<'unavailable', void>
 }
 
 export interface DeleteOrcidTokenEnv {
-  deleteOrcidToken: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+  deleteOrcidToken: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
 }
 
 const HashSetC = <O, A>(item: C.Codec<unknown, O, A>) =>
@@ -31,7 +31,7 @@ export const OrcidTokenC = C.struct({
   scopes: HashSetC(NonEmptyStringC),
 }) satisfies C.Codec<unknown, unknown, OrcidToken>
 
-export const getOrcidToken = (orcid: Orcid) =>
+export const getOrcidToken = (orcid: OrcidId) =>
   pipe(
     RTE.ask<GetOrcidTokenEnv>(),
     RTE.chainTaskEitherK(({ getOrcidToken }) => getOrcidToken(orcid)),
@@ -48,12 +48,12 @@ export const maybeGetOrcidToken = flow(
 )
 
 export const saveOrcidToken = (
-  orcid: Orcid,
+  orcid: OrcidId,
   orcidToken: OrcidToken,
 ): RTE.ReaderTaskEither<EditOrcidTokenEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveOrcidToken }) => saveOrcidToken(orcid, orcidToken)))
 
-export const deleteOrcidToken = (orcid: Orcid) =>
+export const deleteOrcidToken = (orcid: OrcidId) =>
   pipe(
     RTE.ask<DeleteOrcidTokenEnv>(),
     RTE.chainTaskEitherK(({ deleteOrcidToken }) => deleteOrcidToken(orcid)),

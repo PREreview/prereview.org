@@ -5,13 +5,13 @@ import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
 import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, Orcid, Uuid } from '../../../src/types/index.js'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
 import * as fc from '../../fc.js'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
-const authorId = Orcid.Orcid('0000-0002-1825-0097')
-const authorId2 = Orcid.Orcid('0000-0002-6109-0367')
+const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
+const authorId2 = OrcidId.OrcidId('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answered1 = new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
@@ -35,7 +35,7 @@ describe('query', () => {
     [
       fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))),
       fc.uuid(),
-      fc.orcid(),
+      fc.orcidId(),
     ],
     {
       examples: [
@@ -54,9 +54,9 @@ describe('query', () => {
   test.prop(
     [
       fc
-        .tuple(fc.datasetReviewWasStarted(), fc.orcid())
+        .tuple(fc.datasetReviewWasStarted(), fc.orcidId())
         .map(([event, userId]) =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             Array.make(event),
             event.datasetReviewId,
             userId,
@@ -127,7 +127,7 @@ describe('query', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -158,7 +158,7 @@ describe('query', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, Orcid.Orcid]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,

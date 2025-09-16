@@ -1,12 +1,12 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.js'
-import type { Orcid, Uuid } from '../../types/index.js'
+import type { OrcidId, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 
 export interface Command {
   readonly persona: Events.PersonaForDatasetReviewWasChosen['persona']
   readonly datasetReviewId: Uuid.Uuid
-  readonly userId: Orcid.Orcid
+  readonly userId: OrcidId.OrcidId
 }
 
 export type Error =
@@ -18,16 +18,16 @@ export type State = NotStarted | NotChosen | HasBeenChosen | IsBeingPublished | 
 
 export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
-export class NotChosen extends Data.TaggedClass('NotChosen')<{ authorId: Orcid.Orcid }> {}
+export class NotChosen extends Data.TaggedClass('NotChosen')<{ authorId: OrcidId.OrcidId }> {}
 
 export class HasBeenChosen extends Data.TaggedClass('HasBeenChosen')<{
   persona: Events.PersonaForDatasetReviewWasChosen['persona']
-  authorId: Orcid.Orcid
+  authorId: OrcidId.OrcidId
 }> {}
 
-export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ authorId: Orcid.Orcid }> {}
+export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ authorId: OrcidId.OrcidId }> {}
 
-export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: Orcid.Orcid }> {}
+export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: OrcidId.OrcidId }> {}
 
 export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
   types: [

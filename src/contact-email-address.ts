@@ -7,7 +7,7 @@ import type { Uuid } from 'uuid-ts'
 import type { Locale } from './Context.js'
 import type { IndeterminatePreprintId } from './Preprints/index.js'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 import { UuidC } from './types/uuid.js'
 import type { User } from './user.js'
 
@@ -17,12 +17,14 @@ export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactE
 
 export class GetContactEmailAddress extends Context.Tag('GetContactEmailAddress')<
   GetContactEmailAddress,
-  (orcid: Orcid) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
+  (
+    orcid: OrcidId,
+  ) => Effect.Effect<ContactEmailAddress, ContactEmailAddressIsNotFound | ContactEmailAddressIsUnavailable>
 >() {}
 
 export class SaveContactEmailAddress extends Context.Tag('SaveContactEmailAddress')<
   SaveContactEmailAddress,
-  (orcid: Orcid, ContactEmailAddress: ContactEmailAddress) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
+  (orcid: OrcidId, ContactEmailAddress: ContactEmailAddress) => Effect.Effect<void, ContactEmailAddressIsUnavailable>
 >() {}
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
@@ -37,12 +39,12 @@ export class UnverifiedContactEmailAddress extends Data.TaggedClass('UnverifiedC
 }> {}
 
 export interface GetContactEmailAddressEnv {
-  getContactEmailAddress: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', ContactEmailAddress>
+  getContactEmailAddress: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', ContactEmailAddress>
 }
 
 export interface SaveContactEmailAddressEnv {
   saveContactEmailAddress: (
-    orcid: Orcid,
+    orcid: OrcidId,
     ContactEmailAddress: ContactEmailAddress,
   ) => TE.TaskEither<'unavailable', void>
 }
@@ -118,7 +120,7 @@ export const ContactEmailAddressC = pipe(
   ),
 ) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
 
-export const getContactEmailAddress = (orcid: Orcid) =>
+export const getContactEmailAddress = (orcid: OrcidId) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ getContactEmailAddress }: GetContactEmailAddressEnv) => getContactEmailAddress(orcid)),
   )
@@ -134,7 +136,7 @@ export const maybeGetContactEmailAddress = flow(
 )
 
 export const saveContactEmailAddress = (
-  orcid: Orcid,
+  orcid: OrcidId,
   emailAddress: ContactEmailAddress,
 ): RTE.ReaderTaskEither<SaveContactEmailAddressEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(

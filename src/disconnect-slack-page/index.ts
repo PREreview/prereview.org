@@ -9,7 +9,7 @@ import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectRespons
 import { disconnectSlackMatch, myDetailsMatch } from '../routes.js'
 import { type DeleteSlackUserIdEnv, deleteSlackUserId } from '../slack-user-id.js'
 import { type IsSlackUserEnv, isSlackUser } from '../slack-user.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { User } from '../user.js'
 import { disconnectSlackPage } from './disconnect-slack-page.js'
 import { failureMessage } from './failure-message.js'
@@ -55,7 +55,7 @@ export const disconnectSlack = ({
     ),
   )
 
-const handleDisconnectSlack = ({ locale, orcid }: { locale: SupportedLocale; orcid: Orcid }) =>
+const handleDisconnectSlack = ({ locale, orcid }: { locale: SupportedLocale; orcid: OrcidId }) =>
   pipe(
     deleteSlackUserId(orcid),
     RTE.matchW(

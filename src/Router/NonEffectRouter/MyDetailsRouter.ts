@@ -44,7 +44,7 @@ import * as Routes from '../../routes.js'
 import type { SlackUserId } from '../../slack-user-id.js'
 import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.js'
 import { Uuid } from '../../types/index.js'
-import type { Orcid } from '../../types/Orcid.js'
+import type { OrcidId } from '../../types/OrcidId.js'
 import type * as Response from '../Response.js'
 import type { Env } from './index.js'
 
@@ -302,7 +302,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         deleteSlackUserId: withEnv(
-          (orcid: Orcid) =>
+          (orcid: OrcidId) =>
             pipe(
               RTE.of(orcid),
               RTE.chainFirst(
@@ -443,7 +443,7 @@ export const MyDetailsRouter = pipe(
           ...env.logger,
         }),
         saveSlackUserId: withEnv(
-          (orcid: Orcid, slackUser: SlackUserId) =>
+          (orcid: OrcidId, slackUser: SlackUserId) =>
             pipe(
               Keyv.saveSlackUserId(orcid, slackUser),
               RTE.chainFirstW(() => addOrcidToSlackProfile(slackUser, orcid)),

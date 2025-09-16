@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { authorInvite } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
@@ -10,6 +9,7 @@ import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { Prereview } from '../../src/Prereview.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -22,12 +22,12 @@ test('content looks right', async ({ showPage }) => {
         new Prereview({
           authors: {
             named: [
-              { name: 'Jingfang Hao', orcid: Orcid('0000-0003-4436-3420') },
-              { name: 'Pierrick Bru', orcid: Orcid('0000-0001-5854-0905') },
-              { name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') },
-              { name: 'Aurélie Crepin', orcid: Orcid('0000-0002-4754-6823') },
-              { name: 'Jack Forsman', orcid: Orcid('0000-0002-5111-8901') },
-              { name: 'Domenica Farci', orcid: Orcid('0000-0002-3691-2699') },
+              { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
+              { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
+              { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
+              { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
+              { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
+              { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
             ],
             anonymous: 2,
           },
@@ -74,7 +74,7 @@ test('content looks right when logged in', async ({ showPage }) => {
     locale: DefaultLocale,
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
   })({
@@ -85,12 +85,12 @@ test('content looks right when logged in', async ({ showPage }) => {
         new Prereview({
           authors: {
             named: [
-              { name: 'Jingfang Hao', orcid: Orcid('0000-0003-4436-3420') },
-              { name: 'Pierrick Bru', orcid: Orcid('0000-0001-5854-0905') },
-              { name: 'Alizée Malnoë', orcid: Orcid('0000-0002-8777-3174') },
-              { name: 'Aurélie Crepin', orcid: Orcid('0000-0002-4754-6823') },
-              { name: 'Jack Forsman', orcid: Orcid('0000-0002-5111-8901') },
-              { name: 'Domenica Farci', orcid: Orcid('0000-0002-3691-2699') },
+              { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
+              { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
+              { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
+              { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
+              { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
+              { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
             ],
             anonymous: 0,
           },

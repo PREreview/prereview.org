@@ -3,8 +3,8 @@ import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import { NonEmptyString, Orcid, Pseudonym } from './types/index.js'
-import { isOrcid } from './types/Orcid.js'
+import { NonEmptyString, OrcidId, Pseudonym } from './types/index.js'
+import { isOrcidId } from './types/OrcidId.js'
 
 export type User = C.TypeOf<typeof UserC>
 
@@ -12,7 +12,7 @@ export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
 export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
 
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 export const UserC = C.struct({
   name: NonEmptyString.NonEmptyStringC,
@@ -22,7 +22,7 @@ export const UserC = C.struct({
 
 export const UserSchema = Schema.Struct({
   name: NonEmptyString.NonEmptyStringSchema,
-  orcid: Orcid.OrcidSchema,
+  orcid: OrcidId.OrcidIdSchema,
   pseudonym: Pseudonym.PseudonymSchema,
 })
 

@@ -1,18 +1,18 @@
 import { Data, Function } from 'effect'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from './OrcidId.js'
 import type { Pseudonym } from './Pseudonym.js'
 
 export type ProfileId = OrcidProfileId | PseudonymProfileId
 
 export class OrcidProfileId extends Data.TaggedClass('OrcidProfileId')<{
-  orcid: Orcid
+  orcid: OrcidId
 }> {}
 
 export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
   pseudonym: Pseudonym
 }> {}
 
-export const forOrcid = (orcid: Orcid) => new OrcidProfileId({ orcid })
+export const forOrcid = (orcid: OrcidId) => new OrcidProfileId({ orcid })
 
 export const forPseudonym = (pseudonym: Pseudonym) => new PseudonymProfileId({ pseudonym })
 

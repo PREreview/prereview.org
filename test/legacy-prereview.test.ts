@@ -233,7 +233,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
 })
 
 describe('createUserOnLegacyPrereview', () => {
-  test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.pseudonym()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.pseudonym()])(
     'when the user can be created',
     async (orcid, name, app, key, url, update, pseudonym) => {
       const fetch = fetchMock.sandbox().postOnce(
@@ -255,7 +255,7 @@ describe('createUserOnLegacyPrereview', () => {
   )
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.string(),
     fc.string(),
     fc.string(),
@@ -282,7 +282,7 @@ describe('createUserOnLegacyPrereview', () => {
   })
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.string(),
     fc.string(),
     fc.string(),
@@ -308,7 +308,7 @@ describe('createUserOnLegacyPrereview', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
     'when fetch throws an error',
     async (orcid, name, app, key, url, update, error) => {
       const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
@@ -323,7 +323,7 @@ describe('createUserOnLegacyPrereview', () => {
 
 describe('getPseudonymFromLegacyPrereview', () => {
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.string(),
     fc.string(),
     fc.origin(),
@@ -362,7 +362,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
   })
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.string(),
     fc.string(),
     fc.origin(),
@@ -380,7 +380,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (orcid, app, key, url, update) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, StatusCodes.NotFound)
@@ -395,7 +395,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
   )
 
   test.prop([
-    fc.orcid(),
+    fc.orcidId(),
     fc.string(),
     fc.string(),
     fc.origin(),
@@ -413,7 +413,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
     'when fetch throws an error',
     async (orcid, app, key, url, update, error) => {
       const actual = await _.getPseudonymFromLegacyPrereview(orcid)({

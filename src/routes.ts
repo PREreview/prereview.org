@@ -12,7 +12,7 @@ import { ClubIdC } from './types/club-id.js'
 import { isFieldId } from './types/field.js'
 import { ProfileId, Uuid } from './types/index.js'
 import { NonEmptyStringC } from './types/NonEmptyString.js'
-import { isOrcid } from './types/Orcid.js'
+import { isOrcidId } from './types/OrcidId.js'
 import { PseudonymC } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 
@@ -249,7 +249,7 @@ const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
 const LanguageC = pipe(C.string, C.refine(iso6391.validate, 'LanguageCode'))
 
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 const OrcidProfileIdC = pipe(
   OrcidC,

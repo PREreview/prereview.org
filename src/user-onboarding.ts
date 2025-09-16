@@ -2,7 +2,7 @@ import { Context, flow } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface UserOnboarding {
   readonly seenMyDetailsPage: boolean
@@ -14,11 +14,11 @@ export class UserOnboardingService extends Context.Tag('UserOnboardingService')<
 >() {}
 
 export interface GetUserOnboardingEnv {
-  getUserOnboarding: (orcid: Orcid) => TE.TaskEither<'unavailable', UserOnboarding>
+  getUserOnboarding: (orcid: OrcidId) => TE.TaskEither<'unavailable', UserOnboarding>
 }
 
 export interface SaveUserOnboardingEnv {
-  saveUserOnboarding: (orcid: Orcid, userOnboarding: UserOnboarding) => TE.TaskEither<'unavailable', void>
+  saveUserOnboarding: (orcid: OrcidId, userOnboarding: UserOnboarding) => TE.TaskEither<'unavailable', void>
 }
 
 export const UserOnboardingC = C.struct({
@@ -26,7 +26,7 @@ export const UserOnboardingC = C.struct({
 }) satisfies C.Codec<unknown, unknown, UserOnboarding>
 
 export const getUserOnboarding = (
-  orcid: Orcid,
+  orcid: OrcidId,
 ): RTE.ReaderTaskEither<GetUserOnboardingEnv, 'unavailable', UserOnboarding> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getUserOnboarding }) => getUserOnboarding(orcid)))
 
@@ -36,7 +36,7 @@ export const maybeGetUserOnboarding = flow(
 )
 
 export const saveUserOnboarding = (
-  orcid: Orcid,
+  orcid: OrcidId,
   userOnboarding: UserOnboarding,
 ): RTE.ReaderTaskEither<SaveUserOnboardingEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveUserOnboarding }) => saveUserOnboarding(orcid, userOnboarding)))

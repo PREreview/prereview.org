@@ -20,7 +20,7 @@ import {
 } from './Preprints/index.js'
 import * as StatusCodes from './StatusCodes.js'
 import { ProfileId } from './types/index.js'
-import { type Orcid, isOrcid } from './types/Orcid.js'
+import { type OrcidId, isOrcidId } from './types/OrcidId.js'
 import { PseudonymC, isPseudonym } from './types/Pseudonym.js'
 import { UuidC } from './types/uuid.js'
 import type { NewPrereview } from './write-review/index.js'
@@ -47,7 +47,7 @@ const JsonD = {
     ),
 }
 
-const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+const OrcidD = D.fromRefinement(isOrcidId, 'ORCID')
 
 const InstantD = pipe(
   D.string,
@@ -224,7 +224,7 @@ export const getProfileIdFromLegacyPreviewUuid: (
   ),
 )
 
-export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
+export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: OrcidId; name: string }) =>
   pipe(
     RTE.fromReader(legacyPrereviewUrl('users')),
     RTE.chainReaderK(
@@ -241,7 +241,7 @@ export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; nam
     RTE.mapLeft(() => 'unavailable' as const),
   )
 
-export const getPseudonymFromLegacyPrereview = (orcid: Orcid) =>
+export const getPseudonymFromLegacyPrereview = (orcid: OrcidId) =>
   pipe(
     RTE.fromReader(legacyPrereviewUrl(`users/${orcid}`)),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),

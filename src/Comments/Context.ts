@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type Option } from 'effect'
 import type { Html } from '../html.js'
 import type { NonEmptyString, Uuid } from '../types/index.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { CommentCommand } from './Commands.js'
 import type { CommentError } from './Errors.js'
 import type * as Queries from './Queries.js'
@@ -38,7 +38,7 @@ export class CreateRecordOnZenodoForComment extends Context.Tag('CreateRecordOnZ
 >() {}
 
 export interface InputForCommentZenodoRecord {
-  readonly authorId: Orcid
+  readonly authorId: OrcidId
   readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   readonly comment: Html
   readonly persona: 'public' | 'pseudonym'
@@ -47,7 +47,7 @@ export interface InputForCommentZenodoRecord {
 
 export class DoesUserHaveAVerifiedEmailAddress extends Context.Tag('DoesUserHaveAVerifiedEmailAddress')<
   DoesUserHaveAVerifiedEmailAddress,
-  (orcid: Orcid) => Effect.Effect<boolean, UnableToQuery>
+  (orcid: OrcidId) => Effect.Effect<boolean, UnableToQuery>
 >() {}
 
 export class PublishCommentOnZenodo extends Context.Tag('PublishCommentOnZenodo')<

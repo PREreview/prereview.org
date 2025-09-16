@@ -4,7 +4,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export interface ResearchInterests {
   readonly value: NonEmptyString
@@ -12,12 +12,12 @@ export interface ResearchInterests {
 }
 
 export interface GetResearchInterestsEnv {
-  getResearchInterests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', ResearchInterests>
+  getResearchInterests: (orcid: OrcidId) => TE.TaskEither<'not-found' | 'unavailable', ResearchInterests>
 }
 
 export interface EditResearchInterestsEnv extends GetResearchInterestsEnv {
-  deleteResearchInterests: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-  saveResearchInterests: (orcid: Orcid, researchInterests: ResearchInterests) => TE.TaskEither<'unavailable', void>
+  deleteResearchInterests: (orcid: OrcidId) => TE.TaskEither<'unavailable', void>
+  saveResearchInterests: (orcid: OrcidId, researchInterests: ResearchInterests) => TE.TaskEither<'unavailable', void>
 }
 
 export const ResearchInterestsC = C.struct({
@@ -26,7 +26,7 @@ export const ResearchInterestsC = C.struct({
 }) satisfies C.Codec<unknown, unknown, ResearchInterests>
 
 export const getResearchInterests = (
-  orcid: Orcid,
+  orcid: OrcidId,
 ): RTE.ReaderTaskEither<GetResearchInterestsEnv, 'not-found' | 'unavailable', ResearchInterests> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getResearchInterests }) => getResearchInterests(orcid)))
 
@@ -40,13 +40,13 @@ export const maybeGetResearchInterests = flow(
   ),
 )
 
-export const deleteResearchInterests = (orcid: Orcid) =>
+export const deleteResearchInterests = (orcid: OrcidId) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ deleteResearchInterests }: EditResearchInterestsEnv) => deleteResearchInterests(orcid)),
   )
 
 export const saveResearchInterests = (
-  orcid: Orcid,
+  orcid: OrcidId,
   researchInterests: ResearchInterests,
 ): RTE.ReaderTaskEither<EditResearchInterestsEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(

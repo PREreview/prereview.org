@@ -20,7 +20,7 @@ describe('CheckYourReviewPage', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
-          author: fc.record({ orcidId: fc.orcid(), persona: fc.constant(Option.some('public')) }),
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('public')) }),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -91,7 +91,7 @@ describe('CheckYourReviewPage', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
-          author: fc.record({ orcidId: fc.orcid(), persona: fc.constant(Option.some('pseudonym')) }),
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('pseudonym')) }),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -162,7 +162,7 @@ describe('CheckYourReviewPage', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
-          author: fc.record({ orcidId: fc.orcid(), persona: fc.constant(Option.none()) }),
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.none()) }),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -229,7 +229,7 @@ describe('CheckYourReviewPage', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.record<DatasetReviews.DatasetReviewPreview>({
-        author: fc.record({ orcidId: fc.orcid(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
+        author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
         qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -389,7 +389,7 @@ describe('CheckYourReviewPage', () => {
     fc.uuid(),
     fc.supportedLocale(),
     fc
-      .tuple(fc.user(), fc.orcid())
+      .tuple(fc.user(), fc.orcidId())
       .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
   ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
     Effect.gen(function* () {
@@ -535,7 +535,7 @@ describe('CheckYourReviewSubmission', () => {
     fc.uuid(),
     fc.supportedLocale(),
     fc
-      .tuple(fc.user(), fc.orcid())
+      .tuple(fc.user(), fc.orcidId())
       .filter(([user, datasetReviewAuthor]) => !Equal.equals(user.orcid, datasetReviewAuthor)),
   ])('when the dataset review is by a different user', (datasetReviewId, locale, [user, datasetReviewAuthor]) =>
     Effect.gen(function* () {

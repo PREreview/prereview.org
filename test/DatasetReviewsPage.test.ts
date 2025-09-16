@@ -15,7 +15,7 @@ describe('DatasetReviewsPage', () => {
     fc.supportedLocale(),
     fc.array(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcid(), persona: fc.constantFrom('pseudonym', 'public') }),
+      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -76,7 +76,7 @@ describe('DatasetReviewsPage', () => {
     fc.supportedLocale(),
     fc.nonEmptyArray(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcid(), persona: fc.constantFrom('pseudonym', 'public') }),
+      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({

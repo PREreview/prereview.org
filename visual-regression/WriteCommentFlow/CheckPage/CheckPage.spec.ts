@@ -1,8 +1,8 @@
 import { Option } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import { NonEmptyString, Uuid } from '../../../src/types/index.js'
+import { OrcidId } from '../../../src/types/OrcidId.js'
 import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.js'
@@ -57,7 +57,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
 
 const user = {
   name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-  orcid: Orcid('0000-0002-1825-0097'),
+  orcid: OrcidId('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 

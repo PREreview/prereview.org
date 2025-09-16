@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option } from 'effect'
 import * as _ from '../src/club-details.js'
-import { Orcid } from '../src/types/Orcid.js'
+import { OrcidId } from '../src/types/OrcidId.js'
 import * as fc from './fc.js'
 
 describe('getClubByName', () => {
@@ -24,15 +24,15 @@ describe('getClubByName', () => {
 
 describe('isLeadFor', () => {
   test.each([
-    ['Stephen Gabrielson', Orcid('0000-0001-9420-4466'), ['asapbio-meta-research']],
-    ['Jonathon Coates', Orcid('0000-0001-9039-9219'), ['asapbio-metabolism']],
+    ['Stephen Gabrielson', OrcidId('0000-0001-9420-4466'), ['asapbio-meta-research']],
+    ['Jonathon Coates', OrcidId('0000-0001-9039-9219'), ['asapbio-metabolism']],
   ])('when a lead (%s)', (_name, orcid, expected) => {
     const actual = _.isLeadFor(orcid)
 
     expect(actual).toStrictEqual(expected)
   })
 
-  test.prop([fc.orcid()])('when not a lead', orcid => {
+  test.prop([fc.orcidId()])('when not a lead', orcid => {
     const actual = _.isLeadFor(orcid)
 
     expect(actual).toHaveLength(0)
@@ -41,15 +41,15 @@ describe('isLeadFor', () => {
 
 describe('isAClubLead', () => {
   test.each([
-    ['Stephen Gabrielson', Orcid('0000-0001-9420-4466')],
-    ['Jonathon Coates', Orcid('0000-0001-9039-9219')],
+    ['Stephen Gabrielson', OrcidId('0000-0001-9420-4466')],
+    ['Jonathon Coates', OrcidId('0000-0001-9039-9219')],
   ])('when a lead (%s)', (_name, orcid) => {
     const actual = _.isAClubLead(orcid)
 
     expect(actual).toBeTruthy()
   })
 
-  test.prop([fc.orcid()])('when not a lead', orcid => {
+  test.prop([fc.orcidId()])('when not a lead', orcid => {
     const actual = _.isAClubLead(orcid)
 
     expect(actual).toBeFalsy()

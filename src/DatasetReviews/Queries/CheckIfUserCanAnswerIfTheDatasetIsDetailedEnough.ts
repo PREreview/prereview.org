@@ -1,12 +1,12 @@
 import { Array, Either, Equal, Option, Struct } from 'effect'
 import type { EventFilter } from '../../Events.js'
 import * as Events from '../../Events.js'
-import type { Orcid, Uuid } from '../../types/index.js'
+import type { OrcidId, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 
 export interface Input {
   datasetReviewId: Uuid.Uuid
-  userId: Orcid.Orcid
+  userId: OrcidId.OrcidId
 }
 
 export type Result = Either.Either<

@@ -1,11 +1,11 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Struct } from 'effect'
-import type { Doi, NonEmptyString, Orcid, Uuid } from '../../types/index.js'
+import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface PublishedReview {
-  author: { orcidId: Orcid.Orcid; persona: 'public' | 'pseudonym' }
+  author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {

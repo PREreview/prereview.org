@@ -1,8 +1,8 @@
 import { Either } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import { Uuid } from '../../../src/types/index.js'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../../src/types/OrcidId.js'
 import { Pseudonym } from '../../../src/types/Pseudonym.js'
 import type { User } from '../../../src/user.js'
 import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.js'
@@ -50,6 +50,6 @@ test('content looks right when the persona is missing', async ({ showPage }) => 
 
 const user = {
   name: NonEmptyString('Josiah Carberry'),
-  orcid: Orcid('0000-0002-1825-0097'),
+  orcid: OrcidId('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User

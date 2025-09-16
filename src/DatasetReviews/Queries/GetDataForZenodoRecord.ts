@@ -1,10 +1,10 @@
 import { Array, Either, Option, Struct } from 'effect'
-import type { Orcid } from '../../types/index.js'
+import type { OrcidId } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface DataForZenodoRecord {
-  readonly author: { orcidId: Orcid.Orcid; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
+  readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>

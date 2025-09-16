@@ -1,11 +1,11 @@
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { authorInviteStart } from '../../src/author-invite-flow/index.js'
 import { html } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -15,7 +15,7 @@ test('content looks right when already started', async ({ showPage }) => {
     locale: DefaultLocale,
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
   })({
@@ -23,7 +23,7 @@ test('content looks right when already started', async ({ showPage }) => {
       TE.right({
         status: 'assigned',
         emailAddress: EmailAddress('jcarberry@example.com'),
-        orcid: Orcid('0000-0002-1825-0097'),
+        orcid: OrcidId('0000-0002-1825-0097'),
         review: 1234,
       }),
     getPrereview: () =>

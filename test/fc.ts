@@ -140,7 +140,7 @@ import { EmailAddress } from '../src/types/EmailAddress.js'
 import { type FieldId, fieldIds } from '../src/types/field.js'
 import { OrcidLocale, ProfileId } from '../src/types/index.js'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
-import { type Orcid, isOrcid } from '../src/types/Orcid.js'
+import { type OrcidId, isOrcidId } from '../src/types/OrcidId.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
 import type { UserOnboarding } from '../src/user-onboarding.js'
@@ -1039,7 +1039,7 @@ export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintI
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
-export const orcid = (): fc.Arbitrary<Orcid> =>
+export const orcidId = (): fc.Arbitrary<OrcidId> =>
   fc
     .string({
       unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
@@ -1047,7 +1047,7 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
       maxLength: 4 + 4 + 4 + 3,
     })
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
-    .filter(isOrcid)
+    .filter(isOrcidId)
 
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
   fc.oneof(
@@ -1130,14 +1130,14 @@ export const assignedAuthorInvite = ({
   orcid: _orcid,
   persona,
 }: {
-  orcid?: fc.Arbitrary<Orcid>
+  orcid?: fc.Arbitrary<OrcidId>
   persona?: fc.Arbitrary<AssignedAuthorInvite['persona']>
 } = {}): fc.Arbitrary<AssignedAuthorInvite> =>
   fc.record(
     {
       status: constant('assigned'),
       emailAddress: emailAddress(),
-      orcid: _orcid ?? orcid(),
+      orcid: _orcid ?? orcidId(),
       persona: persona ?? constantFrom('public', 'pseudonym'),
       review: fc.integer({ min: 1 }),
     },
@@ -1146,8 +1146,8 @@ export const assignedAuthorInvite = ({
 
 export const completedAuthorInvite = ({
   orcid: _orcid,
-}: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<CompletedAuthorInvite> =>
-  fc.record({ status: constant('completed'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
+}: { orcid?: fc.Arbitrary<OrcidId> } = {}): fc.Arbitrary<CompletedAuthorInvite> =>
+  fc.record({ status: constant('completed'), orcid: _orcid ?? orcidId(), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })
@@ -1197,7 +1197,7 @@ export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 
-export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orcid().map(ProfileId.forOrcid)
+export const orcidProfileId = (): fc.Arbitrary<ProfileId.OrcidProfileId> => orcidId().map(ProfileId.forOrcid)
 
 export const pseudonymProfileId = (): fc.Arbitrary<ProfileId.PseudonymProfileId> =>
   pseudonym().map(ProfileId.forPseudonym)
@@ -1404,7 +1404,7 @@ export const ghostPage = (): fc.Arbitrary<GhostPage> =>
 export const publicPersona = (): fc.Arbitrary<Personas.PublicPersona> =>
   fc
     .record({
-      orcidId: orcid(),
+      orcidId: orcidId(),
       name: nonEmptyString(),
     })
     .map(args => new Personas.PublicPersona(args))
@@ -1421,7 +1421,7 @@ export const persona = (): fc.Arbitrary<Personas.Persona> => fc.oneof(publicPers
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
   fc.record({
     name: nonEmptyString(),
-    orcid: userOrcid ?? orcid(),
+    orcid: userOrcid ?? orcidId(),
     pseudonym: pseudonym(),
   })
 
@@ -1456,7 +1456,7 @@ export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']>
           fc.record(
             {
               name: fc.string(),
-              orcid: orcid(),
+              orcid: orcidId(),
             },
             { requiredKeys: ['name'] },
           ),
@@ -1483,7 +1483,7 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
   fc
     .record({
       authors: fc.record({
-        named: nonEmptyArray(fc.record({ name: fc.string(), orcid: orcid() }, { requiredKeys: ['name'] })),
+        named: nonEmptyArray(fc.record({ name: fc.string(), orcid: orcidId() }, { requiredKeys: ['name'] })),
         anonymous: fc.integer({ min: 0 }),
       }),
       doi: doi(),
@@ -1513,7 +1513,7 @@ export const commentWasStarted = ({
     .record({
       commentId: commentId ?? uuid(),
       prereviewId: fc.integer(),
-      authorId: orcid(),
+      authorId: orcidId(),
     })
     .map(data => new Events.CommentWasStarted(data))
 
@@ -1614,7 +1614,7 @@ export const datasetReviewWasStarted = ({
 } = {}): fc.Arbitrary<Events.DatasetReviewWasStarted> =>
   fc
     .record({
-      authorId: orcid(),
+      authorId: orcidId(),
       datasetId: _datasetId ?? datasetId(),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
@@ -1921,7 +1921,7 @@ export const commentInProgress = ({
 } = {}): fc.Arbitrary<Comments.CommentInProgress> =>
   fc
     .record({
-      authorId: orcid(),
+      authorId: orcidId(),
       prereviewId: fc.integer(),
       comment: comment ?? fc.option(html(), { nil: undefined }),
       competingInterests: competingInterests ?? fc.option(maybe(nonEmptyString()), { nil: undefined }),
@@ -1934,7 +1934,7 @@ export const commentInProgress = ({
 export const commentReadyForPublishing = (): fc.Arbitrary<Comments.CommentReadyForPublishing> =>
   fc
     .record({
-      authorId: orcid(),
+      authorId: orcidId(),
       competingInterests: maybe(nonEmptyString()),
       comment: html(),
       persona: constantFrom('public', 'pseudonym'),
@@ -1951,7 +1951,7 @@ export const commentBeingPublished = ({
 } = {}): fc.Arbitrary<Comments.CommentBeingPublished> =>
   fc
     .record({
-      authorId: orcid(),
+      authorId: orcidId(),
       competingInterests: maybe(nonEmptyString()),
       doi: _doi ?? option(doi(), { nil: undefined }),
       comment: html(),
@@ -1964,7 +1964,7 @@ export const commentBeingPublished = ({
 export const commentPublished = (): fc.Arbitrary<Comments.CommentPublished> =>
   fc
     .record({
-      authorId: orcid(),
+      authorId: orcidId(),
       competingInterests: maybe(nonEmptyString()),
       doi: doi(),
       comment: html(),
@@ -2018,7 +2018,7 @@ export const expectedCommandForUser = (): fc.Arbitrary<Comments.ExpectedCommandF
 
 export const inputForCommentZenodoRecord = (): fc.Arbitrary<Comments.InputForCommentZenodoRecord> =>
   fc.record({
-    authorId: orcid(),
+    authorId: orcidId(),
     competingInterests: maybe(nonEmptyString()),
     comment: html(),
     persona: constantFrom('public', 'pseudonym'),

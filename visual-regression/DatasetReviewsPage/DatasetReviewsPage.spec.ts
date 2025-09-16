@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
 import * as _ from '../../src/DatasetReviewsPage/DatasetReviewsPage.js'
 import * as Personas from '../../src/Personas/index.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym, Uuid } from '../../src/types/index.js'
+import { Doi, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showTwoUpPage }) => {
@@ -27,7 +27,7 @@ test('content looks right when empty', async ({ showTwoUpPage }) => {
 
 const prereview1: _.DatasetReview = {
   author: new Personas.PublicPersona({
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
   }),
   doi: Doi.Doi('10.5281/zenodo.10779310'),

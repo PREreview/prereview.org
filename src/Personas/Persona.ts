@@ -1,11 +1,11 @@
 import { Data, Function } from 'effect'
-import type { NonEmptyString, Orcid, Pseudonym } from '../types/index.js'
+import type { NonEmptyString, OrcidId, Pseudonym } from '../types/index.js'
 
 export type Persona = PublicPersona | PseudonymPersona
 
 export class PublicPersona extends Data.TaggedClass('PublicPersona')<{
   name: NonEmptyString.NonEmptyString
-  orcidId: Orcid.Orcid
+  orcidId: OrcidId.OrcidId
 }> {}
 
 export class PseudonymPersona extends Data.TaggedClass('PseudonymPersona')<{ pseudonym: Pseudonym.Pseudonym }> {}

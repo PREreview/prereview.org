@@ -1,11 +1,11 @@
 import { HashSet, Option } from 'effect'
-import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import { createPage } from '../../src/my-details-page/my-details-page.js'
 import { EmailAddress } from '../../src/types/EmailAddress.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import type { UserOnboarding } from '../../src/user-onboarding.js'
 import type { User } from '../../src/user.js'
@@ -116,7 +116,7 @@ test('content looks right when empty', async ({ showPage }) => {
 
 const user = {
   name: NonEmptyString('Josiah Carberry'),
-  orcid: Orcid('0000-0002-1825-0097'),
+  orcid: OrcidId('0000-0002-1825-0097'),
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies User
 

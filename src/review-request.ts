@@ -29,7 +29,7 @@ import type {
   TechrxivPreprintId,
   ZenodoPreprintId,
 } from './Preprints/index.js'
-import type { Orcid } from './types/Orcid.js'
+import type { OrcidId } from './types/OrcidId.js'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
@@ -68,14 +68,14 @@ export interface CompletedReviewRequest {
 
 export interface GetReviewRequestEnv {
   getReviewRequest: (
-    orcid: Orcid,
+    orcid: OrcidId,
     preprint: ReviewRequestPreprintId,
   ) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequest>
 }
 
 export interface SaveReviewRequestEnv {
   saveReviewRequest: (
-    orcid: Orcid,
+    orcid: OrcidId,
     preprint: ReviewRequestPreprintId,
     reviewRequest: ReviewRequest,
   ) => TE.TaskEither<'unavailable', void>
@@ -107,7 +107,7 @@ export const ReviewRequestC = C.make(D.union(IncompleteReviewRequestC, Completed
 }) satisfies C.Codec<unknown, unknown, ReviewRequest>
 
 export const getReviewRequest = (
-  orcid: Orcid,
+  orcid: OrcidId,
   preprint: ReviewRequestPreprintId,
 ): RTE.ReaderTaskEither<GetReviewRequestEnv, 'not-found' | 'unavailable', ReviewRequest> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getReviewRequest }) => getReviewRequest(orcid, preprint)))
@@ -123,7 +123,7 @@ export const maybeGetReviewRequest = flow(
 )
 
 export const saveReviewRequest = (
-  orcid: Orcid,
+  orcid: OrcidId,
   preprint: ReviewRequestPreprintId,
   reviewRequest: ReviewRequest,
 ): RTE.ReaderTaskEither<SaveReviewRequestEnv, 'unavailable', void> =>

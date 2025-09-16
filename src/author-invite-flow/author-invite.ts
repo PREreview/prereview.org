@@ -23,7 +23,7 @@ import {
 } from '../routes.js'
 import { renderDate } from '../time.js'
 import { ProfileId } from '../types/index.js'
-import { type Orcid, Eq as eqOrcid } from '../types/Orcid.js'
+import { type OrcidId, Eq as eqOrcid } from '../types/OrcidId.js'
 import { isPseudonym } from '../types/Pseudonym.js'
 import type { User } from '../user.js'
 
@@ -262,7 +262,7 @@ function startPage({
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {
     return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a

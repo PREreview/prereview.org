@@ -5,13 +5,13 @@ import { Array, Either, Option } from 'effect'
 import * as _ from '../../src/Comments/Queries.js'
 import * as Comments from '../../src/Comments/index.js'
 import { html } from '../../src/html.js'
-import { Orcid } from '../../src/types/Orcid.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Uuid } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
 describe('GetPrereviewId', () => {
   const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
-  const authorId = Orcid('0000-0002-1825-0097')
+  const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const commentWasStarted = new Comments.CommentWasStarted({ commentId, authorId, prereviewId })
 
@@ -33,7 +33,7 @@ describe('GetPrereviewId', () => {
 })
 
 describe('GetNextExpectedCommandForUser', () => {
-  const authorId = Orcid('0000-0002-1825-0097')
+  const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
   const commentWasStarted = new Comments.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
@@ -118,17 +118,24 @@ describe('GetNextExpectedCommandForUser', () => {
     })
   })
 
-  test.prop([fc.orcid(), fc.integer()])('when there are no comments, starts a new comment', (authorId, prereviewId) => {
-    const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
+  test.prop([fc.orcidId(), fc.integer()])(
+    'when there are no comments, starts a new comment',
+    (authorId, prereviewId) => {
+      const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
-    expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
-  })
+      expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
+    },
+  )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
     'when in progress comments are by other authors, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [
-        new Comments.CommentWasStarted({ commentId: resourceId, prereviewId, authorId: Orcid('0000-0002-1825-0097') }),
+        new Comments.CommentWasStarted({
+          commentId: resourceId,
+          prereviewId,
+          authorId: OrcidId('0000-0002-1825-0097'),
+        }),
       ]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
@@ -136,7 +143,7 @@ describe('GetNextExpectedCommandForUser', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
     'when in progress comments are for other PREreviews, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [new Comments.CommentWasStarted({ commentId: resourceId, prereviewId: 123, authorId })]
@@ -146,7 +153,7 @@ describe('GetNextExpectedCommandForUser', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.integer(), fc.uuid()])(
+  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
     'when no user input is needed for a comment, starts a new comment',
     (authorId, prereviewId, resourceId) => {
       const events = [new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })]
@@ -158,7 +165,7 @@ describe('GetNextExpectedCommandForUser', () => {
 })
 
 describe('GetNextExpectedCommandForUserOnAComment', () => {
-  const authorId = Orcid('0000-0002-1825-0097')
+  const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
   const commentWasStarted = new Comments.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
@@ -293,7 +300,7 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
 
 describe('buildInputForCommentZenodoRecord', () => {
   const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
-  const authorId = Orcid('0000-0002-1825-0097')
+  const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const commentWasStarted = new Comments.CommentWasStarted({ commentId, authorId, prereviewId })
   const commentWasEntered = new Comments.CommentWasEntered({ commentId, comment: html`Some comment` })

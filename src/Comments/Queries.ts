@@ -1,6 +1,6 @@
 import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
-import type { Orcid } from '../types/Orcid.js'
 import type { Uuid } from '../types/index.js'
+import type { OrcidId } from '../types/OrcidId.js'
 import type { InputForCommentZenodoRecord } from './Context.js'
 import * as Errors from './Errors.js'
 import type { CommentEvent, CommentWasAssignedADoi, PublicationOfCommentWasRequested } from './Events.js'
@@ -19,7 +19,7 @@ export const GetNextExpectedCommandForUser =
     authorId,
     prereviewId,
   }: {
-    readonly authorId: Orcid
+    readonly authorId: OrcidId
     readonly prereviewId: number
   }): ExpectedCommand.ExpectedCommandForUser => {
     const [commentId, comment] = pipe(

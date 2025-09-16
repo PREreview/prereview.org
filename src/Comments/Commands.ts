@@ -2,11 +2,11 @@ import type { Doi } from 'doi-ts'
 import { Data, type Option } from 'effect'
 import type { Html } from '../html.js'
 import type { NonEmptyString, Uuid } from '../types/index.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export class StartComment extends Data.TaggedClass('StartComment')<{
   prereviewId: number
-  authorId: Orcid
+  authorId: OrcidId
   commentId: Uuid.Uuid
 }> {}
 

@@ -5,7 +5,7 @@ import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
 import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
-import { Doi, NonEmptyString, Orcid, Pseudonym } from '../../../src/types/index.js'
+import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.js'
 
 const cases = [
   [
@@ -13,7 +13,7 @@ const cases = [
     {
       author: new Personas.PublicPersona({
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-        orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+        orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       qualityRating: Option.some('excellent'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
@@ -31,7 +31,7 @@ const cases = [
       ),
     },
     {
-      creators: [{ name: 'Josiah Carberry', orcid: Orcid.Orcid('0000-0002-1825-0097') }],
+      creators: [{ name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') }],
       description: rawHtml(`
     <dl>
       

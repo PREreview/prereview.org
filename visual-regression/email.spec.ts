@@ -1,5 +1,4 @@
 import { Doi } from 'doi-ts'
-import { Orcid } from 'orcid-id-ts'
 import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress } from '../src/contact-email-address.js'
 import {
@@ -13,6 +12,7 @@ import { DefaultLocale } from '../src/locales/index.js'
 import { BiorxivPreprintId } from '../src/Preprints/index.js'
 import { EmailAddress } from '../src/types/EmailAddress.js'
 import { NonEmptyString } from '../src/types/NonEmptyString.js'
+import { OrcidId } from '../src/types/OrcidId.js'
 import { Pseudonym } from '../src/types/Pseudonym.js'
 import { expect, test } from './base.js'
 
@@ -20,7 +20,7 @@ test('email-verification HTML looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
@@ -39,7 +39,7 @@ test('email-verification text looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
@@ -58,7 +58,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
@@ -77,7 +77,7 @@ test('email-verification text for an invited author looks right', async ({ page 
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
@@ -96,7 +96,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({
@@ -116,7 +116,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({
     user: {
       name: NonEmptyString('Josiah Carberry'),
-      orcid: Orcid('0000-0002-1825-0097'),
+      orcid: OrcidId('0000-0002-1825-0097'),
       pseudonym: Pseudonym('Orange Panda'),
     },
     emailAddress: new UnverifiedContactEmailAddress({

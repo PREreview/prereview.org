@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.js'
 import * as Personas from '../../src/Personas/index.js'
-import { Doi, NonEmptyString, Orcid, Uuid } from '../../src/types/index.js'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
@@ -18,7 +18,7 @@ test('content looks right', async ({ showPage }) => {
 const datasetReview: _.DatasetReview = {
   author: new Personas.PublicPersona({
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-    orcidId: Orcid.Orcid('0000-0002-1825-0097'),
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),

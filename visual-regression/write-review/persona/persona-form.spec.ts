@@ -3,7 +3,7 @@ import { missingE } from '../../../src/form.js'
 import { html } from '../../../src/html.js'
 import { DefaultLocale } from '../../../src/locales/index.js'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.js'
-import { Doi, Orcid, Pseudonym } from '../../../src/types/index.js'
+import { Doi, OrcidId, Pseudonym } from '../../../src/types/index.js'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
 import type { User } from '../../../src/user.js'
 import { personaForm } from '../../../src/write-review/persona/persona-form.js'
@@ -35,6 +35,6 @@ const preprint = {
 
 const user = {
   name: NonEmptyString('Josiah Carberry'),
-  orcid: Orcid.Orcid('0000-0002-1825-0097'),
+  orcid: OrcidId.OrcidId('0000-0002-1825-0097'),
   pseudonym: Pseudonym.Pseudonym('Orange Panda'),
 } satisfies User

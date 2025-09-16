@@ -2,12 +2,12 @@ import type { Doi } from 'doi-ts'
 import { Data, type Option } from 'effect'
 import type { Html } from '../html.js'
 import type { NonEmptyString } from '../types/index.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export class CommentNotStarted extends Data.TaggedClass('CommentNotStarted') {}
 
 export class CommentInProgress extends Data.TaggedClass('CommentInProgress')<{
-  authorId: Orcid
+  authorId: OrcidId
   prereviewId: number
   comment?: Html
   persona?: 'public' | 'pseudonym'
@@ -17,7 +17,7 @@ export class CommentInProgress extends Data.TaggedClass('CommentInProgress')<{
 }> {}
 
 export class CommentReadyForPublishing extends Data.TaggedClass('CommentReadyForPublishing')<{
-  authorId: Orcid
+  authorId: OrcidId
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   comment: Html
   persona: 'public' | 'pseudonym'
@@ -25,7 +25,7 @@ export class CommentReadyForPublishing extends Data.TaggedClass('CommentReadyFor
 }> {}
 
 export class CommentBeingPublished extends Data.TaggedClass('CommentBeingPublished')<{
-  authorId: Orcid
+  authorId: OrcidId
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi?: Doi
   id?: number
@@ -35,7 +35,7 @@ export class CommentBeingPublished extends Data.TaggedClass('CommentBeingPublish
 }> {}
 
 export class CommentPublished extends Data.TaggedClass('CommentPublished')<{
-  authorId: Orcid
+  authorId: OrcidId
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   doi: Doi
   id: number

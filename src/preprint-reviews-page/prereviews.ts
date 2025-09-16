@@ -5,11 +5,11 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.js'
 import type { PreprintId } from '../Preprints/index.js'
 import type { ClubId } from '../types/club-id.js'
-import type { Orcid } from '../types/Orcid.js'
+import type { OrcidId } from '../types/OrcidId.js'
 
 export interface Prereview {
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: Orcid }>
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
     anonymous: number
   }
   club?: ClubId

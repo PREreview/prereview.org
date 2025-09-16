@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Orcid } from 'orcid-id-ts'
 import { rawHtml } from '../../src/html.js'
 import { DefaultLocale } from '../../src/locales/index.js'
 import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
+import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import { expect, test } from '../base.js'
 
@@ -15,7 +15,7 @@ test('content looks right', async ({ showPage }) => {
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
       user: {
         name: NonEmptyString('Josiah Carberry'),
-        orcid: Orcid('0000-0002-1825-0097'),
+        orcid: OrcidId('0000-0002-1825-0097'),
         pseudonym: Pseudonym('Orange Panda'),
       },
     }),
