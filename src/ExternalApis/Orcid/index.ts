@@ -3,7 +3,6 @@ import { Context, Effect, flow, Layer } from 'effect'
 import { GetPersonalDetails } from './GetPersonalDetails/index.js'
 import type { OrcidApi } from './OrcidApi.js'
 
-export * from './legacy-orcid.js'
 export * from './OrcidApi.js'
 
 export class Orcid extends Context.Tag('Orcid')<
