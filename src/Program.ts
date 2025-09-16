@@ -9,7 +9,7 @@ import * as DatasetReviews from './DatasetReviews/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as Events from './Events.js'
-import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci } from './ExternalApis/index.js'
+import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci, Zenodo } from './ExternalApis/index.js'
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -32,7 +32,7 @@ import * as SqlEventStore from './SqlEventStore.js'
 import { Uuid } from './types/index.js'
 import { WebApp } from './WebApp.js'
 import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.js'
-import * as Zenodo from './Zenodo/index.js'
+import * as ZenodoInteractions from './Zenodo/index.js'
 
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
@@ -275,8 +275,9 @@ const commentsForReview = Layer.effect(
     const context = yield* Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>()
 
     return {
-      get: reviewDoi => pipe(Zenodo.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
-      invalidate: prereviewId => pipe(Zenodo.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
+      get: reviewDoi => pipe(ZenodoInteractions.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
+      invalidate: prereviewId =>
+        pipe(ZenodoInteractions.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
     }
   }),
 )
@@ -334,7 +335,7 @@ export const Program = pipe(
         Layer.fresh,
       ),
       Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
-      Zenodo.layer,
+      ZenodoInteractions.layer,
     ),
   ),
   Layer.provide(

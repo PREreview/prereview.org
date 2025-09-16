@@ -9,7 +9,7 @@ import { isAClubLead } from './club-details.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
-import { Orcid } from './ExternalApis/index.js'
+import { Orcid, Zenodo } from './ExternalApis/index.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { GhostApi } from './GhostPage/index.js'
@@ -23,7 +23,6 @@ import * as Redis from './Redis.js'
 import { SlackApiConfig } from './slack.js'
 import * as TemplatePage from './TemplatePage.js'
 import { isPrereviewTeam } from './user.js'
-import * as Zenodo from './Zenodo/index.js'
 
 const CockroachClientLayer = Layer.mergeAll(
   PgClient.layerConfig({

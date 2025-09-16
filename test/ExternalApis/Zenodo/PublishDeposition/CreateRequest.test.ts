@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import * as _ from '../../../src/Zenodo/PublishDeposition/CreateRequest.js'
-import { ZenodoApi } from '../../../src/Zenodo/index.js'
-import * as EffectTest from '../../EffectTest.js'
+import { Zenodo } from '../../../../src/ExternalApis/index.js'
+import * as _ from '../../../../src/ExternalApis/Zenodo/PublishDeposition/CreateRequest.js'
+import * as EffectTest from '../../../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('CreateRequest', () => {
@@ -14,7 +14,7 @@ describe('CreateRequest', () => {
         const actual = yield* _.CreateRequest(unsubmittedDeposition)
 
         expect(actual.method).toStrictEqual('POST')
-      }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+      }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition()])('sets the URL', (zenodoApi, unsubmittedDeposition) =>
@@ -22,7 +22,7 @@ describe('CreateRequest', () => {
       const actual = yield* _.CreateRequest(unsubmittedDeposition)
 
       expect(actual.url).toStrictEqual(unsubmittedDeposition.links.publish.href)
-    }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition()])(
@@ -32,7 +32,7 @@ describe('CreateRequest', () => {
         const actual = yield* _.CreateRequest(unsubmittedDeposition)
 
         expect(actual.headers['accept']).toStrictEqual('application/json')
-      }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+      }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition()])(
@@ -42,6 +42,6 @@ describe('CreateRequest', () => {
         const actual = yield* _.CreateRequest(unsubmittedDeposition)
 
         expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(zenodoApi.key)}`)
-      }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+      }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 })

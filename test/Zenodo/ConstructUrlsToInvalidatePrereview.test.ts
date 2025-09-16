@@ -1,12 +1,12 @@
 import { describe, expect, it } from '@jest/globals'
 import { Array, Effect, Redacted } from 'effect'
+import { Zenodo } from '../../src/ExternalApis/index.js'
 import { BiorxivPreprintId } from '../../src/Preprints/index.js'
 import { Doi } from '../../src/types/index.js'
 import { NonEmptyString } from '../../src/types/NonEmptyString.js'
 import { OrcidId } from '../../src/types/OrcidId.js'
 import { Pseudonym } from '../../src/types/Pseudonym.js'
 import * as _ from '../../src/Zenodo/ConstructUrlsToInvalidatePrereview.js'
-import * as Zenodo from '../../src/Zenodo/index.js'
 import * as EffectTest from '../EffectTest.js'
 
 describe('constructUrlsToInvalidatePrereview', () => {

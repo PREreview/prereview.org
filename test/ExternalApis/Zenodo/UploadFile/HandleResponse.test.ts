@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import * as StatusCodes from '../../../src/StatusCodes.js'
-import * as _ from '../../../src/Zenodo/UploadFile/HandleResponse.js'
-import * as EffectTest from '../../EffectTest.js'
+import * as _ from '../../../../src/ExternalApis/Zenodo/UploadFile/HandleResponse.js'
+import * as StatusCodes from '../../../../src/StatusCodes.js'
+import * as EffectTest from '../../../EffectTest.js'
 import * as fc from '../fc.js'
 import uploadedFile from '../Samples/uploaded-file.json' with { type: 'json' }
 

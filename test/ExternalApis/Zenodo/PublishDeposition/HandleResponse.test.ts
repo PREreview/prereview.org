@@ -2,9 +2,9 @@ import type { HttpClientError } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import * as StatusCodes from '../../../src/StatusCodes.js'
-import * as _ from '../../../src/Zenodo/PublishDeposition/HandleResponse.js'
-import * as EffectTest from '../../EffectTest.js'
+import * as _ from '../../../../src/ExternalApis/Zenodo/PublishDeposition/HandleResponse.js'
+import * as StatusCodes from '../../../../src/StatusCodes.js'
+import * as EffectTest from '../../../EffectTest.js'
 import * as fc from '../fc.js'
 import submittedDeposition from '../Samples/submitted-deposition.json' with { type: 'json' }
 

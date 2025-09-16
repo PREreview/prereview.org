@@ -1,15 +1,15 @@
 import { Match, Option, pipe } from 'effect'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
+import type { Zenodo } from '../../ExternalApis/index.js'
 import { html } from '../../html.js'
 import * as Personas from '../../Personas/index.js'
 import { Doi } from '../../types/index.js'
-import type { DepositMetadata } from '../Deposition.js'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
   readonly author: Personas.Persona
 }
 
-export const DatasetReviewToDepositMetadata = (review: DatasetReview): DepositMetadata => ({
+export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.DepositMetadata => ({
   creators: [
     Personas.match(review.author, {
       onPublic: author => ({ name: author.name, orcid: author.orcidId }),

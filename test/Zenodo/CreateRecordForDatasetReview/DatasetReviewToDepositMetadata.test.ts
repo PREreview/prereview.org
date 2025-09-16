@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Option } from 'effect'
+import type { Zenodo } from '../../../src/ExternalApis/index.js'
 import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
-import type { DepositMetadata } from '../../../src/Zenodo/Deposition.js'
 import { rawHtml } from '../../../src/html.js'
 import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.js'
 
@@ -180,7 +180,7 @@ const cases = [
       publicationType: 'peerreview',
     },
   ],
-] satisfies ReadonlyArray<[string, _.DatasetReview, DepositMetadata]>
+] satisfies ReadonlyArray<[string, _.DatasetReview, Zenodo.DepositMetadata]>
 
 test.each(cases)('DatasetReviewToDepositMetadata (%s)', (_name, datasetReview, expected) => {
   const actual = _.DatasetReviewToDepositMetadata(datasetReview)

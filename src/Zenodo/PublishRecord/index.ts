@@ -1,6 +1,5 @@
 import { Data, Effect } from 'effect'
-import { GetDeposition } from '../GetDeposition/index.js'
-import { PublishDeposition } from '../PublishDeposition/index.js'
+import { Zenodo } from '../../ExternalApis/index.js'
 
 export class FailedToPublishRecord extends Data.TaggedError('FailedToPublishRecord')<{
   cause?: unknown
@@ -8,9 +7,9 @@ export class FailedToPublishRecord extends Data.TaggedError('FailedToPublishReco
 
 export const PublishRecord = Effect.fn(
   function* (recordId: number) {
-    const deposition = yield* GetDeposition(recordId)
+    const deposition = yield* Zenodo.getDeposition(recordId)
 
-    yield* PublishDeposition(deposition)
+    yield* Zenodo.publishDeposition(deposition)
   },
   Effect.catchAll(error => new FailedToPublishRecord({ cause: error })),
 )

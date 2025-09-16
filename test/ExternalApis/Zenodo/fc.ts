@@ -1,17 +1,15 @@
-import type { DepositMetadata, UnsubmittedDeposition } from '../../src/Zenodo/Deposition.js'
-import type { File } from '../../src/Zenodo/UploadFile/index.js'
-import type { ZenodoApi } from '../../src/Zenodo/ZenodoApi.js'
-import * as fc from '../fc.js'
+import type { Zenodo } from '../../../src/ExternalApis/index.js'
+import * as fc from '../../fc.js'
 
-export * from '../fc.js'
+export * from '../../fc.js'
 
-export const file = (): fc.Arbitrary<File> =>
+export const file = (): fc.Arbitrary<Zenodo.File> =>
   fc.record({
     name: fc.string(),
     content: fc.string(),
   })
 
-export const depositMetadata = (): fc.Arbitrary<DepositMetadata> =>
+export const depositMetadata = (): fc.Arbitrary<Zenodo.DepositMetadata> =>
   fc.record({
     creators: fc.tuple(fc.record({ name: fc.string() })),
     description: fc.html(),
@@ -29,7 +27,7 @@ export const depositMetadata = (): fc.Arbitrary<DepositMetadata> =>
     publicationType: fc.constant('peerreview'),
   })
 
-export const unsubmittedDeposition = (): fc.Arbitrary<UnsubmittedDeposition> =>
+export const unsubmittedDeposition = (): fc.Arbitrary<Zenodo.UnsubmittedDeposition> =>
   fc.record({
     id: fc.integer(),
     links: fc.record({
@@ -48,7 +46,7 @@ export const unsubmittedDeposition = (): fc.Arbitrary<UnsubmittedDeposition> =>
     submitted: fc.constant(false),
   })
 
-export const zenodoApi = (): fc.Arbitrary<typeof ZenodoApi.Service> =>
+export const zenodoApi = (): fc.Arbitrary<typeof Zenodo.ZenodoApi.Service> =>
   fc.record({
     key: fc.redacted(fc.string()),
     origin: fc.origin(),

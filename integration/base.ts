@@ -58,7 +58,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import { Orcid } from '../src/ExternalApis/index.js'
+import { Orcid, Zenodo } from '../src/ExternalApis/index.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
 import * as Ghost from '../src/GhostPage/index.js'
 import { rawHtml } from '../src/html.js'
@@ -88,7 +88,6 @@ import { EmailAddress } from '../src/types/EmailAddress.js'
 import { NonEmptyString } from '../src/types/NonEmptyString.js'
 import { OrcidId } from '../src/types/OrcidId.js'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
-import * as Zenodo from '../src/Zenodo/index.js'
 
 export { expect } from '@playwright/test'
 

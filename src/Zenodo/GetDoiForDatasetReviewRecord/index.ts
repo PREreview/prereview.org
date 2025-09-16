@@ -1,5 +1,5 @@
 import { Data, Effect } from 'effect'
-import { GetDeposition } from '../GetDeposition/index.js'
+import { Zenodo } from '../../ExternalApis/index.js'
 
 export class FailedToGetRecordForDatasetReview extends Data.TaggedError('FailedToGetRecordForDatasetReview')<{
   cause?: unknown
@@ -7,7 +7,7 @@ export class FailedToGetRecordForDatasetReview extends Data.TaggedError('FailedT
 
 export const GetDoiForDatasetReviewRecord = Effect.fn(
   function* (recordId: number) {
-    const deposition = yield* GetDeposition(recordId)
+    const deposition = yield* Zenodo.getDeposition(recordId)
 
     return deposition.metadata.prereserveDoi.doi
   },

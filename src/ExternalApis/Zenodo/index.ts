@@ -1,0 +1,6 @@
+export { CreateDeposition as createDeposition } from './CreateDeposition/index.js'
+export * from './Deposition.js'
+export { GetDeposition as getDeposition } from './GetDeposition/index.js'
+export { PublishDeposition as publishDeposition } from './PublishDeposition/index.js'
+export { UploadFile as uploadFile, type File } from './UploadFile/index.js'
+export { ZenodoApi } from './ZenodoApi.js'

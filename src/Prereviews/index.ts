@@ -4,6 +4,7 @@ import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struc
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
 import * as EffectToFpts from '../EffectToFpts.js'
+import { Zenodo } from '../ExternalApis/index.js'
 import * as FptsToEffect from '../FptsToEffect.js'
 import type { Html } from '../html.js'
 import {
@@ -30,7 +31,6 @@ import {
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from '../zenodo.js'
-import * as Zenodo from '../Zenodo/index.js'
 
 export interface RecentPrereview {
   readonly id: number

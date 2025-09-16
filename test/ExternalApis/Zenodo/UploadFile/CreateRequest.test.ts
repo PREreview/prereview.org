@@ -2,9 +2,9 @@ import { HttpBody } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import { ZenodoApi } from '../../../src/Zenodo/index.js'
-import * as _ from '../../../src/Zenodo/UploadFile/CreateRequest.js'
-import * as EffectTest from '../../EffectTest.js'
+import { Zenodo } from '../../../../src/ExternalApis/index.js'
+import * as _ from '../../../../src/ExternalApis/Zenodo/UploadFile/CreateRequest.js'
+import * as EffectTest from '../../../EffectTest.js'
 import * as fc from '../fc.js'
 
 describe('CreateRequest', () => {
@@ -15,7 +15,7 @@ describe('CreateRequest', () => {
       expect(actual.url).toStrictEqual(
         `${deposition.links.bucket.origin}${deposition.links.bucket.pathname}/${file.name}`,
       )
-    }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition(), fc.file()])(
@@ -25,7 +25,7 @@ describe('CreateRequest', () => {
         const actual = yield* _.CreateRequest(deposition, file)
 
         expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(zenodoApi.key)}`)
-      }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+      }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition(), fc.file()])('sets the body', (zenodoApi, deposition, file) =>
@@ -35,6 +35,6 @@ describe('CreateRequest', () => {
       const expected = HttpBody.text(file.content, 'application/octet-stream')
 
       expect(actual.body).toStrictEqual(expected)
-    }).pipe(Effect.provideService(ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
   )
 })

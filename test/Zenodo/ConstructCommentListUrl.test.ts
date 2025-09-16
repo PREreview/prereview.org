@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
+import { Zenodo } from '../../src/ExternalApis/index.js'
 import * as _ from '../../src/Zenodo/ConstructCommentListUrl.js'
-import * as Zenodo from '../../src/Zenodo/index.js'
 import { Doi } from '../../src/types/index.js'
 import * as EffectTest from '../EffectTest.js'
 
