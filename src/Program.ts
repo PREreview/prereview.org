@@ -16,7 +16,6 @@ import * as FptsToEffect from './FptsToEffect.js'
 import * as GhostPage from './GhostPage/index.js'
 import { html } from './html.js'
 import * as Keyv from './keyv.js'
-import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from './legacy-prereview.js'
 import { DefaultLocale, translate } from './locales/index.js'
 import * as LoggingHttpClient from './LoggingHttpClient.js'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.js'
@@ -164,24 +163,15 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const legacyPrereviewApi = yield* LegacyPrereviewApi
+    const context = yield* Effect.context<Personas.Personas>()
     const fetch = yield* FetchHttpClient.Fetch
     const logger = yield* DeprecatedLoggerEnv
     const getPrereview = yield* Prereview.GetPrereview
-    const orcidApi = yield* Orcid.OrcidApi
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
     const env = {
       fetch,
-      legacyPrereviewApi: {
-        app: legacyPrereviewApi.app,
-        key: Redacted.value(legacyPrereviewApi.key),
-        url: legacyPrereviewApi.origin,
-        update: legacyPrereviewApi.update,
-      },
-      orcidApiUrl: orcidApi.origin,
-      orcidApiToken: Option.getOrUndefined(Option.map(orcidApi.token, Redacted.value)),
       publicUrl,
       zenodoApiKey: Redacted.value(zenodoApi.key),
       zenodoUrl: zenodoApi.origin,
@@ -203,28 +193,10 @@ const createRecordOnZenodoForComment = Layer.effect(
           ),
         )
 
-        const author = yield* pipe(
-          Match.value(comment.persona),
-          Match.when('public', () =>
-            pipe(
-              FptsToEffect.readerTaskEither(Orcid.getNameFromOrcid(comment.authorId), env),
-              Effect.filterOrFail(name => name !== undefined),
-              Effect.mapBoth({
-                onFailure: () => new Comments.UnableToAssignADoi({}),
-                onSuccess: name => ({ name, orcid: comment.authorId }),
-              }),
-            ),
-          ),
-          Match.when('pseudonym', () =>
-            pipe(
-              FptsToEffect.readerTaskEither(getPseudonymFromLegacyPrereview(comment.authorId), env),
-              Effect.mapBoth({
-                onFailure: () => new Comments.UnableToAssignADoi({}),
-                onSuccess: pseudonym => ({ name: pseudonym }),
-              }),
-            ),
-          ),
-          Match.exhaustive,
+        const author = yield* Effect.catchTag(
+          Personas.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
+          'UnableToGetPersona',
+          error => new Comments.UnableToAssignADoi({ cause: error }),
         )
 
         const text = html`${comment.comment}
@@ -238,7 +210,18 @@ const createRecordOnZenodoForComment = Layer.effect(
           </p>`
 
         return yield* pipe(
-          FptsToEffect.readerTaskEither(createCommentOnZenodo({ ...comment, comment: text, author, prereview }), env),
+          FptsToEffect.readerTaskEither(
+            createCommentOnZenodo({
+              ...comment,
+              comment: text,
+              author: Personas.match(author, {
+                onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                onPseudonym: persona => ({ name: persona.pseudonym }),
+              }),
+              prereview,
+            }),
+            env,
+          ),
           Effect.mapError(
             flow(
               Match.value,
@@ -247,7 +230,7 @@ const createRecordOnZenodoForComment = Layer.effect(
             ),
           ),
         )
-      })
+      }).pipe(Effect.provide(context))
   }),
 )
 
