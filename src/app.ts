@@ -20,7 +20,6 @@ import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.js'
-import type { NodemailerEnv } from './nodemailer.js'
 import { handleResponse } from './response.js'
 import { securityHeaders } from './securityHeaders.js'
 import type { User } from './user.js'
@@ -31,8 +30,7 @@ export type ConfigEnv = Omit<
   'getPreprintId' | 'getUserOnboarding' | 'locale' | 'logger' | 'getPreprintIdFromUuid' | 'getProfileIdFromUuid'
 > &
   Keyv.UserOnboardingStoreEnv &
-  WasPrereviewRemovedEnv &
-  NodemailerEnv & {
+  WasPrereviewRemovedEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean
   }

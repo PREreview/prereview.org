@@ -6,7 +6,6 @@ import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import { LegacyPrereviewApi } from './legacy-prereview.js'
-import { Nodemailer } from './nodemailer.js'
 import { OrcidOauth } from './OrcidOauth.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
@@ -16,7 +15,6 @@ export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
   const fetch = yield* FetchHttpClient.Fetch
   const { clock } = yield* DeprecatedLoggerEnv
-  const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
@@ -32,7 +30,6 @@ export const expressServer = Effect.gen(function* () {
       url: legacyPrereviewApi.origin,
       update: legacyPrereviewApi.update,
     },
-    nodemailer,
     publicUrl,
     secret: Redacted.value(secret),
     templatePage,
