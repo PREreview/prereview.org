@@ -1,12 +1,11 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Data, Effect, flow, identity, Layer } from 'effect'
 import type { Locale } from '../Context.js'
+import type { Ghost } from '../ExternalApis/index.js'
 import type { Html } from '../html.js'
 import type { SupportedLocale } from '../locales/index.js'
-import { getPage, type GhostApi } from './GetPage.js'
+import { getPage } from './GetPage.js'
 import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.js'
-
-export { GhostApi } from './GetPage.js'
 
 export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   GetPageFromGhost,
@@ -25,7 +24,7 @@ export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, i
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
-    const context = yield* Effect.context<GhostApi | HttpClient.HttpClient>()
+    const context = yield* Effect.context<Ghost.GhostApi | HttpClient.HttpClient>()
 
     return flow(
       getGhostIdAndLocaleForPage,

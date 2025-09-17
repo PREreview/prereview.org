@@ -3,6 +3,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
 import fetchMock from 'fetch-mock'
+import { Ghost } from '../../src/ExternalApis/index.js'
 import * as _ from '../../src/GhostPage/GetPage.js'
 import { rawHtml } from '../../src/html.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
@@ -27,7 +28,7 @@ describe('getPage', () => {
               { body: { pages: [{ html: html.toString() }] } },
             ) as never,
         ),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
       expect(actual).toStrictEqual(html)
@@ -56,7 +57,7 @@ describe('getPage', () => {
             },
           ) as never,
         ),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
       expect(actual).toStrictEqual(
@@ -89,7 +90,7 @@ describe('getPage', () => {
             },
           ) as never,
         ),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
       expect(actual).toStrictEqual(
@@ -122,7 +123,7 @@ describe('getPage', () => {
             },
           ) as never,
         ),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
       expect(actual).toStrictEqual(rawHtml('<a href="https://donorbox.org/prereview" class="button">Donate</a>'))
@@ -151,7 +152,7 @@ describe('getPage', () => {
             },
           ) as never,
         ),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
       expect(actual).toStrictEqual(rawHtml('<h2 id="some-heading">Some heading</h2>'))
@@ -175,10 +176,10 @@ describe('getPage', () => {
         Effect.flip,
         Effect.provide(FetchHttpClient.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as never),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
-      expect(actual).toStrictEqual(new _.GhostPageUnavailable())
+      expect(actual).toStrictEqual(new Ghost.GhostPageUnavailable({}))
       expect(fetch.done()).toBeTruthy()
     }).pipe(EffectTest.run),
   )
@@ -199,10 +200,10 @@ describe('getPage', () => {
         Effect.flip,
         Effect.provide(FetchHttpClient.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as never),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
-      expect(actual).toStrictEqual(new _.GhostPageNotFound())
+      expect(actual).toStrictEqual(new Ghost.GhostPageNotFound({}))
     }).pipe(EffectTest.run),
   )
 
@@ -220,10 +221,10 @@ describe('getPage', () => {
         Effect.flip,
         Effect.provide(FetchHttpClient.layer),
         Effect.provideService(FetchHttpClient.Fetch, fetch as never),
-        Effect.provideService(_.GhostApi, { key: Redacted.make(key) }),
+        Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }),
       )
 
-      expect(actual).toStrictEqual(new _.GhostPageUnavailable())
+      expect(actual).toStrictEqual(new Ghost.GhostPageUnavailable({}))
       expect(fetch.done()).toBeTruthy()
     }).pipe(EffectTest.run),
   )
@@ -240,7 +241,7 @@ describe('getPage', () => {
         Effect.provideService(FetchHttpClient.Fetch, () => Promise.reject(error)),
       )
 
-      expect(actual).toStrictEqual(new _.GhostPageUnavailable())
-    }).pipe(Effect.provideService(_.GhostApi, { key: Redacted.make(key) }), EffectTest.run),
+      expect(actual).toStrictEqual(new Ghost.GhostPageUnavailable({}))
+    }).pipe(Effect.provideService(Ghost.GhostApi, { key: Redacted.make(key) }), EffectTest.run),
   )
 })

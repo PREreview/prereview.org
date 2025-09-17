@@ -56,9 +56,8 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import { Cloudinary, Orcid, Zenodo } from '../src/ExternalApis/index.js'
+import { Cloudinary, Ghost, Orcid, Zenodo } from '../src/ExternalApis/index.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
-import * as Ghost from '../src/GhostPage/index.js'
 import { rawHtml } from '../src/html.js'
 import type {
   AuthorInviteStoreEnv,

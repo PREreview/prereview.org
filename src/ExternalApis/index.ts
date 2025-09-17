@@ -1,6 +1,7 @@
 export * as Cloudinary from './Cloudinary/index.js'
 export * as Crossref from './Crossref/index.js'
 export * as Datacite from './Datacite/index.js'
+export * as Ghost from './Ghost/index.js'
 export * as JapanLinkCenter from './JapanLinkCenter/index.js'
 export * as Orcid from './Orcid/index.js'
 export * as Philsci from './Philsci/index.js'

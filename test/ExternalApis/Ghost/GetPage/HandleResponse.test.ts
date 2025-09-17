@@ -1,0 +1,85 @@
+import { test } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
+import { Effect, Either } from 'effect'
+import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.js'
+import * as StatusCodes from '../../../../src/StatusCodes.js'
+import * as EffectTest from '../../../EffectTest.js'
+import * as fc from '../../../fc.js'
+import page from '../Samples/page.json' with { type: 'json' }
+
+describe('HandleResponse', () => {
+  describe('with a 200 status code', () => {
+    describe('with a decodable body', () => {
+      test.prop([
+        fc.httpClientResponse({
+          json: fc.constant(page),
+          status: fc.constant(StatusCodes.OK),
+        }),
+      ])('decodes the response', response =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.either(_.HandleResponse(response))
+
+          expect(actual).toStrictEqual(Either.right(expect.anything()))
+        }).pipe(EffectTest.run),
+      )
+    })
+
+    describe('with an unknown JSON body', () => {
+      test.prop([
+        fc.httpClientResponse({
+          json: fc.json(),
+          status: fc.constant(StatusCodes.OK),
+        }),
+      ])('returns an error', response =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('GhostPageUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'ParseError' })
+        }).pipe(EffectTest.run),
+      )
+    })
+
+    describe('with an unknown body', () => {
+      test.prop([
+        fc.httpClientResponse({
+          status: fc.constant(StatusCodes.OK),
+          text: fc.lorem(),
+        }),
+      ])('returns an error', response =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('GhostPageUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'Decode', response })
+        }).pipe(EffectTest.run),
+      )
+    })
+  })
+
+  describe('with a 404 status code', () => {
+    test.prop([fc.httpClientResponse({ status: fc.constant(StatusCodes.NotFound) })])('returns an error', response =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.flip(_.HandleResponse(response))
+
+        expect(actual._tag).toStrictEqual('GhostPageNotFound')
+        expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+      }).pipe(EffectTest.run),
+    )
+  })
+
+  describe('with another status code', () => {
+    test.prop([
+      fc.httpClientResponse({
+        status: fc.statusCode().filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
+      }),
+    ])('returns an error', response =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.flip(_.HandleResponse(response))
+
+        expect(actual._tag).toStrictEqual('GhostPageUnavailable')
+        expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+      }).pipe(EffectTest.run),
+    )
+  })
+})

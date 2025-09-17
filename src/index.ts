@@ -8,10 +8,9 @@ import { isAClubLead } from './club-details.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
-import { Cloudinary, Orcid, Zenodo } from './ExternalApis/index.js'
+import { Cloudinary, Ghost, Orcid, Zenodo } from './ExternalApis/index.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import * as FptsToEffect from './FptsToEffect.js'
-import { GhostApi } from './GhostPage/index.js'
 import { LegacyPrereviewApi } from './legacy-prereview.js'
 import * as Nodemailer from './nodemailer.js'
 import * as OrcidOauth from './OrcidOauth.js'
@@ -87,7 +86,7 @@ pipe(
         useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
       }),
       SqlClient,
-      Layer.effect(GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
+      Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(
         SlackApiConfig,
         Config.all({
