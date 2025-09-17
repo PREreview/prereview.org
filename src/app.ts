@@ -141,19 +141,15 @@ export const app = (config: ConfigEnv) => {
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local(
-              (
-                env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime },
-              ): RouterEnv & LegacyEnv & { runtime: AppRuntime } => ({
-                ...env,
-                user,
-                getUserOnboarding: withEnv(getUserOnboarding, env),
-                locale,
-                getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-                getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-                getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
-              }),
-            ),
+            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
+              ...env,
+              user,
+              getUserOnboarding: withEnv(getUserOnboarding, env),
+              locale,
+              getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+              getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+              getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
+            })),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({
               ...appEnv,
               logger,
