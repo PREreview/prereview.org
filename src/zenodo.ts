@@ -59,7 +59,6 @@ import {
 } from './Preprints/index.js'
 import * as Prereview from './Prereview.js'
 import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Comment as PrereviewComment } from './review-page/index.js'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
 import type { RecentPrereviews } from './reviews-page/index.js'
 import { reviewMatch } from './routes.js'
@@ -438,37 +437,6 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const getCommentsForPrereviewFromZenodo = flow(
-  (id: Doi) =>
-    new URLSearchParams({
-      q: `related.identifier:"${id}"`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-other',
-      access_status: 'open',
-    }),
-  getCommunityRecords('prereview-reviews'),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPrereviewComment))),
-  RTE.orElseFirstW(
-    RTE.fromReaderIOK(
-      flow(
-        error => ({
-          error: match(error)
-            .with(P.instanceOf(Error), error => error.message)
-            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
-            .with({ _tag: P.string }, D.draw)
-            .with('unknown-license', 'text-unavailable', identity)
-            .exhaustive(),
-        }),
-        L.errorP('Unable to get comments for PREreview from Zenodo'),
-      ),
-    ),
-  ),
-  RTE.mapLeft(() => 'unavailable' as const),
-)
-
 export const addAuthorToRecordOnZenodo = (
   id: number,
   user: User,
@@ -802,48 +770,6 @@ function recordToPrereview(
       }),
     ),
     RTE.map(args => new Prereview.Prereview(args)),
-  )
-}
-
-function recordToPrereviewComment(
-  record: Record,
-): RTE.ReaderTaskEither<
-  F.FetchEnv & L.LoggerEnv,
-  HttpError<404> | 'text-unavailable' | 'unknown-license',
-  PrereviewComment
-> {
-  return pipe(
-    RTE.Do,
-    RTE.apSW('commentTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
-    RTE.apSW(
-      'license',
-      RTE.fromEither(
-        pipe(
-          PrereviewLicenseD.decode(record),
-          E.filterOrElseW(license => license !== 'CC0-1.0', identity),
-          E.mapLeft(() => 'unknown-license' as const),
-        ),
-      ),
-    ),
-    RTE.chainW(({ license, commentTextUrl }) =>
-      sequenceS(RTE.ApplyPar)({
-        authors: RTE.right({ named: getAuthors(record).named }),
-        doi: RTE.right(record.metadata.doi),
-        language: RTE.right(
-          pipe(
-            Option.fromNullable(record.metadata.language),
-            Option.filter(iso6393Validate),
-            Option.match({ onNone: () => undefined, onSome: iso6393To1 }),
-          ),
-        ),
-        id: RTE.right(record.id),
-        license: RTE.right(license),
-        published: RTE.right(
-          toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
-        ),
-        text: getReviewText(commentTextUrl),
-      }),
-    ),
   )
 }
 
