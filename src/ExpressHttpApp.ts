@@ -1,17 +1,19 @@
-import { type HttpApp, HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { type HttpApp, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { NodeHttpServerRequest } from '@effect/platform-node'
 import { type ConfigError, Effect, HashMap, Option, pipe } from 'effect'
 import express, { type ErrorRequestHandler } from 'express'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
+import httpErrors from 'http-errors'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
 import type { AppContext } from './app.js'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
+import * as StatusCodes from './StatusCodes.js'
 import { LoggedInUser } from './user.js'
 
 export const ExpressHttpApp: HttpApp.Default<
-  ConfigError.ConfigError,
-  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | AppContext
+  ConfigError.ConfigError | HttpServerError.RouteNotFound,
+  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale | AppContext
 > = Effect.gen(function* () {
   const expressApp = yield* Express
   const loggerEnv = yield* DeprecatedLoggerEnv
@@ -33,7 +35,7 @@ export const ExpressHttpApp: HttpApp.Default<
     })),
   )
 
-  return yield* Effect.async<HttpServerResponse.HttpServerResponse>(resume => {
+  return yield* Effect.async<HttpServerResponse.HttpServerResponse, HttpServerError.RouteNotFound>(resume => {
     nodeResponse.once('close', () =>
       resume(
         Effect.succeed(
@@ -58,6 +60,10 @@ export const ExpressHttpApp: HttpApp.Default<
 
         if (res.headersSent) {
           return next(error)
+        }
+
+        if (httpErrors.isHttpError(error) && error.status === StatusCodes.NotFound) {
+          return resume(Effect.fail(new HttpServerError.RouteNotFound({ request })))
         }
 
         resume(Effect.die(error))

@@ -3,19 +3,17 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
+import type { HttpError } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import * as L from 'logger-fp-ts'
-import { match } from 'ts-pattern'
-import type { Locale } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
 import type * as Keyv from './keyv.js'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.js'
-import { PageNotFound } from './PageNotFound/index.js'
 import * as Preprints from './Preprints/index.js'
 import { type RouterEnv, routes } from './app-router.js'
 import { getUserOnboarding } from './keyv.js'
@@ -39,13 +37,7 @@ export type ConfigEnv = Omit<
     useCrowdinInContext: boolean
   }
 
-const appMiddleware: RM.ReaderMiddleware<
-  RouterEnv & LegacyEnv & { runtime: AppRuntime },
-  StatusOpen,
-  ResponseEnded,
-  never,
-  void
-> = pipe(
+const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, HttpError<404>, void> = pipe(
   routes,
   RM.orElseW(() =>
     pipe(
@@ -63,28 +55,9 @@ const appMiddleware: RM.ReaderMiddleware<
       RM.ichainW(handleResponse),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with({ status: 404 }, () =>
-        pipe(
-          RM.of({}),
-          RM.apS(
-            'user',
-            RM.asks((env: RouterEnv) => env.user),
-          ),
-          RM.apS(
-            'locale',
-            RM.asks((env: RouterEnv) => env.locale),
-          ),
-          RM.apSW('response', EffectToFpts.toReaderMiddleware(PageNotFound)),
-          RM.ichainW(handleResponse),
-        ),
-      )
-      .exhaustive(),
-  ),
 )
 
-export type AppContext = Locale | Preprints.Preprints
+export type AppContext = Preprints.Preprints
 
 type AppRuntime = Runtime.Runtime<AppContext>
 

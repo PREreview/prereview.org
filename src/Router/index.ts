@@ -7,6 +7,7 @@ import { CodeOfConductPage } from '../CodeOfConductPage.js'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.js'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
+import { ExpressHttpApp } from '../ExpressHttpApp.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { FundingPage } from '../FundingPage.js'
 import { HowToUsePage } from '../HowToUsePage.js'
@@ -401,4 +402,8 @@ export const Router = pipe(
   HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
+  Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
+  Effect.catchTag('RouteNotFound', () =>
+    Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
+  ),
 )
