@@ -29,12 +29,10 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.js'
-import { getAvatarFromCloudinary } from '../../cloudinary.js'
-import * as Cloudinary from '../../Cloudinary/index.js'
 import { clubProfile } from '../../club-profile-page/index.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
-import { Zenodo } from '../../ExternalApis/index.js'
+import { Cloudinary, Zenodo } from '../../ExternalApis/index.js'
 import * as FeatureFlags from '../../FeatureFlags.js'
 import { withEnv } from '../../Fpts.js'
 import * as FptsToEffect from '../../FptsToEffect.js'
@@ -340,7 +338,7 @@ const routerWithoutHyperTs = pipe(
         ({ profile: id }) =>
           (env: Env) =>
             profile({ locale: env.locale, profile: id })({
-              getAvatar: withEnv(getAvatarFromCloudinary, {
+              getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
                 getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
                 cloudinaryApi: {
                   cloudName: env.cloudinaryApiConfig.cloudName,

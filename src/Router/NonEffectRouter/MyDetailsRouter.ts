@@ -7,8 +7,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
-import * as Cloudinary from '../../cloudinary.js'
-import { getAvatarFromCloudinary, removeAvatarFromCloudinary } from '../../cloudinary.js'
 import {
   connectOrcid,
   connectOrcidCode,
@@ -20,6 +18,7 @@ import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } 
 import { disconnectSlack } from '../../disconnect-slack-page/index.js'
 import * as EffectToFpts from '../../EffectToFpts.js'
 import { sendContactEmailAddressVerificationEmail } from '../../email.js'
+import { Cloudinary } from '../../ExternalApis/index.js'
 import { withEnv } from '../../Fpts.js'
 import * as Keyv from '../../keyv.js'
 import {
@@ -273,7 +272,7 @@ export const MyDetailsRouter = pipe(
               : RTE.left('unavailable' as const),
           { sessionStore: env.sessionStore, ...env.logger },
         ),
-        deleteAvatar: withEnv(removeAvatarFromCloudinary, {
+        deleteAvatar: withEnv(Cloudinary.removeAvatarFromCloudinary, {
           cloudinaryApi: {
             cloudName: env.cloudinaryApiConfig.cloudName,
             key: Redacted.value(env.cloudinaryApiConfig.key),
@@ -332,7 +331,7 @@ export const MyDetailsRouter = pipe(
           orcidTokenStore: env.users.orcidTokenStore,
           ...env.logger,
         }),
-        getAvatar: withEnv(getAvatarFromCloudinary, {
+        getAvatar: withEnv(Cloudinary.getAvatarFromCloudinary, {
           getCloudinaryAvatar: withEnv(Keyv.getAvatar, { avatarStore: env.users.avatarStore, ...env.logger }),
           cloudinaryApi: {
             cloudName: env.cloudinaryApiConfig.cloudName,

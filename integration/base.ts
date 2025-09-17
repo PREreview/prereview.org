@@ -48,7 +48,6 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.js'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.js'
-import * as Cloudinary from '../src/Cloudinary/index.js'
 import {
   ContactEmailAddressC,
   UnverifiedContactEmailAddress,
@@ -57,7 +56,7 @@ import {
 import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
-import { Orcid, Zenodo } from '../src/ExternalApis/index.js'
+import { Cloudinary, Orcid, Zenodo } from '../src/ExternalApis/index.js'
 import * as FeatureFlags from '../src/FeatureFlags.js'
 import * as Ghost from '../src/GhostPage/index.js'
 import { rawHtml } from '../src/html.js'
