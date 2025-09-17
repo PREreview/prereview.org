@@ -46,7 +46,6 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import type { ConfigEnv } from '../src/app.js'
 import { AuthorInviteC } from '../src/author-invite.js'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.js'
 import * as Cloudinary from '../src/Cloudinary/index.js'
@@ -105,7 +104,7 @@ interface AppFixtures {
   languagesStore: LanguagesStoreEnv['languagesStore']
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
-  slackUserIdStore: ConfigEnv['slackUserIdStore']
+  slackUserIdStore: Keyv
   contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
@@ -1270,11 +1269,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
-          cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
           formStore,
           careerStageStore,
-          coarNotifyToken: 'token',
-          coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
           contactEmailAddressStore,
           isOpenForRequestsStore,
           isUserBlocked,
@@ -1284,7 +1280,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',
             clientSecret: 'client-secret',
-            revokeUrl: new URL('http://orcid.test/revoke'),
             tokenUrl: new URL('http://orcid.test/token'),
           },
           orcidTokenStore: new Keyv(),
@@ -1293,8 +1288,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           scietyListToken: NonEmptyString('secret'),
           sessionCookie: 'session',
           sessionStore: new Keyv(),
-          slackApiToken: '',
-          slackApiUpdate: true,
           slackOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',

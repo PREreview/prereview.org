@@ -1,6 +1,5 @@
 import { flow, pipe, String } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
-import * as E from 'fp-ts/lib/Either.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { v4 } from 'uuid-ts'
@@ -34,16 +33,6 @@ const IntD = pipe(
 
 const OrcidD = D.fromRefinement(isOrcidId, 'ORCID')
 
-const UrlD = pipe(
-  D.string,
-  D.parse(s =>
-    E.tryCatch(
-      () => new URL(s),
-      () => D.error(s, 'URL'),
-    ),
-  ),
-)
-
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
   pipe(D.string, D.map(String.split(',')), D.compose(D.array(decoder)))
 
@@ -55,16 +44,10 @@ const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
-    COAR_NOTIFY_TOKEN: D.string,
-    COAR_NOTIFY_URL: UrlD,
-    CLOUDINARY_API_KEY: D.string,
-    CLOUDINARY_API_SECRET: D.string,
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),
-    SLACK_API_TOKEN: D.string,
     SLACK_CLIENT_ID: D.string,
     SLACK_CLIENT_SECRET: D.string,
-    SLACK_UPDATE: withDefault(BooleanD, false),
   }),
   D.intersect(
     D.partial({

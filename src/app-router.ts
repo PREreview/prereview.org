@@ -1,4 +1,3 @@
-import type { HttpClient } from '@effect/platform'
 import { Array, Function, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as P from 'fp-ts-routing'
@@ -13,38 +12,26 @@ import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import type * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import type * as CachingHttpClient from './CachingHttpClient/index.js'
-import type { Locale } from './Context.js'
-import type { EffectEnv } from './EffectToFpts.js'
-import type { Orcid, Zenodo } from './ExternalApis/index.js'
-import type * as FeatureFlags from './FeatureFlags.js'
 import { withEnv } from './Fpts.js'
-import type * as OpenAlex from './OpenAlex/index.js'
 import * as StatusCodes from './StatusCodes.js'
-import type { CloudinaryApiEnv } from './cloudinary.js'
-import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid/index.js'
-import type { SlackOAuthEnv } from './connect-slack-page/index.js'
-import type { SendEmailEnv } from './email.js'
 import * as Keyv from './keyv.js'
 import {
-  type LegacyPrereviewApiEnv,
   createUserOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
   getUsersFromLegacyPrereview,
+  type LegacyPrereviewApiEnv,
 } from './legacy-prereview.js'
 import type { SupportedLocale } from './locales/index.js'
 import {
-  type IsUserBlockedEnv,
-  type OrcidOAuthEnv,
   authenticate,
   authenticateError,
   logIn,
   logOut,
+  type IsUserBlockedEnv,
+  type OrcidOAuthEnv,
 } from './log-in/index.js'
 import type { TemplatePageEnv } from './page.js'
-import type { GetPreprintEnv, GetPreprintIdEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint.js'
-import type * as PrereviewCoarNotify from './prereview-coar-notify/index.js'
-import type { PrereviewCoarNotifyEnv } from './prereview-coar-notify/index.js'
+import type { GetPreprintIdEnv } from './preprint.js'
 import type { PublicUrlEnv } from './public-url.js'
 import { handleResponse } from './response.js'
 import { reviewsData } from './reviews-data/index.js'
@@ -57,64 +44,24 @@ import {
   scietyListMatch,
   usersDataMatch,
 } from './routes.js'
-import { type ScietyListEnv, scietyList } from './sciety-list/index.js'
-import type { AddToSessionEnv, PopFromSessionEnv } from './session.js'
-import type { SlackApiEnv, SlackApiUpdateEnv } from './slack.js'
+import { scietyList, type ScietyListEnv } from './sciety-list/index.js'
 import type { OrcidId } from './types/OrcidId.js'
-import type { GenerateUuid, GenerateUuidEnv } from './types/uuid.js'
 import type { GetUserOnboardingEnv } from './user-onboarding.js'
 import type { User } from './user.js'
 import { usersData } from './users-data/index.js'
-import type { FormStoreEnv } from './write-review/index.js'
-import { type WasPrereviewRemovedEnv, getPrereviewsForSciety } from './zenodo.js'
+import { getPrereviewsForSciety } from './zenodo.js'
 
-export type RouterEnv = Keyv.AvatarStoreEnv &
-  EffectEnv<
-    | CachingHttpClient.HttpCache
-    | FeatureFlags.FeatureFlags
-    | Locale
-    | OpenAlex.GetCategories
-    | GenerateUuid
-    | HttpClient.HttpClient
-    | Orcid.OrcidApi
-    | PrereviewCoarNotify.PrereviewCoarNotifyConfig
-    | Zenodo.ZenodoApi
-  > &
-  ResolvePreprintIdEnv &
-  GetPreprintIdEnv &
-  GenerateUuidEnv &
-  GetPreprintEnv &
-  GetPreprintTitleEnv &
+export type RouterEnv = GetPreprintIdEnv &
   GetUserOnboardingEnv &
-  Keyv.AuthorInviteStoreEnv &
   Keyv.CareerStageStoreEnv &
-  CloudinaryApiEnv &
-  ConnectOrcidOAuthEnv &
-  Keyv.ContactEmailAddressStoreEnv &
-  FormStoreEnv &
-  Keyv.IsOpenForRequestsStoreEnv &
   IsUserBlockedEnv &
-  Keyv.LanguagesStoreEnv &
   LegacyPrereviewApiEnv &
   Keyv.LocationStoreEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
-  Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
-  PrereviewCoarNotifyEnv &
   PublicUrlEnv &
-  Keyv.ResearchInterestsStoreEnv &
-  Keyv.ReviewRequestStoreEnv &
   ScietyListEnv &
-  SendEmailEnv &
   SessionEnv &
-  SlackApiEnv &
-  SlackApiUpdateEnv &
-  SlackOAuthEnv &
-  Keyv.SlackUserIdStoreEnv &
   TemplatePageEnv &
-  Keyv.UserOnboardingStoreEnv &
-  AddToSessionEnv &
-  PopFromSessionEnv &
-  WasPrereviewRemovedEnv &
   FetchEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(

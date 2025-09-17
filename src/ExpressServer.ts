@@ -4,7 +4,6 @@ import { Duration, Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
-import * as EffectToFpts from './EffectToFpts.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import { LegacyPrereviewApi } from './legacy-prereview.js'
 import { Nodemailer } from './nodemailer.js'
@@ -12,7 +11,6 @@ import { OrcidOauth } from './OrcidOauth.js'
 import { PublicUrl } from './public-url.js'
 import { DataStoreRedis } from './Redis.js'
 import { TemplatePage } from './TemplatePage.js'
-import { GenerateUuid } from './types/uuid.js'
 
 export const expressServer = Effect.gen(function* () {
   const config = yield* ExpressConfig
@@ -20,7 +18,6 @@ export const expressServer = Effect.gen(function* () {
   const { clock } = yield* DeprecatedLoggerEnv
   const nodemailer = yield* Nodemailer
   const publicUrl = yield* PublicUrl
-  const generateUuid = yield* Effect.andThen(GenerateUuid, EffectToFpts.makeIO)
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
@@ -29,7 +26,6 @@ export const expressServer = Effect.gen(function* () {
   return app({
     clock,
     fetch,
-    generateUuid,
     legacyPrereviewApi: {
       app: legacyPrereviewApi.app,
       key: Redacted.value(legacyPrereviewApi.key),
@@ -58,9 +54,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
-    cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
-    coarNotifyToken: env.COAR_NOTIFY_TOKEN,
-    coarNotifyUrl: env.COAR_NOTIFY_URL,
     contactEmailAddressStore: new Keyv({
       emitErrors: false,
       namespace: 'contact-email-address',
@@ -81,7 +74,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       clientSecret: Redacted.value(orcidOauth.clientSecret),
     },
     orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
-    redis,
     researchInterestsStore: new Keyv({ emitErrors: false, namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
     scietyListToken: env.SCIETY_LIST_TOKEN,
@@ -98,8 +90,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       clientSecret: env.SLACK_CLIENT_SECRET,
       tokenUrl: new URL('https://slack.com/api/oauth.v2.access'),
     },
-    slackApiToken: env.SLACK_API_TOKEN,
-    slackApiUpdate: env.SLACK_UPDATE,
     slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
     userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),

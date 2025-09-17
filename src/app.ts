@@ -3,17 +3,16 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
-import type { Redis } from 'ioredis'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import type { Locale } from './Context.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { withEnv } from './Fpts.js'
-import * as Keyv from './keyv.js'
+import type * as Keyv from './keyv.js'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.js'
 import { PageNotFound } from './PageNotFound/index.js'
@@ -23,35 +22,30 @@ import { getUserOnboarding } from './keyv.js'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.js'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.js'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.js'
-import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer.js'
+import type { NodemailerEnv } from './nodemailer.js'
 import { handleResponse } from './response.js'
 import { securityHeaders } from './securityHeaders.js'
 import type { User } from './user.js'
+import type { WasPrereviewRemovedEnv } from './zenodo.js'
 
 export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
-  | 'resolvePreprintId'
-  | 'getPreprintId'
-  | 'getUser'
-  | 'getUserOnboarding'
-  | 'getPreprint'
-  | 'getPreprintTitle'
-  | 'locale'
-  | 'logger'
-  | 'getPreprintIdFromUuid'
-  | 'getProfileIdFromUuid'
-  | 'runtime'
-  | 'sendEmail'
-  | 'addToSession'
-  | 'popFromSession'
+  'getPreprintId' | 'getUserOnboarding' | 'locale' | 'logger' | 'getPreprintIdFromUuid' | 'getProfileIdFromUuid'
 > &
+  Keyv.UserOnboardingStoreEnv &
+  WasPrereviewRemovedEnv &
   NodemailerEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean
-    redis?: Redis
   }
 
-const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, never, void> = pipe(
+const appMiddleware: RM.ReaderMiddleware<
+  RouterEnv & LegacyEnv & { runtime: AppRuntime },
+  StatusOpen,
+  ResponseEnded,
+  never,
+  void
+> = pipe(
   routes,
   RM.orElseW(() =>
     pipe(
@@ -90,7 +84,7 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
   ),
 )
 
-export type AppContext = Runtime.Runtime.Context<RouterEnv['runtime']> | Preprints.Preprints
+export type AppContext = Locale | Preprints.Preprints
 
 type AppRuntime = Runtime.Runtime<AppContext>
 
@@ -132,13 +126,11 @@ export const app = (config: ConfigEnv) => {
     locale,
     logger,
     runtime,
-    sessionId,
     user,
   }: {
     locale: SupportedLocale
     logger: L.Logger
     runtime: AppRuntime
-    sessionId?: string
     user?: User
   }) => {
     return express()
@@ -178,33 +170,19 @@ export const app = (config: ConfigEnv) => {
         asyncHandler((req, res, next) => {
           return pipe(
             appMiddleware,
-            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
-              ...env,
-              addToSession: withEnv(
-                (key: string, value: Json) =>
-                  typeof sessionId === 'string'
-                    ? Keyv.addToSession(sessionId, key, value)
-                    : RTE.left('unavailable' as const),
-                env,
-              ),
-              user,
-              getUserOnboarding: withEnv(getUserOnboarding, env),
-              getPreprint: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprint), env),
-              getPreprintTitle: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintTitle), env),
-              locale,
-              getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-              getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-              getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
-              popFromSession: withEnv(
-                (key: string) =>
-                  typeof sessionId === 'string'
-                    ? Keyv.popFromSession(sessionId, key)
-                    : RTE.left('unavailable' as const),
-                env,
-              ),
-              resolvePreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.resolvePreprintId), env),
-              sendEmail: withEnv(sendEmailWithNodemailer, env),
-            })),
+            R.local(
+              (
+                env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime },
+              ): RouterEnv & LegacyEnv & { runtime: AppRuntime } => ({
+                ...env,
+                user,
+                getUserOnboarding: withEnv(getUserOnboarding, env),
+                locale,
+                getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+                getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+                getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
+              }),
+            ),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({
               ...appEnv,
               logger,
