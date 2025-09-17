@@ -9,7 +9,7 @@ import * as DatasetReviews from './DatasetReviews/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as Events from './Events.js'
-import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci, Zenodo } from './ExternalApis/index.js'
+import { Crossref, Datacite, Ghost, JapanLinkCenter, Orcid, Philsci, Zenodo } from './ExternalApis/index.js'
 import { collapseRequests } from './fetch.js'
 import * as FetchHttpClient from './FetchHttpClient.js'
 import * as FptsToEffect from './FptsToEffect.js'
@@ -334,7 +334,7 @@ export const Program = pipe(
         ),
         Layer.fresh,
       ),
-      Layer.provide(GhostPage.layer, CachingHttpClient.layer('10 seconds')),
+      GhostPage.layer,
       ZenodoInteractions.layer,
     ),
   ),
@@ -342,6 +342,7 @@ export const Program = pipe(
     Layer.mergeAll(
       Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
+      Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
