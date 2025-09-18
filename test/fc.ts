@@ -1479,6 +1479,35 @@ export const preprintTitle = ({ id }: { id?: fc.Arbitrary<PreprintId> } = {}): f
     title: html(),
   })
 
+export const dataset = (): fc.Arbitrary<Datasets.Dataset> =>
+  fc
+    .record(
+      {
+        abstract: fc.record({
+          language: languageCode(),
+          text: html(),
+        }),
+        authors: nonEmptyArray(
+          fc.record(
+            {
+              name: fc.string(),
+              orcid: orcidId(),
+            },
+            { requiredKeys: ['name'] },
+          ),
+        ),
+        id: datasetId(),
+        posted: fc.oneof(plainDate(), plainYearMonth(), year()),
+        title: fc.record({
+          language: languageCode(),
+          text: html(),
+        }),
+        url: url(),
+      },
+      { requiredKeys: ['authors', 'id', 'posted', 'title', 'url'] },
+    )
+    .map(args => new Datasets.Dataset(args))
+
 export const prereview = (): fc.Arbitrary<Prereview> =>
   fc
     .record({

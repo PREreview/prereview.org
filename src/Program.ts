@@ -6,6 +6,7 @@ import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from './Context.js'
 import * as DatasetReviews from './DatasetReviews/index.js'
+import * as Datasets from './Datasets/index.js'
 import * as EffectToFpts from './EffectToFpts.js'
 import { createContactEmailAddressVerificationEmailForComment } from './email.js'
 import * as Events from './Events.js'
@@ -310,6 +311,7 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       Personas.layer,
+      Datasets.layer,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
