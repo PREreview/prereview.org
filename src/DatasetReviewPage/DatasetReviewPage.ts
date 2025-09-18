@@ -33,11 +33,10 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
     main: html`
       <header>
         <h1>
-          Structured PREreview of “<cite
-            lang="${datasetReview.dataset.language}"
-            dir="${rtlDetect.getLangDir(datasetReview.dataset.language)}"
+          Structured PREreview of
+          <cite lang="${datasetReview.dataset.language}" dir="${rtlDetect.getLangDir(datasetReview.dataset.language)}"
             >${datasetReview.dataset.title}</cite
-          >”
+          >
         </h1>
 
         <div class="byline">
