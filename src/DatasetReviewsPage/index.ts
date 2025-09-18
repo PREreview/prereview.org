@@ -4,13 +4,10 @@ import * as Datasets from '../Datasets/index.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { PageNotFound } from '../PageNotFound/index.js'
 import * as Personas from '../Personas/index.js'
-import { Doi } from '../types/index.js'
 import { createDatasetReviewsPage } from './DatasetReviewsPage.js'
 
 export const DatasetReviewsPage = Effect.fn(
-  function* () {
-    const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-
+  function* ({ datasetId }: { datasetId: Datasets.DatasetId }) {
     const { dataset, datasetReviews } = yield* Effect.all(
       {
         dataset: Datasets.getDataset(datasetId),

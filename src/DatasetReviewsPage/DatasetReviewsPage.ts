@@ -119,7 +119,7 @@ export const createDatasetReviewsPage = ({
         `,
       })}
     `,
-    canonical: Routes.DatasetReviews,
+    canonical: Routes.DatasetReviews.href({ datasetId: dataset.id }),
     type: 'dataset',
   })
 }

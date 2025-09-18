@@ -6,6 +6,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
+import * as Datasets from './Datasets/index.js'
 import * as FptsToEffect from './FptsToEffect.js'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.js'
 import { ClubIdC } from './types/club-id.js'
@@ -38,7 +39,22 @@ export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
 export const LogInDemo = '/log-in-demo'
 
-export const DatasetReviews = '/datasets/doi-10.5061-dryad.wstqjq2n3'
+const DatasetIdSchema = Schema.transform(
+  Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),
+  Datasets.DatasetIdFromString,
+  {
+    strict: true,
+    decode: ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
+    encode: value =>
+      Tuple.make('doi-' as const, value.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
+  },
+)
+
+export const DatasetReviews: Route<{ datasetId: Datasets.DatasetId }> = {
+  path: '/datasets/:datasetId',
+  href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}`,
+  schema: Schema.Struct({ datasetId: DatasetIdSchema }),
+}
 
 export const DatasetReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/reviews/:datasetReviewId',

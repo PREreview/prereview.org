@@ -14,6 +14,7 @@ import * as fc from './fc.js'
 describe('DatasetReviewsPage', () => {
   test.prop([
     fc.supportedLocale(),
+    fc.datasetId(),
     fc.array(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
@@ -45,13 +46,13 @@ describe('DatasetReviewsPage', () => {
     fc.pseudonymPersona(),
   ])(
     'when reviews can be loaded',
-    (locale, datasetReviewIds, datasetReview, dataset, publicPersona, pseudonymPersona) =>
+    (locale, datasetId, datasetReviewIds, datasetReview, dataset, publicPersona, pseudonymPersona) =>
       Effect.gen(function* () {
-        const actual = yield* _.DatasetReviewsPage()
+        const actual = yield* _.DatasetReviewsPage({ datasetId })
 
         expect(actual).toStrictEqual({
           _tag: 'TwoUpPageResponse',
-          canonical: Routes.DatasetReviews,
+          canonical: Routes.DatasetReviews.href({ datasetId: dataset.id }),
           title: expect.anything(),
           description: expect.anything(),
           h1: expect.anything(),
@@ -84,6 +85,7 @@ describe('DatasetReviewsPage', () => {
 
   test.prop([
     fc.supportedLocale(),
+    fc.datasetId(),
     fc.nonEmptyArray(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
@@ -112,9 +114,9 @@ describe('DatasetReviewsPage', () => {
     }),
     fc.dataset(),
     fc.anything(),
-  ])("when personas can't be loaded", (locale, datasetReviewIds, datasetReview, dataset, error) =>
+  ])("when personas can't be loaded", (locale, datasetId, datasetReviewIds, datasetReview, dataset, error) =>
     Effect.gen(function* () {
-      const actual = yield* _.DatasetReviewsPage()
+      const actual = yield* _.DatasetReviewsPage({ datasetId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
@@ -149,6 +151,7 @@ describe('DatasetReviewsPage', () => {
 
   test.prop([
     fc.supportedLocale(),
+    fc.datasetId(),
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
@@ -156,9 +159,9 @@ describe('DatasetReviewsPage', () => {
       new DatasetReviews.UnknownDatasetReview({}),
     ),
     fc.dataset(),
-  ])("when reviews can't be loaded", (locale, datasetReviewIds, error, dataset) =>
+  ])("when reviews can't be loaded", (locale, datasetId, datasetReviewIds, error, dataset) =>
     Effect.gen(function* () {
-      const actual = yield* _.DatasetReviewsPage()
+      const actual = yield* _.DatasetReviewsPage({ datasetId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
@@ -188,6 +191,7 @@ describe('DatasetReviewsPage', () => {
 
   test.prop([
     fc.supportedLocale(),
+    fc.datasetId(),
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
@@ -223,9 +227,9 @@ describe('DatasetReviewsPage', () => {
     fc.pseudonymPersona(),
   ])(
     "when the dataset can't be loaded",
-    (locale, datasetReviewIds, error, datasetReview, publicPersona, pseudonymPersona) =>
+    (locale, datasetId, datasetReviewIds, error, datasetReview, publicPersona, pseudonymPersona) =>
       Effect.gen(function* () {
-        const actual = yield* _.DatasetReviewsPage()
+        const actual = yield* _.DatasetReviewsPage({ datasetId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -260,6 +264,7 @@ describe('DatasetReviewsPage', () => {
 
   test.prop([
     fc.supportedLocale(),
+    fc.datasetId(),
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
@@ -295,9 +300,9 @@ describe('DatasetReviewsPage', () => {
     fc.pseudonymPersona(),
   ])(
     'when the dataset is not found',
-    (locale, datasetReviewIds, error, datasetReview, publicPersona, pseudonymPersona) =>
+    (locale, datasetId, datasetReviewIds, error, datasetReview, publicPersona, pseudonymPersona) =>
       Effect.gen(function* () {
-        const actual = yield* _.DatasetReviewsPage()
+        const actual = yield* _.DatasetReviewsPage({ datasetId })
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -330,9 +335,9 @@ describe('DatasetReviewsPage', () => {
       ),
   )
 
-  test.prop([fc.supportedLocale()])("when review IDs can't be loaded", locale =>
+  test.prop([fc.supportedLocale(), fc.datasetId()])("when review IDs can't be loaded", (locale, datasetId) =>
     Effect.gen(function* () {
-      const actual = yield* _.DatasetReviewsPage()
+      const actual = yield* _.DatasetReviewsPage({ datasetId })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

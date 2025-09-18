@@ -27,7 +27,9 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
     title: plainText`Structured PREreview of “${plainText(datasetReview.dataset.title)}”`,
     description: plainText`Authored by ${displayAuthor(datasetReview.author)}`,
     nav: html`
-      <a href="${Routes.DatasetReviews}" class="back"><span>Back to all reviews</span></a>
+      <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
+        ><span>Back to all reviews</span></a
+      >
       <a href="${plainText(datasetReview.dataset.url.href)}" class="forward"><span>See the dataset</span></a>
     `,
     main: html`
