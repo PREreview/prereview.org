@@ -1,7 +1,6 @@
 import { Context, Effect, Layer } from 'effect'
-import * as Dataset from './Dataset.js'
-import type { GetDataset } from './GetDataset.js'
-import type { GetDatasetTitle } from './GetDatasetTitle.js'
+import { GetDataset } from './GetDataset.js'
+import { GetDatasetTitle } from './GetDatasetTitle.js'
 
 export * from './Dataset.js'
 export * from './DatasetId.js'
@@ -27,6 +26,6 @@ export class Datasets extends Context.Tag('Datasets')<
 export const { getDataset, getDatasetTitle } = Effect.serviceFunctions(Datasets)
 
 export const layer = Layer.succeed(Datasets, {
-  getDataset: () => new Dataset.DatasetIsUnavailable({ cause: 'not implemented' }),
-  getDatasetTitle: () => new Dataset.DatasetIsUnavailable({ cause: 'not implemented' }),
+  getDataset: GetDataset,
+  getDatasetTitle: GetDatasetTitle,
 })
