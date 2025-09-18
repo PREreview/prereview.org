@@ -87,7 +87,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByRole('link', { name: 'See your review' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+    'Structured PREreview of Metadata collected from 500 articles in the field of ecology and evolution',
   )
   await expect(page.getByRole('main')).toContainText('by Josiah Carberry')
   await expect(page.getByRole('main')).toContainText('How would you rate the quality of this data set? Fair')
