@@ -67,6 +67,11 @@ export const CheckYourReviewPage = ({
                         </a>
                       </dd>
                     </div>
+
+                    <div>
+                      <dt><span>Competing interests</span></dt>
+                      <dd>${Option.getOrElse(review.competingInterests, () => html`<i>None declared</i>`)}</dd>
+                    </div>
                   </dl>
                 </div>
               </div>`,

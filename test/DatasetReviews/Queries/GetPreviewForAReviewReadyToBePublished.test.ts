@@ -113,6 +113,18 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
+const competingInterestsForADatasetReviewWereDeclared1 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.none(),
+    datasetReviewId,
+  })
+const competingInterestsForADatasetReviewWereDeclared2 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.some(
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    ),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -155,11 +167,13 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
               author: { orcidId: events[0].authorId, persona: Option.some(events[13].persona) },
+              competingInterests: events[14].competingInterests,
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -182,6 +196,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples],
               {
                 author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                competingInterests: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -228,12 +243,15 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answeredIfTheDatasetIsMissingAnything2,
                 personaForDatasetReviewWasChosen1,
                 personaForDatasetReviewWasChosen2,
+                competingInterestsForADatasetReviewWereDeclared1,
+                competingInterestsForADatasetReviewWereDeclared2,
               ],
               {
                 author: {
                   orcidId: datasetReviewWasStarted.authorId,
                   persona: Option.some(personaForDatasetReviewWasChosen2.persona),
                 },
+                competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,

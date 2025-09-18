@@ -8,6 +8,7 @@ export interface DatasetReviewPreview {
     readonly orcidId: OrcidId.OrcidId
     readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
   }
+  readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -98,6 +99,8 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const answerToIfTheDatasetIsMissingAnything = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything'))
 
+  const competingInterests = Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () =>
       Either.left(
@@ -108,6 +111,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+        competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),

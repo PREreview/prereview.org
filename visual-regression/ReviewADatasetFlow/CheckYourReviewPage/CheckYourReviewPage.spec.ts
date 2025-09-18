@@ -25,6 +25,11 @@ const review = {
       orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     }),
   ),
+  competingInterests: Option.some(
+    NonEmptyString.NonEmptyString(
+      'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
+    ),
+  ),
   qualityRating: Option.some('excellent'),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),

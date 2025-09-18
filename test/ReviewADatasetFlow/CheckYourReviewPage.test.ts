@@ -21,6 +21,9 @@ describe('CheckYourReviewPage', () => {
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('public')) }),
+          competingInterests: fc
+            .competingInterestsForADatasetReviewWereDeclared()
+            .map(Struct.get('competingInterests')),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -92,6 +95,9 @@ describe('CheckYourReviewPage', () => {
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('pseudonym')) }),
+          competingInterests: fc
+            .competingInterestsForADatasetReviewWereDeclared()
+            .map(Struct.get('competingInterests')),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -163,6 +169,9 @@ describe('CheckYourReviewPage', () => {
         fc.user(),
         fc.record<DatasetReviews.DatasetReviewPreview>({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.none()) }),
+          competingInterests: fc
+            .competingInterestsForADatasetReviewWereDeclared()
+            .map(Struct.get('competingInterests')),
           qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
           answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
             .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -230,6 +239,7 @@ describe('CheckYourReviewPage', () => {
       fc.user(),
       fc.record<DatasetReviews.DatasetReviewPreview>({
         author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
+        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
         qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
