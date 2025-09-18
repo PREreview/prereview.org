@@ -15,6 +15,7 @@ import * as AnswerIfTheDatasetIsReadyToBeShared from './AnswerIfTheDatasetIsRead
 import * as AnswerIfTheDatasetMattersToItsAudience from './AnswerIfTheDatasetMattersToItsAudience.js'
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as ChoosePersona from './ChoosePersona.js'
+import * as DeclareCompetingInterests from './DeclareCompetingInterests.js'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.js'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.js'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.js'
@@ -74,6 +75,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsMissingAnything.Error
     >
     choosePersona: CommandHandler<ChoosePersona.Command, ChoosePersona.Error>
+    declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
       MarkRecordAsPublishedOnZenodo.Command,
@@ -112,6 +114,7 @@ export const {
   answerIfTheDatasetIsReadyToBeShared,
   answerIfTheDatasetIsMissingAnything,
   choosePersona,
+  declareCompetingInterests,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -253,6 +256,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         ChoosePersona.foldState,
         ChoosePersona.authorize,
         ChoosePersona.decide,
+      ),
+      declareCompetingInterests: handleCommand(
+        DeclareCompetingInterests.createFilter,
+        DeclareCompetingInterests.foldState,
+        DeclareCompetingInterests.authorize,
+        DeclareCompetingInterests.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
         datasetReviewId => ({
