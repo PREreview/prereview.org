@@ -210,10 +210,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
     <h2>Competing interests</h2>
 
     <p>
-      ${Option.getOrElse(
-        review.competingInterests,
-        () => 'The author of this comment declares that they have no competing interests.',
-      )}
+      ${Option.getOrElse(review.competingInterests, () => 'The author declares that they have no competing interests.')}
     </p>
   `,
   title: 'Dataset review',

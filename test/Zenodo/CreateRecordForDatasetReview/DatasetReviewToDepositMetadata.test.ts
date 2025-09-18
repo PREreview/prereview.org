@@ -181,7 +181,7 @@ const cases = [
     <h2>Competing interests</h2>
 
     <p>
-      The author of this comment declares that they have no competing interests.
+      The author declares that they have no competing interests.
     </p>
   `),
       title: 'Dataset review',

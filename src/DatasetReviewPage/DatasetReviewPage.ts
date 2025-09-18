@@ -248,7 +248,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
       <p>
         ${Option.getOrElse(
           datasetReview.competingInterests,
-          () => 'The author of this comment declares that they have no competing interests.',
+          () => 'The author declares that they have no competing interests.',
         )}
       </p>
     `,
