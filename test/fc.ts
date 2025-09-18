@@ -1776,6 +1776,18 @@ export const personaForDatasetReviewWasChosen = ({
     })
     .map(data => new Events.PersonaForDatasetReviewWasChosen(data))
 
+export const competingInterestsForADatasetReviewWereDeclared = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.CompetingInterestsForADatasetReviewWereDeclared['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.CompetingInterestsForADatasetReviewWereDeclared> =>
+  fc
+    .record({
+      datasetReviewId: datasetReviewId ?? uuid(),
+      competingInterests: maybe(nonEmptyString()),
+    })
+    .map(data => new Events.CompetingInterestsForADatasetReviewWereDeclared(data))
+
 export const publicationOfDatasetReviewWasRequested = ({
   datasetReviewId,
 }: {
@@ -1854,6 +1866,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetIsReadyToBeShared(args),
     answeredIfTheDatasetIsMissingAnything(args),
     personaForDatasetReviewWasChosen(args),
+    competingInterestsForADatasetReviewWereDeclared(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
     datasetReviewWasAssignedADoi(args),

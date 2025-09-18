@@ -81,6 +81,14 @@ export class PersonaForDatasetReviewWasChosen extends Schema.TaggedClass<Persona
   },
 ) {}
 
+export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.TaggedClass<CompetingInterestsForADatasetReviewWereDeclared>()(
+  'CompetingInterestsForADatasetReviewWereDeclared',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    competingInterests: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema),
+  },
+) {}
+
 export class PublicationOfDatasetReviewWasRequested extends Schema.TaggedClass<PublicationOfDatasetReviewWasRequested>()(
   'PublicationOfDatasetReviewWasRequested',
   { datasetReviewId: Uuid.UuidSchema },
@@ -134,6 +142,7 @@ export const DatasetReviewEvent = Schema.Union(
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
   PersonaForDatasetReviewWasChosen,
+  CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
   ZenodoRecordForDatasetReviewWasPublished,
