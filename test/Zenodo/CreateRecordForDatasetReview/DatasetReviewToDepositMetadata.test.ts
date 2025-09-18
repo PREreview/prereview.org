@@ -15,6 +15,11 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
+      competingInterests: Option.some(
+        NonEmptyString.NonEmptyString(
+          'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
+        ),
+      ),
       qualityRating: Option.some('excellent'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
@@ -113,6 +118,12 @@ const cases = [
           <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
         
     </dl>
+
+    <h2>Competing interests</h2>
+
+    <p>
+      Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
+    </p>
   `),
       title: 'Dataset review',
       communities: [{ identifier: 'prereview-reviews' }],
@@ -132,6 +143,7 @@ const cases = [
     'minimal questions answered',
     {
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      competingInterests: Option.none(),
       qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
@@ -165,6 +177,12 @@ const cases = [
       
       
     </dl>
+
+    <h2>Competing interests</h2>
+
+    <p>
+      The author of this comment declares that they have no competing interests.
+    </p>
   `),
       title: 'Dataset review',
       communities: [{ identifier: 'prereview-reviews' }],

@@ -110,6 +110,18 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
+const competingInterestsForADatasetReviewWereDeclared1 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.none(),
+    datasetReviewId,
+  })
+const competingInterestsForADatasetReviewWereDeclared2 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.some(
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    ),
+    datasetReviewId,
+  })
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({
   recordId: 123,
   datasetReviewId,
@@ -154,12 +166,14 @@ describe('GetDataForZenodoRecord', () => {
               fc.answeredIfTheDatasetIsReadyToBeShared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.answeredIfTheDatasetIsMissingAnything({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.competingInterestsForADatasetReviewWereDeclared({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.publicationOfDatasetReviewWasRequested({ datasetReviewId: fc.constant(datasetReviewId) }),
             ),
           )
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DataForZenodoRecord]>(events, {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
+              competingInterests: events[14].competingInterests,
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
@@ -186,6 +200,7 @@ describe('GetDataForZenodoRecord', () => {
               ],
               {
                 author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                competingInterests: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -232,6 +247,8 @@ describe('GetDataForZenodoRecord', () => {
                 answeredIfTheDatasetIsMissingAnything2,
                 personaForDatasetReviewWasChosen1,
                 personaForDatasetReviewWasChosen2,
+                competingInterestsForADatasetReviewWereDeclared1,
+                competingInterestsForADatasetReviewWereDeclared2,
                 publicationOfDatasetReviewWasRequested,
               ],
               {
@@ -239,6 +256,7 @@ describe('GetDataForZenodoRecord', () => {
                   orcidId: datasetReviewWasStarted.authorId,
                   persona: personaForDatasetReviewWasChosen2.persona,
                 },
+                competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
@@ -270,6 +288,7 @@ describe('GetDataForZenodoRecord', () => {
               ],
               {
                 author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                competingInterests: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
@@ -296,6 +315,7 @@ describe('GetDataForZenodoRecord', () => {
               ],
               {
                 author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                competingInterests: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,

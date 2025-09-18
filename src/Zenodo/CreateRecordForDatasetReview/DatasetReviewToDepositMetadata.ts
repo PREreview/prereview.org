@@ -206,6 +206,15 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
         `,
       })}
     </dl>
+
+    <h2>Competing interests</h2>
+
+    <p>
+      ${Option.getOrElse(
+        review.competingInterests,
+        () => 'The author of this comment declares that they have no competing interests.',
+      )}
+    </p>
   `,
   title: 'Dataset review',
   communities: [{ identifier: 'prereview-reviews' }],

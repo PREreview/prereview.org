@@ -14,6 +14,7 @@ describe('CreateRecordOnZenodo', () => {
       fc.uuid(),
       fc.record<DatasetReviews.DataForZenodoRecord>({
         author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
+        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
         qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -73,6 +74,7 @@ describe('CreateRecordOnZenodo', () => {
       fc.uuid(),
       fc.record<DatasetReviews.DataForZenodoRecord>({
         author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
+        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
         qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -133,6 +135,7 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('public', 'pseudonym') }),
+      competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -202,6 +205,7 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('public', 'pseudonym') }),
+      competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
@@ -264,6 +268,7 @@ describe('CreateRecordOnZenodo', () => {
     fc.uuid(),
     fc.record<DatasetReviews.DataForZenodoRecord>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('public', 'pseudonym') }),
+      competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
       qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()

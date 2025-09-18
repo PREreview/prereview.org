@@ -5,6 +5,7 @@ import type * as Events from '../Events.js'
 
 export interface DataForZenodoRecord {
   readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
+  readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
@@ -92,6 +93,8 @@ export const GetDataForZenodoRecord = (
 
   const answerToIfTheDatasetIsMissingAnything = Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything'))
 
+  const competingInterests = Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
@@ -100,6 +103,7 @@ export const GetDataForZenodoRecord = (
           orcidId: started.authorId,
           persona: Option.match(chosenPersona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
+        competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
