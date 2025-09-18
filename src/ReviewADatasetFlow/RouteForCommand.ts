@@ -20,5 +20,6 @@ const commandRoutes = {
   AnswerIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
   AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   ChoosePersona: Routes.ReviewADatasetChooseYourPersona,
+  DeclareCompetingInterests: Routes.ReviewADatasetDeclareCompetingInterests,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
 } satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>

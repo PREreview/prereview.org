@@ -22,7 +22,9 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
+        ><span>Back</span></a
+      >
     `,
     main: html`
       <single-use-form>
@@ -71,6 +73,11 @@ export const CheckYourReviewPage = ({
                     <div>
                       <dt><span>Competing interests</span></dt>
                       <dd>${Option.getOrElse(review.competingInterests, () => html`<i>None declared</i>`)}</dd>
+                      <dd>
+                        <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
+                          Change <span class="visually-hidden">your competing interests</span>
+                        </a>
+                      </dd>
                     </div>
                   </dl>
                 </div>

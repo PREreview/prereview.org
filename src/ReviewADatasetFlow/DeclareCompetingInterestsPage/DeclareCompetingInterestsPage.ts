@@ -16,6 +16,9 @@ export const DeclareCompetingInterestsPage = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Do you have any competing interests?`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+    `,
     main: html`
       <form
         method="post"
