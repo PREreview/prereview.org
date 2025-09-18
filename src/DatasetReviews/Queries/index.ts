@@ -18,6 +18,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared from './CheckIfUse
 import * as CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience from './CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.js'
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.js'
 import * as CheckIfUserCanChoosePersona from './CheckIfUserCanChoosePersona.js'
+import * as CheckIfUserCanDeclareCompetingInterests from './CheckIfUserCanDeclareCompetingInterests.js'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.js'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.js'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.js'
@@ -97,6 +98,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       ) => CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Result
     >
     checkIfUserCanChoosePersona: Query<(input: CheckIfUserCanChoosePersona.Input) => CheckIfUserCanChoosePersona.Result>
+    checkIfUserCanDeclareCompetingInterests: Query<
+      (input: CheckIfUserCanDeclareCompetingInterests.Input) => CheckIfUserCanDeclareCompetingInterests.Result
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -151,6 +155,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared,
   checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
   checkIfUserCanChoosePersona,
+  checkIfUserCanDeclareCompetingInterests,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -274,6 +279,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanChoosePersona: handleQuery(
         CheckIfUserCanChoosePersona.createFilter,
         CheckIfUserCanChoosePersona.query,
+      ),
+      checkIfUserCanDeclareCompetingInterests: handleQuery(
+        CheckIfUserCanDeclareCompetingInterests.createFilter,
+        CheckIfUserCanDeclareCompetingInterests.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
