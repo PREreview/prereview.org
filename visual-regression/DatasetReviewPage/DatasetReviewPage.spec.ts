@@ -1,6 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.js'
+import * as Datasets from '../../src/Datasets/index.js'
+import { html } from '../../src/html.js'
 import * as Personas from '../../src/Personas/index.js'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.js'
 import { expect, test } from '../base.js'
@@ -20,6 +22,12 @@ const datasetReview: _.DatasetReview = {
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
+  dataset: {
+    id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+    title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+    language: 'en',
+    url: new URL('https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3'),
+  },
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {

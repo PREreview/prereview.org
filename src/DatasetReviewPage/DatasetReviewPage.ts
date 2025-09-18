@@ -1,7 +1,10 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import type { LanguageCode } from 'iso-639-1'
+import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../DatasetReviews/index.js'
-import { html, plainText } from '../html.js'
+import type * as Datasets from '../Datasets/index.js'
+import { type Html, html, plainText } from '../html.js'
 import { DefaultLocale } from '../locales/index.js'
 import * as Personas from '../Personas/index.js'
 import { PageResponse } from '../response.js'
@@ -11,21 +14,31 @@ import { Doi, ProfileId } from '../types/index.js'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author'> & {
   readonly author: Personas.Persona
+  readonly dataset: {
+    readonly id: Datasets.DatasetId
+    readonly language: LanguageCode
+    readonly title: Html
+    readonly url: URL
+  }
 }
 
 export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReview }) => {
   return PageResponse({
-    title: plainText`Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”`,
+    title: plainText`Structured PREreview of “${plainText(datasetReview.dataset.title)}”`,
     description: plainText`Authored by ${displayAuthor(datasetReview.author)}`,
     nav: html`
       <a href="${Routes.DatasetReviews}" class="back"><span>Back to all reviews</span></a>
-      <a href="https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3" class="forward"
-        ><span>See the dataset</span></a
-      >
+      <a href="${plainText(datasetReview.dataset.url.href)}" class="forward"><span>See the dataset</span></a>
     `,
     main: html`
       <header>
-        <h1>Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”</h1>
+        <h1>
+          Structured PREreview of “<cite
+            lang="${datasetReview.dataset.language}"
+            dir="${rtlDetect.getLangDir(datasetReview.dataset.language)}"
+            >${datasetReview.dataset.title}</cite
+          >”
+        </h1>
 
         <div class="byline">
           <span class="visually-hidden">Authored</span> by ${displayAuthor(datasetReview.author)}
