@@ -823,3 +823,43 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a persona', async ({ j
 
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to declare competing interests',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../declare-competing-interests`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Do you have any competing interests?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+
+    await page.getByRole('link', { name: 'Select yes if you have any competing interests' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+
+    await page.getByLabel('Yes').check()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
+
+    await expect(page.getByLabel('What are they?')).toBeFocused()
+  },
+)

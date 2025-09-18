@@ -1,9 +1,11 @@
+import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/index.js'
+import { RouteForCommand } from '../../src/ReviewADatasetFlow/RouteForCommand.js'
 import * as StatusCodes from '../../src/StatusCodes.js'
 import * as Routes from '../../src/routes.js'
 import { LoggedInUser } from '../../src/user.js'
@@ -165,19 +167,176 @@ describe('DeclareCompetingInterestsPage', () => {
   )
 })
 
-test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
-  'DeclareCompetingInterestsSubmission',
-  (datasetReviewId, body, locale, user) =>
+describe('DeclareCompetingInterestsSubmission', () => {
+  describe('when there is an answer', () => {
+    describe('when the answer can be saved', () => {
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(
+          fc.oneof(
+            fc.record(
+              { declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.string() },
+              { requiredKeys: ['declareCompetingInterests'] },
+            ),
+            fc.record({ declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.nonEmptyString() }),
+          ),
+        ),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.datasetReviewNextExpectedCommand(),
+      ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
+        Effect.gen(function* () {
+          const actual = yield* _.DeclareCompetingInterestsSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              declareCompetingInterests: () => Effect.void,
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(
+          fc.oneof(
+            fc.record(
+              { declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.string() },
+              { requiredKeys: ['declareCompetingInterests'] },
+            ),
+            fc.record({ declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.nonEmptyString() }),
+          ),
+        ),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.oneof(
+          fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+          fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
+          fc.constant(Effect.succeedNone),
+        ),
+      ])("the next expected command can't be found", (datasetReviewId, body, locale, user, result) =>
+        Effect.gen(function* () {
+          const actual = yield* _.DeclareCompetingInterestsSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              declareCompetingInterests: () => Effect.void,
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getNextExpectedCommandForAUserOnADatasetReview: () => result,
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+    })
+
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(
+        fc.oneof(
+          fc.record(
+            { declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.string() },
+            { requiredKeys: ['declareCompetingInterests'] },
+          ),
+          fc.record({ declareCompetingInterests: fc.constant('no'), competingInterestDetails: fc.nonEmptyString() }),
+        ),
+      ),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewIsBeingPublished(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+      ),
+    ])("when the answer can't be saved", (datasetReviewId, body, locale, user, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.DeclareCompetingInterestsSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {
+            declareCompetingInterests: () => error,
+          }),
+        ),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+  })
+
+  test.prop([
+    fc.uuid(),
+    fc.oneof(
+      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'declareCompetingInterests'))),
+      fc.urlParams(
+        fc.record({
+          declareCompetingInterests: fc.string().filter(string => !['yes', 'no'].includes(string)),
+        }),
+      ),
+      fc.urlParams(
+        fc.record(
+          {
+            declareCompetingInterests: fc.constant('yes'),
+            competingInterestDetails: fc.string({ unit: fc.whiteSpaceCharacter() }),
+          },
+          { requiredKeys: ['declareCompetingInterests'] },
+        ),
+      ),
+    ),
+    fc.supportedLocale(),
+    fc.user(),
+  ])("when there isn't a declaration", (datasetReviewId, body, locale, user) =>
     Effect.gen(function* () {
       const actual = yield* _.DeclareCompetingInterestsSubmission({ body, datasetReviewId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
+        _tag: 'StreamlinePageResponse',
+        canonical: Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId }),
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        skipToLabel: 'form',
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
@@ -186,4 +345,5 @@ test.prop([fc.uuid(), fc.urlParams(), fc.supportedLocale(), fc.user()])(
       Effect.provideService(LoggedInUser, user),
       EffectTest.run,
     ),
-)
+  )
+})
