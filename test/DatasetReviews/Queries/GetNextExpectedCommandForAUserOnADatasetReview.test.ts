@@ -110,6 +110,18 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
+const competingInterestsForADatasetReviewWereDeclared1 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.none(),
+    datasetReviewId,
+  })
+const competingInterestsForADatasetReviewWereDeclared2 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.some(
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    ),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -151,6 +163,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsReadyToBeShared(),
             fc.answeredIfTheDatasetIsMissingAnything(),
             fc.personaForDatasetReviewWasChosen(),
+            fc.competingInterestsForADatasetReviewWereDeclared(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -315,11 +328,32 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsMissingAnything1,
               personaForDatasetReviewWasChosen1,
             ],
-            'PublishDatasetReview',
+            'DeclareCompetingInterests',
           ], // persona chosen
           [
             [
               datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetMattersToItsAudience1,
+              answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetIsMissingAnything1,
+              personaForDatasetReviewWasChosen1,
+              competingInterestsForADatasetReviewWereDeclared1,
+            ],
+            'PublishDatasetReview',
+          ], // competing interests declared
+          [
+            [
+              datasetReviewWasStarted,
+              competingInterestsForADatasetReviewWereDeclared1,
               answeredIfTheDatasetIsMissingAnything1,
               answeredIfTheDatasetIsReadyToBeShared1,
               answeredIfTheDatasetMattersToItsAudience1,
@@ -333,6 +367,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
               personaForDatasetReviewWasChosen1,
+              competingInterestsForADatasetReviewWereDeclared2,
               answeredIfTheDatasetIsMissingAnything2,
               answeredIfTheDatasetIsReadyToBeShared2,
               answeredIfTheDatasetMattersToItsAudience2,
