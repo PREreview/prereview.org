@@ -24,6 +24,7 @@ export interface PublishedReview {
     answerToIfTheDatasetIsReadyToBeShared: Option.Option<'yes' | 'no' | 'unsure'>
     answerToIfTheDatasetIsMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
   }
+  competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   published: Temporal.PlainDate
 }
 
@@ -104,6 +105,11 @@ export const GetPublishedReview = (
     Struct.get('answer'),
   )
 
+  const competingInterests = Option.andThen(
+    Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared')),
+    Struct.get('competingInterests'),
+  )
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -129,6 +135,7 @@ export const GetPublishedReview = (
           answerToIfTheDatasetIsReadyToBeShared,
           answerToIfTheDatasetIsMissingAnything,
         },
+        competingInterests,
         published: data.datasetReviewWasPublished.publicationDate,
       }),
   })

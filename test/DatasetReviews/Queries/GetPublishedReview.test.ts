@@ -107,6 +107,18 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
+const competingInterestsForADatasetReviewWereDeclared1 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.none(),
+    datasetReviewId,
+  })
+const competingInterestsForADatasetReviewWereDeclared2 =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.some(
+      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    ),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -159,6 +171,7 @@ describe('GetPublishedReview', () => {
                   answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                   answerToIfTheDatasetIsMissingAnything: Option.none(),
                 },
+                competingInterests: Option.none(),
                 published: events[4].publicationDate,
               }),
             ),
@@ -182,6 +195,7 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsReadyToBeShared1,
                   answeredIfTheDatasetIsMissingAnything1,
                   personaForDatasetReviewWasChosen1,
+                  competingInterestsForADatasetReviewWereDeclared1,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished1,
                 ],
@@ -215,6 +229,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared1.answer),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                   },
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
                   published: datasetReviewWasPublished1.publicationDate,
                 },
               ],
@@ -249,6 +264,8 @@ describe('GetPublishedReview', () => {
                   answeredIfTheDatasetIsMissingAnything2,
                   personaForDatasetReviewWasChosen1,
                   personaForDatasetReviewWasChosen2,
+                  competingInterestsForADatasetReviewWereDeclared1,
+                  competingInterestsForADatasetReviewWereDeclared2,
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished1,
@@ -284,6 +301,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                   },
+                  competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                   published: datasetReviewWasPublished2.publicationDate,
                 },
               ],
@@ -315,6 +333,7 @@ describe('GetPublishedReview', () => {
                     answerToIfTheDatasetIsReadyToBeShared: Option.none(),
                     answerToIfTheDatasetIsMissingAnything: Option.none(),
                   },
+                  competingInterests: Option.none(),
                   published: datasetReviewWasPublished1.publicationDate,
                 },
               ],

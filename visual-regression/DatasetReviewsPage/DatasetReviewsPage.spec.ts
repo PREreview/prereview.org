@@ -48,6 +48,11 @@ const prereview1: _.DatasetReview = {
       NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     ),
   },
+  competingInterests: Option.some(
+    NonEmptyString.NonEmptyString(
+      'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
+    ),
+  ),
   published: Temporal.PlainDate.from('2025-08-06'),
 }
 
@@ -69,5 +74,6 @@ const prereview2: _.DatasetReview = {
     answerToIfTheDatasetIsReadyToBeShared: Option.none(),
     answerToIfTheDatasetIsMissingAnything: Option.none(),
   },
+  competingInterests: Option.none(),
   published: Temporal.PlainDate.from('2025-08-02'),
 }

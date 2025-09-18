@@ -242,6 +242,15 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
           `,
         })}
       </dl>
+
+      <h2>Competing interests</h2>
+
+      <p>
+        ${Option.getOrElse(
+          datasetReview.competingInterests,
+          () => 'The author of this comment declares that they have no competing interests.',
+        )}
+      </p>
     `,
     skipToLabel: 'prereview',
     canonical: Routes.DatasetReview.href({ datasetReviewId: datasetReview.id }),
