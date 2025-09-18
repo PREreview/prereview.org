@@ -4,6 +4,7 @@ import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../DatasetReviews/index.js'
 import type * as Datasets from '../Datasets/index.js'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../html.js'
+import { DefaultLocale } from '../locales/index.js'
 import * as Personas from '../Personas/index.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
@@ -23,7 +24,7 @@ export const createDatasetReviewsPage = ({
 }) => {
   return TwoUpPageResponse({
     title: plainText`PREreviews of “${plainText(dataset.title.text)}”`,
-    description: plainText`Authored by ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList('en'))}
+    description: plainText`Authored by ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(DefaultLocale))}
     ${
       dataset.abstract
         ? plainText`
@@ -47,13 +48,13 @@ export const createDatasetReviewsPage = ({
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
-            ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList('en'))}
+            ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(DefaultLocale))}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate('en')(dataset.posted)}</dd>
+              <dd>${renderDate(DefaultLocale)(dataset.posted)}</dd>
             </div>
             <div>
               <dt>Repository</dt>
