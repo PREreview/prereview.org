@@ -44,16 +44,17 @@ export const DatasetReviewsPage = Effect.fn(
       url: new URL('https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3'),
     })
 
-    const datasetReviewIds = yield* DatasetReviews.findPublishedReviewsForADataset(datasetId)
+    const datasetReviews = yield* Effect.andThen(
+      DatasetReviews.findPublishedReviewsForADataset(datasetId),
+      Effect.forEach(
+        Effect.fn(function* (datasetReviewId) {
+          const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
+          const author = yield* Personas.getPersona(datasetReview.author)
 
-    const datasetReviews = yield* Effect.forEach(
-      datasetReviewIds,
-      Effect.fn(function* (datasetReviewId) {
-        const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
-        const author = yield* Personas.getPersona(datasetReview.author)
-
-        return { ...datasetReview, author }
-      }),
+          return { ...datasetReview, author }
+        }),
+        { concurrency: 'inherit' },
+      ),
     )
 
     return createDatasetReviewsPage({ dataset, datasetReviews })
