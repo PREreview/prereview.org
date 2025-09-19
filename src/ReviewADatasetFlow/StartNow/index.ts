@@ -3,7 +3,7 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { html } from '../../html.js'
+import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
 import { Doi, Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
@@ -13,18 +13,21 @@ import { CarryOnPage } from './CarryOnPage.js'
 export const StartNow: Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
+  | DatasetReviews.DatasetReviewCommands
+  | DatasetReviews.DatasetReviewQueries
+  | Datasets.Datasets
+  | Locale
+  | LoggedInUser
+  | Uuid.GenerateUuid
 > = Effect.fn(
   function* () {
     const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
     const user = yield* LoggedInUser
 
-    const dataset = new Datasets.DatasetTitle({
-      id: datasetId,
-      title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
-      language: 'en',
+    const { dataset, reviewId } = yield* Effect.all({
+      dataset: Datasets.getDatasetTitle(datasetId),
+      reviewId: DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId),
     })
-    const reviewId = yield* DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId)
 
     return yield* Option.match(reviewId, {
       onNone: Effect.fn(
@@ -56,6 +59,8 @@ export const StartNow: Effect.Effect<
     })
   },
   Effect.catchTags({
+    DatasetIsNotFound: () => PageNotFound,
+    DatasetIsUnavailable: () => HavingProblemsPage,
     DatasetReviewWasAlreadyStarted: () => HavingProblemsPage,
     NotAuthorizedToRunCommand: () => HavingProblemsPage,
     UnableToHandleCommand: () => HavingProblemsPage,
