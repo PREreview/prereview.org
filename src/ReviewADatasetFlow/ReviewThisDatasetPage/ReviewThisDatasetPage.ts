@@ -1,10 +1,14 @@
-import { Option } from 'effect'
-import { html, plainText } from '../../html.js'
+import { Array, flow, Option, pipe, Struct } from 'effect'
+import rtlDetect from 'rtl-detect'
+import type * as Datasets from '../../Datasets/index.js'
+import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
+import { DefaultLocale } from '../../locales/index.js'
 import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
+import { renderDate } from '../../time.js'
 import type { User } from '../../user.js'
 
-export const ReviewThisDatasetPage = ({ user }: { user: Option.Option<User> }) => {
+export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dataset; user: Option.Option<User> }) => {
   return PageResponse({
     title: plainText`Review a dataset`,
     main: html`
@@ -12,17 +16,19 @@ export const ReviewThisDatasetPage = ({ user }: { user: Option.Option<User> }) =
 
       <article class="preview" tabindex="0" aria-labelledby="dataset-title">
         <header>
-          <h2 id="dataset-title">Metadata collected from 500 articles in the field of ecology and evolution</h2>
+          <h2 id="dataset-title" lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}">
+            ${dataset.title.text}
+          </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by Jesse Wolf, Layla MacKay, Sarah Haworth, Morgan Dedato,
-            Kiana Young, Marie-Laurence Cossette, Colin Elliott and Rebekah Oomen
+            <span class="visually-hidden">Authored</span> by
+            ${pipe(dataset.authors, Array.map(Struct.get('name')), formatList(DefaultLocale))}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>September 2, 2022</dd>
+              <dd>${renderDate(DefaultLocale)(dataset.posted)}</dd>
             </div>
             <div>
               <dt>Repository</dt>
@@ -30,25 +36,25 @@ export const ReviewThisDatasetPage = ({ user }: { user: Option.Option<User> }) =
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi" translate="no">10.5061/dryad.wstqjq2n3</dd>
+              <dd class="doi" translate="no">${dataset.id.value}</dd>
             </div>
           </dl>
         </header>
 
-        <p>
-          The submitted dataset contains the metadata collected from 500 articles in the field of ecology and evolution.
-          This includes articles from the following journals: Ecology and Evolution, PLoS One, Proceedings of the Royal
-          Society B, Ecology and the preprint server bioRxiv. Direct identifiers have been removed from the dataset.
-          These included the first and last names of authors. No more than three indirect identifiers have been
-          provided. Information found herein includes article titles, number of authors and ECR status, among others. A
-          README file has been attached to provide greater details about the dataset.
-        </p>
+        ${dataset.abstract
+          ? html`
+              <div lang="${dataset.abstract.language}" dir="${rtlDetect.getLangDir(dataset.abstract.language)}">
+                ${fixHeadingLevels(2, dataset.abstract.text)}
+              </div>
+            `
+          : ''}
       </article>
 
       <p>
         You can write a PREreview of
-        <cite>Metadata collected from 500 articles in the field of ecology and evolution</cite>. We’ll ask questions
-        about the dataset to create a structured review.
+        <cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
+          >${dataset.title.text}</cite
+        >. We’ll ask questions about the dataset to create a structured review.
       </p>
 
       ${Option.match(user, {
@@ -75,4 +81,16 @@ export const ReviewThisDatasetPage = ({ user }: { user: Option.Option<User> }) =
     `,
     canonical: Routes.ReviewThisDataset,
   })
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
