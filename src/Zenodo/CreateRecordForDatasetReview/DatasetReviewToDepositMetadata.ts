@@ -3,7 +3,6 @@ import type * as DatasetReviews from '../../DatasetReviews/index.js'
 import type { Zenodo } from '../../ExternalApis/index.js'
 import { html } from '../../html.js'
 import * as Personas from '../../Personas/index.js'
-import { Doi } from '../../types/index.js'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
   readonly author: Personas.Persona
@@ -217,7 +216,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
   communities: [{ identifier: 'prereview-reviews' }],
   relatedIdentifiers: [
     {
-      identifier: Doi.Doi('10.5061/dryad.wstqjq2n3'),
+      identifier: review.dataset.value,
       relation: 'reviews',
       resourceType: 'dataset',
       scheme: 'doi',

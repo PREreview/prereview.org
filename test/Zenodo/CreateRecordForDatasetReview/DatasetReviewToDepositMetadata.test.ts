@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Option } from 'effect'
+import * as Datasets from '../../../src/Datasets/index.js'
 import type { Zenodo } from '../../../src/ExternalApis/index.js'
 import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
@@ -15,6 +16,7 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
+      dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
       competingInterests: Option.some(
         NonEmptyString.NonEmptyString(
           'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
@@ -143,6 +145,7 @@ const cases = [
     'minimal questions answered',
     {
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
       competingInterests: Option.none(),
       qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
