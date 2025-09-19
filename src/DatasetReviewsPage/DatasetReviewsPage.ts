@@ -85,7 +85,7 @@ export const createDatasetReviewsPage = ({
       <h2>${datasetReviews.length} PREreview${datasetReviews.length === 1 ? '' : 's'}</h2>
 
       <div class="button-group" role="group">
-        <a href="${Routes.ReviewThisDataset}" class="button">Write a PREreview</a>
+        <a href="${Routes.ReviewThisDataset.href({ datasetId: dataset.id })}" class="button">Write a PREreview</a>
       </div>
 
       ${Array.match(datasetReviews, {
