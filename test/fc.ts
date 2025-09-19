@@ -1508,6 +1508,15 @@ export const dataset = (): fc.Arbitrary<Datasets.Dataset> =>
     )
     .map(args => new Datasets.Dataset(args))
 
+export const datasetTitle = (): fc.Arbitrary<Datasets.DatasetTitle> =>
+  fc
+    .record({
+      id: datasetId(),
+      language: languageCode(),
+      title: html(),
+    })
+    .map(args => new Datasets.DatasetTitle(args))
+
 export const prereview = (): fc.Arbitrary<Prereview> =>
   fc
     .record({

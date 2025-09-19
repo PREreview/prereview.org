@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Equal, Layer, Option, Struct, Tuple } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as DatasetReviews from '../../src/DatasetReviews/index.js'
+import * as Datasets from '../../src/Datasets/index.js'
 import * as Personas from '../../src/Personas/index.js'
 import * as _ from '../../src/ReviewADatasetFlow/CheckYourReviewPage/index.js'
 import * as Routes from '../../src/routes.js'
@@ -57,8 +58,9 @@ describe('CheckYourReviewPage', () => {
             fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
           ),
         }),
+        fc.datasetTitle(),
         fc.publicPersona(),
-      ])('with a public persona', (datasetReviewId, locale, user, preview, publicPersona) =>
+      ])('with a public persona', (datasetReviewId, locale, user, preview, dataset, publicPersona) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
@@ -76,6 +78,11 @@ describe('CheckYourReviewPage', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
               getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Datasets.Datasets, {
+              getDatasetTitle: () => Effect.succeed(dataset),
             }),
           ),
           Effect.provide(
@@ -131,8 +138,9 @@ describe('CheckYourReviewPage', () => {
             fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
           ),
         }),
+        fc.datasetTitle(),
         fc.pseudonymPersona(),
-      ])('with a pseudonym persona', (datasetReviewId, locale, user, preview, pseudonymPersona) =>
+      ])('with a pseudonym persona', (datasetReviewId, locale, user, preview, dataset, pseudonymPersona) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
@@ -150,6 +158,11 @@ describe('CheckYourReviewPage', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
               getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Datasets.Datasets, {
+              getDatasetTitle: () => Effect.succeed(dataset),
             }),
           ),
           Effect.provide(
@@ -205,7 +218,8 @@ describe('CheckYourReviewPage', () => {
             fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
           ),
         }),
-      ])('without a persona', (datasetReviewId, locale, user, preview) =>
+        fc.datasetTitle(),
+      ])('without a persona', (datasetReviewId, locale, user, preview, dataset) =>
         Effect.gen(function* () {
           const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
@@ -223,6 +237,11 @@ describe('CheckYourReviewPage', () => {
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
               getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Datasets.Datasets, {
+              getDatasetTitle: () => Effect.succeed(dataset),
             }),
           ),
           Effect.provide(Layer.mock(Personas.Personas, {})),
@@ -273,8 +292,94 @@ describe('CheckYourReviewPage', () => {
           fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
         ),
       }),
+      fc
+        .anything()
+        .chain(cause =>
+          fc.constantFrom(new Datasets.DatasetIsNotFound({ cause }), new Datasets.DatasetIsUnavailable({ cause })),
+        ),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+    ])(
+      "when the dataset can't be loaded",
+      (datasetReviewId, locale, user, preview, error, publicPersona, pseudonymPersona) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getAuthor: () => Effect.succeed(user.orcid),
+              getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Datasets.Datasets, {
+              getDatasetTitle: () => error,
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.record<DatasetReviews.DatasetReviewPreview>({
+        author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
+        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
+        qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.get('rating'))),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
+          .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+          .map(Struct.get('answer')),
+        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
+          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
+          fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
+          fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
+          fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetIsDetailedEnough: fc.maybe(
+          fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
+        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
+          fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
+          fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
+        ),
+        answerToIfTheDatasetIsMissingAnything: fc.maybe(
+          fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
+        ),
+      }),
+      fc.datasetTitle(),
       fc.anything(),
-    ])("when the persona can't be loaded", (datasetReviewId, locale, user, preview, error) =>
+    ])("when the persona can't be loaded", (datasetReviewId, locale, user, preview, dataset, error) =>
       Effect.gen(function* () {
         const actual = yield* _.CheckYourReviewPage({ datasetReviewId })
 
@@ -291,6 +396,11 @@ describe('CheckYourReviewPage', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getAuthor: () => Effect.succeed(user.orcid),
             getPreviewForAReviewReadyToBePublished: () => Effect.succeed(preview),
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(Datasets.Datasets, {
+            getDatasetTitle: () => Effect.succeed(dataset),
           }),
         ),
         Effect.provide(
@@ -337,6 +447,7 @@ describe('CheckYourReviewPage', () => {
               new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing }),
           }),
         ),
+        Effect.provide(Layer.mock(Datasets.Datasets, {})),
         Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -362,6 +473,7 @@ describe('CheckYourReviewPage', () => {
               getPreviewForAReviewReadyToBePublished: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
             }),
           ),
+          Effect.provide(Layer.mock(Datasets.Datasets, {})),
           Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
@@ -387,6 +499,7 @@ describe('CheckYourReviewPage', () => {
               getPreviewForAReviewReadyToBePublished: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
             }),
           ),
+          Effect.provide(Layer.mock(Datasets.Datasets, {})),
           Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
@@ -417,6 +530,7 @@ describe('CheckYourReviewPage', () => {
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => Effect.succeed(datasetReviewAuthor) }),
       ),
+      Effect.provide(Layer.mock(Datasets.Datasets, {})),
       Effect.provide(Layer.mock(Personas.Personas, {})),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
@@ -444,6 +558,7 @@ describe('CheckYourReviewPage', () => {
             getAuthor: () => new DatasetReviews.UnknownDatasetReview({}),
           }),
         ),
+        Effect.provide(Layer.mock(Datasets.Datasets, {})),
         Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
@@ -469,6 +584,7 @@ describe('CheckYourReviewPage', () => {
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
         ),
+        Effect.provide(Layer.mock(Datasets.Datasets, {})),
         Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),

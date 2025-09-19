@@ -3,7 +3,6 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { html } from '../../html.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
@@ -19,7 +18,7 @@ export const CheckYourReviewPage = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Personas.Personas
+  DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Locale | LoggedInUser | Personas.Personas
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
@@ -30,19 +29,19 @@ export const CheckYourReviewPage = ({
     }
 
     const review = yield* DatasetReviews.getPreviewForAReviewReadyToBePublished(datasetReviewId)
-    const authorPersona = yield* Option.match(review.author.persona, {
-      onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
-      onNone: () => Effect.succeedNone,
-    })
-    const dataset = new Datasets.DatasetTitle({
-      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-      title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
-      language: 'en',
+    const { authorPersona, dataset } = yield* Effect.all({
+      authorPersona: Option.match(review.author.persona, {
+        onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
+        onNone: () => Effect.succeedNone,
+      }),
+      dataset: Datasets.getDatasetTitle(new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })),
     })
 
     return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset } })
   }).pipe(
     Effect.catchTags({
+      DatasetIsNotFound: () => HavingProblemsPage,
+      DatasetIsUnavailable: () => HavingProblemsPage,
       DatasetReviewHasBeenPublished: () =>
         Effect.succeed(
           Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
