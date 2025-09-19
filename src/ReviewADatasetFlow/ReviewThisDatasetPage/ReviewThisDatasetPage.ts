@@ -77,7 +77,9 @@ export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dat
         `,
       })}
 
-      <a href="${Routes.ReviewThisDatasetStartNow}" role="button" draggable="false">Start now</a>
+      <a href="${Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id })}" role="button" draggable="false"
+        >Start now</a
+      >
     `,
     canonical: Routes.ReviewThisDataset.href({ datasetId: dataset.id }),
   })

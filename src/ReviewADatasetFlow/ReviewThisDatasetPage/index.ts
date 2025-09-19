@@ -28,7 +28,8 @@ export const ReviewThisDatasetPage: ({
 
       return Option.match(reviewId, {
         onNone: () => MakeResponse({ dataset, user }),
-        onSome: () => Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow }),
+        onSome: () =>
+          Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }) }),
       })
     },
     Effect.catchTags({

@@ -68,7 +68,11 @@ export const ReviewThisDataset: Route<{ datasetId: Datasets.DatasetId }> = {
   schema: Schema.Struct({ datasetId: DatasetIdSchema }),
 }
 
-export const ReviewThisDatasetStartNow = '/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset/start-now'
+export const ReviewThisDatasetStartNow: Route<{ datasetId: Datasets.DatasetId }> = {
+  path: '/datasets/:datasetId/start-now',
+  href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}/start-now`,
+  schema: Schema.Struct({ datasetId: DatasetIdSchema }),
+}
 
 export const ReviewADatasetRateTheQuality: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/rate-the-quality',

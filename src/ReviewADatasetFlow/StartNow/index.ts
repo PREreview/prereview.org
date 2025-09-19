@@ -5,12 +5,16 @@ import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Response from '../../response.js'
-import { Doi, Uuid } from '../../types/index.js'
+import { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { RouteForCommand } from '../RouteForCommand.js'
 import { CarryOnPage } from './CarryOnPage.js'
 
-export const StartNow: Effect.Effect<
+export const StartNow: ({
+  datasetId,
+}: {
+  datasetId: Datasets.DatasetId
+}) => Effect.Effect<
   Response.Response,
   never,
   | DatasetReviews.DatasetReviewCommands
@@ -20,8 +24,7 @@ export const StartNow: Effect.Effect<
   | LoggedInUser
   | Uuid.GenerateUuid
 > = Effect.fn(
-  function* () {
-    const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
+  function* ({ datasetId }) {
     const user = yield* LoggedInUser
 
     const { dataset, reviewId } = yield* Effect.all({
@@ -66,4 +69,4 @@ export const StartNow: Effect.Effect<
     UnableToHandleCommand: () => HavingProblemsPage,
     UnableToQuery: () => HavingProblemsPage,
   }),
-)()
+)

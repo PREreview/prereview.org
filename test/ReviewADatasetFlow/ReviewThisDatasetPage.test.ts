@@ -103,7 +103,7 @@ describe('ReviewThisDatasetPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: StatusCodes.SeeOther,
-            location: Routes.ReviewThisDatasetStartNow,
+            location: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }),
           })
         }).pipe(
           Effect.provide(

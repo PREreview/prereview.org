@@ -56,7 +56,7 @@ const MakeStaticRoute = <E, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
+  MakeRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
   MakeRoute(
     'GET',
     Routes.ReviewADatasetFollowsFairAndCarePrinciples,

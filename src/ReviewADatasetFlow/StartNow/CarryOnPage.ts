@@ -27,5 +27,5 @@ export const CarryOnPage = ({
 
       <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false">Continue</a>
     `,
-    canonical: Routes.ReviewThisDatasetStartNow,
+    canonical: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }),
   })
