@@ -1,12 +1,16 @@
+import rtlDetect from 'rtl-detect'
+import type * as Datasets from '../../Datasets/index.js'
 import { html, plainText } from '../../html.js'
 import { PageResponse } from '../../response.js'
 import * as Routes from '../../routes.js'
 import type { Uuid } from '../../types/index.js'
 
 export const CarryOnPage = ({
+  dataset,
   datasetReviewId,
   nextRoute,
 }: {
+  dataset: Datasets.DatasetTitle
   datasetReviewId: Uuid.Uuid
   nextRoute: Routes.Route<{ datasetReviewId: Uuid.Uuid }>
 }) =>
@@ -17,8 +21,8 @@ export const CarryOnPage = ({
 
       <p>
         As you’ve already started a PREreview of
-        <cite>Metadata collected from 500 articles in the field of ecology and evolution</cite>, we’ll take you to the
-        next step so you can carry&nbsp;on.
+        <cite lang="${dataset.language}" dir="${rtlDetect.getLangDir(dataset.language)}">${dataset.title}</cite>, we’ll
+        take you to the next step so you can carry&nbsp;on.
       </p>
 
       <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false">Continue</a>

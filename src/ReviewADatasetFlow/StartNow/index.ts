@@ -3,6 +3,7 @@ import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
 import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { html } from '../../html.js'
 import * as Response from '../../response.js'
 import { Doi, Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
@@ -18,6 +19,11 @@ export const StartNow: Effect.Effect<
     const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
     const user = yield* LoggedInUser
 
+    const dataset = new Datasets.DatasetTitle({
+      id: datasetId,
+      title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      language: 'en',
+    })
     const reviewId = yield* DatasetReviews.findInProgressReviewForADataset(user.orcid, datasetId)
 
     return yield* Option.match(reviewId, {
@@ -43,7 +49,7 @@ export const StartNow: Effect.Effect<
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
           )
 
-          return CarryOnPage({ datasetReviewId, nextRoute: RouteForCommand(nextExpectedCommand) })
+          return CarryOnPage({ dataset, datasetReviewId, nextRoute: RouteForCommand(nextExpectedCommand) })
         },
         Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
       ),
