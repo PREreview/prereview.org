@@ -1,8 +1,9 @@
 import { Option } from 'effect'
+import * as Datasets from '../../../src/Datasets/index.js'
+import { html } from '../../../src/html.js'
 import * as Personas from '../../../src/Personas/index.js'
 import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.js'
-import { NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.js'
-
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.js'
 import { expect, test } from '../../base.js'
 
 test('content looks right', async ({ showPage }) => {
@@ -30,6 +31,11 @@ const review = {
       'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
     ),
   ),
+  dataset: new Datasets.DatasetTitle({
+    id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+    title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+    language: 'en',
+  }),
   qualityRating: Option.some('excellent'),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),

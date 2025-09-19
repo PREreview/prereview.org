@@ -1,12 +1,14 @@
 import { Array, Effect, Equal, Option, pipe } from 'effect'
 import type { Locale } from '../../Context.js'
 import * as DatasetReviews from '../../DatasetReviews/index.js'
+import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
+import { html } from '../../html.js'
 import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import { Doi, type Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { CheckYourReviewPage as MakeResponse } from './CheckYourReviewPage.js'
 
@@ -32,8 +34,13 @@ export const CheckYourReviewPage = ({
       onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
       onNone: () => Effect.succeedNone,
     })
+    const dataset = new Datasets.DatasetTitle({
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+      title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      language: 'en',
+    })
 
-    return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona } })
+    return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset } })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () =>

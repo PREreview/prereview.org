@@ -1,6 +1,8 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.js'
+import type * as Datasets from '../../Datasets/index.js'
 import { html, plainText } from '../../html.js'
 import * as Personas from '../../Personas/index.js'
 import { StreamlinePageResponse } from '../../response.js'
@@ -10,6 +12,7 @@ import type { Uuid } from '../../types/uuid.js'
 
 export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author'> & {
   readonly author: Option.Option<Personas.Persona>
+  readonly dataset: Datasets.DatasetTitle
 }
 
 export const CheckYourReviewPage = ({
@@ -40,7 +43,9 @@ export const CheckYourReviewPage = ({
               <div>
                 <dt><span>Title</span></dt>
                 <dd>
-                  <cite>Metadata collected from 500 articles in the field of ecology and evolution</cite>
+                  <cite lang="${review.dataset.language}" dir="${rtlDetect.getLangDir(review.dataset.language)}"
+                    >${review.dataset.title}</cite
+                  >
                 </dd>
               </div>
               <div>
