@@ -1,0 +1,32 @@
+import { Match } from 'effect'
+import type * as Datasets from '../../Datasets/index.js'
+import * as StatusCodes from '../../StatusCodes.js'
+import { html, plainText } from '../../html.js'
+import { PageResponse } from '../../response.js'
+import * as Routes from '../../routes.js'
+
+export const UnknownDatasetPage = ({ dataset }: { dataset: Datasets.DatasetId }) => {
+  return PageResponse({
+    status: StatusCodes.BadRequest,
+    title: plainText('Sorry, we don’t know this dataset'),
+    main: html`
+      <h1>Sorry, we don’t know this dataset</h1>
+
+      <p>
+        ${Match.valueTags(dataset, {
+          DryadDatasetId: () =>
+            html`We think the DOI <q class="select-all" translate="no">${dataset.value}</q> could be a Dryad dataset,
+              but we can’t find any details.`,
+        })}
+      </p>
+
+      <p>If you typed the DOI, check it is correct.</p>
+
+      <p>If you pasted the DOI, check you copied the entire address.</p>
+
+      <p>If the DOI is correct, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+
+      <a href="${Routes.ReviewADataset}" class="button">Back</a>
+    `,
+  })
+}
