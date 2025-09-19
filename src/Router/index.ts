@@ -215,6 +215,18 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.ReviewADatasetReviewPublished, ReviewADatasetFlow.ReviewPublishedPage),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpRouter.append(MakeStaticRoute('GET', Routes.ReviewADataset, ReviewADatasetFlow.ReviewADatasetPage)),
+  HttpRouter.append(
+    MakeStaticRoute(
+      'POST',
+      Routes.ReviewADataset,
+      pipe(
+        Effect.Do,
+        Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+        Effect.andThen(ReviewADatasetFlow.ReviewADatasetSubmission),
+      ),
+    ),
+  ),
   HttpRouter.append(MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
   HttpRouter.use(
     HttpMiddleware.make(app =>

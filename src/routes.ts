@@ -62,6 +62,8 @@ export const DatasetReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADataset = '/review-a-dataset'
+
 export const ReviewThisDataset: Route<{ datasetId: Datasets.DatasetId }> = {
   path: '/datasets/:datasetId/review-this-dataset',
   href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}/review-this-dataset`,
