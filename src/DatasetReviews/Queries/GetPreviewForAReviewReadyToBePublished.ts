@@ -1,4 +1,5 @@
 import { Array, Either, Option, Struct } from 'effect'
+import type * as Datasets from '../../Datasets/index.js'
 import type { OrcidId } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
@@ -8,6 +9,7 @@ export interface DatasetReviewPreview {
     readonly orcidId: OrcidId.OrcidId
     readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
   }
+  readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
@@ -111,6 +113,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+        dataset: started.datasetId,
         competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,

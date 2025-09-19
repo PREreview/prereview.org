@@ -173,6 +173,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
           .map(events =>
             Tuple.make<[ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.DatasetReviewPreview]>(events, {
               author: { orcidId: events[0].authorId, persona: Option.some(events[13].persona) },
+              dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
               qualityRating: Option.some(events[1].rating),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
@@ -196,6 +197,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples],
               {
                 author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: Option.none(),
                 qualityRating: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
@@ -251,6 +253,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   orcidId: datasetReviewWasStarted.authorId,
                   persona: Option.some(personaForDatasetReviewWasChosen2.persona),
                 },
+                dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:

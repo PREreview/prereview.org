@@ -10,7 +10,7 @@ import * as Routes from '../../routes.js'
 import { ProfileId } from '../../types/index.js'
 import type { Uuid } from '../../types/uuid.js'
 
-export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author'> & {
+export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
   readonly author: Option.Option<Personas.Persona>
   readonly dataset: Datasets.DatasetTitle
 }

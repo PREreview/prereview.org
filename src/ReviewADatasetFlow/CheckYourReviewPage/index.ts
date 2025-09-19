@@ -7,7 +7,7 @@ import { PageNotFound } from '../../PageNotFound/index.js'
 import * as Personas from '../../Personas/index.js'
 import * as Response from '../../response.js'
 import * as Routes from '../../routes.js'
-import { Doi, type Uuid } from '../../types/index.js'
+import type { Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.js'
 import { CheckYourReviewPage as MakeResponse } from './CheckYourReviewPage.js'
 
@@ -34,7 +34,7 @@ export const CheckYourReviewPage = ({
         onSome: persona => Effect.map(Personas.getPersona({ ...review.author, persona }), Option.some),
         onNone: () => Effect.succeedNone,
       }),
-      dataset: Datasets.getDatasetTitle(new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })),
+      dataset: Datasets.getDatasetTitle(review.dataset),
     })
 
     return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset } })
