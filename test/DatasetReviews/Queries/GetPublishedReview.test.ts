@@ -155,6 +155,7 @@ describe('GetPublishedReview', () => {
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
                 author: { orcidId: events[0].authorId, persona: events[2].persona },
+                dataset: events[0].datasetId,
                 doi: events[3].doi,
                 id: events[0].datasetReviewId,
                 questions: {
@@ -204,6 +205,7 @@ describe('GetPublishedReview', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen1.persona,
                   },
+                  dataset: datasetReviewWasStarted.datasetId,
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {
@@ -276,6 +278,7 @@ describe('GetPublishedReview', () => {
                     orcidId: datasetReviewWasStarted.authorId,
                     persona: personaForDatasetReviewWasChosen2.persona,
                   },
+                  dataset: datasetReviewWasStarted.datasetId,
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,
                   questions: {
@@ -316,6 +319,7 @@ describe('GetPublishedReview', () => {
                 ],
                 {
                   author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  dataset: datasetReviewWasStarted.datasetId,
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {

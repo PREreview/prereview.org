@@ -1,11 +1,13 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Struct } from 'effect'
+import type * as Datasets from '../../Datasets/index.js'
 import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.js'
 import * as Errors from '../Errors.js'
 import type * as Events from '../Events.js'
 
 export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
+  dataset: Datasets.DatasetId
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {
@@ -118,6 +120,7 @@ export const GetPublishedReview = (
           orcidId: data.datasetReviewWasStarted.authorId,
           persona: Option.match(author, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
+        dataset: data.datasetReviewWasStarted.datasetId,
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {

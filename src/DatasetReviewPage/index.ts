@@ -4,7 +4,7 @@ import * as Datasets from '../Datasets/index.js'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.js'
 import { PageNotFound } from '../PageNotFound/index.js'
 import * as Personas from '../Personas/index.js'
-import { Doi, type Uuid } from '../types/index.js'
+import type { Uuid } from '../types/index.js'
 import { createDatasetReviewPage } from './DatasetReviewPage.js'
 
 export const DatasetReviewPage = Effect.fn(
@@ -13,7 +13,7 @@ export const DatasetReviewPage = Effect.fn(
     const { author, dataset } = yield* Effect.all(
       {
         author: Personas.getPersona(datasetReview.author),
-        dataset: Datasets.getDataset(new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })),
+        dataset: Datasets.getDataset(datasetReview.dataset),
       },
       { concurrency: 'inherit' },
     )

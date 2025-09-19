@@ -12,7 +12,7 @@ import * as Routes from '../routes.js'
 import { renderDate } from '../time.js'
 import { Doi, ProfileId } from '../types/index.js'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly dataset: {
     readonly id: Datasets.DatasetId

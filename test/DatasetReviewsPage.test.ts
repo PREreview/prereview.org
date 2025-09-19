@@ -18,6 +18,7 @@ describe('DatasetReviewsPage', () => {
     fc.array(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
+      dataset: fc.datasetId(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -89,6 +90,7 @@ describe('DatasetReviewsPage', () => {
     fc.nonEmptyArray(fc.uuid()),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
+      dataset: fc.datasetId(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -200,6 +202,7 @@ describe('DatasetReviewsPage', () => {
     ),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
+      dataset: fc.datasetId(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
@@ -273,6 +276,7 @@ describe('DatasetReviewsPage', () => {
     ),
     fc.record<DatasetReviews.PublishedReview>({
       author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
+      dataset: fc.datasetId(),
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
