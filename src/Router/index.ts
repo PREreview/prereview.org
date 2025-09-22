@@ -1,5 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
+import { Config, Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
@@ -421,7 +421,16 @@ export const Router = pipe(
       HttpMiddleware.withLoggerDisabled,
     ),
   ),
-  HttpRouter.get('/robots.txt', HttpServerResponse.text('User-agent: *\nAllow: /')),
+  HttpRouter.get(
+    '/robots.txt',
+    Effect.if(
+      Effect.orElseSucceed(Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false), () => false),
+      {
+        onTrue: () => HttpServerResponse.text('User-agent: *\nAllow: /'),
+        onFalse: () => HttpServerResponse.text('User-agent: *\nAllow: /\n\nUser-agent: Amazonbot\nDisallow: /'),
+      },
+    ),
+  ),
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
