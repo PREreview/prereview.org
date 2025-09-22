@@ -65,8 +65,8 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
             : ''}
 
           <input
-            id="whichDataset"
-            name="which-dataset"
+            name="whichDataset"
+            id="which-dataset"
             type="text"
             size="60"
             spellcheck="false"
