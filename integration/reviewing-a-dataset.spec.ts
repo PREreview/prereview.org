@@ -1,3 +1,5 @@
+import { Duration } from 'effect'
+import * as StatusCodes from '../src/StatusCodes.js'
 import {
   areLoggedIn,
   test as baseTest,
@@ -160,6 +162,185 @@ test.extend(canLogIn).extend(areLoggedIn)(
     )
   },
 )
+
+test('when the dataset is not found', async ({ fetch, page }, testInfo) => {
+  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/this-should-not-find-anything')
+
+  fetch.get('https://api.datacite.org/dois/10.5061/this-should-not-find-anything', { status: StatusCodes.NotFound })
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  testInfo.fail()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this dataset')
+})
+
+test('when it is not a dataset', async ({ fetch, page }, testInfo) => {
+  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/not-a-dataset')
+
+  fetch.get('https://api.datacite.org/dois/10.5061/not-a-dataset', {
+    body: {
+      data: {
+        id: '10.5281/zenodo.1001813',
+        type: 'dois',
+        attributes: {
+          doi: '10.5281/zenodo.1001813',
+          prefix: '10.5281',
+          suffix: 'zenodo.1001813',
+          identifiers: [{ identifier: '28945194', identifierType: 'PMID' }],
+          alternateIdentifiers: [{ alternateIdentifierType: 'PMID', alternateIdentifier: '28945194' }],
+          creators: [
+            {
+              name: 'Keine, Christian',
+              nameType: 'Personal',
+              givenName: 'Christian',
+              familyName: 'Keine',
+              affiliation: ['Carver College of Medicine, University of Iowa, Iowa City, USA'],
+              nameIdentifiers: [
+                { nameIdentifier: 'https://orcid.org/0000-0002-8953-2593', nameIdentifierScheme: 'ORCID' },
+              ],
+            },
+            {
+              name: 'Rübsamen, Rudolf',
+              nameType: 'Personal',
+              givenName: 'Rudolf',
+              familyName: 'Rübsamen',
+              affiliation: ['University of Leipzig, Leipzig, Germany'],
+              nameIdentifiers: [],
+            },
+            {
+              name: 'Englitz, Bernhard',
+              nameType: 'Personal',
+              givenName: 'Bernhard',
+              familyName: 'Englitz',
+              affiliation: ['Donders Center for Neuroscience, Radboud University, Nijmegen, The Netherlands'],
+              nameIdentifiers: [],
+            },
+          ],
+          titles: [
+            {
+              title:
+                'Signal Integration At Spherical Bushy Cells Enhances Representation Of Temporal Structure But Limits Its Range.',
+            },
+          ],
+          publisher: 'Zenodo',
+          container: {},
+          publicationYear: 2017,
+          subjects: [
+            { subject: 'Inhibition' },
+            { subject: 'Cochlear Nucleus' },
+            { subject: 'Spherical Bushy Cells' },
+            { subject: 'Stimulus reconstruction' },
+            { subject: 'Sound Localization' },
+          ],
+          contributors: [],
+          dates: [{ date: '2017-09-25', dateType: 'Issued' }],
+          language: 'en',
+          types: {
+            ris: 'JOUR',
+            bibtex: 'article',
+            citeproc: 'article-journal',
+            schemaOrg: 'ScholarlyArticle',
+            resourceType: 'Journal article',
+            resourceTypeGeneral: 'Text',
+          },
+          relatedIdentifiers: [
+            { relationType: 'IsVersionOf', relatedIdentifier: '10.5281/zenodo.1001812', relatedIdentifierType: 'DOI' },
+          ],
+          relatedItems: [],
+          sizes: [],
+          formats: [],
+          version: null,
+          rightsList: [
+            { rights: 'Creative Commons Attribution 4.0', rightsUri: 'https://creativecommons.org/licenses/by/4.0' },
+            { rights: 'Open Access', rightsUri: 'info:eu-repo/semantics/openAccess' },
+          ],
+          descriptions: [
+            {
+              description:
+                'Neuronal inhibition is crucial for temporally precise and reproducible signaling in the auditory brainstem. We showed previously (Keine et al., 2016) that for various synthetic stimuli, spherical bushy cell (SBC) activity in the Mongolian gerbil is rendered sparser and more reliable by subtractive inhibition. Employing environmental stimuli, we demonstrate here that the inhibitory gain control becomes even more effective, keeping stimulated response rates equal to spontaneous ones. However, what are the costs of this modulation? We performed dynamic stimulus reconstructions based on neural population responses for auditory nerve (ANF) input and SBC output to assess the influence of inhibition on signal representation. Compared to ANFs, reconstructions of natural stimuli based on SBC responses were temporally more precise, but the match between acoustic and represented signal decreased. Hence, for natural sounds, inhibition at SBCs plays an even stronger role in achieving sparse and reproducible neuronal activity, while compromising general signal representation.',
+              descriptionType: 'Abstract',
+            },
+            {
+              description: 'This article has been published in eLife on September 25, 2017 [DOI: 10.7554/eLife.29639]',
+              descriptionType: 'Other',
+            },
+          ],
+          geoLocations: [],
+          fundingReferences: [],
+          url: 'https://zenodo.org/record/1001813',
+          contentUrl: null,
+          metadataVersion: 1,
+          schemaVersion: 'http://datacite.org/schema/kernel-4',
+          source: null,
+          isActive: true,
+          state: 'findable',
+          reason: null,
+          viewCount: 0,
+          viewsOverTime: [],
+          downloadCount: 0,
+          downloadsOverTime: [],
+          referenceCount: 0,
+          citationCount: 0,
+          citationsOverTime: [],
+          partCount: 0,
+          partOfCount: 0,
+          versionCount: 0,
+          versionOfCount: 1,
+          created: '2017-10-04T00:02:51.000Z',
+          registered: '2017-10-04T00:02:52.000Z',
+          published: '2017',
+          updated: '2020-09-19T01:10:57.000Z',
+        },
+        relationships: {
+          client: { data: { id: 'cern.zenodo', type: 'clients' } },
+          provider: { data: { id: 'cern', type: 'providers' } },
+          media: { data: { id: '10.5281/zenodo.1001813', type: 'media' } },
+          references: { data: [] },
+          citations: { data: [] },
+          parts: { data: [] },
+          partOf: { data: [] },
+          versions: { data: [] },
+          versionOf: { data: [{ id: '10.5281/zenodo.1001812', type: 'dois' }] },
+        },
+      },
+    },
+  })
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  testInfo.fail()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we only support datasets')
+})
+
+test('might not load the dataset in time', async ({ fetch, page }) => {
+  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/this-should-take-too-long')
+
+  fetch.get(
+    'https://api.datacite.org/dois/10.5061/this-should-take-too-long',
+    { status: StatusCodes.NotFound },
+    { delay: Duration.toMillis('2.5 seconds') },
+  )
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+})
+
+test('when the DOI is not supported', async ({ page }, testInfo) => {
+  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.getByLabel('Which dataset are you reviewing?').fill('10.5555/12345678')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  testInfo.fail()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
