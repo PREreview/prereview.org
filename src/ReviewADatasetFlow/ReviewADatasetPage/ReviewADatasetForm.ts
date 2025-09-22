@@ -1,5 +1,6 @@
-import { Data, type Either } from 'effect'
-import type { Doi } from '../../types/index.js'
+import { UrlParams } from '@effect/platform'
+import { Data, Effect, Either, Option, Schema } from 'effect'
+import { Doi, NonEmptyString } from '../../types/index.js'
 
 export type ReviewADatasetForm = IncompleteForm | CompletedForm
 
@@ -20,3 +21,21 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   whichDataset: Doi.Doi
 }> {}
+
+export const fromBody = Effect.fn(
+  function* (body: UrlParams.UrlParams) {
+    const { whichDataset } = yield* Schema.decode(WhichDatasetSchema)(body)
+
+    return Option.match(Doi.parse(whichDataset), {
+      onNone: () => new InvalidForm({ whichDataset: Either.left(new Invalid({ value: whichDataset })) }),
+      onSome: whichDataset => new CompletedForm({ whichDataset }),
+    })
+  },
+  Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ whichDataset: Either.left(new Missing()) }))),
+)
+
+const WhichDatasetSchema = UrlParams.schemaRecord(
+  Schema.Struct({
+    whichDataset: NonEmptyString.NonEmptyStringSchema,
+  }),
+)
