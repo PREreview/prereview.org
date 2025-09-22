@@ -29,6 +29,8 @@ export class DatasetTitle extends Data.Class<{
   title: Html
 }> {}
 
+export class NotADataset extends Data.TaggedError('NotADataset')<{ cause?: unknown; datasetId: DatasetId }> {}
+
 export class DatasetIsNotFound extends Data.TaggedError('DatasetIsNotFound')<{
   cause?: unknown
   datasetId: DatasetId
