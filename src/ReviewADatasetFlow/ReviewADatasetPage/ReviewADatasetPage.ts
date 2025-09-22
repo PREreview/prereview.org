@@ -46,8 +46,8 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
             <div>
               <p>
                 A <a href="https://www.doi.org/"><dfn>DOI</dfn></a> is a unique identifier that you can find on many
-                datasets. For example, <q class="select-all" translate="no">10.1101/2022.10.06.511170</q> or
-                <q class="select-all" translate="no">https://doi.org/10.1101/2022.10.06.511170</q>.
+                datasets. For example, <q class="select-all" translate="no">10.5061/dryad.wstqjq2n3</q> or
+                <q class="select-all" translate="no">https://doi.org/10.5061/dryad.wstqjq2n3</q>.
               </p>
             </div>
           </details>
