@@ -3,7 +3,7 @@ import KeyvRedis from '@keyv/redis'
 import { Duration, Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
+import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import * as FeatureFlags from './FeatureFlags.js'
 import { LegacyPrereviewApi } from './legacy-prereview.js'
 import { OrcidOauth } from './OrcidOauth.js'
@@ -20,8 +20,10 @@ export const expressServer = Effect.gen(function* () {
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
   const legacyPrereviewApi = yield* LegacyPrereviewApi
+  const allowSiteCrawlers = yield* AllowSiteCrawlers
 
   return app({
+    allowSiteCrawlers,
     clock,
     fetch,
     legacyPrereviewApi: {
@@ -48,7 +50,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
 
   return {
     ...loggerEnv,
-    allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
     contactEmailAddressStore: new Keyv({

@@ -5,7 +5,7 @@ import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import { isAClubLead } from './club-details.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
+import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.js'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.js'
 import { ExpressConfigLive } from './ExpressServer.js'
 import { Cloudinary, Ghost, Orcid, Zenodo } from './ExternalApis/index.js'
@@ -65,6 +65,7 @@ pipe(
   ),
   Effect.provide(
     Layer.mergeAll(
+      Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
       FeatureFlags.layerConfig({
         aiReviewsAsCc0: pipe(
           Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),

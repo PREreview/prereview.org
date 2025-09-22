@@ -8,8 +8,8 @@ import {
   Path,
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
-import { Array, Cause, Config, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
-import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
+import { Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
+import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.js'
 import * as FeatureFlags from '../FeatureFlags.js'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.js'
 import { PublicUrl } from '../public-url.js'
@@ -117,7 +117,7 @@ export const addSecurityHeaders = HttpMiddleware.make(app =>
 
 export const addXRobotsTagHeader = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const allowSiteCrawlers = yield* Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)
+    const allowSiteCrawlers = yield* AllowSiteCrawlers
     const response = yield* app
 
     if (allowSiteCrawlers) {

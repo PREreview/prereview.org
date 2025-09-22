@@ -1,9 +1,10 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Config, Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
+import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
 import { AboutUsPage } from '../AboutUsPage/index.js'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.js'
 import { ClubsPage } from '../ClubsPage.js'
 import { CodeOfConductPage } from '../CodeOfConductPage.js'
+import { AllowSiteCrawlers } from '../Context.js'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.js'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.js'
 import { EdiaStatementPage } from '../EdiaStatementPage.js'
@@ -423,13 +424,10 @@ export const Router = pipe(
   ),
   HttpRouter.get(
     '/robots.txt',
-    Effect.if(
-      Effect.orElseSucceed(Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false), () => false),
-      {
-        onTrue: () => HttpServerResponse.text('User-agent: *\nAllow: /'),
-        onFalse: () => HttpServerResponse.text('User-agent: *\nAllow: /\n\nUser-agent: Amazonbot\nDisallow: /'),
-      },
-    ),
+    Effect.if(AllowSiteCrawlers, {
+      onTrue: () => HttpServerResponse.text('User-agent: *\nAllow: /'),
+      onFalse: () => HttpServerResponse.text('User-agent: *\nAllow: /\n\nUser-agent: Amazonbot\nDisallow: /'),
+    }),
   ),
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),

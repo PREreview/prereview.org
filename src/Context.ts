@@ -18,6 +18,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
   ExpressConfig,
   Omit<
     ConfigEnv,
+    | 'allowSiteCrawlers'
     | 'clock'
     | 'fetch'
     | 'generateUuid'
@@ -41,6 +42,8 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     SlackOAuthEnv &
     FormStoreEnv
 >() {}
+
+export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}
 
 export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 

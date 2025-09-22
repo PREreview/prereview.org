@@ -17,11 +17,6 @@ export function decodeEnv(process: NodeJS.Process) {
   )
 }
 
-const BooleanD = pipe(
-  D.literal('true', 'false'),
-  D.map(value => value === 'true'),
-)
-
 const IntD = pipe(
   D.string,
   D.parse(s => {
@@ -42,7 +37,6 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 
 const EnvD = pipe(
   D.struct({
-    ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),

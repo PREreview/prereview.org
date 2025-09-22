@@ -53,7 +53,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.js'
-import { DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
+import { AllowSiteCrawlers, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
 import { DeprecatedLogger } from '../src/DeprecatedServices.js'
 import { createAuthorInviteEmail } from '../src/email.js'
 import { Cloudinary, Ghost, Orcid, Zenodo } from '../src/ExternalApis/index.js'
@@ -1264,7 +1264,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Layer.launch,
         Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
         Effect.provideService(ExpressConfig, {
-          allowSiteCrawlers: true,
           authorInviteStore,
           avatarStore: new Keyv(),
           formStore,
@@ -1299,6 +1298,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
           Layer.mergeAll(
+            Layer.succeed(AllowSiteCrawlers, true),
             CachingHttpClient.layerInMemory(),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,
