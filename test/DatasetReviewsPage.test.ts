@@ -251,7 +251,7 @@ describe('DatasetReviewsPage', () => {
         ),
         Effect.provide(
           Layer.mock(Datasets.Datasets, {
-            getDataset: () => new Datasets.DatasetIsUnavailable({ cause: error }),
+            getDataset: datasetId => new Datasets.DatasetIsUnavailable({ cause: error, datasetId }),
           }),
         ),
         Effect.provide(
@@ -325,7 +325,7 @@ describe('DatasetReviewsPage', () => {
         ),
         Effect.provide(
           Layer.mock(Datasets.Datasets, {
-            getDataset: () => new Datasets.DatasetIsNotFound({ cause: error }),
+            getDataset: datasetId => new Datasets.DatasetIsNotFound({ cause: error, datasetId }),
           }),
         ),
         Effect.provide(

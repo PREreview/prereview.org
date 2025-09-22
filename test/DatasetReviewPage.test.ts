@@ -178,9 +178,12 @@ describe('DatasetReviewPage', () => {
       published: fc.plainDate(),
     }),
     fc
-      .anything()
-      .chain(cause =>
-        fc.constantFrom(new Datasets.DatasetIsNotFound({ cause }), new Datasets.DatasetIsUnavailable({ cause })),
+      .tuple(fc.anything(), fc.datasetId())
+      .chain(([cause, datasetId]) =>
+        fc.constantFrom(
+          new Datasets.DatasetIsNotFound({ cause, datasetId }),
+          new Datasets.DatasetIsUnavailable({ cause, datasetId }),
+        ),
       ),
     fc.publicPersona(),
     fc.pseudonymPersona(),

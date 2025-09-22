@@ -40,56 +40,62 @@ describe('ReviewThisDatasetPage', () => {
         ),
     )
 
-    test.prop([fc.supportedLocale(), fc.datasetId(), fc.anything()])(
-      'the dataset cannot be loaded',
-      (locale, datasetId, cause) =>
-        Effect.gen(function* () {
-          const actual = yield* _.ReviewThisDatasetPage({ datasetId })
+    test.prop([
+      fc.supportedLocale(),
+      fc.datasetId(),
+      fc
+        .record({ cause: fc.anything(), datasetId: fc.datasetId() })
+        .map(args => new Datasets.DatasetIsUnavailable(args)),
+    ])('the dataset cannot be loaded', (locale, datasetId, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewThisDatasetPage({ datasetId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
-          Effect.provide(
-            Layer.mock(Datasets.Datasets, {
-              getDataset: () => new Datasets.DatasetIsUnavailable({ cause }),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(
+          Layer.mock(Datasets.Datasets, {
+            getDataset: () => error,
+          }),
         ),
+        Effect.provideService(Locale, locale),
+        EffectTest.run,
+      ),
     )
 
-    test.prop([fc.supportedLocale(), fc.datasetId(), fc.anything()])(
-      'the dataset cannot be found',
-      (locale, datasetId, cause) =>
-        Effect.gen(function* () {
-          const actual = yield* _.ReviewThisDatasetPage({ datasetId })
+    test.prop([
+      fc.supportedLocale(),
+      fc.datasetId(),
+      fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsNotFound(args)),
+    ])('the dataset cannot be found', (locale, datasetId, error) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewThisDatasetPage({ datasetId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.NotFound,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
-          Effect.provide(
-            Layer.mock(Datasets.Datasets, {
-              getDataset: () => new Datasets.DatasetIsNotFound({ cause }),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provide(
+          Layer.mock(Datasets.Datasets, {
+            getDataset: () => error,
+          }),
         ),
+        Effect.provideService(Locale, locale),
+        EffectTest.run,
+      ),
     )
   })
 
@@ -154,66 +160,76 @@ describe('ReviewThisDatasetPage', () => {
         ),
     )
 
-    test.prop([fc.supportedLocale(), fc.datasetId(), fc.user(), fc.anything(), fc.maybe(fc.uuid())])(
-      'the dataset cannot be loaded',
-      (locale, datasetId, user, cause, reviewId) =>
-        Effect.gen(function* () {
-          const actual = yield* _.ReviewThisDatasetPage({ datasetId })
+    test.prop([
+      fc.supportedLocale(),
+      fc.datasetId(),
+      fc.user(),
+      fc
+        .record({ cause: fc.anything(), datasetId: fc.datasetId() })
+        .map(args => new Datasets.DatasetIsUnavailable(args)),
+      fc.maybe(fc.uuid()),
+    ])('the dataset cannot be loaded', (locale, datasetId, user, error, reviewId) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewThisDatasetPage({ datasetId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              findInProgressReviewForADataset: () => Effect.succeed(reviewId),
-            }),
-          ),
-          Effect.provide(
-            Layer.mock(Datasets.Datasets, {
-              getDataset: () => new Datasets.DatasetIsUnavailable({ cause }),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeed(reviewId),
+          }),
         ),
+        Effect.provide(
+          Layer.mock(Datasets.Datasets, {
+            getDataset: () => error,
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
     )
 
-    test.prop([fc.supportedLocale(), fc.datasetId(), fc.user(), fc.anything(), fc.maybe(fc.uuid())])(
-      'the dataset cannot be found',
-      (locale, datasetId, user, cause, reviewId) =>
-        Effect.gen(function* () {
-          const actual = yield* _.ReviewThisDatasetPage({ datasetId })
+    test.prop([
+      fc.supportedLocale(),
+      fc.datasetId(),
+      fc.user(),
+      fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsNotFound(args)),
+      fc.maybe(fc.uuid()),
+    ])('the dataset cannot be found', (locale, datasetId, user, error, reviewId) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewThisDatasetPage({ datasetId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.NotFound,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              findInProgressReviewForADataset: () => Effect.succeed(reviewId),
-            }),
-          ),
-          Effect.provide(
-            Layer.mock(Datasets.Datasets, {
-              getDataset: () => new Datasets.DatasetIsNotFound({ cause }),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            findInProgressReviewForADataset: () => Effect.succeed(reviewId),
+          }),
         ),
+        Effect.provide(
+          Layer.mock(Datasets.Datasets, {
+            getDataset: () => error,
+          }),
+        ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
     )
 
     test.prop([fc.supportedLocale(), fc.datasetId(), fc.user(), fc.dataset(), fc.anything()])(
