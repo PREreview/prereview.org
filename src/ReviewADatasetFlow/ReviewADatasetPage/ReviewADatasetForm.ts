@@ -1,5 +1,5 @@
 import { Data, type Either } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
+import type { Doi } from '../../types/index.js'
 
 export type ReviewADatasetForm = IncompleteForm | CompletedForm
 
@@ -18,5 +18,5 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
-  whichDataset: Datasets.DatasetId
+  whichDataset: Doi.Doi
 }> {}
