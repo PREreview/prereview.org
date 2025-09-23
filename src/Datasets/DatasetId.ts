@@ -10,7 +10,7 @@ export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadD
 export const DatasetId = Schema.Union(DryadDatasetId)
 
 export const DatasetIdFromString = Schema.transform(
-  Schema.TemplateLiteralParser('doi:', Doi.RegistrantDoiSchema('5061')),
+  Schema.TemplateLiteralParser('doi:', DryadDatasetId.fields.value),
   Schema.typeSchema(DatasetId),
   {
     strict: true,
