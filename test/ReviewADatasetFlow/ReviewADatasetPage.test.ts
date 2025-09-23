@@ -29,7 +29,7 @@ test.prop([fc.supportedLocale(), fc.datasetId(), fc.dataset()])('ReviewADatasetP
 )
 
 describe('ReviewADatasetSubmission', () => {
-  test.failing.prop(
+  test.prop(
     [
       fc.supportedLocale(),
       fc.datasetId().map(id => Tuple.make<[string, Datasets.DatasetId]>(id.value, id)),
@@ -91,7 +91,7 @@ describe('ReviewADatasetSubmission', () => {
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 
-  test.failing.prop([
+  test.prop([
     fc.supportedLocale(),
     fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
     fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsNotFound(args)),
