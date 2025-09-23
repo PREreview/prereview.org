@@ -13,7 +13,8 @@ import {
 const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
 
 test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.getByRole('link', { name: 'Review a dataset' }).click()
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/dryad.wstqjq2n3')
   await page.getByRole('button', { name: 'Continue' }).click()
 

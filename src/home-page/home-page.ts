@@ -23,11 +23,13 @@ import type { RecentPrereview } from './recent-prereviews.js'
 import type { RecentReviewRequest } from './recent-review-requests.js'
 
 export const createPage = ({
+  canReviewDatasets = false,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
+  canReviewDatasets?: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<RecentPrereview>
   recentReviewRequests: ReadonlyArray<RecentReviewRequest>
@@ -48,6 +50,7 @@ export const createPage = ({
             <a href="${format(requestAPrereviewMatch.formatter, {})}"
               >${translate(locale, 'home-page', 'requestReviewButton')()}</a
             >
+            ${canReviewDatasets ? html`<a href="${Routes.ReviewADataset}">Review a dataset</a>` : ''}
           </div>
         </div>
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />

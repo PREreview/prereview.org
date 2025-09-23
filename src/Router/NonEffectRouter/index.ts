@@ -287,7 +287,7 @@ const routerWithoutHyperTs = pipe(
       Routes.homeMatch.parser,
       P.map(
         () => (env: Env) =>
-          home({ locale: env.locale })({
+          home({ canReviewDatasets: env.featureFlags.canReviewDatasets, locale: env.locale })({
             getRecentPrereviews: () => EffectToFpts.toTask(Prereviews.getFiveMostRecent, env.runtime),
             getRecentReviewRequests: () => EffectToFpts.toTask(ReviewRequests.getFiveMostRecent, env.runtime),
           }),
