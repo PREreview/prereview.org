@@ -176,7 +176,7 @@ test('when the dataset is not found', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this dataset')
 })
 
-test('when it is not a dataset', async ({ fetch, page }, testInfo) => {
+test('when it is not a dataset', async ({ fetch, page }) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/not-a-dataset')
 
@@ -310,8 +310,6 @@ test('when it is not a dataset', async ({ fetch, page }, testInfo) => {
   })
 
   await page.getByRole('button', { name: 'Continue' }).click()
-
-  testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we only support datasets')
 })
