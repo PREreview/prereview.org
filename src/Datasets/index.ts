@@ -1,4 +1,5 @@
-import { Context, Effect, Layer } from 'effect'
+import { Context, Effect, flow, Layer } from 'effect'
+import type { Datacite } from '../ExternalApis/index.js'
 import { GetDataset } from './GetDataset.js'
 import { GetDatasetTitle } from './GetDatasetTitle.js'
 import { ResolveDatasetId } from './ResolveDatasetId.js'
@@ -32,8 +33,15 @@ export class Datasets extends Context.Tag('Datasets')<
 
 export const { getDataset, getDatasetTitle, resolveDatasetId } = Effect.serviceFunctions(Datasets)
 
-export const layer = Layer.succeed(Datasets, {
-  getDataset: GetDataset,
-  getDatasetTitle: GetDatasetTitle,
-  resolveDatasetId: ResolveDatasetId,
-})
+export const layer = Layer.effect(
+  Datasets,
+  Effect.gen(function* () {
+    const context = yield* Effect.context<Datacite.Datacite>()
+
+    return {
+      getDataset: flow(GetDataset, Effect.provide(context)),
+      getDatasetTitle: flow(GetDatasetTitle, Effect.provide(context)),
+      resolveDatasetId: flow(ResolveDatasetId, Effect.provide(context)),
+    }
+  }),
+)

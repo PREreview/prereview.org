@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Equal } from 'effect'
+import type { Datacite } from '../../ExternalApis/index.js'
 import { html } from '../../html.js'
 import { Doi } from '../../types/index.js'
 import * as Dataset from '../Dataset.js'
@@ -7,7 +8,11 @@ import type * as DatasetId from '../DatasetId.js'
 
 export const GetDatasetFromDatacite = (
   id: DatasetId.DatasetId,
-): Effect.Effect<Dataset.Dataset, Dataset.NotADataset | Dataset.DatasetIsNotFound | Dataset.DatasetIsUnavailable> =>
+): Effect.Effect<
+  Dataset.Dataset,
+  Dataset.NotADataset | Dataset.DatasetIsNotFound | Dataset.DatasetIsUnavailable,
+  Datacite.Datacite
+> =>
   Effect.if(Equal.equals(id.value, Doi.Doi('10.5061/dryad.wstqjq2n3')), {
     onFalse: () => new Dataset.DatasetIsUnavailable({ cause: 'not implemented', datasetId: id }),
     onTrue: () =>
