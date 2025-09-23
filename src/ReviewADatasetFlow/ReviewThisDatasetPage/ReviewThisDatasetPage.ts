@@ -11,6 +11,9 @@ import type { User } from '../../user.js'
 export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dataset; user: Option.Option<User> }) => {
   return PageResponse({
     title: plainText`Review a dataset`,
+    nav: html`
+      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back"><span>Back to dataset</span></a>
+    `,
     main: html`
       <h1>Review a dataset</h1>
 
