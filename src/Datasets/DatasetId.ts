@@ -1,4 +1,4 @@
-import { Schema, Tuple } from 'effect'
+import { type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.js'
 
 export type DatasetId = typeof DatasetId.Type
@@ -18,3 +18,5 @@ export const DatasetIdFromString = Schema.transform(
     encode: datasetId => Tuple.make('doi:' as const, datasetId.value),
   },
 )
+
+export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DryadDatasetId.fields.value)
