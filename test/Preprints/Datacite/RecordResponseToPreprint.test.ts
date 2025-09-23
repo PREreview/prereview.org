@@ -282,3 +282,19 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
       expect(actual._tag).toStrictEqual('NotAPreprint')
     }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
+
+test.each(['dryad'])('returns a specific error for an unsupported DOI record (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
+      Effect.andThen(Struct.get('data')),
+      Effect.andThen(Struct.get('attributes')),
+      Effect.andThen(recordToPreprint),
+      Effect.flip,
+    )
+
+    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+)

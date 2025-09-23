@@ -1,0 +1,200 @@
+{
+  "data": {
+    "id": "10.5061/dryad.wstqjq2n3",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5061/dryad.wstqjq2n3",
+      "prefix": "10.5061",
+      "suffix": "dryad.wstqjq2n3",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Wolf, Jesse",
+          "nameType": "Personal",
+          "givenName": "Jesse",
+          "familyName": "Wolf",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "MacKay, Layla",
+          "nameType": "Personal",
+          "givenName": "Layla",
+          "familyName": "MacKay",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Haworth, Sarah",
+          "nameType": "Personal",
+          "givenName": "Sarah",
+          "familyName": "Haworth",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Dedato, Morgan",
+          "nameType": "Personal",
+          "givenName": "Morgan",
+          "familyName": "Dedato",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Young, Kiana",
+          "nameType": "Personal",
+          "givenName": "Kiana",
+          "familyName": "Young",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Cossette, Marie-Laurence",
+          "nameType": "Personal",
+          "givenName": "Marie-Laurence",
+          "familyName": "Cossette",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Elliott, Colin",
+          "nameType": "Personal",
+          "givenName": "Colin",
+          "familyName": "Elliott",
+          "affiliation": ["Trent University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Oomen, Rebekah",
+          "nameType": "Personal",
+          "givenName": "Rebekah",
+          "familyName": "Oomen",
+          "affiliation": ["University of Olso"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [{ "title": "Metadata collected from 500 articles in the field of ecology and evolution" }],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2022,
+      "subjects": [],
+      "contributors": [],
+      "dates": [
+        { "date": "2021-08-27T13:16:02Z", "dateType": "Submitted" },
+        { "date": "2022-09-02T00:00:00Z", "dateType": "Issued" },
+        { "date": "2022-09-02T00:00:00Z", "dateType": "Available" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsCitedBy",
+          "relatedIdentifier": "10.22541/au.161818075.53734576/v1",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["101721 bytes"],
+      "formats": [],
+      "version": "2",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "The submitted dataset contains the metadata collected from 500 articles in\n the field of ecology and evolution. This includes articles from the\n following journals: Ecology and Evolution, PLoS One, Proceedings of the\n Royal Society B, Ecology and the preprint server bioRxiv. Direct\n identifiers have been removed from the dataset. These included the first\n and last names of authors. No more than three indirect identifiers have\n been provided. Information found herein includes article titles, number of\n authors and ECR status, among others. A README file has been attached to\n provide greater details about the dataset.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTA2MS9EUllBRC5XU1RRSlEyTjM8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPldvbGYsIEplc3NlPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAzeWdtcTIzMCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5UcmVudCBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NYWNLYXksIExheWxhPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAzeWdtcTIzMCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5UcmVudCBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5IYXdvcnRoLCBTYXJhaDwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM3lnbXEyMzAiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VHJlbnQgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+RGVkYXRvLCBNb3JnYW48L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDN5Z21xMjMwIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPlRyZW50IFVuaXZlcnNpdHk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPllvdW5nLCBLaWFuYTwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM3lnbXEyMzAiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VHJlbnQgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+Q29zc2V0dGUsIE1hcmllLUxhdXJlbmNlPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAzeWdtcTIzMCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5UcmVudCBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5FbGxpb3R0LCBDb2xpbjwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM3lnbXEyMzAiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VHJlbnQgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+T29tZW4sIFJlYmVrYWg8L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24+VW5pdmVyc2l0eSBvZiBPbHNvPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+TWV0YWRhdGEgY29sbGVjdGVkIGZyb20gNTAwIGFydGljbGVzIGluIHRoZSBmaWVsZCBvZiBlY29sb2d5IGFuZCBldm9sdXRpb248L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXIgcHVibGlzaGVySWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAweDZoNW45NSIgcHVibGlzaGVySWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZy8iPkRyeWFkPC9wdWJsaXNoZXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ij5kYXRhc2V0PC9yZXNvdXJjZVR5cGU+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDIyPC9wdWJsaWNhdGlvblllYXI+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCI+MjAyMS0wOC0yN1QxMzoxNjowMlo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDIyLTA5LTAyVDAwOjAwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiPjIwMjItMDktMDJUMDA6MDA6MDBaPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjIyNTQxL2F1LjE2MTgxODA3NS41MzczNDU3Ni92MTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzPgogICAgPHNpemU+MTAxNzIxIGJ5dGVzPC9zaXplPgogIDwvc2l6ZXM+CiAgPHZlcnNpb24+MjwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL3NwZHgub3JnL2xpY2Vuc2VzL0NDMC0xLjAuaHRtbCI+Q3JlYXRpdmUgQ29tbW9ucyBaZXJvIHYxLjAgVW5pdmVyc2FsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+CiAgICAgIFRoZSBzdWJtaXR0ZWQgZGF0YXNldCBjb250YWlucyB0aGUgbWV0YWRhdGEgY29sbGVjdGVkIGZyb20gNTAwIGFydGljbGVzIGluCiAgICAgIHRoZSBmaWVsZCBvZiBlY29sb2d5IGFuZCBldm9sdXRpb24uIFRoaXMgaW5jbHVkZXMgYXJ0aWNsZXMgZnJvbSB0aGUKICAgICAgZm9sbG93aW5nIGpvdXJuYWxzOiBFY29sb2d5IGFuZCBFdm9sdXRpb24sIFBMb1MgT25lLCBQcm9jZWVkaW5ncyBvZiB0aGUKICAgICAgUm95YWwgU29jaWV0eSBCLCBFY29sb2d5IGFuZCB0aGUgcHJlcHJpbnQgc2VydmVyIGJpb1J4aXYuJmFtcDtuYnNwO0RpcmVjdAogICAgICBpZGVudGlmaWVycyBoYXZlIGJlZW4gcmVtb3ZlZCBmcm9tIHRoZSBkYXRhc2V0LiBUaGVzZSBpbmNsdWRlZCB0aGUgZmlyc3QKICAgICAgYW5kIGxhc3QgbmFtZXMgb2YgYXV0aG9ycy4gTm8gbW9yZSB0aGFuIHRocmVlIGluZGlyZWN0IGlkZW50aWZpZXJzIGhhdmUKICAgICAgYmVlbiBwcm92aWRlZC4gSW5mb3JtYXRpb24gZm91bmQgaGVyZWluIGluY2x1ZGVzIGFydGljbGUgdGl0bGVzLCBudW1iZXIgb2YKICAgICAgYXV0aG9ycyBhbmQgRUNSIHN0YXR1cywgYW1vbmcgb3RoZXJzLiBBIFJFQURNRSBmaWxlIGhhcyBiZWVuIGF0dGFjaGVkIHRvCiAgICAgIHByb3ZpZGUgZ3JlYXRlciBkZXRhaWxzIGFib3V0IHRoZSBkYXRhc2V0LgogICAgPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3",
+      "contentUrl": null,
+      "metadataVersion": 10,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 171,
+      "viewsOverTime": [
+        { "yearMonth": "2021-09", "total": 6 },
+        { "yearMonth": "2021-10", "total": 6 },
+        { "yearMonth": "2021-11", "total": 8 },
+        { "yearMonth": "2022-01", "total": 3 },
+        { "yearMonth": "2022-02", "total": 4 },
+        { "yearMonth": "2022-03", "total": 35 },
+        { "yearMonth": "2022-04", "total": 3 },
+        { "yearMonth": "2022-05", "total": 1 },
+        { "yearMonth": "2022-06", "total": 1 },
+        { "yearMonth": "2022-08", "total": 1 },
+        { "yearMonth": "2022-10", "total": 2 },
+        { "yearMonth": "2022-11", "total": 1 },
+        { "yearMonth": "2022-12", "total": 1 },
+        { "yearMonth": "2023-01", "total": 3 },
+        { "yearMonth": "2023-03", "total": 2 },
+        { "yearMonth": "2023-04", "total": 1 },
+        { "yearMonth": "2023-05", "total": 3 },
+        { "yearMonth": "2023-06", "total": 1 },
+        { "yearMonth": "2023-07", "total": 1 },
+        { "yearMonth": "2023-08", "total": 37 },
+        { "yearMonth": "2023-09", "total": 34 },
+        { "yearMonth": "2023-10", "total": 1 },
+        { "yearMonth": "2023-11", "total": 6 },
+        { "yearMonth": "2024-08", "total": 2 },
+        { "yearMonth": "2024-10", "total": 1 },
+        { "yearMonth": "2025-01", "total": 2 },
+        { "yearMonth": "2025-03", "total": 2 },
+        { "yearMonth": "2025-08", "total": 3 }
+      ],
+      "downloadCount": 6,
+      "downloadsOverTime": [
+        { "yearMonth": "2021-09", "total": 1 },
+        { "yearMonth": "2023-03", "total": 1 },
+        { "yearMonth": "2023-06", "total": 1 },
+        { "yearMonth": "2024-08", "total": 0 },
+        { "yearMonth": "2024-10", "total": 0 },
+        { "yearMonth": "2025-01", "total": 1 },
+        { "yearMonth": "2025-03", "total": 1 },
+        { "yearMonth": "2025-08", "total": 1 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2024", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2021-09-02T18:51:39.000Z",
+      "registered": "2021-09-02T18:51:40.000Z",
+      "published": "2022",
+      "updated": "2025-07-23T00:08:18.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.5061/dryad.wstqjq2n3", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [{ "id": "10.22541/au.161818075.53734576/v1", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}
