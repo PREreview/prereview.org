@@ -1,6 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { LibsqlClient } from '@effect/sql-libsql'
-import { Config, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
+import { Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.js'
 import * as Comments from './Comments/index.js'
 import * as ContactEmailAddress from './contact-email-address.js'
@@ -326,16 +325,7 @@ export const Program = pipe(
         Comments.makeGetNextExpectedCommandForUserOnAComment,
       ),
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      pipe(
-        DatasetReviews.layer,
-        Layer.provide(SqlEventStore.layer),
-        Layer.provide(
-          LibsqlClient.layerConfig({
-            url: Config.withDefault(Config.string('DATASET_REVIEWS_LIBSQL_URL'), 'file::memory:?cache=shared'),
-          }),
-        ),
-        Layer.fresh,
-      ),
+      DatasetReviews.layer,
       GhostPage.layer,
       ZenodoInteractions.layer,
     ),
