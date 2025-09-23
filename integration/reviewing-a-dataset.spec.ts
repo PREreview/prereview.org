@@ -165,15 +165,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test('when the dataset is not found', async ({ fetch, page }, testInfo) => {
+test('when the dataset is not found', async ({ fetch, page }) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/this-should-not-find-anything')
 
   fetch.get('https://api.datacite.org/dois/10.5061%2Fthis-should-not-find-anything', { status: StatusCodes.NotFound })
 
   await page.getByRole('button', { name: 'Continue' }).click()
-
-  testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this dataset')
 })
