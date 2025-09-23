@@ -137,7 +137,7 @@ describe('ReviewADatasetSubmission', () => {
     ),
   )
 
-  test.failing.prop([
+  test.prop([
     fc.supportedLocale(),
     fc.urlParams(fc.record({ whichDataset: fc.nonDatasetDoi() })),
     fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.NotADataset(args)),

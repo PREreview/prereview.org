@@ -1,11 +1,12 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import type { Locale } from '../../Context.js'
-import type * as Datasets from '../../Datasets/index.js'
+import * as Datasets from '../../Datasets/index.js'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
 import type * as Response from '../../response.js'
 import * as ReviewADatasetForm from './ReviewADatasetForm.js'
 import { ReviewADatasetPage as MakeResponse } from './ReviewADatasetPage.js'
+import { UnsupportedDoiPage } from './UnsupportedDoiPage.js'
 
 export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.succeed(
   MakeResponse({ form: new ReviewADatasetForm.EmptyForm() }),
@@ -20,7 +21,13 @@ export const ReviewADatasetSubmission = ({
     const form = yield* ReviewADatasetForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fn(function* (form: ReviewADatasetForm.CompletedForm) {
+        if (!Datasets.isDatasetDoi(form.whichDataset)) {
+          return UnsupportedDoiPage()
+        }
+
+        return yield* HavingProblemsPage
+      }),
       InvalidForm: form => Effect.succeed(MakeResponse({ form })),
     })
   })

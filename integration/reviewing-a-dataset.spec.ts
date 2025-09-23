@@ -331,13 +331,11 @@ test('might not load the dataset in time', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
 })
 
-test('when the DOI is not supported', async ({ page }, testInfo) => {
+test('when the DOI is not supported', async ({ page }) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5555/12345678')
 
   await page.getByRole('button', { name: 'Continue' }).click()
-
-  testInfo.fail()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
 })
