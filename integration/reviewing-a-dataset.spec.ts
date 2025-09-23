@@ -167,7 +167,7 @@ test('when the dataset is not found', async ({ fetch, page }, testInfo) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/this-should-not-find-anything')
 
-  fetch.get('https://api.datacite.org/dois/10.5061/this-should-not-find-anything', { status: StatusCodes.NotFound })
+  fetch.get('https://api.datacite.org/dois/10.5061%2Fthis-should-not-find-anything', { status: StatusCodes.NotFound })
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -180,7 +180,7 @@ test('when it is not a dataset', async ({ fetch, page }, testInfo) => {
   await page.goto('/review-a-dataset', { waitUntil: 'commit' })
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/not-a-dataset')
 
-  fetch.get('https://api.datacite.org/dois/10.5061/not-a-dataset', {
+  fetch.get('https://api.datacite.org/dois/10.5061%2Fnot-a-dataset', {
     body: {
       data: {
         id: '10.5281/zenodo.1001813',
@@ -321,7 +321,7 @@ test('might not load the dataset in time', async ({ fetch, page }) => {
   await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/this-should-take-too-long')
 
   fetch.get(
-    'https://api.datacite.org/dois/10.5061/this-should-take-too-long',
+    'https://api.datacite.org/dois/10.5061%2Fthis-should-take-too-long',
     { status: StatusCodes.NotFound },
     { delay: Duration.toMillis('2.5 seconds') },
   )
