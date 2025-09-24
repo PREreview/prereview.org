@@ -46,6 +46,14 @@ export const fromUrl = (url: URL): Option.Option<DatasetId> =>
     Match.orElse(Option.none<DatasetId>),
   )
 
+export const parseDatasetIdInput = pipe(
+  Match.type<Doi.Doi | URL>(),
+  Match.withReturnType<Option.Option<DatasetId>>(),
+  Match.when(Match.string, parseDatasetDoi),
+  Match.when({ href: Match.string }, fromUrl),
+  Match.exhaustive,
+)
+
 const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
 
 const extractFromDryadPath = flow(

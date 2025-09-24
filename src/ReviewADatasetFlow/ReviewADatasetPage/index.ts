@@ -27,7 +27,7 @@ export const ReviewADatasetSubmission = ({
       CompletedForm: Effect.fn(
         function* (form: ReviewADatasetForm.CompletedForm) {
           const datasetId = yield* Effect.andThen(
-            Datasets.parseDatasetDoi(form.whichDataset),
+            Datasets.parseDatasetIdInput(form.whichDataset),
             Datasets.resolveDatasetId,
           )
 

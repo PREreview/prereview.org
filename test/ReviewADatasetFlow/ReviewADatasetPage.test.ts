@@ -29,7 +29,7 @@ test.prop([fc.supportedLocale(), fc.datasetId(), fc.dataset()])('ReviewADatasetP
 )
 
 describe('ReviewADatasetSubmission', () => {
-  test.failing.prop(
+  test.prop(
     [
       fc.supportedLocale(),
       fc.oneof(

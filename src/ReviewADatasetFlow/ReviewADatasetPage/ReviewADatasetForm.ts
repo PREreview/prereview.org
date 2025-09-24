@@ -1,4 +1,4 @@
-import { UrlParams } from '@effect/platform'
+import { Url, UrlParams } from '@effect/platform'
 import { Data, Effect, Either, Option, Schema } from 'effect'
 import { Doi, NonEmptyString } from '../../types/index.js'
 
@@ -19,17 +19,20 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 }> {}
 
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
-  whichDataset: Doi.Doi
+  whichDataset: Doi.Doi | URL
 }> {}
 
 export const fromBody = Effect.fn(
   function* (body: UrlParams.UrlParams) {
     const { whichDataset } = yield* Schema.decode(WhichDatasetSchema)(body)
 
-    return Option.match(Doi.parse(whichDataset), {
-      onNone: () => new InvalidForm({ whichDataset: Either.left(new Invalid({ value: whichDataset })) }),
-      onSome: whichDataset => new CompletedForm({ whichDataset }),
-    })
+    return Option.match(
+      Option.orElse(Doi.parse(whichDataset), () => Either.getRight(Url.fromString(whichDataset))),
+      {
+        onNone: () => new InvalidForm({ whichDataset: Either.left(new Invalid({ value: whichDataset })) }),
+        onSome: whichDataset => new CompletedForm({ whichDataset }),
+      },
+    )
   },
   Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ whichDataset: Either.left(new Missing()) }))),
 )
