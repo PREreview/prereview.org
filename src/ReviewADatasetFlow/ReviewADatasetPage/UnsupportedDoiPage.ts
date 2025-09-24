@@ -13,7 +13,7 @@ export const UnsupportedDoiPage = () => {
       <p>We support datasets from Dryad.</p>
 
       <p>
-        If this DOI is for a preprint on a server we don’t support, please
+        If this DOI is for a dataset on a repository we don’t support, please
         <a href="mailto:help@prereview.org">get in touch</a>.
       </p>
 
