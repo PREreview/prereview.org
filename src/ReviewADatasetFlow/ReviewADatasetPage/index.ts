@@ -26,11 +26,10 @@ export const ReviewADatasetSubmission = ({
     return yield* Match.valueTags(form, {
       CompletedForm: Effect.fn(
         function* (form: ReviewADatasetForm.CompletedForm) {
-          if (!Datasets.isDatasetDoi(form.whichDataset)) {
-            return UnsupportedDoiPage()
-          }
-
-          const datasetId = yield* Datasets.resolveDatasetId(new Datasets.DryadDatasetId({ value: form.whichDataset }))
+          const datasetId = yield* Effect.andThen(
+            Datasets.parseDatasetDoi(form.whichDataset),
+            Datasets.resolveDatasetId,
+          )
 
           return Response.RedirectResponse({
             location: Routes.ReviewThisDataset.href({ datasetId }),
@@ -39,6 +38,7 @@ export const ReviewADatasetSubmission = ({
         Effect.catchTags({
           DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId })),
           DatasetIsUnavailable: () => HavingProblemsPage,
+          NoSuchElementException: () => Effect.succeed(UnsupportedDoiPage()),
           NotADataset: () => Effect.succeed(NotADatasetPage()),
         }),
       ),

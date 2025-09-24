@@ -13,11 +13,10 @@ export const RecordToDataset = (
   record: Datacite.Record,
 ): Either.Either<Dataset.Dataset, Dataset.NotADataset | Dataset.DatasetIsUnavailable | RecordIsNotSupported> =>
   Either.gen(function* () {
-    if (!DatasetId.isDatasetDoi(record.doi)) {
-      return yield* Either.left(new RecordIsNotSupported({ cause: record.doi }))
-    }
-
-    const datasetId = new DatasetId.DryadDatasetId({ value: record.doi })
+    const datasetId = yield* Either.fromOption(
+      DatasetId.parseDatasetDoi(record.doi),
+      () => new RecordIsNotSupported({ cause: record.doi }),
+    )
 
     if (record.types.resourceType?.toLowerCase() !== 'dataset') {
       return yield* Either.left(new Dataset.NotADataset({ cause: record.types, datasetId }))
