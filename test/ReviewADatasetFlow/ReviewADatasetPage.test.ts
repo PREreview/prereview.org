@@ -29,10 +29,13 @@ test.prop([fc.supportedLocale(), fc.datasetId(), fc.dataset()])('ReviewADatasetP
 )
 
 describe('ReviewADatasetSubmission', () => {
-  test.prop(
+  test.failing.prop(
     [
       fc.supportedLocale(),
-      fc.datasetId().map(id => Tuple.make<[string, Datasets.DatasetId]>(id.value, id)),
+      fc.oneof(
+        fc.datasetId().map(id => Tuple.make<[string, Datasets.DatasetId]>(id.value, id)),
+        fc.supportedDatasetUrl().map(([url, id]) => Tuple.make<[string, Datasets.DatasetId]>(url.href, id)),
+      ),
       fc.datasetId(),
     ],
     {
@@ -65,6 +68,22 @@ describe('ReviewADatasetSubmission', () => {
           DefaultLocale,
           [
             ' https://doi.org/10.5061/dryad.wstqjq2n3 ', // doi.org URL with whitespace
+            new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+          ],
+          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        ],
+        [
+          DefaultLocale,
+          [
+            'https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3', // Dryad URL
+            new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+          ],
+          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        ],
+        [
+          DefaultLocale,
+          [
+            ' https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3 ', // Dryad URL with whitespace
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
           new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
