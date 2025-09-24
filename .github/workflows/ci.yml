@@ -399,38 +399,6 @@ jobs:
           name: visual-regression-tests-results-${{ matrix.shard }}
           path: integration-results
 
-  test-web:
-    name: 'Web Tests'
-    runs-on: ubuntu-22.04
-    continue-on-error: true
-    timeout-minutes: 30
-    needs:
-      - build-locales
-
-    steps:
-      - name: 'Checkout code'
-        uses: actions/checkout@v5.0.0
-
-      - name: 'Set up Node.js'
-        uses: actions/setup-node@v5.0.0
-        with:
-          node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
-
-      - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
-
-      - name: 'Download assets locales'
-        uses: actions/download-artifact@v5.0.0
-        with:
-          name: locales-assets
-          path: assets/locales
-
-      - name: 'Run the tests'
-        uses: docker://mcr.microsoft.com/playwright:v1.55.1-jammy
-        with:
-          args: env HOME=/root npx web-test-runner
-
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-22.04
@@ -489,7 +457,6 @@ jobs:
       - test-integration
       - test-smoke
       - test-visual-regression
-      - test-web
       - typecheck
 
     steps:

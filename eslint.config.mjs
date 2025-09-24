@@ -119,12 +119,6 @@ export default defineConfig([
     },
   },
   {
-    files: ['test/assets/**/*.test.ts'],
-    rules: {
-      '@typescript-eslint/no-unused-expressions': 'off',
-    },
-  },
-  {
     files: ['integration/**/*.ts', 'visual-regression/**/*.ts'],
     rules: {
       '@typescript-eslint/unbound-method': 'off',
@@ -136,12 +130,6 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-base-to-string': 'off',
       'import/no-internal-modules': ['error', { forbid: ['**/assets/**/*'] }],
-    },
-  },
-  {
-    files: ['test/assets/**/*.ts'],
-    rules: {
-      'import/no-internal-modules': 'off',
     },
   },
 ])

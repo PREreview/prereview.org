@@ -51,9 +51,3 @@ updates:
       tiptap:
         patterns:
           - '@tiptap/*'
-      web-test-runner:
-        patterns:
-          - '@web/dev-server'
-          - '@web/dev-server-*'
-          - '@web/test-runner'
-          - '@web/test-runner-*'
