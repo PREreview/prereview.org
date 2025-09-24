@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Layer, Option, pipe, Predicate, Tuple } from 'effect'
+import { Effect, Layer, Option, pipe, Predicate, Struct, Tuple } from 'effect'
 import { Locale } from '../../src/Context.js'
 import * as Datasets from '../../src/Datasets/index.js'
 import { DefaultLocale } from '../../src/locales/index.js'
@@ -158,7 +158,7 @@ describe('ReviewADatasetSubmission', () => {
 
   test.prop([
     fc.supportedLocale(),
-    fc.urlParams(fc.record({ whichDataset: fc.nonDatasetDoi() })),
+    fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
     fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.NotADataset(args)),
   ])("when the DOI isn't for a dataset", (locale, body, error) =>
     Effect.gen(function* () {
@@ -177,6 +177,24 @@ describe('ReviewADatasetSubmission', () => {
       Effect.provideService(Locale, locale),
       EffectTest.run,
     ),
+  )
+
+  test.prop([
+    fc.supportedLocale(),
+    fc.urlParams(fc.record({ whichDataset: fc.oneof(fc.nonDatasetDoi(), fc.nonDatasetUrl().map(Struct.get('href'))) })),
+  ])("when the DOI or URL isn't supported", (locale, body) =>
+    Effect.gen(function* () {
+      const actual = yield* _.ReviewADatasetSubmission({ body })
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.BadRequest,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale), EffectTest.run),
   )
 
   test.prop([
