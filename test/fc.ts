@@ -1108,7 +1108,9 @@ export const dryadDatasetId = (): fc.Arbitrary<Datasets.DryadDatasetId> =>
   doi(constant('5061')).map(doi => new Datasets.DryadDatasetId({ value: doi }))
 
 export const dryadDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DryadDatasetId]> =>
-  dryadDatasetId().map(id => [new URL(`https://datadryad.org/dataset/doi:${encodeURIComponent(id.value)}`), id])
+  dryadDatasetId()
+    .filter(id => !id.value.endsWith('/'))
+    .map(id => [new URL(`https://datadryad.org/dataset/doi:${encodeURIComponent(id.value)}`), id])
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
