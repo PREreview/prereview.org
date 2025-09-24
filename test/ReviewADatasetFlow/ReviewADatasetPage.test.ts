@@ -183,7 +183,11 @@ describe('ReviewADatasetSubmission', () => {
     fc.supportedLocale(),
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'whichDataset'))),
-      fc.urlParams(fc.record({ whichDataset: fc.string().filter(Predicate.not(Doi.isDoi)) })),
+      fc.urlParams(
+        fc.record({
+          whichDataset: fc.string().filter(Predicate.nor(Doi.isDoi, (string: string) => URL.canParse(string))),
+        }),
+      ),
     ),
   ])("when there isn't a dataset DOI", (locale, body) =>
     Effect.gen(function* () {
