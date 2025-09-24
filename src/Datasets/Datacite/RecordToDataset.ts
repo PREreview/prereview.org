@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import type { Datacite } from '../../ExternalApis/index.js'
 import { sanitizeHtml } from '../../html.js'
+import { OrcidId } from '../../types/index.js'
 import * as Dataset from '../Dataset.js'
 import * as DatasetId from '../DatasetId.js'
 
@@ -30,9 +31,10 @@ export const RecordToDataset = (
             creators,
             flow(
               Match.value,
-              Match.when({ name: Match.string }, creator => ({ name: creator.name })),
+              Match.when({ name: Match.string }, creator => ({ name: creator.name, orcid: findOrcid(creator) })),
               Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
                 name: `${creator.givenName} ${creator.familyName}`,
+                orcid: findOrcid(creator),
               })),
               Match.exhaustive,
             ),
@@ -66,6 +68,13 @@ const findPublishedDate = (dates: Datacite.Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Available')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
+  )
+
+const findOrcid = (creator: Datacite.Record['creators'][number]) =>
+  pipe(
+    Array.findFirst(creator.nameIdentifiers, ({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
+    Option.andThen(({ nameIdentifier }) => OrcidId.parse(nameIdentifier)),
+    Option.getOrUndefined,
   )
 
 const getAbstract = (descriptions: Datacite.Record['descriptions']): Dataset.Dataset['abstract'] => {
