@@ -761,7 +761,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a DOI', async ({ javaSc
   }
   await expect(page.getByLabel('Which dataset are you reviewing?')).toHaveAttribute('aria-invalid', 'true')
 
-  await page.getByRole('link', { name: 'Enter the dataset DOI' }).click()
+  await page.getByRole('link', { name: 'Enter the dataset DOI or URL' }).click()
 
   await expect(page.getByLabel('Which dataset are you reviewing?')).toBeFocused()
 
@@ -776,7 +776,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a DOI', async ({ javaSc
   await expect(page.getByLabel('Which dataset are you reviewing?')).toHaveAttribute('aria-invalid', 'true')
   await expect(page.getByLabel('Which dataset are you reviewing?')).toHaveValue('not-a-DOI')
 
-  await page.getByRole('link', { name: 'Enter a dataset DOI' }).click()
+  await page.getByRole('link', { name: 'Enter a dataset DOI or URL' }).click()
 
   await expect(page.getByLabel('Which dataset are you reviewing?')).toBeFocused()
 })

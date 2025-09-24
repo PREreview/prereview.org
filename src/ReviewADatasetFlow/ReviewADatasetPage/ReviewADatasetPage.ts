@@ -21,8 +21,8 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
                         <li>
                           <a href="#which-dataset">
                             ${Match.valueTags(form.whichDataset.left, {
-                              Invalid: () => 'Enter a dataset DOI',
-                              Missing: () => 'Enter the dataset DOI',
+                              Invalid: () => 'Enter a dataset DOI or URL',
+                              Missing: () => 'Enter the dataset DOI or URL',
                             })}
                           </a>
                         </li>
@@ -38,7 +38,7 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
             <label id="which-dataset-label" for="which-dataset">Which dataset are you reviewing?</label>
           </h1>
 
-          <p id="which-dataset-tip" role="note">Use the dataset DOI.</p>
+          <p id="which-dataset-tip" role="note">Use the dataset DOI or URL.</p>
 
           <details>
             <summary><span>What is a DOI?</span></summary>
@@ -57,8 +57,8 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
                 <div class="error-message" id="which-dataset-error">
                   <span class="visually-hidden">Error:</span>
                   ${Match.valueTags(form.whichDataset.left, {
-                    Invalid: () => 'Enter a dataset DOI',
-                    Missing: () => 'Enter the dataset DOI',
+                    Invalid: () => 'Enter a dataset DOI or URL',
+                    Missing: () => 'Enter the dataset DOI or URL',
                   })}
                 </div>
               `
