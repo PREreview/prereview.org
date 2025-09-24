@@ -339,6 +339,15 @@ test('when the DOI is not supported', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
 })
 
+test('when the URL is not supported', async ({ page }) => {
+  await page.goto('/review-a-dataset', { waitUntil: 'commit' })
+  await page.getByLabel('Which dataset are you reviewing?').fill('http://example.com')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
+})
+
 test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
 

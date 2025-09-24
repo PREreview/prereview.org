@@ -1,5 +1,5 @@
 import { Url } from '@effect/platform'
-import { flow, Match, Option, pipe, Predicate, Schema, Tuple } from 'effect'
+import { Data, Either, flow, Match, Option, pipe, Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.js'
 
 export type DatasetId = typeof DatasetId.Type
@@ -46,11 +46,15 @@ export const fromUrl = (url: URL): Option.Option<DatasetId> =>
     Match.orElse(Option.none<DatasetId>),
   )
 
+class UnsupportedDoi extends Data.TaggedError('UnsupportedDoi')<{ doi: Doi.Doi }> {}
+
+class UnsupportedUrl extends Data.TaggedError('UnsupportedUrl')<{ url: URL }> {}
+
 export const parseDatasetIdInput = pipe(
   Match.type<Doi.Doi | URL>(),
-  Match.withReturnType<Option.Option<DatasetId>>(),
-  Match.when(Match.string, parseDatasetDoi),
-  Match.when({ href: Match.string }, fromUrl),
+  Match.withReturnType<Either.Either<DatasetId, UnsupportedDoi | UnsupportedUrl>>(),
+  Match.when(Match.string, doi => Either.fromOption(parseDatasetDoi(doi), () => new UnsupportedDoi({ doi }))),
+  Match.when({ href: Match.string }, url => Either.fromOption(fromUrl(url), () => new UnsupportedUrl({ url }))),
   Match.exhaustive,
 )
 

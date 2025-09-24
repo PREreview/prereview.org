@@ -10,6 +10,7 @@ import * as ReviewADatasetForm from './ReviewADatasetForm.js'
 import { ReviewADatasetPage as MakeResponse } from './ReviewADatasetPage.js'
 import { UnknownDatasetPage } from './UnknownDatasetPage.js'
 import { UnsupportedDoiPage } from './UnsupportedDoiPage.js'
+import { UnsupportedUrlPage } from './UnsupportedUrlPage.js'
 
 export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.succeed(
   MakeResponse({ form: new ReviewADatasetForm.EmptyForm() }),
@@ -38,7 +39,8 @@ export const ReviewADatasetSubmission = ({
         Effect.catchTags({
           DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId })),
           DatasetIsUnavailable: () => HavingProblemsPage,
-          NoSuchElementException: () => Effect.succeed(UnsupportedDoiPage()),
+          UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage()),
+          UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage()),
           NotADataset: () => Effect.succeed(NotADatasetPage()),
         }),
       ),
