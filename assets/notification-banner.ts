@@ -1,4 +1,4 @@
-import { forceFocus } from './dom.js'
+import { forceFocus } from './dom.ts'
 
 export class NotificationBanner extends HTMLElement {
   static element = 'notification-banner' as const

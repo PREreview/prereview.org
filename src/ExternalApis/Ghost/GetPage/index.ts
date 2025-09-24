@@ -1,10 +1,10 @@
 import { HttpClient } from '@effect/platform'
 import { Effect, flow } from 'effect'
-import { CreateRequest } from './CreateRequest.js'
-import { GhostPageUnavailable } from './Errors.js'
-import { HandleResponse } from './HandleResponse.js'
+import { CreateRequest } from './CreateRequest.ts'
+import { GhostPageUnavailable } from './Errors.ts'
+import { HandleResponse } from './HandleResponse.ts'
 
-export * from './Errors.js'
+export * from './Errors.ts'
 
 export const GetPage = flow(
   CreateRequest,

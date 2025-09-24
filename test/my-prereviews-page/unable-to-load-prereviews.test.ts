@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/my-prereviews-page/unable-to-load-prereviews.js'
-import * as fc from './fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/my-prereviews-page/unable-to-load-prereviews.ts'
+import * as fc from './fc.ts'
 
 test.prop([fc.supportedLocale()])('toResponse', locale => {
   const actual = _.toResponse(_.UnableToLoadPrereviews, locale)

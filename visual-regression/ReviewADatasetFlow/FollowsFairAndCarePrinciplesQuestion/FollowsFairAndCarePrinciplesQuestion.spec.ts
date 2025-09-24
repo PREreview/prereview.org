@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as FollowsFairAndCarePrinciplesForm from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as FollowsFairAndCarePrinciplesForm from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.FollowsFairAndCarePrinciplesQuestion({

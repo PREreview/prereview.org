@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Either } from 'effect'
-import { Crossref } from '../../../src/ExternalApis/index.js'
-import * as _ from '../../../src/Preprints/Crossref/Preprint.js'
-import { Doi } from '../../../src/types/Doi.js'
-import * as fc from '../../fc.js'
+import { Crossref } from '../../../src/ExternalApis/index.ts'
+import * as _ from '../../../src/Preprints/Crossref/Preprint.ts'
+import { Doi } from '../../../src/types/Doi.ts'
+import * as fc from '../../fc.ts'
 
 describe('workToPreprint', () => {
   test.prop([fc.lorem(), fc.option(fc.lorem(), { nil: undefined })], {

@@ -28,8 +28,8 @@ import type {
   SocarxivPreprintId,
   TechrxivPreprintId,
   ZenodoPreprintId,
-} from './Preprints/index.js'
-import type { OrcidId } from './types/OrcidId.js'
+} from './Preprints/index.ts'
+import type { OrcidId } from './types/OrcidId.ts'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 

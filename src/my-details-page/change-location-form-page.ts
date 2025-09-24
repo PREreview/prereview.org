@@ -1,11 +1,11 @@
 import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import type { Location } from '../location.js'
-import { PageResponse } from '../response.js'
-import { changeLocationMatch, myDetailsMatch } from '../routes.js'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import type { Location } from '../location.ts'
+import { PageResponse } from '../response.ts'
+import { changeLocationMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = (location: Option.Option<Location>, locale: SupportedLocale) =>
   PageResponse({

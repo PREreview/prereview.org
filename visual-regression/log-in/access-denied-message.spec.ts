@@ -1,6 +1,6 @@
-import { DefaultLocale } from '../../src/locales/index.js'
-import { accessDeniedMessage } from '../../src/log-in/access-denied-message.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { accessDeniedMessage } from '../../src/log-in/access-denied-message.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(accessDeniedMessage(DefaultLocale))

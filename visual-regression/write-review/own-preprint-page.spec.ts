@@ -1,9 +1,9 @@
 import { Doi } from 'doi-ts'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { BiorxivPreprintId } from '../../src/Preprints/index.js'
-import { writeReviewMatch } from '../../src/routes.js'
-import { ownPreprintPage } from '../../src/write-review/own-preprint-page.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { writeReviewMatch } from '../../src/routes.ts'
+import { ownPreprintPage } from '../../src/write-review/own-preprint-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = ownPreprintPage(

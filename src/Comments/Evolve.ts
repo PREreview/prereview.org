@@ -1,6 +1,6 @@
 import { flow, Function, Match, Option, pipe } from 'effect'
-import type * as Events from './Events.js'
-import * as State from './State.js'
+import type * as Events from './Events.ts'
+import * as State from './State.ts'
 
 const onCommentWasStarted = (event: Events.CommentWasStarted) =>
   flow(

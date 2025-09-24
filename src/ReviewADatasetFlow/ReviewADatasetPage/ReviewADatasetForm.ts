@@ -1,6 +1,6 @@
 import { Url, UrlParams } from '@effect/platform'
 import { Data, Effect, Either, Option, Schema } from 'effect'
-import { Doi, NonEmptyString } from '../../types/index.js'
+import { Doi, NonEmptyString } from '../../types/index.ts'
 
 export type ReviewADatasetForm = IncompleteForm | CompletedForm
 

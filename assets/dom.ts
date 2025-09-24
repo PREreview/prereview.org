@@ -1,4 +1,4 @@
-import { DefaultLocale, isSupportedLocale, type SupportedLocale } from './locales/index.js'
+import { DefaultLocale, isSupportedLocale, type SupportedLocale } from './locales/index.ts'
 
 export function preventDefault(event: Event) {
   event.preventDefault()

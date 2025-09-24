@@ -9,12 +9,12 @@ import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { match, P } from 'ts-pattern'
 import { URL } from 'url'
-import * as StatusCodes from './StatusCodes.js'
-import { timeoutRequest } from './fetch.js'
-import type { SlackUserId } from './slack-user-id.js'
-import type { SlackUser } from './slack-user.js'
-import { NonEmptyStringC } from './types/NonEmptyString.js'
-import { type OrcidId, toUrl } from './types/OrcidId.js'
+import * as StatusCodes from './StatusCodes.ts'
+import { timeoutRequest } from './fetch.ts'
+import type { SlackUserId } from './slack-user-id.ts'
+import type { SlackUser } from './slack-user.ts'
+import { NonEmptyStringC } from './types/NonEmptyString.ts'
+import { type OrcidId, toUrl } from './types/OrcidId.ts'
 
 export class SlackApiConfig extends Context.Tag('SlackApiConfig')<
   SlackApiConfig,

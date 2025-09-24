@@ -1,9 +1,9 @@
 import rtlDetect from 'rtl-detect'
-import type * as Datasets from '../../Datasets/index.js'
-import { html, plainText } from '../../html.js'
-import { PageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import { html, plainText } from '../../html.ts'
+import { PageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/index.ts'
 
 export const CarryOnPage = ({
   dataset,

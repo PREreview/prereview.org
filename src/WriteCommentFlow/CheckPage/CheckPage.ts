@@ -1,11 +1,11 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import { type NonEmptyString, ProfileId, type Uuid } from '../../types/index.js'
-import type { User } from '../../user.js'
+import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { type NonEmptyString, ProfileId, type Uuid } from '../../types/index.ts'
+import type { User } from '../../user.ts'
 
 export const CheckPage = ({
   competingInterests,

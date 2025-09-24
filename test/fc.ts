@@ -34,23 +34,23 @@ import type {
   CompletedAuthorInvite,
   DeclinedAuthorInvite,
   OpenAuthorInvite,
-} from '../src/author-invite.js'
-import type { CareerStage } from '../src/career-stage.js'
-import * as Comments from '../src/Comments/index.js'
-import type { OrcidOAuthEnv } from '../src/connect-orcid/index.js'
+} from '../src/author-invite.ts'
+import type { CareerStage } from '../src/career-stage.ts'
+import * as Comments from '../src/Comments/index.ts'
+import type { OrcidOAuthEnv } from '../src/connect-orcid/index.ts'
 import {
   type ContactEmailAddress,
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
-} from '../src/contact-email-address.js'
-import type * as DatasetReviews from '../src/DatasetReviews/index.js'
-import * as Datasets from '../src/Datasets/index.js'
-import type { Email } from '../src/email.js'
-import * as Events from '../src/Events.js'
-import type { GhostPage } from '../src/GhostPage/index.js'
-import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
-import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
-import type { Languages } from '../src/languages.js'
+} from '../src/contact-email-address.ts'
+import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
+import * as Datasets from '../src/Datasets/index.ts'
+import type { Email } from '../src/email.ts'
+import * as Events from '../src/Events.ts'
+import type { GhostPage } from '../src/GhostPage/index.ts'
+import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
+import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
+import type { Languages } from '../src/languages.ts'
 import {
   type SupportedLocale,
   SupportedLocales,
@@ -58,15 +58,15 @@ import {
   UserSelectableLanguages,
   type UserSelectableLocale,
   UserSelectableLocales,
-} from '../src/locales/index.js'
-import type { Location } from '../src/location.js'
+} from '../src/locales/index.ts'
+import type { Location } from '../src/location.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
-import type { OrcidToken } from '../src/orcid-token.js'
-import * as Personas from '../src/Personas/index.js'
-import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.js'
-import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.js'
-import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Preprints/Datacite/legacy-datacite.js'
-import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.js'
+import type { OrcidToken } from '../src/orcid-token.ts'
+import * as Personas from '../src/Personas/index.ts'
+import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.ts'
+import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.ts'
+import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Preprints/Datacite/legacy-datacite.ts'
+import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.ts'
 import {
   AdvancePreprintId,
   AfricarxivFigsharePreprintId,
@@ -113,10 +113,10 @@ import {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
   isPreprintDoi,
-} from '../src/Preprints/index.js'
-import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.js'
-import { Prereview } from '../src/Prereview.js'
-import type { ResearchInterests } from '../src/research-interests.js'
+} from '../src/Preprints/index.ts'
+import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.ts'
+import { Prereview } from '../src/Prereview.ts'
+import type { ResearchInterests } from '../src/research-interests.ts'
 import {
   type FlashMessageResponse,
   FlashMessageSchema,
@@ -125,26 +125,26 @@ import {
   type RedirectResponse,
   type StreamlinePageResponse,
   type TwoUpPageResponse,
-} from '../src/response.js'
+} from '../src/response.ts'
 import type {
   CompletedReviewRequest,
   IncompleteReviewRequest,
   ReviewRequest,
   ReviewRequestPreprintId,
-} from '../src/review-request.js'
-import type { SlackUserId } from '../src/slack-user-id.js'
-import type { SlackUser } from '../src/slack-user.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import { type ClubId, clubIds } from '../src/types/club-id.js'
-import { EmailAddress } from '../src/types/EmailAddress.js'
-import { type FieldId, fieldIds } from '../src/types/field.js'
-import { OrcidLocale, ProfileId } from '../src/types/index.js'
-import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.js'
-import { type OrcidId, isOrcidId } from '../src/types/OrcidId.js'
-import { Pseudonym } from '../src/types/Pseudonym.js'
-import { type SubfieldId, subfieldIds } from '../src/types/subfield.js'
-import type { UserOnboarding } from '../src/user-onboarding.js'
-import type { User } from '../src/user.js'
+} from '../src/review-request.ts'
+import type { SlackUserId } from '../src/slack-user-id.ts'
+import type { SlackUser } from '../src/slack-user.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import { type ClubId, clubIds } from '../src/types/club-id.ts'
+import { EmailAddress } from '../src/types/EmailAddress.ts'
+import { type FieldId, fieldIds } from '../src/types/field.ts'
+import { OrcidLocale, ProfileId } from '../src/types/index.ts'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
+import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
+import type { UserOnboarding } from '../src/user-onboarding.ts'
+import type { User } from '../src/user.ts'
 
 export type Arbitrary<T> = fc.Arbitrary<T>
 

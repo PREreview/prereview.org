@@ -1,7 +1,7 @@
-import * as Datasets from '../../../src/Datasets/index.js'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/UnknownDatasetPage.js'
-import { Doi } from '../../../src/types/index.js'
-import { expect, test } from '../../base.js'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/UnknownDatasetPage.ts'
+import { Doi } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.UnknownDatasetPage({ dataset })

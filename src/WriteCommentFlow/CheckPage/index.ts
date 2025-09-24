@@ -1,13 +1,13 @@
 import { Effect, Equal, Match, pipe } from 'effect'
-import * as Comments from '../../Comments/index.js'
-import { Locale } from '../../Context.js'
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { PageNotFound } from '../../PageNotFound/index.js'
-import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
-import { EnsureUserIsLoggedIn } from '../../user.js'
-import { CheckPage as MakeResponse } from './CheckPage.js'
+import * as Comments from '../../Comments/index.ts'
+import { Locale } from '../../Context.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/index.ts'
+import { EnsureUserIsLoggedIn } from '../../user.ts'
+import { CheckPage as MakeResponse } from './CheckPage.ts'
 
 export const CheckPage = ({
   commentId,

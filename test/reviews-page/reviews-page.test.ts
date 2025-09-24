@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/reviews-page/index.js'
-import { reviewsMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/reviews-page/index.ts'
+import { reviewsMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
 
 describe('reviewsPage', () => {
   test.prop([

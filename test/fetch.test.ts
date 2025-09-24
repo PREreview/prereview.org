@@ -3,8 +3,8 @@ import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as _ from '../src/fetch.js'
-import * as fc from './fc.js'
+import * as _ from '../src/fetch.ts'
+import * as fc from './fc.ts'
 
 describe('collapseRequests', () => {
   test.prop([

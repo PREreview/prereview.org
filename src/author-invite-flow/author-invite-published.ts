@@ -7,19 +7,19 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
-import { type Html, html, plainText, rawHtml } from '../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.ts'
+import { type Html, html, plainText, rawHtml } from '../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   reviewMatch,
-} from '../routes.js'
-import type { User } from '../user.js'
+} from '../routes.ts'
+import type { User } from '../user.ts'
 
 export interface Prereview {
   doi: Doi

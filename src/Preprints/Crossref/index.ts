@@ -1,12 +1,12 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import { Crossref } from '../../ExternalApis/index.js'
-import * as FptsToEffect from '../../FptsToEffect.js'
-import * as Preprint from '../Preprint.js'
-import type { IndeterminatePreprintId } from '../PreprintId.js'
-import * as LegacyCrossref from './legacy-crossref.js'
-import { workToPreprint } from './Preprint.js'
-import { type IndeterminateCrossrefPreprintId, isCrossrefPreprintId as isCrossrefPreprintId_ } from './PreprintId.js'
+import { Crossref } from '../../ExternalApis/index.ts'
+import * as FptsToEffect from '../../FptsToEffect.ts'
+import * as Preprint from '../Preprint.ts'
+import type { IndeterminatePreprintId } from '../PreprintId.ts'
+import * as LegacyCrossref from './legacy-crossref.ts'
+import { workToPreprint } from './Preprint.ts'
+import { type IndeterminateCrossrefPreprintId, isCrossrefPreprintId as isCrossrefPreprintId_ } from './PreprintId.ts'
 
 export const isCrossrefPreprintId = (
   id: IndeterminatePreprintId,

@@ -1,13 +1,13 @@
 import { Array, flow, identity, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { getClubName } from '../club-details.js'
-import { type Html, html, plainText, rawHtml } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
+import { getClubName } from '../club-details.ts'
+import { type Html, html, plainText, rawHtml } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
-import * as PreprintServers from '../PreprintServers/index.js'
-import { PageResponse } from '../response.js'
-import * as Routes from '../routes.js'
+import * as PreprintServers from '../PreprintServers/index.ts'
+import { PageResponse } from '../response.ts'
+import * as Routes from '../routes.ts'
 import {
   homeMatch,
   requestAPrereviewMatch,
@@ -16,11 +16,11 @@ import {
   reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
-} from '../routes.js'
-import { renderDate } from '../time.js'
-import { getSubfieldName } from '../types/subfield.js'
-import type { RecentPrereview } from './recent-prereviews.js'
-import type { RecentReviewRequest } from './recent-review-requests.js'
+} from '../routes.ts'
+import { renderDate } from '../time.ts'
+import { getSubfieldName } from '../types/subfield.ts'
+import type { RecentPrereview } from './recent-prereviews.ts'
+import type { RecentReviewRequest } from './recent-review-requests.ts'
 
 export const createPage = ({
   canReviewDatasets = false,

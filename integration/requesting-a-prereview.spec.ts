@@ -1,5 +1,5 @@
-import * as StatusCodes from '../src/StatusCodes.js'
-import { areLoggedIn, canLogIn, expect, test } from './base.js'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import { areLoggedIn, canLogIn, expect, test } from './base.ts'
 
 test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await page.goto('/', { waitUntil: 'commit' })

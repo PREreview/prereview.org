@@ -1,7 +1,7 @@
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { Uuid } from '../../../src/types/index.js'
-import * as _ from '../../../src/WriteCommentFlow/PublishingPage/PublishingPage.js'
-import { expect, test } from '../../base.js'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { Uuid } from '../../../src/types/index.ts'
+import * as _ from '../../../src/WriteCommentFlow/PublishingPage/PublishingPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.PublishingPage({

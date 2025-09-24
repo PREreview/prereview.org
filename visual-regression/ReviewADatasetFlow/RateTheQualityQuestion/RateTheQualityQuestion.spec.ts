@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as RateTheQualityForm from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as RateTheQualityForm from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.RateTheQualityQuestion({

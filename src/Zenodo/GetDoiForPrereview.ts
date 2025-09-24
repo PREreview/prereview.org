@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
-import { Zenodo } from '../ExternalApis/index.js'
-import { Doi } from '../types/index.js'
+import { Zenodo } from '../ExternalApis/index.ts'
+import { Doi } from '../types/index.ts'
 
 const RecordSchema = Schema.Struct({
   metadata: Schema.Struct({

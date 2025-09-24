@@ -2,9 +2,9 @@ import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '
 import { Effect, Either, Layer, pipe, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
-import * as Redis from '../Redis.js'
-import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.js'
-import { serializationErrorChecking } from './SerializationErrorChecking.js'
+import * as Redis from '../Redis.ts'
+import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.ts'
+import { serializationErrorChecking } from './SerializationErrorChecking.ts'
 
 export const layerPersistedToRedis = Layer.effect(
   HttpCache,

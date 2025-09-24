@@ -1,8 +1,8 @@
-import { html, plainText } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { EmailAddress, Uuid } from '../../types/index.js'
+import { html, plainText } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { EmailAddress, Uuid } from '../../types/index.ts'
 
 export const NeedToVerifyEmailAddressPage = ({
   commentId,

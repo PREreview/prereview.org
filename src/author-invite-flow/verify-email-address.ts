@@ -6,7 +6,7 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.ts'
 import {
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
@@ -14,19 +14,19 @@ import {
   getContactEmailAddress,
   isUnverified,
   saveContactEmailAddress,
-} from '../contact-email-address.js'
-import type { Html } from '../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
+} from '../contact-email-address.ts'
+import type { Html } from '../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   authorInviteVerifyEmailAddressMatch,
-} from '../routes.js'
-import type { User } from '../user.js'
+} from '../routes.ts'
+import type { User } from '../user.ts'
 
 export interface Prereview {
   preprint: {

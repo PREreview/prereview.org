@@ -2,19 +2,19 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start.js'
-import * as _ from '../../src/author-invite-flow/index.js'
-import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite.js'
+import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start.ts'
+import * as _ from '../../src/author-invite-flow/index.ts'
+import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite.ts'
 import {
   authorInviteDeclineMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
-} from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { Eq as eqOrcid } from '../../src/types/OrcidId.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+} from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { Eq as eqOrcid } from '../../src/types/OrcidId.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('authorInviteStart', () => {
   describe('when the review can be loaded', () => {

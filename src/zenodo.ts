@@ -34,11 +34,11 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { getClubByName, getClubName } from './club-details.js'
-import { timeoutRequest, useStaleCache } from './fetch.js'
-import * as FptsToEffect from './FptsToEffect.js'
-import { type Html, plainText, sanitizeHtml } from './html.js'
-import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.js'
+import { getClubByName, getClubName } from './club-details.ts'
+import { timeoutRequest, useStaleCache } from './fetch.ts'
+import * as FptsToEffect from './FptsToEffect.ts'
+import { type Html, plainText, sanitizeHtml } from './html.ts'
+import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -46,7 +46,7 @@ import {
   getPreprint,
   getPreprintId,
   getPreprintTitle,
-} from './preprint.js'
+} from './preprint.ts'
 import {
   type IndeterminatePreprintId,
   type NotAPreprint,
@@ -56,24 +56,24 @@ import {
   type PreprintIsUnavailable,
   fromPreprintDoi,
   fromUrl,
-} from './Preprints/index.js'
-import * as Prereview from './Prereview.js'
-import { type PublicUrlEnv, toUrl } from './public-url.js'
-import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.js'
-import type { RecentPrereviews } from './reviews-page/index.js'
-import { reviewMatch } from './routes.js'
-import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
-import * as StatusCodes from './StatusCodes.js'
-import type { ClubId } from './types/club-id.js'
-import { isDomainId } from './types/domain.js'
-import { type FieldId, isFieldId } from './types/field.js'
-import { ProfileId } from './types/index.js'
-import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.js'
-import type { NonEmptyString } from './types/NonEmptyString.js'
-import type { OrcidId } from './types/OrcidId.js'
-import { isSubfieldId } from './types/subfield.js'
-import type { User } from './user.js'
-import type { NewPrereview } from './write-review/index.js'
+} from './Preprints/index.ts'
+import * as Prereview from './Prereview.ts'
+import { type PublicUrlEnv, toUrl } from './public-url.ts'
+import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
+import type { RecentPrereviews } from './reviews-page/index.ts'
+import { reviewMatch } from './routes.ts'
+import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
+import * as StatusCodes from './StatusCodes.ts'
+import type { ClubId } from './types/club-id.ts'
+import { isDomainId } from './types/domain.ts'
+import { type FieldId, isFieldId } from './types/field.ts'
+import { ProfileId } from './types/index.ts'
+import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.ts'
+import type { NonEmptyString } from './types/NonEmptyString.ts'
+import type { OrcidId } from './types/OrcidId.ts'
+import { isSubfieldId } from './types/subfield.ts'
+import type { User } from './user.ts'
+import type { NewPrereview } from './write-review/index.ts'
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

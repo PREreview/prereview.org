@@ -1,12 +1,12 @@
 import { Effect } from 'effect'
 import rtlDetect from 'rtl-detect'
-import { Locale } from './Context.js'
-import * as GhostPage from './GhostPage/index.js'
-import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import { fixHeadingLevels, html, plainText } from './html.js'
-import { translate, type SupportedLocale } from './locales/index.js'
-import { PageResponse } from './response.js'
-import * as Routes from './routes.js'
+import { Locale } from './Context.ts'
+import * as GhostPage from './GhostPage/index.ts'
+import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
+import { fixHeadingLevels, html, plainText } from './html.ts'
+import { translate, type SupportedLocale } from './locales/index.ts'
+import { PageResponse } from './response.ts'
+import * as Routes from './routes.ts'
 
 export const ResourcesPage = Effect.gen(function* () {
   const locale = yield* Locale

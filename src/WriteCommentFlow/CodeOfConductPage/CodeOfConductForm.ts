@@ -1,5 +1,5 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
-import type * as Comments from '../../Comments/index.js'
+import type * as Comments from '../../Comments/index.ts'
 
 export type CodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
 

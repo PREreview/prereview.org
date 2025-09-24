@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html.js'
-import type { IsOpenForRequests } from '../is-open-for-requests.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.js'
+import { html, plainText } from '../html.ts'
+import type { IsOpenForRequests } from '../is-open-for-requests.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({
   locale,

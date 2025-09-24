@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
-import { Temporal, type Uuid } from '../../types/index.js'
-import * as Commands from '../Commands/index.js'
-import * as Errors from '../Errors.js'
+import { Temporal, type Uuid } from '../../types/index.ts'
+import * as Commands from '../Commands/index.ts'
+import * as Errors from '../Errors.ts'
 
 export const MarkDatasetReviewAsPublished = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {

@@ -1,9 +1,9 @@
 import { Uuid } from 'uuid-ts'
-import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.js'
-import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { EmailAddress } from '../../src/types/EmailAddress.js'
-import { expect, test } from '../base.js'
+import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.ts'
+import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = needToVerifyEmailAddressPage({

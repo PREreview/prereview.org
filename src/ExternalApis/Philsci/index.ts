@@ -1,8 +1,8 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetEprint } from './GetEprint/index.js'
+import { GetEprint } from './GetEprint/index.ts'
 
-export { Eprint } from './Eprint.js'
+export { Eprint } from './Eprint.ts'
 
 export class Philsci extends Context.Tag('Philsci')<
   Philsci,

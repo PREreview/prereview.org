@@ -1,11 +1,11 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetPage } from './GetPage/index.js'
-import type { GhostApi } from './GhostApi.js'
+import { GetPage } from './GetPage/index.ts'
+import type { GhostApi } from './GhostApi.ts'
 
-export { GhostPageNotFound, GhostPageUnavailable } from './GetPage/index.js'
-export * from './GhostApi.js'
-export { Page } from './Page.js'
+export { GhostPageNotFound, GhostPageUnavailable } from './GetPage/index.ts'
+export * from './GhostApi.ts'
+export { Page } from './Page.ts'
 
 export class Ghost extends Context.Tag('Ghost')<
   Ghost,

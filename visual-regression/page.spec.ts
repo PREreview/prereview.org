@@ -1,10 +1,10 @@
-import { html, plainText } from '../src/html.js'
-import { PageResponse } from '../src/response.js'
-import { NonEmptyString } from '../src/types/NonEmptyString.js'
-import { OrcidId } from '../src/types/OrcidId.js'
-import { Pseudonym } from '../src/types/Pseudonym.js'
-import type { User } from '../src/user.js'
-import { expect, test } from './base.js'
+import { html, plainText } from '../src/html.ts'
+import { PageResponse } from '../src/response.ts'
+import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
+import type { User } from '../src/user.ts'
+import { expect, test } from './base.ts'
 
 test('page layout looks right', async ({ showPage }) => {
   const response = PageResponse({

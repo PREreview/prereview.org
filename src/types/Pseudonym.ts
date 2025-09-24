@@ -3,8 +3,8 @@ import { capitalCase } from 'case-anything'
 import { type Brand, Either, pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as EffectToFpts from '../EffectToFpts.js'
-import { type NonEmptyString, NonEmptyStringSchema } from './NonEmptyString.js'
+import * as EffectToFpts from '../EffectToFpts.ts'
+import { type NonEmptyString, NonEmptyStringSchema } from './NonEmptyString.ts'
 
 const PseudonymBrand: unique symbol = Symbol.for('Pseudonym')
 

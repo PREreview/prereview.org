@@ -1,9 +1,9 @@
 import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.js'
-import type { PartialDate } from '../time.js'
-import type { OrcidId } from '../types/index.js'
-import type { DatasetId } from './DatasetId.js'
+import type { Html } from '../html.ts'
+import type { PartialDate } from '../time.ts'
+import type { OrcidId } from '../types/index.ts'
+import type { DatasetId } from './DatasetId.ts'
 
 export class Dataset extends Data.Class<{
   abstract?: {

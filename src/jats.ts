@@ -1,5 +1,5 @@
 import sanitize from 'sanitize-html'
-import { type Html, rawHtml } from './html.js'
+import { type Html, rawHtml } from './html.ts'
 
 export function transformJatsToHtml(jats: string): Html {
   const sanitized = sanitize(jats, {

@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/request-a-prereview-page/handle-decision.js'
-import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes.js'
-import * as fc from './fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/request-a-prereview-page/handle-decision.ts'
+import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes.ts'
+import * as fc from './fc.ts'
 
 describe('handleDecision', () => {
   test.prop([fc.reviewRequestPreprintId(), fc.supportedLocale()])('with a BeginFlow decision', (preprint, locale) => {

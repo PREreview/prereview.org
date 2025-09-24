@@ -1,7 +1,7 @@
 import { HttpClientRequest } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
-import { DepositMetadata } from '../Deposition.js'
-import { ZenodoApi } from '../ZenodoApi.js'
+import { DepositMetadata } from '../Deposition.ts'
+import { ZenodoApi } from '../ZenodoApi.ts'
 
 export const CreateRequest = Effect.fn(function* (metadata: DepositMetadata) {
   const api = yield* ZenodoApi

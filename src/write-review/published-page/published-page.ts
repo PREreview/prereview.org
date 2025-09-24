@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import { preprintReviewsMatch } from '../../routes.js'
-import { isScietyPreprint, scietyUrl } from '../../sciety.js'
-import type { PublishedReview } from '../published-review.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import { preprintReviewsMatch } from '../../routes.ts'
+import { isScietyPreprint, scietyUrl } from '../../sciety.ts'
+import type { PublishedReview } from '../published-review.ts'
 
 export const publishedPage = ({
   review: { doi, form },

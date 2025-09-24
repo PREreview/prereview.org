@@ -1,13 +1,13 @@
 import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as StatusCodes from '../StatusCodes.js'
-import { hasAnError, type MissingE, type TooBigE, type WrongTypeE } from '../form.js'
-import { html, plainText, rawHtml } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { changeAvatarMatch, myDetailsMatch } from '../routes.js'
-import { errorPrefix } from '../shared-translation-elements.js'
+import * as StatusCodes from '../StatusCodes.ts'
+import { hasAnError, type MissingE, type TooBigE, type WrongTypeE } from '../form.ts'
+import { html, plainText, rawHtml } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { changeAvatarMatch, myDetailsMatch } from '../routes.ts'
+import { errorPrefix } from '../shared-translation-elements.ts'
 
 export interface UploadAvatarForm {
   readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>

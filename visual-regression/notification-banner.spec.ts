@@ -1,7 +1,7 @@
-import { html, plainText } from '../src/html.js'
-import { showNotificationBanner } from '../src/notification-banner.js'
-import { PageResponse } from '../src/response.js'
-import { expect, test } from './base.js'
+import { html, plainText } from '../src/html.ts'
+import { showNotificationBanner } from '../src/notification-banner.ts'
+import { PageResponse } from '../src/response.ts'
+import { expect, test } from './base.ts'
 
 test('notification-banner looks right with a success', async ({ showPage }) => {
   const content = await showPage(

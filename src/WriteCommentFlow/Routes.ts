@@ -1,7 +1,7 @@
 import { Match, pipe } from 'effect'
-import type * as Comments from '../Comments/index.js'
-import * as Routes from '../routes.js'
-import type { Uuid } from '../types/index.js'
+import type * as Comments from '../Comments/index.ts'
+import * as Routes from '../routes.ts'
+import type { Uuid } from '../types/index.ts'
 
 export const RouteForCommand = pipe(
   Match.type<Exclude<Comments.ExpectedCommandForUser, Comments.ExpectedToStartAComment>>(),

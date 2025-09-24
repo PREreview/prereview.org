@@ -1,5 +1,5 @@
 import { Data, Function } from 'effect'
-import type { NonEmptyString, OrcidId, Pseudonym } from '../types/index.js'
+import type { NonEmptyString, OrcidId, Pseudonym } from '../types/index.ts'
 
 export type Persona = PublicPersona | PseudonymPersona
 

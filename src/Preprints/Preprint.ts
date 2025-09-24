@@ -1,9 +1,9 @@
 import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.js'
-import type { PartialDate } from '../time.js'
-import type { OrcidId } from '../types/OrcidId.js'
-import type { PreprintId } from './PreprintId.js'
+import type { Html } from '../html.ts'
+import type { PartialDate } from '../time.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import type { PreprintId } from './PreprintId.ts'
 
 export interface Preprint {
   abstract?: {

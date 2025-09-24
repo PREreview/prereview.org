@@ -1,14 +1,14 @@
 import { flow, identity, Match, pipe, Struct } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { SupportedLocale } from '../locales/index.js'
-import type { Response } from '../response.js'
-import type { User } from '../user.js'
-import * as ListOfPrereviews from './list-of-prereviews.js'
-import * as NoPrereviews from './no-prereviews.js'
-import * as Prereviews from './prereviews.js'
-import * as RequireLogIn from './require-log-in.js'
-import * as UnableToLoadPrereviews from './unable-to-load-prereviews.js'
+import type { SupportedLocale } from '../locales/index.ts'
+import type { Response } from '../response.ts'
+import type { User } from '../user.ts'
+import * as ListOfPrereviews from './list-of-prereviews.ts'
+import * as NoPrereviews from './no-prereviews.ts'
+import * as Prereviews from './prereviews.ts'
+import * as RequireLogIn from './require-log-in.ts'
+import * as UnableToLoadPrereviews from './unable-to-load-prereviews.ts'
 
 export const myPrereviews = ({
   locale,

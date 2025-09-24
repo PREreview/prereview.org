@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { disconnectSlackMatch } from '../routes.js'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { disconnectSlackMatch } from '../routes.ts'
 
 export const disconnectSlackPage = (locale: SupportedLocale) =>
   PageResponse({

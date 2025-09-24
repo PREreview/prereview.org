@@ -1,6 +1,6 @@
-import { html, plainText } from '../src/html.js'
-import { PageResponse } from '../src/response.js'
-import { expect, test } from './base.js'
+import { html, plainText } from '../src/html.ts'
+import { PageResponse } from '../src/response.ts'
+import { expect, test } from './base.ts'
 
 test('visibly hidden when not focussed', async ({ showPage }) => {
   const response = PageResponse({

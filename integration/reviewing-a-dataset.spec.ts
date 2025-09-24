@@ -1,5 +1,5 @@
 import { Duration } from 'effect'
-import * as StatusCodes from '../src/StatusCodes.js'
+import * as StatusCodes from '../src/StatusCodes.ts'
 import {
   areLoggedIn,
   test as baseTest,
@@ -8,7 +8,7 @@ import {
   expect,
   useCockroachDB,
   willPublishADatasetReview,
-} from './base.js'
+} from './base.ts'
 
 const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
 

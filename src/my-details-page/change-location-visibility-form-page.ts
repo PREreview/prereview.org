@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import type { Location } from '../location.js'
-import { PageResponse } from '../response.js'
-import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes.js'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import type { Location } from '../location.ts'
+import { PageResponse } from '../response.ts'
+import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({ locale, location }: { locale: SupportedLocale; location: Location }) =>
   PageResponse({

@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option } from 'effect'
-import * as _ from '../../../src/write-review/add-author-page/parse-authors.js'
+import * as _ from '../../../src/write-review/add-author-page/parse-authors.ts'
 
 describe('parseAuthors', () => {
   test.each([

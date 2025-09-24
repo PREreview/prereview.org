@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Response from '../response.js'
-import { myPrereviewsMatch } from '../routes.js'
-import type { User } from '../user.js'
+import * as Response from '../response.ts'
+import { myPrereviewsMatch } from '../routes.ts'
+import type { User } from '../user.ts'
 
 export interface RequireLogIn {
   readonly _tag: 'RequireLogIn'

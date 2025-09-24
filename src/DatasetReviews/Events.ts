@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
-import * as Datasets from '../Datasets/index.js'
-import { Doi, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.js'
+import * as Datasets from '../Datasets/index.ts'
+import { Doi, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 

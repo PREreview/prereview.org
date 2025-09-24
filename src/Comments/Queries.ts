@@ -1,12 +1,12 @@
 import { Array, Data, Either, Equal, Option, pipe, Record } from 'effect'
-import type { Uuid } from '../types/index.js'
-import type { OrcidId } from '../types/OrcidId.js'
-import type { InputForCommentZenodoRecord } from './Context.js'
-import * as Errors from './Errors.js'
-import type { CommentEvent, CommentWasAssignedADoi, PublicationOfCommentWasRequested } from './Events.js'
-import { EvolveComment } from './Evolve.js'
-import * as ExpectedCommand from './ExpectedCommand.js'
-import { CommentNotStarted, type CommentState } from './State.js'
+import type { Uuid } from '../types/index.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import type { InputForCommentZenodoRecord } from './Context.ts'
+import * as Errors from './Errors.ts'
+import type { CommentEvent, CommentWasAssignedADoi, PublicationOfCommentWasRequested } from './Events.ts'
+import { EvolveComment } from './Evolve.ts'
+import * as ExpectedCommand from './ExpectedCommand.ts'
+import { CommentNotStarted, type CommentState } from './State.ts'
 
 export const GetPrereviewId = (eventsForComment: ReadonlyArray<CommentEvent>): Option.Option<number> =>
   Array.findFirst(eventsForComment, event =>

@@ -2,7 +2,7 @@ import { Context, Function, pipe } from 'effect'
 import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
-import type { Route } from './routes.js'
+import type { Route } from './routes.ts'
 
 export interface PublicUrlEnv {
   publicUrl: URL

@@ -1,8 +1,8 @@
 import { Array, Boolean, Data, Either, flow, Function, Match, Option, Predicate } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
-import type { OrcidId, Uuid } from '../../types/index.js'
-import * as Errors from '../Errors.js'
-import * as Events from '../Events.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
+import * as Events from '../Events.ts'
 
 export interface StartDatasetReview {
   readonly authorId: OrcidId.OrcidId

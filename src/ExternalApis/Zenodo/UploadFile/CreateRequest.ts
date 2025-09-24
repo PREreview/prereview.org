@@ -1,7 +1,7 @@
 import { HttpClientRequest } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import type { UnsubmittedDeposition } from '../Deposition.js'
-import { ZenodoApi } from '../ZenodoApi.js'
+import type { UnsubmittedDeposition } from '../Deposition.ts'
+import { ZenodoApi } from '../ZenodoApi.ts'
 
 export interface File {
   readonly name: string

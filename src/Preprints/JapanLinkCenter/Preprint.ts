@@ -1,9 +1,9 @@
 import { Array, Either, Option, pipe } from 'effect'
-import type { JapanLinkCenter } from '../../ExternalApis/index.js'
-import { html } from '../../html.js'
-import * as Preprint from '../Preprint.js'
-import { JxivPreprintId } from '../PreprintId.js'
-import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.js'
+import type { JapanLinkCenter } from '../../ExternalApis/index.ts'
+import { html } from '../../html.ts'
+import * as Preprint from '../Preprint.ts'
+import { JxivPreprintId } from '../PreprintId.ts'
+import { isDoiFromSupportedPublisher, type JapanLinkCenterPreprintId } from './PreprintId.ts'
 
 const determineJapanLinkCenterPreprintId = (
   record: JapanLinkCenter.Record,

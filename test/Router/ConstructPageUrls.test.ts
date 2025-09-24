@@ -1,16 +1,16 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
-import { constructPageUrls } from '../../src/Router/ConstructPageUrls.js'
+import { constructPageUrls } from '../../src/Router/ConstructPageUrls.ts'
 import {
   CrowdinInContextLocale,
   DefaultLocale,
   getLocaleForLanguage,
   UserSelectableLanguages,
   UserSelectableLocales,
-} from '../../src/locales/index.js'
-import type { PageResponse } from '../../src/response.js'
-import * as fc from '../fc.js'
+} from '../../src/locales/index.ts'
+import type { PageResponse } from '../../src/response.ts'
+import * as fc from '../fc.ts'
 
 describe('constructPageUrls', () => {
   describe('when there is a canonical url', () => {

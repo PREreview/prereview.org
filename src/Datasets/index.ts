@@ -1,11 +1,11 @@
 import { Context, Effect, flow, Layer } from 'effect'
-import type { Datacite } from '../ExternalApis/index.js'
-import { GetDataset } from './GetDataset.js'
-import { GetDatasetTitle } from './GetDatasetTitle.js'
-import { ResolveDatasetId } from './ResolveDatasetId.js'
+import type { Datacite } from '../ExternalApis/index.ts'
+import { GetDataset } from './GetDataset.ts'
+import { GetDatasetTitle } from './GetDatasetTitle.ts'
+import { ResolveDatasetId } from './ResolveDatasetId.ts'
 
-export * from './Dataset.js'
-export * from './DatasetId.js'
+export * from './Dataset.ts'
+export * from './DatasetId.ts'
 
 export class Datasets extends Context.Tag('Datasets')<
   Datasets,

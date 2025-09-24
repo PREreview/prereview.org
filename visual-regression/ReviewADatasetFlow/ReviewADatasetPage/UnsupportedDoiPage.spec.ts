@@ -1,5 +1,5 @@
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/UnsupportedDoiPage.js'
-import { expect, test } from '../../base.js'
+import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/UnsupportedDoiPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.UnsupportedDoiPage()

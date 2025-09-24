@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Match, pipe } from 'effect'
-import { html } from './html.js'
+import { html } from './html.ts'
 
 export type PartialDate = Temporal.PlainDate | Temporal.PlainYearMonth | number
 

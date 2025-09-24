@@ -3,19 +3,19 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { match } from 'ts-pattern'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import type { PageResponse } from '../response.js'
-import type { FieldId } from '../types/field.js'
-import { createEmptyPage, createPage } from './review-requests-page.js'
-import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import type { PageResponse } from '../response.ts'
+import type { FieldId } from '../types/field.ts'
+import { createEmptyPage, createPage } from './review-requests-page.ts'
+import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.ts'
 
 export {
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
   type GetReviewRequestsEnv,
   type ReviewRequests,
-} from './review-requests.js'
+} from './review-requests.ts'
 
 export const reviewRequests = ({
   field,

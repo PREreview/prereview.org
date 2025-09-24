@@ -1,6 +1,6 @@
 import { ParseResult, pipe, Schema } from 'effect'
 import * as OrcidId from 'orcid-id-ts'
-import * as FptsToEffect from '../FptsToEffect.js'
+import * as FptsToEffect from '../FptsToEffect.ts'
 
 export { Eq, isOrcid as isOrcidId, Orcid as OrcidId, toUrl } from 'orcid-id-ts'
 

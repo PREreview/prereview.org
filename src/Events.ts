@@ -1,9 +1,9 @@
 import { Array, Context, Effect, Function, Layer, PubSub, Record, Schema, Struct, flow, pipe } from 'effect'
-import * as CommentEvents from './Comments/Events.js' // eslint-disable-line import/no-internal-modules
-import * as DatasetReviewEvents from './DatasetReviews/Events.js' // eslint-disable-line import/no-internal-modules
+import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
+import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 
-export * from './Comments/Events.js' // eslint-disable-line import/no-internal-modules
-export * from './DatasetReviews/Events.js' // eslint-disable-line import/no-internal-modules
+export * from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
+export * from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 
 export type Event = typeof Event.Type
 

@@ -1,8 +1,8 @@
 import { Array, Equal, Order, pipe, Tuple } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
-import type { Uuid } from '../../types/index.js'
-import { OrderPlainDate } from '../../types/Temporal.js'
-import type * as Events from '../Events.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import type { Uuid } from '../../types/index.ts'
+import { OrderPlainDate } from '../../types/Temporal.ts'
+import type * as Events from '../Events.ts'
 
 export const FindPublishedReviewsForADataset =
   (events: ReadonlyArray<Events.DatasetReviewWasStarted | Events.DatasetReviewWasPublished>) =>

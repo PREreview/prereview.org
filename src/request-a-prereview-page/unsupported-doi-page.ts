@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../StatusCodes.js'
-import { html, plainText, rawHtml } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { requestAPrereviewMatch } from '../routes.js'
+import * as StatusCodes from '../StatusCodes.ts'
+import { html, plainText, rawHtml } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { requestAPrereviewMatch } from '../routes.ts'
 
 export const unsupportedDoiPage = (locale: SupportedLocale) =>
   PageResponse({

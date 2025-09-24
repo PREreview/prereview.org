@@ -1,7 +1,7 @@
 import { Array, Data, Either, Function, Match, Option } from 'effect'
-import type { Doi, Uuid } from '../../types/index.js'
-import * as Errors from '../Errors.js'
-import * as Events from '../Events.js'
+import type { Doi, Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
+import * as Events from '../Events.ts'
 
 export interface Command {
   readonly datasetReviewId: Uuid.Uuid

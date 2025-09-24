@@ -2,10 +2,10 @@ import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted, Tuple } from 'effect'
-import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/CreateRequest.js'
-import { Ghost } from '../../../../src/ExternalApis/index.js'
-import * as EffectTest from '../../../EffectTest.js'
-import * as fc from '../fc.js'
+import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/CreateRequest.ts'
+import { Ghost } from '../../../../src/ExternalApis/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {
   test.prop([fc.ghostApi(), fc.string()])('creates a GET request', (ghostApi, id) =>

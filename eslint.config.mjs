@@ -86,7 +86,7 @@ export default defineConfig([
             'tinyld/heavy',
             'integration/base',
             'types/*',
-            '*/index.js',
+            '*/index.ts',
           ],
         },
       ],

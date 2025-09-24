@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText, rawHtml } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import type { Prereview } from '../../Prereview.js'
-import { PageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import type { Prereview } from '../../Prereview.ts'
+import { PageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/index.ts'
 
 export const CarryOnPage = ({
   commentId,

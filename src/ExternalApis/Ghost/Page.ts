@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { Html, rawHtml } from '../../html.js'
+import { Html, rawHtml } from '../../html.ts'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,

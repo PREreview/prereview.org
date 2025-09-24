@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as HasTrackedChangesForm from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as HasTrackedChangesForm from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasTrackedChangesQuestion({

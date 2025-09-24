@@ -4,9 +4,9 @@ import { SystemClock } from 'clock-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/prereview-coar-notify/new-prereview.js'
-import * as fc from './fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/prereview-coar-notify/new-prereview.ts'
+import * as fc from './fc.ts'
 
 describe('postNewPrereview', () => {
   test.prop([fc.url(), fc.string(), fc.newPrereview(), fc.fetchResponse({ status: fc.constant(StatusCodes.Created) })])(

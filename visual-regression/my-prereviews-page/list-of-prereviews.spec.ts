@@ -1,13 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { rawHtml } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import * as _ from '../../src/my-prereviews-page/list-of-prereviews.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { expect, test } from '../base.js'
+import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import * as _ from '../../src/my-prereviews-page/list-of-prereviews.ts'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.toResponse(

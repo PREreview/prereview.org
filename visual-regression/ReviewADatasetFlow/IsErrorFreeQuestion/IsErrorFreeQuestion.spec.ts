@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as IsErrorFreeForm from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as IsErrorFreeForm from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsErrorFreeQuestion({

@@ -2,10 +2,10 @@ import { HttpBody } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import { Zenodo } from '../../../../src/ExternalApis/index.js'
-import * as _ from '../../../../src/ExternalApis/Zenodo/UploadFile/CreateRequest.js'
-import * as EffectTest from '../../../EffectTest.js'
-import * as fc from '../fc.js'
+import { Zenodo } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalApis/Zenodo/UploadFile/CreateRequest.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {
   test.prop([fc.zenodoApi(), fc.unsubmittedDeposition(), fc.file()])('sets the URL', (zenodoApi, deposition, file) =>

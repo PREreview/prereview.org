@@ -1,11 +1,11 @@
 import { describe, test } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Option } from 'effect'
-import * as _ from '../../src/Comments/index.js'
-import { html } from '../../src/html.js'
-import { NonEmptyString, Uuid } from '../../src/types/index.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { CommandHandlerSpecification } from '../CommandHandlerSpecification.js'
+import * as _ from '../../src/Comments/index.ts'
+import { html } from '../../src/html.ts'
+import { NonEmptyString, Uuid } from '../../src/types/index.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { CommandHandlerSpecification } from '../CommandHandlerSpecification.ts'
 
 const given = CommandHandlerSpecification.for({
   decide: _.DecideComment,

@@ -1,13 +1,13 @@
 import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText, rawHtml } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
-import { ProfileId } from '../../types/index.js'
-import type { OrcidId } from '../../types/OrcidId.js'
-import { isPseudonym } from '../../types/Pseudonym.js'
-import type { User } from '../../user.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.ts'
+import { ProfileId } from '../../types/index.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import { isPseudonym } from '../../types/Pseudonym.ts'
+import type { User } from '../../user.ts'
 
 export function checkPage({
   inviteId,

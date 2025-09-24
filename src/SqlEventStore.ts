@@ -1,9 +1,9 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
 import { PgClient } from '@effect/sql-pg'
 import { Array, DateTime, Effect, Layer, Option, ParseResult, pipe, PubSub, Record, Schema, Struct } from 'effect'
-import * as EventStore from './EventStore.js'
-import * as Events from './Events.js'
-import { Uuid } from './types/index.js'
+import * as EventStore from './EventStore.ts'
+import * as Events from './Events.ts'
+import { Uuid } from './types/index.ts'
 
 export const make: Effect.Effect<
   EventStore.EventStore,

@@ -2,11 +2,11 @@ import { Headers } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Option, Redacted, Tuple } from 'effect'
-import { Orcid } from '../../../../src/ExternalApis/index.js'
-import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/CreateRequest.js'
-import { OrcidId } from '../../../../src/types/index.js'
-import * as EffectTest from '../../../EffectTest.js'
-import * as fc from '../fc.js'
+import { Orcid } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/CreateRequest.ts'
+import { OrcidId } from '../../../../src/types/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {
   test.prop([fc.orcidApi(), fc.orcidId()])('creates a GET request', (orcidApi, orcidId) =>

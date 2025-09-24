@@ -4,9 +4,9 @@ import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { addToSession, popFromSession } from '../session.js'
-import { type CompletedForm, CompletedFormC } from './completed-form.js'
-import { FormC } from './form.js'
+import { addToSession, popFromSession } from '../session.ts'
+import { type CompletedForm, CompletedFormC } from './completed-form.ts'
+import { FormC } from './form.ts'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 

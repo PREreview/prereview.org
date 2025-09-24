@@ -6,13 +6,13 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import rtlDetect from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
-import { getClubName } from '../club-details.js'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import type { Prereview } from '../Prereview.js'
-import { PageResponse, RedirectResponse } from '../response.js'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.ts'
+import { getClubName } from '../club-details.ts'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import type { Prereview } from '../Prereview.ts'
+import { PageResponse, RedirectResponse } from '../response.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
@@ -20,12 +20,12 @@ import {
   authorInviteStartMatch,
   clubProfileMatch,
   profileMatch,
-} from '../routes.js'
-import { renderDate } from '../time.js'
-import { ProfileId } from '../types/index.js'
-import { type OrcidId, Eq as eqOrcid } from '../types/OrcidId.js'
-import { isPseudonym } from '../types/Pseudonym.js'
-import type { User } from '../user.js'
+} from '../routes.ts'
+import { renderDate } from '../time.ts'
+import { ProfileId } from '../types/index.ts'
+import { type OrcidId, Eq as eqOrcid } from '../types/OrcidId.ts'
+import { isPseudonym } from '../types/Pseudonym.ts'
+import type { User } from '../user.ts'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>

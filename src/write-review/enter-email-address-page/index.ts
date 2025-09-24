@@ -13,19 +13,19 @@ import {
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForReview,
-} from '../../contact-email-address.js'
-import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../form.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.js'
-import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
-import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../routes.js'
-import { EmailAddressC } from '../../types/EmailAddress.js'
-import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.js'
-import type { User } from '../../user.js'
-import { type FormStoreEnv, getForm, nextFormMatch } from '../form.js'
-import { enterEmailAddressPage } from './enter-email-address-page.js'
+} from '../../contact-email-address.ts'
+import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../form.ts'
+import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
+import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.ts'
+import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../routes.ts'
+import { EmailAddressC } from '../../types/EmailAddress.ts'
+import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.ts'
+import type { User } from '../../user.ts'
+import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
+import { enterEmailAddressPage } from './enter-email-address-page.ts'
 
 export const writeReviewEnterEmailAddress = ({
   body,

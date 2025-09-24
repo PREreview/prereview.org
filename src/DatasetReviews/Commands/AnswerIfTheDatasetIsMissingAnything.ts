@@ -1,7 +1,7 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
-import * as Events from '../../Events.js'
-import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.js'
-import * as Errors from '../Errors.js'
+import * as Events from '../../Events.ts'
+import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
 
 export interface Command {
   readonly answer: Option.Option<NonEmptyString.NonEmptyString>

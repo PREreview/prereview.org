@@ -11,15 +11,15 @@ import {
   getContactEmailAddress,
   isUnverified,
   saveContactEmailAddress,
-} from '../contact-email-address.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.js'
-import type { IndeterminatePreprintId } from '../Preprints/index.js'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
-import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../routes.js'
-import type { User } from '../user.js'
-import { type FormStoreEnv, getForm, nextFormMatch } from './form.js'
+} from '../contact-email-address.ts'
+import { havingProblemsPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint.ts'
+import type { IndeterminatePreprintId } from '../Preprints/index.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.ts'
+import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../routes.ts'
+import type { User } from '../user.ts'
+import { type FormStoreEnv, getForm, nextFormMatch } from './form.ts'
 
 export const writeReviewVerifyEmailAddress = ({
   id,

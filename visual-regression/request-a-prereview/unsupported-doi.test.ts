@@ -1,6 +1,6 @@
-import { DefaultLocale } from '../../src/locales/index.js'
-import { unsupportedDoiPage } from '../../src/request-a-prereview-page/unsupported-doi-page.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { unsupportedDoiPage } from '../../src/request-a-prereview-page/unsupported-doi-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(unsupportedDoiPage(DefaultLocale))

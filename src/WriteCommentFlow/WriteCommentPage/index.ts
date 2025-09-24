@@ -1,13 +1,13 @@
 import { Effect, Option } from 'effect'
-import * as Comments from '../../Comments/index.js'
-import { Locale } from '../../Context.js'
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { PageNotFound } from '../../PageNotFound/index.js'
-import { GetPrereview } from '../../Prereview.js'
-import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
-import { LoggedInUser } from '../../user.js'
-import { WriteCommentPage as MakeResponse } from './WriteCommentPage.js'
+import * as Comments from '../../Comments/index.ts'
+import { Locale } from '../../Context.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import { GetPrereview } from '../../Prereview.ts'
+import * as Response from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { LoggedInUser } from '../../user.ts'
+import { WriteCommentPage as MakeResponse } from './WriteCommentPage.ts'
 
 export const WriteCommentPage = ({
   id,

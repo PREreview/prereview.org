@@ -1,12 +1,12 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import { Datacite } from '../../ExternalApis/index.js'
-import * as FptsToEffect from '../../FptsToEffect.js'
-import * as Preprint from '../Preprint.js'
-import type { IndeterminatePreprintId } from '../PreprintId.js'
-import * as LegacyDatacite from './legacy-datacite.js'
-import { recordToPreprint } from './Preprint.js'
-import { type IndeterminateDatacitePreprintId, isDatacitePreprintId as isDatacitePreprintId_ } from './PreprintId.js'
+import { Datacite } from '../../ExternalApis/index.ts'
+import * as FptsToEffect from '../../FptsToEffect.ts'
+import * as Preprint from '../Preprint.ts'
+import type { IndeterminatePreprintId } from '../PreprintId.ts'
+import * as LegacyDatacite from './legacy-datacite.ts'
+import { recordToPreprint } from './Preprint.ts'
+import { type IndeterminateDatacitePreprintId, isDatacitePreprintId as isDatacitePreprintId_ } from './PreprintId.ts'
 
 export const isDatacitePreprintId = (
   id: IndeterminatePreprintId,

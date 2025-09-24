@@ -1,12 +1,12 @@
 import { toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import type { ReviewRequestPreprintId } from '../review-request.js'
-import { profileMatch } from '../routes.js'
-import { ProfileId } from '../types/index.js'
-import type { Uuid } from '../types/uuid.js'
-import type { User } from '../user.js'
-import type { CoarReviewActionOfferPayload } from './CoarReviewActionOfferPayload.js'
+import type { ReviewRequestPreprintId } from '../review-request.ts'
+import { profileMatch } from '../routes.ts'
+import { ProfileId } from '../types/index.ts'
+import type { Uuid } from '../types/uuid.ts'
+import type { User } from '../user.ts'
+import type { CoarReviewActionOfferPayload } from './CoarReviewActionOfferPayload.ts'
 
 interface PayloadInputs {
   coarNotifyUrl: URL

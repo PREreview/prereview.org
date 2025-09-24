@@ -7,10 +7,10 @@ import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Readable } from 'stream'
 import { P, isMatching } from 'ts-pattern'
-import * as _ from '../../../src/ExternalApis/Cloudinary/legacy-cloudinary.js'
-import * as StatusCodes from '../../../src/StatusCodes.js'
-import * as fc from '../../fc.js'
-import { shouldNotBeCalled } from '../../should-not-be-called.js'
+import * as _ from '../../../src/ExternalApis/Cloudinary/legacy-cloudinary.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('getAvatarFromCloudinary', () => {
   test.prop([

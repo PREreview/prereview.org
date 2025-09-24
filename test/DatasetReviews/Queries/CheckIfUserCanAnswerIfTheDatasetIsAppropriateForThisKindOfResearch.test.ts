@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate, Tuple } from 'effect'
-import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.js'
-import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
-import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
-import * as fc from '../../fc.js'
+import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.ts'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
+import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')

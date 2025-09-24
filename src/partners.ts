@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from './html.js'
-import { type SupportedLocale, translate } from './locales/index.js'
+import { html, plainText } from './html.ts'
+import { type SupportedLocale, translate } from './locales/index.ts'
 import assets from './manifest.json' with { type: 'json' }
-import { PageResponse } from './response.js'
-import { partnersMatch } from './routes.js'
+import { PageResponse } from './response.ts'
+import { partnersMatch } from './routes.ts'
 
 export const partners = (locale: SupportedLocale) => {
   const t = translate(locale)

@@ -1,2 +1,2 @@
-export { CloudinaryApi } from './CloudinaryApi.js'
-export * from './legacy-cloudinary.js'
+export { CloudinaryApi } from './CloudinaryApi.ts'
+export * from './legacy-cloudinary.ts'

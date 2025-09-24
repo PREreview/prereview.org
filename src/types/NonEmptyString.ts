@@ -1,7 +1,7 @@
 import { type Brand, Either, pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as EffectToFpts from '../EffectToFpts.js'
+import * as EffectToFpts from '../EffectToFpts.ts'
 
 const NonEmptyStringBrand: unique symbol = Symbol.for('NonEmptyString')
 

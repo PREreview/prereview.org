@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import { rawHtml } from '../../../src/html.js'
-import * as _ from '../../../src/Preprints/Datacite/legacy-datacite.js'
-import { NotAPreprint, PreprintIsUnavailable } from '../../../src/Preprints/index.js'
-import { OrcidId } from '../../../src/types/OrcidId.js'
-import * as fc from '../../fc.js'
+import { rawHtml } from '../../../src/html.ts'
+import * as _ from '../../../src/Preprints/Datacite/legacy-datacite.ts'
+import { NotAPreprint, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import * as fc from '../../fc.ts'
 
 describe('isDatacitePreprintDoi', () => {
   test.prop([fc.legacyDatacitePreprintDoi()])('with a DataCite DOI', doi => {

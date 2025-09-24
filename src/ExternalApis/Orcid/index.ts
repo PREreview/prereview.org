@@ -1,9 +1,9 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetPersonalDetails } from './GetPersonalDetails/index.js'
-import type { OrcidApi } from './OrcidApi.js'
+import { GetPersonalDetails } from './GetPersonalDetails/index.ts'
+import type { OrcidApi } from './OrcidApi.ts'
 
-export * from './OrcidApi.js'
+export * from './OrcidApi.ts'
 
 export class Orcid extends Context.Tag('Orcid')<
   Orcid,

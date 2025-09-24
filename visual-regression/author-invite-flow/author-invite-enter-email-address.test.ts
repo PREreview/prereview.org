@@ -1,10 +1,10 @@
 import * as E from 'fp-ts/lib/Either.js'
 import { Uuid } from 'uuid-ts'
-import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form.js'
-import { invalidE, missingE } from '../../src/form.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { EmailAddress } from '../../src/types/EmailAddress.js'
-import { expect, test } from '../base.js'
+import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form.ts'
+import { invalidE, missingE } from '../../src/form.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = enterEmailAddressForm({

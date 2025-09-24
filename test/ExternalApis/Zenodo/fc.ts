@@ -1,7 +1,7 @@
-import type { Zenodo } from '../../../src/ExternalApis/index.js'
-import * as fc from '../../fc.js'
+import type { Zenodo } from '../../../src/ExternalApis/index.ts'
+import * as fc from '../../fc.ts'
 
-export * from '../../fc.js'
+export * from '../../fc.ts'
 
 export const file = (): fc.Arbitrary<Zenodo.File> =>
   fc.record({

@@ -1,8 +1,8 @@
 import * as E from 'fp-ts/lib/Either.js'
-import { invalidE } from '../../src/form.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createPage } from '../../src/review-a-preprint-page/review-a-preprint.js'
-import { expect, test } from '../base.js'
+import { invalidE } from '../../src/form.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createPage } from '../../src/review-a-preprint-page/review-a-preprint.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage(E.right(undefined), DefaultLocale)

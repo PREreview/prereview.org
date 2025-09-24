@@ -1,5 +1,5 @@
-import { disableButton, getLocale } from './dom.js'
-import { translate } from './locales/index.js'
+import { disableButton, getLocale } from './dom.ts'
+import { translate } from './locales/index.ts'
 
 export class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const

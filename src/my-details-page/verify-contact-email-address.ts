@@ -3,18 +3,18 @@ import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import type { EnvFor } from '../Fpts.js'
+import type { EnvFor } from '../Fpts.ts'
 import {
   getContactEmailAddress,
   isUnverified,
   saveContactEmailAddress,
   VerifiedContactEmailAddress,
-} from '../contact-email-address.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { FlashMessageResponse, LogInResponse } from '../response.js'
-import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.js'
-import type { User } from '../user.js'
+} from '../contact-email-address.ts'
+import { havingProblemsPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { FlashMessageResponse, LogInResponse } from '../response.ts'
+import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.ts'
+import type { User } from '../user.ts'
 
 export type Env = EnvFor<ReturnType<typeof verifyContactEmailAddress>>
 

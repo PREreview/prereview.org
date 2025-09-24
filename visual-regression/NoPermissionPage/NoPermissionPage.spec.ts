@@ -1,6 +1,6 @@
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createNoPermissionPage } from '../../src/NoPermissionPage/NoPermissionPage.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createNoPermissionPage } from '../../src/NoPermissionPage/NoPermissionPage.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(createNoPermissionPage(DefaultLocale))

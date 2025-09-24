@@ -1,9 +1,9 @@
 import { Effect, pipe } from 'effect'
-import { Philsci } from '../../ExternalApis/index.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import * as Preprint from '../Preprint.js'
-import type { PhilsciPreprintId } from '../PreprintId.js'
-import { EprintToPreprint } from './EprintToPreprint.js'
+import { Philsci } from '../../ExternalApis/index.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import * as Preprint from '../Preprint.ts'
+import type { PhilsciPreprintId } from '../PreprintId.ts'
+import { EprintToPreprint } from './EprintToPreprint.ts'
 
 export const getPreprintFromPhilsci = (
   id: PhilsciPreprintId,

@@ -1,5 +1,5 @@
 import { flow, Option } from 'effect'
-import { DefaultLocale, type SupportedLocale } from '../locales/index.js'
+import { DefaultLocale, type SupportedLocale } from '../locales/index.ts'
 
 export type OrcidLocale = (typeof OrcidLocales)[number]
 

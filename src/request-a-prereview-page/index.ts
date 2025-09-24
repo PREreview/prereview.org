@@ -1,8 +1,8 @@
 import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { handleDecision } from './handle-decision.js'
-import { makeDecision } from './make-decision.js'
+import type { SupportedLocale } from '../locales/index.ts'
+import { handleDecision } from './handle-decision.ts'
+import { makeDecision } from './make-decision.ts'
 
 export const requestAPrereview = ({
   body,

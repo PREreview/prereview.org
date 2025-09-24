@@ -13,14 +13,14 @@ import {
   connectOrcidError,
   connectOrcidStart,
   disconnectOrcid,
-} from '../../connect-orcid/index.js'
-import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.js'
-import { disconnectSlack } from '../../disconnect-slack-page/index.js'
-import * as EffectToFpts from '../../EffectToFpts.js'
-import { sendContactEmailAddressVerificationEmail } from '../../email.js'
-import { Cloudinary } from '../../ExternalApis/index.js'
-import { withEnv } from '../../Fpts.js'
-import * as Keyv from '../../keyv.js'
+} from '../../connect-orcid/index.ts'
+import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
+import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
+import * as EffectToFpts from '../../EffectToFpts.ts'
+import { sendContactEmailAddressVerificationEmail } from '../../email.ts'
+import { Cloudinary } from '../../ExternalApis/index.ts'
+import { withEnv } from '../../Fpts.ts'
+import * as Keyv from '../../keyv.ts'
 import {
   changeAvatar,
   changeCareerStage,
@@ -37,15 +37,15 @@ import {
   myDetails,
   removeAvatar,
   verifyContactEmailAddress,
-} from '../../my-details-page/index.js'
-import { sendEmailWithNodemailer } from '../../nodemailer.js'
-import * as Routes from '../../routes.js'
-import type { SlackUserId } from '../../slack-user-id.js'
-import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.js'
-import { Uuid } from '../../types/index.js'
-import type { OrcidId } from '../../types/OrcidId.js'
-import type * as Response from '../Response.js'
-import type { Env } from './index.js'
+} from '../../my-details-page/index.ts'
+import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import * as Routes from '../../routes.ts'
+import type { SlackUserId } from '../../slack-user-id.ts'
+import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.ts'
+import { Uuid } from '../../types/index.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import type * as Response from '../Response.ts'
+import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(
   [

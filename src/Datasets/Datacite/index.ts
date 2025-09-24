@@ -1,8 +1,8 @@
 import { Effect, pipe } from 'effect'
-import { Datacite } from '../../ExternalApis/index.js'
-import * as Dataset from '../Dataset.js'
-import type * as DatasetId from '../DatasetId.js'
-import { RecordToDataset } from './RecordToDataset.js'
+import { Datacite } from '../../ExternalApis/index.ts'
+import * as Dataset from '../Dataset.ts'
+import type * as DatasetId from '../DatasetId.ts'
+import { RecordToDataset } from './RecordToDataset.ts'
 
 export const GetDatasetFromDatacite = (
   id: DatasetId.DatasetId,

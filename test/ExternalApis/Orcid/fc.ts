@@ -1,7 +1,7 @@
-import type { OrcidApi } from '../../../src/ExternalApis/Orcid/OrcidApi.js'
-import * as fc from '../../fc.js'
+import type { OrcidApi } from '../../../src/ExternalApis/Orcid/OrcidApi.ts'
+import * as fc from '../../fc.ts'
 
-export * from '../../fc.js'
+export * from '../../fc.ts'
 
 export const orcidApi = (): fc.Arbitrary<typeof OrcidApi.Service> =>
   fc.record({

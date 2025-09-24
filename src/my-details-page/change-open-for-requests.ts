@@ -4,19 +4,19 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import type { EnvFor } from '../Fpts.js'
-import { havingProblemsPage } from '../http-error.js'
+import type { EnvFor } from '../Fpts.ts'
+import { havingProblemsPage } from '../http-error.ts'
 import {
   type IsOpenForRequests,
   type IsOpenForRequestsEnv,
   isOpenForRequests,
   saveOpenForRequests,
-} from '../is-open-for-requests.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { LogInResponse, RedirectResponse } from '../response.js'
-import { myDetailsMatch } from '../routes.js'
-import type { User } from '../user.js'
-import { createFormPage } from './change-open-for-requests-form-page.js'
+} from '../is-open-for-requests.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { LogInResponse, RedirectResponse } from '../response.ts'
+import { myDetailsMatch } from '../routes.ts'
+import type { User } from '../user.ts'
+import { createFormPage } from './change-open-for-requests-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeOpenForRequests>>
 

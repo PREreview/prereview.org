@@ -1,11 +1,11 @@
 import * as E from 'fp-ts/lib/Either.js'
-import { missingE } from '../../../src/form.js'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.js'
-import { Doi } from '../../../src/types/index.js'
-import { codeOfConductForm } from '../../../src/write-review/code-of-conduct-page/code-of-conduct-form.js'
-import { expect, test } from '../../base.js'
+import { missingE } from '../../../src/form.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { Doi } from '../../../src/types/index.ts'
+import { codeOfConductForm } from '../../../src/write-review/code-of-conduct-page/code-of-conduct-form.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = codeOfConductForm(preprint, { conduct: E.right(undefined) }, locale)

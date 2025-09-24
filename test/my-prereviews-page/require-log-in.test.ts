@@ -2,9 +2,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as _ from '../../src/my-prereviews-page/require-log-in.js'
-import { myPrereviewsMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/my-prereviews-page/require-log-in.ts'
+import { myPrereviewsMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
 
 describe('ensureUserIsLoggedIn', () => {
   test.prop([fc.user()])('when there is a user', user => {

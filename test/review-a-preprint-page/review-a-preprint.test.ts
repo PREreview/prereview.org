@@ -16,14 +16,14 @@ import {
   OsfPreprintsPreprintId,
   PreprintIsNotFound,
   PreprintIsUnavailable,
-} from '../../src/Preprints/index.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import type { ResolvePreprintIdEnv } from '../../src/preprint.js'
-import * as _ from '../../src/review-a-preprint-page/index.js'
-import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+} from '../../src/Preprints/index.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import type { ResolvePreprintIdEnv } from '../../src/preprint.ts'
+import * as _ from '../../src/review-a-preprint-page/index.ts'
+import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('reviewAPreprint', () => {
   test.prop([fc.supportedLocale(), fc.requestMethod().filter(method => method !== 'POST'), fc.anything()])(

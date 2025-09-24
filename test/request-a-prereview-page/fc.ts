@@ -1,7 +1,7 @@
-import type * as Form from '../../src/request-a-prereview-page/form.js'
-import * as fc from '../fc.js'
+import type * as Form from '../../src/request-a-prereview-page/form.ts'
+import * as fc from '../fc.ts'
 
-export * from '../fc.js'
+export * from '../fc.ts'
 
 export const invalidForm = (): fc.Arbitrary<Form.InvalidForm> =>
   fc.record({

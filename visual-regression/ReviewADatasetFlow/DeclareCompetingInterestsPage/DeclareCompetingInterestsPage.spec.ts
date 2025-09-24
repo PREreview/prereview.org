@@ -1,8 +1,8 @@
 import { Either, Option } from 'effect'
-import * as DeclareCompetingInterestsForm from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.js'
-import { NonEmptyString, Uuid } from '../../../src/types/index.js'
-import { expect, test } from '../../base.js'
+import * as DeclareCompetingInterestsForm from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.DeclareCompetingInterestsPage({

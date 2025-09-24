@@ -7,12 +7,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import * as StatusCodes from '../../StatusCodes.js'
-import { detectLanguageFrom } from '../../detect-language.js'
-import { timeoutRequest, useStaleCache } from '../../fetch.js'
-import { sanitizeHtml } from '../../html.js'
-import { OrcidId } from '../../types/index.js'
-import * as Preprint from '../Preprint.js'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { detectLanguageFrom } from '../../detect-language.ts'
+import { timeoutRequest, useStaleCache } from '../../fetch.ts'
+import { sanitizeHtml } from '../../html.ts'
+import { OrcidId } from '../../types/index.ts'
+import * as Preprint from '../Preprint.ts'
 import {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
@@ -20,7 +20,7 @@ import {
   type IndeterminatePreprintId,
   type PreprintId,
   PsychArchivesPreprintId,
-} from '../PreprintId.js'
+} from '../PreprintId.ts'
 
 const dataciteDoiPrefixes = ['6084', '23668', '57844', '60763'] as const
 

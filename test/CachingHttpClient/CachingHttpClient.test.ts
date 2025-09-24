@@ -2,12 +2,12 @@ import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse
 import { test } from '@fast-check/jest'
 import { beforeEach, describe, expect } from '@jest/globals'
 import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock } from 'effect'
-import * as _ from '../../src/CachingHttpClient/index.js'
-import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as _ from '../../src/CachingHttpClient/index.ts'
+import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 const stubbedClient = (
   response: HttpClientResponse.HttpClientResponse,

@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, Function, pipe, Schema, String } from 'effect'
-import * as StatusCodes from '../../StatusCodes.js'
-import { Doi, Temporal } from '../../types/index.js'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { Doi, Temporal } from '../../types/index.ts'
 
 const EmptyStringAsUndefinedSchema = Schema.transform(
   Schema.compose(Schema.Trim, Schema.Literal('')),

@@ -1,6 +1,6 @@
-import type * as DatasetReviews from '../DatasetReviews/index.js'
-import * as Routes from '../routes.js'
-import type { Uuid } from '../types/index.js'
+import type * as DatasetReviews from '../DatasetReviews/index.ts'
+import * as Routes from '../routes.ts'
+import type { Uuid } from '../types/index.ts'
 
 export const RouteForCommand = (
   command: DatasetReviews.NextExpectedCommand,

@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Array, Data, Effect, flow, identity, Match, pipe, Schema, Struct } from 'effect'
-import * as StatusCodes from '../../StatusCodes.js'
-import { Doi, OrcidId, Temporal } from '../../types/index.js'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { Doi, OrcidId, Temporal } from '../../types/index.ts'
 
 const PublicationDateSchema = Schema.transform(
   Schema.Struct({

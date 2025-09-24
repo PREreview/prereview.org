@@ -1,11 +1,11 @@
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
-import { invalidE, missingE } from '../../../src/form.js'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.js'
-import { enterEmailAddressPage } from '../../../src/write-review/enter-email-address-page/enter-email-address-page.js'
-import { expect, test } from '../../base.js'
+import { invalidE, missingE } from '../../../src/form.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { enterEmailAddressPage } from '../../../src/write-review/enter-email-address-page/enter-email-address-page.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = enterEmailAddressPage(preprint, { emailAddress: E.right(undefined) }, locale)

@@ -1,6 +1,6 @@
 import { Effect, pipe, type Record } from 'effect'
-import { Locale } from '../Context.js'
-import type { SupportedLocale } from '../locales/index.js'
+import { Locale } from '../Context.ts'
+import type { SupportedLocale } from '../locales/index.ts'
 
 export type PageId = keyof typeof pageIds
 

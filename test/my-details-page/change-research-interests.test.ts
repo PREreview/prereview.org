@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/my-details-page/change-research-interests.js'
-import { changeResearchInterestsMatch, myDetailsMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/my-details-page/change-research-interests.ts'
+import { changeResearchInterestsMatch, myDetailsMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('changeResearchInterests', () => {
   test.prop([

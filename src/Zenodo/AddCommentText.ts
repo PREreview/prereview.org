@@ -1,8 +1,8 @@
 import { HttpClient, type HttpClientError, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import { sanitizeHtml } from '../html.js'
-import type * as ReviewPage from '../review-page/index.js'
-import type { CommentWithoutText } from './TransformRecordToCommentWithoutText.js'
+import { sanitizeHtml } from '../html.ts'
+import type * as ReviewPage from '../review-page/index.ts'
+import type { CommentWithoutText } from './TransformRecordToCommentWithoutText.ts'
 
 export const addCommentText = (
   commentWithoutText: CommentWithoutText,

@@ -1,8 +1,8 @@
 import { HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, flow, Match, Schema, Tuple } from 'effect'
-import * as StatusCodes from '../../../StatusCodes.js'
-import { Page } from '../Page.js'
-import { GhostPageNotFound, GhostPageUnavailable } from './Errors.js'
+import * as StatusCodes from '../../../StatusCodes.ts'
+import { Page } from '../Page.ts'
+import { GhostPageNotFound, GhostPageUnavailable } from './Errors.ts'
 
 const ResponseSchema = Schema.transform(Schema.Struct({ pages: Schema.Tuple(Page) }), Schema.typeSchema(Page), {
   strict: true,

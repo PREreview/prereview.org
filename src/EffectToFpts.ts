@@ -9,7 +9,7 @@ import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
-import { withEnv } from './Fpts.js'
+import { withEnv } from './Fpts.ts'
 
 export interface EffectEnv<R> {
   readonly runtime: Runtime.Runtime<R>

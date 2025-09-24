@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
-import { Locale } from '../src/Context.js'
-import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import * as _ from '../src/TrainingsPage.js'
-import * as EffectTest from './EffectTest.js'
-import * as fc from './fc.js'
+import { Locale } from '../src/Context.ts'
+import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import * as _ from '../src/TrainingsPage.ts'
+import * as EffectTest from './EffectTest.ts'
+import * as fc from './fc.ts'
 
 describe('TrainingsPage', () => {
   test.prop([fc.supportedLocale()])('when the page cannot be loaded', async locale =>

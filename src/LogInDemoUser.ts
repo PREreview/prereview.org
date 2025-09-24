@@ -1,9 +1,9 @@
 import { Effect } from 'effect'
-import type { Locale } from './Context.js'
-import * as FeatureFlags from './FeatureFlags.js'
-import { PageNotFound } from './PageNotFound/index.js'
-import * as Response from './response.js'
-import { NonEmptyString, OrcidId, Pseudonym } from './types/index.js'
+import type { Locale } from './Context.ts'
+import * as FeatureFlags from './FeatureFlags.ts'
+import { PageNotFound } from './PageNotFound/index.ts'
+import * as Response from './response.ts'
+import { NonEmptyString, OrcidId, Pseudonym } from './types/index.ts'
 
 export const LogInDemoUser: Effect.Effect<
   Response.Response | Response.ForceLogInResponse,

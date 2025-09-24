@@ -1,9 +1,9 @@
-import * as Datasets from '../../../src/Datasets/index.js'
-import { html } from '../../../src/html.js'
-import * as _ from '../../../src/ReviewADatasetFlow/StartNow/CarryOnPage.js'
-import * as Routes from '../../../src/routes.js'
-import { Doi, Uuid } from '../../../src/types/index.js'
-import { expect, test } from '../../base.js'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import { html } from '../../../src/html.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/StartNow/CarryOnPage.ts'
+import * as Routes from '../../../src/routes.ts'
+import { Doi, Uuid } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CarryOnPage({

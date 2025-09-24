@@ -1,6 +1,6 @@
 import { UrlParams } from '@effect/platform'
 import { Data, Effect, Option, Schema } from 'effect'
-import { NonEmptyString } from '../../types/index.js'
+import { NonEmptyString } from '../../types/index.ts'
 
 export type IsMissingAnythingForm = EmptyForm | CompletedForm
 

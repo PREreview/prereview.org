@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
-import { Locale } from '../Context.js'
-import type { PageResponse } from '../response.js'
-import { createPageNotFound } from './PageNotFound.js'
+import { Locale } from '../Context.ts'
+import type { PageResponse } from '../response.ts'
+import { createPageNotFound } from './PageNotFound.ts'
 
 export const PageNotFound: Effect.Effect<PageResponse, never, Locale> = Effect.andThen(Locale, createPageNotFound)

@@ -6,12 +6,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
-import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
-import { timeoutRequest, useStaleCache } from '../../fetch.js'
-import { type Html, sanitizeHtml } from '../../html.js'
-import { transformJatsToHtml } from '../../jats.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import * as Preprint from '../Preprint.js'
+import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
+import { timeoutRequest, useStaleCache } from '../../fetch.ts'
+import { type Html, sanitizeHtml } from '../../html.ts'
+import { transformJatsToHtml } from '../../jats.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import * as Preprint from '../Preprint.ts'
 import {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,
@@ -27,7 +27,7 @@ import {
   PsyarxivPreprintId,
   ScienceOpenPreprintId,
   TechrxivPreprintId,
-} from '../PreprintId.js'
+} from '../PreprintId.ts'
 
 const crossrefDoiPrefixes = [
   '14293',

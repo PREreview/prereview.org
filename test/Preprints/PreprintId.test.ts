@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi, toUrl } from 'doi-ts'
-import * as _ from '../../src/Preprints/PreprintId.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/Preprints/PreprintId.ts'
+import * as fc from '../fc.ts'
 
 describe('PreprintIdEquivalence', () => {
   test.prop([fc.indeterminatePreprintId().map(id => [id, id] as const)], {

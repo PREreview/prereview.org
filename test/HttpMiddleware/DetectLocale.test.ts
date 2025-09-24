@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 import { Option } from 'effect'
-import * as _ from '../../src/HttpMiddleware/DetectLocale.js'
+import * as _ from '../../src/HttpMiddleware/DetectLocale.ts'
 
 describe('detectLocale', () => {
   it.each([

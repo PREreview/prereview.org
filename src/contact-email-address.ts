@@ -4,12 +4,12 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import type { Locale } from './Context.js'
-import type { IndeterminatePreprintId } from './Preprints/index.js'
-import { type EmailAddress, EmailAddressC } from './types/EmailAddress.js'
-import type { OrcidId } from './types/OrcidId.js'
-import { UuidC } from './types/uuid.js'
-import type { User } from './user.js'
+import type { Locale } from './Context.ts'
+import type { IndeterminatePreprintId } from './Preprints/index.ts'
+import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
+import type { OrcidId } from './types/OrcidId.ts'
+import { UuidC } from './types/uuid.ts'
+import type { User } from './user.ts'
 
 export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
 

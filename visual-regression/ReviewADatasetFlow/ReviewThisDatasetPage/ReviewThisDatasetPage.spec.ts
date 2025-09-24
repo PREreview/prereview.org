@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import * as Datasets from '../../../src/Datasets/index.js'
-import { html } from '../../../src/html.js'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewThisDatasetPage/ReviewThisDatasetPage.js'
-import { Doi } from '../../../src/types/index.js'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../../src/types/OrcidId.js'
-import { Pseudonym } from '../../../src/types/Pseudonym.js'
-import type { User } from '../../../src/user.js'
-import { expect, test } from '../../base.js'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import { html } from '../../../src/html.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/ReviewThisDatasetPage/ReviewThisDatasetPage.ts'
+import { Doi } from '../../../src/types/index.ts'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import type { User } from '../../../src/user.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.ReviewThisDatasetPage({ dataset, user: Option.none() })

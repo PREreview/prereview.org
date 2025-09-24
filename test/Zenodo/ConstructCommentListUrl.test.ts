@@ -1,9 +1,9 @@
 import { describe, expect, it } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
-import { Zenodo } from '../../src/ExternalApis/index.js'
-import * as _ from '../../src/Zenodo/ConstructCommentListUrl.js'
-import { Doi } from '../../src/types/index.js'
-import * as EffectTest from '../EffectTest.js'
+import { Zenodo } from '../../src/ExternalApis/index.ts'
+import * as _ from '../../src/Zenodo/ConstructCommentListUrl.ts'
+import { Doi } from '../../src/types/index.ts'
+import * as EffectTest from '../EffectTest.ts'
 
 describe('ConstructCommentListUrl', () => {
   it('constructs a valid url', () =>

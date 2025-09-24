@@ -1,6 +1,6 @@
 import { Array, Either } from 'effect'
-import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Errors from '../Errors.ts'
+import type * as Events from '../Events.ts'
 
 export const CheckIfReviewIsInProgress = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,

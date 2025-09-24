@@ -1,13 +1,13 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Context, Data, Effect, Layer, Match, pipe, Redacted } from 'effect'
-import { Orcid } from '../ExternalApis/index.js'
-import * as FptsToEffect from '../FptsToEffect.js'
-import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.js'
-import type { OrcidId } from '../types/index.js'
-import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.js'
-import { PseudonymPersona, PublicPersona, type Persona } from './Persona.js'
+import { Orcid } from '../ExternalApis/index.ts'
+import * as FptsToEffect from '../FptsToEffect.ts'
+import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.ts'
+import type { OrcidId } from '../types/index.ts'
+import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.ts'
+import { PseudonymPersona, PublicPersona, type Persona } from './Persona.ts'
 
-export * from './Persona.js'
+export * from './Persona.ts'
 
 export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
 

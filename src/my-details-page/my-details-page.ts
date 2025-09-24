@@ -1,16 +1,16 @@
 import { Match, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
-import type { CareerStage } from '../career-stage.js'
-import type { ContactEmailAddress } from '../contact-email-address.js'
-import { html, plainText, rawHtml } from '../html.js'
-import type { IsOpenForRequests } from '../is-open-for-requests.js'
-import type { Languages } from '../languages.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import type { Location } from '../location.js'
-import type { OrcidToken } from '../orcid-token.js'
-import type { ResearchInterests } from '../research-interests.js'
-import { PageResponse } from '../response.js'
+import type { CareerStage } from '../career-stage.ts'
+import type { ContactEmailAddress } from '../contact-email-address.ts'
+import { html, plainText, rawHtml } from '../html.ts'
+import type { IsOpenForRequests } from '../is-open-for-requests.ts'
+import type { Languages } from '../languages.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import type { Location } from '../location.ts'
+import type { OrcidToken } from '../orcid-token.ts'
+import type { ResearchInterests } from '../research-interests.ts'
+import { PageResponse } from '../response.ts'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,
@@ -31,11 +31,11 @@ import {
   myDetailsMatch,
   profileMatch,
   removeAvatarMatch,
-} from '../routes.js'
-import type { SlackUser } from '../slack-user.js'
-import { ProfileId } from '../types/index.js'
-import type { UserOnboarding } from '../user-onboarding.js'
-import type { User } from '../user.js'
+} from '../routes.ts'
+import type { SlackUser } from '../slack-user.ts'
+import { ProfileId } from '../types/index.ts'
+import type { UserOnboarding } from '../user-onboarding.ts'
+import type { User } from '../user.ts'
 
 export function createPage({
   user,

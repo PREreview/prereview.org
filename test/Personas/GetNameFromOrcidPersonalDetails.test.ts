@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option, Tuple } from 'effect'
-import { Orcid } from '../../src/ExternalApis/index.js'
-import * as _ from '../../src/Personas/GetNameFromOrcidPersonalDetails.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import * as fc from '../fc.js'
+import { Orcid } from '../../src/ExternalApis/index.ts'
+import * as _ from '../../src/Personas/GetNameFromOrcidPersonalDetails.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import * as fc from '../fc.ts'
 
 describe('GetNameFromOrcidPersonalDetails', () => {
   test.prop(

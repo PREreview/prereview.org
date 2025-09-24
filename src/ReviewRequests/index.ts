@@ -2,21 +2,21 @@ import type { HttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, flow, Layer, pipe } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.js'
-import type * as Preprints from '../Preprints/index.js'
-import type { PreprintId } from '../Preprints/index.js'
-import * as PrereviewCoarNotify from '../prereview-coar-notify/index.js'
+import type { Html } from '../html.ts'
+import type * as Preprints from '../Preprints/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
+import * as PrereviewCoarNotify from '../prereview-coar-notify/index.ts'
 import {
   getReviewRequestsFromPrereviewCoarNotify,
   type PrereviewCoarNotifyConfig,
-} from '../prereview-coar-notify/index.js'
+} from '../prereview-coar-notify/index.ts'
 import type {
   ReviewRequests as PageOfReviewRequests,
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
-} from '../review-requests-page/index.js'
-import type { FieldId } from '../types/field.js'
-import type { SubfieldId } from '../types/subfield.js'
+} from '../review-requests-page/index.ts'
+import type { FieldId } from '../types/field.ts'
+import type { SubfieldId } from '../types/subfield.ts'
 
 export interface ReviewRequest {
   readonly published: Temporal.PlainDate

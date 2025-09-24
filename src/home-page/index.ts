@@ -1,13 +1,13 @@
 import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import type { SupportedLocale } from '../locales/index.js'
-import type { PageResponse } from '../response.js'
-import { createPage } from './home-page.js'
-import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.js'
-import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.js'
+import type { SupportedLocale } from '../locales/index.ts'
+import type { PageResponse } from '../response.ts'
+import { createPage } from './home-page.ts'
+import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.ts'
+import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.ts'
 
-export { type RecentPrereview } from './recent-prereviews.js'
-export { type RecentReviewRequest } from './recent-review-requests.js'
+export { type RecentPrereview } from './recent-prereviews.ts'
+export { type RecentReviewRequest } from './recent-review-requests.ts'
 
 export const home = ({
   canReviewDatasets = false,

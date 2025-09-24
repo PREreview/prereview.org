@@ -1,11 +1,11 @@
 import { Uuid } from 'uuid-ts'
-import { checkPage } from '../../src/author-invite-flow/check-page/check-page.js'
-import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { expect, test } from '../base.js'
+import { checkPage } from '../../src/author-invite-flow/check-page/check-page.ts'
+import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = checkPage({

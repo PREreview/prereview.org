@@ -1,6 +1,6 @@
 import type { Types } from 'effect'
 {{#locales}}
-  import * as l{{@key}} from './{{module}}/{{.}}.js'
+  import * as l{{@key}} from './{{module}}/{{.}}.ts'
 {{/locales}}
 
 const translations = {

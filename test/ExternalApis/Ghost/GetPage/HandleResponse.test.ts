@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.js'
-import * as StatusCodes from '../../../../src/StatusCodes.js'
-import * as EffectTest from '../../../EffectTest.js'
-import * as fc from '../../../fc.js'
+import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.ts'
+import * as StatusCodes from '../../../../src/StatusCodes.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../../../fc.ts'
 import page from '../Samples/page.json' with { type: 'json' }
 
 describe('HandleResponse', () => {

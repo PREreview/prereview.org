@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Layer } from 'effect'
-import { Ghost } from '../../src/ExternalApis/index.js'
-import * as _ from '../../src/GhostPage/GetPage.js'
-import { rawHtml } from '../../src/html.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from '../fc.js'
+import { Ghost } from '../../src/ExternalApis/index.ts'
+import * as _ from '../../src/GhostPage/GetPage.ts'
+import { rawHtml } from '../../src/html.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('getPage', () => {
   test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.sanitisedHtml()])(

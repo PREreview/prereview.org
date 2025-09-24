@@ -1,11 +1,11 @@
 import { Either, Match, pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../html.js'
-import type * as Personas from '../../Personas/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type { Uuid } from '../../types/index.js'
-import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import type * as Personas from '../../Personas/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { Uuid } from '../../types/index.ts'
+import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 
 export const ChooseYourPersonaPage = ({
   datasetReviewId,

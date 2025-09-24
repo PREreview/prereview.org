@@ -1,13 +1,13 @@
 import { flow } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
-import type { EnvFor } from '../Fpts.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { ProfileId } from '../types/index.js'
-import { createPage } from './create-page.js'
-import { getOrcidProfile } from './orcid-profile.js'
-import { getPseudonymProfile } from './pseudonym-profile.js'
+import type { EnvFor } from '../Fpts.ts'
+import { havingProblemsPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { ProfileId } from '../types/index.ts'
+import { createPage } from './create-page.ts'
+import { getOrcidProfile } from './orcid-profile.ts'
+import { getPseudonymProfile } from './pseudonym-profile.ts'
 
 export type Env = EnvFor<ReturnType<typeof profile>>
 

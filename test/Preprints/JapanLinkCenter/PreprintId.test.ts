@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as _ from '../../../src/Preprints/JapanLinkCenter/PreprintId.js'
-import * as fc from '../../fc.js'
+import * as _ from '../../../src/Preprints/JapanLinkCenter/PreprintId.ts'
+import * as fc from '../../fc.ts'
 
 describe('isJapanLinkCenterPreprintId', () => {
   test.prop([fc.japanLinkCenterPreprintId()])('with a Japan Link Center ID', id => {

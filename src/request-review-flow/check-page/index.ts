@@ -5,11 +5,11 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { P, match } from 'ts-pattern'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
-import type { IndeterminatePreprintId } from '../../Preprints/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
+import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
 import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
@@ -18,11 +18,11 @@ import {
   getReviewRequest,
   isReviewRequestPreprintId,
   saveReviewRequest,
-} from '../../review-request.js'
-import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../routes.js'
-import type { User } from '../../user.js'
-import { checkPage } from './check-page.js'
-import { failureMessage } from './failure-message.js'
+} from '../../review-request.ts'
+import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../routes.ts'
+import type { User } from '../../user.ts'
+import { checkPage } from './check-page.ts'
+import { failureMessage } from './failure-message.ts'
 
 export interface PublishRequestEnv {
   publishRequest: (

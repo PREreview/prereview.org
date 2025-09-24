@@ -1,9 +1,9 @@
 import { Either, Match } from 'effect'
-import { html, plainText } from '../../html.js'
-import { PageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type * as ReviewADatasetForm from './ReviewADatasetForm.js'
+import { html, plainText } from '../../html.ts'
+import { PageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type * as ReviewADatasetForm from './ReviewADatasetForm.ts'
 
 export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.IncompleteForm }) => {
   return PageResponse({

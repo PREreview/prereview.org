@@ -1,8 +1,8 @@
-import type { CoarReviewActionOfferPayload } from '../../src/prereview-coar-notify/CoarReviewActionOfferPayload.js'
-import type { NewPrereview } from '../../src/prereview-coar-notify/new-prereview.js'
-import * as fc from '../fc.js'
+import type { CoarReviewActionOfferPayload } from '../../src/prereview-coar-notify/CoarReviewActionOfferPayload.ts'
+import type { NewPrereview } from '../../src/prereview-coar-notify/new-prereview.ts'
+import * as fc from '../fc.ts'
 
-export * from '../fc.js'
+export * from '../fc.ts'
 
 export const coarReviewActionOfferPayload = (): fc.Arbitrary<CoarReviewActionOfferPayload> =>
   fc.record({

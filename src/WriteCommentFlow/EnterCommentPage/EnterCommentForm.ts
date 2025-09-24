@@ -1,8 +1,8 @@
 import { Data, Effect, Either, Match, pipe, Schema } from 'effect'
 import markdownIt from 'markdown-it'
-import type * as Comments from '../../Comments/index.js'
-import { Html, sanitizeHtml } from '../../html.js'
-import { NonEmptyString } from '../../types/index.js'
+import type * as Comments from '../../Comments/index.ts'
+import { Html, sanitizeHtml } from '../../html.ts'
+import { NonEmptyString } from '../../types/index.ts'
 
 export type EnterCommentForm = EmptyForm | InvalidForm | CompletedForm
 

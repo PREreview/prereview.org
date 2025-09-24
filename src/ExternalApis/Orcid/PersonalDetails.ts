@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { NonEmptyString } from '../../types/index.js'
+import { NonEmptyString } from '../../types/index.ts'
 
 export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDetails')({
   name: Schema.NullOr(

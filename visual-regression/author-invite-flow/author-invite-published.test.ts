@@ -1,13 +1,13 @@
 import { Doi } from 'doi-ts'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Uuid } from 'uuid-ts'
-import { authorInvitePublished } from '../../src/author-invite-flow/index.js'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { expect, test } from '../base.js'
+import { authorInvitePublished } from '../../src/author-invite-flow/index.ts'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 const locale = DefaultLocale
 

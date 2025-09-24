@@ -1,4 +1,4 @@
-import { forceFocus, getTargetElement } from './dom.js'
+import { forceFocus, getTargetElement } from './dom.ts'
 
 export class ErrorSummary extends HTMLElement {
   static element = 'error-summary' as const

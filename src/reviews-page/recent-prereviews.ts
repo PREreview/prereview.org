@@ -3,12 +3,12 @@ import { type Array, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.js'
-import type { PreprintId } from '../Preprints/index.js'
-import type { ClubId } from '../types/club-id.js'
-import type { FieldId } from '../types/field.js'
-import type { NonEmptyString } from '../types/NonEmptyString.js'
-import type { SubfieldId } from '../types/subfield.js'
+import type { Html } from '../html.ts'
+import type { PreprintId } from '../Preprints/index.ts'
+import type { ClubId } from '../types/club-id.ts'
+import type { FieldId } from '../types/field.ts'
+import type { NonEmptyString } from '../types/NonEmptyString.ts'
+import type { SubfieldId } from '../types/subfield.ts'
 
 export interface RecentPrereviews {
   readonly currentPage: number

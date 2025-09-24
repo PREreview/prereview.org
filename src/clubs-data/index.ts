@@ -2,10 +2,10 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Function, Schema, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { getClubAddedDate, getClubName } from '../club-details.js'
-import type { ScietyListEnv } from '../sciety-list/index.js'
-import { type ClubId, clubIds } from '../types/club-id.js'
-import { PlainDateSchema } from '../types/Temporal.js'
+import { getClubAddedDate, getClubName } from '../club-details.ts'
+import type { ScietyListEnv } from '../sciety-list/index.ts'
+import { type ClubId, clubIds } from '../types/club-id.ts'
+import { PlainDateSchema } from '../types/Temporal.ts'
 
 interface Club {
   id: ClubId

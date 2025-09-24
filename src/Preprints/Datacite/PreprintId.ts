@@ -1,5 +1,5 @@
 import * as Doi from 'doi-ts'
-import type { IndeterminatePreprintId, PreprintId } from '../PreprintId.js'
+import type { IndeterminatePreprintId, PreprintId } from '../PreprintId.ts'
 
 const dataciteDoiPrefixes = ['5281', '17605', '48550'] as const
 

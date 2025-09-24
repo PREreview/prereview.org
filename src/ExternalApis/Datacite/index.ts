@@ -1,8 +1,8 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetRecord } from './Record.js'
+import { GetRecord } from './Record.ts'
 
-export { Record, ResponseSchema } from './Record.js'
+export { Record, ResponseSchema } from './Record.ts'
 
 export class Datacite extends Context.Tag('Datacite')<
   Datacite,

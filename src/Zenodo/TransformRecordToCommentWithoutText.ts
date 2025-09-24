@@ -1,7 +1,7 @@
 import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
-import type * as ReviewPage from '../review-page/index.js'
-import { Doi, OrcidId, Temporal } from '../types/index.js'
-import * as Iso639 from '../types/iso639.js'
+import type * as ReviewPage from '../review-page/index.ts'
+import { Doi, OrcidId, Temporal } from '../types/index.ts'
+import * as Iso639 from '../types/iso639.ts'
 
 export type CommentWithoutText = Omit<ReviewPage.Comment, 'text'> & { textUrl: URL }
 

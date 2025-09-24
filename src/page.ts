@@ -2,14 +2,14 @@ import { Array, Boolean, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
-import { type Html, type PlainText, html, rawHtml } from './html.js'
-import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.js'
+import { type Html, type PlainText, html, rawHtml } from './html.ts'
+import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.ts'
 import assets from './manifest.json' with { type: 'json' }
-import type * as Router from './Router/index.js'
-import * as Routes from './routes.js'
-import { homeMatch, logInMatch, logOutMatch } from './routes.js'
-import type { UserOnboarding } from './user-onboarding.js'
-import type { User } from './user.js'
+import type * as Router from './Router/index.ts'
+import * as Routes from './routes.ts'
+import { homeMatch, logInMatch, logOutMatch } from './routes.ts'
+import type { UserOnboarding } from './user-onboarding.ts'
+import type { User } from './user.ts'
 
 export interface Page {
   readonly locale: SupportedLocale

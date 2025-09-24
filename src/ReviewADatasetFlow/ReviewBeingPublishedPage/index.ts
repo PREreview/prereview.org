@@ -1,13 +1,13 @@
 import { Effect, Equal } from 'effect'
-import type { Locale } from '../../Context.js'
-import * as DatasetReviews from '../../DatasetReviews/index.js'
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { PageNotFound } from '../../PageNotFound/index.js'
-import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
-import { LoggedInUser } from '../../user.js'
-import { ReviewBeingPublishedPage as MakeResponse } from './ReviewBeingPublishedPage.js'
+import type { Locale } from '../../Context.ts'
+import * as DatasetReviews from '../../DatasetReviews/index.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/index.ts'
+import { LoggedInUser } from '../../user.ts'
+import { ReviewBeingPublishedPage as MakeResponse } from './ReviewBeingPublishedPage.ts'
 
 export const ReviewBeingPublishedPage = ({
   datasetReviewId,

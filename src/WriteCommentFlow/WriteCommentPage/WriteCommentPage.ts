@@ -1,14 +1,14 @@
 import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { getClubName } from '../../club-details.js'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import type { Prereview } from '../../Prereview.js'
-import { PageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import { renderDate } from '../../time.js'
-import type { User } from '../../user.js'
+import { getClubName } from '../../club-details.ts'
+import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import type { Prereview } from '../../Prereview.ts'
+import { PageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { renderDate } from '../../time.ts'
+import type { User } from '../../user.ts'
 
 export const WriteCommentPage = ({
   prereview,

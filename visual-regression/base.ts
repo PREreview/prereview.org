@@ -1,10 +1,10 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { P, match } from 'ts-pattern'
-import type { Html } from '../src/html.js'
-import { DefaultLocale } from '../src/locales/index.js'
-import { type Page, page as templatePage } from '../src/page.js'
-import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/response.js'
+import type { Html } from '../src/html.ts'
+import { DefaultLocale } from '../src/locales/index.ts'
+import { type Page, page as templatePage } from '../src/page.ts'
+import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/response.ts'
 
 export { expect } from '@playwright/test'
 

@@ -1,10 +1,10 @@
 import { FileSystem, HttpServer, Multipart } from '@effect/platform'
 import { flow, Layer, Option, pipe } from 'effect'
-import { Express } from './Context.js'
-import { expressServer } from './ExpressServer.js'
-import * as HttpMiddleware from './HttpMiddleware/index.js'
-import { Router } from './Router/index.js'
-import * as TemplatePage from './TemplatePage.js'
+import { Express } from './Context.ts'
+import { expressServer } from './ExpressServer.ts'
+import * as HttpMiddleware from './HttpMiddleware/index.ts'
+import { Router } from './Router/index.ts'
+import * as TemplatePage from './TemplatePage.ts'
 
 export const WebApp = pipe(
   Router,

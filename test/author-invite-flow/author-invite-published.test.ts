@@ -2,18 +2,18 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-published.js'
-import * as _ from '../../src/author-invite-flow/index.js'
-import type { GetAuthorInviteEnv } from '../../src/author-invite.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-published.ts'
+import * as _ from '../../src/author-invite-flow/index.ts'
+import type { GetAuthorInviteEnv } from '../../src/author-invite.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
-} from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+} from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('authorInvite', () => {
   describe('when the user is logged in', () => {

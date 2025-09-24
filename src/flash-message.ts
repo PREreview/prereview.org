@@ -3,7 +3,7 @@ import { flow, pipe, Record } from 'effect'
 import type { HeadersOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import type { FlashMessageSchema } from './response.js'
+import type { FlashMessageSchema } from './response.ts'
 
 export const deleteFlashMessage = pipe(
   M.decodeHeader<HeadersOpen, unknown, string>('Cookie', D.string.decode),

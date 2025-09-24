@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { encode } from 'html-entities'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { getClubName } from '../../src/club-details.js'
-import * as _ from '../../src/club-profile-page/index.js'
-import { clubProfileMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { getClubName } from '../../src/club-details.ts'
+import * as _ from '../../src/club-profile-page/index.ts'
+import { clubProfileMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
 
 describe('clubProfile', () => {
   test.prop([

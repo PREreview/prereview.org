@@ -1,11 +1,11 @@
 import { Boolean, Option, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import * as Routes from '../routes.js'
-import type { UserOnboarding } from '../user-onboarding.js'
-import type { User } from '../user.js'
+import { html, plainText } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import * as Routes from '../routes.ts'
+import type { UserOnboarding } from '../user-onboarding.ts'
+import type { User } from '../user.ts'
 
 export const createMenuPage = ({
   canLogInAsDemoUser = false,

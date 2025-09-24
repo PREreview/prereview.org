@@ -2,23 +2,23 @@ import { Effect, Function, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import * as EffectToFpts from '../../EffectToFpts.js'
-import { withEnv } from '../../Fpts.js'
-import * as Keyv from '../../keyv.js'
-import * as Preprints from '../../Preprints/index.js'
-import * as PrereviewCoarNotify from '../../prereview-coar-notify/index.js'
+import * as EffectToFpts from '../../EffectToFpts.ts'
+import { withEnv } from '../../Fpts.ts'
+import * as Keyv from '../../keyv.ts'
+import * as Preprints from '../../Preprints/index.ts'
+import * as PrereviewCoarNotify from '../../prereview-coar-notify/index.ts'
 import {
   requestReview,
   requestReviewCheck,
   requestReviewPersona,
   requestReviewPublished,
   requestReviewStart,
-} from '../../request-review-flow/index.js'
-import type { ReviewRequestPreprintId } from '../../review-request.js'
-import * as Routes from '../../routes.js'
-import type { User } from '../../user.js'
-import type * as Response from '../Response.js'
-import type { Env } from './index.js'
+} from '../../request-review-flow/index.ts'
+import type { ReviewRequestPreprintId } from '../../review-request.ts'
+import * as Routes from '../../routes.ts'
+import type { User } from '../../user.ts'
+import type * as Response from '../Response.ts'
+import type { Env } from './index.ts'
 
 export const RequestReviewFlowRouter = pipe(
   [

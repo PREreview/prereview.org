@@ -1,7 +1,7 @@
 import { HttpClientRequest } from '@effect/platform'
 import { Effect, identity, Option, pipe } from 'effect'
-import type { OrcidId } from '../../../types/index.js'
-import { OrcidApi } from '../OrcidApi.js'
+import type { OrcidId } from '../../../types/index.ts'
+import { OrcidApi } from '../OrcidApi.ts'
 
 export const CreateRequest = Effect.fn(function* (orcidId: OrcidId.OrcidId) {
   const api = yield* OrcidApi

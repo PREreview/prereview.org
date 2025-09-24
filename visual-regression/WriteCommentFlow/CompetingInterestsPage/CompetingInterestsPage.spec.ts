@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { NonEmptyString, Uuid } from '../../../src/types/index.js'
-import * as CompetingInterestsForm from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsForm.js'
-import * as _ from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsPage.js'
-import { expect, test } from '../../base.js'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import * as CompetingInterestsForm from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsForm.ts'
+import * as _ from '../../../src/WriteCommentFlow/CompetingInterestsPage/CompetingInterestsPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CompetingInterestsPage({

@@ -15,9 +15,9 @@ import {
 import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.js'
-import * as EffectToFpts from './EffectToFpts.js'
-import { decodeEnv } from './env.js'
+import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.ts'
+import * as EffectToFpts from './EffectToFpts.ts'
+import { decodeEnv } from './env.ts'
 
 export const makeDeprecatedEnvVars = decodeEnv(process)
 

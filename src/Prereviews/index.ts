@@ -2,27 +2,27 @@ import { FetchHttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.js'
-import * as EffectToFpts from '../EffectToFpts.js'
-import { Zenodo } from '../ExternalApis/index.js'
-import * as FptsToEffect from '../FptsToEffect.js'
-import type { Html } from '../html.js'
+import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.ts'
+import * as EffectToFpts from '../EffectToFpts.ts'
+import { Zenodo } from '../ExternalApis/index.ts'
+import * as FptsToEffect from '../FptsToEffect.ts'
+import type { Html } from '../html.ts'
 import {
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
   LegacyPrereviewApi,
-} from '../legacy-prereview.js'
-import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.js'
-import type { PreprintId } from '../Preprints/index.js'
-import * as Preprints from '../Preprints/index.js'
-import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.js'
-import type { RecentPrereviews } from '../reviews-page/index.js'
-import type { ClubId } from '../types/club-id.js'
-import type { FieldId } from '../types/field.js'
-import type { NonEmptyString } from '../types/NonEmptyString.js'
-import type { ProfileId } from '../types/profile-id.js'
-import type { SubfieldId } from '../types/subfield.js'
-import type { User } from '../user.js'
+} from '../legacy-prereview.ts'
+import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
+import * as Preprints from '../Preprints/index.ts'
+import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.ts'
+import type { RecentPrereviews } from '../reviews-page/index.ts'
+import type { ClubId } from '../types/club-id.ts'
+import type { FieldId } from '../types/field.ts'
+import type { NonEmptyString } from '../types/NonEmptyString.ts'
+import type { ProfileId } from '../types/profile-id.ts'
+import type { SubfieldId } from '../types/subfield.ts'
+import type { User } from '../user.ts'
 import {
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
@@ -30,7 +30,7 @@ import {
   getPrereviewsForProfileFromZenodo,
   getPrereviewsForUserFromZenodo,
   getRecentPrereviewsFromZenodo,
-} from '../zenodo.js'
+} from '../zenodo.ts'
 
 export interface RecentPrereview {
   readonly id: number

@@ -3,7 +3,7 @@ import { flow, Function, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as L from 'logger-fp-ts'
-import * as StatusCodes from '../StatusCodes.js'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export interface NewPrereview {
   preprint: { doi?: Doi }

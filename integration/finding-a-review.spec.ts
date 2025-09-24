@@ -2,8 +2,8 @@ import { Doi } from 'doi-ts'
 import { Duration } from 'effect'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { OrcidId } from '../src/types/OrcidId.js'
-import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.js'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))

@@ -1,6 +1,6 @@
 import { type Array, Context, Data, Effect, type Option } from 'effect'
-import type { Event, EventFilter } from './Events.js'
-import type { Uuid } from './types/index.js'
+import type { Event, EventFilter } from './Events.ts'
+import type { Uuid } from './types/index.ts'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
 

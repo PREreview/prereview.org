@@ -2,20 +2,20 @@ import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { match } from 'ts-pattern'
-import { hasAnError, type MissingE } from '../../form.js'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { hasAnError, type MissingE } from '../../form.ts'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewReviewTypeMatch,
   writeReviewUseOfAiMatch,
-} from '../../routes.js'
-import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import { backNav, prereviewOfSuffix } from '../shared-elements.js'
+} from '../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../shared-translation-elements.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
 export interface UseOfAiForm {
   readonly generativeAiIdeas: E.Either<MissingE, 'yes' | 'no' | undefined>

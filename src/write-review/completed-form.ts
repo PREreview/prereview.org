@@ -1,10 +1,10 @@
 import { pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as E from 'io-ts/lib/Encoder.js'
-import { RawHtmlC } from '../html.js'
-import { EmailAddressC } from '../types/EmailAddress.js'
-import { NonEmptyStringC } from '../types/NonEmptyString.js'
-import type { Form } from './form.js'
+import { RawHtmlC } from '../html.ts'
+import { EmailAddressC } from '../types/EmailAddress.ts'
+import { NonEmptyStringC } from '../types/NonEmptyString.ts'
+import type { Form } from './form.ts'
 
 export type CompletedForm = C.TypeOf<typeof CompletedFormC>
 

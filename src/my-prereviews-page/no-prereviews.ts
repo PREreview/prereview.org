@@ -1,11 +1,11 @@
 import { Array } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { myPrereviewsMatch, reviewAPreprintMatch } from '../routes.js'
-import type { Prereview } from './prereviews.js'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { myPrereviewsMatch, reviewAPreprintMatch } from '../routes.ts'
+import type { Prereview } from './prereviews.ts'
 
 export interface NoPrereviews {
   readonly _tag: 'NoPrereviews'

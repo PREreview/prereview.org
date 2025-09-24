@@ -1,7 +1,7 @@
 import { Array, flow, Option, pipe } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { detect, detectAll } from 'tinyld/heavy'
-import { type Html, plainText } from './html.js'
+import { type Html, plainText } from './html.ts'
 
 export function detectLanguage(html: Html): Option.Option<LanguageCode> {
   return pipe(

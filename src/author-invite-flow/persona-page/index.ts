@@ -14,20 +14,20 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite.js'
-import { missingE } from '../../form.js'
-import type { Html } from '../../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+} from '../../author-invite.ts'
+import { missingE } from '../../form.ts'
+import type { Html } from '../../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
-} from '../../routes.js'
-import type { User } from '../../user.js'
-import { personaForm } from './persona-form.js'
+} from '../../routes.ts'
+import type { User } from '../../user.ts'
+import { personaForm } from './persona-form.ts'
 
 export interface Prereview {
   preprint: {

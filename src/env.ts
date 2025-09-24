@@ -3,8 +3,8 @@ import * as C from 'fp-ts/lib/Console.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { v4 } from 'uuid-ts'
-import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.js'
-import { isOrcidId } from './types/OrcidId.js'
+import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.ts'
+import { isOrcidId } from './types/OrcidId.ts'
 
 export type EnvVars = D.TypeOf<typeof EnvD>
 

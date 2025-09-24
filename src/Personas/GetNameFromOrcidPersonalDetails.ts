@@ -1,6 +1,6 @@
 import { Match, pipe } from 'effect'
-import type { Orcid } from '../ExternalApis/index.js'
-import { NonEmptyString } from '../types/index.js'
+import type { Orcid } from '../ExternalApis/index.ts'
+import { NonEmptyString } from '../types/index.ts'
 
 export const GetNameFromOrcidPersonalDetails = pipe(
   Match.type<Orcid.PersonalDetails>(),

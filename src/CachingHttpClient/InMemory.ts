@@ -7,7 +7,7 @@ import {
   InternalHttpCacheFailure,
   NoCachedResponseFound,
   StoredResponseSchema,
-} from './HttpCache.js'
+} from './HttpCache.ts'
 
 export type CacheKey = string
 

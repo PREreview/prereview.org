@@ -5,7 +5,7 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import type { EnvFor } from '../Fpts.js'
+import type { EnvFor } from '../Fpts.ts'
 import {
   type SaveContactEmailAddressEnv,
   UnverifiedContactEmailAddress,
@@ -13,16 +13,16 @@ import {
   getContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddress,
-} from '../contact-email-address.js'
-import { getInput, invalidE, missingE } from '../form.js'
-import { havingProblemsPage } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.js'
-import { myDetailsMatch } from '../routes.js'
-import { EmailAddressC } from '../types/EmailAddress.js'
-import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.js'
-import type { User } from '../user.js'
-import { createFormPage } from './change-contact-email-address-form-page.js'
+} from '../contact-email-address.ts'
+import { getInput, invalidE, missingE } from '../form.ts'
+import { havingProblemsPage } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.ts'
+import { myDetailsMatch } from '../routes.ts'
+import { EmailAddressC } from '../types/EmailAddress.ts'
+import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.ts'
+import type { User } from '../user.ts'
+import { createFormPage } from './change-contact-email-address-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeContactEmailAddress>>
 

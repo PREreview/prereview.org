@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { BiorxivPreprintId } from '../../../src/Preprints/index.js'
-import * as Prereview from '../../../src/Prereview.js'
-import * as Routes from '../../../src/routes.js'
-import { Uuid } from '../../../src/types/index.js'
-import { OrcidId } from '../../../src/types/OrcidId.js'
-import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.js'
-import { expect, test } from '../../base.js'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import * as Prereview from '../../../src/Prereview.ts'
+import * as Routes from '../../../src/routes.ts'
+import { Uuid } from '../../../src/types/index.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CarryOnPage({

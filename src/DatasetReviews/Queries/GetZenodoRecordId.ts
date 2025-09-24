@@ -1,6 +1,6 @@
 import { Array, Either, Option } from 'effect'
-import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import * as Errors from '../Errors.ts'
+import type * as Events from '../Events.ts'
 
 export const GetZenodoRecordId = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,

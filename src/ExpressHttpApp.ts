@@ -6,10 +6,10 @@ import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import httpErrors from 'http-errors'
 import type { LogEntry } from 'logger-fp-ts'
 import * as L from 'logging-ts/lib/IO.js'
-import type { AppContext } from './app.js'
-import { DeprecatedLoggerEnv, Express, Locale } from './Context.js'
-import * as StatusCodes from './StatusCodes.js'
-import { LoggedInUser } from './user.js'
+import type { AppContext } from './app.ts'
+import { DeprecatedLoggerEnv, Express, Locale } from './Context.ts'
+import * as StatusCodes from './StatusCodes.ts'
+import { LoggedInUser } from './user.ts'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError | HttpServerError.RouteNotFound,

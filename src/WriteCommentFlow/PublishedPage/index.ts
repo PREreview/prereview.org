@@ -1,13 +1,13 @@
 import { Effect, Equal } from 'effect'
-import * as Comments from '../../Comments/index.js'
-import { Locale } from '../../Context.js'
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { PageNotFound } from '../../PageNotFound/index.js'
-import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/index.js'
-import { EnsureUserIsLoggedIn } from '../../user.js'
-import { PublishedPage as MakeResponse } from './PublishedPage.js'
+import * as Comments from '../../Comments/index.ts'
+import { Locale } from '../../Context.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/index.ts'
+import { EnsureUserIsLoggedIn } from '../../user.ts'
+import { PublishedPage as MakeResponse } from './PublishedPage.ts'
 
 export const PublishedPage = ({
   commentId,

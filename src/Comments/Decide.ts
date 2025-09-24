@@ -1,8 +1,8 @@
 import { Either, flow, Function, Match, Option, pipe } from 'effect'
-import type * as Commands from './Commands.js'
-import * as Errors from './Errors.js'
-import * as Events from './Events.js'
-import type * as State from './State.js'
+import type * as Commands from './Commands.ts'
+import * as Errors from './Errors.ts'
+import * as Events from './Events.ts'
+import type * as State from './State.ts'
 
 const onStartComment = (command: Commands.StartComment) =>
   flow(

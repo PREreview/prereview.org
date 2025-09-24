@@ -3,8 +3,8 @@ import { Duration, Function } from 'effect'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
-import * as StatusCodes from '../src/StatusCodes.js'
-import { OrcidId } from '../src/types/OrcidId.js'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
 import {
   areLoggedIn,
   canAddMultipleAuthors,
@@ -16,7 +16,7 @@ import {
   updatesLegacyPrereview,
   waitForNotBusy,
   willPublishAReview,
-} from './base.js'
+} from './base.ts'
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview',

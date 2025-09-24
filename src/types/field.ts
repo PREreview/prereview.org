@@ -1,5 +1,5 @@
 import { pipe, Schema } from 'effect'
-import { type SupportedLocale, translate } from '../locales/index.js'
+import { type SupportedLocale, translate } from '../locales/index.ts'
 
 export type FieldId = (typeof fieldIds)[number]
 

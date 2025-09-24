@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Array, Either, Option } from 'effect'
-import * as _ from '../../src/Comments/Queries.js'
-import * as Comments from '../../src/Comments/index.js'
-import { html } from '../../src/html.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Uuid } from '../../src/types/index.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/Comments/Queries.ts'
+import * as Comments from '../../src/Comments/index.ts'
+import { html } from '../../src/html.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Uuid } from '../../src/types/index.ts'
+import * as fc from '../fc.ts'
 
 describe('GetPrereviewId', () => {
   const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')

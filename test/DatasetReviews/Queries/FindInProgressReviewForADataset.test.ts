@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import * as _ from '../../../src/DatasetReviews/Queries/FindInProgressReviewForADataset.js'
-import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
-import * as Datasets from '../../../src/Datasets/index.js'
-import { Doi, OrcidId, Uuid } from '../../../src/types/index.js'
+import * as _ from '../../../src/DatasetReviews/Queries/FindInProgressReviewForADataset.ts'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')

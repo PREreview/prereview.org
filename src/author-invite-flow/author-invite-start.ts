@@ -12,19 +12,19 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../author-invite.js'
-import { type Html, html, plainText } from '../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+} from '../author-invite.ts'
+import { type Html, html, plainText } from '../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
-} from '../routes.js'
-import type { User } from '../user.js'
+} from '../routes.ts'
+import type { User } from '../user.ts'
 
 export interface Prereview {
   preprint: {

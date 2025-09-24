@@ -1,11 +1,11 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
-import type { UnverifiedContactEmailAddress } from '../../contact-email-address.js'
-import { html, plainText } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import { authorInviteNeedToVerifyEmailAddressMatch } from '../../routes.js'
+import type { UnverifiedContactEmailAddress } from '../../contact-email-address.ts'
+import { html, plainText } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import { authorInviteNeedToVerifyEmailAddressMatch } from '../../routes.ts'
 
 export function needToVerifyEmailAddressPage({
   contactEmailAddress,

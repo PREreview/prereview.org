@@ -2,9 +2,9 @@ import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, pipe, Schema, Tuple } from 'effect'
-import * as _ from '../../src/prereview-coar-notify/GetPageOfReviewRequests.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from './fc.js'
+import * as _ from '../../src/prereview-coar-notify/GetPageOfReviewRequests.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from './fc.ts'
 
 describe('getPageOfReviewRequests', () => {
   test.prop(

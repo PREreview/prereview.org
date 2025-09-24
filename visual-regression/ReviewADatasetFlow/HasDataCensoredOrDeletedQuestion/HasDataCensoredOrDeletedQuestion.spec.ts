@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as HasDataCensoredOrDeletedForm from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as HasDataCensoredOrDeletedForm from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasDataCensoredOrDeletedQuestion({

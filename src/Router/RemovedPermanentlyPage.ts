@@ -1,7 +1,7 @@
-import { html, plainText, rawHtml } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import * as StatusCodes from '../StatusCodes.js'
+import { html, plainText, rawHtml } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export const removedPermanentlyPage = (locale: SupportedLocale) =>
   PageResponse({

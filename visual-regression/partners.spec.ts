@@ -1,6 +1,6 @@
-import { DefaultLocale } from '../src/locales/index.js'
-import { partners } from '../src/partners.js'
-import { expect, test } from './base.js'
+import { DefaultLocale } from '../src/locales/index.ts'
+import { partners } from '../src/partners.ts'
+import { expect, test } from './base.ts'
 
 test('content looks right', async ({ showPage }, testInfo) => {
   const content = await showPage(partners(DefaultLocale))

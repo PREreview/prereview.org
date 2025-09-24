@@ -1,10 +1,10 @@
 import { Option } from 'effect'
-import * as Datasets from '../../../src/Datasets/index.js'
-import { html } from '../../../src/html.js'
-import * as Personas from '../../../src/Personas/index.js'
-import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.js'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.js'
-import { expect, test } from '../../base.js'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import { html } from '../../../src/html.ts'
+import * as Personas from '../../../src/Personas/index.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/CheckYourReviewPage/CheckYourReviewPage.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.CheckYourReviewPage({

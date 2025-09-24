@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/my-details-page/my-details.js'
-import { myDetailsMatch } from '../../src/routes.js'
-import type { SaveUserOnboardingEnv } from '../../src/user-onboarding.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/my-details-page/my-details.ts'
+import { myDetailsMatch } from '../../src/routes.ts'
+import type { SaveUserOnboardingEnv } from '../../src/user-onboarding.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {

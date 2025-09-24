@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.js'
-import { createUnknownPreprintWithDoiPage } from '../../src/review-a-preprint-page/unknown-preprint-with-doi-page.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
+import { createUnknownPreprintWithDoiPage } from '../../src/review-a-preprint-page/unknown-preprint-with-doi-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createUnknownPreprintWithDoiPage(

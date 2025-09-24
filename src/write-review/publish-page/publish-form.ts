@@ -2,11 +2,11 @@ import { Array, flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
-import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import * as PreprintServers from '../../PreprintServers/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import * as PreprintServers from '../../PreprintServers/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -25,13 +25,13 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
   writeReviewUseOfAiMatch,
-} from '../../routes.js'
-import { ProfileId } from '../../types/index.js'
-import type { OrcidId } from '../../types/OrcidId.js'
-import { isPseudonym } from '../../types/Pseudonym.js'
-import type { User } from '../../user.js'
-import type { CompletedForm } from '../completed-form.js'
-import { backNav } from '../shared-elements.js'
+} from '../../routes.ts'
+import { ProfileId } from '../../types/index.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import { isPseudonym } from '../../types/Pseudonym.ts'
+import type { User } from '../../user.ts'
+import type { CompletedForm } from '../completed-form.ts'
+import { backNav } from '../shared-elements.ts'
 
 export function publishForm(
   preprint: PreprintTitle,

@@ -1,15 +1,15 @@
 import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { getClubDetails } from '../club-details.js'
-import { havingProblemsPage } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
-import type { PageResponse } from '../response.js'
-import type { ClubId } from '../types/club-id.js'
-import { createPage } from './club-profile-page.js'
-import { type GetPrereviewsEnv, getPrereviews } from './prereviews.js'
+import { getClubDetails } from '../club-details.ts'
+import { havingProblemsPage } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import type { PageResponse } from '../response.ts'
+import type { ClubId } from '../types/club-id.ts'
+import { createPage } from './club-profile-page.ts'
+import { type GetPrereviewsEnv, getPrereviews } from './prereviews.ts'
 
-export { type GetPrereviewsEnv } from './prereviews.js'
+export { type GetPrereviewsEnv } from './prereviews.ts'
 
 export const clubProfile = (id: ClubId, locale: SupportedLocale): RT.ReaderTask<GetPrereviewsEnv, PageResponse> =>
   pipe(

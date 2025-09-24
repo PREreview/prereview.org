@@ -2,10 +2,10 @@ import type { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { type Array, Context, Data, type Effect } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from './html.js'
-import type { PreprintId } from './Preprints/index.js'
-import type { ClubId } from './types/club-id.js'
-import type { OrcidId } from './types/OrcidId.js'
+import type { Html } from './html.ts'
+import type { PreprintId } from './Preprints/index.ts'
+import type { ClubId } from './types/club-id.ts'
+import type { OrcidId } from './types/OrcidId.ts'
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
 

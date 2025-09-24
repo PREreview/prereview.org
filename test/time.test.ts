@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as _ from '../src/time.js'
-import * as fc from './fc.js'
+import * as _ from '../src/time.ts'
+import * as fc from './fc.ts'
 
 describe('renderTime', () => {
   test.prop([fc.locale(), fc.plainDate()])('with a plain date', (locale, date) => {

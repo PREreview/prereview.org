@@ -1,8 +1,8 @@
 import { Option } from 'effect'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createFormPage } from '../../src/my-details-page/change-research-interests-form-page.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createFormPage } from '../../src/my-details-page/change-research-interests-form-page.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage(

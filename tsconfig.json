@@ -8,6 +8,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "plugins": [{ "name": "@effect/language-service" }],
     "resolveJsonModule": true,
+    "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": true
   },
   "include": ["assets", "integration", "src", "test", "visual-regression", "*.ts"]

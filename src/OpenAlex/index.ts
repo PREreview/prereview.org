@@ -1,6 +1,6 @@
 import type * as Doi from 'doi-ts'
 import { Context, Effect, pipe } from 'effect'
-import { getCategories, getWorkByDoi, type WorkIsNotFound, WorkIsUnavailable } from './Work.js'
+import { getCategories, getWorkByDoi, type WorkIsNotFound, WorkIsUnavailable } from './Work.ts'
 
 export class GetCategories extends Context.Tag('GetCategories')<
   GetCategories,

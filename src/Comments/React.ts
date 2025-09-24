@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
-import type { Uuid } from '../types/index.js'
-import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.js'
+import type { Uuid } from '../types/index.ts'
+import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.ts'
 import {
   CreateRecordOnZenodoForComment,
   DoesUserHaveAVerifiedEmailAddress,
@@ -10,9 +10,9 @@ import {
   PublishCommentOnZenodo,
   type UnableToAssignADoi,
   UnableToHandleCommand,
-} from './Context.js'
-import type { CommentError } from './Errors.js'
-import type { CommentWasAssignedADoi } from './Events.js'
+} from './Context.ts'
+import type { CommentError } from './Errors.ts'
+import type { CommentWasAssignedADoi } from './Events.ts'
 
 type ToDo = unknown
 

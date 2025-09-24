@@ -1,6 +1,6 @@
 import * as Doi from 'doi-ts'
 import { pipe, Schema } from 'effect'
-import * as FptsToEffect from '../FptsToEffect.js'
+import * as FptsToEffect from '../FptsToEffect.ts'
 
 export { Doi, hasRegistrant, isDoi, toUrl } from 'doi-ts'
 

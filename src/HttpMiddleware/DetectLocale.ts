@@ -5,7 +5,7 @@ import {
   isUserSelectableLocale,
   UserSelectableLocales,
   type UserSelectableLocale,
-} from '../locales/index.js'
+} from '../locales/index.ts'
 
 export const detectLocale = (acceptLanguageHeader: string): Option.Option<UserSelectableLocale> => {
   const parsed = parseAcceptLanguage(acceptLanguageHeader, { ignoreWildcard: false })

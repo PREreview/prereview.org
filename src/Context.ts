@@ -1,12 +1,12 @@
 import { Context, type Redacted } from 'effect'
 import type { LoggerEnv } from 'logger-fp-ts'
-import type { app, ConfigEnv } from './app.js'
-import type { SlackOAuthEnv } from './connect-slack-page/index.js'
-import type { EnvVars } from './env.js'
-import type * as Keyv from './keyv.js'
-import type { SupportedLocale } from './locales/index.js'
-import type { FlashMessageSchema } from './response.js'
-import type { FormStoreEnv } from './write-review/index.js'
+import type { app, ConfigEnv } from './app.ts'
+import type { SlackOAuthEnv } from './connect-slack-page/index.ts'
+import type { EnvVars } from './env.ts'
+import type * as Keyv from './keyv.ts'
+import type { SupportedLocale } from './locales/index.ts'
+import type { FlashMessageSchema } from './response.ts'
+import type { FormStoreEnv } from './write-review/index.ts'
 
 export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<DeprecatedEnvVars, EnvVars>() {}
 

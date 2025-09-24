@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option, Tuple } from 'effect'
-import * as _ from '../../src/types/OrcidLocale.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/types/OrcidLocale.ts'
+import * as fc from '../fc.ts'
 
 describe('isOrcidLocale', () => {
   test.prop([fc.orcidLocale()])('with an ORCID locale', locale => {

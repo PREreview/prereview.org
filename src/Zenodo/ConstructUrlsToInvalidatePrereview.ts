@@ -1,9 +1,9 @@
 import { Url, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
-import { Zenodo } from '../ExternalApis/index.js'
-import type { PreprintId } from '../Preprints/index.js'
-import type { User } from '../user.js'
-import { toExternalIdentifier } from '../zenodo.js'
+import { Zenodo } from '../ExternalApis/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
+import type { User } from '../user.ts'
+import { toExternalIdentifier } from '../zenodo.ts'
 
 export const constructUrlsToInvalidatePrereview = ({
   prereviewId,

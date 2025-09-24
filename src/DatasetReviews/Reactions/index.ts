@@ -1,13 +1,13 @@
 import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
-import * as Events from '../../Events.js'
-import type * as Personas from '../../Personas/index.js'
-import type { Zenodo } from '../../Zenodo/index.js'
-import type { DatasetReviewCommands } from '../Commands/index.js'
-import type { DatasetReviewQueries } from '../Queries/index.js'
-import { CreateRecordOnZenodo } from './CreateRecordOnZenodo.js'
-import { MarkDatasetReviewAsPublished } from './MarkDatasetReviewAsPublished.js'
-import { PublishRecordOnZenodo } from './PublishRecordOnZenodo.js'
-import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.js'
+import * as Events from '../../Events.ts'
+import type * as Personas from '../../Personas/index.ts'
+import type { Zenodo } from '../../Zenodo/index.ts'
+import type { DatasetReviewCommands } from '../Commands/index.ts'
+import type { DatasetReviewQueries } from '../Queries/index.ts'
+import { CreateRecordOnZenodo } from './CreateRecordOnZenodo.ts'
+import { MarkDatasetReviewAsPublished } from './MarkDatasetReviewAsPublished.ts'
+import { PublishRecordOnZenodo } from './PublishRecordOnZenodo.ts'
+import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.ts'
 
 const makeDatasetReviewReactions: Effect.Effect<
   never,

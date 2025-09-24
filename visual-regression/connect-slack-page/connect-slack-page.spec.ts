@@ -1,6 +1,6 @@
-import { connectSlackPage } from '../../src/connect-slack-page/connect-slack-page.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { expect, test } from '../base.js'
+import { connectSlackPage } from '../../src/connect-slack-page/connect-slack-page.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(connectSlackPage(DefaultLocale))

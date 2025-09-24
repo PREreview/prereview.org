@@ -1,7 +1,7 @@
 import { Array, Boolean, Equal, Match, Option, pipe, Record, Tuple } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
-import type { OrcidId, Uuid } from '../../types/index.js'
-import type * as Events from '../Events.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
+import type * as Events from '../Events.ts'
 
 export const FindInProgressReviewForADataset =
   (

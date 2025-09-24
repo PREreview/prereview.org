@@ -1,12 +1,12 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { PageResponse } from '../../response.js'
-import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.js'
-import type { User } from '../../user.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { PageResponse } from '../../response.ts'
+import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes.ts'
+import type { User } from '../../user.ts'
 
 const orcidLinkAsDefinition = (text: string) => `<a href="https://orcid.org/"><dfn>${text}</dfn></a>`
 

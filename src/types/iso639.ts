@@ -1,7 +1,7 @@
 import { Option, pipe, Schema, Struct } from 'effect'
 import iso6391, { type LanguageCode as Iso6391Code } from 'iso-639-1'
 import type iso6393 from 'iso-639-3/to-1.json'
-import type { SupportedLocale } from '../locales/index.js'
+import type { SupportedLocale } from '../locales/index.ts'
 
 export type Iso6393Code = keyof Omit<typeof iso6393, 'hbs'>
 

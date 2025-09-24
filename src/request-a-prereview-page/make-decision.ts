@@ -3,12 +3,12 @@ import * as E from 'fp-ts/lib/Either.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
-import type { EnvFor } from '../Fpts.js'
-import * as Preprint from '../preprint.js'
-import * as Preprints from '../Preprints/index.js'
-import * as ReviewRequest from '../review-request.js'
-import * as Decision from './decision.js'
-import * as Form from './form.js'
+import type { EnvFor } from '../Fpts.ts'
+import * as Preprint from '../preprint.ts'
+import * as Preprints from '../Preprints/index.ts'
+import * as ReviewRequest from '../review-request.ts'
+import * as Decision from './decision.ts'
+import * as Form from './form.ts'
 
 export type Env = EnvFor<ReturnType<typeof makeDecision>>
 

@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals'
 import { Option } from 'effect'
-import * as _ from '../src/detect-language.js'
-import { html, rawHtml } from '../src/html.js'
+import * as _ from '../src/detect-language.ts'
+import { html, rawHtml } from '../src/html.ts'
 
 describe('detectLanguage', () => {
   test.each([

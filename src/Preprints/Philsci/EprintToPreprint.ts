@@ -1,9 +1,9 @@
 import { Url } from '@effect/platform'
 import { Array, Either } from 'effect'
-import type { Philsci } from '../../ExternalApis/index.js'
-import { sanitizeHtml } from '../../html.js'
-import * as Preprint from '../Preprint.js'
-import { PhilsciPreprintId } from '../PreprintId.js'
+import type { Philsci } from '../../ExternalApis/index.ts'
+import { sanitizeHtml } from '../../html.ts'
+import * as Preprint from '../Preprint.ts'
+import { PhilsciPreprintId } from '../PreprintId.ts'
 
 export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint.Preprint, Preprint.NotAPreprint> =>
   Either.gen(function* () {

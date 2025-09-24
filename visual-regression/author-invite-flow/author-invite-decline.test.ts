@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Uuid } from 'uuid-ts'
-import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.js'
-import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { BiorxivPreprintId } from '../../src/Preprints/index.js'
-import { Prereview } from '../../src/Prereview.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { expect, test } from '../base.js'
+import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.ts'
+import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.ts'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { Prereview } from '../../src/Prereview.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right before declining', async ({ showPage }) => {
   const response = declinePage({

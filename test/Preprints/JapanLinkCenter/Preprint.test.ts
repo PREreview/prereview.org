@@ -3,11 +3,11 @@ import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Either } from 'effect'
-import { JapanLinkCenter } from '../../../src/ExternalApis/index.js'
-import { rawHtml } from '../../../src/html.js'
-import { JxivPreprintId, Preprint } from '../../../src/Preprints/index.js'
-import * as _ from '../../../src/Preprints/JapanLinkCenter/Preprint.js'
-import * as fc from '../../fc.js'
+import { JapanLinkCenter } from '../../../src/ExternalApis/index.ts'
+import { rawHtml } from '../../../src/html.ts'
+import { JxivPreprintId, Preprint } from '../../../src/Preprints/index.ts'
+import * as _ from '../../../src/Preprints/JapanLinkCenter/Preprint.ts'
+import * as fc from '../../fc.ts'
 
 describe('recordToPreprint', () => {
   test('can be transformed', () => {

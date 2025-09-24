@@ -11,19 +11,19 @@ import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
-import { timeoutRequest, useStaleCache } from './fetch.js'
+import { timeoutRequest, useStaleCache } from './fetch.ts'
 import {
   type IndeterminatePreprintIdWithDoi,
   type PreprintId,
   type PreprintIdWithDoi,
   parsePreprintDoi,
-} from './Preprints/index.js'
-import * as StatusCodes from './StatusCodes.js'
-import { ProfileId } from './types/index.js'
-import { type OrcidId, isOrcidId } from './types/OrcidId.js'
-import { PseudonymC, isPseudonym } from './types/Pseudonym.js'
-import { UuidC } from './types/uuid.js'
-import type { NewPrereview } from './write-review/index.js'
+} from './Preprints/index.ts'
+import * as StatusCodes from './StatusCodes.ts'
+import { ProfileId } from './types/index.ts'
+import { type OrcidId, isOrcidId } from './types/OrcidId.ts'
+import { PseudonymC, isPseudonym } from './types/Pseudonym.ts'
+import { UuidC } from './types/uuid.ts'
+import type { NewPrereview } from './write-review/index.ts'
 
 export class LegacyPrereviewApi extends Context.Tag('LegacyPrereviewApi')<
   LegacyPrereviewApi,

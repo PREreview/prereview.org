@@ -1,13 +1,13 @@
 import { Effect, Option } from 'effect'
-import type { Locale } from '../../Context.js'
-import * as DatasetReviews from '../../DatasetReviews/index.js'
-import * as Datasets from '../../Datasets/index.js'
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.js'
-import { PageNotFound } from '../../PageNotFound/index.js'
-import * as Response from '../../response.js'
-import * as Routes from '../../routes.js'
-import { LoggedInUser } from '../../user.js'
-import { ReviewThisDatasetPage as MakeResponse } from './ReviewThisDatasetPage.js'
+import type { Locale } from '../../Context.ts'
+import * as DatasetReviews from '../../DatasetReviews/index.ts'
+import * as Datasets from '../../Datasets/index.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { LoggedInUser } from '../../user.ts'
+import { ReviewThisDatasetPage as MakeResponse } from './ReviewThisDatasetPage.ts'
 
 export const ReviewThisDatasetPage: ({
   datasetId,

@@ -13,19 +13,19 @@ import {
   authorInvitePublished,
   authorInviteStart,
   authorInviteVerifyEmailAddress,
-} from '../../author-invite-flow/index.js'
-import * as EffectToFpts from '../../EffectToFpts.js'
-import { createContactEmailAddressVerificationEmailForInvitedAuthor, sendEmail } from '../../email.js'
-import { withEnv } from '../../Fpts.js'
-import * as Keyv from '../../keyv.js'
-import { sendEmailWithNodemailer } from '../../nodemailer.js'
-import * as Prereviews from '../../Prereviews/index.js'
-import * as Routes from '../../routes.js'
-import { Uuid } from '../../types/index.js'
-import { addAuthorToRecordOnZenodo } from '../../zenodo.js'
-import * as Zenodo from '../../Zenodo/index.js'
-import type * as Response from '../Response.js'
-import type { Env } from './index.js'
+} from '../../author-invite-flow/index.ts'
+import * as EffectToFpts from '../../EffectToFpts.ts'
+import { createContactEmailAddressVerificationEmailForInvitedAuthor, sendEmail } from '../../email.ts'
+import { withEnv } from '../../Fpts.ts'
+import * as Keyv from '../../keyv.ts'
+import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import * as Prereviews from '../../Prereviews/index.ts'
+import * as Routes from '../../routes.ts'
+import { Uuid } from '../../types/index.ts'
+import { addAuthorToRecordOnZenodo } from '../../zenodo.ts'
+import * as Zenodo from '../../Zenodo/index.ts'
+import type * as Response from '../Response.ts'
+import type { Env } from './index.ts'
 
 export const AuthorInviteFlowRouter = pipe(
   [

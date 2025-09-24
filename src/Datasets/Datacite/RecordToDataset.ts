@@ -1,10 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, flow, Match, Option, pipe, Struct } from 'effect'
-import type { Datacite } from '../../ExternalApis/index.js'
-import { sanitizeHtml } from '../../html.js'
-import { OrcidId } from '../../types/index.js'
-import * as Dataset from '../Dataset.js'
-import * as DatasetId from '../DatasetId.js'
+import type { Datacite } from '../../ExternalApis/index.ts'
+import { sanitizeHtml } from '../../html.ts'
+import { OrcidId } from '../../types/index.ts'
+import * as Dataset from '../Dataset.ts'
+import * as DatasetId from '../DatasetId.ts'
 
 export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported')<{
   cause?: unknown

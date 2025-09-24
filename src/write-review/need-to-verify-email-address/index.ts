@@ -9,25 +9,25 @@ import {
   type VerifyContactEmailAddressForReviewEnv,
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
-} from '../../contact-email-address.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
-import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.js'
+} from '../../contact-email-address.ts'
+import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
+import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.ts'
 import {
   FlashMessageResponse,
   type PageResponse,
   RedirectResponse,
   type StreamlinePageResponse,
-} from '../../response.js'
+} from '../../response.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../../routes.js'
-import type { User } from '../../user.js'
-import { type FormStoreEnv, getForm, nextFormMatch } from '../form.js'
-import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.js'
+} from '../../routes.ts'
+import type { User } from '../../user.ts'
+import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
+import { needToVerifyEmailAddressMessage } from './need-to-verify-email-address-message.ts'
 
 export const writeReviewNeedToVerifyEmailAddress = ({
   id,

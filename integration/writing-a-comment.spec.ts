@@ -1,7 +1,7 @@
 import { Doi } from 'doi-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { OrcidId } from '../src/types/OrcidId.js'
+import { OrcidId } from '../src/types/OrcidId.ts'
 import {
   areLoggedIn,
   test as baseTest,
@@ -12,7 +12,7 @@ import {
   useCockroachDB,
   waitForNotBusy,
   willPublishAComment,
-} from './base.js'
+} from './base.ts'
 
 const test = baseTest.extend(useCockroachDB)
 

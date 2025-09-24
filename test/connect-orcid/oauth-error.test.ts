@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/connect-orcid/oauth-error.js'
-import * as fc from '../fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/connect-orcid/oauth-error.ts'
+import * as fc from '../fc.ts'
 
 describe('connectOrcidError', () => {
   test.prop([fc.supportedLocale()])('with an access_denied error', locale => {

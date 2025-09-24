@@ -1,11 +1,11 @@
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/lib/Either.js'
-import { missingE } from '../../../src/form.js'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.js'
-import { findingsNextStepsForm } from '../../../src/write-review/findings-next-steps/findings-next-steps-form.js'
-import { expect, test } from '../../base.js'
+import { missingE } from '../../../src/form.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { findingsNextStepsForm } from '../../../src/write-review/findings-next-steps/findings-next-steps-form.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = findingsNextStepsForm(

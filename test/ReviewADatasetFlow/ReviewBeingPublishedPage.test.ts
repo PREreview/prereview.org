@@ -1,14 +1,14 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Equal, Layer } from 'effect'
-import { Locale } from '../../src/Context.js'
-import * as DatasetReviews from '../../src/DatasetReviews/index.js'
-import * as _ from '../../src/ReviewADatasetFlow/ReviewBeingPublishedPage/index.js'
-import * as Routes from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { LoggedInUser } from '../../src/user.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from '../fc.js'
+import { Locale } from '../../src/Context.ts'
+import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
+import * as _ from '../../src/ReviewADatasetFlow/ReviewBeingPublishedPage/index.ts'
+import * as Routes from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { LoggedInUser } from '../../src/user.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('ReviewBeingPublishedPage', () => {
   describe('when the dataset review is by the user', () => {

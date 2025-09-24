@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.js'
-import * as _ from '../../src/my-details-page/change-contact-email-address.js'
-import { changeContactEmailAddressMatch, myDetailsMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
+import * as _ from '../../src/my-details-page/change-contact-email-address.ts'
+import { changeContactEmailAddressMatch, myDetailsMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('changeContactEmailAddress', () => {
   test.prop([

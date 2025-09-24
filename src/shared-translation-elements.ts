@@ -1,6 +1,6 @@
 import { Boolean } from 'effect'
-import { html, type Html } from './html.js'
-import { type SupportedLocale, translate } from './locales/index.js'
+import { html, type Html } from './html.ts'
+import { type SupportedLocale, translate } from './locales/index.ts'
 
 export const errorPrefix = (locale: SupportedLocale, error: boolean) => (s: string) =>
   Boolean.match(error, {

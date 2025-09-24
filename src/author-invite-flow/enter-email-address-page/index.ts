@@ -9,7 +9,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.js'
+import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
 import {
   type ContactEmailAddress,
   type GetContactEmailAddressEnv,
@@ -20,23 +20,23 @@ import {
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForInvitedAuthor,
-} from '../../contact-email-address.js'
-import { getInput, invalidE, missingE } from '../../form.js'
-import type { Html } from '../../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+} from '../../contact-email-address.ts'
+import { getInput, invalidE, missingE } from '../../form.ts'
+import type { Html } from '../../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
-} from '../../routes.js'
-import { EmailAddressC } from '../../types/EmailAddress.js'
-import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.js'
-import type { User } from '../../user.js'
-import { enterEmailAddressForm } from './enter-email-address-form.js'
+} from '../../routes.ts'
+import { EmailAddressC } from '../../types/EmailAddress.ts'
+import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.ts'
+import type { User } from '../../user.ts'
+import { enterEmailAddressForm } from './enter-email-address-form.ts'
 
 export interface Prereview {
   preprint: {

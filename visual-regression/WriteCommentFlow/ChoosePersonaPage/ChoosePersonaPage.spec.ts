@@ -1,13 +1,13 @@
 import { Either } from 'effect'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { Uuid } from '../../../src/types/index.js'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../../src/types/OrcidId.js'
-import { Pseudonym } from '../../../src/types/Pseudonym.js'
-import type { User } from '../../../src/user.js'
-import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.js'
-import * as _ from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.js'
-import { expect, test } from '../../base.js'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import type { User } from '../../../src/user.ts'
+import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.ts'
+import * as _ from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.ChoosePersonaPage({

@@ -1,13 +1,13 @@
 import { pipe, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import type { CareerStage } from '../career-stage.js'
-import { html, plainText, rawHtml } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { changeCareerStageMatch, myDetailsMatch } from '../routes.js'
-import { errorPrefix } from '../shared-translation-elements.js'
-import * as StatusCodes from '../StatusCodes.js'
+import type { CareerStage } from '../career-stage.ts'
+import { html, plainText, rawHtml } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { changeCareerStageMatch, myDetailsMatch } from '../routes.ts'
+import { errorPrefix } from '../shared-translation-elements.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export const createFormPage = ({
   careerStage,

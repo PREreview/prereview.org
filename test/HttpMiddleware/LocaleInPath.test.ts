@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { Option } from 'effect'
-import * as _ from '../../src/HttpMiddleware/LocaleInPath.js'
-import type { SupportedLocale } from '../../src/locales/index.js'
+import * as _ from '../../src/HttpMiddleware/LocaleInPath.ts'
+import type { SupportedLocale } from '../../src/locales/index.ts'
 
 const localeInPathCases = [
   ['/', '/', Option.none()],

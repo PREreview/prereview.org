@@ -1,12 +1,12 @@
 import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type Option } from 'effect'
-import type { Html } from '../html.js'
-import type { NonEmptyString, Uuid } from '../types/index.js'
-import type { OrcidId } from '../types/OrcidId.js'
-import type { CommentCommand } from './Commands.js'
-import type { CommentError } from './Errors.js'
-import type * as Queries from './Queries.js'
-import type { CommentState } from './State.js'
+import type { Html } from '../html.ts'
+import type { NonEmptyString, Uuid } from '../types/index.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import type { CommentCommand } from './Commands.ts'
+import type { CommentError } from './Errors.ts'
+import type * as Queries from './Queries.ts'
+import type { CommentState } from './State.ts'
 
 export class GetNextExpectedCommandForUserOnAComment extends Context.Tag('GetNextExpectedCommandForUserOnAComment')<
   GetNextExpectedCommandForUserOnAComment,

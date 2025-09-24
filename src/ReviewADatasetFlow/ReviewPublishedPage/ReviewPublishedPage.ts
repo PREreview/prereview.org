@@ -1,7 +1,7 @@
-import { html, plainText } from '../../html.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Doi, Uuid } from '../../types/index.js'
+import { html, plainText } from '../../html.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Doi, Uuid } from '../../types/index.ts'
 
 export const ReviewPublishedPage = ({ datasetReviewId, doi }: { datasetReviewId: Uuid.Uuid; doi: Doi.Doi }) => {
   return StreamlinePageResponse({

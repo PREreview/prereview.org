@@ -8,9 +8,9 @@ import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
-import { disableButton, enableButton, getLocale, preventDefault } from './dom.js'
+import { disableButton, enableButton, getLocale, preventDefault } from './dom.ts'
 
-const translateDep = import('./locales/index.js')
+const translateDep = import('./locales/index.ts')
 
 const deps = Promise.all([
   import('@tiptap/core'),

@@ -7,10 +7,10 @@ import {
   CacheValueFromStringSchema,
   InternalHttpCacheFailure,
   NoCachedResponseFound,
-} from '../../src/CachingHttpClient/HttpCache.js'
-import * as _ from '../../src/CachingHttpClient/PersistedToRedis.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from '../fc.js'
+} from '../../src/CachingHttpClient/HttpCache.ts'
+import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('getFromRedis', () => {
   const stubbedRedisReturning = (value: string | null) =>

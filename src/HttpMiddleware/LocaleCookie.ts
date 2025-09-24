@@ -1,7 +1,7 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
 import type { RequestHandler } from 'express'
-import { type UserSelectableLocale, UserSelectableLocales } from '../locales/index.js'
+import { type UserSelectableLocale, UserSelectableLocales } from '../locales/index.ts'
 
 export const setLocaleCookie = (locale: UserSelectableLocale) =>
   HttpServerResponse.setCookie('locale', locale, { path: '/' })

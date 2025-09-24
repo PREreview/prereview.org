@@ -45,19 +45,19 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { AuthorInviteC } from '../src/author-invite.js'
-import * as CachingHttpClient from '../src/CachingHttpClient/index.js'
+import { AuthorInviteC } from '../src/author-invite.ts'
+import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import {
   ContactEmailAddressC,
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
-} from '../src/contact-email-address.js'
-import { AllowSiteCrawlers, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.js'
-import { DeprecatedLogger } from '../src/DeprecatedServices.js'
-import { createAuthorInviteEmail } from '../src/email.js'
-import { Cloudinary, Ghost, Orcid, Zenodo } from '../src/ExternalApis/index.js'
-import * as FeatureFlags from '../src/FeatureFlags.js'
-import { rawHtml } from '../src/html.js'
+} from '../src/contact-email-address.ts'
+import { AllowSiteCrawlers, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.ts'
+import { DeprecatedLogger } from '../src/DeprecatedServices.ts'
+import { createAuthorInviteEmail } from '../src/email.ts'
+import { Cloudinary, Ghost, Orcid, Zenodo } from '../src/ExternalApis/index.ts'
+import * as FeatureFlags from '../src/FeatureFlags.ts'
+import { rawHtml } from '../src/html.ts'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -67,23 +67,23 @@ import type {
   ResearchInterestsStoreEnv,
   ReviewRequestStoreEnv,
   UserOnboardingStoreEnv,
-} from '../src/keyv.js'
-import { LegacyPrereviewApi } from '../src/legacy-prereview.js'
-import { DefaultLocale } from '../src/locales/index.js'
-import type { IsUserBlockedEnv } from '../src/log-in/index.js'
-import * as Nodemailer from '../src/nodemailer.js'
-import { OrcidOauth } from '../src/OrcidOauth.js'
-import { BiorxivPreprintId } from '../src/Preprints/index.js'
-import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.js'
-import { Program } from '../src/Program.js'
-import { PublicUrl } from '../src/public-url.js'
-import { SlackApiConfig } from '../src/slack.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import * as TemplatePage from '../src/TemplatePage.js'
-import { EmailAddress } from '../src/types/EmailAddress.js'
-import { NonEmptyString } from '../src/types/NonEmptyString.js'
-import { OrcidId } from '../src/types/OrcidId.js'
-import type { WasPrereviewRemovedEnv } from '../src/zenodo.js'
+} from '../src/keyv.ts'
+import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
+import { DefaultLocale } from '../src/locales/index.ts'
+import type { IsUserBlockedEnv } from '../src/log-in/index.ts'
+import * as Nodemailer from '../src/nodemailer.ts'
+import { OrcidOauth } from '../src/OrcidOauth.ts'
+import { BiorxivPreprintId } from '../src/Preprints/index.ts'
+import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.ts'
+import { Program } from '../src/Program.ts'
+import { PublicUrl } from '../src/public-url.ts'
+import { SlackApiConfig } from '../src/slack.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import * as TemplatePage from '../src/TemplatePage.ts'
+import { EmailAddress } from '../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import type { WasPrereviewRemovedEnv } from '../src/zenodo.ts'
 
 export { expect } from '@playwright/test'
 

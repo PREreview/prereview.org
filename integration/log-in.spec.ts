@@ -1,6 +1,6 @@
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import path from 'path'
-import * as StatusCodes from '../src/StatusCodes.js'
+import * as StatusCodes from '../src/StatusCodes.ts'
 import {
   areLoggedIn,
   canLogIn,
@@ -11,7 +11,7 @@ import {
   isASlackUser,
   test,
   userIsBlocked,
-} from './base.js'
+} from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))

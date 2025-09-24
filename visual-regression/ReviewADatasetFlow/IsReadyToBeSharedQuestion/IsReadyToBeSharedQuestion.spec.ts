@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as IsReadyToBeSharedForm from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as IsReadyToBeSharedForm from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsReadyToBeSharedQuestion({

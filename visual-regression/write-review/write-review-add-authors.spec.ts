@@ -1,11 +1,11 @@
 import { Doi } from 'doi-ts'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.js'
-import { EmailAddress } from '../../src/types/EmailAddress.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form.js'
-import { expect, test } from '../base.js'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form.ts'
+import { expect, test } from '../base.ts'
 
 const preprint = {
   id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),

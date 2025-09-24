@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
-import { rawHtml } from '../src/html.js'
-import * as _ from '../src/jats.js'
+import { rawHtml } from '../src/html.ts'
+import * as _ from '../src/jats.ts'
 
 describe('transformJatsToHtml', () => {
   test.each([

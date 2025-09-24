@@ -12,16 +12,16 @@ import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import type * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import { withEnv } from './Fpts.js'
-import * as StatusCodes from './StatusCodes.js'
-import * as Keyv from './keyv.js'
+import { withEnv } from './Fpts.ts'
+import * as StatusCodes from './StatusCodes.ts'
+import * as Keyv from './keyv.ts'
 import {
   createUserOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
   getUsersFromLegacyPrereview,
   type LegacyPrereviewApiEnv,
-} from './legacy-prereview.js'
-import type { SupportedLocale } from './locales/index.js'
+} from './legacy-prereview.ts'
+import type { SupportedLocale } from './locales/index.ts'
 import {
   authenticate,
   authenticateError,
@@ -29,12 +29,12 @@ import {
   logOut,
   type IsUserBlockedEnv,
   type OrcidOAuthEnv,
-} from './log-in/index.js'
-import type { TemplatePageEnv } from './page.js'
-import type { GetPreprintIdEnv } from './preprint.js'
-import type { PublicUrlEnv } from './public-url.js'
-import { handleResponse } from './response.js'
-import { reviewsData } from './reviews-data/index.js'
+} from './log-in/index.ts'
+import type { TemplatePageEnv } from './page.ts'
+import type { GetPreprintIdEnv } from './preprint.ts'
+import type { PublicUrlEnv } from './public-url.ts'
+import { handleResponse } from './response.ts'
+import { reviewsData } from './reviews-data/index.ts'
 import {
   logInMatch,
   logOutMatch,
@@ -43,13 +43,13 @@ import {
   reviewsDataMatch,
   scietyListMatch,
   usersDataMatch,
-} from './routes.js'
-import { scietyList, type ScietyListEnv } from './sciety-list/index.js'
-import type { OrcidId } from './types/OrcidId.js'
-import type { GetUserOnboardingEnv } from './user-onboarding.js'
-import type { User } from './user.js'
-import { usersData } from './users-data/index.js'
-import { getPrereviewsForSciety } from './zenodo.js'
+} from './routes.ts'
+import { scietyList, type ScietyListEnv } from './sciety-list/index.ts'
+import type { OrcidId } from './types/OrcidId.ts'
+import type { GetUserOnboardingEnv } from './user-onboarding.ts'
+import type { User } from './user.ts'
+import { usersData } from './users-data/index.ts'
+import { getPrereviewsForSciety } from './zenodo.ts'
 
 export type RouterEnv = GetPreprintIdEnv &
   GetUserOnboardingEnv &

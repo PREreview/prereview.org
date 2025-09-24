@@ -1,8 +1,8 @@
-import * as StatusCodes from '../StatusCodes.js'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import type * as Response from '../response.js'
-import { PageResponse } from '../response.js'
+import * as StatusCodes from '../StatusCodes.ts'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import type * as Response from '../response.ts'
+import { PageResponse } from '../response.ts'
 
 export interface UnableToLoadPrereviews {
   readonly _tag: 'UnableToLoadPrereviews'

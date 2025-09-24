@@ -2,7 +2,7 @@ import * as Doi from 'doi-ts'
 import { flow, Option, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { getInput } from '../form.js'
+import { getInput } from '../form.ts'
 
 export interface ValidForm {
   _tag: 'ValidForm'

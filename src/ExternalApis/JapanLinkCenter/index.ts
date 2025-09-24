@@ -1,8 +1,8 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetRecord } from './Record.js'
+import { GetRecord } from './Record.ts'
 
-export { Record } from './Record.js'
+export { Record } from './Record.ts'
 
 export class JapanLinkCenter extends Context.Tag('JapanLinkCenter')<
   JapanLinkCenter,

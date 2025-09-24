@@ -1,7 +1,7 @@
-import { html, plainText, rawHtml } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import * as StatusCodes from '../StatusCodes.js'
+import { html, plainText, rawHtml } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export const createNoPermissionPage = (locale: SupportedLocale): PageResponse =>
   PageResponse({

@@ -1,7 +1,7 @@
 import type { Array } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type * as Preprints from './Preprints/index.js'
+import type * as Preprints from './Preprints/index.ts'
 
 /** @deprecated */
 export interface ResolvePreprintIdEnv {

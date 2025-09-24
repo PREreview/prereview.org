@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType } from 'hyper-ts'
-import type { TemplatePageEnv } from '../src/page.js'
-import * as _ from '../src/response.js'
-import type { GetUserOnboardingEnv } from '../src/user-onboarding.js'
-import * as fc from './fc.js'
-import { runMiddleware } from './middleware.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
+import type { TemplatePageEnv } from '../src/page.ts'
+import * as _ from '../src/response.ts'
+import type { GetUserOnboardingEnv } from '../src/user-onboarding.ts'
+import * as fc from './fc.ts'
+import { runMiddleware } from './middleware.ts'
+import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('handleResponse', () => {
   describe('with a PageResponse', () => {

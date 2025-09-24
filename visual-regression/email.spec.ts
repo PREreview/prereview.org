@@ -1,20 +1,20 @@
 import { Doi } from 'doi-ts'
 import { Uuid } from 'uuid-ts'
-import { UnverifiedContactEmailAddress } from '../src/contact-email-address.js'
+import { UnverifiedContactEmailAddress } from '../src/contact-email-address.ts'
 import {
   createAuthorInviteEmail,
   createContactEmailAddressVerificationEmail,
   createContactEmailAddressVerificationEmailForComment,
   createContactEmailAddressVerificationEmailForInvitedAuthor,
-} from '../src/email.js'
-import { html } from '../src/html.js'
-import { DefaultLocale } from '../src/locales/index.js'
-import { BiorxivPreprintId } from '../src/Preprints/index.js'
-import { EmailAddress } from '../src/types/EmailAddress.js'
-import { NonEmptyString } from '../src/types/NonEmptyString.js'
-import { OrcidId } from '../src/types/OrcidId.js'
-import { Pseudonym } from '../src/types/Pseudonym.js'
-import { expect, test } from './base.js'
+} from '../src/email.ts'
+import { html } from '../src/html.ts'
+import { DefaultLocale } from '../src/locales/index.ts'
+import { BiorxivPreprintId } from '../src/Preprints/index.ts'
+import { EmailAddress } from '../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { expect, test } from './base.ts'
 
 test('email-verification HTML looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({

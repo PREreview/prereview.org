@@ -1,12 +1,12 @@
 import { HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
-import { Locale } from '../Context.js'
-import { OrcidOauth } from '../OrcidOauth.js'
-import { PublicUrl } from '../public-url.js'
-import * as Routes from '../routes.js'
-import * as StatusCodes from '../StatusCodes.js'
-import { OrcidLocale } from '../types/index.js'
+import { Locale } from '../Context.ts'
+import { OrcidOauth } from '../OrcidOauth.ts'
+import { PublicUrl } from '../public-url.ts'
+import * as Routes from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
+import { OrcidLocale } from '../types/index.ts'
 
 export const forceLogIn = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl

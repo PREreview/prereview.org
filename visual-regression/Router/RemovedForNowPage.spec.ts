@@ -1,6 +1,6 @@
-import { DefaultLocale } from '../../src/locales/index.js'
-import { removedForNowPage } from '../../src/Router/RemovedForNowPage.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { removedForNowPage } from '../../src/Router/RemovedForNowPage.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(removedForNowPage(DefaultLocale))

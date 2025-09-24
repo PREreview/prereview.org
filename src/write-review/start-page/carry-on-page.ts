@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { PageResponse } from '../../response.js'
-import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes.js'
-import { nextFormMatch, type Form } from '../form.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { PageResponse } from '../../response.ts'
+import { preprintReviewsMatch, writeReviewStartMatch } from '../../routes.ts'
+import { nextFormMatch, type Form } from '../form.ts'
 
 const cite = (lang: PreprintTitle['language']) => (text: string) =>
   `<cite lang="${lang}" dir="${rtlDetect.getLangDir(lang)}">${text}</cite>`

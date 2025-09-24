@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { OrcidId } from '../src/types/OrcidId.js'
-import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base.js'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base.ts'
 
 test('can find and view a profile', async ({ fetch, page }) => {
   fetch

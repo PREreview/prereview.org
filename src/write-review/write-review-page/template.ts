@@ -1,4 +1,4 @@
-import { translate, type SupportedLocale } from '../../locales/index.js'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
 
 export const template = (locale: SupportedLocale) =>
   `

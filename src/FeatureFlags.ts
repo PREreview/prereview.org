@@ -1,5 +1,5 @@
 import { Config, Context, Data, Effect, Layer, Struct } from 'effect'
-import type { User } from './user.js'
+import type { User } from './user.ts'
 
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,

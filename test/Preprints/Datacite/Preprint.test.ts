@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
-import { Datacite } from '../../../src/ExternalApis/index.js'
-import * as _ from '../../../src/Preprints/Datacite/Preprint.js'
-import { Doi } from '../../../src/types/Doi.js'
-import * as fc from '../../fc.js'
+import { Datacite } from '../../../src/ExternalApis/index.ts'
+import * as _ from '../../../src/Preprints/Datacite/Preprint.ts'
+import { Doi } from '../../../src/types/Doi.ts'
+import * as fc from '../../fc.ts'
 
 describe('recordToPreprint', () => {
   test.prop([fc.option(fc.lorem(), { nil: undefined }), fc.option(fc.lorem(), { nil: undefined })], {

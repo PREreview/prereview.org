@@ -1,4 +1,4 @@
-import { expect, test } from './base.js'
+import { expect, test } from './base.ts'
 
 test('when the page does not exist', async ({ page }) => {
   await page.goto('/this-should-not-find-anything', { waitUntil: 'commit' })

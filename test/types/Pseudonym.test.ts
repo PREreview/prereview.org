@@ -3,8 +3,8 @@ import { describe, expect } from '@jest/globals'
 import { Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as _ from '../../src/types/Pseudonym.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/types/Pseudonym.ts'
+import * as fc from '../fc.ts'
 
 describe('PseudonymC', () => {
   describe('decode', () => {

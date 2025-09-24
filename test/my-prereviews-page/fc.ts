@@ -1,7 +1,7 @@
-import type { Prereview } from '../../src/my-prereviews-page/prereviews.js'
-import * as fc from '../fc.js'
+import type { Prereview } from '../../src/my-prereviews-page/prereviews.ts'
+import * as fc from '../fc.ts'
 
-export * from '../fc.js'
+export * from '../fc.ts'
 
 export const localPrereview = (): fc.Arbitrary<Prereview> =>
   fc.record(

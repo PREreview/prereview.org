@@ -1,10 +1,10 @@
-import { UnverifiedContactEmailAddress } from '../../../src/contact-email-address.js'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.js'
-import { Doi, EmailAddress, Uuid } from '../../../src/types/index.js'
-import { needToVerifyEmailAddressMessage } from '../../../src/write-review/need-to-verify-email-address/need-to-verify-email-address-message.js'
-import { expect, test } from '../../base.js'
+import { UnverifiedContactEmailAddress } from '../../../src/contact-email-address.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { Doi, EmailAddress, Uuid } from '../../../src/types/index.ts'
+import { needToVerifyEmailAddressMessage } from '../../../src/write-review/need-to-verify-email-address/need-to-verify-email-address-message.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = needToVerifyEmailAddressMessage({ contactEmailAddress, locale, preprint })

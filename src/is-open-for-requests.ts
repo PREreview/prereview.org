@@ -5,7 +5,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import { match } from 'ts-pattern'
-import type { OrcidId } from './types/OrcidId.js'
+import type { OrcidId } from './types/OrcidId.ts'
 
 export type IsOpenForRequests =
   | {

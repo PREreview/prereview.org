@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Tuple } from 'effect'
-import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/CreateRequest.js'
-import * as fc from '../../../fc.js'
+import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/CreateRequest.ts'
+import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
   test.prop(

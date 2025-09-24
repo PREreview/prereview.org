@@ -1,6 +1,6 @@
-import { createChooseLocalePage } from '../../src/ChooseLocalePage/ChooseLocalePage.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { expect, test } from '../base.js'
+import { createChooseLocalePage } from '../../src/ChooseLocalePage/ChooseLocalePage.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(createChooseLocalePage({ locale: DefaultLocale }))

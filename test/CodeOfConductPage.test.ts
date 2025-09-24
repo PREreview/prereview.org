@@ -1,13 +1,13 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect } from 'effect'
-import * as _ from '../src/CodeOfConductPage.js'
-import { Locale } from '../src/Context.js'
-import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.js'
-import * as Routes from '../src/routes.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import * as EffectTest from './EffectTest.js'
-import * as fc from './fc.js'
+import * as _ from '../src/CodeOfConductPage.ts'
+import { Locale } from '../src/Context.ts'
+import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.ts'
+import * as Routes from '../src/routes.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import * as EffectTest from './EffectTest.ts'
+import * as fc from './fc.ts'
 
 describe('CodeOfConductPage', () => {
   test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>

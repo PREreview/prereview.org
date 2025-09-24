@@ -5,9 +5,9 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema, Struct } from 'effect'
-import { Datacite } from '../../../src/ExternalApis/index.js'
-import { rawHtml } from '../../../src/html.js'
-import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.js'
+import { Datacite } from '../../../src/ExternalApis/index.ts'
+import { rawHtml } from '../../../src/html.ts'
+import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.ts'
 import {
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
@@ -15,9 +15,9 @@ import {
   OsfPreprintId,
   Preprint,
   ZenodoPreprintId,
-} from '../../../src/Preprints/index.js'
-import { OrcidId } from '../../../src/types/OrcidId.js'
-import * as EffectTest from '../../EffectTest.js'
+} from '../../../src/Preprints/index.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import * as EffectTest from '../../EffectTest.ts'
 
 test.each([
   {

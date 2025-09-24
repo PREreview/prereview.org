@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
-import type { CareerStage } from '../career-stage.js'
-import { html, plainText } from '../html.js'
-import { translate, type SupportedLocale } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.js'
+import type { CareerStage } from '../career-stage.ts'
+import { html, plainText } from '../html.ts'
+import { translate, type SupportedLocale } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({ careerStage, locale }: { careerStage: CareerStage; locale: SupportedLocale }) =>
   PageResponse({

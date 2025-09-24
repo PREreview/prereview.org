@@ -1,7 +1,7 @@
 import { Array, Either, Option } from 'effect'
-import type { Doi } from '../../types/index.js'
-import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import type { Doi } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
+import type * as Events from '../Events.ts'
 
 export const GetPublishedDoi = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,

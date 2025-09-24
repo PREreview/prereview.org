@@ -5,21 +5,21 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
-import { createAuthorInvite, type OpenAuthorInvite } from '../../author-invite.js'
-import * as EffectToFpts from '../../EffectToFpts.js'
-import { createAuthorInviteEmail, sendContactEmailAddressVerificationEmailForReview, sendEmail } from '../../email.js'
-import { withEnv } from '../../Fpts.js'
-import * as Keyv from '../../keyv.js'
-import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../legacy-prereview.js'
-import { sendEmailWithNodemailer } from '../../nodemailer.js'
-import * as OpenAlex from '../../OpenAlex/index.js'
-import type { PreprintId } from '../../Preprints/index.js'
-import * as Preprints from '../../Preprints/index.js'
-import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.js'
-import * as ReviewRequests from '../../ReviewRequests/index.js'
-import * as Routes from '../../routes.js'
-import { Uuid } from '../../types/index.js'
-import { generateUuidIO } from '../../types/uuid.js'
+import { createAuthorInvite, type OpenAuthorInvite } from '../../author-invite.ts'
+import * as EffectToFpts from '../../EffectToFpts.ts'
+import { createAuthorInviteEmail, sendContactEmailAddressVerificationEmailForReview, sendEmail } from '../../email.ts'
+import { withEnv } from '../../Fpts.ts'
+import * as Keyv from '../../keyv.ts'
+import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../legacy-prereview.ts'
+import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import * as OpenAlex from '../../OpenAlex/index.ts'
+import type { PreprintId } from '../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
+import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.ts'
+import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as Routes from '../../routes.ts'
+import { Uuid } from '../../types/index.ts'
+import { generateUuidIO } from '../../types/uuid.ts'
 import {
   type NewPrereview,
   writeReview,
@@ -50,11 +50,11 @@ import {
   writeReviewUseOfAi,
   writeReviewUseOfAiSubmission,
   writeReviewVerifyEmailAddress,
-} from '../../write-review/index.js'
-import { createRecordOnZenodo } from '../../zenodo.js'
-import * as Zenodo from '../../Zenodo/index.js'
-import type * as Response from '../Response.js'
-import type { Env } from './index.js'
+} from '../../write-review/index.ts'
+import { createRecordOnZenodo } from '../../zenodo.ts'
+import * as Zenodo from '../../Zenodo/index.ts'
+import type * as Response from '../Response.ts'
+import type { Env } from './index.ts'
 
 export const WriteReviewRouter = pipe(
   [

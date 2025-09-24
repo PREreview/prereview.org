@@ -1,12 +1,12 @@
 import { Array, flow, Option, pipe, Struct } from 'effect'
 import rtlDetect from 'rtl-detect'
-import type * as Datasets from '../../Datasets/index.js'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.js'
-import { DefaultLocale } from '../../locales/index.js'
-import { PageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import { renderDate } from '../../time.js'
-import type { User } from '../../user.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
+import { DefaultLocale } from '../../locales/index.ts'
+import { PageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { renderDate } from '../../time.ts'
+import type { User } from '../../user.ts'
 
 export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dataset; user: Option.Option<User> }) => {
   return PageResponse({

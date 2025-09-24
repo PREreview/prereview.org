@@ -1,10 +1,10 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import type { ReviewRequestPreprintId } from '../../review-request.js'
-import { requestReviewPublishedMatch, reviewRequestsMatch } from '../../routes.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import type { ReviewRequestPreprintId } from '../../review-request.ts'
+import { requestReviewPublishedMatch, reviewRequestsMatch } from '../../routes.ts'
 
 const listOfRequestsLink = (text: string) => `<a href="${format(reviewRequestsMatch.formatter, {})}">${text}</a>`
 const communitySlackLink = (text: string) => `<a href="https://bit.ly/PREreview-Slack">${text}</a>`

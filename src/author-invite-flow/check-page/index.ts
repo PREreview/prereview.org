@@ -12,22 +12,22 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite.js'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.js'
-import type { Html } from '../../html.js'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
+} from '../../author-invite.ts'
+import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.ts'
+import type { Html } from '../../html.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
-} from '../../routes.js'
-import type { User } from '../../user.js'
-import { checkPage } from './check-page.js'
-import { failureMessage } from './failure-message.js'
+} from '../../routes.ts'
+import type { User } from '../../user.ts'
+import { checkPage } from './check-page.ts'
+import { failureMessage } from './failure-message.ts'
 
 export interface Prereview {
   preprint: {

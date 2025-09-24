@@ -1,8 +1,8 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option, pipe } from 'effect'
-import * as _ from '../../src/Zenodo/TransformRecordToCommentWithoutText.js'
-import * as fc from '../fc.js'
+import * as _ from '../../src/Zenodo/TransformRecordToCommentWithoutText.ts'
+import * as fc from '../fc.ts'
 
 describe('pickOutTextUrl', () => {
   describe('given there is a url to the comment text', () => {

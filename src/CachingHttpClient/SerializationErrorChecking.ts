@@ -1,7 +1,7 @@
 import { Headers, type HttpClientRequest, type HttpClientResponse, Url, UrlParams } from '@effect/platform'
 import { diff } from 'deep-object-diff'
 import { type DateTime, Effect, pipe } from 'effect'
-import type * as HttpCache from './HttpCache.js'
+import type * as HttpCache from './HttpCache.ts'
 
 const headerToIgnoreWhenDiffing = [
   'Date',

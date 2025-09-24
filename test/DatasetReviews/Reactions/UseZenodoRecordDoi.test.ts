@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
-import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
-import * as _ from '../../../src/DatasetReviews/Reactions/UseZenodoRecordDoi.js'
-import * as Zenodo from '../../../src/Zenodo/index.js'
-import * as EffectTest from '../../EffectTest.js'
-import * as fc from '../../fc.js'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as _ from '../../../src/DatasetReviews/Reactions/UseZenodoRecordDoi.ts'
+import * as Zenodo from '../../../src/Zenodo/index.ts'
+import * as EffectTest from '../../EffectTest.ts'
+import * as fc from '../../fc.ts'
 
 describe('UseZenodoRecordDoi', () => {
   test.prop([fc.uuid(), fc.integer(), fc.doi()])(

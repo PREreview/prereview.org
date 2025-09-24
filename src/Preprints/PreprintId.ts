@@ -3,8 +3,8 @@ import { type Doi, Eq as eqDoi, hasRegistrant, isDoi, parse } from 'doi-ts'
 import { Array, Data, Either, type Equivalence, Option, ParseResult, Predicate, Schema, flow, pipe } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import * as FptsToEffect from '../FptsToEffect.js'
-import { DoiSchema, RegistrantDoiSchema } from '../types/Doi.js'
+import * as FptsToEffect from '../FptsToEffect.ts'
+import { DoiSchema, RegistrantDoiSchema } from '../types/Doi.ts'
 
 export type PreprintId = typeof PreprintId.Type
 

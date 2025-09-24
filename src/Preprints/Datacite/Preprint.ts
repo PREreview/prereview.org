@@ -2,19 +2,19 @@ import { Url } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../../detect-language.js'
-import type { Datacite } from '../../ExternalApis/index.js'
-import { type Html, sanitizeHtml } from '../../html.js'
-import { OrcidId } from '../../types/index.js'
-import * as Preprint from '../Preprint.js'
+import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
+import type { Datacite } from '../../ExternalApis/index.ts'
+import { type Html, sanitizeHtml } from '../../html.ts'
+import { OrcidId } from '../../types/index.ts'
+import * as Preprint from '../Preprint.ts'
 import {
   AfricarxivZenodoPreprintId,
   fromPreprintDoi,
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../PreprintId.js'
-import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.js'
+} from '../PreprintId.ts'
+import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
 export const recordToPreprint = (
   record: Datacite.Record,

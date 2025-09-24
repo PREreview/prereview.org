@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as Personas from '../../../src/Personas/index.js'
-import * as ChooseYourPersonaForm from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.js'
-import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.js'
-import { expect, test } from '../../base.js'
+import * as Personas from '../../../src/Personas/index.ts'
+import * as ChooseYourPersonaForm from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
+import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.ChooseYourPersonaPage({

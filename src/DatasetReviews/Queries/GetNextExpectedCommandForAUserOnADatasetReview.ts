@@ -1,5 +1,5 @@
 import { Array, Option } from 'effect'
-import type * as Events from '../Events.js'
+import type * as Events from '../Events.ts'
 
 export type NextExpectedCommand =
   | 'RateTheQuality'

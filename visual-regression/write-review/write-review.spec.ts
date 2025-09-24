@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import type { User } from '../../src/user.js'
-import { startPage } from '../../src/write-review/write-a-prereview-page/write-a-prereview-page.js'
-import { expect, test } from '../base.js'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import type { User } from '../../src/user.ts'
+import { startPage } from '../../src/write-review/write-a-prereview-page/write-a-prereview-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = startPage(preprint, DefaultLocale)

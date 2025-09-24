@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
-import { Locale } from '../Context.js'
-import type { PageResponse } from '../response.js'
-import { createNoPermissionPage } from './NoPermissionPage.js'
+import { Locale } from '../Context.ts'
+import type { PageResponse } from '../response.ts'
+import { createNoPermissionPage } from './NoPermissionPage.ts'
 
 export const NoPermissionPage: Effect.Effect<PageResponse, never, Locale> = Effect.andThen(
   Locale,

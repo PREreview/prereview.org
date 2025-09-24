@@ -10,21 +10,21 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import * as FptsToEffect from '../FptsToEffect.js'
-import { havingProblemsPage, pageNotFound } from '../http-error.js'
-import type { SupportedLocale } from '../locales/index.js'
+import * as FptsToEffect from '../FptsToEffect.ts'
+import { havingProblemsPage, pageNotFound } from '../http-error.ts'
+import type { SupportedLocale } from '../locales/index.ts'
 import {
   ArxivPreprintId,
   type IndeterminatePreprintId,
   PhilsciPreprintId,
   PreprintDoiD,
   fromPreprintDoi,
-} from '../Preprints/index.js'
-import { type PageResponse, RedirectResponse } from '../response.js'
-import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.js'
-import * as StatusCodes from '../StatusCodes.js'
-import type { ProfileId } from '../types/profile-id.js'
-import { UuidC } from '../types/uuid.js'
+} from '../Preprints/index.ts'
+import { type PageResponse, RedirectResponse } from '../response.ts'
+import { preprintReviewsMatch, profileMatch, writeReviewReviewTypeMatch } from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
+import type { ProfileId } from '../types/profile-id.ts'
+import { UuidC } from '../types/uuid.ts'
 
 export type LegacyEnv = GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & { locale: SupportedLocale }
 

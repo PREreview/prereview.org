@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { rawHtml } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
-import { createPage } from '../../src/profile-page/create-page.js'
-import type { Prereviews } from '../../src/profile-page/prereviews.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { expect, test } from '../base.js'
+import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import { createPage } from '../../src/profile-page/create-page.ts'
+import type { Prereviews } from '../../src/profile-page/prereviews.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage(

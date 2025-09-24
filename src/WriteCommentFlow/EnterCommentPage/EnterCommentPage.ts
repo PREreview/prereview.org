@@ -1,14 +1,14 @@
 import { absurd, Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { type Html, html, plainText } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import { errorPrefix } from '../../shared-translation-elements.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type { Uuid } from '../../types/index.js'
-import type * as EnterCommentForm from './EnterCommentForm.js'
-import { Turndown } from './Turndown.js'
+import { type Html, html, plainText } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import { errorPrefix } from '../../shared-translation-elements.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { Uuid } from '../../types/index.ts'
+import type * as EnterCommentForm from './EnterCommentForm.ts'
+import { Turndown } from './Turndown.ts'
 
 export const EnterCommentPage = ({
   commentId,

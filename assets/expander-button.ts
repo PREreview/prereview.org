@@ -1,4 +1,4 @@
-import { getFocusableElements, nextFocusableElement } from './dom.js'
+import { getFocusableElements, nextFocusableElement } from './dom.ts'
 
 export class ExpanderButton extends HTMLElement {
   static element = 'expander-button' as const

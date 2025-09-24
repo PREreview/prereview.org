@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as HasEnoughMetadataForm from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as HasEnoughMetadataForm from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasEnoughMetadataQuestion({

@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.js'
-import * as Datasets from '../../src/Datasets/index.js'
-import { html } from '../../src/html.js'
-import * as Personas from '../../src/Personas/index.js'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.js'
-import { expect, test } from '../base.js'
+import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.ts'
+import * as Datasets from '../../src/Datasets/index.ts'
+import { html } from '../../src/html.ts'
+import * as Personas from '../../src/Personas/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.createDatasetReviewPage({

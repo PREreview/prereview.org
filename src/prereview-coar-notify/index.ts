@@ -19,24 +19,24 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import * as Preprints from '../Preprints/index.js'
-import { type PreprintId, PreprintIdEquivalence } from '../Preprints/index.js'
-import { type PublicUrlEnv, toUrl } from '../public-url.js'
-import type { ReviewRequestPreprintId } from '../review-request.js'
+import * as Preprints from '../Preprints/index.ts'
+import { type PreprintId, PreprintIdEquivalence } from '../Preprints/index.ts'
+import { type PublicUrlEnv, toUrl } from '../public-url.ts'
+import type { ReviewRequestPreprintId } from '../review-request.ts'
 import {
   type ReviewRequests,
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
-} from '../review-requests-page/index.js'
-import { reviewMatch } from '../routes.js'
-import type { FieldId } from '../types/field.js'
-import { Uuid } from '../types/index.js'
-import type { User } from '../user.js'
-import type { NewPrereview } from '../write-review/index.js'
-import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.js'
-import { getPageOfReviewRequests } from './GetPageOfReviewRequests.js'
-import { postNewPrereview } from './new-prereview.js'
-import { sendReviewActionOffer } from './SendReviewActionOffer.js'
+} from '../review-requests-page/index.ts'
+import { reviewMatch } from '../routes.ts'
+import type { FieldId } from '../types/field.ts'
+import { Uuid } from '../types/index.ts'
+import type { User } from '../user.ts'
+import type { NewPrereview } from '../write-review/index.ts'
+import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.ts'
+import { getPageOfReviewRequests } from './GetPageOfReviewRequests.ts'
+import { postNewPrereview } from './new-prereview.ts'
+import { sendReviewActionOffer } from './SendReviewActionOffer.ts'
 
 export interface PrereviewCoarNotifyEnv {
   readonly coarNotifyToken: string

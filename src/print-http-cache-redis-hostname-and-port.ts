@@ -1,5 +1,5 @@
 import { Console, Effect, Exit, pipe } from 'effect'
-import { httpCacheRedisUri } from './Redis.js'
+import { httpCacheRedisUri } from './Redis.ts'
 
 const program = pipe(
   httpCacheRedisUri,

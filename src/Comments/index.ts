@@ -1,7 +1,7 @@
 import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
-import * as Events from '../Events.js'
-import * as EventStore from '../EventStore.js'
-import * as ReviewPage from '../review-page/index.js'
+import * as Events from '../Events.ts'
+import * as EventStore from '../EventStore.ts'
+import * as ReviewPage from '../review-page/index.ts'
 import {
   UnableToHandleCommand,
   UnableToQuery,
@@ -12,22 +12,22 @@ import {
   type GetNextExpectedCommandForUserOnAComment,
   type HandleCommentCommand,
   type PublishCommentOnZenodo,
-} from './Context.js'
-import { DecideComment } from './Decide.js'
-import { CommentEventTypes, type CommentEvent } from './Events.js'
-import { EvolveComment } from './Evolve.js'
-import * as Queries from './Queries.js'
-import * as React from './React.js'
-import { CommentNotStarted, type CommentState } from './State.js'
+} from './Context.ts'
+import { DecideComment } from './Decide.ts'
+import { CommentEventTypes, type CommentEvent } from './Events.ts'
+import { EvolveComment } from './Evolve.ts'
+import * as Queries from './Queries.ts'
+import * as React from './React.ts'
+import { CommentNotStarted, type CommentState } from './State.ts'
 
-export * from './Commands.js'
-export * from './Context.js'
-export * from './Decide.js'
-export * from './Errors.js'
-export * from './Events.js'
-export * from './Evolve.js'
-export * from './ExpectedCommand.js'
-export * from './State.js'
+export * from './Commands.ts'
+export * from './Context.ts'
+export * from './Decide.ts'
+export * from './Errors.ts'
+export * from './Events.ts'
+export * from './Evolve.ts'
+export * from './ExpectedCommand.ts'
+export * from './State.ts'
 
 export const makeHandleCommentCommand: Effect.Effect<
   typeof HandleCommentCommand.Service,

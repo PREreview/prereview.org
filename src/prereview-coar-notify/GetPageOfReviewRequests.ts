@@ -1,9 +1,9 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, pipe, Schema } from 'effect'
-import * as Preprints from '../Preprints/index.js'
-import { ReviewRequestsAreUnavailable } from '../review-requests-page/index.js'
-import * as StatusCodes from '../StatusCodes.js'
-import { Field, Iso639, Subfield, Temporal } from '../types/index.js'
+import * as Preprints from '../Preprints/index.ts'
+import { ReviewRequestsAreUnavailable } from '../review-requests-page/index.ts'
+import * as StatusCodes from '../StatusCodes.ts'
+import { Field, Iso639, Subfield, Temporal } from '../types/index.ts'
 
 export const ReviewRequestsSchema = Schema.Array(
   Schema.Struct({

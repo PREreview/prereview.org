@@ -1,8 +1,8 @@
 import { Array, Either, Equal, Option, Struct } from 'effect'
-import type { EventFilter } from '../../Events.js'
-import * as Events from '../../Events.js'
-import type { OrcidId, Uuid } from '../../types/index.js'
-import * as Errors from '../Errors.js'
+import type { EventFilter } from '../../Events.ts'
+import * as Events from '../../Events.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
 
 export interface Input {
   datasetReviewId: Uuid.Uuid

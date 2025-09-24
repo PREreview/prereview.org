@@ -1,8 +1,8 @@
 import { Effect } from 'effect'
-import type { Uuid } from '../../types/index.js'
-import * as Zenodo from '../../Zenodo/index.js'
-import * as Commands from '../Commands/index.js'
-import * as Errors from '../Errors.js'
+import type { Uuid } from '../../types/index.ts'
+import * as Zenodo from '../../Zenodo/index.ts'
+import * as Commands from '../Commands/index.ts'
+import * as Errors from '../Errors.ts'
 
 export const UseZenodoRecordDoi = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid, recordId: number) {

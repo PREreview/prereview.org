@@ -1,9 +1,9 @@
 import { Option } from 'effect'
-import * as IsMissingAnythingForm from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.js'
-import { NonEmptyString, Uuid } from '../../../src/types/index.js'
+import * as IsMissingAnythingForm from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsMissingAnythingQuestion({

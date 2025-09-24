@@ -3,8 +3,8 @@ import { describe, expect } from '@jest/globals'
 import { Option, pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as _ from '../src/user.js'
-import * as fc from './fc.js'
+import * as _ from '../src/user.ts'
+import * as fc from './fc.ts'
 
 describe('UserC', () => {
   test.prop([fc.user()])('when the user can be decoded', user => {

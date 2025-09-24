@@ -1,11 +1,11 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
 import { Context, DateTime, Effect, flow, Function, Layer, pipe, Queue, type Duration } from 'effect'
-import * as StatusCodes from '../StatusCodes.js'
-import * as HttpCache from './HttpCache.js'
+import * as StatusCodes from '../StatusCodes.ts'
+import * as HttpCache from './HttpCache.ts'
 
-export * from './HttpCache.js'
-export { layerInMemory } from './InMemory.js'
-export { layerPersistedToRedis } from './PersistedToRedis.js'
+export * from './HttpCache.ts'
+export { layerInMemory } from './InMemory.ts'
+export { layerPersistedToRedis } from './PersistedToRedis.ts'
 
 export const CacheTimeout = '200 millis'
 

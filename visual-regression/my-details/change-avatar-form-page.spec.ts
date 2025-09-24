@@ -1,8 +1,8 @@
 import * as E from 'fp-ts/lib/Either.js'
-import { missingE, tooBigE, wrongTypeE } from '../../src/form.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createPage } from '../../src/my-details-page/change-avatar-form-page.js'
-import { expect, test } from '../base.js'
+import { missingE, tooBigE, wrongTypeE } from '../../src/form.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createPage } from '../../src/my-details-page/change-avatar-form-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage({ form: { avatar: E.right(undefined) }, locale: DefaultLocale })

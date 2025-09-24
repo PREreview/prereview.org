@@ -3,21 +3,21 @@ import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.js'
-import type { IndeterminatePreprintId } from '../../Preprints/index.js'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../../response.js'
+import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
+import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../../response.ts'
 import {
   type GetReviewRequestEnv,
   type SaveReviewRequestEnv,
   isReviewRequestPreprintId,
   maybeGetReviewRequest,
   saveReviewRequest,
-} from '../../review-request.js'
-import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes.js'
-import type { User } from '../../user.js'
-import { carryOnPage } from './carry-on-page.js'
+} from '../../review-request.ts'
+import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes.ts'
+import type { User } from '../../user.ts'
+import { carryOnPage } from './carry-on-page.ts'
 
 export const requestReviewStart = ({
   preprint,

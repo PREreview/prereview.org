@@ -2,8 +2,8 @@ import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Duration, Effect, Exit, Fiber, pipe, TestClock } from 'effect'
-import * as _ from '../src/RequestCollapsingHttpClient.js'
-import * as EffectTest from './EffectTest.js'
+import * as _ from '../src/RequestCollapsingHttpClient.ts'
+import * as EffectTest from './EffectTest.ts'
 
 describe('requestCollapsingHttpClient', () => {
   test('when the requests are sent in parallel', () =>

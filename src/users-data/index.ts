@@ -6,10 +6,10 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as E from 'io-ts/lib/Encoder.js'
 import safeStableStringify from 'safe-stable-stringify'
-import type { CareerStage } from '../career-stage.js'
-import type { Location } from '../location.js'
-import type { ScietyListEnv } from '../sciety-list/index.js'
-import type { OrcidId } from '../types/OrcidId.js'
+import type { CareerStage } from '../career-stage.ts'
+import type { Location } from '../location.ts'
+import type { ScietyListEnv } from '../sciety-list/index.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
 
 export interface User {
   orcid: OrcidId

@@ -4,12 +4,12 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import * as _ from '../../src/connect-orcid/oauth-code.js'
-import type { EditOrcidTokenEnv } from '../../src/orcid-token.js'
-import { connectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as _ from '../../src/connect-orcid/oauth-code.ts'
+import type { EditOrcidTokenEnv } from '../../src/orcid-token.ts'
+import { connectOrcidMatch, myDetailsMatch } from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('connectOrcidCode', () => {
   describe('when the access token can be decoded', () => {

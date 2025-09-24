@@ -1,10 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
-import * as DatasetReviews from '../../../src/DatasetReviews/index.js'
-import * as _ from '../../../src/DatasetReviews/Reactions/MarkDatasetReviewAsPublished.js'
-import * as EffectTest from '../../EffectTest.js'
-import * as fc from '../../fc.js'
+import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as _ from '../../../src/DatasetReviews/Reactions/MarkDatasetReviewAsPublished.ts'
+import * as EffectTest from '../../EffectTest.ts'
+import * as fc from '../../fc.ts'
 
 describe('MarkDatasetReviewAsPublished', () => {
   test.prop([fc.uuid()])('when the command can be completed', datasetReviewId =>

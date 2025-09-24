@@ -2,19 +2,19 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { PreprintIsUnavailable } from '../../src/Preprints/index.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import type { GetPreprintTitleEnv } from '../../src/preprint.js'
-import * as _ from '../../src/request-review-flow/persona-page/index.js'
-import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.js'
+import { PreprintIsUnavailable } from '../../src/Preprints/index.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import type { GetPreprintTitleEnv } from '../../src/preprint.ts'
+import * as _ from '../../src/request-review-flow/persona-page/index.ts'
+import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.ts'
 import {
   requestReviewCheckMatch,
   requestReviewMatch,
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
-} from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+} from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('requestReviewPersona', () => {
   describe('when the user is logged in', () => {

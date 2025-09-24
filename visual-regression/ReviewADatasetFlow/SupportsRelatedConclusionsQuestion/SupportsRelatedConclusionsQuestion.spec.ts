@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as SupportsRelatedConclusionsForm from '../../../src/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as SupportsRelatedConclusionsForm from '../../../src/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/SupportsRelatedConclusionsQuestion/SupportsRelatedConclusionsQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.SupportsRelatedConclusionsQuestion({

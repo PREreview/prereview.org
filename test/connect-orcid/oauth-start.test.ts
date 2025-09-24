@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/connect-orcid/oauth-start.js'
-import { connectOrcidMatch } from '../../src/routes.js'
-import { OrcidLocale } from '../../src/types/index.js'
-import * as fc from '../fc.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/connect-orcid/oauth-start.ts'
+import { connectOrcidMatch } from '../../src/routes.ts'
+import { OrcidLocale } from '../../src/types/index.ts'
+import * as fc from '../fc.ts'
 
 describe('connectOrcidStart', () => {
   test.prop([fc.oauth(), fc.origin(), fc.user(), fc.supportedLocale()])(

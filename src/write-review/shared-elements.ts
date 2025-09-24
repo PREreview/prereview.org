@@ -1,6 +1,6 @@
 import { String } from 'effect'
-import { type Html, html } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
+import { type Html, html } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
 
 export const prereviewOfSuffix = (locale: SupportedLocale, preprintTitle: Html): ((s: string) => string) =>
   String.concat(` – ${translate(locale)('write-review', 'prereviewOf')({ preprintTitle: preprintTitle.toString() })}`)

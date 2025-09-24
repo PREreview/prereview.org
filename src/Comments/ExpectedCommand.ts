@@ -1,5 +1,5 @@
 import { Data } from 'effect'
-import type { Uuid } from '../types/index.js'
+import type { Uuid } from '../types/index.ts'
 
 export class ExpectedToStartAComment extends Data.TaggedClass('ExpectedToStartAComment') {}
 

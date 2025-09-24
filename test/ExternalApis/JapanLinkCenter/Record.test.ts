@@ -4,9 +4,9 @@ import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
-import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.js'
-import * as EffectTest from '../../EffectTest.js'
-import * as fc from '../../fc.js'
+import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'
+import * as EffectTest from '../../EffectTest.ts'
+import * as fc from '../../fc.ts'
 
 describe('GetRecord', () => {
   test.prop(

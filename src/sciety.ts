@@ -12,7 +12,7 @@ import type {
   ResearchSquarePreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
-} from './Preprints/index.js'
+} from './Preprints/index.ts'
 
 export type PreprintIdSupportedBySciety =
   | AfricarxivOsfPreprintId

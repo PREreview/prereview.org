@@ -1,13 +1,13 @@
 import * as E from 'fp-ts/lib/Either.js'
-import { missingE } from '../../../src/form.js'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.js'
-import { Doi, OrcidId, Pseudonym } from '../../../src/types/index.js'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.js'
-import type { User } from '../../../src/user.js'
-import { personaForm } from '../../../src/write-review/persona/persona-form.js'
-import { expect, test } from '../../base.js'
+import { missingE } from '../../../src/form.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
+import { Doi, OrcidId, Pseudonym } from '../../../src/types/index.ts'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import type { User } from '../../../src/user.ts'
+import { personaForm } from '../../../src/write-review/persona/persona-form.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = personaForm(preprint, { persona: E.right(undefined) }, undefined, user, locale)

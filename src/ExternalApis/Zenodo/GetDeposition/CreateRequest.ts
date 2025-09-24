@@ -1,6 +1,6 @@
 import { HttpClientRequest } from '@effect/platform'
 import { Effect, pipe } from 'effect'
-import { ZenodoApi } from '../ZenodoApi.js'
+import { ZenodoApi } from '../ZenodoApi.ts'
 
 export const CreateRequest = Effect.fn(function* (recordId: number) {
   const api = yield* ZenodoApi

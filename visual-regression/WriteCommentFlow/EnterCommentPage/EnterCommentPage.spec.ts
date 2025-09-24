@@ -1,10 +1,10 @@
 import { Either } from 'effect'
-import { html } from '../../../src/html.js'
-import { DefaultLocale } from '../../../src/locales/index.js'
-import { Uuid } from '../../../src/types/index.js'
-import * as EnterCommentForm from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentForm.js'
-import * as _ from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentPage.js'
-import { expect, test } from '../../base.js'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { Uuid } from '../../../src/types/index.ts'
+import * as EnterCommentForm from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentForm.ts'
+import * as _ from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.EnterCommentPage({

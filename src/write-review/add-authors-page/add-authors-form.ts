@@ -1,20 +1,20 @@
 import { pipe, type Array } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { StreamlinePageResponse } from '../../response.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
 import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewChangeAuthorMatch,
   writeReviewRemoveAuthorMatch,
-} from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type { EmailAddress } from '../../types/EmailAddress.js'
-import type { NonEmptyString } from '../../types/NonEmptyString.js'
-import { backNav, prereviewOfSuffix } from '../shared-elements.js'
+} from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { EmailAddress } from '../../types/EmailAddress.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
 export function addAuthorsForm({
   authors,

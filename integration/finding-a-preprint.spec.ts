@@ -2,8 +2,8 @@ import { Doi } from 'doi-ts'
 import { Duration } from 'effect'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
-import { OrcidId } from '../src/types/OrcidId.js'
-import { expect, test } from './base.js'
+import { OrcidId } from '../src/types/OrcidId.ts'
+import { expect, test } from './base.ts'
 
 test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })

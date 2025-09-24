@@ -5,11 +5,11 @@ import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as StatusCodes from '../src/StatusCodes.js'
-import { rawHtml } from '../src/html.js'
-import * as _ from '../src/legacy-prereview.js'
-import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import { rawHtml } from '../src/html.ts'
+import * as _ from '../src/legacy-prereview.ts'
+import * as fc from './fc.ts'
+import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintDoi()])(

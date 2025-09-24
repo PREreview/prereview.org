@@ -5,7 +5,7 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import type * as E from 'io-ts/lib/Encoder.js'
 import * as L from 'logger-fp-ts'
 import { createTransport, type SendMailOptions, type Transporter } from 'nodemailer'
-import type { Email } from './email.js'
+import type { Email } from './email.ts'
 
 export interface NodemailerEnv {
   nodemailer: Transporter<unknown>

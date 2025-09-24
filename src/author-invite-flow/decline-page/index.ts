@@ -10,16 +10,16 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite.js'
-import { havingProblemsPage, pageNotFound } from '../../http-error.js'
-import type { SupportedLocale } from '../../locales/index.js'
-import type { Prereview } from '../../Prereview.js'
-import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
-import { authorInviteDeclineMatch } from '../../routes.js'
-import { declinePage } from './decline-page.js'
-import { inviteDeclinedPage } from './invite-declined-page.js'
+} from '../../author-invite.ts'
+import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import type { Prereview } from '../../Prereview.ts'
+import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import { authorInviteDeclineMatch } from '../../routes.ts'
+import { declinePage } from './decline-page.ts'
+import { inviteDeclinedPage } from './invite-declined-page.ts'
 
-export type { Prereview } from '../../Prereview.js'
+export type { Prereview } from '../../Prereview.ts'
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>

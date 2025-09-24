@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.js'
-import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.js'
-import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { expect, test } from '../base.js'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.ts'
+import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.ts'
+import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showTwoUpPage }) => {
   const response = createPage({

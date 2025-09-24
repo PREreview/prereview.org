@@ -1,11 +1,11 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import { authorInviteDeclineMatch } from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
+import { html, plainText } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import { authorInviteDeclineMatch } from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
 
 export const inviteDeclinedPage = (locale: SupportedLocale, inviteId: Uuid) => {
   const t = translate(locale, 'author-invite-flow')

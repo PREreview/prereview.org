@@ -1,7 +1,7 @@
 import { Option } from 'effect'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createFormPage } from '../../src/my-details-page/change-open-for-requests-form-page.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createFormPage } from '../../src/my-details-page/change-open-for-requests-form-page.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createFormPage({

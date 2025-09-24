@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import type { PreprintId } from '../Preprints/index.js'
-import * as PreprintServers from '../PreprintServers/index.js'
-import { PageResponse } from '../response.js'
-import { requestAPrereviewMatch } from '../routes.js'
-import * as StatusCodes from '../StatusCodes.js'
+import { html, plainText } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
+import * as PreprintServers from '../PreprintServers/index.ts'
+import { PageResponse } from '../response.ts'
+import { requestAPrereviewMatch } from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export const unsupportedPreprintPage = (preprint: PreprintId, locale: SupportedLocale) =>
   PageResponse({

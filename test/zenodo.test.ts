@@ -26,16 +26,16 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName } from '../src/club-details.js'
-import { plainText, rawHtml } from '../src/html.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.js'
-import * as Prereview from '../src/Prereview.js'
-import { reviewMatch } from '../src/routes.js'
-import { iso6391To3 } from '../src/types/iso639.js'
-import type { NewPrereview } from '../src/write-review/index.js'
-import * as _ from '../src/zenodo.js'
-import * as fc from './fc.js'
-import { shouldNotBeCalled } from './should-not-be-called.js'
+import { getClubName } from '../src/club-details.ts'
+import { plainText, rawHtml } from '../src/html.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.ts'
+import * as Prereview from '../src/Prereview.ts'
+import { reviewMatch } from '../src/routes.ts'
+import { iso6391To3 } from '../src/types/iso639.ts'
+import type { NewPrereview } from '../src/write-review/index.ts'
+import * as _ from '../src/zenodo.ts'
+import * as fc from './fc.ts'
+import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([

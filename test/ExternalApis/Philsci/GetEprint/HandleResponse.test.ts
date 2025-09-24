@@ -2,10 +2,10 @@ import type { HttpClientError } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either } from 'effect'
-import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/HandleResponse.js'
-import * as StatusCodes from '../../../../src/StatusCodes.js'
-import * as EffectTest from '../../../EffectTest.js'
-import * as fc from '../../../fc.js'
+import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/HandleResponse.ts'
+import * as StatusCodes from '../../../../src/StatusCodes.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../../../fc.ts'
 import eprintOther from '../Samples/eprint-other.json' with { type: 'json' }
 import eprintPittpreprintNoDate from '../Samples/eprint-pittpreprint-no-date.json' with { type: 'json' }
 import eprintPittpreprint from '../Samples/eprint-pittpreprint.json' with { type: 'json' }

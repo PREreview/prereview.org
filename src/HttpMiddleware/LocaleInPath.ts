@@ -1,5 +1,5 @@
 import { Array, HashSet, Option, pipe, String } from 'effect'
-import { type UserSelectableLocale, UserSelectableLocales } from '../locales/index.js'
+import { type UserSelectableLocale, UserSelectableLocales } from '../locales/index.ts'
 
 export const removeLocaleFromPath = (pathAndQuerystring: string): string => {
   const [path, queryParams] = pathAndQuerystring.split('?')

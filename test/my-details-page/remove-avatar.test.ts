@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/my-details-page/remove-avatar.js'
-import { myDetailsMatch, removeAvatarMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/my-details-page/remove-avatar.ts'
+import { myDetailsMatch, removeAvatarMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('removeAvatar', () => {
   test.prop([fc.user(), fc.supportedLocale(), fc.url()])(

@@ -1,5 +1,5 @@
 import { Array, Iterable, Option, String, flow, pipe } from 'effect'
-import { EmailAddress, NonEmptyString } from '../../types/index.js'
+import { EmailAddress, NonEmptyString } from '../../types/index.ts'
 
 export const parseAuthors = (
   authors: string,

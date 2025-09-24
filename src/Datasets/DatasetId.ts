@@ -1,6 +1,6 @@
 import { Url } from '@effect/platform'
 import { Data, Either, flow, Match, Option, pipe, Predicate, Schema, Tuple } from 'effect'
-import { Doi } from '../types/index.js'
+import { Doi } from '../types/index.ts'
 
 export type DatasetId = typeof DatasetId.Type
 

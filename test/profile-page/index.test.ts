@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { plainText } from '../../src/html.js'
-import * as _ from '../../src/profile-page/index.js'
-import { profileMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { plainText } from '../../src/html.ts'
+import * as _ from '../../src/profile-page/index.ts'
+import { profileMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {

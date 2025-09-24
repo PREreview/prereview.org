@@ -3,7 +3,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
-import type { OrcidId } from './types/OrcidId.js'
+import type { OrcidId } from './types/OrcidId.ts'
 
 export interface CareerStage {
   readonly value: 'early' | 'mid' | 'late'

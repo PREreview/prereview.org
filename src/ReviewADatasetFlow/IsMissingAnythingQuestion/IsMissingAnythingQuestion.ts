@@ -1,9 +1,9 @@
 import { Match, Option, String } from 'effect'
-import { html, plainText } from '../../html.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import type { Uuid } from '../../types/uuid.js'
-import type { IsMissingAnythingForm } from './IsMissingAnythingForm.js'
+import { html, plainText } from '../../html.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import type { Uuid } from '../../types/uuid.ts'
+import type { IsMissingAnythingForm } from './IsMissingAnythingForm.ts'
 
 export const IsMissingAnythingQuestion = ({
   datasetReviewId,

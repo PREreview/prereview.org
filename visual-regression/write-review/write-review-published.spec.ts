@@ -1,12 +1,12 @@
 import { Doi } from 'doi-ts'
-import { html } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.js'
-import { EmailAddress } from '../../src/types/EmailAddress.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import type { CompletedForm } from '../../src/write-review/completed-form.js'
-import { publishedPage } from '../../src/write-review/published-page/published-page.js'
-import { expect, test } from '../base.js'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
+import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import type { CompletedForm } from '../../src/write-review/completed-form.ts'
+import { publishedPage } from '../../src/write-review/published-page/published-page.ts'
+import { expect, test } from '../base.ts'
 
 const locale = DefaultLocale
 

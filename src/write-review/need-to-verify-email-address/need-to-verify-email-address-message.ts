@@ -1,12 +1,12 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import type { UnverifiedContactEmailAddress } from '../../contact-email-address.js'
-import { html, plainText } from '../../html.js'
-import { type SupportedLocale, translate } from '../../locales/index.js'
-import type { PreprintTitle } from '../../Preprints/index.js'
-import { StreamlinePageResponse } from '../../response.js'
-import { writeReviewEnterEmailAddressMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../routes.js'
-import { prereviewOfSuffix } from '../shared-elements.js'
+import type { UnverifiedContactEmailAddress } from '../../contact-email-address.ts'
+import { html, plainText } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import type { PreprintTitle } from '../../Preprints/index.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import { writeReviewEnterEmailAddressMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../routes.ts'
+import { prereviewOfSuffix } from '../shared-elements.ts'
 
 export const needToVerifyEmailAddressMessage = ({
   contactEmailAddress,

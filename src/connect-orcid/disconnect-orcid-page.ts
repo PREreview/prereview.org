@@ -1,8 +1,8 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html.js'
-import { type SupportedLocale, translate } from '../locales/index.js'
-import { PageResponse } from '../response.js'
-import { disconnectOrcidMatch } from '../routes.js'
+import { html, plainText } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { PageResponse } from '../response.ts'
+import { disconnectOrcidMatch } from '../routes.ts'
 
 export const disconnectOrcidPage = (locale: SupportedLocale) =>
   PageResponse({

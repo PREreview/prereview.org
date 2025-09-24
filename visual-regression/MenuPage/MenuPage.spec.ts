@@ -1,11 +1,11 @@
 import { Option } from 'effect'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { createMenuPage } from '../../src/MenuPage/MenuPage.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import type { User } from '../../src/user.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { createMenuPage } from '../../src/MenuPage/MenuPage.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import type { User } from '../../src/user.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(

@@ -1,6 +1,6 @@
 import { Array, Schema, Struct } from 'effect'
-import { Html, rawHtml } from '../html.js'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../types/index.js'
+import { Html, rawHtml } from '../html.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../types/index.ts'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,

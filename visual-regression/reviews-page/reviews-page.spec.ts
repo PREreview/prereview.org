@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { rawHtml } from '../../src/html.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.js'
-import type { RecentPrereviews } from '../../src/reviews-page/index.js'
-import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { expect, test } from '../base.js'
+import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import type { RecentPrereviews } from '../../src/reviews-page/index.ts'
+import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = createPage(

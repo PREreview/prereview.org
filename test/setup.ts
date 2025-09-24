@@ -3,7 +3,7 @@ import { expect } from '@jest/globals'
 import { Either, Equal, Utils } from 'effect'
 import type { MatcherFunction } from 'expect'
 import * as fc from 'fast-check'
-import { Html, PlainText } from '../src/html.js'
+import { Html, PlainText } from '../src/html.ts'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })

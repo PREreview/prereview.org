@@ -3,12 +3,12 @@ import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.js'
-import { writeReviewMatch, writeReviewStartMatch } from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { FormC, formKey } from '../../src/write-review/form.js'
-import * as _ from '../../src/write-review/index.js'
-import * as fc from './fc.js'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.ts'
+import { writeReviewMatch, writeReviewStartMatch } from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { FormC, formKey } from '../../src/write-review/form.ts'
+import * as _ from '../../src/write-review/index.ts'
+import * as fc from './fc.ts'
 
 describe('writeReview', () => {
   describe('when there is a session', () => {

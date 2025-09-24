@@ -2,11 +2,11 @@ import { HttpServerResponse } from '@effect/platform'
 import { Effect, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
-import { clubsData } from '../../clubs-data/index.js'
-import * as FptsToEffect from '../../FptsToEffect.js'
-import * as Routes from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type { Env } from './index.js'
+import { clubsData } from '../../clubs-data/index.ts'
+import * as FptsToEffect from '../../FptsToEffect.ts'
+import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { Env } from './index.ts'
 
 export const DataRouter = pipe(
   [

@@ -1,7 +1,7 @@
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.js'
-import { Doi, Uuid } from '../../../src/types/index.js'
+import * as _ from '../../../src/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.ts'
+import { Doi, Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.ReviewPublishedPage({ datasetReviewId, doi })

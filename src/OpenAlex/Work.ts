@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { type Doi, toUrl } from 'doi-ts'
 import { Array, Data, Effect, Equivalence, flow, pipe, Schema, String, Struct } from 'effect'
-import * as StatusCodes from '../StatusCodes.js'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export type Work = typeof WorkSchema.Type
 

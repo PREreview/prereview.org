@@ -1,7 +1,7 @@
-import type { Work } from '../../src/OpenAlex/Work.js'
-import * as fc from '../fc.js'
+import type { Work } from '../../src/OpenAlex/Work.ts'
+import * as fc from '../fc.ts'
 
-export * from '../fc.js'
+export * from '../fc.ts'
 
 export const work = ({ topics }: { topics?: fc.Arbitrary<Work['topics']> } = {}): fc.Arbitrary<Work> =>
   fc.record({

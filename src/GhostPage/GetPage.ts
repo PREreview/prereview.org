@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
-import { Ghost } from '../ExternalApis/index.js'
-import { rawHtml, sanitizeHtml } from '../html.js'
+import { Ghost } from '../ExternalApis/index.ts'
+import { rawHtml, sanitizeHtml } from '../html.ts'
 
 export const getPage = (id: string) =>
   pipe(

@@ -1,10 +1,10 @@
 import { Effect, pipe } from 'effect'
-import { JapanLinkCenter } from '../../ExternalApis/index.js'
-import * as Preprint from '../Preprint.js'
-import { recordToPreprint } from './Preprint.js'
-import type { JapanLinkCenterPreprintId } from './PreprintId.js'
+import { JapanLinkCenter } from '../../ExternalApis/index.ts'
+import * as Preprint from '../Preprint.ts'
+import { recordToPreprint } from './Preprint.ts'
+import type { JapanLinkCenterPreprintId } from './PreprintId.ts'
 
-export { isJapanLinkCenterPreprintId, type JapanLinkCenterPreprintId } from './PreprintId.js'
+export { isJapanLinkCenterPreprintId, type JapanLinkCenterPreprintId } from './PreprintId.ts'
 
 export const getPreprintFromJapanLinkCenter: (
   id: JapanLinkCenterPreprintId,

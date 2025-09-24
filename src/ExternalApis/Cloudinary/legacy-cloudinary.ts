@@ -15,11 +15,11 @@ import type { Readable } from 'stream'
 import { buffer } from 'stream/consumers'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import type { EnvFor } from '../../Fpts.js'
-import type { PublicUrlEnv } from '../../public-url.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import { type NonEmptyString, NonEmptyStringC } from '../../types/NonEmptyString.js'
-import type { OrcidId } from '../../types/OrcidId.js'
+import type { EnvFor } from '../../Fpts.ts'
+import type { PublicUrlEnv } from '../../public-url.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { type NonEmptyString, NonEmptyStringC } from '../../types/NonEmptyString.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {

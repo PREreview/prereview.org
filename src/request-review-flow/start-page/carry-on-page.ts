@@ -1,10 +1,10 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../../html.js'
-import { translate, type SupportedLocale } from '../../locales/index.js'
-import { PageResponse } from '../../response.js'
-import type { ReviewRequestPreprintId } from '../../review-request.js'
-import { preprintReviewsMatch, requestReviewCheckMatch, requestReviewStartMatch } from '../../routes.js'
+import { html, plainText } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { PageResponse } from '../../response.ts'
+import type { ReviewRequestPreprintId } from '../../review-request.ts'
+import { preprintReviewsMatch, requestReviewCheckMatch, requestReviewStartMatch } from '../../routes.ts'
 
 export const carryOnPage = (locale: SupportedLocale, preprint: ReviewRequestPreprintId) => {
   const t = translate(locale, 'request-review-flow')

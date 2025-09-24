@@ -1,8 +1,8 @@
 import { Match, Option, pipe } from 'effect'
-import type * as DatasetReviews from '../../DatasetReviews/index.js'
-import type { Zenodo } from '../../ExternalApis/index.js'
-import { html } from '../../html.js'
-import * as Personas from '../../Personas/index.js'
+import type * as DatasetReviews from '../../DatasetReviews/index.ts'
+import type { Zenodo } from '../../ExternalApis/index.ts'
+import { html } from '../../html.ts'
+import * as Personas from '../../Personas/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
   readonly author: Personas.Persona

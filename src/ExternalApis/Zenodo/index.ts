@@ -1,14 +1,14 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { CreateDeposition } from './CreateDeposition/index.js'
-import { GetDeposition } from './GetDeposition/index.js'
-import { PublishDeposition } from './PublishDeposition/index.js'
-import { UploadFile } from './UploadFile/index.js'
-import type { ZenodoApi } from './ZenodoApi.js'
+import { CreateDeposition } from './CreateDeposition/index.ts'
+import { GetDeposition } from './GetDeposition/index.ts'
+import { PublishDeposition } from './PublishDeposition/index.ts'
+import { UploadFile } from './UploadFile/index.ts'
+import type { ZenodoApi } from './ZenodoApi.ts'
 
-export * from './Deposition.js'
-export { type File } from './UploadFile/index.js'
-export { ZenodoApi } from './ZenodoApi.js'
+export * from './Deposition.ts'
+export { type File } from './UploadFile/index.ts'
+export { ZenodoApi } from './ZenodoApi.ts'
 
 export class Zenodo extends Context.Tag('Zenodo')<
   Zenodo,

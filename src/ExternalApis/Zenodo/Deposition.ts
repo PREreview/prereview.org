@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
-import { Html, rawHtml } from '../../html.js'
-import { Doi, OrcidId } from '../../types/index.js'
+import { Html, rawHtml } from '../../html.ts'
+import { Doi, OrcidId } from '../../types/index.ts'
 
 export type DepositMetadata = typeof DepositMetadata.Type
 

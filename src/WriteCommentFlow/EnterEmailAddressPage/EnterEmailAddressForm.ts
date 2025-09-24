@@ -1,5 +1,5 @@
 import { Data, Effect, Either, Schema } from 'effect'
-import { EmailAddress, NonEmptyString } from '../../types/index.js'
+import { EmailAddress, NonEmptyString } from '../../types/index.ts'
 
 export type EnterEmailAddressForm = EmptyForm | InvalidForm | CompletedForm
 

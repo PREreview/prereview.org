@@ -1,9 +1,9 @@
 import { Doi } from 'doi-ts'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { BiorxivPreprintId } from '../../src/Preprints/index.js'
-import { carryOnPage } from '../../src/request-review-flow/start-page/carry-on-page.js'
-import type { ReviewRequestPreprintId } from '../../src/review-request.js'
-import { expect, test } from '../base.js'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { carryOnPage } from '../../src/request-review-flow/start-page/carry-on-page.ts'
+import type { ReviewRequestPreprintId } from '../../src/review-request.ts'
+import { expect, test } from '../base.ts'
 
 const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }) satisfies ReviewRequestPreprintId
 

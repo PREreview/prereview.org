@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as _ from '../../src/connect-orcid/disconnect-orcid.js'
-import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token.js'
-import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as _ from '../../src/connect-orcid/disconnect-orcid.ts'
+import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token.ts'
+import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('disconnectOrcid', () => {
   describe('when the user is logged in', () => {

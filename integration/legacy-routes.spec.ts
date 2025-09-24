@@ -1,4 +1,4 @@
-import { expect, test } from './base.js'
+import { expect, test } from './base.ts'
 
 test('when the page has been temporarily removed', async ({ page }) => {
   await page.goto('/prereviewers', { waitUntil: 'commit' })

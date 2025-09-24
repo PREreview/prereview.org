@@ -1,9 +1,9 @@
 import { Either } from 'effect'
-import * as IsDetailedEnoughForm from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.js'
-import { Uuid } from '../../../src/types/index.js'
+import * as IsDetailedEnoughForm from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.ts'
+import { Uuid } from '../../../src/types/index.ts'
 
-import { expect, test } from '../../base.js'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsDetailedEnoughQuestion({

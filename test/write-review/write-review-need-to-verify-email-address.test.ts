@@ -3,18 +3,18 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.js'
+import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../src/Preprints/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../../src/routes.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import { FormC, formKey } from '../../src/write-review/form.js'
-import * as _ from '../../src/write-review/index.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
-import * as fc from './fc.js'
+} from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { FormC, formKey } from '../../src/write-review/form.ts'
+import * as _ from '../../src/write-review/index.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
+import * as fc from './fc.ts'
 
 describe('writeReviewNeedToVerifyEmailAddress', () => {
   test.prop([

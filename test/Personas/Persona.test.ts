@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Struct } from 'effect'
-import * as _ from '../../src/Personas/index.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as _ from '../../src/Personas/index.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('match', () => {
   test.prop([fc.publicPersona()])('PublicPersona', persona => {

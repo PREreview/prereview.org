@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Option } from 'effect'
-import * as Datasets from '../../../src/Datasets/index.js'
-import type { Zenodo } from '../../../src/ExternalApis/index.js'
-import * as Personas from '../../../src/Personas/index.js'
-import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.js'
-import { rawHtml } from '../../../src/html.js'
-import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.js'
+import * as Datasets from '../../../src/Datasets/index.ts'
+import type { Zenodo } from '../../../src/ExternalApis/index.ts'
+import * as Personas from '../../../src/Personas/index.ts'
+import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
+import { rawHtml } from '../../../src/html.ts'
+import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 
 const cases = [
   [

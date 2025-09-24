@@ -1,12 +1,12 @@
 import * as E from 'fp-ts/lib/Either.js'
 import { Uuid } from 'uuid-ts'
-import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.js'
-import { missingE } from '../../src/form.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { NonEmptyString } from '../../src/types/NonEmptyString.js'
-import { OrcidId } from '../../src/types/OrcidId.js'
-import { Pseudonym } from '../../src/types/Pseudonym.js'
-import { expect, test } from '../base.js'
+import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.ts'
+import { missingE } from '../../src/form.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = personaForm({

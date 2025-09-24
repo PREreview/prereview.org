@@ -2,11 +2,11 @@ import { it } from '@fast-check/jest'
 import { describe } from '@jest/globals'
 import { expect } from '@playwright/test'
 import { DateTime, Effect, pipe } from 'effect'
-import { HttpCache } from '../../src/CachingHttpClient/HttpCache.js'
-import { layerInMemory } from '../../src/CachingHttpClient/InMemory.js'
-import { serializationErrorChecking } from '../../src/CachingHttpClient/SerializationErrorChecking.js'
-import * as EffectTest from '../EffectTest.js'
-import * as fc from '../fc.js'
+import { HttpCache } from '../../src/CachingHttpClient/HttpCache.ts'
+import { layerInMemory } from '../../src/CachingHttpClient/InMemory.ts'
+import { serializationErrorChecking } from '../../src/CachingHttpClient/SerializationErrorChecking.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('when the cached response matches the original', () => {
   it.prop([fc.httpClientResponse()])('the response is left in the cache', response =>

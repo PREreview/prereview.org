@@ -1,9 +1,9 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Struct } from 'effect'
-import type * as Datasets from '../../Datasets/index.js'
-import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.js'
-import * as Errors from '../Errors.js'
-import type * as Events from '../Events.js'
+import type * as Datasets from '../../Datasets/index.ts'
+import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
+import type * as Events from '../Events.ts'
 
 export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }

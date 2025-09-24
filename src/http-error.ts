@@ -1,9 +1,9 @@
 import { Effect } from 'effect'
-import { Locale } from './Context.js'
-import { HavingProblemsPage } from './HavingProblemsPage/index.js'
-import type { SupportedLocale } from './locales/index.js'
-import { NoPermissionPage } from './NoPermissionPage/index.js'
-import { PageNotFound } from './PageNotFound/index.js'
+import { Locale } from './Context.ts'
+import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
+import type { SupportedLocale } from './locales/index.ts'
+import { NoPermissionPage } from './NoPermissionPage/index.ts'
+import { PageNotFound } from './PageNotFound/index.ts'
 
 /** @deprecated */
 export const pageNotFound = (locale: SupportedLocale) =>

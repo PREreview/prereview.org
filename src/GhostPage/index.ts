@@ -1,10 +1,10 @@
 import { Context, Data, Effect, flow, identity, Layer } from 'effect'
-import type { Locale } from '../Context.js'
-import type { Ghost } from '../ExternalApis/index.js'
-import type { Html } from '../html.js'
-import type { SupportedLocale } from '../locales/index.js'
-import { getPage } from './GetPage.js'
-import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.js'
+import type { Locale } from '../Context.ts'
+import type { Ghost } from '../ExternalApis/index.ts'
+import type { Html } from '../html.ts'
+import type { SupportedLocale } from '../locales/index.ts'
+import { getPage } from './GetPage.ts'
+import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.ts'
 
 export class GetPageFromGhost extends Context.Tag('GetPageFromGhost')<
   GetPageFromGhost,

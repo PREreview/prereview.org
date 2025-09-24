@@ -1,7 +1,7 @@
 import { Either } from 'effect'
-import * as ReviewADatasetForm from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetForm.js'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetPage.js'
-import { expect, test } from '../../base.js'
+import * as ReviewADatasetForm from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetForm.ts'
+import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetPage.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.ReviewADatasetPage({

@@ -4,12 +4,12 @@ import { Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.js'
-import * as _ from '../../src/legacy-routes/index.js'
-import { DefaultLocale } from '../../src/locales/index.js'
-import { preprintReviewsMatch, profileMatch } from '../../src/routes.js'
-import * as fc from '../fc.js'
-import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/legacy-routes/index.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { preprintReviewsMatch, profileMatch } from '../../src/routes.ts'
+import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('legacyRoutes', () => {
   test.each([

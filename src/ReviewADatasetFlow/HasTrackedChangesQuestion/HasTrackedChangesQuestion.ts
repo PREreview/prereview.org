@@ -1,10 +1,10 @@
 import { Either, Match, pipe } from 'effect'
-import { html, plainText, rawHtml } from '../../html.js'
-import { StreamlinePageResponse } from '../../response.js'
-import * as Routes from '../../routes.js'
-import * as StatusCodes from '../../StatusCodes.js'
-import type { Uuid } from '../../types/uuid.js'
-import type { HasTrackedChangesForm } from './HasTrackedChangesForm.js'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { StreamlinePageResponse } from '../../response.ts'
+import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { Uuid } from '../../types/uuid.ts'
+import type { HasTrackedChangesForm } from './HasTrackedChangesForm.ts'
 
 export const HasTrackedChangesQuestion = ({
   datasetReviewId,

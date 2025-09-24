@@ -1,10 +1,10 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import * as FeatureFlags from './FeatureFlags.js'
-import type { Html } from './html.js'
-import { type Page, page as templatePage } from './page.js'
-import { PublicUrl } from './public-url.js'
+import * as FeatureFlags from './FeatureFlags.ts'
+import type { Html } from './html.ts'
+import { type Page, page as templatePage } from './page.ts'
+import { PublicUrl } from './public-url.ts'
 
-export type { Page } from './page.js'
+export type { Page } from './page.ts'
 
 export class TemplatePage extends Context.Tag('TemplatePage')<TemplatePage, (page: Page) => Html>() {}
 
