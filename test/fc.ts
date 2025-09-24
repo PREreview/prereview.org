@@ -545,7 +545,8 @@ export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.no
 
 export const preprintDoi = (): fc.Arbitrary<PreprintIdWithDoi['value']> => preprintIdWithDoi().map(id => id.value)
 
-export const nonDatasetDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.not(Datasets.isDatasetDoi))
+export const nonDatasetDoi = (): fc.Arbitrary<Doi> =>
+  fc.oneof(doi().filter(Predicate.not(Datasets.isDatasetDoi)), preprintDoi())
 
 export const datasetDoi = (): fc.Arbitrary<Datasets.DatasetId['value']> => datasetId().map(id => id.value)
 

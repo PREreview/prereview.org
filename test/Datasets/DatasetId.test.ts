@@ -6,6 +6,23 @@ import * as Datasets from '../../src/Datasets/index.js'
 import { Doi } from '../../src/types/index.js'
 import * as fc from '../fc.js'
 
+describe('isDatasetDoi', () => {
+  test.prop([fc.datasetDoi()])('with a dataset DOI', doi => {
+    const actual = _.isDatasetDoi(doi)
+
+    expect(actual).toBeTruthy()
+  })
+
+  test.prop([fc.oneof(fc.doi(fc.constantFrom('0001', '1', '123', '1000')), fc.nonDatasetDoi())])(
+    'with a non-dataset DOI',
+    doi => {
+      const actual = _.isDatasetDoi(doi)
+
+      expect(actual).toBeFalsy()
+    },
+  )
+})
+
 describe('fromUrl', () => {
   test.failing.prop([fc.datasetId().map(id => [Doi.toUrl(id.value), id] as const)], {
     examples: [
