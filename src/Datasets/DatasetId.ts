@@ -10,23 +10,25 @@ export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadD
 
 export const DatasetId = Schema.Union(DryadDatasetId)
 
-export const DatasetIdFromDoi = Schema.transform(DryadDatasetId.fields.value, Schema.typeSchema(DatasetId), {
+const DatasetDoiSchema = DryadDatasetId.fields.value
+
+export const DatasetIdFromDoi = Schema.transform(DatasetDoiSchema, Schema.typeSchema(DatasetId), {
   strict: true,
   decode: doi => new DryadDatasetId({ value: doi }),
   encode: datasetId => datasetId.value,
 })
 
 export const DatasetIdFromString = Schema.transform(
-  Schema.TemplateLiteralParser('doi:', DryadDatasetId.fields.value),
+  Schema.TemplateLiteralParser('doi:', DatasetIdFromDoi),
   Schema.typeSchema(DatasetId),
   {
     strict: true,
-    decode: ([, doi]) => new DryadDatasetId({ value: doi }),
-    encode: datasetId => Tuple.make('doi:' as const, datasetId.value),
+    decode: Tuple.getSecond,
+    encode: id => Tuple.make('doi:' as const, id),
   },
 )
 
-export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DryadDatasetId.fields.value)
+export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DatasetDoiSchema)
 
 export const parseDatasetDoi: (input: string) => Option.Option<DatasetId> = Schema.decodeOption(DatasetIdFromDoi)
 
