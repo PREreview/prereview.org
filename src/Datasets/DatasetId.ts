@@ -32,7 +32,7 @@ export const parseDatasetDoi: (input: string) => Option.Option<DatasetId> = Sche
 
 export const fromUrl = (url: URL): Option.Option<DatasetId> =>
   pipe(
-    Match.value(Url.mutate(url, url => url.hostname.replace('www.', ''))),
+    Match.value(Url.mutate(url, url => (url.hostname = url.hostname.replace('www.', '')))),
     Match.when(
       url => ['doi.org', 'dx.doi.org'].includes(url.hostname),
       url => extractFromDoiPath(url.pathname.slice(1)),
