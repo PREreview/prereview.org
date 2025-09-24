@@ -1,5 +1,5 @@
 import { Url } from '@effect/platform'
-import { flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
+import { flow, Match, Option, pipe, Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.js'
 
 export type DatasetId = typeof DatasetId.Type
@@ -37,7 +37,18 @@ export const fromUrl = (url: URL): Option.Option<DatasetId> =>
       url => ['doi.org', 'dx.doi.org'].includes(url.hostname),
       url => extractFromDoiPath(url.pathname.slice(1)),
     ),
+    Match.when(
+      url => url.hostname === 'datadryad.org',
+      url => extractFromDryadPath(url.pathname.slice(1)),
+    ),
     Match.orElse(Option.none<DatasetId>),
   )
 
 const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
+
+const extractFromDryadPath = flow(
+  decodeURIComponent,
+  Option.liftNullable(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
+  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061'))),
+  Option.andThen(doi => new DryadDatasetId({ value: doi })),
+)

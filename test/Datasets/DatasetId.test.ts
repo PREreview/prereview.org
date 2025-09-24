@@ -74,7 +74,7 @@ describe('fromUrl', () => {
     expect(actual).toStrictEqual(Option.some(expected))
   })
 
-  test.failing.prop([fc.dryadDatasetUrl()], {
+  test.prop([fc.dryadDatasetUrl()], {
     examples: [
       [
         [
