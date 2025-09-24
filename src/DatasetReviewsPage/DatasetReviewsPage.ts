@@ -9,7 +9,7 @@ import * as Personas from '../Personas/index.js'
 import { TwoUpPageResponse } from '../response.js'
 import * as Routes from '../routes.js'
 import { renderDate } from '../time.js'
-import { Doi, type OrcidId, ProfileId } from '../types/index.js'
+import { Doi, ProfileId } from '../types/index.js'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
@@ -129,11 +129,9 @@ const displayAuthor = Personas.match({
   onPseudonym: Struct.get('pseudonym'),
 })
 
-function displayDatasetAuthor({ name, orcidId }: { name: string; orcidId?: OrcidId.OrcidId }) {
-  if (orcidId) {
-    return html`<a
-      href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}"
-      class="orcid"
+function displayDatasetAuthor({ name, orcid }: Datasets.Dataset['authors'][number]) {
+  if (orcid) {
+    return html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
       >${name}</a
     >`
   }
