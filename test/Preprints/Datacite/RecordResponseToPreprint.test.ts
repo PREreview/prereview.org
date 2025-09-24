@@ -283,7 +283,7 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
     }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['dryad'])('returns a specific error for an unsupported DOI record (%s)', response =>
+test.each(['dryad', 'dryad-html'])('returns a specific error for an unsupported DOI record (%s)', response =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,

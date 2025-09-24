@@ -1,0 +1,199 @@
+{
+  "data": {
+    "id": "10.5061/dryad.b2rbnzst9",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5061/dryad.b2rbnzst9",
+      "prefix": "10.5061",
+      "suffix": "dryad.b2rbnzst9",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Hewawasam, Kalindu Ramyasoma",
+          "nameType": "Personal",
+          "givenName": "Kalindu Ramyasoma",
+          "familyName": "Hewawasam",
+          "affiliation": ["North Carolina State University"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-9796-2294",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Yamamoto, Akihiko",
+          "nameType": "Personal",
+          "givenName": "Akihiko",
+          "familyName": "Yamamoto",
+          "affiliation": ["North Carolina State University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Scott, Maxwell",
+          "nameType": "Personal",
+          "givenName": "Maxwell",
+          "familyName": "Scott",
+          "affiliation": ["North Carolina State University"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-6536-4735",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Data from: Establishment of transgenic \u003cem\u003eDrosophila suzukii\u003c/em\u003e lines that express \u003cem\u003ephiC31\u003c/em\u003e integrase and carry the \u003cem\u003esepia\u003c/em\u003e gene as a marker for transformation"
+        }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        { "subject": "Drosophila suzukii" },
+        { "subject": "sepia" },
+        { "subject": "phiC31 integrase" },
+        { "subject": "piggyBac" },
+        {
+          "subject": "Eye color",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "FOS: Biological sciences",
+          "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+          "subjectScheme": "fos"
+        },
+        {
+          "subject": "FOS: Biological sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        {
+          "subject": "FOS: Agricultural biotechnology",
+          "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+          "subjectScheme": "fos"
+        },
+        {
+          "subject": "FOS: Agricultural biotechnology",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2025-08-07T18:09:38Z", "dateType": "Created" },
+        { "date": "2025-08-07T18:09:48Z", "dateType": "Submitted" },
+        { "date": "2025-09-02T00:00:00Z", "dateType": "Issued" },
+        { "date": "2025-09-02T00:00:00Z", "dateType": "Available" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.1111/imb.70001", "relatedIdentifierType": "DOI" },
+        { "relationType": "IsSourceOf", "relatedIdentifier": "10.5281/zenodo.17023517", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": ["72043 bytes"],
+      "formats": [],
+      "version": "3",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Many eye colour mutants have been identified in Drosophila melanogaster.\n Mutations in the sepia gene result in brown eyes due to a lack of PDA\n synthase, which is essential for production of the red drosopterin eye\n pigment. We previously used CRISPR/Cas9 to target the PDA synthase gene to\n establish sepia mutant strains for Drosophila suzukii (Matsumura)\n (Diptera: Drosophilidae), an invasive global pest of soft skinned fruits.\n The fecundity and fertility of some of the sepia mutant strains were\n similar to wild‐type. The goal of this study was to determine if the sepia\n gene could be used as a marker to identify transgenic D. suzukii. By using\n the sepia gene as a marker, we successfully developed lines expressing\n Streptomyces phage phiC31 integrase in the germline. For most of these\n lines, hemizygotes exhibited complete rescue of the sepia eye colour and\n relatively high levels of phiC31 RNA in ovaries. In contrast, lines with\n partial rescue showed low levels of sepia RNA in heads and phiC31 RNA in\n ovaries. These findings suggest that the sepia gene is an effective marker\n for D. suzukii transgenesis, and its relatively small size (1.8 kb) makes\n it advantageous when assembling large gene constructs. The phiC31\n integrase lines established in this study should serve as a valuable\n resource for future genetic research in D. suzukii, including the further\n development of strains for genetic biocontrol.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "# Data from: Establishment of transgenic *Drosophila suzukii* lines that\n express *phiC31* integrase and carry the *sepia* gene as a marker for\n transformation Dataset DOI:\n [10.5061/dryad.b2rbnzst9](10.5061/dryad.b2rbnzst9) ## Description of the\n data and file structure To measure the expression levels of *phiC31* and\n *sepia*, primer pairs PhiC31qPCR1F/PhiC31qPCR1R, Seg2RTF/Seg2RTR, and\n ActinRTF3/ActinRTR3 were designed, as specified in the supplementary\n materials (Table S4). The *sepia* primers were designed to amplify and\n detect the active *sepia* mRNA by using a forward primer that ends in\n sequence deleted in *se1* and by taking advantage of the lack of 3'\n to 5' exonuclease activity in *Taq* polymerase (Figure S4).\n Quantitative PCR was conducted using the Luna® Universal qPCR Master Mix\n (Cat# M3003L, New England Biolabs) and cDNA synthesized in a CFX384 Touch™\n real-time PCR detection system (Bio-Rad, Hercules, CA, USA). All reactions\n were performed in triplicate for both biological and technical replicates.\n The 2−ΔΔCt method (Livak and Schmittgen 2001) was used for data analysis,\n with *actin* used as a reference gene (Zhai et al. 2014) to normalize\n *sepia* and *phiC31* RNA levels. Supplementary tables S1 and S2 show the\n raw data for the real time PCR experiments that were carried out to\n quantify sepia and phiC31 RNA levels. If n/a is listed the data is not\n available as the technical replicate failed. The mean was calculated from\n the other replicates. Supplementary Tables S3 and S4 list the\n oligonucleotide primers used in this study. The Supplementary Figures show\n images of flies and DNA sequences that support the genome locations of the\n transgenes and edits in the targeted gene. ### Files and variables ####\n File: Figure_S1.tif **Description:** **FIGURE S1.** Transgenic\n flies showing full and partial rescue of *sepia* eye color phenotype. Male\n (A) and females (B) from the NPS lines that have the SE+ DNA construct.\n Male (C) and females (D) from the INPS lines that have the SE+attP DNA\n construct. NPS4A48, INPS2 and INPS3 shows a partial eye color rescue\n phenotype compared to the other fly lines. The mutant flies with the sepia\n eye color are from the *se*1 line and WT is wild type. #### File:\n Table_S1_revised-Final.xlsx **Description:** Real time PCR Ct\n values for *sepia* and *actin* plus relative expression calculations #####\n Variables  *  *Sample Name*: RNA extraction sample\n name  * *Target*: Target gene name  * *Ct1, Ct2, Ct3*:\n Technical replicates for target gene *  *Average Ct*: Mean Ct of\n target replicates *  *Reference*: Reference gene name * *Ct1,\n Ct2, Ct3*: Technical replicates for reference gene * *Average Ct*: Mean Ct\n of reference replicates * *deltaCt*: ΔCt (target gene Ct – reference Ct) *\n *delta delta Ct*: ΔΔCt (sample ΔCt – mean ΔCt of reference) * *Fold Change\n (2−ΔΔCt)*: Relative expression fold change #### File:\n Table_S3_revised-Final.docx **Description:** Oligonucleotide\n primers were used in this study. ##### Variables *  *Primer\n Name*: Oligonucleotide primer name  *  *Sequence\n (5′→3′)*: DNA sequence  #### File: Table_S2_revised-Final.xlsx\n **Description:** Real time PCR Ct values for *phiC31* and *actin*\n plus relative expression calculations ##### Variables *  *Sample\n Name*: RNA extraction sample name * *Target*: Target gene name * *Ct1,\n Ct2, Ct3*: Technical replicates for target gene *  *Average Ct*:\n Mean Ct of target replicates *  *Reference*: Reference gene name\n * *Ct1, Ct2, Ct3*: Technical replicates for reference gene * *Average Ct*:\n Mean Ct of reference replicates * *deltaCt*: ΔCt (target gene Ct –\n reference Ct) * *delta delta Ct*: ΔΔCt (sample ΔCt – mean ΔCt of\n reference) * *Fold Change (2−ΔΔCt)*: Relative expression fold change ####\n File: Figure_S4_copy.pdf **Description:** Seg2RTF specific primer\n designed to amplify the wild type *sepia* gene and not the *se1* mutant.\n Alignment of wild type (WT) and *se1* mutant DNA sequences with location\n of the Seg2RTF primer shown. #### File: Figure_S2_copy.pdf\n **Description:** Sanger sequencing results of DNA fragments\n obtained by splinkerette PCR. SE+ lines (A) SE+attP lines (B).\n 5’PBAC or 3’PBAC sequences were identified in the sequences and are\n indicated. #### File: Table_S4_revised-Final.docx\n **Description:** Oligonucleotide primers used for qPCR #####\n Variables * *Primer Name*: Oligonucleotide primer name  *\n  *Sequence (5′→3′)*: DNA sequence  * *Primer\n efficiency*: Real-time PCR efficiency  * *R² Value*: Coefficient\n of determination  #### File: Figure_S3_copy.tif\n **Description:** The INPS4 Y-linked line shows partial rescue of\n the sepia eye color in males. (A) Eyes of the INPS4 line males and\n females. (B) Sanger sequencing results of DNA fragments obtained by\n splinkerette PCR. 5’PBAC sequence was identified in the sequences\n and is indicated. ## Code/software The figures can be viewed using a pdf\n reader. Tables S1 and S2 can be opened in Excel and Tables S3 and S4 using\n Word. ## Access information Other publicly accessible locations of the\n data: *\n [https://doi.org/10.1111/imb.70001](https://doi.org/10.1111/imb.70001)\n Data was derived from the following sources: * Data in this dataset was\n derived from the above publication and supplementary\n information. ",
+          "descriptionType": "TechnicalInfo"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute of Food and Agriculture",
+          "awardNumber": "2020‐33522‐32317",
+          "funderIdentifier": "https://ror.org/05qx3fv49",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute of Food and Agriculture",
+          "awardNumber": "7008054",
+          "funderIdentifier": "https://ror.org/05qx3fv49",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute of Food and Agriculture",
+          "awardNumber": "7008054",
+          "funderIdentifier": "https://ror.org/05qx3fv49",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute of Food and Agriculture",
+          "awardNumber": "2020-33522-32317",
+          "funderIdentifier": "https://ror.org/05qx3fv49",
+          "funderIdentifierType": "ROR"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTA2MS9EUllBRC5CMlJCTlpTVDk8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkhld2F3YXNhbSwgS2FsaW5kdSBSYW15YXNvbWE8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDItOTc5Ni0yMjk0PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0dGo2M2QwNiIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Ob3J0aCBDYXJvbGluYSBTdGF0ZSBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5ZYW1hbW90bywgQWtpaGlrbzwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNHRqNjNkMDYiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+Tm9ydGggQ2Fyb2xpbmEgU3RhdGUgVW5pdmVyc2l0eTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+U2NvdHQsIE1heHdlbGw8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDEtNjUzNi00NzM1PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0dGo2M2QwNiIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Ob3J0aCBDYXJvbGluYSBTdGF0ZSBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+CiAgICAgIERhdGEgZnJvbTogRXN0YWJsaXNobWVudCBvZiB0cmFuc2dlbmljICZsdDtlbSZndDtEcm9zb3BoaWxhCiAgICAgIHN1enVraWkmbHQ7L2VtJmd0OyBsaW5lcyB0aGF0IGV4cHJlc3MgJmx0O2VtJmd0O3BoaUMzMSZsdDsvZW0mZ3Q7CiAgICAgIGludGVncmFzZSBhbmQgY2FycnkgdGhlICZsdDtlbSZndDtzZXBpYSZsdDsvZW0mZ3Q7IGdlbmUgYXMgYSBtYXJrZXIgZm9yCiAgICAgIHRyYW5zZm9ybWF0aW9uCiAgICA8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXIgcHVibGlzaGVySWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAweDZoNW45NSIgcHVibGlzaGVySWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZy8iPkRyeWFkPC9wdWJsaXNoZXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ij5kYXRhc2V0PC9yZXNvdXJjZVR5cGU+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI1PC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Q+RHJvc29waGlsYSBzdXp1a2lpPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+c2VwaWE8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5waGlDMzEgaW50ZWdyYXNlPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cGlnZ3lCYWM8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPkV5ZSBjb2xvcjwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9ImZvcyIgc2NoZW1lVVJJPSJodHRwczovL3dlYi1hcmNoaXZlLm9lY2Qub3JnLzIwMTItMDYtMTUvMTM4NTc1LTM4MjM1MTQ3LnBkZiI+Rk9TOiBCaW9sb2dpY2FsIHNjaWVuY2VzPC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iZm9zIiBzY2hlbWVVUkk9Imh0dHBzOi8vd2ViLWFyY2hpdmUub2VjZC5vcmcvMjAxMi0wNi0xNS8xMzg1NzUtMzgyMzUxNDcucGRmIj5GT1M6IEFncmljdWx0dXJhbCBiaW90ZWNobm9sb2d5PC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPk5hdGlvbmFsIEluc3RpdHV0ZSBvZiBGb29kIGFuZCBBZ3JpY3VsdHVyZTwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1cXgzZnY0OTwvZnVuZGVySWRlbnRpZmllcj4KICAgICAgPGF3YXJkTnVtYmVyPjIwMjDigJAzMzUyMuKAkDMyMzE3PC9hd2FyZE51bWJlcj4KICAgIDwvZnVuZGluZ1JlZmVyZW5jZT4KICAgIDxmdW5kaW5nUmVmZXJlbmNlPgogICAgICA8ZnVuZGVyTmFtZT5OYXRpb25hbCBJbnN0aXR1dGUgb2YgRm9vZCBhbmQgQWdyaWN1bHR1cmU8L2Z1bmRlck5hbWU+CiAgICAgIDxmdW5kZXJJZGVudGlmaWVyIGZ1bmRlcklkZW50aWZpZXJUeXBlPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wNXF4M2Z2NDk8L2Z1bmRlcklkZW50aWZpZXI+CiAgICAgIDxhd2FyZE51bWJlcj43MDA4MDU0PC9hd2FyZE51bWJlcj4KICAgIDwvZnVuZGluZ1JlZmVyZW5jZT4KICAgIDxmdW5kaW5nUmVmZXJlbmNlPgogICAgICA8ZnVuZGVyTmFtZT5OYXRpb25hbCBJbnN0aXR1dGUgb2YgRm9vZCBhbmQgQWdyaWN1bHR1cmU8L2Z1bmRlck5hbWU+CiAgICAgIDxmdW5kZXJJZGVudGlmaWVyIGZ1bmRlcklkZW50aWZpZXJUeXBlPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wNXF4M2Z2NDk8L2Z1bmRlcklkZW50aWZpZXI+CiAgICAgIDxhd2FyZE51bWJlcj43MDA4MDU0PC9hd2FyZE51bWJlcj4KICAgICAgPGF3YXJkVGl0bGUvPgogICAgPC9mdW5kaW5nUmVmZXJlbmNlPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPk5hdGlvbmFsIEluc3RpdHV0ZSBvZiBGb29kIGFuZCBBZ3JpY3VsdHVyZTwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1cXgzZnY0OTwvZnVuZGVySWRlbnRpZmllcj4KICAgICAgPGF3YXJkTnVtYmVyPjIwMjAtMzM1MjItMzIzMTc8L2F3YXJkTnVtYmVyPgogICAgICA8YXdhcmRUaXRsZS8+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgPC9mdW5kaW5nUmVmZXJlbmNlcz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyNS0wOC0wN1QxODowOTozOFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDI1LTA4LTA3VDE4OjA5OjQ4WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjUtMDktMDJUMDA6MDA6MDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyNS0wOS0wMlQwMDowMDowMFo8L2RhdGU+CiAgPC9kYXRlcz4KICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJJc0NpdGVkQnkiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj5odHRwczovL2RvaS5vcmcvMTAuMTExMS9pbWIuNzAwMDE8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNTb3VyY2VPZiIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPmh0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby4xNzAyMzUxNzwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzPgogICAgPHNpemU+NzIwNDMgYnl0ZXM8L3NpemU+CiAgPC9zaXplcz4KICA8dmVyc2lvbj4zPC92ZXJzaW9uPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vc3BkeC5vcmcvbGljZW5zZXMvQ0MwLTEuMC5odG1sIj5DcmVhdGl2ZSBDb21tb25zIFplcm8gdjEuMCBVbml2ZXJzYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij4KICAgICAgTWFueSBleWUgY29sb3VyIG11dGFudHMgaGF2ZSBiZWVuIGlkZW50aWZpZWQgaW4gRHJvc29waGlsYSBtZWxhbm9nYXN0ZXIuCiAgICAgIE11dGF0aW9ucyBpbiB0aGUgc2VwaWEgZ2VuZSByZXN1bHQgaW4gYnJvd24gZXllcyBkdWUgdG8gYSBsYWNrIG9mIFBEQQogICAgICBzeW50aGFzZSwgd2hpY2ggaXMgZXNzZW50aWFsIGZvciBwcm9kdWN0aW9uIG9mIHRoZSByZWQgZHJvc29wdGVyaW4gZXllCiAgICAgIHBpZ21lbnQuIFdlIHByZXZpb3VzbHkgdXNlZCBDUklTUFIvQ2FzOSB0byB0YXJnZXQgdGhlIFBEQSBzeW50aGFzZSBnZW5lIHRvCiAgICAgIGVzdGFibGlzaCBzZXBpYSBtdXRhbnQgc3RyYWlucyBmb3IgRHJvc29waGlsYSBzdXp1a2lpIChNYXRzdW11cmEpCiAgICAgIChEaXB0ZXJhOiBEcm9zb3BoaWxpZGFlKSwgYW4gaW52YXNpdmUgZ2xvYmFsIHBlc3Qgb2Ygc29mdCBza2lubmVkIGZydWl0cy4KICAgICAgVGhlIGZlY3VuZGl0eSBhbmQgZmVydGlsaXR5IG9mIHNvbWUgb2YgdGhlIHNlcGlhIG11dGFudCBzdHJhaW5zIHdlcmUKICAgICAgc2ltaWxhciB0byB3aWxk4oCQdHlwZS4gVGhlIGdvYWwgb2YgdGhpcyBzdHVkeSB3YXMgdG8gZGV0ZXJtaW5lIGlmIHRoZSBzZXBpYQogICAgICBnZW5lIGNvdWxkIGJlIHVzZWQgYXMgYSBtYXJrZXIgdG8gaWRlbnRpZnkgdHJhbnNnZW5pYyBELiBzdXp1a2lpLiBCeSB1c2luZwogICAgICB0aGUgc2VwaWEgZ2VuZSBhcyBhIG1hcmtlciwgd2Ugc3VjY2Vzc2Z1bGx5IGRldmVsb3BlZCBsaW5lcyBleHByZXNzaW5nCiAgICAgIFN0cmVwdG9teWNlcyBwaGFnZSBwaGlDMzEgaW50ZWdyYXNlIGluIHRoZSBnZXJtbGluZS4gRm9yIG1vc3Qgb2YgdGhlc2UKICAgICAgbGluZXMsIGhlbWl6eWdvdGVzIGV4aGliaXRlZCBjb21wbGV0ZSByZXNjdWUgb2YgdGhlIHNlcGlhIGV5ZSBjb2xvdXIgYW5kCiAgICAgIHJlbGF0aXZlbHkgaGlnaCBsZXZlbHMgb2YgcGhpQzMxIFJOQSBpbiBvdmFyaWVzLiBJbiBjb250cmFzdCwgbGluZXMgd2l0aAogICAgICBwYXJ0aWFsIHJlc2N1ZSBzaG93ZWQgbG93IGxldmVscyBvZiBzZXBpYSBSTkEgaW4gaGVhZHMgYW5kIHBoaUMzMSBSTkEgaW4KICAgICAgb3Zhcmllcy4gVGhlc2UgZmluZGluZ3Mgc3VnZ2VzdCB0aGF0IHRoZSBzZXBpYSBnZW5lIGlzIGFuIGVmZmVjdGl2ZSBtYXJrZXIKICAgICAgZm9yIEQuIHN1enVraWkgdHJhbnNnZW5lc2lzLCBhbmQgaXRzIHJlbGF0aXZlbHkgc21hbGwgc2l6ZSAoMS444oCJa2IpIG1ha2VzCiAgICAgIGl0IGFkdmFudGFnZW91cyB3aGVuIGFzc2VtYmxpbmcgbGFyZ2UgZ2VuZSBjb25zdHJ1Y3RzLiBUaGUgcGhpQzMxCiAgICAgIGludGVncmFzZSBsaW5lcyBlc3RhYmxpc2hlZCBpbiB0aGlzIHN0dWR5IHNob3VsZCBzZXJ2ZSBhcyBhIHZhbHVhYmxlCiAgICAgIHJlc291cmNlIGZvciBmdXR1cmUgZ2VuZXRpYyByZXNlYXJjaCBpbiBELiBzdXp1a2lpLCBpbmNsdWRpbmcgdGhlIGZ1cnRoZXIKICAgICAgZGV2ZWxvcG1lbnQgb2Ygc3RyYWlucyBmb3IgZ2VuZXRpYyBiaW9jb250cm9sLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IlRlY2huaWNhbEluZm8iPgogICAgICAjIERhdGEgZnJvbTogRXN0YWJsaXNobWVudCBvZiB0cmFuc2dlbmljICpEcm9zb3BoaWxhIHN1enVraWkqIGxpbmVzIHRoYXQKICAgICAgZXhwcmVzcyAqcGhpQzMxKiBpbnRlZ3Jhc2UgYW5kIGNhcnJ5IHRoZSAqc2VwaWEqIGdlbmUgYXMgYSBtYXJrZXIgZm9yCiAgICAgIHRyYW5zZm9ybWF0aW9uIERhdGFzZXQgRE9JOgogICAgICBbMTAuNTA2MS9kcnlhZC5iMnJibnpzdDldKDEwLjUwNjEvZHJ5YWQuYjJyYm56c3Q5KSAjIyBEZXNjcmlwdGlvbiBvZiB0aGUKICAgICAgZGF0YSBhbmQgZmlsZSBzdHJ1Y3R1cmUgVG8gbWVhc3VyZSB0aGUgZXhwcmVzc2lvbiBsZXZlbHMgb2YgKnBoaUMzMSogYW5kCiAgICAgICpzZXBpYSosIHByaW1lciBwYWlycyBQaGlDMzFxUENSMUYvUGhpQzMxcVBDUjFSLCBTZWcyUlRGL1NlZzJSVFIsIGFuZAogICAgICBBY3RpblJURjMvQWN0aW5SVFIzIHdlcmUgZGVzaWduZWQsIGFzIHNwZWNpZmllZCBpbiB0aGUgc3VwcGxlbWVudGFyeQogICAgICBtYXRlcmlhbHMgKFRhYmxlIFM0KS4gVGhlICpzZXBpYSogcHJpbWVycyB3ZXJlIGRlc2lnbmVkIHRvIGFtcGxpZnkgYW5kCiAgICAgIGRldGVjdCB0aGUgYWN0aXZlICpzZXBpYSogbVJOQSBieSB1c2luZyBhIGZvcndhcmQgcHJpbWVyIHRoYXQgZW5kcyBpbgogICAgICBzZXF1ZW5jZSBkZWxldGVkIGluICpzZTEqIGFuZCBieSB0YWtpbmcgYWR2YW50YWdlIG9mIHRoZSBsYWNrIG9mIDMnCiAgICAgIHRvIDUnIGV4b251Y2xlYXNlIGFjdGl2aXR5IGluICpUYXEqIHBvbHltZXJhc2UgKEZpZ3VyZSBTNCkuCiAgICAgIFF1YW50aXRhdGl2ZSBQQ1Igd2FzIGNvbmR1Y3RlZCB1c2luZyB0aGUgTHVuYcKuIFVuaXZlcnNhbCBxUENSIE1hc3RlciBNaXgKICAgICAgKENhdCMgTTMwMDNMLCBOZXcgRW5nbGFuZCBCaW9sYWJzKSBhbmQgY0ROQSBzeW50aGVzaXplZCBpbiBhIENGWDM4NCBUb3VjaOKEogogICAgICByZWFsLXRpbWUgUENSIGRldGVjdGlvbiBzeXN0ZW0gKEJpby1SYWQsIEhlcmN1bGVzLCBDQSwgVVNBKS4gQWxsIHJlYWN0aW9ucwogICAgICB3ZXJlIHBlcmZvcm1lZCBpbiB0cmlwbGljYXRlIGZvciBib3RoIGJpb2xvZ2ljYWwgYW5kIHRlY2huaWNhbCByZXBsaWNhdGVzLgogICAgICBUaGUgMuKIks6UzpRDdCBtZXRob2QgKExpdmFrIGFuZCBTY2htaXR0Z2VuIDIwMDEpIHdhcyB1c2VkIGZvciBkYXRhIGFuYWx5c2lzLAogICAgICB3aXRoICphY3RpbiogdXNlZCBhcyBhIHJlZmVyZW5jZSBnZW5lIChaaGFpIGV0IGFsLiAyMDE0KSB0byBub3JtYWxpemUKICAgICAgKnNlcGlhKiBhbmQgKnBoaUMzMSogUk5BIGxldmVscy4gU3VwcGxlbWVudGFyeSB0YWJsZXMgUzEgYW5kIFMyIHNob3cgdGhlCiAgICAgIHJhdyBkYXRhIGZvciB0aGUgcmVhbCB0aW1lIFBDUiBleHBlcmltZW50cyB0aGF0IHdlcmUgY2FycmllZCBvdXQgdG8KICAgICAgcXVhbnRpZnkgc2VwaWEgYW5kIHBoaUMzMSBSTkEgbGV2ZWxzLiBJZiBuL2EgaXMgbGlzdGVkIHRoZSBkYXRhIGlzIG5vdAogICAgICBhdmFpbGFibGUgYXMgdGhlIHRlY2huaWNhbCByZXBsaWNhdGUgZmFpbGVkLiBUaGUgbWVhbiB3YXMgY2FsY3VsYXRlZCBmcm9tCiAgICAgIHRoZSBvdGhlciByZXBsaWNhdGVzLiBTdXBwbGVtZW50YXJ5IFRhYmxlcyBTMyBhbmQgUzQgbGlzdCB0aGUKICAgICAgb2xpZ29udWNsZW90aWRlIHByaW1lcnMgdXNlZCBpbiB0aGlzIHN0dWR5LiBUaGUgU3VwcGxlbWVudGFyeSBGaWd1cmVzIHNob3cKICAgICAgaW1hZ2VzIG9mIGZsaWVzIGFuZCBETkEgc2VxdWVuY2VzIHRoYXQgc3VwcG9ydCB0aGUgZ2Vub21lIGxvY2F0aW9ucyBvZiB0aGUKICAgICAgdHJhbnNnZW5lcyBhbmQgZWRpdHMgaW4gdGhlIHRhcmdldGVkIGdlbmUuICMjIyBGaWxlcyBhbmQgdmFyaWFibGVzICMjIyMKICAgICAgRmlsZTogRmlndXJlX1MxLnRpZiAqKkRlc2NyaXB0aW9uOioqJmFtcDtuYnNwOyoqRklHVVJFIFMxLioqIFRyYW5zZ2VuaWMKICAgICAgZmxpZXMgc2hvd2luZyBmdWxsIGFuZCBwYXJ0aWFsIHJlc2N1ZSBvZiAqc2VwaWEqIGV5ZSBjb2xvciBwaGVub3R5cGUuIE1hbGUKICAgICAgKEEpIGFuZCBmZW1hbGVzIChCKSBmcm9tIHRoZSBOUFMgbGluZXMgdGhhdCBoYXZlIHRoZSBTRSsgRE5BIGNvbnN0cnVjdC4KICAgICAgTWFsZSAoQykgYW5kIGZlbWFsZXMgKEQpIGZyb20gdGhlIElOUFMgbGluZXMgdGhhdCBoYXZlIHRoZSBTRSthdHRQIEROQQogICAgICBjb25zdHJ1Y3QuIE5QUzRBNDgsIElOUFMyIGFuZCBJTlBTMyBzaG93cyBhIHBhcnRpYWwgZXllIGNvbG9yIHJlc2N1ZQogICAgICBwaGVub3R5cGUgY29tcGFyZWQgdG8gdGhlIG90aGVyIGZseSBsaW5lcy4gVGhlIG11dGFudCBmbGllcyB3aXRoIHRoZSBzZXBpYQogICAgICBleWUgY29sb3IgYXJlIGZyb20gdGhlICpzZSoxIGxpbmUgYW5kIFdUIGlzIHdpbGQgdHlwZS4gIyMjIyBGaWxlOgogICAgICBUYWJsZV9TMV9yZXZpc2VkLUZpbmFsLnhsc3ggKipEZXNjcmlwdGlvbjoqKiZhbXA7bmJzcDtSZWFsIHRpbWUgUENSIEN0CiAgICAgIHZhbHVlcyBmb3IgKnNlcGlhKiBhbmQgKmFjdGluKiBwbHVzIHJlbGF0aXZlIGV4cHJlc3Npb24gY2FsY3VsYXRpb25zICMjIyMjCiAgICAgIFZhcmlhYmxlcyZhbXA7bmJzcDsgKiAmYW1wO25ic3A7KlNhbXBsZSBOYW1lKjogUk5BIGV4dHJhY3Rpb24gc2FtcGxlCiAgICAgIG5hbWUmYW1wO25ic3A7ICogKlRhcmdldCo6IFRhcmdldCBnZW5lIG5hbWUmYW1wO25ic3A7ICogKkN0MSwgQ3QyLCBDdDMqOgogICAgICBUZWNobmljYWwgcmVwbGljYXRlcyBmb3IgdGFyZ2V0IGdlbmUgKiAmYW1wO25ic3A7KkF2ZXJhZ2UgQ3QqOiBNZWFuIEN0IG9mCiAgICAgIHRhcmdldCByZXBsaWNhdGVzICogJmFtcDtuYnNwOypSZWZlcmVuY2UqOiBSZWZlcmVuY2UgZ2VuZSBuYW1lICogKkN0MSwKICAgICAgQ3QyLCBDdDMqOiBUZWNobmljYWwgcmVwbGljYXRlcyBmb3IgcmVmZXJlbmNlIGdlbmUgKiAqQXZlcmFnZSBDdCo6IE1lYW4gQ3QKICAgICAgb2YgcmVmZXJlbmNlIHJlcGxpY2F0ZXMgKiAqZGVsdGFDdCo6IM6UQ3QgKHRhcmdldCBnZW5lIEN0IOKAkyByZWZlcmVuY2UgQ3QpICoKICAgICAgKmRlbHRhIGRlbHRhIEN0KjogzpTOlEN0IChzYW1wbGUgzpRDdCDigJMgbWVhbiDOlEN0IG9mIHJlZmVyZW5jZSkgKiAqRm9sZCBDaGFuZ2UKICAgICAgKDLiiJLOlM6UQ3QpKjogUmVsYXRpdmUgZXhwcmVzc2lvbiBmb2xkIGNoYW5nZSAjIyMjIEZpbGU6CiAgICAgIFRhYmxlX1MzX3JldmlzZWQtRmluYWwuZG9jeCAqKkRlc2NyaXB0aW9uOioqJmFtcDtuYnNwO09saWdvbnVjbGVvdGlkZQogICAgICBwcmltZXJzIHdlcmUgdXNlZCBpbiB0aGlzIHN0dWR5LiAjIyMjIyBWYXJpYWJsZXMgKiAmYW1wO25ic3A7KlByaW1lcgogICAgICBOYW1lKjogT2xpZ29udWNsZW90aWRlIHByaW1lciBuYW1lJmFtcDtuYnNwOyAqICZhbXA7bmJzcDsqU2VxdWVuY2UKICAgICAgKDXigLLihpIz4oCyKSo6IEROQSBzZXF1ZW5jZSZhbXA7bmJzcDsgIyMjIyBGaWxlOiBUYWJsZV9TMl9yZXZpc2VkLUZpbmFsLnhsc3gKICAgICAgKipEZXNjcmlwdGlvbjoqKiZhbXA7bmJzcDtSZWFsIHRpbWUgUENSIEN0IHZhbHVlcyBmb3IgKnBoaUMzMSogYW5kICphY3RpbioKICAgICAgcGx1cyByZWxhdGl2ZSBleHByZXNzaW9uIGNhbGN1bGF0aW9ucyAjIyMjIyBWYXJpYWJsZXMgKiAmYW1wO25ic3A7KlNhbXBsZQogICAgICBOYW1lKjogUk5BIGV4dHJhY3Rpb24gc2FtcGxlIG5hbWUgKiAqVGFyZ2V0KjogVGFyZ2V0IGdlbmUgbmFtZSAqICpDdDEsCiAgICAgIEN0MiwgQ3QzKjogVGVjaG5pY2FsIHJlcGxpY2F0ZXMgZm9yIHRhcmdldCBnZW5lICogJmFtcDtuYnNwOypBdmVyYWdlIEN0KjoKICAgICAgTWVhbiBDdCBvZiB0YXJnZXQgcmVwbGljYXRlcyAqICZhbXA7bmJzcDsqUmVmZXJlbmNlKjogUmVmZXJlbmNlIGdlbmUgbmFtZQogICAgICAqICpDdDEsIEN0MiwgQ3QzKjogVGVjaG5pY2FsIHJlcGxpY2F0ZXMgZm9yIHJlZmVyZW5jZSBnZW5lICogKkF2ZXJhZ2UgQ3QqOgogICAgICBNZWFuIEN0IG9mIHJlZmVyZW5jZSByZXBsaWNhdGVzICogKmRlbHRhQ3QqOiDOlEN0ICh0YXJnZXQgZ2VuZSBDdCDigJMKICAgICAgcmVmZXJlbmNlIEN0KSAqICpkZWx0YSBkZWx0YSBDdCo6IM6UzpRDdCAoc2FtcGxlIM6UQ3Qg4oCTIG1lYW4gzpRDdCBvZgogICAgICByZWZlcmVuY2UpICogKkZvbGQgQ2hhbmdlICgy4oiSzpTOlEN0KSo6IFJlbGF0aXZlIGV4cHJlc3Npb24gZm9sZCBjaGFuZ2UgIyMjIwogICAgICBGaWxlOiBGaWd1cmVfUzRfY29weS5wZGYgKipEZXNjcmlwdGlvbjoqKiZhbXA7bmJzcDtTZWcyUlRGIHNwZWNpZmljIHByaW1lcgogICAgICBkZXNpZ25lZCB0byBhbXBsaWZ5IHRoZSB3aWxkIHR5cGUgKnNlcGlhKiBnZW5lIGFuZCBub3QgdGhlICpzZTEqIG11dGFudC4KICAgICAgQWxpZ25tZW50IG9mIHdpbGQgdHlwZSAoV1QpIGFuZCAqc2UxKiBtdXRhbnQgRE5BIHNlcXVlbmNlcyB3aXRoIGxvY2F0aW9uCiAgICAgIG9mIHRoZSBTZWcyUlRGIHByaW1lciBzaG93bi4gIyMjIyBGaWxlOiBGaWd1cmVfUzJfY29weS5wZGYKICAgICAgKipEZXNjcmlwdGlvbjoqKiZhbXA7bmJzcDtTYW5nZXIgc2VxdWVuY2luZyByZXN1bHRzIG9mIEROQSBmcmFnbWVudHMKICAgICAgb2J0YWluZWQgYnkgc3BsaW5rZXJldHRlIFBDUi4mYW1wO25ic3A7U0UrIGxpbmVzIChBKSBTRSthdHRQIGxpbmVzIChCKS4KICAgICAgNeKAmVBCQUMgb3IgM+KAmVBCQUMgc2VxdWVuY2VzIHdlcmUgaWRlbnRpZmllZCBpbiB0aGUgc2VxdWVuY2VzIGFuZCBhcmUKICAgICAgaW5kaWNhdGVkLiAjIyMjIEZpbGU6IFRhYmxlX1M0X3JldmlzZWQtRmluYWwuZG9jeAogICAgICAqKkRlc2NyaXB0aW9uOioqJmFtcDtuYnNwO09saWdvbnVjbGVvdGlkZSBwcmltZXJzIHVzZWQgZm9yIHFQQ1IgIyMjIyMKICAgICAgVmFyaWFibGVzICogKlByaW1lciBOYW1lKjogT2xpZ29udWNsZW90aWRlIHByaW1lciBuYW1lJmFtcDtuYnNwOyAqCiAgICAgICZhbXA7bmJzcDsqU2VxdWVuY2UgKDXigLLihpIz4oCyKSo6IEROQSBzZXF1ZW5jZSZhbXA7bmJzcDsgKiAqUHJpbWVyCiAgICAgIGVmZmljaWVuY3kqOiBSZWFsLXRpbWUgUENSIGVmZmljaWVuY3kmYW1wO25ic3A7ICogKlLCsiBWYWx1ZSo6IENvZWZmaWNpZW50CiAgICAgIG9mIGRldGVybWluYXRpb24mYW1wO25ic3A7ICMjIyMgRmlsZTogRmlndXJlX1MzX2NvcHkudGlmCiAgICAgICoqRGVzY3JpcHRpb246KiomYW1wO25ic3A7VGhlIElOUFM0IFktbGlua2VkIGxpbmUgc2hvd3MgcGFydGlhbCByZXNjdWUgb2YKICAgICAgdGhlIHNlcGlhIGV5ZSBjb2xvciBpbiBtYWxlcy4gKEEpIEV5ZXMgb2YgdGhlIElOUFM0IGxpbmUgbWFsZXMgYW5kCiAgICAgIGZlbWFsZXMuIChCKSBTYW5nZXIgc2VxdWVuY2luZyByZXN1bHRzIG9mIEROQSBmcmFnbWVudHMgb2J0YWluZWQgYnkKICAgICAgc3BsaW5rZXJldHRlIFBDUi4mYW1wO25ic3A7NeKAmVBCQUMgc2VxdWVuY2Ugd2FzIGlkZW50aWZpZWQgaW4gdGhlIHNlcXVlbmNlcwogICAgICBhbmQgaXMgaW5kaWNhdGVkLiAjIyBDb2RlL3NvZnR3YXJlIFRoZSBmaWd1cmVzIGNhbiBiZSB2aWV3ZWQgdXNpbmcgYSBwZGYKICAgICAgcmVhZGVyLiBUYWJsZXMgUzEgYW5kIFMyIGNhbiBiZSBvcGVuZWQgaW4gRXhjZWwgYW5kIFRhYmxlcyBTMyBhbmQgUzQgdXNpbmcKICAgICAgV29yZC4gIyMgQWNjZXNzIGluZm9ybWF0aW9uIE90aGVyIHB1YmxpY2x5IGFjY2Vzc2libGUgbG9jYXRpb25zIG9mIHRoZQogICAgICBkYXRhOiAqCiAgICAgIFtodHRwczovL2RvaS5vcmcvMTAuMTExMS9pbWIuNzAwMDFdKGh0dHBzOi8vZG9pLm9yZy8xMC4xMTExL2ltYi43MDAwMSkKICAgICAgRGF0YSB3YXMgZGVyaXZlZCBmcm9tIHRoZSBmb2xsb3dpbmcgc291cmNlczogKiBEYXRhIGluIHRoaXMgZGF0YXNldCB3YXMKICAgICAgZGVyaXZlZCBmcm9tIHRoZSBhYm92ZSBwdWJsaWNhdGlvbiBhbmQgc3VwcGxlbWVudGFyeQogICAgICBpbmZvcm1hdGlvbi4mYW1wO25ic3A7CiAgICA8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.b2rbnzst9",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [{ "yearMonth": "2025-08", "total": 0 }],
+      "downloadCount": 2,
+      "downloadsOverTime": [{ "yearMonth": "2025-08", "total": 2 }],
+      "referenceCount": 0,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2025", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2025-09-02T16:48:04.000Z",
+      "registered": "2025-09-02T16:48:05.000Z",
+      "published": "2025",
+      "updated": "2025-09-02T16:48:05.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.5061/dryad.b2rbnzst9", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [{ "id": "10.1111/imb.70001", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}
