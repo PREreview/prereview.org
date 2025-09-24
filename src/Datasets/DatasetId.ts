@@ -9,6 +9,12 @@ export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadD
 
 export const DatasetId = Schema.Union(DryadDatasetId)
 
+export const DatasetIdFromDoi = Schema.transform(DryadDatasetId.fields.value, Schema.typeSchema(DatasetId), {
+  strict: true,
+  decode: doi => new DryadDatasetId({ value: doi }),
+  encode: datasetId => datasetId.value,
+})
+
 export const DatasetIdFromString = Schema.transform(
   Schema.TemplateLiteralParser('doi:', DryadDatasetId.fields.value),
   Schema.typeSchema(DatasetId),
@@ -20,5 +26,7 @@ export const DatasetIdFromString = Schema.transform(
 )
 
 export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DryadDatasetId.fields.value)
+
+export const parseDatasetDoi: (input: string) => Option.Option<DatasetId> = Schema.decodeOption(DatasetIdFromDoi)
 
 export const fromUrl: (url: URL) => Option.Option<DatasetId> = Option.none

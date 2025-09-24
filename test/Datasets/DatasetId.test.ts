@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Option } from 'effect'
+import { Option, Tuple } from 'effect'
 import * as _ from '../../src/Datasets/DatasetId.js'
 import * as Datasets from '../../src/Datasets/index.js'
 import { Doi } from '../../src/types/index.js'
@@ -19,6 +19,23 @@ describe('isDatasetDoi', () => {
       const actual = _.isDatasetDoi(doi)
 
       expect(actual).toBeFalsy()
+    },
+  )
+})
+
+describe('parseDatasetDoi', () => {
+  test.prop([fc.datasetId().map(id => Tuple.make(id.value, id))])('with a dataset DOI', ([doi, expected]) => {
+    const actual = _.parseDatasetDoi(doi)
+
+    expect(actual).toStrictEqual(Option.some(expected))
+  })
+
+  test.prop([fc.oneof(fc.doi(fc.constantFrom('0001', '1', '123', '1000')), fc.nonDatasetDoi())])(
+    'with a non-dataset DOI',
+    doi => {
+      const actual = _.parseDatasetDoi(doi)
+
+      expect(actual).toStrictEqual(Option.none())
     },
   )
 })
