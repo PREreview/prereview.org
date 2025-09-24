@@ -1,4 +1,5 @@
-import { Option, type Predicate, Schema, Tuple } from 'effect'
+import { Url } from '@effect/platform'
+import { flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.js'
 
 export type DatasetId = typeof DatasetId.Type
@@ -29,4 +30,14 @@ export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = S
 
 export const parseDatasetDoi: (input: string) => Option.Option<DatasetId> = Schema.decodeOption(DatasetIdFromDoi)
 
-export const fromUrl: (url: URL) => Option.Option<DatasetId> = Option.none
+export const fromUrl = (url: URL): Option.Option<DatasetId> =>
+  pipe(
+    Match.value(Url.mutate(url, url => url.hostname.replace('www.', ''))),
+    Match.when(
+      url => ['doi.org', 'dx.doi.org'].includes(url.hostname),
+      url => extractFromDoiPath(url.pathname.slice(1)),
+    ),
+    Match.orElse(Option.none<DatasetId>),
+  )
+
+const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)

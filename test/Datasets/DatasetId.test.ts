@@ -41,7 +41,7 @@ describe('parseDatasetDoi', () => {
 })
 
 describe('fromUrl', () => {
-  test.failing.prop([fc.datasetId().map(id => [Doi.toUrl(id.value), id] as const)], {
+  test.prop([fc.datasetId().map(id => [Doi.toUrl(id.value), id] as const)], {
     examples: [
       [
         [
