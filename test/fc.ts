@@ -549,7 +549,8 @@ export const nonDatasetDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.not
 
 export const datasetDoi = (): fc.Arbitrary<Datasets.DatasetId['value']> => datasetId().map(id => id.value)
 
-export const nonPreprintUrl = (): fc.Arbitrary<URL> => fc.oneof(url(), unsupportedPreprintUrl())
+export const nonPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.oneof(url(), supportedDatasetUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
 
 export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonlyArray<IndeterminatePreprintId>]> =>
   fc.oneof(
@@ -1097,8 +1098,16 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
 
 export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId())
 
+export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
+  fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
+
+export const supportedDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DatasetId]> => fc.oneof(dryadDatasetUrl())
+
 export const dryadDatasetId = (): fc.Arbitrary<Datasets.DryadDatasetId> =>
   doi(constant('5061')).map(doi => new Datasets.DryadDatasetId({ value: doi }))
+
+export const dryadDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DryadDatasetId]> =>
+  dryadDatasetId().map(id => [new URL(`https://datadryad.org/dataset/doi:${id.value}`), id])
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 

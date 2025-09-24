@@ -1,4 +1,4 @@
-import { type Predicate, Schema, Tuple } from 'effect'
+import { Option, type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.js'
 
 export type DatasetId = typeof DatasetId.Type
@@ -20,3 +20,5 @@ export const DatasetIdFromString = Schema.transform(
 )
 
 export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = Schema.is(DryadDatasetId.fields.value)
+
+export const fromUrl: (url: URL) => Option.Option<DatasetId> = Option.none
