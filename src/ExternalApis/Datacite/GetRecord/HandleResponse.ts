@@ -5,7 +5,7 @@ import * as Record from '../Record.ts'
 
 export const HandleResponse = flow(
   HttpClientResponse.filterStatus(Equal.equals(StatusCodes.OK)),
-  Effect.andThen(HttpClientResponse.schemaBodyJson(Record.ResponseSchema(Record.Record))),
+  Effect.andThen(HttpClientResponse.schemaBodyJson(Record.RecordResponseSchema)),
   Effect.mapError(
     flow(
       Match.value,

@@ -83,12 +83,15 @@ export class Record extends Schema.Class<Record>('Record')({
   url: Schema.URL,
 }) {}
 
-export const ResponseSchema = <A, I, R>(attributes: Schema.Schema<A, I, R>) =>
-  Schema.transform(Schema.Struct({ data: Schema.Struct({ attributes }) }), Schema.typeSchema(attributes), {
+export const RecordResponseSchema = Schema.transform(
+  Schema.Struct({ data: Schema.Struct({ attributes: Record }) }),
+  Schema.typeSchema(Record),
+  {
     strict: true,
     decode: input => input.data.attributes,
     encode: attributes => ({ data: { attributes } }),
-  })
+  },
+)
 
 export class RecordIsNotFound extends Data.TaggedError('RecordIsNotFound')<{ cause?: unknown }> {}
 

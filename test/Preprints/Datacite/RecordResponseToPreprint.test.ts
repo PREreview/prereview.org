@@ -255,7 +255,7 @@ test.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
       Effect.andThen(recordToPreprint),
     )
 
@@ -270,7 +270,7 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
       const actual = yield* pipe(
         FileSystem.FileSystem,
         Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
         Effect.andThen(recordToPreprint),
         Effect.flip,
       )
@@ -284,7 +284,7 @@ test.each(['dryad', 'dryad-html'])('returns a specific error for an unsupported 
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
       Effect.andThen(recordToPreprint),
       Effect.flip,
     )
