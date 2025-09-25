@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetRecord } from './Record.ts'
+import { GetRecord } from './GetRecord/index.ts'
 
 export { Record, ResponseSchema } from './Record.ts'
 

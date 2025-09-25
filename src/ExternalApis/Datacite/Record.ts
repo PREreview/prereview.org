@@ -1,6 +1,4 @@
-import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { Array, Data, Effect, Function, pipe, Schema, String } from 'effect'
-import * as StatusCodes from '../../StatusCodes.ts'
+import { Array, Data, Function, Schema, String } from 'effect'
 import { Doi, Temporal } from '../../types/index.ts'
 
 const EmptyStringAsUndefinedSchema = Schema.transform(
@@ -92,30 +90,6 @@ export const ResponseSchema = <A, I, R>(attributes: Schema.Schema<A, I, R>) =>
     }),
   })
 
-class RecordIsNotFound extends Data.TaggedError('RecordIsNotFound')<{ cause?: unknown }> {}
+export class RecordIsNotFound extends Data.TaggedError('RecordIsNotFound')<{ cause?: unknown }> {}
 
-class RecordIsUnavailable extends Data.TaggedError('RecordIsUnavailable')<{ cause?: unknown }> {}
-
-export const GetRecord = (
-  doi: Doi.Doi,
-): Effect.Effect<Record, RecordIsNotFound | RecordIsUnavailable, HttpClient.HttpClient> =>
-  pipe(
-    HttpClient.get(`https://api.datacite.org/dois/${encodeURIComponent(doi)}`),
-    Effect.mapError(error => new RecordIsUnavailable({ cause: error })),
-    Effect.andThen(
-      HttpClientResponse.matchStatus({
-        [StatusCodes.OK]: response => Effect.succeed(response),
-        [StatusCodes.NotFound]: response => new RecordIsNotFound({ cause: response }),
-        orElse: response => new RecordIsUnavailable({ cause: response }),
-      }),
-    ),
-    Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseSchema(Record))),
-    Effect.andThen(body => body.data.attributes),
-    Effect.catchTags({
-      ParseError: error => new RecordIsUnavailable({ cause: error }),
-      ResponseError: error => new RecordIsUnavailable({ cause: error }),
-    }),
-    Effect.tapErrorTag('RecordIsUnavailable', error =>
-      Effect.logError('Failed to get record from DataCite').pipe(Effect.annotateLogs({ error })),
-    ),
-  )
+export class RecordIsUnavailable extends Data.TaggedError('RecordIsUnavailable')<{ cause?: unknown }> {}
