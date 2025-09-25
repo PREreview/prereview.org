@@ -40,7 +40,7 @@ import { home } from '../../home-page/index.ts'
 import * as Keyv from '../../keyv.ts'
 import { LegacyPrereviewApi } from '../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { authenticateError } from '../../log-in/index.ts'
+import { authenticateError, logIn } from '../../log-in/index.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
 import { Nodemailer } from '../../nodemailer.ts'
 import type * as OpenAlex from '../../OpenAlex/index.ts'
@@ -163,6 +163,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const env = {
     authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
+    refererHeader: Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
     body,
     commentsForReview,
     locale,
@@ -201,6 +202,7 @@ export const nonEffectRouter: Effect.Effect<
 
 export interface Env {
   authorizationHeader?: string
+  refererHeader?: string
   body: unknown
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
@@ -463,6 +465,23 @@ const routerWithoutHyperTs = pipe(
             reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
               getReviewRequests: EffectToFpts.toTaskEitherK(ReviewRequests.search, env.runtime),
             }),
+      ),
+    ),
+    pipe(
+      Routes.logInMatch.parser,
+      P.map(
+        () => (env: Env) =>
+          T.of(
+            logIn({ locale: env.locale, referer: env.refererHeader })({
+              orcidOauth: {
+                authorizeUrl: env.orcidOauth.authorizeUrl,
+                clientId: env.orcidOauth.clientId,
+                clientSecret: Redacted.value(env.orcidOauth.clientSecret),
+                tokenUrl: env.orcidOauth.tokenUrl,
+              },
+              publicUrl: env.publicUrl,
+            }),
+          ),
       ),
     ),
     pipe(
