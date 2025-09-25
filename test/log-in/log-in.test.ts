@@ -20,65 +20,49 @@ import { runMiddleware } from '../middleware.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('logIn', () => {
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.supportedLocale(),
-    fc
-      .webUrl()
-      .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
-  ])('when there is a Referer header', async (orcidOauth, publicUrl, locale, [connection, referer]) => {
-    const actual = await runMiddleware(_.logIn({ locale, orcidOauth, publicUrl }), connection)()
+  test.prop([fc.oauth(), fc.origin(), fc.supportedLocale(), fc.webUrl()])(
+    'when there is a Referer header',
+    (orcidOauth, publicUrl, locale, referer) => {
+      const actual = _.logIn({ locale, referer })({ orcidOauth, publicUrl })
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: StatusCodes.Found },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: new URL(
-            `?${new URLSearchParams({
-              lang: OrcidLocale.fromSupportedLocale(locale),
-              client_id: orcidOauth.clientId,
-              response_type: 'code',
-              redirect_uri: new URL('/orcid', publicUrl).toString(),
-              scope: '/authenticate',
-              state: referer,
-            }).toString()}`,
-            orcidOauth.authorizeUrl,
-          ).href,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.Found,
+        location: new URL(
+          `?${new URLSearchParams({
+            lang: OrcidLocale.fromSupportedLocale(locale),
+            client_id: orcidOauth.clientId,
+            response_type: 'code',
+            redirect_uri: new URL('/orcid', publicUrl).toString(),
+            scope: '/authenticate',
+            state: referer,
+          }).toString()}`,
+          orcidOauth.authorizeUrl,
+        ),
+      })
+    },
+  )
 
   test.prop([fc.oauth(), fc.origin(), fc.supportedLocale(), fc.connection()])(
     "when there isn't a Referer header",
-    async (orcidOauth, publicUrl, locale, connection) => {
-      const actual = await runMiddleware(_.logIn({ locale, orcidOauth, publicUrl }), connection)()
+    (orcidOauth, publicUrl, locale) => {
+      const actual = _.logIn({ locale })({ orcidOauth, publicUrl })
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: StatusCodes.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                lang: OrcidLocale.fromSupportedLocale(locale),
-                client_id: orcidOauth.clientId,
-                response_type: 'code',
-                redirect_uri: new URL('/orcid', publicUrl).toString(),
-                scope: '/authenticate',
-                state: '',
-              }).toString()}`,
-              orcidOauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.Found,
+        location: new URL(
+          `?${new URLSearchParams({
+            lang: OrcidLocale.fromSupportedLocale(locale),
+            client_id: orcidOauth.clientId,
+            response_type: 'code',
+            redirect_uri: new URL('/orcid', publicUrl).toString(),
+            scope: '/authenticate',
+            state: '',
+          }).toString()}`,
+          orcidOauth.authorizeUrl,
+        ),
+      })
     },
   )
 })

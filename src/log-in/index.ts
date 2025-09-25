@@ -1,4 +1,5 @@
-import { Function, Option, String, flow, pipe } from 'effect'
+import { UrlParams } from '@effect/platform'
+import { Function, Option, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -6,7 +7,7 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -17,8 +18,9 @@ import { timeoutRequest } from '../fetch.ts'
 import { setFlashMessage } from '../flash-message.ts'
 import type { SupportedLocale } from '../locales/index.ts'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
-import { handlePageResponse } from '../response.ts'
+import { RedirectResponse, handlePageResponse } from '../response.ts'
 import { homeMatch, orcidCodeMatch } from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 import { NonEmptyString, OrcidLocale } from '../types/index.ts'
 import { type OrcidId, isOrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
@@ -38,22 +40,15 @@ export interface IsUserBlockedEnv {
   isUserBlocked: (user: OrcidId) => boolean
 }
 
-export const logIn = pipe(
-  RM.of({}),
-  RM.apS(
-    'state',
-    RM.decodeHeader(
-      'Referer',
-      flow(Option.liftPredicate(String.isString), Option.match({ onNone: () => E.right(''), onSome: E.right })),
-    ),
-  ),
-  RM.apS(
-    'lang',
-    RM.asks(({ locale }: { locale: SupportedLocale }) => OrcidLocale.fromSupportedLocale(locale)),
-  ),
-  RM.ichainW(({ state, lang }) => requestAuthorizationCode('/authenticate')(state, { lang })),
-  R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv & { locale: SupportedLocale }>()),
-)
+export const logIn = ({ locale, referer }: { locale: SupportedLocale; referer?: string }) =>
+  pipe(
+    R.of({}),
+    R.let('state', () => Option.getOrElse(Option.fromNullable(referer), () => '')),
+    R.let('locale', () => locale),
+    R.chain(authorizationRequestUrl),
+    R.map(url => RedirectResponse({ location: url, status: StatusCodes.Found })),
+    R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv>()),
+  )
 
 export const logOut = pipe(
   RM.redirect(format(homeMatch.formatter, {})),
@@ -62,6 +57,23 @@ export const logOut = pipe(
   RM.ichain(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
 )
+
+const authorizationRequestUrl = ({ locale, state }: { locale: SupportedLocale; state: string }) =>
+  R.asks(({ oauth: { authorizeUrl, clientId, redirectUri } }: OAuthEnv) => {
+    return new URL(
+      `?${UrlParams.toString(
+        UrlParams.fromInput({
+          lang: OrcidLocale.fromSupportedLocale(locale),
+          client_id: clientId,
+          response_type: 'code',
+          redirect_uri: redirectUri.href,
+          scope: '/authenticate',
+          state,
+        }),
+      )}`,
+      authorizeUrl,
+    )
+  })
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 

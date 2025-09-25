@@ -26,6 +26,7 @@ import { authenticate, logIn, logOut, type IsUserBlockedEnv, type OrcidOAuthEnv 
 import type { TemplatePageEnv } from './page.ts'
 import type { GetPreprintIdEnv } from './preprint.ts'
 import type { PublicUrlEnv } from './public-url.ts'
+import { handleResponse } from './response.ts'
 import { reviewsData } from './reviews-data/index.ts'
 import { logInMatch, logOutMatch, orcidCodeMatch, reviewsDataMatch, scietyListMatch, usersDataMatch } from './routes.ts'
 import { scietyList, type ScietyListEnv } from './sciety-list/index.ts'
@@ -52,7 +53,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   [
     pipe(
       logInMatch.parser,
-      P.map(() => logIn),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apSW(
+            'referer',
+            RM.decodeHeader('Referer', input => (typeof input === 'string' ? E.right(input) : E.right(undefined))),
+          ),
+          RM.apSW(
+            'locale',
+            RM.asks((env: RouterEnv) => env.locale),
+          ),
+          RM.bindW('response', RM.fromReaderK(logIn)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       logOutMatch.parser,
