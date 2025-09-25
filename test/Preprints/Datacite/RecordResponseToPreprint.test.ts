@@ -4,7 +4,7 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, Schema, Struct } from 'effect'
+import { Effect, pipe, Schema } from 'effect'
 import { Datacite } from '../../../src/ExternalApis/index.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.ts'
@@ -256,8 +256,6 @@ test.each([
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
-      Effect.andThen(Struct.get('data')),
-      Effect.andThen(Struct.get('attributes')),
       Effect.andThen(recordToPreprint),
     )
 
@@ -273,8 +271,6 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
         FileSystem.FileSystem,
         Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
         Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
-        Effect.andThen(Struct.get('data')),
-        Effect.andThen(Struct.get('attributes')),
         Effect.andThen(recordToPreprint),
         Effect.flip,
       )
@@ -289,8 +285,6 @@ test.each(['dryad', 'dryad-html'])('returns a specific error for an unsupported 
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
       Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.ResponseSchema(Datacite.Record)))),
-      Effect.andThen(Struct.get('data')),
-      Effect.andThen(Struct.get('attributes')),
       Effect.andThen(recordToPreprint),
       Effect.flip,
     )
