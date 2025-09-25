@@ -291,6 +291,35 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2023-11-17'),
     leads: [{ name: 'Timo Betz', orcid: OrcidId('0000-0002-1548-0655') }],
   },
+  cibca: {
+    name: 'Club Comunidad Iberoamericana de Ciencia Abierta (CIbCA)',
+    description: html`
+      <div lang="es-419" dir="ltr">
+        <p>
+          La Fundación Openlab Ecuador es una organización sin fines de lucro con sede en Quito, creada en 2020, que
+          actúa como un laboratorio ciudadano dedicado a la innovación social abierta.
+        </p>
+
+        <p>
+          Su misión se centra en fomentar el diálogo y la acción en ámbitos como la cultura tecnológica, la
+          participación ciudadana, la ciencia abierta, la educación crítica, los derechos digitales y el software libre.
+        </p>
+
+        <p>
+          El Club de la Comunidad Iberoamericano de Ciencia Abierta es la comunidad que impulsa y acompaña al Congreso
+          Iberoamericano de Ciencia Abierta en el fortalecimiento de prácticas abiertas de evaluación, con especial
+          énfasis en la revisión por pares abierta (<span lang="en">Open Peer Review</span>). Un espacio para aprender,
+          colaborar y transformar colectivamente la forma en que se valida el conocimiento en nuestra región.
+        </p>
+      </div>
+    `,
+    added: Temporal.PlainDate.from('2025-09-25'),
+    leads: [
+      { name: 'Francisco Silva-Garcés', orcid: OrcidId('0000-0002-2635-1293') },
+      { name: 'Rosario Rogel-Salazar', orcid: OrcidId('0000-0002-6018-0635') },
+    ],
+    joinLink: new URL('https://cienciaabierta.info/'),
+  },
   'elife-ambassadors': {
     name: 'eLife Community Ambassadors',
     description: html`
