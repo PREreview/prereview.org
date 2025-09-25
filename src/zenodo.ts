@@ -101,6 +101,7 @@ const isReviewRequested = (preprint: PreprintId): RT.ReaderTask<IsReviewRequeste
 const getPrereviewsPageForSciety = flow(
   (page: number) =>
     new URLSearchParams({
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
       page: page.toString(),
       size: '100',
       sort: '-mostrecent',
@@ -119,6 +120,7 @@ const getPrereviewsPageForSciety = flow(
 
 export const getPrereviewsForSciety = pipe(
   new URLSearchParams({
+    q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
     page: '1',
     size: '1',
     resource_type: 'publication::publication-peerreview',
@@ -168,6 +170,7 @@ export const getRecentPrereviewsFromZenodo = ({
             resource_type: 'publication::publication-peerreview',
             access_status: 'open',
             q: [
+              'metadata.related_identifiers.resource_type.id:"publication-preprint"',
               field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
               language ? `language:"${iso6391To3(language)}"` : '',
               query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : '',
@@ -292,10 +295,13 @@ export const getPrereviewFromZenodo = (id: number) =>
 export const getPrereviewsForProfileFromZenodo = flow(
   (profile: ProfileId.ProfileId) =>
     new URLSearchParams({
-      q: ProfileId.match(profile, {
-        onOrcid: profile => `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
-        onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
-      }),
+      q: [
+        'metadata.related_identifiers.resource_type.id:"publication-preprint"',
+        ProfileId.match(profile, {
+          onOrcid: profile => `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
+          onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+        }),
+      ].join(' AND '),
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -332,7 +338,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
 export const getPrereviewsForUserFromZenodo = flow(
   (user: User) =>
     new URLSearchParams({
-      q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
+      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -369,7 +375,7 @@ export const getPrereviewsForUserFromZenodo = flow(
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
     new URLSearchParams({
-      q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -409,7 +415,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
 export const getPrereviewsForPreprintFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({
-      q: `related.identifier:"${toExternalIdentifier(preprint).identifier}"`,
+      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${toExternalIdentifier(preprint).identifier}"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

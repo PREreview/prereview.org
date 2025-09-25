@@ -15,7 +15,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can see my own PREreviews', async ({ 
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda")',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -194,7 +194,7 @@ test.extend(canLogIn).extend(areLoggedIn)('might not load my PREreviews in time'
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097 metadata.creators.person_or_org.name:"Orange Panda"',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -356,7 +356,9 @@ test('can find and view a review', async ({ fetch, page }) => {
   fetch.get(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+      },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -442,7 +444,9 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   fetch.get(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+      },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -550,7 +554,9 @@ test('can find and view comments to a review', async ({ fetch, page }) => {
   fetch.get(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+      },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -688,7 +694,9 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
   fetch.get(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+      },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )

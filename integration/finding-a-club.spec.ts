@@ -71,7 +71,7 @@ test('can find and view a club', async ({ fetch, page }) => {
       name: 'club-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -189,7 +189,7 @@ test('might not load the PREreviews in time', async ({ fetch, page }) => {
       name: 'club-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -308,7 +308,7 @@ test('the list might be empty', async ({ fetch, page }) => {
       name: 'club-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',

@@ -201,7 +201,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
               access_status: 'open',
-              q: `${
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND ${
                 field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
               }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
             },
@@ -352,6 +352,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
+            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
             page,
             size: '5',
             sort: 'publication-desc',
@@ -492,6 +493,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       {
         url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
+          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
           page,
           size: '5',
           sort: 'publication-desc',
@@ -526,6 +528,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
+            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
             page,
             size: '5',
             sort: 'publication-desc',
@@ -552,6 +555,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
+            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
             page,
             size: '5',
             sort: 'publication-desc',
@@ -1386,7 +1390,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -1590,7 +1594,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -1955,7 +1959,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
@@ -2331,7 +2335,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
@@ -2382,7 +2386,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
@@ -2413,7 +2417,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       {
         url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
-          q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+          q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
@@ -2546,7 +2550,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
@@ -2639,7 +2643,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -2732,7 +2736,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
               access_status: 'open',
@@ -2767,7 +2771,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
             access_status: 'open',
@@ -2836,7 +2840,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
               access_status: 'open',

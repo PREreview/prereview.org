@@ -75,7 +75,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -230,7 +230,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -321,7 +321,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.name:"Blue Sheep"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Blue Sheep"',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -439,7 +439,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.name:"Orange Panda"',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Orange Panda"',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -462,7 +462,7 @@ test('the list might be empty', async ({ fetch, page }) => {
       name: 'profile-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
         size: 100,
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',

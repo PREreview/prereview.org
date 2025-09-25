@@ -199,7 +199,9 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
   fetch.get(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+      },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )

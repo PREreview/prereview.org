@@ -1129,7 +1129,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       {
         name: '10.1101/12345678 reviews',
         url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.1101/12345678"' },
+        query: {
+          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/12345678"',
+        },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )
@@ -1664,7 +1666,9 @@ export const willPublishAReview: Fixtures<
         {
           name: 'reload-preprint-reviews',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+          query: {
+            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+          },
           functionMatcher: (_, req) => req.cache === 'reload',
         },
         { status: StatusCodes.ServiceUnavailable },
@@ -1828,7 +1832,9 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
         {
           name: 'reload-preprint-reviews',
           url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+          query: {
+            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
+          },
           functionMatcher: (_, req) => req.cache === 'reload',
         },
         { status: StatusCodes.ServiceUnavailable },
