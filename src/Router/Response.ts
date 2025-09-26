@@ -42,7 +42,16 @@ export const toHttpServerResponse = (
         state: new URL(`${publicUrl.origin}${response.location}`).href,
       })
 
-      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
+      return yield* HttpServerResponse.redirect(location, {
+        status: StatusCodes.Found,
+        cookies: Boolean.match(response.location === format(Routes.homeMatch.formatter, {}), {
+          onTrue: () =>
+            Cookies.fromIterable([
+              Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+            ]),
+          onFalse: () => Cookies.empty,
+        }),
+      })
     }
 
     const locale = yield* Locale
