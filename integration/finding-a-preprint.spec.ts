@@ -102,7 +102,7 @@ test('might not load PREreviews in time', async ({ fetch, page }) => {
       },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    { delay: Duration.toMillis('2.5 seconds') },
+    { delay: Duration.toMillis('5.5 seconds') },
   )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })

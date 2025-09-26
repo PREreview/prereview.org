@@ -1217,7 +1217,7 @@ test('might not load the older reviews in time', async ({ fetch, page }) => {
         },
       }),
     },
-    { delay: Duration.toMillis('2.5 seconds'), overwriteRoutes: true },
+    { delay: Duration.toMillis('5.5 seconds'), overwriteRoutes: true },
   )
 
   await page.goto('/reviews', { waitUntil: 'commit' })

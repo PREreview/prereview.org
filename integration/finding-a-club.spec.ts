@@ -294,7 +294,7 @@ test('might not load the PREreviews in time', async ({ fetch, page }) => {
         },
       }),
     },
-    { delay: Duration.toMillis('2.5 seconds') },
+    { delay: Duration.toMillis('5.5 seconds') },
   )
 
   await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })

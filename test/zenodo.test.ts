@@ -201,9 +201,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
               access_status: 'open',
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND ${
-                field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
-              }${field && language ? ' AND ' : ''}${language ? `language:"${iso6391To3(language)}"` : ''}${(field || language) && query ? ' AND ' : ''}${query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint"${
+                field ? ` AND custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
+              }${language ? ` AND language:"${iso6391To3(language)}"` : ''}${query ? ` AND (title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
             },
           },
           {
