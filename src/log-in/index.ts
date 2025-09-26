@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { Function, Option, flow, pipe } from 'effect'
+import { Function, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -40,12 +40,12 @@ export interface IsUserBlockedEnv {
   isUserBlocked: (user: OrcidId) => boolean
 }
 
-export const logIn = ({ locale, referer }: { locale: SupportedLocale; referer?: string }) =>
+export const logIn = ({ locale }: { locale: SupportedLocale }) =>
   pipe(
     R.of({}),
-    R.let('state', () => Option.getOrElse(Option.fromNullable(referer), () => '')),
+    R.let('state', () => ''),
     R.let('locale', () => locale),
-    R.chain(authorizationRequestUrl),
+    R.chainW(authorizationRequestUrl),
     R.map(url => RedirectResponse({ location: url, status: StatusCodes.Found })),
     R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv>()),
   )

@@ -166,7 +166,6 @@ export const nonEffectRouter: Effect.Effect<
 
   const env = {
     authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
-    refererHeader: Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
     body,
     commentsForReview,
     locale,
@@ -208,7 +207,6 @@ export const nonEffectRouter: Effect.Effect<
 
 export interface Env {
   authorizationHeader?: string
-  refererHeader?: string
   body: unknown
   commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
@@ -478,7 +476,7 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           T.of(
-            logIn({ locale: env.locale, referer: env.refererHeader })({
+            logIn({ locale: env.locale })({
               orcidOauth: {
                 authorizeUrl: env.orcidOauth.authorizeUrl,
                 clientId: env.orcidOauth.clientId,
