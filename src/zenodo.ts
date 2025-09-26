@@ -182,7 +182,7 @@ export const getRecentPrereviewsFromZenodo = ({
       ),
     ),
     RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
+    RTE.local(timeoutRequest(5000)),
     RTE.bindW(
       'hits',
       RTE.fromOptionK(() => 'not-found' as const)(({ records }) =>
@@ -250,7 +250,7 @@ export const getPrereviewFromZenodo = (id: number) =>
     ),
     RTE.chainW(() => getRecord(id)),
     RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
+    RTE.local(timeoutRequest(5000)),
     RTE.filterOrElseW(
       pipe(isInCommunity, Predicate.and(isPeerReview), Predicate.and(isOpen)),
       () => 'not-found' as const,
@@ -309,7 +309,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
+  RTE.local(timeoutRequest(5000)),
   RTE.chainReaderTaskKW(
     flow(
       records => records.hits.hits,
@@ -346,7 +346,7 @@ export const getPrereviewsForUserFromZenodo = flow(
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
+  RTE.local(timeoutRequest(5000)),
   RTE.chainReaderTaskKW(
     flow(
       records => records.hits.hits,
@@ -383,7 +383,7 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
     }),
     getCommunityRecords('prereview-reviews'),
     RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
+    RTE.local(timeoutRequest(5000)),
     RTE.orElseFirstW(
       RTE.fromReaderIOK(
         flow(
@@ -423,7 +423,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
     }),
   getCommunityRecords('prereview-reviews'),
   RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
+  RTE.local(timeoutRequest(5000)),
   RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPreprintPrereview))),
   RTE.orElseFirstW(
     RTE.fromReaderIOK(
