@@ -13,29 +13,17 @@ import Keyv from 'keyv'
 import * as _ from '../../src/log-in/index.ts'
 import { homeMatch } from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { OrcidLocale } from '../../src/types/index.ts'
 import { UserC } from '../../src/user.ts'
 import * as fc from '../fc.ts'
 import { runMiddleware } from '../middleware.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
-test.prop([fc.oauth(), fc.origin(), fc.supportedLocale()])('logIn', (orcidOauth, publicUrl, locale) => {
-  const actual = _.logIn({ locale })({ orcidOauth, publicUrl })
+test('logIn', () => {
+  const actual = _.logIn
 
   expect(actual).toStrictEqual({
-    _tag: 'RedirectResponse',
-    status: StatusCodes.Found,
-    location: new URL(
-      `?${new URLSearchParams({
-        lang: OrcidLocale.fromSupportedLocale(locale),
-        client_id: orcidOauth.clientId,
-        response_type: 'code',
-        redirect_uri: new URL('/orcid', publicUrl).toString(),
-        scope: '/authenticate',
-        state: '',
-      }).toString()}`,
-      orcidOauth.authorizeUrl,
-    ),
+    _tag: 'LogInResponse',
+    location: '/',
   })
 })
 

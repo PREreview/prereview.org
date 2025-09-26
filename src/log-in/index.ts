@@ -1,4 +1,3 @@
-import { UrlParams } from '@effect/platform'
 import { Function, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
@@ -18,10 +17,9 @@ import { timeoutRequest } from '../fetch.ts'
 import { setFlashMessage } from '../flash-message.ts'
 import type { SupportedLocale } from '../locales/index.ts'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
-import { RedirectResponse, handlePageResponse } from '../response.ts'
+import { LogInResponse, handlePageResponse } from '../response.ts'
 import { homeMatch, orcidCodeMatch } from '../routes.ts'
-import * as StatusCodes from '../StatusCodes.ts'
-import { NonEmptyString, OrcidLocale } from '../types/index.ts'
+import { NonEmptyString } from '../types/index.ts'
 import { type OrcidId, isOrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 import { newSessionForUser } from '../user.ts'
@@ -40,15 +38,7 @@ export interface IsUserBlockedEnv {
   isUserBlocked: (user: OrcidId) => boolean
 }
 
-export const logIn = ({ locale }: { locale: SupportedLocale }) =>
-  pipe(
-    R.of({}),
-    R.let('state', () => ''),
-    R.let('locale', () => locale),
-    R.chainW(authorizationRequestUrl),
-    R.map(url => RedirectResponse({ location: url, status: StatusCodes.Found })),
-    R.local(addRedirectUri<OrcidOAuthEnv & PublicUrlEnv>()),
-  )
+export const logIn = LogInResponse({ location: format(homeMatch.formatter, {}) })
 
 export const logOut = pipe(
   RM.redirect(format(homeMatch.formatter, {})),
@@ -57,23 +47,6 @@ export const logOut = pipe(
   RM.ichain(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
 )
-
-const authorizationRequestUrl = ({ locale, state }: { locale: SupportedLocale; state: string }) =>
-  R.asks(({ oauth: { authorizeUrl, clientId, redirectUri } }: OAuthEnv) => {
-    return new URL(
-      `?${UrlParams.toString(
-        UrlParams.fromInput({
-          lang: OrcidLocale.fromSupportedLocale(locale),
-          client_id: clientId,
-          response_type: 'code',
-          redirect_uri: redirectUri.href,
-          scope: '/authenticate',
-          state,
-        }),
-      )}`,
-      authorizeUrl,
-    )
-  })
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 

@@ -473,20 +473,7 @@ const routerWithoutHyperTs = pipe(
     ),
     pipe(
       Routes.logInMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          T.of(
-            logIn({ locale: env.locale })({
-              orcidOauth: {
-                authorizeUrl: env.orcidOauth.authorizeUrl,
-                clientId: env.orcidOauth.clientId,
-                clientSecret: Redacted.value(env.orcidOauth.clientSecret),
-                tokenUrl: env.orcidOauth.tokenUrl,
-              },
-              publicUrl: env.publicUrl,
-            }),
-          ),
-      ),
+      P.map(() => () => T.of(logIn)),
     ),
     pipe(
       Routes.orcidErrorMatch.parser,
