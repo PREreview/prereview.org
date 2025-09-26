@@ -354,6 +354,21 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
 ])
 
+const AuthRouter = HttpRouter.fromIterable([
+  HttpRouter.makeRoute(
+    'GET',
+    Routes.LogInDemo,
+    Effect.andThen(
+      LogInDemoUser,
+      flow(
+        Match.value,
+        Match.tag('ForceLogInResponse', Response.handleForceLogInResponse),
+        Match.orElse(Response.toHttpServerResponse),
+      ),
+    ),
+  ),
+])
+
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
@@ -364,24 +379,13 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Funding, FundingPage),
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
     MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
-    HttpRouter.makeRoute(
-      'GET',
-      Routes.LogInDemo,
-      Effect.andThen(
-        LogInDemoUser,
-        flow(
-          Match.value,
-          Match.tag('ForceLogInResponse', Response.handleForceLogInResponse),
-          Match.orElse(Response.toHttpServerResponse),
-        ),
-      ),
-    ),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
   ]),
+  HttpRouter.concat(AuthRouter),
   HttpRouter.concat(DatasetReviewPages),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
