@@ -1,9 +1,10 @@
 import type { HttpClient } from '@effect/platform'
-import { Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
+import KeyvRedis from '@keyv/redis'
+import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
-import { DeprecatedLoggerEnv, ExpressConfig, Locale } from './Context.ts'
+import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from './Context.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { AddAnnotationsToLogger } from './DeprecatedServices.ts'
@@ -26,6 +27,7 @@ import * as Preprints from './Preprints/index.ts'
 import * as Prereview from './Prereview.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
+import { DataStoreRedis } from './Redis.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as ReviewPage from './review-page/index.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
@@ -356,6 +358,25 @@ export const Program = pipe(
       DatasetReviews.layer,
       GhostPage.layer,
       ZenodoInteractions.layer,
+      Layer.effect(
+        SessionStore,
+        Effect.gen(function* () {
+          const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
+
+          return {
+            cookie: 'session',
+            store: new Keyv.Keyv({
+              emitErrors: false,
+              namespace: 'sessions',
+              store: Option.match(maybeRedis, {
+                onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
+                onNone: () => new Map(),
+              }),
+              ttl: Duration.toMillis('30 days'),
+            }),
+          }
+        }),
+      ),
     ),
   ),
   Layer.provide(

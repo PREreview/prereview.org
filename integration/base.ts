@@ -1283,8 +1283,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           researchInterestsStore,
           reviewRequestStore,
           scietyListToken: NonEmptyString('secret'),
-          sessionCookie: 'session',
-          sessionStore: new Keyv(),
           slackOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',

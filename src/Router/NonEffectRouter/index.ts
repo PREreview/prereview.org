@@ -30,7 +30,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { clubProfile } from '../../club-profile-page/index.ts'
-import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.ts'
+import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, Zenodo } from '../../ExternalApis/index.ts'
@@ -87,6 +87,7 @@ export const nonEffectRouter: Effect.Effect<
   | ExpressConfig
   | SlackApiConfig
   | Cloudinary.CloudinaryApi
+  | SessionStore
   | PrereviewCoarNotifyConfig
   | Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
@@ -132,6 +133,7 @@ export const nonEffectRouter: Effect.Effect<
   const orcidOauth = yield* OrcidOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
+  const sessionStore = yield* SessionStore
 
   const commentsForReview = yield* CommentsForReview
   const users = {
@@ -197,7 +199,7 @@ export const nonEffectRouter: Effect.Effect<
     authorInviteStore: expressConfig.authorInviteStore,
     formStore: expressConfig.formStore,
     reviewRequestStore: expressConfig.reviewRequestStore,
-    sessionStore: expressConfig.sessionStore,
+    sessionStore: sessionStore.store,
     nodemailer,
   } satisfies Env
 

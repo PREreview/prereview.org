@@ -2,7 +2,7 @@ import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
 import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Redacted, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
-import { ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.ts'
+import { FlashMessage, Locale, SessionSecret, SessionStore } from '../Context.ts'
 import { OrcidOauth } from '../OrcidOauth.ts'
 import { PublicUrl } from '../public-url.ts'
 import { toPage, type ForceLogInResponse, type Response } from '../response.ts'
@@ -106,7 +106,7 @@ export const toHttpServerResponse = (
 
 export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogInResponse) {
   const secret = yield* SessionSecret
-  const { sessionCookie, sessionStore } = yield* ExpressConfig
+  const { cookie, store } = yield* SessionStore
 
   const sessionId = yield* Uuid.generateUuid
   const session = { user: response.user }
@@ -114,13 +114,13 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
   const encodedSessionId = yield* Schema.encode(Uuid.UuidSchema)(sessionId)
   const encodedSession = yield* Schema.encode(Schema.Struct({ user: UserSchema }))(session)
 
-  yield* Effect.tryPromise(() => sessionStore.set(encodedSessionId, encodedSession))
+  yield* Effect.tryPromise(() => store.set(encodedSessionId, encodedSession))
 
   return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
       Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
-      Cookies.unsafeMakeCookie(sessionCookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {
+      Cookies.unsafeMakeCookie(cookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {
         httpOnly: true,
         path: '/',
       }),

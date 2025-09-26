@@ -1,9 +1,16 @@
 import { FetchHttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Duration, Effect, Redacted } from 'effect'
+import { Effect, Redacted } from 'effect'
 import Keyv from 'keyv'
 import { app } from './app.ts'
-import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.ts'
+import {
+  AllowSiteCrawlers,
+  DeprecatedEnvVars,
+  DeprecatedLoggerEnv,
+  ExpressConfig,
+  SessionSecret,
+  SessionStore,
+} from './Context.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import { OrcidOauth } from './OrcidOauth.ts'
@@ -19,6 +26,7 @@ export const expressServer = Effect.gen(function* () {
   const templatePage = yield* TemplatePage
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
+  const sessionStore = yield* SessionStore
   const legacyPrereviewApi = yield* LegacyPrereviewApi
   const allowSiteCrawlers = yield* AllowSiteCrawlers
 
@@ -34,6 +42,8 @@ export const expressServer = Effect.gen(function* () {
     },
     publicUrl,
     secret: Redacted.value(secret),
+    sessionCookie: sessionStore.cookie,
+    sessionStore: sessionStore.store,
     templatePage,
     useCrowdinInContext,
     ...config,
@@ -73,13 +83,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     researchInterestsStore: new Keyv({ emitErrors: false, namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
     scietyListToken: env.SCIETY_LIST_TOKEN,
-    sessionCookie: 'session',
-    sessionStore: new Keyv({
-      emitErrors: false,
-      namespace: 'sessions',
-      store: createKeyvStore(),
-      ttl: Duration.toMillis('30 days'),
-    }),
     slackOauth: {
       authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
       clientId: env.SLACK_CLIENT_ID,

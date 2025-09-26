@@ -26,6 +26,8 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'nodemailer'
     | 'publicUrl'
     | 'secret'
+    | 'sessionCookie'
+    | 'sessionStore'
     | 'templatePage'
     | 'useCrowdinInContext'
   > &
@@ -50,3 +52,5 @@ export class Locale extends Context.Tag('Locale')<Locale, SupportedLocale>() {}
 export class FlashMessage extends Context.Tag('CurrentFlashMessage')<FlashMessage, typeof FlashMessageSchema.Type>() {}
 
 export class SessionSecret extends Context.Tag('SessionSecret')<SessionSecret, Redacted.Redacted>() {}
+
+export class SessionStore extends Context.Tag('SessionStore')<SessionStore, { cookie: string; store: Keyv.Keyv }>() {}

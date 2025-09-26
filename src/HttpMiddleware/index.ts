@@ -9,7 +9,7 @@ import {
 } from '@effect/platform'
 import cookieSignature from 'cookie-signature'
 import { Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
-import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionSecret } from '../Context.ts'
+import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionSecret, SessionStore } from '../Context.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
@@ -151,11 +151,12 @@ export const getFlashMessage = HttpMiddleware.make(app =>
 export const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const secret = yield* SessionSecret
-    const { sessionCookie, sessionStore, userOnboardingStore } = yield* ExpressConfig
+    const { cookie, store } = yield* SessionStore
+    const { userOnboardingStore } = yield* ExpressConfig
 
     const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(
-        Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(sessionCookie)) }),
+        Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(cookie)) }),
       ),
       Effect.andThen(({ session }) => cookieSignature.unsign(session, Redacted.value(secret))),
       Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
@@ -166,7 +167,7 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       onNone: () => Effect.succeedNone,
       onSome: sessionId =>
         pipe(
-          Effect.tryPromise(() => sessionStore.get(sessionId)),
+          Effect.tryPromise(() => store.get(sessionId)),
           Effect.andThen(Schema.decodeUnknown(Schema.Struct({ user: UserSchema }))),
           Effect.option,
         ),
