@@ -39,19 +39,13 @@ export const toHttpServerResponse = (
 
       const location = yield* generateAuthorizationRequestUrl({
         scope: '/authenticate',
-        state: new URL(`${publicUrl.origin}${response.location}`).href,
+        state:
+          response.location !== format(Routes.homeMatch.formatter, {})
+            ? new URL(`${publicUrl.origin}${response.location}`).href
+            : '',
       })
 
-      return yield* HttpServerResponse.redirect(location, {
-        status: StatusCodes.Found,
-        cookies: Boolean.match(response.location === format(Routes.homeMatch.formatter, {}), {
-          onTrue: () =>
-            Cookies.fromIterable([
-              Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
-            ]),
-          onFalse: () => Cookies.empty,
-        }),
-      })
+      return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
     }
 
     const locale = yield* Locale
