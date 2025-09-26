@@ -3,6 +3,7 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.ts'
+import { AddAnnotationsToLogger } from '../DeprecatedServices.ts'
 import * as EffectToFpts from '../EffectToFpts.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
 import * as FptsToEffect from '../FptsToEffect.ts'
@@ -94,66 +95,87 @@ export const layer = Layer.effect(
     const { wasPrereviewRemoved } = yield* ExpressConfig
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereviewApi
-    const logger = yield* DeprecatedLoggerEnv
+    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
     const zenodoApi = yield* Zenodo.ZenodoApi
 
     return {
-      getFiveMostRecent: pipe(
-        FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo({ page: 1 }), {
-          fetch,
-          getPreprintTitle,
-          ...logger,
-          zenodoApiKey: Redacted.value(zenodoApi.key),
-          zenodoUrl: zenodoApi.origin,
-        }),
-        Effect.map(Struct.get('recentPrereviews')),
-        Effect.orElseSucceed(Array.empty),
+      getFiveMostRecent: Effect.gen(function* () {
+        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+        return yield* pipe(
+          FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo({ page: 1 }), {
+            fetch,
+            getPreprintTitle,
+            clock,
+            logger,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
+          }),
+          Effect.map(Struct.get('recentPrereviews')),
+          Effect.orElseSucceed(Array.empty),
+        )
+      }),
+      getForClub: Effect.fn(
+        function* (id) {
+          const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+          return yield* FptsToEffect.readerTaskEither(getPrereviewsForClubFromZenodo(id), {
+            fetch,
+            getPreprintTitle,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
+            clock,
+            logger,
+          })
+        },
+        Effect.mapError(() => new PrereviewsAreUnavailable()),
       ),
-      getForClub: id =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPrereviewsForClubFromZenodo(id), {
+      getForPreprint: Effect.fn(
+        function* (id) {
+          const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+          return yield* FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
+            fetch,
+            zenodoApiKey: Redacted.value(zenodoApi.key),
+            zenodoUrl: zenodoApi.origin,
+            clock,
+            logger,
+          })
+        },
+        Effect.mapError(() => new PrereviewsAreUnavailable()),
+      ),
+      getForProfile: Effect.fn(
+        function* (profile) {
+          const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+          return yield* FptsToEffect.readerTaskEither(getPrereviewsForProfileFromZenodo(profile), {
             fetch,
             getPreprintTitle,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
-            ...logger,
-          }),
-          Effect.mapError(() => new PrereviewsAreUnavailable()),
-        ),
-      getForPreprint: id =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
-            fetch,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-            ...logger,
-          }),
-          Effect.mapError(() => new PrereviewsAreUnavailable()),
-        ),
-      getForProfile: profile =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPrereviewsForProfileFromZenodo(profile), {
+            clock,
+            logger,
+          })
+        },
+        Effect.mapError(() => new PrereviewsAreUnavailable()),
+      ),
+      getForUser: Effect.fn(
+        function* (user) {
+          const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+          return yield* FptsToEffect.readerTaskEither(getPrereviewsForUserFromZenodo(user), {
             fetch,
             getPreprintTitle,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
-            ...logger,
-          }),
-          Effect.mapError(() => new PrereviewsAreUnavailable()),
-        ),
-      getForUser: user =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPrereviewsForUserFromZenodo(user), {
-            fetch,
-            getPreprintTitle,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-            ...logger,
-          }),
-          Effect.mapError(() => new PrereviewsAreUnavailable()),
-        ),
+            clock,
+            logger,
+          })
+        },
+        Effect.mapError(() => new PrereviewsAreUnavailable()),
+      ),
       getRapidPrereviewsForPreprint: id =>
         pipe(
           Effect.succeed(id),
@@ -178,33 +200,41 @@ export const layer = Layer.effect(
             ),
           ),
         ),
-      getPrereview: id =>
-        FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
+      getPrereview: Effect.fn(function* (id) {
+        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+        return yield* FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
           fetch,
           getPreprint,
           wasPrereviewRemoved,
           zenodoApiKey: Redacted.value(zenodoApi.key),
           zenodoUrl: zenodoApi.origin,
-          ...logger,
-        }),
-      search: args =>
-        pipe(
-          FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo(args), {
+          clock,
+          logger,
+        })
+      }),
+      search: Effect.fn(
+        function* (args) {
+          const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+          return yield* FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo(args), {
             fetch,
             getPreprintTitle,
-            ...logger,
+            clock,
+            logger,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
-          }),
-          Effect.mapError(
-            flow(
-              Match.value,
-              Match.when('not-found', () => new PrereviewsPageNotFound()),
-              Match.when('unavailable', () => new PrereviewsAreUnavailable()),
-              Match.exhaustive,
-            ),
+          })
+        },
+        Effect.mapError(
+          flow(
+            Match.value,
+            Match.when('not-found', () => new PrereviewsPageNotFound()),
+            Match.when('unavailable', () => new PrereviewsAreUnavailable()),
+            Match.exhaustive,
           ),
         ),
+      ),
     }
   }),
 )

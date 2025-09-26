@@ -31,6 +31,7 @@ import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { clubProfile } from '../../club-profile-page/index.ts'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale } from '../../Context.ts'
+import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, Zenodo } from '../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
@@ -115,7 +116,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const expressConfig = yield* ExpressConfig
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
-  const logger = yield* DeprecatedLoggerEnv
+  const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
   const nodemailer = yield* Nodemailer
@@ -161,6 +162,8 @@ export const nonEffectRouter: Effect.Effect<
     onFalse: () => Effect.void,
   })
 
+  const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
   const env = {
     authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
     refererHeader: Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
@@ -173,7 +176,10 @@ export const nonEffectRouter: Effect.Effect<
     method: request.method,
     fileSystem,
     runtime,
-    logger,
+    logger: {
+      clock,
+      logger,
+    },
     fetch,
     publicUrl,
     orcidOauth,

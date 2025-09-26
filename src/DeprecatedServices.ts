@@ -15,6 +15,7 @@ import {
 import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
+import * as l from 'logging-ts/lib/IO.js'
 import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.ts'
 import * as EffectToFpts from './EffectToFpts.ts'
 import { decodeEnv } from './env.ts'
@@ -56,4 +57,16 @@ export const DeprecatedLogger = Effect.gen(function* () {
       Match.exhaustive,
     )(message)({ fiber: FiberId.threadName(options.fiberId), cause, ...payload, ...spans })(loggerEnv)()
   })
+})
+
+export const AddAnnotationsToLogger = Effect.fn(function* (logger: L.Logger) {
+  const logAnnotations = yield* Effect.logAnnotations
+
+  return pipe(
+    logger,
+    l.contramap((entry: L.LogEntry) => ({
+      ...entry,
+      payload: { ...(Object.fromEntries(HashMap.toEntries(logAnnotations)) as J.JsonRecord), ...entry.payload },
+    })),
+  )
 })

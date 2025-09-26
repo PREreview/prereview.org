@@ -43,13 +43,11 @@ export const expressServer = Effect.gen(function* () {
 export const ExpressConfigLive = Effect.gen(function* () {
   const redis = yield* DataStoreRedis
   const env = yield* DeprecatedEnvVars
-  const loggerEnv = yield* DeprecatedLoggerEnv
   const orcidOauth = yield* OrcidOauth
 
   const createKeyvStore = () => new KeyvRedis(redis).on('error', () => undefined)
 
   return {
-    ...loggerEnv,
     authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
     avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
     contactEmailAddressStore: new Keyv({
