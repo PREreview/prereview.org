@@ -37,7 +37,9 @@ export const Funding = '/funding'
 export const Partners = '/partners'
 export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
+export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
+export const OrcidAuth = '/orcid'
 
 const DatasetIdSchema = Schema.transform(
   Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),

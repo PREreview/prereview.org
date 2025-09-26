@@ -1,10 +1,10 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
+import { Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubsPage } from '../ClubsPage.ts'
 import { CodeOfConductPage } from '../CodeOfConductPage.ts'
-import { AllowSiteCrawlers } from '../Context.ts'
+import { AllowSiteCrawlers, Locale } from '../Context.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { EdiaStatementPage } from '../EdiaStatementPage.ts'
@@ -14,6 +14,7 @@ import { FundingPage } from '../FundingPage.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
+import { authenticateError, logIn } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
@@ -355,6 +356,7 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
 ])
 
 const AuthRouter = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.LogIn, Effect.succeed(logIn)),
   HttpRouter.makeRoute(
     'GET',
     Routes.LogInDemo,
@@ -364,6 +366,18 @@ const AuthRouter = HttpRouter.fromIterable([
         Match.value,
         Match.tag('ForceLogInResponse', Response.handleForceLogInResponse),
         Match.orElse(Response.toHttpServerResponse),
+      ),
+    ),
+  ),
+  MakeStaticRoute(
+    'GET',
+    Routes.OrcidAuth,
+    pipe(
+      HttpServerRequest.schemaSearchParams(Schema.Struct({ error: Schema.String, state: Schema.String })),
+      Effect.bind('locale', () => Locale),
+      Effect.andThen(authenticateError),
+      Effect.catchTag('ParseError', () =>
+        Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
       ),
     ),
   ),

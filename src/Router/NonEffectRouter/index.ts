@@ -41,7 +41,6 @@ import { home } from '../../home-page/index.ts'
 import * as Keyv from '../../keyv.ts'
 import { LegacyPrereviewApi } from '../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { authenticateError, logIn } from '../../log-in/index.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
 import { Nodemailer } from '../../nodemailer.ts'
 import type * as OpenAlex from '../../OpenAlex/index.ts'
@@ -469,18 +468,6 @@ const routerWithoutHyperTs = pipe(
             reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
               getReviewRequests: EffectToFpts.toTaskEitherK(ReviewRequests.search, env.runtime),
             }),
-      ),
-    ),
-    pipe(
-      Routes.logInMatch.parser,
-      P.map(() => () => T.of(logIn)),
-    ),
-    pipe(
-      Routes.orcidErrorMatch.parser,
-      P.map(
-        ({ error }) =>
-          (env: Env) =>
-            T.of(authenticateError({ error, locale: env.locale })),
       ),
     ),
     AuthorInviteFlowRouter,
