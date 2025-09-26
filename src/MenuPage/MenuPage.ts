@@ -100,7 +100,7 @@ export const createMenuPage = ({
               `,
               onNone: () => html`
                 <li>
-                  <a href="${format(Routes.logInMatch.formatter, {})}">${t('menuLogIn')()}</a>
+                  <a href="${Routes.LogIn}">${t('menuLogIn')()}</a>
                 </li>
                 ${Boolean.match(canLogInAsDemoUser, {
                   onFalse: () => '',

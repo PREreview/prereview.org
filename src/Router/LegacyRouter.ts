@@ -96,7 +96,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   ),
   MakeRoute('*', '/extension', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
-  MakeStaticRoute('*', '/login', movedPermanently(format(Routes.logInMatch.formatter, {}))),
+  MakeStaticRoute('*', '/login', movedPermanently(Routes.LogIn)),
   MakeStaticRoute('*', '/logout', movedPermanently(format(Routes.logOutMatch.formatter, {}))),
   MakeStaticRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
@@ -104,7 +104,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeStaticRoute('*', '/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute('*', '/settings/api', showRemovedForNowMessage),
   MakeRoute('*', '/settings/drafts', showRemovedForNowMessage),
-  MakeStaticRoute('*', '/signup', movedPermanently(format(Routes.logInMatch.formatter, {}))),
+  MakeStaticRoute('*', '/signup', movedPermanently(Routes.LogIn)),
   MakeStaticRoute('*', '/)', movedPermanently(format(Routes.homeMatch.formatter, {}))),
   MakeStaticRoute('*', '/),', movedPermanently(format(Routes.homeMatch.formatter, {}))),
 ])

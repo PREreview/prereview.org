@@ -7,7 +7,7 @@ import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate }
 import assets from './manifest.json' with { type: 'json' }
 import type * as Router from './Router/index.ts'
 import * as Routes from './routes.ts'
-import { homeMatch, logInMatch, logOutMatch } from './routes.ts'
+import { homeMatch, logOutMatch } from './routes.ts'
 import type { UserOnboarding } from './user-onboarding.ts'
 import type { User } from './user.ts'
 
@@ -191,9 +191,7 @@ export const page = ({
                         >`
                       : ''}
                     ${!user && current === 'home'
-                      ? html` <a href="${format(logInMatch.formatter, {})}"
-                          >${translate(locale, 'header', 'menuLogIn')()}</a
-                        >`
+                      ? html` <a href="${Routes.LogIn}">${translate(locale, 'header', 'menuLogIn')()}</a>`
                       : ''}
                   `}
             </div>
@@ -306,9 +304,7 @@ export const page = ({
                             `
                           : html`
                               <li>
-                                <a href="${format(Routes.logInMatch.formatter, {})}"
-                                  >${translate(locale, 'header', 'menuLogIn')()}</a
-                                >
+                                <a href="${Routes.LogIn}">${translate(locale, 'header', 'menuLogIn')()}</a>
                               </li>
                               ${Boolean.match(canLogInAsDemoUser, {
                                 onFalse: () => '',
