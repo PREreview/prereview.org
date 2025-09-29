@@ -89,8 +89,7 @@ export const toHttpServerResponse = (
       HttpServerResponse.setStatus(response._tag === 'TwoUpPageResponse' ? StatusCodes.OK : response.status),
       Option.match(message, {
         onNone: () => identity<HttpServerResponse.HttpServerResponse>,
-        onSome: () =>
-          HttpServerResponse.unsafeSetCookie('flash-message', '', { expires: new Date(1), httpOnly: true, path: '/' }),
+        onSome: () => HttpServerResponse.expireCookie('flash-message', { httpOnly: true, path: '/' }),
       }),
       Array.match(links, {
         onEmpty: () => identity<HttpServerResponse.HttpServerResponse>,
