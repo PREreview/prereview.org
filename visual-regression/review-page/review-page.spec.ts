@@ -156,7 +156,8 @@ const review = new Prereview({
   },
   requested: false,
   structured: false,
-  text: html`<p>
+  text: html`
+    <p>
       The SARS-CoV-2 virus has experienced tremendous selective pressure over the course of the global pandemic with
       variants of concern emerging that differ in terms of transmissibility, immunogenicity, and other properties. The
       major goal of this paper is to determine how sequence changes in the major determinant of these properties, the
@@ -221,7 +222,8 @@ const review = new Prereview({
       <li><p>In figure 2c, consider adding a legend that specifies red is prefusion and black is postfusion.</p></li>
     </ul>
     <h2>Competing interests</h2>
-    <p>The author declares that they have no competing interests.</p>`,
+    <p>The author declares that they have no competing interests.</p>
+  `,
 })
 
 const structuredReview = new Prereview({
@@ -243,7 +245,8 @@ const structuredReview = new Prereview({
   },
   requested: false,
   structured: true,
-  text: html` <dl>
+  text: html`
+    <dl>
       <dt>Does the introduction explain the objective of the research presented in the preprint?</dt>
       <dd>Yes</dd>
       <dt>Are the methods well-suited for this research?</dt>
@@ -278,7 +281,8 @@ const structuredReview = new Prereview({
       <dd>Yes, as it is</dd>
     </dl>
     <h2>Competing interests</h2>
-    <p>The author declares that they have no competing interests.</p>`,
+    <p>The author declares that they have no competing interests.</p>
+  `,
 })
 
 const comment1 = {
