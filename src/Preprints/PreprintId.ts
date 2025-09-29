@@ -534,7 +534,7 @@ const extractFromTechrxivPath = flow(
 
 const extractFromZenodoPath = flow(
   decodeURIComponent,
-  Option.liftNullable(s => /^record\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
+  Option.liftNullable(s => /^records?\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )

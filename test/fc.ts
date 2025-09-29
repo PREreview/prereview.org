@@ -933,7 +933,7 @@ export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
   fc
     .integer({ min: 1 })
     .map(id => [
-      new URL(`https://zenodo.org/record/${id}`),
+      new URL(`https://zenodo.org/records/${id}`),
       new ZenodoPreprintId({ value: Doi(`10.5281/zenodo.${id}`) }),
     ])
 

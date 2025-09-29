@@ -943,22 +943,23 @@ describe('fromUrl', () => {
 
   test.prop([fc.zenodoPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
-      [[new URL('https://zenodo.org/record/4290795'), Doi('10.5281/zenodo.4290795')]],
-      [[new URL('https://www.zenodo.org/record/4290795'), Doi('10.5281/zenodo.4290795')]], // www.
-      [[new URL('http://zenodo.org/record/4290795'), Doi('10.5281/zenodo.4290795')]], // http
+      [[new URL('https://zenodo.org/records/4290795'), Doi('10.5281/zenodo.4290795')]],
+      [[new URL('https://zenodo.org/record/4290795'), Doi('10.5281/zenodo.4290795')]], // without s
+      [[new URL('https://www.zenodo.org/records/4290795'), Doi('10.5281/zenodo.4290795')]], // www.
+      [[new URL('http://zenodo.org/records/4290795'), Doi('10.5281/zenodo.4290795')]], // http
       [
         [
-          new URL('https://zenodo.org/record/4290795/files/f1000research-revised.pdf'), // file
+          new URL('https://zenodo.org/records/4290795/files/f1000research-revised.pdf'), // file
           Doi('10.5281/zenodo.4290795'),
         ],
       ],
       [
         [
-          new URL('https://zenodo.org/record/4290795/preview/f1000research-revised.pdf'), // file preview
+          new URL('https://zenodo.org/records/4290795/preview/f1000research-revised.pdf'), // file preview
           Doi('10.5281/zenodo.4290795'),
         ],
       ],
-      [[new URL('https://zenodo.org/record/4290795/export/json'), Doi('10.5281/zenodo.4290795')]], // export
+      [[new URL('https://zenodo.org/records/4290795/export/json'), Doi('10.5281/zenodo.4290795')]], // export
     ],
   })('with a Zenodo URL', ([url, doi]) => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.ZenodoOrAfricarxivPreprintId({ value: doi })))
