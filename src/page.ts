@@ -7,7 +7,7 @@ import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate }
 import assets from './manifest.json' with { type: 'json' }
 import type * as Router from './Router/index.ts'
 import * as Routes from './routes.ts'
-import { homeMatch, logOutMatch } from './routes.ts'
+import { homeMatch } from './routes.ts'
 import type { UserOnboarding } from './user-onboarding.ts'
 import type { User } from './user.ts'
 
@@ -185,11 +185,7 @@ export const page = ({
                       : ''}
                   `
                 : html`
-                    ${user
-                      ? html` <a href="${format(logOutMatch.formatter, {})}"
-                          >${translate(locale, 'header', 'menuLogOut')()}</a
-                        >`
-                      : ''}
+                    ${user ? html`<a href="${Routes.LogOut}">${translate(locale, 'header', 'menuLogOut')()}</a>` : ''}
                     ${!user && current === 'home'
                       ? html` <a href="${Routes.LogIn}">${translate(locale, 'header', 'menuLogIn')()}</a>`
                       : ''}
@@ -297,9 +293,7 @@ export const page = ({
                                 >
                               </li>
                               <li>
-                                <a href="${format(Routes.logOutMatch.formatter, {})}"
-                                  >${translate(locale, 'header', 'menuLogOut')()}</a
-                                >
+                                <a href="${Routes.LogOut}">${translate(locale, 'header', 'menuLogOut')()}</a>
                               </li>
                             `
                           : html`

@@ -95,7 +95,7 @@ export const createMenuPage = ({
                   <a href="${format(Routes.myPrereviewsMatch.formatter, {})}">${t('menuMyPrereviews')()}</a>
                 </li>
                 <li>
-                  <a href="${format(Routes.logOutMatch.formatter, {})}">${t('menuLogOut')()}</a>
+                  <a href="${Routes.LogOut}">${t('menuLogOut')()}</a>
                 </li>
               `,
               onNone: () => html`
