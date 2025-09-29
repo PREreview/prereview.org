@@ -450,6 +450,14 @@
   "aiIdeasAuthorsStatement": {
     "message": "The authors declare that they used generative AI to come up with new ideas for their review."
   },
+  "noAiIdeasStatement": {
+    "message": "The author declares that they did not use generative AI to come up with new ideas for their review.",
+    "description": "Statement added to a review when the author declared that they didn't use a tool like ChatGPT to come up with ideas for their review."
+  },
+  "noAiIdeasAuthorsStatement": {
+    "message": "The authors declare that they did not use generative AI to come up with new ideas for their review.",
+    "description": "Statement added to a review when the authors declared that they didn't use a tool like ChatGPT to come up with ideas for their review."
+  },
   "changeUseOfAi": {
     "message": "Change <visuallyHidden>use of AI</visuallyHidden>"
   },

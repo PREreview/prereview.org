@@ -405,12 +405,6 @@ export const getUseOfAi = (form: CompletedForm, locale: SupportedLocale) =>
   match([form.generativeAiIdeas, form.moreAuthors])
     .with(['yes', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'aiIdeasAuthorsStatement')())
     .with(['yes', 'no'], () => translate(locale, 'write-review', 'aiIdeasStatement')())
-    .with(
-      ['no', P.union('yes', 'yes-private')],
-      () => 'The authors declare that they did not use generative AI to come up with new ideas for their review.',
-    )
-    .with(
-      ['no', 'no'],
-      () => 'The author declares that they did not use generative AI to come up with new ideas for their review.',
-    )
+    .with(['no', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'noAiIdeasAuthorsStatement')())
+    .with(['no', 'no'], () => translate(locale, 'write-review', 'noAiIdeasStatement')())
     .exhaustive()
