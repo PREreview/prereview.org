@@ -5,11 +5,11 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import { URL } from 'url'
-import * as StatusCodes from '../src/StatusCodes.ts'
-import * as _ from '../src/slack.ts'
-import { toUrl } from '../src/types/OrcidId.ts'
-import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
+import * as _ from '../../../src/ExternalApis/Slack/legacy-slack.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import { toUrl } from '../../../src/types/OrcidId.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('getUserFromSlack', () => {
   test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.nonEmptyString(), fc.url()])(

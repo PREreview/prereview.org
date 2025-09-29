@@ -55,7 +55,7 @@ import {
 import { AllowSiteCrawlers, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.ts'
 import { DeprecatedLogger } from '../src/DeprecatedServices.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
-import { Cloudinary, Ghost, Orcid, Zenodo } from '../src/ExternalApis/index.ts'
+import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { rawHtml } from '../src/html.ts'
 import type {
@@ -77,7 +77,6 @@ import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
-import { SlackApiConfig } from '../src/slack.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import * as TemplatePage from '../src/TemplatePage.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
@@ -1309,7 +1308,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Nodemailer.layer(nodemailer),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
-            Layer.succeed(SlackApiConfig, { apiToken: Redacted.make(''), apiUpdate: true }),
+            Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make(''), apiUpdate: true }),
             Layer.succeed(Cloudinary.CloudinaryApi, {
               cloudName: 'prereview',
               key: Redacted.make('key'),

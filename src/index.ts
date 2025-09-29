@@ -8,7 +8,7 @@ import { isAClubLead } from './club-details.ts'
 import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.ts'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { ExpressConfigLive } from './ExpressServer.ts'
-import { Cloudinary, Ghost, Orcid, Zenodo } from './ExternalApis/index.ts'
+import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
@@ -18,7 +18,6 @@ import * as PrereviewCoarNotify from './prereview-coar-notify/index.ts'
 import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
-import { SlackApiConfig } from './slack.ts'
 import * as TemplatePage from './TemplatePage.ts'
 import { isPrereviewTeam } from './user.ts'
 
@@ -89,7 +88,7 @@ pipe(
       SqlClient,
       Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
       Layer.effect(
-        SlackApiConfig,
+        Slack.SlackApi,
         Config.all({
           apiToken: Config.redacted('SLACK_API_TOKEN'),
           apiUpdate: Config.withDefault(Config.boolean('SLACK_UPDATE'), false),

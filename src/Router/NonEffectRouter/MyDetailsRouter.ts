@@ -18,7 +18,7 @@ import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } 
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { sendContactEmailAddressVerificationEmail } from '../../email.ts'
-import { Cloudinary } from '../../ExternalApis/index.ts'
+import { Cloudinary, Slack } from '../../ExternalApis/index.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import {
@@ -41,7 +41,6 @@ import {
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
 import * as Routes from '../../routes.ts'
 import type { SlackUserId } from '../../slack-user-id.ts'
-import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from '../../slack.ts'
 import { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type * as Response from '../Response.ts'
@@ -307,7 +306,7 @@ export const MyDetailsRouter = pipe(
               RTE.chainFirst(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(removeOrcidFromSlackProfile),
+                  RTE.chainW(Slack.removeOrcidFromSlackProfile),
                   RTE.orElseW(() => RTE.right(undefined)),
                 ),
               ),
@@ -342,7 +341,7 @@ export const MyDetailsRouter = pipe(
         getSlackUser: withEnv(
           flow(
             Keyv.getSlackUserId,
-            RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+            RTE.chainW(({ userId }) => Slack.getUserFromSlack(userId)),
           ),
           {
             ...env.logger,
@@ -445,7 +444,7 @@ export const MyDetailsRouter = pipe(
           (orcid: OrcidId, slackUser: SlackUserId) =>
             pipe(
               Keyv.saveSlackUserId(orcid, slackUser),
-              RTE.chainFirstW(() => addOrcidToSlackProfile(slackUser, orcid)),
+              RTE.chainFirstW(() => Slack.addOrcidToSlackProfile(slackUser, orcid)),
             ),
           {
             fetch: env.fetch,

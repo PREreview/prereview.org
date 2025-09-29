@@ -33,7 +33,7 @@ import { clubProfile } from '../../club-profile-page/index.ts'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
-import { Cloudinary, Zenodo } from '../../ExternalApis/index.ts'
+import { Cloudinary, Slack, Zenodo } from '../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
@@ -60,7 +60,6 @@ import { reviewRequests } from '../../review-requests-page/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import * as Routes from '../../routes.ts'
-import { getUserFromSlack, SlackApiConfig } from '../../slack.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import type { NonEmptyString } from '../../types/index.ts'
 import type { GenerateUuid } from '../../types/uuid.ts'
@@ -85,7 +84,7 @@ export const nonEffectRouter: Effect.Effect<
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | ExpressConfig
-  | SlackApiConfig
+  | Slack.SlackApi
   | Cloudinary.CloudinaryApi
   | SessionStore
   | PrereviewCoarNotifyConfig
@@ -126,7 +125,7 @@ export const nonEffectRouter: Effect.Effect<
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
   const sessionId = yield* Effect.serviceOption(SessionId)
 
-  const slackApiConfig = yield* SlackApiConfig
+  const slackApiConfig = yield* Slack.SlackApi
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
@@ -256,7 +255,7 @@ export interface Env {
     tokenUrl: URL
   }
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
-  slackApiConfig: typeof SlackApiConfig.Service
+  slackApiConfig: typeof Slack.SlackApi.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
@@ -388,7 +387,7 @@ const routerWithoutHyperTs = pipe(
               getSlackUser: withEnv(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+                  RTE.chainW(({ userId }) => Slack.getUserFromSlack(userId)),
                 ),
                 {
                   ...env.logger,
