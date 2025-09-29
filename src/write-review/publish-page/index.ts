@@ -29,7 +29,7 @@ import { type CompletedForm, CompletedFormC } from '../completed-form.ts'
 import { type Form, type FormStoreEnv, deleteForm, getForm, nextFormMatch, saveForm } from '../form.ts'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review.ts'
 import { failureMessage } from './failure-message.ts'
-import { getCompetingInterests, publishForm } from './publish-form.ts'
+import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.ts'
 
 export interface NewPrereview {
   conduct: 'yes'
@@ -339,18 +339,5 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
 
     <h2>${t('useOfAi')()}</h2>
 
-    <p>
-      ${match([form.generativeAiIdeas, form.moreAuthors])
-        .with(['yes', P.union('yes', 'yes-private')], () => t('aiIdeasAuthorsStatement')())
-        .with(['yes', 'no'], () => t('aiIdeasStatement')())
-        .with(
-          ['no', P.union('yes', 'yes-private')],
-          () => 'The authors declare that they did not use generative AI to come up with new ideas for their review.',
-        )
-        .with(
-          ['no', 'no'],
-          () => 'The author declares that they did not use generative AI to come up with new ideas for their review.',
-        )
-        .exhaustive()}
-    </p>`
+    <p>${getUseOfAi(form, locale)}</p>`
 }

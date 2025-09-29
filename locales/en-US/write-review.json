@@ -450,9 +450,6 @@
   "aiIdeasAuthorsStatement": {
     "message": "The authors declare that they used generative AI to come up with new ideas for their review."
   },
-  "aiNotUsed": {
-    "message": "Not used"
-  },
   "changeUseOfAi": {
     "message": "Change <visuallyHidden>use of AI</visuallyHidden>"
   },

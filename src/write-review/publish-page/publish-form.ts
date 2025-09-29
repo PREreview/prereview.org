@@ -119,13 +119,7 @@ export function publishForm(
 
               <div>
                 <dt><span>${t('useOfAiShort')()}</span></dt>
-                <dd>
-                  ${match([review.generativeAiIdeas, review.moreAuthors])
-                    .with(['yes', P.union('yes', 'yes-private')], () => t('aiIdeasAuthorsStatement')())
-                    .with(['yes', 'no'], () => t('aiIdeasStatement')())
-                    .with(['no', P.string], () => t('aiNotUsed')())
-                    .exhaustive()}
-                </dd>
+                <dd>${getUseOfAi(review, locale)}</dd>
                 <dd>
                   <a href="${format(writeReviewUseOfAiMatch.formatter, { id: preprint.id })}"
                     >${rawHtml(t('changeUseOfAi')(visuallyHidden))}</a
@@ -404,5 +398,19 @@ export const getCompetingInterests = (form: CompletedForm, locale: SupportedLoca
     )
     .with({ competingInterests: 'no', moreAuthors: 'no' }, () =>
       translate(locale, 'write-review', 'competingInterestsNo')(),
+    )
+    .exhaustive()
+
+export const getUseOfAi = (form: CompletedForm, locale: SupportedLocale) =>
+  match([form.generativeAiIdeas, form.moreAuthors])
+    .with(['yes', P.union('yes', 'yes-private')], () => translate(locale, 'write-review', 'aiIdeasAuthorsStatement')())
+    .with(['yes', 'no'], () => translate(locale, 'write-review', 'aiIdeasStatement')())
+    .with(
+      ['no', P.union('yes', 'yes-private')],
+      () => 'The authors declare that they did not use generative AI to come up with new ideas for their review.',
+    )
+    .with(
+      ['no', 'no'],
+      () => 'The author declares that they did not use generative AI to come up with new ideas for their review.',
     )
     .exhaustive()

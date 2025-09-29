@@ -923,7 +923,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Use of AI Not used')
+    await expect(page.getByRole('main')).toContainText(
+      'Use of AI The author declares that they did not use generative AI to come up with new ideas for their review.',
+    )
 
     await page.getByRole('link', { name: 'Change use of AI' }).click()
 
