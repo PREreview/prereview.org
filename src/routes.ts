@@ -39,6 +39,7 @@ export const LiveReviews = '/live-reviews'
 export const Resources = '/resources'
 export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
+export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
 
 const DatasetIdSchema = Schema.transform(

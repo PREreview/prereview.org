@@ -14,7 +14,7 @@ import { FundingPage } from '../FundingPage.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
-import { authenticateError, logIn } from '../log-in/index.ts'
+import { authenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
@@ -369,6 +369,7 @@ const AuthRouter = HttpRouter.fromIterable([
       ),
     ),
   ),
+  HttpRouter.makeRoute('GET', Routes.LogOut, LogOut),
   MakeStaticRoute(
     'GET',
     Routes.OrcidAuth,

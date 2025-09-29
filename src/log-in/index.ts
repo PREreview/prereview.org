@@ -1,4 +1,5 @@
-import { Function, flow, pipe } from 'effect'
+import { Cookies, HttpServerResponse } from '@effect/platform'
+import { Duration, Effect, Function, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -7,22 +8,25 @@ import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
-import { endSession as _endSession, storeSession } from 'hyper-ts-session'
+import { storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
+import { SessionStore } from '../Context.ts'
 import { timeoutRequest } from '../fetch.ts'
 import { setFlashMessage } from '../flash-message.ts'
 import type { SupportedLocale } from '../locales/index.ts'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
 import { LogInResponse, handlePageResponse } from '../response.ts'
+import * as Routes from '../routes.ts'
 import { homeMatch, orcidCodeMatch } from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 import { NonEmptyString } from '../types/index.ts'
 import { type OrcidId, isOrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
-import { newSessionForUser } from '../user.ts'
+import { SessionId, newSessionForUser } from '../user.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
 import { failureMessage } from './failure-message.ts'
 
@@ -40,13 +44,23 @@ export interface IsUserBlockedEnv {
 
 export const logIn = LogInResponse({ location: format(homeMatch.formatter, {}) })
 
-export const logOut = pipe(
-  RM.redirect(format(homeMatch.formatter, {})),
-  RM.ichainFirst(() => endSession),
-  RM.ichainW(() => RM.fromMiddleware(setFlashMessage('logged-out'))),
-  RM.ichain(() => RM.closeHeaders()),
-  RM.ichain(() => RM.end()),
-)
+export const LogOut = Effect.gen(function* () {
+  const { cookie, store } = yield* SessionStore
+
+  yield* pipe(
+    Effect.serviceOptional(SessionId),
+    Effect.andThen(sessionId => store.delete(sessionId)),
+    Effect.ignore,
+  )
+
+  return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+    status: StatusCodes.SeeOther,
+    cookies: Cookies.fromIterable([
+      Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+      Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+    ]),
+  })
+})
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
@@ -172,11 +186,6 @@ function getReferer(state: string) {
     ),
   )
 }
-
-const endSession = pipe(
-  _endSession(),
-  RM.orElseW(() => RM.right(undefined)),
-)
 
 function orElseFirstW<R2, E, I, O, M, B>(f: (e: E) => RM.ReaderMiddleware<R2, I, O, M, B>) {
   return <R1, A>(ma: RM.ReaderMiddleware<R1, I, O, E, A>): RM.ReaderMiddleware<R2 & R1, I, O, E | M, A> =>

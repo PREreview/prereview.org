@@ -22,12 +22,12 @@ import {
   type LegacyPrereviewApiEnv,
 } from './legacy-prereview.ts'
 import type { SupportedLocale } from './locales/index.ts'
-import { authenticate, logOut, type IsUserBlockedEnv, type OrcidOAuthEnv } from './log-in/index.ts'
+import { authenticate, type IsUserBlockedEnv, type OrcidOAuthEnv } from './log-in/index.ts'
 import type { TemplatePageEnv } from './page.ts'
 import type { GetPreprintIdEnv } from './preprint.ts'
 import type { PublicUrlEnv } from './public-url.ts'
 import { reviewsData } from './reviews-data/index.ts'
-import { logOutMatch, orcidCodeMatch, reviewsDataMatch, scietyListMatch, usersDataMatch } from './routes.ts'
+import { orcidCodeMatch, reviewsDataMatch, scietyListMatch, usersDataMatch } from './routes.ts'
 import { scietyList, type ScietyListEnv } from './sciety-list/index.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import type { GetUserOnboardingEnv } from './user-onboarding.ts'
@@ -50,10 +50,6 @@ export type RouterEnv = GetPreprintIdEnv &
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
-    pipe(
-      logOutMatch.parser,
-      P.map(() => logOut),
-    ),
     pipe(
       orcidCodeMatch.parser,
       P.map(({ code, state }) => authenticate(code, state)),

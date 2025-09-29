@@ -1,8 +1,8 @@
+import { Cookies, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
-import cookieSignature from 'cookie-signature'
-import { Chunk, Effect, identity, Stream } from 'effect'
+import { Chunk, Duration, Effect, identity, pipe, Stream } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -10,10 +10,13 @@ import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { MediaType } from 'hyper-ts'
 import Keyv from 'keyv'
+import { SessionStore } from '../../src/Context.ts'
 import * as _ from '../../src/log-in/index.ts'
+import * as Routes from '../../src/routes.ts'
 import { homeMatch } from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { UserC } from '../../src/user.ts'
+import { SessionId, UserC } from '../../src/user.ts'
+import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 import { runMiddleware } from '../middleware.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
@@ -27,53 +30,74 @@ test('logIn', () => {
   })
 })
 
-describe('logOut', () => {
-  test.prop([
-    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-      fc.tuple(
-        fc.connection({
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+describe('LogOut', () => {
+  test.prop([fc.uuid(), fc.cookieName(), fc.user()])('when there is a session', (cookie, sessionId, user) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      yield* Effect.tryPromise(() => store.set(sessionId, { user: UserC.encode(user) }))
+
+      const actual = yield* pipe(
+        _.LogOut,
+        Effect.provideService(SessionId, sessionId),
+        Effect.provideService(SessionStore, { cookie, store }),
+      )
+
+      expect(yield* Effect.tryPromise(() => store.has(sessionId))).toBeFalsy()
+      expect(actual).toStrictEqual(
+        HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+          status: StatusCodes.SeeOther,
+          cookies: Cookies.fromIterable([
+            Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+            Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+          ]),
         }),
-        fc.constant(sessionCookie),
-        fc.constant(sessionId),
-        fc.constant(secret),
-      ),
-    ),
-    fc.user(),
-  ])('when there is a session', async ([connection, sessionCookie, sessionId, secret], user) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, { user: UserC.encode(user) })
+      )
+    }).pipe(EffectTest.run),
+  )
 
-    const actual = await runMiddleware(_.logOut({ secret, sessionCookie, sessionStore }), connection)()
+  test.prop([fc.uuid(), fc.cookieName(), fc.user(), fc.anything()])(
+    "when the session can't be removed",
+    (cookie, sessionId, user, error) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.tryPromise(() => store.set(sessionId, { user: UserC.encode(user) }))
+        store.delete = () => Promise.reject(error)
 
-    expect(await sessionStore.has(sessionId)).toBeFalsy()
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: StatusCodes.Found },
-        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
-        { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
-        { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+        const actual = yield* pipe(
+          _.LogOut,
+          Effect.provideService(SessionId, sessionId),
+          Effect.provideService(SessionStore, { cookie, store }),
+        )
 
-  test.prop([fc.connection(), fc.cookieName(), fc.string()])(
-    "when there isn't a session",
-    async (connection, sessionCookie, secret) => {
-      const sessionStore = new Keyv()
+        expect(yield* Effect.tryPromise(() => store.has(sessionId))).toBeTruthy()
+        expect(actual).toStrictEqual(
+          HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+            status: StatusCodes.SeeOther,
+            cookies: Cookies.fromIterable([
+              Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+              Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+            ]),
+          }),
+        )
+      }).pipe(EffectTest.run),
+  )
 
-      const actual = await runMiddleware(_.logOut({ secret, sessionCookie, sessionStore }), connection)()
+  test.prop([fc.cookieName()])("when there isn't a session", cookie =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* pipe(_.LogOut, Effect.provideService(SessionStore, { cookie, store }))
 
       expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: StatusCodes.Found },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
-          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
-          { type: 'endResponse' },
-        ]),
+        HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+          status: StatusCodes.SeeOther,
+          cookies: Cookies.fromIterable([
+            Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
+            Cookies.unsafeMakeCookie(cookie, '', { httpOnly: true, maxAge: Duration.zero, path: '/' }),
+          ]),
+        }),
       )
-    },
+    }).pipe(EffectTest.run),
   )
 })
 

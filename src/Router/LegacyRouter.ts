@@ -97,7 +97,7 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('*', '/extension', showRemovedPermanentlyMessage),
   MakeStaticRoute('*', '/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeStaticRoute('*', '/login', movedPermanently(Routes.LogIn)),
-  MakeStaticRoute('*', '/logout', movedPermanently(format(Routes.logOutMatch.formatter, {}))),
+  MakeStaticRoute('*', '/logout', movedPermanently(Routes.LogOut)),
   MakeStaticRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
   MakeRoute('*', '/prereviewers', showRemovedForNowMessage),
