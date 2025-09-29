@@ -337,16 +337,20 @@ function renderReview(form: CompletedForm, locale: SupportedLocale) {
 
     <p>${getCompetingInterests(form, locale)}</p>
 
-    ${form.generativeAiIdeas === 'yes'
-      ? html`
-          <h2>${t('useOfAi')()}</h2>
+    <h2>${t('useOfAi')()}</h2>
 
-          <p>
-            ${match(form.moreAuthors)
-              .with(P.union('yes', 'yes-private'), () => t('aiIdeasAuthorsStatement')())
-              .with('no', () => t('aiIdeasStatement')())
-              .exhaustive()}
-          </p>
-        `
-      : ''} `
+    <p>
+      ${match([form.generativeAiIdeas, form.moreAuthors])
+        .with(['yes', P.union('yes', 'yes-private')], () => t('aiIdeasAuthorsStatement')())
+        .with(['yes', 'no'], () => t('aiIdeasStatement')())
+        .with(
+          ['no', P.union('yes', 'yes-private')],
+          () => 'The authors declare that they did not use generative AI to come up with new ideas for their review.',
+        )
+        .with(
+          ['no', 'no'],
+          () => 'The author declares that they did not use generative AI to come up with new ideas for their review.',
+        )
+        .exhaustive()}
+    </p>`
 }

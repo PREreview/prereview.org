@@ -223,6 +223,8 @@ const review = new Prereview({
     </ul>
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>
+    <h2>Use of Artificial Intelligence (AI)</h2>
+    <p>The authors declare that they did not use generative AI to come up with new ideas for their review.</p>
   `,
 })
 
@@ -282,6 +284,8 @@ const structuredReview = new Prereview({
     </dl>
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>
+    <h2>Use of Artificial Intelligence (AI)</h2>
+    <p>The author declares that they did not use generative AI to come up with new ideas for their review.</p>
   `,
 })
 
