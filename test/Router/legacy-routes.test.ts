@@ -25,8 +25,6 @@ describe('legacyRoutes', () => {
       '/preprints/philsci-22206/write-a-prereview/already-written',
       '/preprints/philsci-22206/write-a-prereview/review-type',
     ],
-    ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
-    ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
   ])('redirects %s', async (path, expected) => {
     const actual = await _.legacyRoutes(path)({
       getPreprintIdFromUuid: shouldNotBeCalled,

@@ -35,6 +35,8 @@ describe('LegacyRouter', () => {
     ['/login?next=/10.1101/2020.03.24.004655', '/log-in'],
     ['/logout', '/log-out'],
     ['/preprint-journal-clubs', '/live-reviews'],
+    ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
+    ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/prereview.org', '/'],
     ['/PREreview.org', '/'],
     ['/reviews/new', '/review-a-preprint'],

@@ -1,4 +1,4 @@
-import { Doi, isDoi } from 'doi-ts'
+import { isDoi } from 'doi-ts'
 import { Option, Tuple, flow, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -14,7 +14,6 @@ import * as FptsToEffect from '../../FptsToEffect.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import {
-  ArxivPreprintId,
   type IndeterminatePreprintId,
   PhilsciPreprintId,
   PreprintDoiD,
@@ -45,24 +44,6 @@ const getProfileIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ getProfileIdFromUuid }: GetProfileIdFromUuidEnv) => getProfileIdFromUuid(uuid)),
   )
-
-const ArxivPreprintIdC = C.make(
-  pipe(
-    D.string,
-    D.parse(s => {
-      const [, match] = /^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i.exec(s) ?? []
-
-      if (typeof match === 'string') {
-        return D.success(new ArxivPreprintId({ value: Doi(`10.48550/arxiv.${match}`) }))
-      }
-
-      return D.failure(s, 'ID')
-    }),
-  ),
-  {
-    encode: id => `philsci-${id.value}`,
-  },
-)
 
 const PreprintDoiC = C.make(
   pipe(
@@ -129,17 +110,6 @@ export const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | Redi
           RedirectResponse({
             status: StatusCodes.MovedPermanently,
             location: P.format(writeReviewReviewTypeMatch.formatter, { id: preprintId }),
-          }),
-        ),
-      ),
-    ),
-    pipe(
-      pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
-      P.map(({ preprintId }) =>
-        RT.of(
-          RedirectResponse({
-            status: StatusCodes.MovedPermanently,
-            location: P.format(preprintReviewsMatch.formatter, { id: preprintId }),
           }),
         ),
       ),

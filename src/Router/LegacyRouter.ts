@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../Context.ts'
-import { BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../Preprints/index.ts'
+import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../Preprints/index.ts'
 import { RedirectResponse } from '../response.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
@@ -98,6 +98,20 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeStaticRoute('*', '/login', movedPermanently(Routes.LogIn)),
   MakeStaticRoute('*', '/logout', movedPermanently(Routes.LogOut)),
   MakeStaticRoute('*', '/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
+  MakeRoute(
+    '*',
+    '/preprints/arxiv-:id',
+    pipe(
+      HttpRouter.schemaParams(Schema.Struct({ id: Schema.NonEmptyString })),
+      Effect.andThen(({ id }) =>
+        movedPermanently(
+          format(Routes.preprintReviewsMatch.formatter, {
+            id: new ArxivPreprintId({ value: Doi(`10.48550/arxiv.${id}`) }),
+          }),
+        ),
+      ),
+    ),
+  ),
   MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
   MakeRoute('*', '/prereviewers', showRemovedForNowMessage),
   MakeStaticRoute('*', '/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
