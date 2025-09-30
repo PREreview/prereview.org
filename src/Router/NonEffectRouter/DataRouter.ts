@@ -4,13 +4,18 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { clubsData } from '../../clubs-data/index.ts'
+import * as EffectToFpts from '../../EffectToFpts.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
 import * as Keyv from '../../keyv.ts'
 import * as LegacyPrereview from '../../legacy-prereview.ts'
+import * as Preprints from '../../Preprints/index.ts'
+import { reviewsData, type GetPrereviewsEnv } from '../../reviews-data/index.ts'
 import * as Routes from '../../routes.ts'
+import type { ScietyListEnv } from '../../sciety-list/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
-import { usersData } from '../../users-data/index.ts'
+import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
+import * as Zenodo from '../../zenodo.ts'
 import type { Env } from './index.ts'
 
 export const DataRouter = pipe(
@@ -23,13 +28,30 @@ export const DataRouter = pipe(
       Routes.usersDataMatch.parser,
       P.map(() => usersData),
     ),
+    pipe(
+      Routes.reviewsDataMatch.parser,
+      P.map(() => reviewsData),
+    ),
   ],
-  concatAll(P.getParserMonoid()),
+  concatAll(
+    P.getParserMonoid<
+      (
+        authorizationHeader: string,
+      ) => RTE.ReaderTaskEither<ScietyListEnv & GetPrereviewsEnv & GetUsersEnv, 'forbidden' | 'unavailable', string>
+    >(),
+  ),
   P.map(handler =>
     Effect.fn(
       function* (env: Env) {
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),
+          getPrereviews: withEnv(() => Zenodo.getPrereviewsForSciety, {
+            fetch: env.fetch,
+            getPreprintId: EffectToFpts.toTaskEitherK(Preprints.getPreprintId, env.runtime),
+            zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
+            zenodoUrl: env.zenodoApiConfig.origin,
+            ...env.logger,
+          }),
           getUsers: withEnv(
             () =>
               pipe(
