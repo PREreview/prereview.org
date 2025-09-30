@@ -22,9 +22,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'allowSiteCrawlers'
     | 'clock'
     | 'fetch'
-    | 'generateUuid'
     | 'legacyPrereviewApi'
-    | 'nodemailer'
     | 'publicUrl'
     | 'secret'
     | 'sessionCookie'
@@ -34,6 +32,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
   > &
     Keyv.AvatarStoreEnv &
     Keyv.AuthorInviteStoreEnv &
+    Keyv.CareerStageStoreEnv &
     Keyv.ContactEmailAddressStoreEnv &
     Keyv.IsOpenForRequestsStoreEnv &
     Keyv.LanguagesStoreEnv &
