@@ -13,10 +13,11 @@ import type * as Keyv from './keyv.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.ts'
 import * as Preprints from './Preprints/index.ts'
+// eslint-disable-next-line import/no-internal-modules
+import { type LegacyEnv, legacyRoutes } from './Router/NonEffectRouter/legacy-routes.ts'
 import { type RouterEnv, routes } from './app-router.ts'
 import { getUserOnboarding } from './keyv.ts'
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.ts'
-import { type LegacyEnv, legacyRoutes } from './legacy-routes/index.ts'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.ts'
 import { handleResponse } from './response.ts'
 import { securityHeaders } from './securityHeaders.ts'
