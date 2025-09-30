@@ -110,7 +110,7 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectResponse>> = pipe(
+export const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectResponse>> = pipe(
   [
     pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,

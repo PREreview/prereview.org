@@ -2,9 +2,6 @@ import { Function, pipe, type Runtime } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
 import * as R from 'fp-ts/lib/Reader.js'
-import type { HttpError } from 'http-errors'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type * as L from 'logger-fp-ts'
 import * as EffectToFpts from './EffectToFpts.ts'
@@ -13,46 +10,19 @@ import type * as Keyv from './keyv.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.ts'
 import * as Preprints from './Preprints/index.ts'
-// eslint-disable-next-line import/no-internal-modules
-import { type LegacyEnv, legacyRoutes } from './Router/NonEffectRouter/legacy-routes.ts'
 import { type RouterEnv, routes } from './app-router.ts'
 import { getUserOnboarding } from './keyv.ts'
-import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview.ts'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.ts'
-import { handleResponse } from './response.ts'
 import { securityHeaders } from './securityHeaders.ts'
 import type { User } from './user.ts'
 import type { WasPrereviewRemovedEnv } from './zenodo.ts'
 
-export type ConfigEnv = Omit<
-  RouterEnv & LegacyEnv,
-  'getPreprintId' | 'getUserOnboarding' | 'locale' | 'logger' | 'getPreprintIdFromUuid' | 'getProfileIdFromUuid'
-> &
+export type ConfigEnv = Omit<RouterEnv, 'getPreprintId' | 'getUserOnboarding' | 'locale' | 'logger'> &
   Keyv.UserOnboardingStoreEnv &
   WasPrereviewRemovedEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean
   }
-
-const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, HttpError<404>, void> = pipe(
-  routes,
-  RM.orElseW(() =>
-    pipe(
-      RM.gets(c => c.getOriginalUrl()),
-      RM.chainReaderTaskEitherK(legacyRoutes),
-      RM.bindTo('response'),
-      RM.apSW(
-        'user',
-        RM.asks((env: RouterEnv) => env.user),
-      ),
-      RM.apSW(
-        'locale',
-        RM.asks((env: RouterEnv) => env.locale),
-      ),
-      RM.ichainW(handleResponse),
-    ),
-  ),
-)
 
 export type AppContext = Preprints.Preprints
 
@@ -103,16 +73,16 @@ export const app = (config: ConfigEnv) => {
       .use(
         asyncHandler((req, res, next) => {
           return pipe(
-            appMiddleware,
-            R.local((env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv & LegacyEnv => ({
-              ...env,
-              user,
-              getUserOnboarding: withEnv(getUserOnboarding, env),
-              locale,
-              getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-              getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-              getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
-            })),
+            routes,
+            R.local(
+              (env: ConfigEnv & L.LoggerEnv & { runtime: AppRuntime }): RouterEnv => ({
+                ...env,
+                user,
+                getUserOnboarding: withEnv(getUserOnboarding, env),
+                locale,
+                getPreprintId: withEnv(EffectToFpts.toReaderTaskEitherK(Preprints.getPreprintId), env),
+              }),
+            ),
             R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv & { runtime: AppRuntime } => ({
               ...appEnv,
               logger,

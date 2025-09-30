@@ -26,6 +26,7 @@ import {
 } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
+import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
@@ -39,6 +40,7 @@ import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
 import { home } from '../../home-page/index.ts'
 import * as Keyv from '../../keyv.ts'
+import * as LegacyPrereview from '../../legacy-prereview.ts'
 import { LegacyPrereviewApi } from '../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
@@ -67,6 +69,7 @@ import { LoggedInUser, SessionId, type User } from '../../user.ts'
 import * as Response from '../Response.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
 import { DataRouter } from './DataRouter.ts'
+import { legacyRouter } from './legacy-routes.ts'
 import { MyDetailsRouter } from './MyDetailsRouter.ts'
 import { RequestReviewFlowRouter } from './RequestReviewFlowRouter.ts'
 import { WriteReviewRouter } from './WriteReviewRouter.ts'
@@ -475,6 +478,32 @@ const routerWithoutHyperTs = pipe(
     MyDetailsRouter,
     RequestReviewFlowRouter,
     WriteReviewRouter,
+    pipe(
+      legacyRouter,
+      P.map(
+        R.local((env: Env) => ({
+          locale: env.locale,
+          getPreprintIdFromUuid: withEnv(LegacyPrereview.getPreprintIdFromLegacyPreviewUuid, {
+            fetch: env.fetch,
+            legacyPrereviewApi: {
+              app: env.legacyPrereviewApiConfig.app,
+              key: Redacted.value(env.legacyPrereviewApiConfig.key),
+              url: env.legacyPrereviewApiConfig.origin,
+              update: env.legacyPrereviewApiConfig.update,
+            },
+          }),
+          getProfileIdFromUuid: withEnv(LegacyPrereview.getProfileIdFromLegacyPreviewUuid, {
+            fetch: env.fetch,
+            legacyPrereviewApi: {
+              app: env.legacyPrereviewApiConfig.app,
+              key: Redacted.value(env.legacyPrereviewApiConfig.key),
+              url: env.legacyPrereviewApiConfig.origin,
+              update: env.legacyPrereviewApiConfig.update,
+            },
+          }),
+        })),
+      ),
+    ),
   ],
   concatAll(P.getParserMonoid()),
   P.map(handler => flow(FptsToEffect.taskK(handler), Effect.andThen(Response.toHttpServerResponse))),
