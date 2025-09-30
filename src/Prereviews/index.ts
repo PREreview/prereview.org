@@ -2,7 +2,7 @@ import { FetchHttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Data, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { DeprecatedLoggerEnv, ExpressConfig } from '../Context.ts'
+import { DeprecatedLoggerEnv } from '../Context.ts'
 import { AddAnnotationsToLogger } from '../DeprecatedServices.ts'
 import * as EffectToFpts from '../EffectToFpts.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
@@ -77,6 +77,11 @@ export class Prereviews extends Context.Tag('Prereviews')<
   }
 >() {}
 
+export class WasPrereviewRemoved extends Context.Tag('WasPrereviewRemoved')<
+  WasPrereviewRemoved,
+  (id: number) => boolean
+>() {}
+
 export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
 
 export const {
@@ -92,7 +97,7 @@ export const {
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const { wasPrereviewRemoved } = yield* ExpressConfig
+    const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereviewApi
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv

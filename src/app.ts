@@ -15,11 +15,9 @@ import { getUserOnboarding } from './keyv.ts'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.ts'
 import { securityHeaders } from './securityHeaders.ts'
 import type { User } from './user.ts'
-import type { WasPrereviewRemovedEnv } from './zenodo.ts'
 
 export type ConfigEnv = Omit<RouterEnv, 'getPreprintId' | 'getUserOnboarding' | 'locale' | 'logger'> &
-  Keyv.UserOnboardingStoreEnv &
-  WasPrereviewRemovedEnv & {
+  Keyv.UserOnboardingStoreEnv & {
     allowSiteCrawlers: boolean
     useCrowdinInContext: boolean
   }

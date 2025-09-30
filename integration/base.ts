@@ -75,6 +75,7 @@ import * as Nodemailer from '../src/nodemailer.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.ts'
+import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
@@ -82,7 +83,6 @@ import * as TemplatePage from '../src/TemplatePage.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
-import type { WasPrereviewRemovedEnv } from '../src/zenodo.ts'
 
 export { expect } from '@playwright/test'
 
@@ -103,7 +103,7 @@ interface AppFixtures {
   slackUserIdStore: Keyv
   contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
-  wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
+  wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
@@ -1290,12 +1290,12 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           },
           slackUserIdStore,
           userOnboardingStore,
-          wasPrereviewRemoved,
         }),
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
           Layer.mergeAll(
             Layer.succeed(AllowSiteCrawlers, true),
+            Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
             CachingHttpClient.layerInMemory(),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,

@@ -40,7 +40,7 @@ import * as ZenodoInteractions from './Zenodo/index.ts'
 const getPrereview = Layer.effect(
   Prereview.GetPrereview,
   Effect.gen(function* () {
-    const { wasPrereviewRemoved } = yield* ExpressConfig
+    const wasPrereviewRemoved = yield* Prereviews.WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const zenodoApi = yield* Zenodo.ZenodoApi

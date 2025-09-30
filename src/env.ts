@@ -17,15 +17,6 @@ export function decodeEnv(process: NodeJS.Process) {
   )
 }
 
-const IntD = pipe(
-  D.string,
-  D.parse(s => {
-    const n = +s
-
-    return isNaN(n) || s.trim() === '' ? D.failure(s, 'Integer') : D.success(n)
-  }),
-)
-
 const OrcidD = D.fromRefinement(isOrcidId, 'ORCID')
 
 const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
@@ -38,7 +29,6 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 const EnvD = pipe(
   D.struct({
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
-    REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),
     SLACK_CLIENT_ID: D.string,
     SLACK_CLIENT_SECRET: D.string,

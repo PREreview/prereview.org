@@ -1,7 +1,7 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Array, Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './club-details.ts'
@@ -15,6 +15,7 @@ import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import * as Nodemailer from './nodemailer.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.ts'
+import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
@@ -147,6 +148,15 @@ pipe(
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
       }),
+      Layer.effect(
+        Prereviews.WasPrereviewRemoved,
+        pipe(
+          Config.withDefault(Config.array(Config.integer(), 'REMOVED_PREREVIEWS'), []),
+          Config.map(removedPrereviews =>
+            Prereviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id)),
+          ),
+        ),
+      ),
       Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
       Layer.effect(

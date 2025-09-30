@@ -91,6 +91,5 @@ export const ExpressConfigLive = Effect.gen(function* () {
     },
     slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
     userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
-    wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   } satisfies typeof ExpressConfig.Service
 })
