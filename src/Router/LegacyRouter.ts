@@ -1,8 +1,9 @@
 import { type HttpMethod, HttpRouter } from '@effect/platform'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, Schema } from 'effect'
+import { Effect, pipe, Schema, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../Context.ts'
+import * as Preprints from '../Preprints/index.ts'
 import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../Preprints/index.ts'
 import { RedirectResponse } from '../response.ts'
 import * as Routes from '../routes.ts'
@@ -23,6 +24,28 @@ const MakeStaticRoute = (method: HttpMethod.HttpMethod | '*', path: `/${string}`
 const showRemovedPermanentlyMessage = Effect.andThen(Locale, removedPermanentlyPage)
 
 const showRemovedForNowMessage = Effect.andThen(Locale, removedForNowPage)
+
+const PreprintIdWithDoiSchema = Schema.transform(
+  Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),
+  Preprints.IndeterminatePreprintIdFromDoiSchema,
+  {
+    strict: true,
+    decode: ([, match]) => match.replaceAll('-', '/').replaceAll('+', '-'),
+    encode: value => Tuple.make('doi-' as const, value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
+  },
+)
+
+const PhilsciPreprintIdSchema = Schema.transform(
+  Schema.compose(Schema.String, Schema.TemplateLiteralParser('philsci-', Preprints.PhilsciPreprintId.fields.value)),
+  Schema.typeSchema(Preprints.PhilsciPreprintId),
+  {
+    strict: true,
+    decode: ([, id]) => new Preprints.PhilsciPreprintId({ value: id }),
+    encode: id => Tuple.make('philsci-' as const, id.value),
+  },
+)
+
+const PreprintIdSchema = Schema.Union(PreprintIdWithDoiSchema, PhilsciPreprintIdSchema)
 
 export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute(
@@ -110,6 +133,14 @@ export const LegacyRouter = HttpRouter.fromIterable([
           }),
         ),
       ),
+    ),
+  ),
+  MakeRoute(
+    '*',
+    '/preprints/:id/write-a-prereview/already-written',
+    pipe(
+      HttpRouter.schemaParams(Schema.Struct({ id: PreprintIdSchema })),
+      Effect.andThen(({ id }) => movedPermanently(format(Routes.writeReviewReviewTypeMatch.formatter, { id }))),
     ),
   ),
   MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),

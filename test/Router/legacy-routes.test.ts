@@ -6,41 +6,11 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as _ from '../../src/Router/NonEffectRouter/legacy-routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { DefaultLocale } from '../../src/locales/index.ts'
 import { preprintReviewsMatch, profileMatch } from '../../src/routes.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('legacyRoutes', () => {
-  test.each([
-    [
-      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/already-written',
-      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/review-type',
-    ],
-    [
-      '/preprints/doi-10.1590-a+b-c/write-a-prereview/already-written',
-      '/preprints/doi-10.1590-a%2Bb-c/write-a-prereview/review-type',
-    ],
-    [
-      '/preprints/philsci-22206/write-a-prereview/already-written',
-      '/preprints/philsci-22206/write-a-prereview/review-type',
-    ],
-  ])('redirects %s', async (path, expected) => {
-    const actual = await _.legacyRoutes(path)({
-      getPreprintIdFromUuid: shouldNotBeCalled,
-      getProfileIdFromUuid: shouldNotBeCalled,
-      locale: DefaultLocale,
-    })()
-
-    expect(actual).toStrictEqual(
-      E.right({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.MovedPermanently,
-        location: expected,
-      }),
-    )
-  })
-
   describe("with an '/about/{uuid}' path", () => {
     test.prop([fc.uuid().map(uuid => Tuple.make(uuid, `/about/${uuid}`)), fc.supportedLocale(), fc.profileId()])(
       'when the profile ID is found',
