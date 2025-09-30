@@ -12,7 +12,7 @@ import * as LegacyPrereview from '../../legacy-prereview.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { reviewsData, type GetPrereviewsEnv } from '../../reviews-data/index.ts'
 import * as Routes from '../../routes.ts'
-import type { ScietyListEnv } from '../../sciety-list/index.ts'
+import { scietyList, type ScietyListEnv } from '../../sciety-list/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
 import * as Zenodo from '../../zenodo.ts'
@@ -31,6 +31,10 @@ export const DataRouter = pipe(
     pipe(
       Routes.reviewsDataMatch.parser,
       P.map(() => reviewsData),
+    ),
+    pipe(
+      Routes.scietyListMatch.parser,
+      P.map(() => scietyList),
     ),
   ],
   concatAll(
