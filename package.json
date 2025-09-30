@@ -34,7 +34,6 @@
     "fp-ts-routing": "^0.7.0",
     "html-entities": "^2.6.0",
     "http-errors": "^2.0.0",
-    "http-proxy-middleware": "^3.0.5",
     "hyper-ts": "^0.7.9",
     "hyper-ts-oauth": "^0.1.2",
     "hyper-ts-routing": "^0.1.4",
