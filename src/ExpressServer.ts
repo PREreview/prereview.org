@@ -82,7 +82,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
     orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
     researchInterestsStore: new Keyv({ emitErrors: false, namespace: 'research-interests', store: createKeyvStore() }),
     reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
-    scietyListToken: env.SCIETY_LIST_TOKEN,
     slackOauth: {
       authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
       clientId: env.SLACK_CLIENT_ID,

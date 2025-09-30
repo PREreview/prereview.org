@@ -5,7 +5,14 @@ import { Array, Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema 
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './club-details.ts'
-import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from './Context.ts'
+import {
+  AllowSiteCrawlers,
+  DeprecatedEnvVars,
+  DeprecatedLoggerEnv,
+  ExpressConfig,
+  ScietyListToken,
+  SessionSecret,
+} from './Context.ts'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { ExpressConfigLive } from './ExpressServer.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
@@ -20,6 +27,7 @@ import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import * as TemplatePage from './TemplatePage.ts'
+import { NonEmptyString } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
 
 const CockroachClientLayer = Layer.mergeAll(
@@ -158,6 +166,10 @@ pipe(
         ),
       ),
       Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
+      Layer.effect(
+        ScietyListToken,
+        Config.redacted(Schema.Config('SCIETY_LIST_TOKEN', NonEmptyString.NonEmptyStringSchema)),
+      ),
       Layer.effect(SessionSecret, Config.redacted('SECRET')),
       Layer.effect(
         Zenodo.ZenodoApi,

@@ -24,7 +24,6 @@ import type { TemplatePageEnv } from './page.ts'
 import type { GetPreprintIdEnv } from './preprint.ts'
 import type { PublicUrlEnv } from './public-url.ts'
 import { orcidCodeMatch } from './routes.ts'
-import type { ScietyListEnv } from './sciety-list/index.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import type { GetUserOnboardingEnv } from './user-onboarding.ts'
 import type { User } from './user.ts'
@@ -37,7 +36,6 @@ export type RouterEnv = GetPreprintIdEnv &
   Keyv.LocationStoreEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
   OrcidOAuthEnv &
   PublicUrlEnv &
-  ScietyListEnv &
   SessionEnv &
   TemplatePageEnv &
   FetchEnv

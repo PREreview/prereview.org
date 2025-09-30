@@ -52,7 +52,13 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
-import { AllowSiteCrawlers, DeprecatedLoggerEnv, ExpressConfig, SessionSecret } from '../src/Context.ts'
+import {
+  AllowSiteCrawlers,
+  DeprecatedLoggerEnv,
+  ExpressConfig,
+  ScietyListToken,
+  SessionSecret,
+} from '../src/Context.ts'
 import { DeprecatedLogger } from '../src/DeprecatedServices.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
@@ -1281,7 +1287,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           orcidTokenStore: new Keyv(),
           researchInterestsStore,
           reviewRequestStore,
-          scietyListToken: NonEmptyString('secret'),
           slackOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',
@@ -1336,6 +1341,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
             }),
             Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),
+            Layer.succeed(ScietyListToken, Redacted.make(NonEmptyString('secret'))),
             Layer.succeed(SessionSecret, Redacted.make('')),
             Layer.succeed(Zenodo.ZenodoApi, {
               key: Redacted.make('key'),
