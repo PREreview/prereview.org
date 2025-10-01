@@ -176,7 +176,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can upload an avatar', async ({ fetch
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Upload an avatar')
 
-  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: '‹ Back', exact: true }).click()
   await page.getByRole('link', { name: 'Remove avatar' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
@@ -263,7 +263,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
 
   await expect(page.getByLabel('Early')).toBeChecked()
 
-  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: '‹ Back', exact: true }).click()
   await page.getByRole('link', { name: 'Set career-stage visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
@@ -324,7 +324,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
     'Nunc vestibulum sapien eu magna elementum consectetur.',
   )
 
-  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: '‹ Back', exact: true }).click()
   await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
@@ -353,7 +353,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
 
   await expect(page.getByLabel('Where are you based?')).toHaveValue('Vivamus in convallis urna.')
 
-  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: '‹ Back', exact: true }).click()
   await page.getByRole('link', { name: 'Set location visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
@@ -380,7 +380,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
 
   await expect(page.getByLabel('What languages can you review in?')).toHaveValue('English and Spanish')
 
-  await page.getByRole('link', { name: 'Back' }).click()
+  await page.getByRole('link', { name: '‹ Back', exact: true }).click()
   await page.getByRole('link', { name: 'Set languages visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
