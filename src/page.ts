@@ -429,7 +429,7 @@ export const page = ({
                 <div>
                   <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
-                    >Share your feedback with PREreview!</a
+                    >${translate(locale, 'footer', 'feedbackLink')()}</a
                   >
                 </div>
 

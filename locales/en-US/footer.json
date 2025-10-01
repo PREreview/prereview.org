@@ -14,6 +14,10 @@
   "slackLink": {
     "message": "Join our Slack Community"
   },
+  "feedbackLink": {
+    "message": "Share your feedback with PREreview!",
+    "description": "Link that takes you to a form where you can share feedback about PREreview.org (what worked well on the site, what didn’t, etc.)."
+  },
   "menuHeading": {
     "message": "Support links",
     "description": "Heading for a list of links about PREreview, such as its Code of Conduct and Privacy Policy."
