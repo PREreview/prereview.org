@@ -239,6 +239,9 @@
   "scheduleAnInterview": {
     "message": "crwdns3988:0crwdne3988:0"
   },
+  "feedbackSurvey": {
+    "message": "crwdns5974:0crwdne5974:0"
+  },
   "backToPreprint": {
     "message": "crwdns3990:0crwdne3990:0"
   },
@@ -449,8 +452,11 @@
   "aiIdeasAuthorsStatement": {
     "message": "crwdns5036:0crwdne5036:0"
   },
-  "aiNotUsed": {
-    "message": "crwdns5038:0crwdne5038:0"
+  "noAiIdeasStatement": {
+    "message": "crwdns5976:0crwdne5976:0"
+  },
+  "noAiIdeasAuthorsStatement": {
+    "message": "crwdns5978:0crwdne5978:0"
   },
   "changeUseOfAi": {
     "message": "crwdns5040:0crwdne5040:0"

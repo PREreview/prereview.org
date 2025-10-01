@@ -443,9 +443,6 @@
   "aiIdeasAuthorsStatement": {
     "message": "Os autores declaram que usaram IA generativa para desenvolver novas ideias para sua avaliação."
   },
-  "aiNotUsed": {
-    "message": "Não utilizada"
-  },
   "changeUseOfAi": {
     "message": "Alterar <visuallyHidden>uso de IA</visuallyHidden>"
   },
