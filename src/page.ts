@@ -426,6 +426,13 @@ export const page = ({
                   >
                 </div>
 
+                <div>
+                  <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
+                    >Share your feedback with PREreview!</a
+                  >
+                </div>
+
                 <ul aria-label="${translate(locale, 'footer', 'menuHeading')()}">
                   <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
                   <li>
