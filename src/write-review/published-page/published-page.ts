@@ -125,6 +125,16 @@ export const publishedPage = ({
         )}
       </p>
 
+      <p>
+        You can also share your feedback about PREreview.org with us by completing a
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+          >brief anonymous survey<span class="visually-hidden"> (${opensInNewTab})</span></a
+        >.
+      </p>
+
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button"
         >${t('write-review', 'backToPreprint')()}</a
       >
