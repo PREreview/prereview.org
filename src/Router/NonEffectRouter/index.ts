@@ -31,7 +31,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { clubProfile } from '../../club-profile-page/index.ts'
-import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from '../../Context.ts'
+import { DeprecatedLoggerEnv, ExpressConfig, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, Slack, Zenodo } from '../../ExternalApis/index.ts'
@@ -63,7 +63,6 @@ import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import * as Routes from '../../routes.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
-import type { NonEmptyString } from '../../types/index.ts'
 import type { GenerateUuid } from '../../types/uuid.ts'
 import { LoggedInUser, SessionId, type User } from '../../user.ts'
 import * as Response from '../Response.ts'
@@ -89,6 +88,7 @@ export const nonEffectRouter: Effect.Effect<
   | ExpressConfig
   | Slack.SlackApi
   | Cloudinary.CloudinaryApi
+  | ScietyListToken
   | SessionStore
   | PrereviewCoarNotifyConfig
   | Nodemailer
@@ -128,6 +128,7 @@ export const nonEffectRouter: Effect.Effect<
   const loggedInUser = yield* Effect.serviceOption(LoggedInUser)
   const sessionId = yield* Effect.serviceOption(SessionId)
 
+  const scietyListToken = yield* ScietyListToken
   const slackApiConfig = yield* Slack.SlackApi
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
@@ -191,7 +192,7 @@ export const nonEffectRouter: Effect.Effect<
       clientSecret: Redacted.make(expressConfig.slackOauth.clientSecret),
       tokenUrl: expressConfig.slackOauth.tokenUrl,
     },
-    scietyListToken: Redacted.make(expressConfig.scietyListToken),
+    scietyListToken,
     slackApiConfig,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
@@ -250,7 +251,7 @@ export interface Env {
   reviewRequestStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service
-  scietyListToken: Redacted.Redacted<NonEmptyString.NonEmptyString>
+  scietyListToken: typeof ScietyListToken.Service
   slackOauth: {
     authorizeUrl: URL
     clientId: string

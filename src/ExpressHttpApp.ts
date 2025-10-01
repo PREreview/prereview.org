@@ -3,7 +3,6 @@ import { NodeHttpServerRequest } from '@effect/platform-node'
 import { type ConfigError, Effect, Option } from 'effect'
 import express, { type ErrorRequestHandler } from 'express'
 import httpErrors from 'http-errors'
-import type { AppContext } from './app.ts'
 import { DeprecatedLoggerEnv, Express, Locale } from './Context.ts'
 import { AddAnnotationsToLogger } from './DeprecatedServices.ts'
 import * as StatusCodes from './StatusCodes.ts'
@@ -11,12 +10,11 @@ import { LoggedInUser } from './user.ts'
 
 export const ExpressHttpApp: HttpApp.Default<
   ConfigError.ConfigError | HttpServerError.RouteNotFound,
-  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale | AppContext
+  DeprecatedLoggerEnv | Express | HttpServerRequest.HttpServerRequest | Locale
 > = Effect.gen(function* () {
   const expressApp = yield* Express
   const { logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
   const request = yield* HttpServerRequest.HttpServerRequest
-  const runtime = yield* Effect.runtime<AppContext>()
 
   const nodeRequest = NodeHttpServerRequest.toIncomingMessage(request)
   nodeRequest.url = request.url
@@ -40,7 +38,6 @@ export const ExpressHttpApp: HttpApp.Default<
         expressApp({
           locale,
           logger,
-          runtime,
           user: Option.getOrUndefined(user),
         }),
       )

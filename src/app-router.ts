@@ -12,7 +12,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import type * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { withEnv } from './Fpts.ts'
-import type * as Keyv from './keyv.ts'
 import {
   createUserOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
@@ -21,23 +20,17 @@ import {
 import type { SupportedLocale } from './locales/index.ts'
 import { authenticate, type IsUserBlockedEnv, type OrcidOAuthEnv } from './log-in/index.ts'
 import type { TemplatePageEnv } from './page.ts'
-import type { GetPreprintIdEnv } from './preprint.ts'
 import type { PublicUrlEnv } from './public-url.ts'
 import { orcidCodeMatch } from './routes.ts'
-import type { ScietyListEnv } from './sciety-list/index.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import type { GetUserOnboardingEnv } from './user-onboarding.ts'
 import type { User } from './user.ts'
 
-export type RouterEnv = GetPreprintIdEnv &
-  GetUserOnboardingEnv &
-  Keyv.CareerStageStoreEnv &
+export type RouterEnv = GetUserOnboardingEnv &
   IsUserBlockedEnv &
-  LegacyPrereviewApiEnv &
-  Keyv.LocationStoreEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
+  LegacyPrereviewApiEnv & { locale: SupportedLocale; user?: User } & L.LoggerEnv &
   OrcidOAuthEnv &
   PublicUrlEnv &
-  ScietyListEnv &
   SessionEnv &
   TemplatePageEnv &
   FetchEnv

@@ -2,8 +2,6 @@ import { flow, pipe, String } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import * as IOE from 'fp-ts/lib/IOEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { v4 } from 'uuid-ts'
-import { NonEmptyString, NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 
 export type EnvVars = D.TypeOf<typeof EnvD>
@@ -29,7 +27,6 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 const EnvD = pipe(
   D.struct({
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
-    SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, NonEmptyString(v4()())),
     SLACK_CLIENT_ID: D.string,
     SLACK_CLIENT_SECRET: D.string,
   }),
