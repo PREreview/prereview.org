@@ -240,6 +240,10 @@
   "scheduleAnInterview": {
     "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!"
   },
+  "feedbackSurvey": {
+    "message": "You can also share your feedback about PREreview.org with us by completing a <link>brief anonymous survey</link>.",
+    "description": "Prompt containing a link that takes you to a form where you can share feedback about PREreview.org (what worked well on the site, what didn’t, etc.)."
+  },
   "backToPreprint": {
     "message": "Back to preprint"
   },
