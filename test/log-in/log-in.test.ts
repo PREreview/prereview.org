@@ -105,7 +105,7 @@ describe('authenticate', () => {
   describe('when the state contains a valid referer', () => {
     test.prop([
       fc.string(),
-      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.url(),
       fc.oauth(),
       fc.supportedLocale(),
       fc.record({
@@ -120,7 +120,7 @@ describe('authenticate', () => {
       fc.connection(),
     ])(
       'when there is a name',
-      async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
+      async (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
         const sessionStore = new Keyv()
 
         const actual = await runMiddleware(
@@ -170,7 +170,7 @@ describe('authenticate', () => {
 
     test.prop([
       fc.string(),
-      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.url(),
       fc.oauth(),
       fc.supportedLocale(),
       fc.record({
@@ -185,7 +185,7 @@ describe('authenticate', () => {
       fc.connection(),
     ])(
       "when there isn't a name",
-      async (code, [referer], orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
+      async (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, connection) => {
         const sessionStore = new Keyv()
 
         const actual = await runMiddleware(
@@ -239,7 +239,7 @@ describe('authenticate', () => {
 
   test.prop([
     fc.string(),
-    fc.url().chain(url => fc.tuple(fc.constant(url))),
+    fc.url(),
     fc.oauth(),
     fc.supportedLocale(),
     fc.record({
@@ -253,7 +253,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the user is blocked',
-    async (code, [referer], orcidOauth, locale, accessToken, secret, sessionCookie, connection) => {
+    async (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
       const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
 
@@ -299,7 +299,7 @@ describe('authenticate', () => {
 
   test.prop([
     fc.string(),
-    fc.url().chain(url => fc.tuple(fc.constant(url))),
+    fc.url(),
     fc.oauth(),
     fc.supportedLocale(),
     fc.record({
@@ -314,7 +314,7 @@ describe('authenticate', () => {
     fc.html(),
   ])(
     'when a pseudonym cannot be retrieved',
-    async (code, [referer], orcidOauth, locale, accessToken, secret, sessionCookie, connection, page) => {
+    async (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie, connection, page) => {
       const sessionStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
         status: StatusCodes.OK,
