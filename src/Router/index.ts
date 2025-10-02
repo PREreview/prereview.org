@@ -8,7 +8,6 @@ import { AllowSiteCrawlers, Locale } from '../Context.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { EdiaStatementPage } from '../EdiaStatementPage.ts'
-import { ExpressHttpApp } from '../ExpressHttpApp.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { FundingPage } from '../FundingPage.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
@@ -465,7 +464,6 @@ export const Router = pipe(
   ),
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
-  Effect.catchTag('RouteNotFound', () => Effect.interruptible(ExpressHttpApp)),
   Effect.catchTag('RouteNotFound', () =>
     Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
   ),
