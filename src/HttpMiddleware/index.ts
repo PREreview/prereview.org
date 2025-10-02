@@ -7,9 +7,9 @@ import {
   HttpServerResponse,
   Path,
 } from '@effect/platform'
-import cookieSignature from 'cookie-signature'
-import { Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
-import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionSecret, SessionStore } from '../Context.ts'
+import { Array, Cause, Duration, Effect, Layer, Option, pipe, Schema, String } from 'effect'
+import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionStore } from '../Context.ts'
+import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
@@ -150,7 +150,6 @@ export const getFlashMessage = HttpMiddleware.make(app =>
 
 export const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
-    const secret = yield* SessionSecret
     const { cookie, store } = yield* SessionStore
     const { userOnboardingStore } = yield* ExpressConfig
 
@@ -158,7 +157,7 @@ export const getLoggedInUser = HttpMiddleware.make(app =>
       HttpServerRequest.schemaCookies(
         Schema.Struct({ session: pipe(Schema.propertySignature(Schema.String), Schema.fromKey(cookie)) }),
       ),
-      Effect.andThen(({ session }) => cookieSignature.unsign(session, Redacted.value(secret))),
+      Effect.andThen(({ session }) => CookieSignature.unsign(session)),
       Effect.andThen(Schema.decodeUnknown(Uuid.UuidSchema)),
       Effect.option,
     )

@@ -1,8 +1,8 @@
 import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
-import cookieSignature from 'cookie-signature'
-import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Redacted, Schema } from 'effect'
+import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
-import { FlashMessage, Locale, SessionSecret, SessionStore } from '../Context.ts'
+import { FlashMessage, Locale, SessionStore } from '../Context.ts'
+import * as CookieSignature from '../CookieSignature.ts'
 import { OrcidOauth } from '../OrcidOauth.ts'
 import { PublicUrl } from '../public-url.ts'
 import { toPage, type ForceLogInResponse, type Response } from '../response.ts'
@@ -104,7 +104,6 @@ export const toHttpServerResponse = (
 }
 
 export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogInResponse) {
-  const secret = yield* SessionSecret
   const { cookie, store } = yield* SessionStore
 
   const sessionId = yield* Uuid.generateUuid
@@ -119,7 +118,7 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
       Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),
-      Cookies.unsafeMakeCookie(cookie, cookieSignature.sign(encodedSessionId, Redacted.value(secret)), {
+      Cookies.unsafeMakeCookie(cookie, yield* CookieSignature.sign(encodedSessionId), {
         httpOnly: true,
         path: '/',
       }),

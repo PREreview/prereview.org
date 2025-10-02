@@ -5,6 +5,7 @@ import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
 import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from './Context.ts'
+import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { AddAnnotationsToLogger } from './DeprecatedServices.ts'
@@ -429,5 +430,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue)),
+  Layer.provide(
+    Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
+  ),
 )
