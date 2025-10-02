@@ -14,7 +14,7 @@ import { FundingPage } from '../FundingPage.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
-import { authenticateError, logIn, LogOut } from '../log-in/index.ts'
+import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
@@ -370,13 +370,28 @@ const AuthRouter = HttpRouter.fromIterable([
     ),
   ),
   HttpRouter.makeRoute('GET', Routes.LogOut, LogOut),
-  MakeStaticRoute(
+  HttpRouter.makeRoute(
     'GET',
     Routes.OrcidAuth,
     pipe(
-      HttpServerRequest.schemaSearchParams(Schema.Struct({ error: Schema.String, state: Schema.String })),
-      Effect.bind('locale', () => Locale),
-      Effect.andThen(authenticateError),
+      HttpServerRequest.schemaSearchParams(
+        Schema.Union(
+          Schema.Struct({ code: Schema.String, state: Schema.String }),
+          Schema.Struct({ error: Schema.String, state: Schema.String }),
+        ),
+      ),
+      Effect.andThen(
+        flow(
+          Match.value,
+          Match.when({ code: Match.string }, ({ code, state }) =>
+            Effect.catchAll(authenticate(code, state), Response.toHttpServerResponse),
+          ),
+          Match.when({ error: Match.string }, ({ error }) =>
+            Effect.andThen(Locale, locale => Response.toHttpServerResponse(authenticateError({ error, locale }))),
+          ),
+          Match.exhaustive,
+        ),
+      ),
       Effect.catchTag('ParseError', () =>
         Effect.andThen(HttpServerRequest.HttpServerRequest, request => new HttpServerError.RouteNotFound({ request })),
       ),

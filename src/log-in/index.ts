@@ -1,29 +1,30 @@
-import { Cookies, HttpServerResponse } from '@effect/platform'
-import { Context, Duration, Effect, Function, flow, pipe } from 'effect'
+import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
+import { Boolean, Context, Duration, Effect, Function, Match, Redacted, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
+import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
-import { storeSession } from 'hyper-ts-session'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import { SessionStore } from '../Context.ts'
+import { DeprecatedLoggerEnv, Locale, SessionStore } from '../Context.ts'
+import * as CookieSignature from '../CookieSignature.ts'
+import { AddAnnotationsToLogger } from '../DeprecatedServices.ts'
 import { timeoutRequest } from '../fetch.ts'
-import { setFlashMessage } from '../flash-message.ts'
+import * as FptsToEffect from '../FptsToEffect.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
-import { LogInResponse, handlePageResponse } from '../response.ts'
+import { OrcidOauth } from '../OrcidOauth.ts'
+import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
+import { FlashMessageResponse, LogInResponse } from '../response.ts'
 import * as Routes from '../routes.ts'
 import { homeMatch, orcidCodeMatch } from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
-import { NonEmptyString } from '../types/index.ts'
+import { NonEmptyString, Uuid } from '../types/index.ts'
 import { type OrcidId, isOrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 import { SessionId, newSessionForUser } from '../user.ts'
@@ -78,9 +79,6 @@ const OrcidUserC = C.struct({
 
 type OrcidUser = C.TypeOf<typeof OrcidUserC>
 
-const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
-
 const isUserBlocked = (user: OrcidId): R.Reader<IsUserBlockedEnv, boolean> =>
   R.asks(({ isUserBlocked }) => isUserBlocked(user))
 
@@ -104,17 +102,23 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
   })
 }
 
-export const authenticate = flow(
-  (code: string, state: string) => RM.of({ code, state }),
-  RM.bind(
-    'referer',
-    RM.fromReaderK(({ state }) => getReferer(state)),
-  ),
-  RM.bindW(
-    'user',
-    RM.fromReaderTaskEitherK(
-      flow(
-        ({ code }) => exchangeAuthorizationCode(OrcidUserC)(code),
+export const authenticate = Effect.fn(
+  function* (code: string, state: string) {
+    const publicUrl = yield* PublicUrl
+    const fetch = yield* FetchHttpClient.Fetch
+    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
+    const orcidOauth = yield* OrcidOauth
+    const { cookie, store } = yield* SessionStore
+    const isUserBlocked = yield* IsUserBlocked
+    const getPseudonym = yield* GetPseudonym
+
+    const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+
+    const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
+
+    const user = yield* FptsToEffect.readerTaskEither(
+      pipe(
+        exchangeAuthorizationCode(OrcidUserC)(code),
         R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
@@ -126,55 +130,60 @@ export const authenticate = flow(
           ),
         ),
       ),
-    ),
-  ),
-  RM.bindW(
-    'pseudonym',
-    RM.fromReaderTaskEitherK(
-      flow(
-        ({ user }) => getPseudonym(user),
-        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym'))),
-      ),
-    ),
-  ),
-  flow(
-    RM.ichainFirstW(({ referer }) => RM.redirect(referer)),
-    RM.ichainFirstW(
-      flow(
-        ({ user, pseudonym }) => ({
-          ...user,
-          name: NonEmptyString.isNonEmptyString(user.name)
-            ? user.name
-            : NonEmptyString.NonEmptyString(`PREreviewer ${user.orcid}`),
-          pseudonym,
+      {
+        clock,
+        fetch,
+        isUserBlocked,
+        logger,
+        orcidOauth: {
+          authorizeUrl: orcidOauth.authorizeUrl,
+          clientId: orcidOauth.clientId,
+          clientSecret: Redacted.value(orcidOauth.clientSecret),
+          tokenUrl: orcidOauth.tokenUrl,
+        },
+        publicUrl,
+      },
+    )
+
+    const pseudonym = yield* Effect.tapError(getPseudonym(user), () => Effect.logWarning('Unable to get pseudonym'))
+
+    const sessionId = yield* Uuid.generateUuid
+
+    yield* pipe(
+      {
+        ...user,
+        name: NonEmptyString.isNonEmptyString(user.name)
+          ? user.name
+          : NonEmptyString.NonEmptyString(`PREreviewer ${user.orcid}`),
+        pseudonym,
+      },
+      newSessionForUser,
+      session => Effect.tryPromise(() => store.set(sessionId, session)),
+      Effect.tapError(error => Effect.logError('Unable to store new session').pipe(Effect.annotateLogs({ error }))),
+    )
+
+    return yield* pipe(
+      HttpServerResponse.redirect(referer),
+      HttpServerResponse.setCookie(cookie, yield* CookieSignature.sign(sessionId), {
+        httpOnly: true,
+        path: '/',
+      }),
+      Effect.andThen(
+        Boolean.match(referer === format(homeMatch.formatter, {}), {
+          onTrue: () => HttpServerResponse.setCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+          onFalse: () => identity<HttpServerResponse.HttpServerResponse>,
         }),
-        newSessionForUser,
-        storeSession,
-        orElseFirstW(RM.fromReaderIOK(error => L.errorP('Unable to store new session')({ error: error.message }))),
       ),
-    ),
-    RM.ichainW(({ referer }) =>
-      referer === format(homeMatch.formatter, {}) ? RM.fromMiddleware(setFlashMessage('logged-in')) : RM.of(undefined),
-    ),
-    RM.ichainFirst(() => RM.closeHeaders()),
-    RM.ichainFirst(() => RM.end()),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .with('blocked', () =>
-        pipe(
-          RM.redirect(format(homeMatch.formatter, {})),
-          RM.ichainW(() => RM.fromMiddleware(setFlashMessage('blocked'))),
-          RM.ichain(() => RM.closeHeaders()),
-          RM.ichain(() => RM.end()),
-        ),
-      )
-      .otherwise(() =>
-        pipe(
-          RM.asks(({ locale }: { locale: SupportedLocale }) => locale),
-          RM.ichainW(locale => handlePageResponse({ locale, response: failureMessage(locale) })),
-        ),
+    )
+  },
+  Effect.catchAll(
+    flow(
+      Match.value,
+      Match.when('blocked', () =>
+        Effect.fail(FlashMessageResponse({ location: format(Routes.homeMatch.formatter, {}), message: 'blocked' })),
       ),
+      Match.orElse(() => Effect.flip(Effect.andThen(Locale, failureMessage))),
+    ),
   ),
 )
 
@@ -192,14 +201,4 @@ function getReferer(state: string) {
       referer => referer.href,
     ),
   )
-}
-
-function orElseFirstW<R2, E, I, O, M, B>(f: (e: E) => RM.ReaderMiddleware<R2, I, O, M, B>) {
-  return <R1, A>(ma: RM.ReaderMiddleware<R1, I, O, E, A>): RM.ReaderMiddleware<R2 & R1, I, O, E | M, A> =>
-    r =>
-    c =>
-      pipe(
-        ma(r)(c),
-        TE.orElseFirstW(e => f(e)(r)(c)),
-      )
 }
