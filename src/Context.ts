@@ -1,6 +1,6 @@
 import { Context, type Redacted } from 'effect'
 import type { LoggerEnv } from 'logger-fp-ts'
-import type { app, ConfigEnv } from './app.ts'
+import type { app } from './app.ts'
 import type { EnvVars } from './env.ts'
 import type * as Keyv from './keyv.ts'
 import type { SupportedLocale } from './locales/index.ts'
@@ -12,26 +12,6 @@ export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<Deprecat
 export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<DeprecatedLoggerEnv, LoggerEnv>() {}
 
 export class Express extends Context.Tag('Express')<Express, ReturnType<typeof app>>() {}
-
-export class ExpressConfig extends Context.Tag('ExpressConfig')<
-  ExpressConfig,
-  Omit<
-    ConfigEnv,
-    | 'allowSiteCrawlers'
-    | 'clock'
-    | 'fetch'
-    | 'isUserBlocked'
-    | 'getPseudonym'
-    | 'orcidOauth'
-    | 'publicUrl'
-    | 'secret'
-    | 'sessionCookie'
-    | 'sessionStore'
-    | 'templatePage'
-    | 'useCrowdinInContext'
-    | 'userOnboardingStore'
-  >
->() {}
 
 export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}
 

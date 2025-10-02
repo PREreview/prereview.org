@@ -1,27 +1,22 @@
-import { Function, pipe } from 'effect'
+import { pipe } from 'effect'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import * as R from 'fp-ts/lib/Reader.js'
 import { toRequestHandler } from 'hyper-ts/lib/express.js'
 import type * as L from 'logger-fp-ts'
-import { withEnv } from './Fpts.ts'
-import type * as Keyv from './keyv.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as LocaleCookie from './HttpMiddleware/LocaleCookie.ts'
-import { type RouterEnv, routes } from './app-router.ts'
-import { getUserOnboarding } from './keyv.ts'
+import { routes } from './app-router.ts'
 import { isUserSelectableLocale, type SupportedLocale } from './locales/index.ts'
+import type { PublicUrlEnv } from './public-url.ts'
 import { securityHeaders } from './securityHeaders.ts'
-import type { User } from './user.ts'
 
-export type ConfigEnv = Omit<RouterEnv, 'getUserOnboarding' | 'locale' | 'logger'> &
-  Keyv.UserOnboardingStoreEnv & {
-    allowSiteCrawlers: boolean
-    useCrowdinInContext: boolean
-  }
+export type ConfigEnv = PublicUrlEnv & {
+  allowSiteCrawlers: boolean
+  useCrowdinInContext: boolean
+}
 
 export const app = (config: ConfigEnv) => {
-  return ({ locale, logger, user }: { locale: SupportedLocale; logger: L.Logger; user?: User }) => {
+  return ({ locale }: { locale: SupportedLocale }) => {
     return express()
       .use((req, res, next) => {
         if (!config.allowSiteCrawlers) {
@@ -54,23 +49,7 @@ export const app = (config: ConfigEnv) => {
       })
       .use(
         asyncHandler((req, res, next) => {
-          return pipe(
-            routes,
-            R.local(
-              (env: ConfigEnv & L.LoggerEnv): RouterEnv => ({
-                ...env,
-                user,
-                getUserOnboarding: withEnv(getUserOnboarding, env),
-                locale,
-              }),
-            ),
-            R.local((appEnv: ConfigEnv): ConfigEnv & L.LoggerEnv => ({
-              ...appEnv,
-              logger,
-            })),
-            Function.apply(config),
-            toRequestHandler,
-          )(req, res, next)
+          return pipe(routes(config), toRequestHandler)(req, res, next)
         }),
       )
   }

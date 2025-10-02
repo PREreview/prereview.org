@@ -5,16 +5,8 @@ import { Array, Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema 
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './club-details.ts'
-import {
-  AllowSiteCrawlers,
-  DeprecatedEnvVars,
-  DeprecatedLoggerEnv,
-  ExpressConfig,
-  ScietyListToken,
-  SessionSecret,
-} from './Context.ts'
+import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from './Context.ts'
 import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
-import { ExpressConfigLive } from './ExpressServer.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
@@ -69,7 +61,6 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
-      Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
       Keyv.keyvStoresLayer,

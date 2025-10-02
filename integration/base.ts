@@ -52,13 +52,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
-import {
-  AllowSiteCrawlers,
-  DeprecatedLoggerEnv,
-  ExpressConfig,
-  ScietyListToken,
-  SessionSecret,
-} from '../src/Context.ts'
+import { AllowSiteCrawlers, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { DeprecatedLogger } from '../src/DeprecatedServices.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
@@ -1270,7 +1264,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Program,
         Layer.launch,
         Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
-        Effect.provideService(ExpressConfig, {}),
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
           Layer.mergeAll(
