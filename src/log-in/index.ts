@@ -1,5 +1,5 @@
 import { Cookies, HttpServerResponse } from '@effect/platform'
-import { Duration, Effect, Function, flow, pipe } from 'effect'
+import { Context, Duration, Effect, Function, flow, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -37,6 +37,8 @@ export interface OrcidOAuthEnv {
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
 }
+
+export class IsUserBlocked extends Context.Tag('IsUserBlocked')<IsUserBlocked, (user: OrcidId) => boolean>() {}
 
 export interface IsUserBlockedEnv {
   isUserBlocked: (user: OrcidId) => boolean

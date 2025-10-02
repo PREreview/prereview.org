@@ -19,6 +19,7 @@ import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
+import { IsUserBlocked } from './log-in/index.ts'
 import * as Nodemailer from './nodemailer.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.ts'
@@ -27,7 +28,7 @@ import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import * as TemplatePage from './TemplatePage.ts'
-import { NonEmptyString } from './types/index.ts'
+import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
 
 const CockroachClientLayer = Layer.mergeAll(
@@ -156,6 +157,13 @@ pipe(
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
       }),
+      Layer.effect(
+        IsUserBlocked,
+        pipe(
+          Config.withDefault(Config.array(Schema.Config('BLOCKED_USERS', OrcidId.OrcidIdSchema)), []),
+          Config.map(blockedUsers => IsUserBlocked.of(user => Array.contains(blockedUsers, user))),
+        ),
+      ),
       Layer.effect(
         Prereviews.WasPrereviewRemoved,
         pipe(

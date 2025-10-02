@@ -22,6 +22,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'allowSiteCrawlers'
     | 'clock'
     | 'fetch'
+    | 'isUserBlocked'
     | 'legacyPrereviewApi'
     | 'publicUrl'
     | 'secret'

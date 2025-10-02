@@ -13,6 +13,7 @@ import {
 } from './Context.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
+import { IsUserBlocked } from './log-in/index.ts'
 import { OrcidOauth } from './OrcidOauth.ts'
 import { PublicUrl } from './public-url.ts'
 import { DataStoreRedis } from './Redis.ts'
@@ -29,11 +30,13 @@ export const expressServer = Effect.gen(function* () {
   const sessionStore = yield* SessionStore
   const legacyPrereviewApi = yield* LegacyPrereviewApi
   const allowSiteCrawlers = yield* AllowSiteCrawlers
+  const isUserBlocked = yield* IsUserBlocked
 
   return app({
     allowSiteCrawlers,
     clock,
     fetch,
+    isUserBlocked,
     legacyPrereviewApi: {
       app: legacyPrereviewApi.app,
       key: Redacted.value(legacyPrereviewApi.key),
@@ -72,7 +75,6 @@ export const ExpressConfigLive = Effect.gen(function* () {
       namespace: 'is-open-for-requests',
       store: createKeyvStore(),
     }),
-    isUserBlocked: user => env.BLOCKED_USERS.includes(user),
     languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
     locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
     orcidOauth: {

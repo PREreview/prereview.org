@@ -76,7 +76,7 @@ import type {
 } from '../src/keyv.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
-import type { IsUserBlockedEnv } from '../src/log-in/index.ts'
+import { IsUserBlocked, type IsUserBlockedEnv } from '../src/log-in/index.ts'
 import * as Nodemailer from '../src/nodemailer.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
@@ -1275,7 +1275,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           careerStageStore,
           contactEmailAddressStore,
           isOpenForRequestsStore,
-          isUserBlocked,
           languagesStore,
           locationStore,
           orcidOauth: {
@@ -1311,6 +1310,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               useCrowdinInContext: false,
             }),
             Nodemailer.layer(nodemailer),
+            Layer.succeed(IsUserBlocked, isUserBlocked),
             Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
             Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
             Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make(''), apiUpdate: true }),
