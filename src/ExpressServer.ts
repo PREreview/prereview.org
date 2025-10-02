@@ -11,9 +11,9 @@ import {
   SessionSecret,
   SessionStore,
 } from './Context.ts'
+import * as EffectToFpts from './EffectToFpts.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
-import { LegacyPrereviewApi } from './legacy-prereview.ts'
-import { IsUserBlocked } from './log-in/index.ts'
+import { GetPseudonym, IsUserBlocked, type GetPseudonymEnv } from './log-in/index.ts'
 import { OrcidOauth } from './OrcidOauth.ts'
 import { PublicUrl } from './public-url.ts'
 import { DataStoreRedis } from './Redis.ts'
@@ -28,7 +28,13 @@ export const expressServer = Effect.gen(function* () {
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const secret = yield* SessionSecret
   const sessionStore = yield* SessionStore
-  const legacyPrereviewApi = yield* LegacyPrereviewApi
+  const getPseudonym: GetPseudonymEnv['getPseudonym'] = yield* EffectToFpts.makeTaskEitherK(
+    Effect.fn(function* (user: Parameters<typeof GetPseudonym.Service>[0]) {
+      const getPseudonym = yield* GetPseudonym
+
+      return yield* getPseudonym(user)
+    }),
+  )
   const allowSiteCrawlers = yield* AllowSiteCrawlers
   const isUserBlocked = yield* IsUserBlocked
 
@@ -37,12 +43,7 @@ export const expressServer = Effect.gen(function* () {
     clock,
     fetch,
     isUserBlocked,
-    legacyPrereviewApi: {
-      app: legacyPrereviewApi.app,
-      key: Redacted.value(legacyPrereviewApi.key),
-      url: legacyPrereviewApi.origin,
-      update: legacyPrereviewApi.update,
-    },
+    getPseudonym,
     publicUrl,
     secret: Redacted.value(secret),
     sessionCookie: sessionStore.cookie,

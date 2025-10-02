@@ -18,7 +18,9 @@ import * as FptsToEffect from './FptsToEffect.ts'
 import * as GhostPage from './GhostPage/index.ts'
 import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
+import * as LegacyPrereview from './legacy-prereview.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
+import { GetPseudonym } from './log-in/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as OpenAlex from './OpenAlex/index.ts'
@@ -60,6 +62,40 @@ const getPrereview = Layer.effect(
         logger,
       })
     })
+  }),
+)
+
+const getPseudonym = Layer.effect(
+  GetPseudonym,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
+
+    return user =>
+      pipe(
+        FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(user.orcid), {
+          fetch,
+          legacyPrereviewApi: {
+            app: legacyPrereviewApi.app,
+            key: Redacted.value(legacyPrereviewApi.key),
+            url: legacyPrereviewApi.origin,
+            update: legacyPrereviewApi.update,
+          },
+        }),
+        Effect.catchIf(
+          error => error === 'not-found',
+          () =>
+            FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview(user), {
+              fetch,
+              legacyPrereviewApi: {
+                app: legacyPrereviewApi.app,
+                key: Redacted.value(legacyPrereviewApi.key),
+                url: legacyPrereviewApi.origin,
+                update: legacyPrereviewApi.update,
+              },
+            }),
+        ),
+      )
   }),
 )
 
@@ -344,6 +380,7 @@ export const Program = pipe(
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
+      getPseudonym,
       doesUserHaveAVerifiedEmailAddress,
       getContactEmailAddress,
       saveContactEmailAddress,

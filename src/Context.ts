@@ -23,7 +23,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'clock'
     | 'fetch'
     | 'isUserBlocked'
-    | 'legacyPrereviewApi'
+    | 'getPseudonym'
     | 'publicUrl'
     | 'secret'
     | 'sessionCookie'

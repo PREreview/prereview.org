@@ -34,6 +34,11 @@ export interface OrcidOAuthEnv {
   orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
 }
 
+export class GetPseudonym extends Context.Tag('GetPseudonym')<
+  GetPseudonym,
+  (user: OrcidUser) => Effect.Effect<Pseudonym, 'unavailable'>
+>() {}
+
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
 }
