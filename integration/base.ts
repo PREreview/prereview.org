@@ -1270,12 +1270,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Layer.launch,
         Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
         Effect.provideService(ExpressConfig, {
-          orcidOauth: {
-            authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
-            clientId: 'client-id',
-            clientSecret: 'client-secret',
-            tokenUrl: new URL('http://orcid.test/token'),
-          },
           slackOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',

@@ -36,6 +36,7 @@ export const expressServer = Effect.gen(function* () {
   )
   const allowSiteCrawlers = yield* AllowSiteCrawlers
   const isUserBlocked = yield* IsUserBlocked
+  const orcidOauth = yield* OrcidOauth
 
   return app({
     allowSiteCrawlers,
@@ -43,6 +44,10 @@ export const expressServer = Effect.gen(function* () {
     fetch,
     isUserBlocked,
     getPseudonym,
+    orcidOauth: {
+      ...orcidOauth,
+      clientSecret: Redacted.value(orcidOauth.clientSecret),
+    },
     publicUrl,
     secret: Redacted.value(secret),
     sessionCookie: sessionStore.cookie,
@@ -56,13 +61,8 @@ export const expressServer = Effect.gen(function* () {
 
 export const ExpressConfigLive = Effect.gen(function* () {
   const env = yield* DeprecatedEnvVars
-  const orcidOauth = yield* OrcidOauth
 
   return {
-    orcidOauth: {
-      ...orcidOauth,
-      clientSecret: Redacted.value(orcidOauth.clientSecret),
-    },
     slackOauth: {
       authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
       clientId: env.SLACK_CLIENT_ID,

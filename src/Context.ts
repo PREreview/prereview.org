@@ -23,6 +23,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'fetch'
     | 'isUserBlocked'
     | 'getPseudonym'
+    | 'orcidOauth'
     | 'publicUrl'
     | 'secret'
     | 'sessionCookie'
