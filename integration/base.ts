@@ -85,6 +85,7 @@ import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
+import { SlackOauth } from '../src/SlackOauth.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import * as TemplatePage from '../src/TemplatePage.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
@@ -1269,14 +1270,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Program,
         Layer.launch,
         Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
-        Effect.provideService(ExpressConfig, {
-          slackOauth: {
-            authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
-            clientId: 'client-id',
-            clientSecret: 'client-secret',
-            tokenUrl: new URL('http://slack.test/token'),
-          },
-        }),
+        Effect.provideService(ExpressConfig, {}),
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
           Layer.mergeAll(
@@ -1340,6 +1334,12 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),
             Layer.succeed(ScietyListToken, Redacted.make(NonEmptyString('secret'))),
             Layer.succeed(SessionSecret, Redacted.make('')),
+            Layer.succeed(SlackOauth, {
+              authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+              clientId: 'client-id',
+              clientSecret: Redacted.make('client-secret'),
+              tokenUrl: new URL('http://slack.test/token'),
+            }),
             Layer.succeed(Zenodo.ZenodoApi, {
               key: Redacted.make('key'),
               origin: new URL('http://zenodo.test/'),

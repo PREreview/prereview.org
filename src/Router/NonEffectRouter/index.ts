@@ -31,7 +31,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { clubProfile } from '../../club-profile-page/index.ts'
-import { DeprecatedLoggerEnv, ExpressConfig, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
+import { DeprecatedLoggerEnv, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, Slack, Zenodo } from '../../ExternalApis/index.ts'
@@ -62,6 +62,7 @@ import { reviewRequests } from '../../review-requests-page/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import * as Routes from '../../routes.ts'
+import { SlackOauth } from '../../SlackOauth.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import type { GenerateUuid } from '../../types/uuid.ts'
 import { LoggedInUser, SessionId, type User } from '../../user.ts'
@@ -85,7 +86,7 @@ export const nonEffectRouter: Effect.Effect<
   | CommentsForReview
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
-  | ExpressConfig
+  | SlackOauth
   | Keyv.KeyvStores
   | Slack.SlackApi
   | Cloudinary.CloudinaryApi
@@ -117,7 +118,6 @@ export const nonEffectRouter: Effect.Effect<
     }),
   )
 
-  const expressConfig = yield* ExpressConfig
   const keyvStores = yield* Keyv.KeyvStores
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
@@ -136,6 +136,7 @@ export const nonEffectRouter: Effect.Effect<
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
   const orcidOauth = yield* OrcidOauth
+  const slackOauth = yield* SlackOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
   const sessionStore = yield* SessionStore
@@ -188,12 +189,7 @@ export const nonEffectRouter: Effect.Effect<
     fetch,
     publicUrl,
     orcidOauth,
-    slackOauth: {
-      authorizeUrl: expressConfig.slackOauth.authorizeUrl,
-      clientId: expressConfig.slackOauth.clientId,
-      clientSecret: Redacted.make(expressConfig.slackOauth.clientSecret),
-      tokenUrl: expressConfig.slackOauth.tokenUrl,
-    },
+    slackOauth,
     scietyListToken,
     slackApiConfig,
     cloudinaryApiConfig,
@@ -254,12 +250,7 @@ export interface Env {
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service
-  slackOauth: {
-    authorizeUrl: URL
-    clientId: string
-    clientSecret: Redacted.Redacted
-    tokenUrl: URL
-  }
+  slackOauth: typeof SlackOauth.Service
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
   slackApiConfig: typeof Slack.SlackApi.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service

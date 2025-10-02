@@ -28,6 +28,7 @@ import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
+import * as SlackOauth from './SlackOauth.ts'
 import * as TemplatePage from './TemplatePage.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
@@ -142,6 +143,10 @@ pipe(
         url: Config.withDefault(Config.url('ORCID_URL'), new URL('https://orcid.org/')),
         clientId: Config.string('ORCID_CLIENT_ID'),
         clientSecret: Config.redacted('ORCID_CLIENT_SECRET'),
+      }),
+      SlackOauth.layerConfig({
+        clientId: Config.string('SLACK_CLIENT_ID'),
+        clientSecret: Config.redacted('SLACK_CLIENT_SECRET'),
       }),
       Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
       Redis.layerHttpCacheConfig(

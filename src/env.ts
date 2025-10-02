@@ -14,14 +14,6 @@ export function decodeEnv(process: NodeJS.Process) {
   )
 }
 
-const EnvD = pipe(
-  D.struct({
-    SLACK_CLIENT_ID: D.string,
-    SLACK_CLIENT_SECRET: D.string,
-  }),
-  D.intersect(
-    D.partial({
-      LOG_FORMAT: D.literal('json'),
-    }),
-  ),
-)
+const EnvD = D.partial({
+  LOG_FORMAT: D.literal('json'),
+})

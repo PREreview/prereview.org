@@ -1,7 +1,6 @@
 import { Context, type Redacted } from 'effect'
 import type { LoggerEnv } from 'logger-fp-ts'
 import type { app, ConfigEnv } from './app.ts'
-import type { SlackOAuthEnv } from './connect-slack-page/index.ts'
 import type { EnvVars } from './env.ts'
 import type * as Keyv from './keyv.ts'
 import type { SupportedLocale } from './locales/index.ts'
@@ -31,8 +30,7 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'templatePage'
     | 'useCrowdinInContext'
     | 'userOnboardingStore'
-  > &
-    SlackOAuthEnv
+  >
 >() {}
 
 export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}
