@@ -8,9 +8,10 @@ import {
   Path,
 } from '@effect/platform'
 import { Array, Cause, Duration, Effect, Layer, Option, pipe, Schema, String } from 'effect'
-import { AllowSiteCrawlers, ExpressConfig, FlashMessage, Locale, SessionStore } from '../Context.ts'
+import { AllowSiteCrawlers, FlashMessage, Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
+import { KeyvStores } from '../keyv.ts'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { FlashMessageSchema } from '../response.ts'
@@ -151,7 +152,7 @@ export const getFlashMessage = HttpMiddleware.make(app =>
 export const getLoggedInUser = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const { cookie, store } = yield* SessionStore
-    const { userOnboardingStore } = yield* ExpressConfig
+    const { userOnboardingStore } = yield* KeyvStores
 
     const sessionId = yield* pipe(
       HttpServerRequest.schemaCookies(

@@ -4,7 +4,7 @@ import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'ef
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
-import { DeprecatedLoggerEnv, ExpressConfig, Locale, SessionStore } from './Context.ts'
+import { DeprecatedLoggerEnv, Locale, SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
@@ -103,7 +103,7 @@ const getPseudonym = Layer.effect(
 const doesUserHaveAVerifiedEmailAddress = Layer.effect(
   Comments.DoesUserHaveAVerifiedEmailAddress,
   Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* ExpressConfig
+    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(
@@ -129,7 +129,7 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
 const getContactEmailAddress = Layer.effect(
   ContactEmailAddress.GetContactEmailAddress,
   Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* ExpressConfig
+    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(
@@ -157,7 +157,7 @@ const getContactEmailAddress = Layer.effect(
 const saveContactEmailAddress = Layer.effect(
   ContactEmailAddress.SaveContactEmailAddress,
   Effect.gen(function* () {
-    const { contactEmailAddressStore } = yield* ExpressConfig
+    const { contactEmailAddressStore } = yield* Keyv.KeyvStores
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(

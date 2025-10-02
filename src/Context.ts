@@ -7,7 +7,6 @@ import type * as Keyv from './keyv.ts'
 import type { SupportedLocale } from './locales/index.ts'
 import type { FlashMessageSchema } from './response.ts'
 import type { NonEmptyString } from './types/index.ts'
-import type { FormStoreEnv } from './write-review/index.ts'
 
 export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<DeprecatedEnvVars, EnvVars>() {}
 
@@ -30,20 +29,9 @@ export class ExpressConfig extends Context.Tag('ExpressConfig')<
     | 'sessionStore'
     | 'templatePage'
     | 'useCrowdinInContext'
+    | 'userOnboardingStore'
   > &
-    Keyv.AvatarStoreEnv &
-    Keyv.AuthorInviteStoreEnv &
-    Keyv.CareerStageStoreEnv &
-    Keyv.ContactEmailAddressStoreEnv &
-    Keyv.IsOpenForRequestsStoreEnv &
-    Keyv.LanguagesStoreEnv &
-    Keyv.LocationStoreEnv &
-    Keyv.OrcidTokenStoreEnv &
-    Keyv.ResearchInterestsStoreEnv &
-    Keyv.ReviewRequestStoreEnv &
-    Keyv.SlackUserIdStoreEnv &
-    SlackOAuthEnv &
-    FormStoreEnv
+    SlackOAuthEnv
 >() {}
 
 export class AllowSiteCrawlers extends Context.Tag('AllowSiteCrawlers')<AllowSiteCrawlers, boolean>() {}

@@ -32,7 +32,7 @@ import http from 'http'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
-import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
+import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import type { BrowserContextOptions, Page } from 'playwright-core'
 import { URL } from 'url'
 import { Uuid, v4 } from 'uuid-ts'
@@ -64,15 +64,16 @@ import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { rawHtml } from '../src/html.ts'
-import type {
-  AuthorInviteStoreEnv,
-  ContactEmailAddressStoreEnv,
-  IsOpenForRequestsStoreEnv,
-  LanguagesStoreEnv,
-  LocationStoreEnv,
-  ResearchInterestsStoreEnv,
-  ReviewRequestStoreEnv,
-  UserOnboardingStoreEnv,
+import {
+  KeyvStores,
+  type AuthorInviteStoreEnv,
+  type ContactEmailAddressStoreEnv,
+  type IsOpenForRequestsStoreEnv,
+  type LanguagesStoreEnv,
+  type LocationStoreEnv,
+  type ResearchInterestsStoreEnv,
+  type ReviewRequestStoreEnv,
+  type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
@@ -1269,35 +1270,37 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Layer.launch,
         Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
         Effect.provideService(ExpressConfig, {
-          authorInviteStore,
-          avatarStore: new Keyv(),
-          formStore,
-          careerStageStore,
-          contactEmailAddressStore,
-          isOpenForRequestsStore,
-          languagesStore,
-          locationStore,
           orcidOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',
             clientSecret: 'client-secret',
             tokenUrl: new URL('http://orcid.test/token'),
           },
-          orcidTokenStore: new Keyv(),
-          researchInterestsStore,
-          reviewRequestStore,
           slackOauth: {
             authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
             clientId: 'client-id',
             clientSecret: 'client-secret',
             tokenUrl: new URL('http://slack.test/token'),
           },
-          slackUserIdStore,
-          userOnboardingStore,
         }),
         Effect.provide(FetchHttpClient.layer),
         Effect.provide(
           Layer.mergeAll(
+            Layer.succeed(KeyvStores, {
+              authorInviteStore,
+              avatarStore: new Keyv(),
+              formStore,
+              careerStageStore,
+              contactEmailAddressStore,
+              isOpenForRequestsStore,
+              languagesStore,
+              locationStore,
+              orcidTokenStore: new Keyv(),
+              researchInterestsStore,
+              reviewRequestStore,
+              slackUserIdStore,
+              userOnboardingStore,
+            }),
             Layer.succeed(AllowSiteCrawlers, true),
             Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
             CachingHttpClient.layerInMemory(),

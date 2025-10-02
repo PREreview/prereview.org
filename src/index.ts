@@ -18,6 +18,7 @@ import { ExpressConfigLive } from './ExpressServer.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
+import * as Keyv from './keyv.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import { IsUserBlocked } from './log-in/index.ts'
 import * as Nodemailer from './nodemailer.ts'
@@ -70,6 +71,7 @@ pipe(
       Layer.effect(ExpressConfig, ExpressConfigLive),
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
+      Keyv.keyvStoresLayer,
     ),
   ),
   Effect.provide(

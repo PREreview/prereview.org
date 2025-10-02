@@ -86,6 +86,7 @@ export const nonEffectRouter: Effect.Effect<
   | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | ExpressConfig
+  | Keyv.KeyvStores
   | Slack.SlackApi
   | Cloudinary.CloudinaryApi
   | ScietyListToken
@@ -117,6 +118,7 @@ export const nonEffectRouter: Effect.Effect<
   )
 
   const expressConfig = yield* ExpressConfig
+  const keyvStores = yield* Keyv.KeyvStores
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
@@ -140,17 +142,17 @@ export const nonEffectRouter: Effect.Effect<
 
   const commentsForReview = yield* CommentsForReview
   const users = {
-    avatarStore: expressConfig.avatarStore,
-    contactEmailAddressStore: expressConfig.contactEmailAddressStore,
-    userOnboardingStore: expressConfig.userOnboardingStore,
-    orcidTokenStore: expressConfig.orcidTokenStore,
-    slackUserIdStore: expressConfig.slackUserIdStore,
-    isOpenForRequestsStore: expressConfig.isOpenForRequestsStore,
-    careerStageStore: expressConfig.careerStageStore,
-    researchInterestsStore: expressConfig.researchInterestsStore,
-    locationStore: expressConfig.locationStore,
-    languagesStore: expressConfig.languagesStore,
-    authorInviteStore: expressConfig.authorInviteStore,
+    avatarStore: keyvStores.avatarStore,
+    contactEmailAddressStore: keyvStores.contactEmailAddressStore,
+    userOnboardingStore: keyvStores.userOnboardingStore,
+    orcidTokenStore: keyvStores.orcidTokenStore,
+    slackUserIdStore: keyvStores.slackUserIdStore,
+    isOpenForRequestsStore: keyvStores.isOpenForRequestsStore,
+    careerStageStore: keyvStores.careerStageStore,
+    researchInterestsStore: keyvStores.researchInterestsStore,
+    locationStore: keyvStores.locationStore,
+    languagesStore: keyvStores.languagesStore,
+    authorInviteStore: keyvStores.authorInviteStore,
   }
 
   const body = yield* Effect.if(HttpMethod.hasBody(request.method), {
@@ -199,9 +201,9 @@ export const nonEffectRouter: Effect.Effect<
     prereviewCoarNotifyConfig,
     legacyPrereviewApiConfig: legacyPrereviewApi,
     users,
-    authorInviteStore: expressConfig.authorInviteStore,
-    formStore: expressConfig.formStore,
-    reviewRequestStore: expressConfig.reviewRequestStore,
+    authorInviteStore: keyvStores.authorInviteStore,
+    formStore: keyvStores.formStore,
+    reviewRequestStore: keyvStores.reviewRequestStore,
     sessionStore: sessionStore.store,
     nodemailer,
   } satisfies Env

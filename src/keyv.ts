@@ -1,4 +1,5 @@
-import { flow, identity, pipe, Record } from 'effect'
+import KeyvRedis from '@keyv/redis'
+import { Context, Effect, flow, identity, Layer, Option, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -8,7 +9,7 @@ import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
 import * as EN from 'io-ts/lib/Encoder.js'
-import type Keyv from 'keyv'
+import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { AuthorInviteC } from './author-invite.ts'
@@ -19,6 +20,7 @@ import { LanguagesC } from './languages.ts'
 import { LocationC } from './location.ts'
 import { OrcidTokenC } from './orcid-token.ts'
 import type { PreprintId } from './Preprints/index.ts'
+import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { ReviewRequestC } from './review-request.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
@@ -26,8 +28,67 @@ import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
 import { UuidC } from './types/uuid.ts'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
+import type { FormStoreEnv } from './write-review/index.ts'
 
 export { Keyv } from 'keyv'
+
+export class KeyvStores extends Context.Tag('KeyvStores')<
+  KeyvStores,
+  AvatarStoreEnv &
+    AuthorInviteStoreEnv &
+    CareerStageStoreEnv &
+    ContactEmailAddressStoreEnv &
+    IsOpenForRequestsStoreEnv &
+    LanguagesStoreEnv &
+    LocationStoreEnv &
+    OrcidTokenStoreEnv &
+    ResearchInterestsStoreEnv &
+    ReviewRequestStoreEnv &
+    SlackUserIdStoreEnv &
+    UserOnboardingStoreEnv &
+    FormStoreEnv
+>() {}
+
+export const keyvStoresLayer = Layer.effect(
+  KeyvStores,
+  Effect.gen(function* () {
+    const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
+
+    const createKeyvStore = () =>
+      Option.match(maybeRedis, {
+        onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
+        onNone: () => new Map(),
+      })
+
+    return {
+      authorInviteStore: new Keyv({ emitErrors: false, namespace: 'author-invite', store: createKeyvStore() }),
+      avatarStore: new Keyv({ emitErrors: false, namespace: 'avatar-store', store: createKeyvStore() }),
+      contactEmailAddressStore: new Keyv({
+        emitErrors: false,
+        namespace: 'contact-email-address',
+        store: createKeyvStore(),
+      }),
+      formStore: new Keyv({ emitErrors: false, namespace: 'forms', store: createKeyvStore() }),
+      careerStageStore: new Keyv({ emitErrors: false, namespace: 'career-stage', store: createKeyvStore() }),
+      isOpenForRequestsStore: new Keyv({
+        emitErrors: false,
+        namespace: 'is-open-for-requests',
+        store: createKeyvStore(),
+      }),
+      languagesStore: new Keyv({ emitErrors: false, namespace: 'languages', store: createKeyvStore() }),
+      locationStore: new Keyv({ emitErrors: false, namespace: 'location', store: createKeyvStore() }),
+      orcidTokenStore: new Keyv({ emitErrors: false, namespace: 'orcid-token', store: createKeyvStore() }),
+      researchInterestsStore: new Keyv({
+        emitErrors: false,
+        namespace: 'research-interests',
+        store: createKeyvStore(),
+      }),
+      reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
+      slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
+      userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
+    }
+  }),
+)
 
 export interface AuthorInviteStoreEnv {
   authorInviteStore: Keyv
