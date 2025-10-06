@@ -9,7 +9,6 @@ import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import httpErrors, { type HttpError } from 'http-errors'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
@@ -262,13 +261,12 @@ export const getPrereviewFromZenodo = (id: number) =>
             match(error)
               .with({ _tag: 'PreprintIsUnavailable' }, () => Option.some('unavailable' as const))
               .with({ _tag: 'PreprintIsNotFound' }, Option.none)
-              .with(P.intersection(P.instanceOf(Error), { status: P.number }), Option.none)
               .with(P.instanceOf(Error), error => Option.some(error.message))
               .with({ status: P.union(StatusCodes.NotFound, StatusCodes.Gone) }, Option.none)
               .with({ status: P.number }, response => Option.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => Option.some(D.draw(error)))
               .with('unknown-license', 'text-unavailable', Option.some)
-              .with('no reviewed preprint', 'removed', 'not-found', Option.none)
+              .with('no reviewed preprint', 'removed', 'not-found', 'text-not-found', Option.none)
               .exhaustive(),
           Option.match({
             onNone: () => RIO.of(undefined),
@@ -283,6 +281,7 @@ export const getPrereviewFromZenodo = (id: number) =>
         .with(
           'no reviewed preprint',
           'not-found',
+          'text-not-found',
           { _tag: 'PreprintIsNotFound' },
           { status: P.union(StatusCodes.NotFound, StatusCodes.Gone) },
           () => new Prereview.PrereviewIsNotFound(),
@@ -432,7 +431,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
             .with(P.instanceOf(Error), error => error.message)
             .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
             .with({ _tag: P.string }, D.draw)
-            .with('text-unavailable', identity)
+            .with('text-not-found', 'text-unavailable', identity)
             .exhaustive(),
         }),
         L.errorP('Unable to get records for preprint from Zenodo'),
@@ -715,7 +714,7 @@ function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-  | HttpError<404>
+  | 'text-not-found'
   | 'no reviewed preprint'
   | PreprintIsUnavailable
   | PreprintIsNotFound
@@ -726,7 +725,7 @@ function recordToPrereview(
   return pipe(
     RTE.Do,
     RTE.apS('preprintId', getReviewedPreprintId(record)),
-    RTE.apSW('reviewTextUrl', RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record))),
+    RTE.apSW('reviewTextUrl', RTE.fromOption(() => 'text-not-found' as const)(getReviewUrl(record))),
     RTE.apSW(
       'license',
       RTE.fromEither(
@@ -780,9 +779,9 @@ function recordToPrereview(
 
 function recordToPreprintPrereview(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable', PreprintPrereview> {
+): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, 'text-not-found' | 'text-unavailable', PreprintPrereview> {
   return pipe(
-    RTE.fromOption(() => new httpErrors.NotFound())(getReviewUrl(record)),
+    RTE.fromOption(() => 'text-not-found' as const)(getReviewUrl(record)),
     RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(getAuthors(record)),
