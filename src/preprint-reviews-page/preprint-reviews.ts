@@ -9,7 +9,7 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../html.t
 import { translate, type SupportedLocale } from '../locales/index.ts'
 import type { Preprint } from '../Preprints/index.ts'
 import * as PreprintServers from '../PreprintServers/index.ts'
-import { TwoUpPageResponse } from '../response.ts'
+import { TwoUpPageResponse } from '../Response/index.ts'
 import { isReviewRequestPreprintId } from '../review-request.ts'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../routes.ts'
 import { renderDate } from '../time.ts'

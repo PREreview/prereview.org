@@ -1,7 +1,6 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
-import { constructPageUrls } from '../../src/Router/ConstructPageUrls.ts'
 import {
   CrowdinInContextLocale,
   DefaultLocale,
@@ -9,7 +8,8 @@ import {
   UserSelectableLanguages,
   UserSelectableLocales,
 } from '../../src/locales/index.ts'
-import type { PageResponse } from '../../src/response.ts'
+import type { PageResponse } from '../../src/Response/index.ts'
+import { constructPageUrls } from '../../src/Router/ConstructPageUrls.ts'
 import * as fc from '../fc.ts'
 
 describe('constructPageUrls', () => {

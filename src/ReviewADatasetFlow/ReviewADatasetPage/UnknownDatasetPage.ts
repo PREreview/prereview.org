@@ -1,9 +1,9 @@
 import { Match } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
-import * as StatusCodes from '../../StatusCodes.ts'
 import { html, plainText } from '../../html.ts'
-import { PageResponse } from '../../response.ts'
+import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
 
 export const UnknownDatasetPage = ({ dataset }: { dataset: Datasets.DatasetId }) => {
   return PageResponse({

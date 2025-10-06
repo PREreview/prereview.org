@@ -5,7 +5,7 @@ import * as GhostPage from './GhostPage/index.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { fixHeadingLevels, html, plainText } from './html.ts'
 import { translate, type SupportedLocale } from './locales/index.ts'
-import { PageResponse } from './response.ts'
+import { PageResponse } from './Response/index.ts'
 import * as Routes from './routes.ts'
 
 export const ResourcesPage = Effect.gen(function* () {

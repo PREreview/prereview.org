@@ -10,7 +10,7 @@ import { translate, type SupportedLocale } from '../locales/index.ts'
 import type { Location } from '../location.ts'
 import type { OrcidToken } from '../orcid-token.ts'
 import type { ResearchInterests } from '../research-interests.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,

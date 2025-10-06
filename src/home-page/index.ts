@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type { SupportedLocale } from '../locales/index.ts'
-import type { PageResponse } from '../response.ts'
+import type { PageResponse } from '../Response/index.ts'
 import { createPage } from './home-page.ts'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.ts'
 import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.ts'

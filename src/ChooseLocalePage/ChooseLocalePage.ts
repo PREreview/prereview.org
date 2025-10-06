@@ -1,7 +1,7 @@
 import { Array, pipe, String, Tuple } from 'effect'
 import { html, plainText } from '../html.ts'
 import { DefaultLocale, type SupportedLocale, translate, UserSelectableLocales } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
 
 export const createChooseLocalePage = ({ locale }: { locale: SupportedLocale }) => {

@@ -1,13 +1,13 @@
 import { Array, Schema } from 'effect'
 import { match } from 'ts-pattern'
-import { type Html, html, rawHtml } from './html.ts'
-import { type SupportedLocale, translate } from './locales/index.ts'
-import { showNotificationBanner } from './notification-banner.ts'
-import type { Page } from './page.ts'
-import type * as Router from './Router/index.ts'
-import * as StatusCodes from './StatusCodes.ts'
-import type { UserOnboarding } from './user-onboarding.ts'
-import type { User } from './user.ts'
+import { type Html, html, rawHtml } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import { showNotificationBanner } from '../notification-banner.ts'
+import type { Page } from '../page.ts'
+import type * as Router from '../Router/index.ts'
+import * as StatusCodes from '../StatusCodes.ts'
+import type { UserOnboarding } from '../user-onboarding.ts'
+import type { User } from '../user.ts'
 
 export type Response =
   | PageResponse

@@ -4,7 +4,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { getClubDetails, type ClubId } from '../Clubs/index.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import type { PageResponse } from '../response.ts'
+import type { PageResponse } from '../Response/index.ts'
 import { createPage } from './club-profile-page.ts'
 import { getPrereviews, type GetPrereviewsEnv } from './prereviews.ts'
 

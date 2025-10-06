@@ -3,7 +3,7 @@ import { match } from 'ts-pattern'
 import { html, plainText } from '../html.ts'
 import type { IsOpenForRequests } from '../is-open-for-requests.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({

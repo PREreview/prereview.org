@@ -14,7 +14,12 @@ import {
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import type { Prereview } from '../../Prereview.ts'
-import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import {
+  type LogInResponse,
+  type PageResponse,
+  RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../Response/index.ts'
 import { authorInviteDeclineMatch } from '../../routes.ts'
 import { declinePage } from './decline-page.ts'
 import { inviteDeclinedPage } from './invite-declined-page.ts'

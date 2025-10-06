@@ -3,7 +3,7 @@ import { match } from 'ts-pattern'
 import type { CareerStage } from '../career-stage.ts'
 import { html, plainText } from '../html.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({ careerStage, locale }: { careerStage: CareerStage; locale: SupportedLocale }) =>

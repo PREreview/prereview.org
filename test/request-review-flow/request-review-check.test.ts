@@ -2,10 +2,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.ts'
 import type { GetPreprintTitleEnv } from '../../src/preprint.ts'
 import * as _ from '../../src/request-review-flow/check-page/index.ts'
-import { RedirectResponse } from '../../src/response.ts'
+import { RedirectResponse } from '../../src/Response/index.ts'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request.ts'
 import {
   requestReviewCheckMatch,
@@ -13,6 +12,7 @@ import {
   requestReviewPersonaMatch,
   requestReviewPublishedMatch,
 } from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 

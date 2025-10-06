@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { connectOrcidMatch, connectOrcidStartMatch } from '../routes.ts'
 
 export const connectOrcidPage = (locale: SupportedLocale) =>

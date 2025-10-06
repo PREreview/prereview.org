@@ -3,16 +3,16 @@ import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import type { EnvFor } from '../Fpts.ts'
 import {
   getContactEmailAddress,
   isUnverified,
   saveContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../contact-email-address.ts'
+import type { EnvFor } from '../Fpts.ts'
 import { havingProblemsPage, pageNotFound } from '../http-error.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import { FlashMessageResponse, LogInResponse } from '../response.ts'
+import { FlashMessageResponse, LogInResponse } from '../Response/index.ts'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.ts'
 import type { User } from '../user.ts'
 

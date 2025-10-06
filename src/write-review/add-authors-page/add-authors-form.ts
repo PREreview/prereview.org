@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { PreprintTitle } from '../../Preprints/index.ts'
-import { StreamlinePageResponse } from '../../response.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,

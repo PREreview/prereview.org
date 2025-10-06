@@ -18,7 +18,7 @@ import {
 import type { Html } from '../html.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

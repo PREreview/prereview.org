@@ -5,7 +5,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import type { EnvFor } from '../Fpts.ts'
 import {
   type SaveContactEmailAddressEnv,
   UnverifiedContactEmailAddress,
@@ -15,9 +14,10 @@ import {
   verifyContactEmailAddress,
 } from '../contact-email-address.ts'
 import { getInput, invalidE, missingE } from '../form.ts'
+import type { EnvFor } from '../Fpts.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
 import { myDetailsMatch } from '../routes.ts'
 import { EmailAddressC } from '../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../types/uuid.ts'

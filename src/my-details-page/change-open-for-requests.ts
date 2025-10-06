@@ -13,7 +13,7 @@ import {
   saveOpenForRequests,
 } from '../is-open-for-requests.ts'
 import type { SupportedLocale } from '../locales/index.ts'
-import { LogInResponse, RedirectResponse } from '../response.ts'
+import { LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { myDetailsMatch } from '../routes.ts'
 import type { User } from '../user.ts'
 import { createFormPage } from './change-open-for-requests-form-page.ts'

@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { StreamlinePageResponse } from '../../response.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import { authorInviteDeclineMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 

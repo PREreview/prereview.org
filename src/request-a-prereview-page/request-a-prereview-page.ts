@@ -1,11 +1,11 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../StatusCodes.ts'
 import { html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { homeMatch, requestAPrereviewMatch } from '../routes.ts'
 import { errorPrefix } from '../shared-translation-elements.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 import type * as Form from './form.ts'
 
 export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: SupportedLocale) => {

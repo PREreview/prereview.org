@@ -1,7 +1,7 @@
-import * as StatusCodes from '../../StatusCodes.ts'
 import { html, plainText } from '../../html.ts'
-import { PageResponse } from '../../response.ts'
+import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
 
 export const UnsupportedDoiPage = () => {
   return PageResponse({

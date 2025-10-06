@@ -10,7 +10,12 @@ import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { type GetPreprintEnv, getPreprint } from '../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.ts'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import {
+  LogInResponse,
+  type PageResponse,
+  RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../Response/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { type Form, type FormStoreEnv, createForm, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'

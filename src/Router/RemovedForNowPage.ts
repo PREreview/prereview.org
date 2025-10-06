@@ -1,6 +1,6 @@
 import { html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 
 export const removedForNowPage = (locale: SupportedLocale) =>

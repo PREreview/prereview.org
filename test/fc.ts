@@ -116,7 +116,7 @@ import {
   type RedirectResponse,
   type StreamlinePageResponse,
   type TwoUpPageResponse,
-} from '../src/response.ts'
+} from '../src/Response/index.ts'
 import type {
   CompletedReviewRequest,
   IncompleteReviewRequest,

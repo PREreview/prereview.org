@@ -3,7 +3,7 @@ import { match } from 'ts-pattern'
 import { html, plainText } from '../html.ts'
 import type { Languages } from '../languages.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes.ts'
 
 export const createFormPage = ({ languages, locale }: { languages: Languages; locale: SupportedLocale }) =>

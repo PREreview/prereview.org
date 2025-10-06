@@ -2,7 +2,7 @@ import { Effect } from 'effect'
 import type { Locale } from './Context.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { PageNotFound } from './PageNotFound/index.ts'
-import * as Response from './response.ts'
+import * as Response from './Response/index.ts'
 import { NonEmptyString, OrcidId, Pseudonym } from './types/index.ts'
 
 export const LogInDemoUser: Effect.Effect<

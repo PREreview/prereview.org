@@ -11,7 +11,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.ts'
 import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../Response/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

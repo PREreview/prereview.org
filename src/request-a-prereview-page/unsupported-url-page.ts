@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../StatusCodes.ts'
 import { html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import { requestAPrereviewMatch } from '../routes.ts'
+import * as StatusCodes from '../StatusCodes.ts'
 
 export const unsupportedUrlPage = (locale: SupportedLocale) =>
   PageResponse({

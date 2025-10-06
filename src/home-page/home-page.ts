@@ -6,7 +6,7 @@ import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as PreprintServers from '../PreprintServers/index.ts'
-import { PageResponse } from '../response.ts'
+import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
 import {
   homeMatch,

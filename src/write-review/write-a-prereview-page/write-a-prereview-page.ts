@@ -7,7 +7,7 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../htm
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Preprint } from '../../Preprints/index.ts'
 import * as PreprintServers from '../../PreprintServers/index.ts'
-import { PageResponse } from '../../response.ts'
+import { PageResponse } from '../../Response/index.ts'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import type { User } from '../../user.ts'

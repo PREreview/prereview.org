@@ -3,7 +3,7 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { Prereview } from '../../Prereview.ts'
-import { PageResponse } from '../../response.ts'
+import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 

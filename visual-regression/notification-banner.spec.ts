@@ -1,6 +1,6 @@
 import { html, plainText } from '../src/html.ts'
 import { showNotificationBanner } from '../src/notification-banner.ts'
-import { PageResponse } from '../src/response.ts'
+import { PageResponse } from '../src/Response/index.ts'
 import { expect, test } from './base.ts'
 
 test('notification-banner looks right with a success', async ({ showPage }) => {

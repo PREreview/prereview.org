@@ -19,7 +19,7 @@ import {
   type PageResponse,
   RedirectResponse,
   type StreamlinePageResponse,
-} from '../../response.ts'
+} from '../../Response/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,

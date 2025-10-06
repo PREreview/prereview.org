@@ -25,7 +25,12 @@ import { getInput, invalidE, missingE } from '../../form.ts'
 import type { Html } from '../../html.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import {
+  LogInResponse,
+  type PageResponse,
+  RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../Response/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

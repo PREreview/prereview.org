@@ -4,7 +4,7 @@ import { P, match } from 'ts-pattern'
 import type { Html } from '../src/html.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
 import { type Page, page as templatePage } from '../src/page.ts'
-import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/response.ts'
+import { PageResponse, type StreamlinePageResponse, type TwoUpPageResponse, toPage } from '../src/Response/index.ts'
 
 export { expect } from '@playwright/test'
 

@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { StreamlinePageResponse } from '../../response.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 
 const mailtoHelp = (text: string) => `<a href="mailto:help@prereview.org">${text}</a>`

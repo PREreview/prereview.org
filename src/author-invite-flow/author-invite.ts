@@ -12,7 +12,7 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.t
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import type { Prereview } from '../Prereview.ts'
-import { PageResponse, RedirectResponse } from '../response.ts'
+import { PageResponse, RedirectResponse } from '../Response/index.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,

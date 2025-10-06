@@ -7,7 +7,12 @@ import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
-import { LogInResponse, type PageResponse, type RedirectResponse, type StreamlinePageResponse } from '../../response.ts'
+import {
+  LogInResponse,
+  type PageResponse,
+  type RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../Response/index.ts'
 import { type GetReviewRequestEnv, getReviewRequest, isReviewRequestPreprintId } from '../../review-request.ts'
 import { requestReviewMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'

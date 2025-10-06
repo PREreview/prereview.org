@@ -1,7 +1,7 @@
 import rtlDetect from 'rtl-detect'
 import type * as Datasets from '../../Datasets/index.ts'
 import { html, plainText } from '../../html.ts'
-import { PageResponse } from '../../response.ts'
+import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 

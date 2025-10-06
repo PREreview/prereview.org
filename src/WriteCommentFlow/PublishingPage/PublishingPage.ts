@@ -1,6 +1,6 @@
 import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import { StreamlinePageResponse } from '../../response.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 

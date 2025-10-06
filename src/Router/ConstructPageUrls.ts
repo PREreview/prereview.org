@@ -8,7 +8,7 @@ import {
   type UserSelectableLanguage,
   type UserSelectableLocale,
 } from '../locales/index.ts'
-import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../response.ts'
+import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../Response/index.ts'
 
 export interface PageUrls {
   canonical: URL

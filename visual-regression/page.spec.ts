@@ -1,5 +1,5 @@
 import { html, plainText } from '../src/html.ts'
-import { PageResponse } from '../src/response.ts'
+import { PageResponse } from '../src/Response/index.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
