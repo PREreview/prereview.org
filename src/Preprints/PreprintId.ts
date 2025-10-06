@@ -246,7 +246,7 @@ export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprin
     return a.value === b.value
   }
 
-  return FptsToEffect.eq(Doi.Eq)(a.value, b.value as typeof a.value)
+  return Doi.DoiEquivalence(a.value, b.value as typeof a.value)
 }
 
 export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintIdWithDoi['value']> = Doi.hasRegistrant(
