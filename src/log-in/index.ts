@@ -32,7 +32,7 @@ import { SessionId, newSessionForUser } from '../user.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
 import { failureMessage } from './failure-message.ts'
 
-interface OAuthEnv {
+export interface OAuthEnv {
   readonly oauth: {
     readonly authorizeUrl: URL
     readonly clientId: string

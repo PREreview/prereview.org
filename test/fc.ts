@@ -17,7 +17,6 @@ import type { Request as ExpressRequest, Response as ExpressResponse } from 'exp
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import type * as H from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
 import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
 import {
@@ -60,6 +59,7 @@ import {
   UserSelectableLocales,
 } from '../src/locales/index.ts'
 import type { Location } from '../src/location.ts'
+import type { OAuthEnv } from '../src/log-in/index.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
 import * as Personas from '../src/Personas/index.ts'
