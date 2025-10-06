@@ -1,0 +1,130 @@
+{
+  "data": {
+    "id": "10.6084/m9.figshare.23650587.v1",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6084/m9.figshare.23650587.v1",
+      "prefix": "10.6084",
+      "suffix": "m9.figshare.23650587.v1",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Enaroseha, Omamoke",
+          "givenName": "Omamoke",
+          "familyName": "Enaroseha",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Agbajor, Godwin Kparobo",
+          "givenName": "Godwin Kparobo",
+          "familyName": "Agbajor",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Vwavware, O. J.",
+          "givenName": "O. J.",
+          "familyName": "Vwavware",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Ogheneovo, Akpoyibo",
+          "givenName": "Akpoyibo",
+          "familyName": "Ogheneovo",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "AB INITIO SIMULATION OF THE STRUCTURAL, ELECTRONIC, MECHANICAL AND ELASTIC PROPERTIES OF SOME TRANSITION METALS YTTRIUM (Yt) AND SCANDIUM(Sc)..docx"
+        }
+      ],
+      "publisher": "AfricArXiv",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [{ "subject": "Condensed matter modelling and density functional theory" }],
+      "contributors": [],
+      "dates": [
+        { "date": "2023-07-26", "dateType": "Created" },
+        { "date": "2023-07-26", "dateType": "Updated" },
+        { "date": "2023", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Journal contribution",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsIdenticalTo",
+          "relatedIdentifier": "10.6084/m9.figshare.23650587",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["516895 Bytes"],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution Non Commercial 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by-nc/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-nc-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "We analyzed theoretically from first principle the structural, thermodynamic, electrical and mechanical properties of Yttrium and Scandium. We used the Density Functional theory to provide the solution to the Kohn – Sham equation. The Xcryden software was used to obtain the structures of the elements studied in correlation within the PBE functions and were treated using the PAW pseudo – potentials and GGA to provide solutions between the core ions and valence electrons. From the ab initio calculations, we observed that a(A), B(GPa), B’(GPa) and E(eV) for both elements studied are engulf in the structural parameters. Calculations for C11, C12 and C44 to obtain the mechanical properties and G, B/G, E, \u003cem\u003eµ\u003c/em\u003e, A and H to obtain results for the elastic properties were also carried out for both metals. The results obtained for Scandium shows that the values of B, C’, C11, C12 and C44 are 51.00, 4.00, 67.00, 43.00 and 32 respectively. For Yttrium we obtained 47.00, 4.07, 53.00, 40.20 and 22.00 corresponding to B, C’, C11, C12 and C44 respectively. The paper also provides results that agreed qualitatively with experimental data and other theoretical techniques discussed in the literature.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjQvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC42MDg0L005LkZJR1NIQVJFLjIzNjUwNTg3LlYxPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+T21hbW9rZSBFbmFyb3NlaGE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk9tYW1va2U8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RW5hcm9zZWhhPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5Hb2R3aW4gS3Bhcm9ibyBBZ2Jham9yPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Hb2R3aW4gS3Bhcm9ibzwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5BZ2Jham9yPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5PLiBKLiBWd2F2d2FyZTwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Ty4gSi48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+VndhdndhcmU8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkFrcG95aWJvIE9naGVuZW92bzwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QWtwb3lpYm88L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+T2doZW5lb3ZvPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5BQiBJTklUSU8gU0lNVUxBVElPTiBPRiBUSEUgU1RSVUNUVVJBTCwgRUxFQ1RST05JQywgTUVDSEFOSUNBTCBBTkQgRUxBU1RJQyBQUk9QRVJUSUVTIE9GIFNPTUUgVFJBTlNJVElPTiBNRVRBTFMgWVRUUklVTSAoWXQpIEFORCBTQ0FORElVTShTYykuLmRvY3g8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+Jmx0O3AmZ3Q7wqAmbHQ7L3AmZ3Q7CiZsdDtwJmd0O1dlIGFuYWx5emVkIHRoZW9yZXRpY2FsbHkgZnJvbSBmaXJzdCBwcmluY2lwbGUgdGhlIHN0cnVjdHVyYWwsIHRoZXJtb2R5bmFtaWMsIGVsZWN0cmljYWwgYW5kIG1lY2hhbmljYWwgcHJvcGVydGllcyBvZiBZdHRyaXVtIGFuZCBTY2FuZGl1bS4gV2UgdXNlZCB0aGUgRGVuc2l0eSBGdW5jdGlvbmFsIHRoZW9yeSB0byBwcm92aWRlIHRoZSBzb2x1dGlvbiB0byB0aGUgS29obiDigJMgU2hhbSBlcXVhdGlvbi4mbHQ7L3AmZ3Q7CiZsdDtwJmd0O1RoZSBYY3J5ZGVuIHNvZnR3YXJlIHdhcyB1c2VkIHRvIG9idGFpbiB0aGUgc3RydWN0dXJlcyBvZiB0aGUgZWxlbWVudHMgc3R1ZGllZCBpbiBjb3JyZWxhdGlvbiB3aXRoaW4gdGhlIFBCRSBmdW5jdGlvbnMgYW5kIHdlcmUgdHJlYXRlZCB1c2luZyB0aGUgUEFXIHBzZXVkbyDigJMgcG90ZW50aWFscyBhbmQgR0dBIHRvIHByb3ZpZGUgc29sdXRpb25zIGJldHdlZW4gdGhlIGNvcmUgaW9ucyBhbmQgdmFsZW5jZSBlbGVjdHJvbnMuJmx0Oy9wJmd0OwombHQ7cCZndDtGcm9tIHRoZSBhYiBpbml0aW8gY2FsY3VsYXRpb25zLCB3ZSBvYnNlcnZlZCB0aGF0IGEoQSksIEIoR1BhKSwgQuKAmShHUGEpIGFuZCBFKGVWKSBmb3IgYm90aCBlbGVtZW50cyBzdHVkaWVkIGFyZSBlbmd1bGYgwqBpbiB0aGUgc3RydWN0dXJhbCBwYXJhbWV0ZXJzLiDCoENhbGN1bGF0aW9ucyBmb3IgQzExLCBDMTIgYW5kIEM0NCB0byBvYnRhaW4gdGhlIG1lY2hhbmljYWwgcHJvcGVydGllcyBhbmQgRywgQi9HLCBFLCAmbHQ7ZW0mZ3Q7wrUmbHQ7L2VtJmd0OywgQSBhbmQgSCB0byBvYnRhaW4gcmVzdWx0cyBmb3IgdGhlIGVsYXN0aWMgcHJvcGVydGllcyB3ZXJlIGFsc28gY2FycmllZCBvdXQgZm9yIGJvdGggbWV0YWxzLiZsdDsvcCZndDsKJmx0O3AmZ3Q7VGhlIHJlc3VsdHMgb2J0YWluZWQgZm9yIFNjYW5kaXVtIHNob3dzIHRoYXQgdGhlIHZhbHVlcyBvZiBCLCBD4oCZLCBDMTEsIEMxMiBhbmQgQzQ0IGFyZSA1MS4wMCwgNC4wMCwgNjcuMDAsIDQzLjAwIGFuZCAzMiByZXNwZWN0aXZlbHkuIEZvciBZdHRyaXVtIHdlIG9idGFpbmVkIDQ3LjAwLCA0LjA3LCA1My4wMCwgNDAuMjAgYW5kIDIyLjAwIGNvcnJlc3BvbmRpbmcgdG8gQiwgQ+KAmSwgQzExLCBDMTIgYW5kIEM0NCByZXNwZWN0aXZlbHkuIFRoZSBwYXBlciBhbHNvIHByb3ZpZGVzIHJlc3VsdHMgdGhhdCBhZ3JlZWQgcXVhbGl0YXRpdmVseSB3aXRoIGV4cGVyaW1lbnRhbCBkYXRhIGFuZCBvdGhlciB0aGVvcmV0aWNhbCB0ZWNobmlxdWVzIGRpc2N1c3NlZCBpbiB0aGUgbGl0ZXJhdHVyZS4mbHQ7L3AmZ3Q7PC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5Db25kZW5zZWQgbWF0dGVyIG1vZGVsbGluZyBhbmQgZGVuc2l0eSBmdW5jdGlvbmFsIHRoZW9yeTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxwdWJsaXNoZXI+QWZyaWNBclhpdjwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMzwvcHVibGljYXRpb25ZZWFyPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJDcmVhdGVkIj4yMDIzLTA3LTI2PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjMtMDctMjY8L2RhdGU+CiAgPC9kYXRlcz4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlRleHQiPkpvdXJuYWwgY29udHJpYnV0aW9uPC9yZXNvdXJjZVR5cGU+CiAgPHNpemVzPgogICAgPHNpemU+NTE2ODk1IEJ5dGVzPC9zaXplPgogIDwvc2l6ZXM+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc0lkZW50aWNhbFRvIj4xMC42MDg0L205LmZpZ3NoYXJlLjIzNjUwNTg3PC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMvNC4wLyI+Q0MgQlktTkMgNC4wPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0Pgo8L3Jlc291cmNlPg==",
+      "url": "https://africarxiv.figshare.com/articles/journal_contribution/AB_INITIO_SIMULATION_OF_THE_STRUCTURAL_ELECTRONIC_MECHANICAL_AND_ELASTIC_PROPERTIES_OF_SOME_TRANSITION_METALS_YTTRIUM_Yt_AND_SCANDIUM_Sc_docx/23650587/1",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-07-26T08:37:33.000Z",
+      "registered": "2023-07-26T08:37:33.000Z",
+      "published": "2023",
+      "updated": "2023-07-26T08:37:34.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "figshare.ars", "type": "clients" } },
+      "provider": { "data": { "id": "otjm", "type": "providers" } },
+      "media": { "data": { "id": "10.6084/m9.figshare.23650587.v1", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

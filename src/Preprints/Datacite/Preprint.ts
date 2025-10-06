@@ -104,6 +104,10 @@ const determineDatacitePreprintId = (
       return new ZenodoPreprintId({ value: indeterminateId.value })
     }
 
+    if (indeterminateId._tag === 'AfricarxivFigsharePreprintId' && record.publisher !== 'AfricArXiv') {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    }
+
     return indeterminateId
   })
 
@@ -170,6 +174,7 @@ const getAbstract = (
 
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
+    AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     ArxivPreprintId: () => Option.some('en' as const),
     LifecycleJournalPreprintId: () => Option.some('en' as const),

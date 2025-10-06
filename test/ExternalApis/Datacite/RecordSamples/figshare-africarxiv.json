@@ -1,0 +1,161 @@
+{
+  "data": {
+    "id": "10.6084/m9.figshare.19064801.v1",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6084/m9.figshare.19064801.v1",
+      "prefix": "10.6084",
+      "suffix": "m9.figshare.19064801.v1",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "NOGBOU, Noel-David",
+          "givenName": "Noel-David",
+          "familyName": "NOGBOU",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "PHOFA, Dikwata Thabiso",
+          "givenName": "Dikwata Thabiso",
+          "familyName": "PHOFA",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "OBI, Lawrence Chikwela",
+          "givenName": "Lawrence Chikwela",
+          "familyName": "OBI",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-0068-2035",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ],
+          "affiliation": []
+        },
+        {
+          "name": "MUSYOKI, Andrew Munyalo",
+          "givenName": "Andrew Munyalo",
+          "familyName": "MUSYOKI",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-6577-6155",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ],
+          "affiliation": []
+        }
+      ],
+      "titles": [
+        { "title": "Revisiting drug resistance mechanisms of a notorious nosocomial pathogen: Acinetobacter baumannii" }
+      ],
+      "publisher": "AfricArXiv",
+      "container": {},
+      "publicationYear": 2022,
+      "subjects": [
+        {
+          "subject": "110303 Clinical Microbiology",
+          "schemeUri": "http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E",
+          "subjectScheme": "FOR"
+        },
+        {
+          "subject": "FOS: Clinical medicine",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        {
+          "subject": "110801 Medical Bacteriology",
+          "schemeUri": "http://www.abs.gov.au/ausstats/abs@.nsf/0/6BB427AB9696C225CA2574180004463E",
+          "subjectScheme": "FOR"
+        },
+        {
+          "subject": "FOS: Health sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2022-01-26", "dateType": "Created" },
+        { "date": "2022-01-26", "dateType": "Updated" },
+        { "date": "2022", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Preprint",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsIdenticalTo",
+          "relatedIdentifier": "10.6084/m9.figshare.19064801",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["552868 Bytes"],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Mini review on mechanisms and strategies expressed by \u003ci\u003eA. baumannii\u003c/i\u003e to resist biological compounds with antagonistic activity on their growth\u003cbr\u003e\u003cbr\u003eAcinetobacter baumannii (A. baumannii) has a propensity to develop, acquire and transmit antibiotic resistance-associated genes. This ability has enabled the proliferation of the species in harsh living conditions like the hospital environment. It is well known that a quasi-permanent contact between the bacterium and antibiotics has contributed to the improvement of expressed resistance mechanisms, but also, literature highlights the natural living conditions in which survival strategies have led the species to develop mechanisms and systems to establish their niche, sometimes in very competitive environment. All these mechanisms and strategies which are expressed, sometimes in response to antibiotics exposure or to just sustain viability, have enabled the rise of this bacteria species as a successful nosocomial pathogen. Here we review drug resistance mechanisms and strategies for environmental survival employed by this bacterium to consolidate information relevant for the current search for alternative management of infections caused by A. baumannii.\u003cbr\u003e",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjEvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC42MDg0L005LkZJR1NIQVJFLjE5MDY0ODAxLlYxPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+Tm9lbC1EYXZpZCBOT0dCT1U8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk5vZWwtRGF2aWQ8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+Tk9HQk9VPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5EaWt3YXRhIFRoYWJpc28gUEhPRkE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkRpa3dhdGEgVGhhYmlzbzwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5QSE9GQTwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+TGF3cmVuY2UgQ2hpa3dlbGEgT0JJPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5MYXdyZW5jZSBDaGlrd2VsYTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5PQkk8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPjAwMDAtMDAwMi0wMDY4LTIwMzU8L25hbWVJZGVudGlmaWVyPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5BbmRyZXcgTXVueWFsbyBNVVNZT0tJPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5BbmRyZXcgTXVueWFsbzwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5NVVNZT0tJPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj4wMDAwLTAwMDItNjU3Ny02MTU1PC9uYW1lSWRlbnRpZmllcj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+UmV2aXNpdGluZyBkcnVnIHJlc2lzdGFuY2UgbWVjaGFuaXNtcyBvZiBhIG5vdG9yaW91cyBub3NvY29taWFsIHBhdGhvZ2VuOiBBY2luZXRvYmFjdGVyIGJhdW1hbm5paTwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5NaW5pIHJldmlldyBvbiBtZWNoYW5pc21zIGFuZCBzdHJhdGVnaWVzIGV4cHJlc3NlZCBieSAmbHQ7aSZndDtBLiBiYXVtYW5uaWkmbHQ7L2kmZ3Q7IHRvIHJlc2lzdCBiaW9sb2dpY2FsIGNvbXBvdW5kcyB3aXRoIGFudGFnb25pc3RpYyBhY3Rpdml0eSBvbiB0aGVpciBncm93dGgmbHQ7YnImZ3Q7Jmx0O2JyJmd0O0FjaW5ldG9iYWN0ZXIgYmF1bWFubmlpIChBLiBiYXVtYW5uaWkpIGhhcyBhIHByb3BlbnNpdHkgdG8gZGV2ZWxvcCwgIGFjcXVpcmUgYW5kIHRyYW5zbWl0IGFudGliaW90aWMgcmVzaXN0YW5jZS1hc3NvY2lhdGVkIGdlbmVzLiBUaGlzIGFiaWxpdHkgaGFzIGVuYWJsZWQgdGhlIHByb2xpZmVyYXRpb24gb2YgdGhlIHNwZWNpZXMgaW4gaGFyc2ggbGl2aW5nIGNvbmRpdGlvbnMgbGlrZSB0aGUgaG9zcGl0YWwgZW52aXJvbm1lbnQuIEl0IGlzIHdlbGwga25vd24gdGhhdCBhIHF1YXNpLXBlcm1hbmVudCBjb250YWN0IGJldHdlZW4gdGhlIGJhY3Rlcml1bSBhbmQgYW50aWJpb3RpY3MgaGFzIGNvbnRyaWJ1dGVkIHRvIHRoZSBpbXByb3ZlbWVudCBvZiBleHByZXNzZWQgcmVzaXN0YW5jZSAgbWVjaGFuaXNtcywgYnV0IGFsc28sIGxpdGVyYXR1cmUgaGlnaGxpZ2h0cyB0aGUgbmF0dXJhbCBsaXZpbmcgY29uZGl0aW9ucyBpbiB3aGljaCBzdXJ2aXZhbCBzdHJhdGVnaWVzIGhhdmUgbGVkIHRoZSBzcGVjaWVzIHRvIGRldmVsb3AgbWVjaGFuaXNtcyBhbmQgc3lzdGVtcyB0byBlc3RhYmxpc2ggdGhlaXIgbmljaGUsIHNvbWV0aW1lcyBpbiB2ZXJ5IGNvbXBldGl0aXZlICBlbnZpcm9ubWVudC4gQWxsIHRoZXNlIG1lY2hhbmlzbXMgYW5kIHN0cmF0ZWdpZXMgd2hpY2ggYXJlIGV4cHJlc3NlZCwgc29tZXRpbWVzIGluIHJlc3BvbnNlIHRvIGFudGliaW90aWNzIGV4cG9zdXJlIG9yIHRvIGp1c3Qgc3VzdGFpbiB2aWFiaWxpdHksIGhhdmUgZW5hYmxlZCB0aGUgcmlzZSBvZiB0aGlzIGJhY3RlcmlhIHNwZWNpZXMgYXMgYSBzdWNjZXNzZnVsIG5vc29jb21pYWwgcGF0aG9nZW4uIEhlcmUgd2UgcmV2aWV3IGRydWcgcmVzaXN0YW5jZSBtZWNoYW5pc21zIGFuZCBzdHJhdGVnaWVzIGZvciBlbnZpcm9ubWVudGFsIHN1cnZpdmFsIGVtcGxveWVkIGJ5IHRoaXMgYmFjdGVyaXVtIHRvIGNvbnNvbGlkYXRlIGluZm9ybWF0aW9uIHJlbGV2YW50IGZvciB0aGUgY3VycmVudCBzZWFyY2ggZm9yIGFsdGVybmF0aXZlIG1hbmFnZW1lbnQgb2YgaW5mZWN0aW9ucyBjYXVzZWQgYnkgQS4gYmF1bWFubmlpLiZsdDticiZndDs8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHNjaGVtZVVSST0iaHR0cDovL3d3dy5hYnMuZ292LmF1L2F1c3N0YXRzL2Fic0AubnNmLzAvNkJCNDI3QUI5Njk2QzIyNUNBMjU3NDE4MDAwNDQ2M0UiIHN1YmplY3RTY2hlbWU9IkZPUiI+MTEwMzAzIENsaW5pY2FsIE1pY3JvYmlvbG9neTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHNjaGVtZVVSST0iaHR0cDovL3d3dy5hYnMuZ292LmF1L2F1c3N0YXRzL2Fic0AubnNmLzAvNkJCNDI3QUI5Njk2QzIyNUNBMjU3NDE4MDAwNDQ2M0UiIHN1YmplY3RTY2hlbWU9IkZPUiI+MTEwODAxIE1lZGljYWwgQmFjdGVyaW9sb2d5PC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPHB1Ymxpc2hlcj5BZnJpY0FyWGl2PC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDIyPC9wdWJsaWNhdGlvblllYXI+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNyZWF0ZWQiPjIwMjItMDEtMjY8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCI+MjAyMi0wMS0yNjwvZGF0ZT4KICA8L2RhdGVzPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+UHJlcHJpbnQ8L3Jlc291cmNlVHlwZT4KICA8c2l6ZXM+CiAgICA8c2l6ZT41NTI4NjggQnl0ZXM8L3NpemU+CiAgPC9zaXplcz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IklzSWRlbnRpY2FsVG8iPjEwLjYwODQvbTkuZmlnc2hhcmUuMTkwNjQ4MDE8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvIj5DQyBCWSA0LjA8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CjwvcmVzb3VyY2U+",
+      "url": "https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/1",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2022-01-26T09:37:19.000Z",
+      "registered": "2022-01-26T09:37:20.000Z",
+      "published": "2022",
+      "updated": "2022-01-26T09:37:21.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "figshare.ars", "type": "clients" } },
+      "provider": { "data": { "id": "otjm", "type": "providers" } },
+      "media": { "data": { "id": "10.6084/m9.figshare.19064801.v1", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

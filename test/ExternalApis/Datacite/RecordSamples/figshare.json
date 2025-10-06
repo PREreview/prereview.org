@@ -1,0 +1,124 @@
+{
+  "data": {
+    "id": "10.6084/m9.figshare.21640889.v1",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6084/m9.figshare.21640889.v1",
+      "prefix": "10.6084",
+      "suffix": "m9.figshare.21640889.v1",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Hrynaszkiewicz, Iain",
+          "givenName": "Iain",
+          "familyName": "Hrynaszkiewicz",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-9673-5559",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ],
+          "affiliation": []
+        },
+        {
+          "name": "Kiermer, Veronique",
+          "givenName": "Veronique",
+          "familyName": "Kiermer",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-8771-7239",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ],
+          "affiliation": []
+        }
+      ],
+      "titles": [{ "title": "PLOS Open Science Indicators principles and definitions" }],
+      "publisher": "figshare",
+      "container": {},
+      "publicationYear": 2022,
+      "subjects": [{ "subject": "Research, science and technology policy" }],
+      "contributors": [],
+      "dates": [
+        { "date": "2022-12-12", "dateType": "Created" },
+        { "date": "2022-12-12", "dateType": "Updated" },
+        { "date": "2022", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Preprint",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsIdenticalTo",
+          "relatedIdentifier": "10.6084/m9.figshare.21640889",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["194697 Bytes"],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "This document provides additional context to PLOS’ Open Science Indicators (OSI) initiative, which releases its first set of results in late 2022, and details on how the indicators have been defined. The OSI initiative was created in response to PLOS’ need to better understand researchers and to inform the development and monitoring of solutions intended to improve adoption of Open Science practices, such as sharing of research data, sharing code and protocols, and posting of preprints. Importantly, our aim is for these indicators to help understand practice and to promote improvements, not to rank journals, institutions or individuals. To ensure consistent and expandable definitions of these indicators, PLOS developed an OSI measurement framework, underpinned by six guiding principles: (1) Align with established community definitions or approaches wherever possible; (2) Measure what practices are being carried out now; (3) Ensure interoperability across diverse communities; (4) Be scalable across large volumes of research outputs; (5) Share results of Open Science Indicators/ monitoring activities openly; (6) Use Open Science Indicators responsibly. The requirements for OSI are inspired by previous efforts in the research community and are aligned with the FAIR principles. The technology to automate measurement of OSIs has been delivered by DataSeer, using a repeatable approach that can be delivered at scale across thousands of published articles. Community feedback after the first data release will inform future directions for the initiative. Here we share our definition framework to help users of the OSI dataset and to facilitate community discussions towards transparent, inter-operable and valuable Open Science monitoring frameworks.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjQvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC42MDg0L005LkZJR1NIQVJFLjIxNjQwODg5LlYxPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+SWFpbiBIcnluYXN6a2lld2ljejwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+SWFpbjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5IcnluYXN6a2lld2ljejwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+MDAwMC0wMDAyLTk2NzMtNTU1OTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPlZlcm9uaXF1ZSBLaWVybWVyPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5WZXJvbmlxdWU8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+S2llcm1lcjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+MDAwMC0wMDAxLTg3NzEtNzIzOTwvbmFtZUlkZW50aWZpZXI+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlBMT1MgT3BlbiBTY2llbmNlIEluZGljYXRvcnMgcHJpbmNpcGxlcyBhbmQgZGVmaW5pdGlvbnM8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+Jmx0O3AmZ3Q7VGhpcyBkb2N1bWVudCBwcm92aWRlcyBhZGRpdGlvbmFsIGNvbnRleHQgdG8gUExPU+KAmSBPcGVuIFNjaWVuY2UgSW5kaWNhdG9ycyAoT1NJKSBpbml0aWF0aXZlLCB3aGljaCByZWxlYXNlcyBpdHMgZmlyc3Qgc2V0IG9mIHJlc3VsdHMgaW4gbGF0ZSAyMDIyLCBhbmQgZGV0YWlscyBvbiBob3cgdGhlIGluZGljYXRvcnMgaGF2ZSBiZWVuIGRlZmluZWQuIFRoZSBPU0kgaW5pdGlhdGl2ZSB3YXMgY3JlYXRlZCBpbiByZXNwb25zZSB0byBQTE9T4oCZIG5lZWQgdG8gYmV0dGVyIHVuZGVyc3RhbmQgcmVzZWFyY2hlcnMgYW5kIHRvIGluZm9ybSB0aGUgZGV2ZWxvcG1lbnQgYW5kIG1vbml0b3Jpbmcgb2Ygc29sdXRpb25zIGludGVuZGVkIHRvIGltcHJvdmUgYWRvcHRpb24gb2YgT3BlbiBTY2llbmNlIHByYWN0aWNlcywgc3VjaCBhcyBzaGFyaW5nIG9mIHJlc2VhcmNoIGRhdGEsIHNoYXJpbmcgY29kZSBhbmQgcHJvdG9jb2xzLCBhbmQgcG9zdGluZyBvZiBwcmVwcmludHMuIEltcG9ydGFudGx5LCBvdXIgYWltIGlzIGZvciB0aGVzZSBpbmRpY2F0b3JzIHRvIGhlbHAgdW5kZXJzdGFuZCBwcmFjdGljZSBhbmQgdG8gcHJvbW90ZSBpbXByb3ZlbWVudHMsIG5vdCB0byByYW5rIGpvdXJuYWxzLCBpbnN0aXR1dGlvbnMgb3IgaW5kaXZpZHVhbHMuIFRvIGVuc3VyZSBjb25zaXN0ZW50IGFuZCBleHBhbmRhYmxlIGRlZmluaXRpb25zIG9mIHRoZXNlIGluZGljYXRvcnMsIFBMT1MgZGV2ZWxvcGVkIGFuIE9TSSBtZWFzdXJlbWVudCBmcmFtZXdvcmssIHVuZGVycGlubmVkIGJ5IHNpeCBndWlkaW5nIHByaW5jaXBsZXM6ICgxKSBBbGlnbiB3aXRoIGVzdGFibGlzaGVkIGNvbW11bml0eSBkZWZpbml0aW9ucyBvciBhcHByb2FjaGVzIHdoZXJldmVyIHBvc3NpYmxlOyAoMikgTWVhc3VyZSB3aGF0IHByYWN0aWNlcyBhcmUgYmVpbmcgY2FycmllZCBvdXQgbm93OyAoMykgRW5zdXJlIGludGVyb3BlcmFiaWxpdHkgYWNyb3NzIGRpdmVyc2UgY29tbXVuaXRpZXM7ICg0KSBCZSBzY2FsYWJsZSBhY3Jvc3MgbGFyZ2Ugdm9sdW1lcyBvZiByZXNlYXJjaCBvdXRwdXRzOyAoNSkgU2hhcmUgcmVzdWx0cyBvZiBPcGVuIFNjaWVuY2UgSW5kaWNhdG9ycy8gbW9uaXRvcmluZyBhY3Rpdml0aWVzIG9wZW5seTsgKDYpIFVzZSBPcGVuIFNjaWVuY2UgSW5kaWNhdG9ycyByZXNwb25zaWJseS4gVGhlIHJlcXVpcmVtZW50cyBmb3IgT1NJIGFyZSBpbnNwaXJlZCBieSBwcmV2aW91cyBlZmZvcnRzIGluIHRoZSByZXNlYXJjaCBjb21tdW5pdHkgYW5kIGFyZSBhbGlnbmVkIHdpdGggdGhlIEZBSVIgcHJpbmNpcGxlcy4gVGhlIHRlY2hub2xvZ3kgdG8gYXV0b21hdGUgbWVhc3VyZW1lbnQgb2YgT1NJcyBoYXMgYmVlbiBkZWxpdmVyZWQgYnkgRGF0YVNlZXIsIHVzaW5nIGEgcmVwZWF0YWJsZSBhcHByb2FjaCB0aGF0IGNhbiBiZSBkZWxpdmVyZWQgYXQgc2NhbGUgYWNyb3NzIHRob3VzYW5kcyBvZiBwdWJsaXNoZWQgYXJ0aWNsZXMuIENvbW11bml0eSBmZWVkYmFjayBhZnRlciB0aGUgZmlyc3QgZGF0YSByZWxlYXNlIHdpbGwgaW5mb3JtIGZ1dHVyZSBkaXJlY3Rpb25zIGZvciB0aGUgaW5pdGlhdGl2ZS4gSGVyZSB3ZSBzaGFyZSBvdXIgZGVmaW5pdGlvbiBmcmFtZXdvcmsgdG8gaGVscCB1c2VycyBvZiB0aGUgT1NJIGRhdGFzZXQgYW5kIHRvIGZhY2lsaXRhdGUgY29tbXVuaXR5IGRpc2N1c3Npb25zIHRvd2FyZHMgdHJhbnNwYXJlbnQsIGludGVyLW9wZXJhYmxlIGFuZCB2YWx1YWJsZSBPcGVuIFNjaWVuY2UgbW9uaXRvcmluZyBmcmFtZXdvcmtzLiZsdDsvcCZndDs8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0PlJlc2VhcmNoLCBzY2llbmNlIGFuZCB0ZWNobm9sb2d5IHBvbGljeTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxwdWJsaXNoZXI+Zmlnc2hhcmU8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjI8L3B1YmxpY2F0aW9uWWVhcj4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyMi0xMi0xMjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDIyLTEyLTEyPC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij5QcmVwcmludDwvcmVzb3VyY2VUeXBlPgogIDxzaXplcz4KICAgIDxzaXplPjE5NDY5NyBCeXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSXNJZGVudGljYWxUbyI+MTAuNjA4NC9tOS5maWdzaGFyZS4yMTY0MDg4OTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8iPkNDIEJZIDQuMDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KPC9yZXNvdXJjZT4=",
+      "url": "https://figshare.com/articles/preprint/PLOS_Open_Science_Indicators_principles_and_definitions/21640889/1",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2022-12-12T11:34:21.000Z",
+      "registered": "2022-12-12T11:34:22.000Z",
+      "published": "2022",
+      "updated": "2022-12-12T11:34:22.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "figshare.ars", "type": "clients" } },
+      "provider": { "data": { "id": "otjm", "type": "providers" } },
+      "media": { "data": { "id": "10.6084/m9.figshare.21640889.v1", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

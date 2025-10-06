@@ -8,6 +8,9 @@ import * as fc from '../../../fc.ts'
 import arxiv from '../RecordSamples/arxiv.json' with { type: 'json' }
 import dryadHtml from '../RecordSamples/dryad-html.json' with { type: 'json' }
 import dryad from '../RecordSamples/dryad.json' with { type: 'json' }
+import figshareAfricarxivJournalArticle from '../RecordSamples/figshare-africarxiv-journal-article.json' with { type: 'json' }
+import figshareAfricarxiv from '../RecordSamples/figshare-africarxiv.json' with { type: 'json' }
+import figshare from '../RecordSamples/figshare.json' with { type: 'json' }
 import lifecycleJournalArticle from '../RecordSamples/lifecycle-journal-article.json' with { type: 'json' }
 import lifecycleJournalRegistration from '../RecordSamples/lifecycle-journal-registration.json' with { type: 'json' }
 import osfFile from '../RecordSamples/osf-file.json' with { type: 'json' }
@@ -29,6 +32,9 @@ describe('HandleResponse', () => {
             arxiv,
             dryadHtml,
             dryad,
+            figshareAfricarxivJournalArticle,
+            figshareAfricarxiv,
+            figshare,
             lifecycleJournalArticle,
             lifecycleJournalRegistration,
             osfFile,

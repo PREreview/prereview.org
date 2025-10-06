@@ -9,6 +9,7 @@ import { Datacite } from '../../../src/ExternalApis/index.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.ts'
 import {
+  AfricarxivFigsharePreprintId,
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
@@ -250,6 +251,34 @@ test.each([
       url: new URL('https://zenodo.org/doi/10.5281/zenodo.15399868'),
     }),
   },
+  {
+    response: 'figshare-africarxiv',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Mini review on mechanisms and strategies expressed by <i>A. baumannii</i> to resist biological compounds with antagonistic activity on their growthAcinetobacter baumannii (A. baumannii) has a propensity to develop, acquire and transmit antibiotic resistance-associated genes. This ability has enabled the proliferation of the species in harsh living conditions like the hospital environment. It is well known that a quasi-permanent contact between the bacterium and antibiotics has contributed to the improvement of expressed resistance mechanisms, but also, literature highlights the natural living conditions in which survival strategies have led the species to develop mechanisms and systems to establish their niche, sometimes in very competitive environment. All these mechanisms and strategies which are expressed, sometimes in response to antibiotics exposure or to just sustain viability, have enabled the rise of this bacteria species as a successful nosocomial pathogen. Here we review drug resistance mechanisms and strategies for environmental survival employed by this bacterium to consolidate information relevant for the current search for alternative management of infections caused by A. baumannii.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Noel-David NOGBOU' },
+        { name: 'Dikwata Thabiso PHOFA' },
+        { name: 'Lawrence Chikwela OBI', orcid: OrcidId('0000-0002-0068-2035') },
+        { name: 'Andrew Munyalo MUSYOKI', orcid: OrcidId('0000-0002-6577-6155') },
+      ],
+      id: new AfricarxivFigsharePreprintId({ value: Doi('10.6084/m9.figshare.19064801.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2022, month: 1, day: 26 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Revisiting drug resistance mechanisms of a notorious nosocomial pathogen: Acinetobacter baumannii',
+        ),
+      },
+      url: new URL(
+        'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/1',
+      ),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -263,7 +292,7 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
+test.each(['figshare-africarxiv-journal-article', 'osf-file', 'osf-registration', 'zenodo-journal-article'])(
   'returns a specific error for non-Preprint record (%s)',
   response =>
     Effect.gen(function* () {
@@ -279,16 +308,18 @@ test.each(['osf-file', 'osf-registration', 'zenodo-journal-article'])(
     }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['dryad', 'dryad-html'])('returns a specific error for an unsupported DOI record (%s)', response =>
-  Effect.gen(function* () {
-    const actual = yield* pipe(
-      FileSystem.FileSystem,
-      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
-      Effect.andThen(recordToPreprint),
-      Effect.flip,
-    )
+test.each(['dryad', 'dryad-html', 'figshare'])(
+  'returns a specific error for an unsupported DOI record (%s)',
+  response =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(
+        FileSystem.FileSystem,
+        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+        Effect.andThen(recordToPreprint),
+        Effect.flip,
+      )
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
