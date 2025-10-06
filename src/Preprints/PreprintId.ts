@@ -1,8 +1,7 @@
 import { Url, UrlParams } from '@effect/platform'
-import { Array, Data, Either, type Equivalence, Option, ParseResult, Predicate, Schema, flow, pipe } from 'effect'
+import { Array, Data, type Equivalence, Option, ParseResult, Predicate, Schema, flow, pipe } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import * as FptsToEffect from '../FptsToEffect.ts'
 import { Doi } from '../types/index.ts'
 
 export type PreprintId = typeof PreprintId.Type
@@ -467,7 +466,7 @@ const makeOsfDois = (prefix: string, id: string, version: string | undefined) =>
 const extractFromPhilsciPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
-  Option.flatMap(flow(id => parseInt(id, 10), D.number.decode, FptsToEffect.either, Either.getRight)),
+  Option.andThen(Schema.decodeOption(Schema.NumberFromString)),
   Option.andThen(id => new PhilsciPreprintId({ value: id })),
   Array.fromOption,
 )
