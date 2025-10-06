@@ -1,13 +1,16 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
 import { Boolean, Context, Duration, Effect, Function, Match, Redacted, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
+import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
+import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
+import { MediaType } from 'hyper-ts'
+import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
@@ -118,7 +121,7 @@ export const authenticate = Effect.fn(
 
     const user = yield* FptsToEffect.readerTaskEither(
       pipe(
-        exchangeAuthorizationCode(OrcidUserC)(code),
+        exchangeAuthorizationCode(code),
         R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
@@ -202,3 +205,43 @@ function getReferer(state: string) {
     ),
   )
 }
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const AccessTokenD = pipe(
+  D.struct({
+    access_token: D.string,
+    token_type: D.string,
+  }),
+  D.intersect(OrcidUserC),
+)
+
+const exchangeAuthorizationCode = (
+  code: string,
+): RTE.ReaderTaskEither<OAuthEnv & FetchEnv, unknown, D.TypeOf<typeof AccessTokenD>> =>
+  pipe(
+    RTE.asks(({ oauth: { clientId, clientSecret, redirectUri, tokenUrl } }: OAuthEnv) =>
+      pipe(
+        F.Request('POST')(tokenUrl),
+        F.setBody(
+          new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri.href,
+            code,
+          }).toString(),
+          MediaType.applicationFormURLEncoded,
+        ),
+      ),
+    ),
+    RTE.chainW(F.send),
+    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(pipe(JsonD, D.compose(AccessTokenD)))),
+  )
