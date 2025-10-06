@@ -9,7 +9,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import { MediaType } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -237,7 +236,7 @@ const exchangeAuthorizationCode = (
             redirect_uri: redirectUri.href,
             code,
           }).toString(),
-          MediaType.applicationFormURLEncoded,
+          'application/x-www-form-urlencoded',
         ),
       ),
     ),
