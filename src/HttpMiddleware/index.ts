@@ -15,7 +15,6 @@ import { KeyvStores } from '../keyv.ts'
 import { CrowdinInContextLocale, DefaultLocale } from '../locales/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { FlashMessageSchema } from '../response.ts'
-import { securityHeaders } from '../securityHeaders.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { Uuid } from '../types/index.ts'
 import { UserOnboardingService } from '../user-onboarding.ts'
@@ -24,6 +23,7 @@ import { detectLocale } from './DetectLocale.ts'
 import { forceLogIn } from './ForceLogIn.ts'
 import * as LocaleCookie from './LocaleCookie.ts'
 import * as LocaleInPath from './LocaleInPath.ts'
+import { securityHeaders } from './SecurityHeaders.ts'
 
 export const { logger, make, withLoggerDisabled } = HttpMiddleware
 
