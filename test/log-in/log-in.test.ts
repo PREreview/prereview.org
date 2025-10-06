@@ -275,7 +275,7 @@ describe('authenticate', () => {
       Effect.provideService(OrcidOauth, orcidOauth),
       Effect.provideService(PublicUrl, new URL('/', referer)),
       Effect.provideService(SessionSecret, Redacted.make(secret)),
-      Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+      Effect.provide(Uuid.layer),
       EffectTest.run,
     ),
   )
@@ -337,7 +337,7 @@ describe('authenticate', () => {
       Effect.provideService(OrcidOauth, orcidOauth),
       Effect.provideService(PublicUrl, new URL('/', referer)),
       Effect.provideService(SessionSecret, Redacted.make(secret)),
-      Effect.provideServiceEffect(Uuid.GenerateUuid, Uuid.make),
+      Effect.provide(Uuid.layer),
       EffectTest.run,
     ),
   )

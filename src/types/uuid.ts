@@ -10,9 +10,7 @@ export { Uuid } from 'uuid-ts'
 
 export class GenerateUuid extends Context.Tag('GenerateUuid')<GenerateUuid, Effect.Effect<Uuid>>() {}
 
-export const make: Effect.Effect<typeof GenerateUuid.Service> = Effect.succeed(FptsToEffect.io(v4()))
-
-export const layer: Layer.Layer<GenerateUuid> = Layer.effect(GenerateUuid, make)
+export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, FptsToEffect.io(v4()))
 
 export const UuidSchema: Schema.Schema<Uuid, string> = pipe(
   Schema.String,
