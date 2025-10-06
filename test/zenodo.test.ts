@@ -10,7 +10,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import {
   type EmptyDeposition,
@@ -31,6 +30,7 @@ import { plainText, rawHtml } from '../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.ts'
 import * as Prereview from '../src/Prereview.ts'
 import { reviewMatch } from '../src/routes.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
 import { iso6391To3 } from '../src/types/iso639.ts'
 import type { NewPrereview } from '../src/write-review/index.ts'
 import * as _ from '../src/zenodo.ts'
@@ -208,7 +208,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         ),
         getPreprintTitle: id =>
@@ -362,7 +362,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -503,7 +503,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
       {
         body: RecordsC.encode(records),
-        status: Status.OK,
+        status: StatusCodes.OK,
       },
     )
 
@@ -538,7 +538,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
         {
           body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: shouldNotBeCalled,
@@ -683,7 +683,7 @@ describe('getPrereviewFromZenodo', () => {
           .sandbox()
           .getOnce(`https://zenodo.org/api/records/${id}`, {
             body: RecordC.encode(record),
-            status: Status.OK,
+            status: StatusCodes.OK,
           })
           .getOnce(
             { url: 'http://example.com/review.html/content', functionMatcher: (_, req) => req.cache === 'force-cache' },
@@ -736,7 +736,7 @@ describe('getPrereviewFromZenodo', () => {
     expect(actual).toStrictEqual(E.left(new Prereview.PrereviewWasRemoved()))
   })
 
-  test.prop([fc.integer(), fc.constantFrom(Status.NotFound, Status.Gone)])(
+  test.prop([fc.integer(), fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone)])(
     'when the review is not found',
     async (id, status) => {
       const actual = await _.getPrereviewFromZenodo(id)({
@@ -800,7 +800,7 @@ describe('getPrereviewFromZenodo', () => {
         .sandbox()
         .getOnce(`https://zenodo.org/api/records/${id}`, {
           body: RecordC.encode(record),
-          status: Status.OK,
+          status: StatusCodes.OK,
         })
         .getOnce('http://example.com/review.html/content', { status: textStatus })
 
@@ -820,7 +820,7 @@ describe('getPrereviewFromZenodo', () => {
   test.prop([fc.integer()])('when the review cannot be loaded', async id => {
     const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
       body: undefined,
-      status: Status.ServiceUnavailable,
+      status: StatusCodes.ServiceUnavailable,
     })
 
     const actual = await _.getPrereviewFromZenodo(id)({
@@ -885,7 +885,7 @@ describe('getPrereviewFromZenodo', () => {
       .sandbox()
       .getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
-        status: Status.OK,
+        status: StatusCodes.OK,
       })
       .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
@@ -953,7 +953,7 @@ describe('getPrereviewFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
-        status: Status.OK,
+        status: StatusCodes.OK,
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
@@ -1008,7 +1008,7 @@ describe('getPrereviewFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
-        status: Status.OK,
+        status: StatusCodes.OK,
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
@@ -1087,7 +1087,7 @@ describe('getPrereviewFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
-        status: Status.OK,
+        status: StatusCodes.OK,
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
@@ -1143,7 +1143,7 @@ describe('getPrereviewFromZenodo', () => {
 
       const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
-        status: Status.OK,
+        status: StatusCodes.OK,
       })
 
       const actual = await _.getPrereviewFromZenodo(id)({
@@ -1207,7 +1207,7 @@ describe('getPrereviewFromZenodo', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
           body: RecordC.encode(record),
-          status: Status.OK,
+          status: StatusCodes.OK,
         }),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
@@ -1267,7 +1267,7 @@ describe('getPrereviewFromZenodo', () => {
 
     const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
       body: RecordC.encode(record),
-      status: Status.OK,
+      status: StatusCodes.OK,
     })
 
     const actual = await _.getPrereviewFromZenodo(id)({
@@ -1399,7 +1399,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         ),
         getPreprintTitle: id =>
@@ -1603,7 +1603,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         ),
         getPreprintTitle: id =>
@@ -1749,7 +1749,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -1968,7 +1968,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -2113,7 +2113,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -2344,7 +2344,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -2395,7 +2395,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         },
         {
           body: RecordsC.encode({ hits: { hits: [], total: 0 } }),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: shouldNotBeCalled,
@@ -2559,7 +2559,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         },
         {
           body: RecordsC.encode(records),
-          status: Status.OK,
+          status: StatusCodes.OK,
         },
       ),
       getPreprintTitle: id =>
@@ -2652,7 +2652,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         ),
         getPreprintTitle: id =>
@@ -2744,7 +2744,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         )
         .getOnce('http://example.com/review.html/content', { body: 'Some text' }),
@@ -2848,7 +2848,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           },
           {
             body: RecordsC.encode(records),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         )
         .getOnce('http://example.com/review.html/content', { status: textStatus })
@@ -2912,7 +2912,7 @@ describe('addAuthorToRecordOnZenodo', () => {
           })
           .postOnce('http://example.com/edit', {
             body: InProgressDepositionC.encode(inProgressDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           })
           .putOnce(
             {
@@ -2932,12 +2932,12 @@ describe('addAuthorToRecordOnZenodo', () => {
             },
             {
               body: InProgressDepositionC.encode(inProgressDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           })
 
         const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
@@ -2992,7 +2992,7 @@ describe('addAuthorToRecordOnZenodo', () => {
           })
           .postOnce('http://example.com/edit', {
             body: InProgressDepositionC.encode(inProgressDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           })
           .putOnce(
             {
@@ -3009,12 +3009,12 @@ describe('addAuthorToRecordOnZenodo', () => {
             },
             {
               body: InProgressDepositionC.encode(inProgressDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           })
 
         const actual = await _.addAuthorToRecordOnZenodo(id, user, 'pseudonym')({ fetch, zenodoApiKey })()
@@ -3069,7 +3069,7 @@ describe('addAuthorToRecordOnZenodo', () => {
           })
           .postOnce('http://example.com/edit', {
             body: InProgressDepositionC.encode(inProgressDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           })
           .putOnce(
             {
@@ -3090,12 +3090,12 @@ describe('addAuthorToRecordOnZenodo', () => {
             },
             {
               body: InProgressDepositionC.encode(inProgressDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           })
 
         const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
@@ -3150,7 +3150,7 @@ describe('addAuthorToRecordOnZenodo', () => {
           })
           .postOnce('http://example.com/edit', {
             body: InProgressDepositionC.encode(inProgressDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           })
           .putOnce(
             {
@@ -3171,12 +3171,12 @@ describe('addAuthorToRecordOnZenodo', () => {
             },
             {
               body: InProgressDepositionC.encode(inProgressDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           })
 
         const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
@@ -3231,7 +3231,7 @@ describe('addAuthorToRecordOnZenodo', () => {
           })
           .postOnce('http://example.com/edit', {
             body: InProgressDepositionC.encode(inProgressDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           })
           .putOnce(
             {
@@ -3251,12 +3251,12 @@ describe('addAuthorToRecordOnZenodo', () => {
             },
             {
               body: InProgressDepositionC.encode(inProgressDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           })
 
         const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
@@ -3386,7 +3386,7 @@ describe('createCommentOnZenodo', () => {
           },
           {
             body: EmptyDepositionC.encode(emptyDeposition),
-            status: Status.Created,
+            status: StatusCodes.Created,
           },
         )
         .putOnce(
@@ -3420,7 +3420,7 @@ ${comment.comment.toString()}`,
           },
           {
             body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.OK,
+            status: StatusCodes.OK,
           },
         )
         .putOnce(
@@ -3430,7 +3430,7 @@ ${comment.comment.toString()}`,
             functionMatcher: (_, req) => req.body === comment.comment.toString(),
           },
           {
-            status: Status.Created,
+            status: StatusCodes.Created,
           },
         ),
       logger: () => IO.of(undefined),
@@ -3515,11 +3515,11 @@ describe('publishDepositionOnZenodo', () => {
         fetch: fetch
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.OK,
+            status: StatusCodes.OK,
           })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           }),
         logger: () => IO.of(undefined),
         zenodoApiKey,
@@ -3552,7 +3552,7 @@ describe('publishDepositionOnZenodo', () => {
         clock: SystemClock,
         fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
           body: EmptyDepositionC.encode(emptyDeposition),
-          status: Status.OK,
+          status: StatusCodes.OK,
         }),
         logger: () => IO.of(undefined),
         zenodoApiKey,
@@ -3586,7 +3586,7 @@ describe('publishDepositionOnZenodo', () => {
         clock: SystemClock,
         fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
           body: SubmittedDepositionC.encode(submittedDeposition),
-          status: Status.OK,
+          status: StatusCodes.OK,
         }),
         logger: () => IO.of(undefined),
         zenodoApiKey,
@@ -3705,7 +3705,7 @@ describe('createRecordOnZenodo', () => {
             },
             {
               body: EmptyDepositionC.encode(emptyDeposition),
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .putOnce(
@@ -3757,7 +3757,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .putOnce(
@@ -3767,12 +3767,12 @@ ${newPrereview.review.toString()}`,
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           }),
         getPreprintSubjects,
         isReviewRequested,
@@ -3871,7 +3871,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: EmptyDepositionC.encode(emptyDeposition),
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .putOnce(
@@ -3925,7 +3925,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .putOnce(
@@ -3935,12 +3935,12 @@ ${newPrereview.review.toString()}`,
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           }),
         getPreprintSubjects,
         isReviewRequested,
@@ -4038,7 +4038,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: EmptyDepositionC.encode(emptyDeposition),
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .putOnce(
@@ -4087,7 +4087,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .putOnce(
@@ -4097,12 +4097,12 @@ ${newPrereview.review.toString()}`,
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
         isReviewRequested: () => T.of(requested),
@@ -4196,7 +4196,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: EmptyDepositionC.encode(emptyDeposition),
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .putOnce(
@@ -4247,7 +4247,7 @@ ${newPrereview.review.toString()}`,
             },
             {
               body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: Status.OK,
+              status: StatusCodes.OK,
             },
           )
           .putOnce(
@@ -4257,12 +4257,12 @@ ${newPrereview.review.toString()}`,
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
-              status: Status.Created,
+              status: StatusCodes.Created,
             },
           )
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
-            status: Status.Accepted,
+            status: StatusCodes.Accepted,
           }),
         getPreprintSubjects: () => T.of(subjects),
         isReviewRequested: () => T.of(requested),
