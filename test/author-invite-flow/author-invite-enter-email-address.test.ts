@@ -20,7 +20,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { Eq as eqOrcid } from '../../src/types/OrcidId.ts'
+import { OrcidIdEquivalence } from '../../src/types/OrcidId.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
@@ -441,7 +441,7 @@ describe('authorInviteEnterEmailAddress', () => {
       fc.uuid(),
       fc
         .tuple(fc.user(), fc.assignedAuthorInvite())
-        .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
+        .filter(([user, invite]) => !OrcidIdEquivalence(user.orcid, invite.orcid)),
       fc.supportedLocale(),
       fc.string(),
       fc.anything(),

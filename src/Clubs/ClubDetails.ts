@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
 import { type Html, html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
-import { Eq as eqOrcid, OrcidId } from '../types/OrcidId.ts'
+import { OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
 import type { ClubId } from './ClubId.ts'
 
 export interface Club {
@@ -32,7 +32,7 @@ export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
     Array.filter(
       flow(
         id => clubs[id].leads,
-        Array.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+        Array.some(lead => OrcidIdEquivalence(lead.orcid, orcid)),
       ),
     ),
   )
@@ -43,7 +43,7 @@ export const isAClubLead = (orcid: OrcidId): boolean =>
     Array.some(
       flow(
         id => clubs[id].leads,
-        Array.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+        Array.some(lead => OrcidIdEquivalence(lead.orcid, orcid)),
       ),
     ),
   )

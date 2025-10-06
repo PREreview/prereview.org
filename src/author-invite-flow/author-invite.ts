@@ -23,7 +23,7 @@ import {
 } from '../routes.ts'
 import { renderDate } from '../time.ts'
 import { ProfileId } from '../types/index.ts'
-import { type OrcidId, Eq as eqOrcid } from '../types/OrcidId.ts'
+import { type OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
 import { isPseudonym } from '../types/Pseudonym.ts'
 import type { User } from '../user.ts'
 
@@ -60,7 +60,7 @@ export const authorInvite = ({
       ),
     ),
     RTE.filterOrElseW(
-      ({ user, invite }) => !user || !('orcid' in invite) || eqOrcid.equals(user.orcid, invite.orcid),
+      ({ user, invite }) => !user || !('orcid' in invite) || OrcidIdEquivalence(user.orcid, invite.orcid),
       () => 'wrong-user' as const,
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),

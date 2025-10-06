@@ -1,8 +1,7 @@
 import { Array, Equivalence, Option, Predicate } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as FptsToEffect from '../FptsToEffect.ts'
 import type { Preprint } from '../Preprints/index.ts'
-import { Eq as eqOrcid } from '../types/OrcidId.ts'
+import { OrcidIdEquivalence } from '../types/OrcidId.ts'
 import type { User } from '../user.ts'
 
 interface IsAuthor {
@@ -17,6 +16,6 @@ export const ensureUserIsNotAnAuthor = (preprint: Preprint) =>
   )
 
 const EquivalenceAuthorByOrcid = Equivalence.mapInput(
-  Option.getEquivalence(FptsToEffect.eq(eqOrcid)),
+  Option.getEquivalence(OrcidIdEquivalence),
   Option.liftNullable((author: Preprint['authors'][number]) => author.orcid),
 )

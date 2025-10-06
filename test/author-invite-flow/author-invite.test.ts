@@ -12,7 +12,7 @@ import {
   authorInviteStartMatch,
 } from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { Eq as eqOrcid } from '../../src/types/OrcidId.ts'
+import { OrcidIdEquivalence } from '../../src/types/OrcidId.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
@@ -171,7 +171,7 @@ describe('authorInvite', () => {
     fc.uuid(),
     fc
       .tuple(fc.user(), fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite()))
-      .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
+      .filter(([user, invite]) => !OrcidIdEquivalence(user.orcid, invite.orcid)),
     fc.supportedLocale(),
   ])('when the invite is assigned to someone else', async (inviteId, [user, invite], locale) => {
     const actual = await _.authorInvite({ id: inviteId, locale, user })({
