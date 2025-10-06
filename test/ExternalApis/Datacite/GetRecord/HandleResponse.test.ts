@@ -5,6 +5,8 @@ import * as _ from '../../../../src/ExternalApis/Datacite/GetRecord/HandleRespon
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
+import africarxivJournalArticle from '../RecordSamples/africarxiv-journal-article.json' with { type: 'json' }
+import africarxiv from '../RecordSamples/africarxiv.json' with { type: 'json' }
 import arxiv from '../RecordSamples/arxiv.json' with { type: 'json' }
 import dryadHtml from '../RecordSamples/dryad-html.json' with { type: 'json' }
 import dryad from '../RecordSamples/dryad.json' with { type: 'json' }
@@ -29,6 +31,8 @@ describe('HandleResponse', () => {
       test.prop([
         fc.httpClientResponse({
           json: fc.constantFrom(
+            africarxivJournalArticle,
+            africarxiv,
             arxiv,
             dryadHtml,
             dryad,

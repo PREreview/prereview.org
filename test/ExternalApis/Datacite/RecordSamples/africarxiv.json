@@ -1,0 +1,127 @@
+{
+  "data": {
+    "id": "10.60763/africarxiv/1533",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.60763/africarxiv/1533",
+      "prefix": "10.60763",
+      "suffix": "africarxiv/1533",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Sokolabe, Yisa Sarah",
+          "nameType": "Personal",
+          "givenName": "Yisa Sarah",
+          "familyName": "Sokolabe",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Ogunniyi, Tolulope",
+          "nameType": "Personal",
+          "givenName": "Tolulope",
+          "familyName": "Ogunniyi",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        { "title": "Primary Healthcare System Strengthening in Nigeria: A means to achieve Universal Health Coverage" }
+      ],
+      "publisher": "My University",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        { "subject": "INTERDISCIPLINARY RESEARCH AREAS::Health and medical services in society" },
+        { "subject": "Health" },
+        { "subject": "SDG 3" },
+        { "subject": "SDG 10" },
+        { "subject": "Universal Health Coverage" }
+      ],
+      "contributors": [
+        {
+          "name": "University, My",
+          "nameType": "Personal",
+          "givenName": "My",
+          "familyName": "University",
+          "affiliation": [],
+          "contributorType": "DataManager",
+          "nameIdentifiers": []
+        },
+        {
+          "name": "University, My",
+          "nameType": "Personal",
+          "givenName": "My",
+          "familyName": "University",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2024-09-09", "dateType": "Accepted" },
+        { "date": "2024-09-09", "dateType": "Available" },
+        { "date": "2024-08", "dateType": "Issued" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "RPRT",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Article",
+        "resourceTypeGeneral": "Text"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [],
+      "descriptions": [
+        {
+          "description": "According to the WHO, more than 1 billion individuals globally risk becoming impoverished because their household's out-of-pocket medical expenses account for 10% or more of their income. A shift in health systems towards primary health care (PHC) as a means to achieving universal health coverage (UHC) in low- and middle-income nations is important in preventing 60 million deaths and adding 3.7 years to the average life expectancy. Nigeria, ranked 187th among 191 countries in the WHO health system performance ranking, faces challenges with PHC owing to inadequate health infrastructure, a shortage of healthcare professionals, and weak health systems, impeding its progress toward achieving UHC. In achieving UHC, the country started prioritizing the revitalization of PHC through collaboration, making great strides in improving PHC, with hundreds of facilities being renovated and more healthcare professionals being hired and trained. Recently, almost 10 million children have received diphtheria and tetanus vaccines in Nigeria, and 4.95 million girls aged 9 to 14 in 15 states have received HPV vaccinations to protect them from cervical cancer. To better achieve UHC, Nigeria need to seek for more collaboration from the private sector and also, the brain drain of healthcare workers should be addressed by providing a sustainable working environment. Data availability statement: Data sharing is not applicable to this article as no new data were created or analyzed in this study.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMyIgeG1sbnM6ZHNwYWNlPSJodHRwOi8vd3d3LmRzcGFjZS5vcmcveG1sbnMvZHNwYWNlL2RpbSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMyBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC0zL21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA3NjMvQUZSSUNBUlhJVi8xNTMzPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+U29rb2xhYmUsIFlpc2EgU2FyYWg8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5PZ3Vubml5aSwgVG9sdWxvcGU8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5QcmltYXJ5IEhlYWx0aGNhcmUgU3lzdGVtIFN0cmVuZ3RoZW5pbmcgaW4gTmlnZXJpYTogQSBtZWFucyB0byBhY2hpZXZlIFVuaXZlcnNhbCBIZWFsdGggQ292ZXJhZ2U8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+TXkgVW5pdmVyc2l0eTwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNDwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0PklOVEVSRElTQ0lQTElOQVJZIFJFU0VBUkNIIEFSRUFTOjpIZWFsdGggYW5kIG1lZGljYWwgc2VydmljZXMgaW4gc29jaWV0eTwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkhlYWx0aDwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlNERyAzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+U0RHIDEwPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+VW5pdmVyc2FsIEhlYWx0aCBDb3ZlcmFnZTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxjb250cmlidXRvcnM+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJEYXRhTWFuYWdlciI+CiAgICAgIDxjb250cmlidXRvck5hbWU+TXkgVW5pdmVyc2l0eTwvY29udHJpYnV0b3JOYW1lPgogICAgPC9jb250cmlidXRvcj4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9Ikhvc3RpbmdJbnN0aXR1dGlvbiI+CiAgICAgIDxjb250cmlidXRvck5hbWU+TXkgVW5pdmVyc2l0eTwvY29udHJpYnV0b3JOYW1lPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQWNjZXB0ZWQiPjIwMjQtMDktMDk8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQXZhaWxhYmxlIj4yMDI0LTA5LTA5PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAyNC0wODwvZGF0ZT4KICA8L2RhdGVzPgogIDxsYW5ndWFnZT5lbjwvbGFuZ3VhZ2U+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJUZXh0Ij5BcnRpY2xlPC9yZXNvdXJjZVR5cGU+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9InVyaSI+aHR0cHM6Ly9hZnJpY2FyeGl2LnVidW50dW5ldC5uZXQvaGFuZGxlLzEvMTY0OTwvYWx0ZXJuYXRlSWRlbnRpZmllcj4KICA8L2FsdGVybmF0ZUlkZW50aWZpZXJzPgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+QWNjb3JkaW5nIHRvIHRoZSBXSE8sIG1vcmUgdGhhbiAxIGJpbGxpb24gaW5kaXZpZHVhbHMgZ2xvYmFsbHkgcmlzayBiZWNvbWluZyBpbXBvdmVyaXNoZWQgYmVjYXVzZSB0aGVpciBob3VzZWhvbGQncyBvdXQtb2YtcG9ja2V0IG1lZGljYWwgZXhwZW5zZXMgYWNjb3VudCBmb3IgMTAlIG9yIG1vcmUgb2YgdGhlaXIgaW5jb21lLiBBIHNoaWZ0IGluIGhlYWx0aCBzeXN0ZW1zIHRvd2FyZHMgcHJpbWFyeSBoZWFsdGggY2FyZSAoUEhDKSBhcyBhIG1lYW5zIHRvIGFjaGlldmluZyB1bml2ZXJzYWwgaGVhbHRoIGNvdmVyYWdlIChVSEMpIGluIGxvdy0gYW5kIG1pZGRsZS1pbmNvbWUgbmF0aW9ucyBpcyBpbXBvcnRhbnQgaW4gcHJldmVudGluZyA2MCBtaWxsaW9uIGRlYXRocyBhbmQgYWRkaW5nIDMuNyB5ZWFycyB0byB0aGUgYXZlcmFnZSBsaWZlIGV4cGVjdGFuY3kuIE5pZ2VyaWEsIHJhbmtlZCAxODd0aCBhbW9uZyAxOTEgY291bnRyaWVzIGluIHRoZSBXSE8gaGVhbHRoIHN5c3RlbSBwZXJmb3JtYW5jZSByYW5raW5nLCBmYWNlcyBjaGFsbGVuZ2VzIHdpdGggUEhDIG93aW5nIHRvIGluYWRlcXVhdGUgaGVhbHRoIGluZnJhc3RydWN0dXJlLCBhIHNob3J0YWdlIG9mIGhlYWx0aGNhcmUgcHJvZmVzc2lvbmFscywgYW5kIHdlYWsgaGVhbHRoIHN5c3RlbXMsIGltcGVkaW5nIGl0cyBwcm9ncmVzcyB0b3dhcmQgYWNoaWV2aW5nIFVIQy4gSW4gYWNoaWV2aW5nIFVIQywgdGhlIGNvdW50cnkgc3RhcnRlZCBwcmlvcml0aXppbmcgdGhlIHJldml0YWxpemF0aW9uIG9mIFBIQyB0aHJvdWdoIGNvbGxhYm9yYXRpb24sIG1ha2luZyBncmVhdCBzdHJpZGVzIGluIGltcHJvdmluZyBQSEMsIHdpdGggaHVuZHJlZHMgb2YgZmFjaWxpdGllcyBiZWluZyByZW5vdmF0ZWQgYW5kIG1vcmUgaGVhbHRoY2FyZSBwcm9mZXNzaW9uYWxzIGJlaW5nIGhpcmVkIGFuZCB0cmFpbmVkLiBSZWNlbnRseSwgYWxtb3N0IDEwIG1pbGxpb24gY2hpbGRyZW4gaGF2ZSByZWNlaXZlZCBkaXBodGhlcmlhIGFuZCB0ZXRhbnVzIHZhY2NpbmVzIGluIE5pZ2VyaWEsIGFuZCA0Ljk1IG1pbGxpb24gZ2lybHMgYWdlZCA5IHRvIDE0IGluIDE1IHN0YXRlcyBoYXZlIHJlY2VpdmVkIEhQViB2YWNjaW5hdGlvbnMgdG8gcHJvdGVjdCB0aGVtIGZyb20gY2VydmljYWwgY2FuY2VyLiBUbyBiZXR0ZXIgYWNoaWV2ZSBVSEMsIE5pZ2VyaWEgbmVlZCB0byBzZWVrIGZvciBtb3JlIGNvbGxhYm9yYXRpb24gZnJvbSB0aGUgcHJpdmF0ZSBzZWN0b3IgYW5kIGFsc28sIHRoZSBicmFpbiBkcmFpbiBvZiBoZWFsdGhjYXJlIHdvcmtlcnMgc2hvdWxkIGJlIGFkZHJlc3NlZCBieSBwcm92aWRpbmcgYSBzdXN0YWluYWJsZSB3b3JraW5nIGVudmlyb25tZW50LiBEYXRhIGF2YWlsYWJpbGl0eSBzdGF0ZW1lbnQ6IERhdGEgc2hhcmluZyBpcyBub3QgYXBwbGljYWJsZSB0byB0aGlzIGFydGljbGUgYXMgbm8gbmV3IGRhdGEgd2VyZSBjcmVhdGVkIG9yIGFuYWx5emVkIGluIHRoaXMgc3R1ZHkuPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://africarxiv.ubuntunet.net/handle/1/1649",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-3",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2024-10-03T12:36:19.000Z",
+      "registered": "2024-10-03T12:36:21.000Z",
+      "published": "2024",
+      "updated": "2024-10-03T12:36:21.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "eqhh.hgpcvf", "type": "clients" } },
+      "provider": { "data": { "id": "eqhh", "type": "providers" } },
+      "media": { "data": { "id": "10.60763/africarxiv/1533", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

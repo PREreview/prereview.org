@@ -1,0 +1,137 @@
+{
+  "data": {
+    "id": "10.60763/africarxiv/10159",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.60763/africarxiv/10159",
+      "prefix": "10.60763",
+      "suffix": "africarxiv/10159",
+      "identifiers": [
+        { "identifier": "Examples and Counterexamples 8 (2025), Art. 100197", "identifierType": "citation" },
+        { "identifier": "2666-657X", "identifierType": "ISSN" }
+      ],
+      "alternateIdentifiers": [
+        {
+          "alternateIdentifierType": "citation",
+          "alternateIdentifier": "Examples and Counterexamples 8 (2025), Art. 100197"
+        },
+        { "alternateIdentifierType": "ISSN", "alternateIdentifier": "2666-657X" }
+      ],
+      "creators": [
+        {
+          "name": "Lemos-Silva, Márcia",
+          "nameType": "Personal",
+          "givenName": "Márcia",
+          "familyName": "Lemos-Silva",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Torres, Delfim F. M.",
+          "nameType": "Personal",
+          "givenName": "Delfim F. M.",
+          "familyName": "Torres",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [{ "lang": "", "title": "Logistic equation on time scales" }],
+      "publisher": "Elsevier",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        { "lang": "", "subject": "Logistic equation on time scales" },
+        { "lang": "", "subject": "Non-negative solutions" },
+        { "lang": "", "subject": "Dynamic consistence" },
+        { "lang": "", "subject": "Exact solution" },
+        { "lang": "", "subject": "Discrete and quantum logistic growth models" }
+      ],
+      "contributors": [
+        {
+          "name": "University, My",
+          "nameType": "Personal",
+          "givenName": "My",
+          "familyName": "University",
+          "affiliation": [],
+          "contributorType": "DataManager",
+          "nameIdentifiers": []
+        },
+        {
+          "name": "University, My",
+          "nameType": "Personal",
+          "givenName": "My",
+          "familyName": "University",
+          "affiliation": [],
+          "contributorType": "HostingInstitution",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2025-09-22", "dateType": "Accepted" },
+        { "date": "2025", "dateType": "Issued" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "JOUR",
+        "bibtex": "article",
+        "citeproc": "article-journal",
+        "schemaOrg": "ScholarlyArticle",
+        "resourceType": "Article",
+        "resourceTypeGeneral": "JournalArticle"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        { "rights": "Attribution-NonCommercial-NoDerivs 3.0 United States" },
+        { "rights": "http://creativecommons.org/licenses/by-nc-nd/3.0/us/" }
+      ],
+      "descriptions": [
+        {
+          "lang": "",
+          "description": "We propose a new dynamic logistic equation that, in contrast with the one available in the literature, preserves the non-negativity of its solutions, which is an essential property for biological meaning. We derive the exact solution of the proposed model and analyze its behavior on arbitrary time scales. Finally, we illustrate our results with concrete examples. Our key novelty is: the model’s ability to maintain positivity across general time scales and its dynamic consistency with the classical logistic equation.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6ZHNwYWNlPSJodHRwOi8vd3d3LmRzcGFjZS5vcmcveG1sbnMvZHNwYWNlL2RpbSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA3NjMvQUZSSUNBUlhJVi8xMDE1OTwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkxlbW9zLVNpbHZhLCBNw6FyY2lhPC9jcmVhdG9yTmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+VG9ycmVzLCBEZWxmaW0gRi4gTS48L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZSB4bWw6bGFuZz0iIj5Mb2dpc3RpYyBlcXVhdGlvbiBvbiB0aW1lIHNjYWxlczwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5FbHNldmllcjwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNTwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSIiPkxvZ2lzdGljIGVxdWF0aW9uIG9uIHRpbWUgc2NhbGVzPC9zdWJqZWN0PgogICAgPHN1YmplY3QgeG1sOmxhbmc9IiI+Tm9uLW5lZ2F0aXZlIHNvbHV0aW9uczwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSIiPkR5bmFtaWMgY29uc2lzdGVuY2U8L3N1YmplY3Q+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iIj5FeGFjdCBzb2x1dGlvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSIiPkRpc2NyZXRlIGFuZCBxdWFudHVtIGxvZ2lzdGljIGdyb3d0aCBtb2RlbHM8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8Y29udHJpYnV0b3JzPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iRGF0YU1hbmFnZXIiPgogICAgICA8Y29udHJpYnV0b3JOYW1lPk15IFVuaXZlcnNpdHk8L2NvbnRyaWJ1dG9yTmFtZT4KICAgIDwvY29udHJpYnV0b3I+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJIb3N0aW5nSW5zdGl0dXRpb24iPgogICAgICA8Y29udHJpYnV0b3JOYW1lPk15IFVuaXZlcnNpdHk8L2NvbnRyaWJ1dG9yTmFtZT4KICAgIDwvY29udHJpYnV0b3I+CiAgPC9jb250cmlidXRvcnM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkFjY2VwdGVkIj4yMDI1LTA5LTIyPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAyNTwvZGF0ZT4KICA8L2RhdGVzPgogIDxsYW5ndWFnZT5lbjwvbGFuZ3VhZ2U+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJKb3VybmFsQXJ0aWNsZSI+QXJ0aWNsZTwvcmVzb3VyY2VUeXBlPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJjaXRhdGlvbiI+RXhhbXBsZXMgYW5kIENvdW50ZXJleGFtcGxlcyA4ICgyMDI1KSwgQXJ0LiAxMDAxOTc8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgICA8YWx0ZXJuYXRlSWRlbnRpZmllciBhbHRlcm5hdGVJZGVudGlmaWVyVHlwZT0iaXNzbiI+MjY2Ni02NTdYPC9hbHRlcm5hdGVJZGVudGlmaWVyPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9InVyaSI+aHR0cHM6Ly9hZnJpY2FyeGl2LnVidW50dW5ldC5uZXQvaGFuZGxlLzEvMTA0MDE8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHM+QXR0cmlidXRpb24tTm9uQ29tbWVyY2lhbC1Ob0Rlcml2cyAzLjAgVW5pdGVkIFN0YXRlczwvcmlnaHRzPgogICAgPHJpZ2h0cz5odHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1uYy1uZC8zLjAvdXMvPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24geG1sOmxhbmc9IiIgZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+V2UgcHJvcG9zZSBhIG5ldyBkeW5hbWljIGxvZ2lzdGljIGVxdWF0aW9uIHRoYXQsIGluIGNvbnRyYXN0IHdpdGggdGhlIG9uZSBhdmFpbGFibGUgaW4gdGhlIGxpdGVyYXR1cmUsIHByZXNlcnZlcyB0aGUgbm9uLW5lZ2F0aXZpdHkgb2YgaXRzIHNvbHV0aW9ucywgd2hpY2ggaXMgYW4gZXNzZW50aWFsIHByb3BlcnR5IGZvciBiaW9sb2dpY2FsIG1lYW5pbmcuIFdlIGRlcml2ZSB0aGUgZXhhY3Qgc29sdXRpb24gb2YgdGhlIHByb3Bvc2VkIG1vZGVsIGFuZCBhbmFseXplIGl0cyBiZWhhdmlvciBvbiBhcmJpdHJhcnkgdGltZSBzY2FsZXMuIEZpbmFsbHksIHdlIGlsbHVzdHJhdGUgb3VyIHJlc3VsdHMgd2l0aCBjb25jcmV0ZSBleGFtcGxlcy4gT3VyIGtleSBub3ZlbHR5IGlzOiB0aGUgbW9kZWzigJlzIGFiaWxpdHkgdG8gbWFpbnRhaW4gcG9zaXRpdml0eSBhY3Jvc3MgZ2VuZXJhbCB0aW1lIHNjYWxlcyBhbmQgaXRzIGR5bmFtaWMgY29uc2lzdGVuY3kgd2l0aCB0aGUgY2xhc3NpY2FsIGxvZ2lzdGljIGVxdWF0aW9uLjwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CjwvcmVzb3VyY2U+",
+      "url": "https://africarxiv.ubuntunet.net/handle/1/10401",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2025-09-22T08:29:20.000Z",
+      "registered": "2025-09-22T08:29:23.000Z",
+      "published": "2025",
+      "updated": "2025-09-22T08:29:23.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "eqhh.hgpcvf", "type": "clients" } },
+      "provider": { "data": { "id": "eqhh", "type": "providers" } },
+      "media": { "data": { "id": "10.60763/africarxiv/10159", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

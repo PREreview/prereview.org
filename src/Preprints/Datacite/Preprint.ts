@@ -27,6 +27,7 @@ export const recordToPreprint = (
       record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
       (id._tag !== 'LifecycleJournalPreprintId' ||
         !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never)) &&
+      (id._tag !== 'AfricarxivUbuntunetPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
       (id._tag !== 'ArxivPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text')
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
@@ -175,6 +176,7 @@ const getAbstract = (
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
     AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
+    AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     ArxivPreprintId: () => Option.some('en' as const),
     LifecycleJournalPreprintId: () => Option.some('en' as const),

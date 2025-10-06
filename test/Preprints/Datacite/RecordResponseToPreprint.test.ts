@@ -10,6 +10,7 @@ import { rawHtml } from '../../../src/html.ts'
 import { recordToPreprint } from '../../../src/Preprints/Datacite/Preprint.ts'
 import {
   AfricarxivFigsharePreprintId,
+  AfricarxivUbuntunetPreprintId,
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
@@ -279,6 +280,27 @@ test.each([
       ),
     }),
   },
+  {
+    response: 'africarxiv',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>According to the WHO, more than 1 billion individuals globally risk becoming impoverished because their household's out-of-pocket medical expenses account for 10% or more of their income. A shift in health systems towards primary health care (PHC) as a means to achieving universal health coverage (UHC) in low- and middle-income nations is important in preventing 60 million deaths and adding 3.7 years to the average life expectancy. Nigeria, ranked 187th among 191 countries in the WHO health system performance ranking, faces challenges with PHC owing to inadequate health infrastructure, a shortage of healthcare professionals, and weak health systems, impeding its progress toward achieving UHC. In achieving UHC, the country started prioritizing the revitalization of PHC through collaboration, making great strides in improving PHC, with hundreds of facilities being renovated and more healthcare professionals being hired and trained. Recently, almost 10 million children have received diphtheria and tetanus vaccines in Nigeria, and 4.95 million girls aged 9 to 14 in 15 states have received HPV vaccinations to protect them from cervical cancer. To better achieve UHC, Nigeria need to seek for more collaboration from the private sector and also, the brain drain of healthcare workers should be addressed by providing a sustainable working environment. Data availability statement: Data sharing is not applicable to this article as no new data were created or analyzed in this study.</p>",
+        ),
+      },
+      authors: [{ name: 'Yisa Sarah Sokolabe' }, { name: 'Tolulope Ogunniyi' }],
+      id: new AfricarxivUbuntunetPreprintId({ value: Doi('10.60763/africarxiv/1533') }),
+      posted: Temporal.PlainYearMonth.from({ year: 2024, month: 8 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Primary Healthcare System Strengthening in Nigeria: A means to achieve Universal Health Coverage',
+        ),
+      },
+      url: new URL('https://africarxiv.ubuntunet.net/handle/1/1649'),
+    }),
+  },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -292,20 +314,24 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['figshare-africarxiv-journal-article', 'osf-file', 'osf-registration', 'zenodo-journal-article'])(
-  'returns a specific error for non-Preprint record (%s)',
-  response =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
-        Effect.andThen(recordToPreprint),
-        Effect.flip,
-      )
+test.each([
+  'africarxiv-journal-article',
+  'figshare-africarxiv-journal-article',
+  'osf-file',
+  'osf-registration',
+  'zenodo-journal-article',
+])('returns a specific error for non-Preprint record (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(recordToPreprint),
+      Effect.flip,
+    )
 
-      expect(actual._tag).toStrictEqual('NotAPreprint')
-    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+    expect(actual._tag).toStrictEqual('NotAPreprint')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
 test.each(['dryad', 'dryad-html', 'figshare'])(
