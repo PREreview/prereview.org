@@ -25,6 +25,7 @@ import type {
   OpenAuthorInvite,
 } from '../src/author-invite.ts'
 import type { CareerStage } from '../src/career-stage.ts'
+import * as Clubs from '../src/Clubs/index.ts'
 import * as Comments from '../src/Comments/index.ts'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/index.ts'
 import {
@@ -125,7 +126,6 @@ import type {
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { type ClubId, clubIds } from '../src/types/club-id.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId } from '../src/types/index.ts'
@@ -1196,7 +1196,7 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
     scopes: hashSet(nonEmptyString()),
   })
 
-export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)
+export const clubId = (): fc.Arbitrary<Clubs.ClubId> => constantFrom(...Clubs.clubIds)
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => Pseudonym(capitalCase(parts.join(' '))))

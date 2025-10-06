@@ -1,7 +1,7 @@
 import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { getClubName } from '../../club-details.ts'
+import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { Prereview } from '../../Prereview.ts'

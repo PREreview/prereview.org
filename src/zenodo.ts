@@ -34,7 +34,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { getClubByName, getClubName } from './club-details.ts'
+import { type ClubId, getClubByName, getClubName } from './Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { type Html, plainText, sanitizeHtml } from './html.ts'
@@ -64,7 +64,6 @@ import type { RecentPrereviews } from './reviews-page/index.ts'
 import { reviewMatch } from './routes.ts'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
-import type { ClubId } from './types/club-id.ts'
 import { isDomainId } from './types/domain.ts'
 import { type FieldId, isFieldId } from './types/field.ts'
 import { ProfileId } from './types/index.ts'

@@ -25,7 +25,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName } from '../src/club-details.ts'
+import { getClubName } from '../src/Clubs/index.ts'
 import { plainText, rawHtml } from '../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.ts'
 import * as Prereview from '../src/Prereview.ts'

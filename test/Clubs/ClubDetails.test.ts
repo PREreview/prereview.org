@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option } from 'effect'
-import * as _ from '../src/club-details.ts'
-import { OrcidId } from '../src/types/OrcidId.ts'
-import * as fc from './fc.ts'
+import * as _ from '../../src/Clubs/ClubDetails.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import * as fc from '../fc.ts'
 
 describe('getClubByName', () => {
   test.each([

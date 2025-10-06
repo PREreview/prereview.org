@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as _ from '../../src/types/club-id.ts'
+import * as _ from '../../src/Clubs/ClubId.ts'
 import * as fc from '../fc.ts'
 
 describe('ClubIdC', () => {

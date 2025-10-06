@@ -1,7 +1,7 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { getClubName } from '../club-details.ts'
+import { getClubName } from '../Clubs/index.ts'
 import { type Html, html, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import * as PreprintServers from '../PreprintServers/index.ts'
