@@ -356,7 +356,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Marcel LaFlamme', orcid: OrcidId('0000-0002-7489-4233') }],
   },
   force11: {
-    name: 'FORCE11',
+    name: 'Future of Research Communication and e-Scholarship (FORCE11)',
     description: html`
       <p>
         The PREreview Club at Future of Research Communication and e-Scholarship (FORCE11) publishes reviews of
