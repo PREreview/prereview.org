@@ -3,9 +3,9 @@ import { html, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import { showNotificationBanner } from '../notification-banner.ts'
 import type { Page } from '../page.ts'
-import type * as Router from '../Router/index.ts'
 import type { UserOnboarding } from '../user-onboarding.ts'
 import type { User } from '../user.ts'
+import type { PageUrls } from './ConstructPageUrls.ts'
 import type { FlashMessageSchema } from './FlashMessage.ts'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from './Response.ts'
 
@@ -21,7 +21,7 @@ export const toPage = ({
   message?: (typeof FlashMessageSchema.literals)[number]
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
-  pageUrls?: Router.PageUrls
+  pageUrls?: PageUrls
   user?: User | undefined
 }): Page =>
   response._tag === 'TwoUpPageResponse'

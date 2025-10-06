@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Array, Either, Schema } from 'effect'
-import * as _ from '../../src/Router/Http.ts'
+import * as _ from '../../src/Response/Http.ts'
 import * as fc from '../fc.ts'
 
 describe('LinkHeaderSchema', () => {

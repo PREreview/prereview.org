@@ -22,6 +22,7 @@ import { PeoplePage } from '../PeoplePage.ts'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
 import { DataStoreRedis } from '../Redis.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
+import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
@@ -29,9 +30,6 @@ import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
-import * as Response from './Response.ts'
-
-export type { PageUrls } from './ConstructPageUrls.ts'
 
 const MakeRoute = <A, E, R>(
   method: HttpMethod.HttpMethod,

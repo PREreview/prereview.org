@@ -4,7 +4,7 @@ import rtlDetect from 'rtl-detect'
 import { type Html, type PlainText, html, rawHtml } from './html.ts'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.ts'
 import assets from './manifest.json' with { type: 'json' }
-import type * as Router from './Router/index.ts'
+import type * as Response from './Response/index.ts'
 import * as Routes from './routes.ts'
 import { homeMatch } from './routes.ts'
 import type { UserOnboarding } from './user-onboarding.ts'
@@ -40,7 +40,7 @@ export interface Page {
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'expander-button.js' | 'skip-link.js'>>
   readonly user?: User
   readonly userOnboarding?: UserOnboarding
-  readonly pageUrls?: Router.PageUrls
+  readonly pageUrls?: Response.PageUrls
 }
 
 export const page = ({

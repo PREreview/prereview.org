@@ -5,12 +5,12 @@ import { format } from 'fp-ts-routing'
 import { Locale } from '../Context.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { ArxivPreprintId, BiorxivOrMedrxivPreprintId, ZenodoOrAfricarxivPreprintId } from '../Preprints/index.ts'
+import * as Response from '../Response/index.ts'
 import { RedirectResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { removedForNowPage } from './RemovedForNowPage.ts'
 import { removedPermanentlyPage } from './RemovedPermanentlyPage.ts'
-import * as Response from './Response.ts'
 
 const MakeRoute = <E, R>(
   method: HttpMethod.HttpMethod | '*',

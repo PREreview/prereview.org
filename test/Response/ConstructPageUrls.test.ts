@@ -8,8 +8,8 @@ import {
   UserSelectableLanguages,
   UserSelectableLocales,
 } from '../../src/locales/index.ts'
+import { constructPageUrls } from '../../src/Response/ConstructPageUrls.ts'
 import type { PageResponse } from '../../src/Response/index.ts'
-import { constructPageUrls } from '../../src/Router/ConstructPageUrls.ts'
 import * as fc from '../fc.ts'
 
 describe('constructPageUrls', () => {

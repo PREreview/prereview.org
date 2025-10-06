@@ -16,6 +16,7 @@ import { sendEmailWithNodemailer } from '../../nodemailer.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.ts'
+import type * as Response from '../../Response/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { Uuid } from '../../types/index.ts'
@@ -53,7 +54,6 @@ import {
 } from '../../write-review/index.ts'
 import { createRecordOnZenodo } from '../../zenodo.ts'
 import * as Zenodo from '../../Zenodo/index.ts'
-import type * as Response from '../Response.ts'
 import type { Env } from './index.ts'
 
 export const WriteReviewRouter = pipe(

@@ -5,7 +5,6 @@ import { FlashMessage, Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import { OrcidOauth } from '../OrcidOauth.ts'
 import { PublicUrl } from '../public-url.ts'
-import { toPage, type ForceLogInResponse, type Response } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { TemplatePage } from '../TemplatePage.ts'
@@ -14,8 +13,8 @@ import { UserOnboardingService } from '../user-onboarding.ts'
 import { LoggedInUser, UserSchema } from '../user.ts'
 import * as ConstructPageUrls from './ConstructPageUrls.ts'
 import * as Http from './Http.ts'
-
-export type { Response } from '../Response/index.ts'
+import { toPage } from './Page.ts'
+import type { ForceLogInResponse, Response } from './Response.ts'
 
 export const toHttpServerResponse = (
   response: Response,

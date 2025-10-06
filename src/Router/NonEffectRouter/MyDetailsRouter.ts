@@ -39,11 +39,11 @@ import {
   verifyContactEmailAddress,
 } from '../../my-details-page/index.ts'
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import type * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { SlackUserId } from '../../slack-user-id.ts'
 import { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
-import type * as Response from '../Response.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(

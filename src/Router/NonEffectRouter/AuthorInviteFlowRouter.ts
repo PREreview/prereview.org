@@ -20,11 +20,11 @@ import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
+import type * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { Uuid } from '../../types/index.ts'
 import { addAuthorToRecordOnZenodo } from '../../zenodo.ts'
 import * as Zenodo from '../../Zenodo/index.ts'
-import type * as Response from '../Response.ts'
 import type { Env } from './index.ts'
 
 export const AuthorInviteFlowRouter = pipe(
