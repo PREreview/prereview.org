@@ -3,9 +3,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { toUrl } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
-import * as _ from '../../src/OpenAlex/Work.ts'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as EffectTest from '../EffectTest.ts'
+import * as _ from '../../../src/ExternalApis/OpenAlex/Work.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as EffectTest from '../../EffectTest.ts'
 import * as fc from './fc.ts'
 
 describe('getWorkByDoi', () => {
