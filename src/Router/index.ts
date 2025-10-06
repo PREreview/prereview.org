@@ -1,5 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
+import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubsPage } from '../ClubsPage.ts'
@@ -10,6 +10,7 @@ import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { EdiaStatementPage } from '../EdiaStatementPage.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { FundingPage } from '../FundingPage.ts'
+import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
@@ -466,5 +467,14 @@ export const Router = pipe(
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
   Effect.catchTag('RouteNotFound', () =>
     Effect.interruptible(Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
+  ),
+  Effect.catchAllCause(cause =>
+    pipe(
+      Effect.logFatal('Failed to create response'),
+      Effect.annotateLogs('cause', Cause.pretty(cause, { renderErrorCause: true })),
+      Effect.andThen(HavingProblemsPage),
+      Effect.andThen(Response.toHttpServerResponse),
+      Effect.interruptible,
+    ),
   ),
 )
