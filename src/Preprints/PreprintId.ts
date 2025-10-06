@@ -300,7 +300,6 @@ export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['va
 
 export const parsePreprintDoi: (input: string) => Option.Option<IndeterminatePreprintIdWithDoi> = flow(
   Doi.parse,
-  FptsToEffect.option,
   Option.filter(isPreprintDoi),
   Option.map(fromPreprintDoi),
 )
