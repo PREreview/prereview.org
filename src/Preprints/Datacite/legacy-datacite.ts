@@ -14,7 +14,6 @@ import { sanitizeHtml } from '../../html.ts'
 import { OrcidId } from '../../types/index.ts'
 import * as Preprint from '../Preprint.ts'
 import {
-  AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
   ArcadiaSciencePreprintId,
   type IndeterminatePreprintId,
@@ -22,7 +21,7 @@ import {
   PsychArchivesPreprintId,
 } from '../PreprintId.ts'
 
-const dataciteDoiPrefixes = ['6084', '23668', '57844', '60763'] as const
+const dataciteDoiPrefixes = ['23668', '57844', '60763'] as const
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 
@@ -110,7 +109,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with(
-                { type: P.union('AfricarxivFigsharePreprintId', 'AfricarxivUbuntunetPreprintId'), text: P.select() },
+                { type: P.union('AfricarxivUbuntunetPreprintId'), text: P.select() },
                 detectLanguageFrom('en', 'fr'),
               )
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
@@ -137,7 +136,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with(
-                { type: P.union('AfricarxivFigsharePreprintId', 'AfricarxivUbuntunetPreprintId'), text: P.select() },
+                { type: P.union('AfricarxivUbuntunetPreprintId'), text: P.select() },
                 detectLanguageFrom('en', 'fr'),
               )
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
@@ -172,13 +171,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
       doi: D.fromRefinement(hasRegistrant('60763'), 'DOI'),
     }),
     D.map(work => new AfricarxivUbuntunetPreprintId({ value: work.doi })),
-  ),
-  pipe(
-    D.fromStruct({
-      doi: D.fromRefinement(hasRegistrant('6084'), 'DOI'),
-      publisher: D.literal('AfricArXiv'),
-    }),
-    D.map(work => new AfricarxivFigsharePreprintId({ value: work.doi })),
   ),
   pipe(
     D.fromStruct({
