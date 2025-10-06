@@ -1,8 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Tuple } from 'effect'
+import { Option, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as _ from '../../src/Router/NonEffectRouter/legacy-routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -24,7 +23,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'RedirectResponse',
             status: StatusCodes.MovedPermanently,
             location: format(profileMatch.formatter, { profile }),
@@ -44,7 +43,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.NotFound,
             title: expect.anything(),
@@ -66,7 +65,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
@@ -94,7 +93,7 @@ describe('legacyRoutes', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
+        Option.some({
           _tag: 'RedirectResponse',
           status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
@@ -113,7 +112,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.NotFound,
             title: expect.anything(),
@@ -135,7 +134,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
@@ -166,7 +165,7 @@ describe('legacyRoutes', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
+        Option.some({
           _tag: 'RedirectResponse',
           status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
@@ -186,7 +185,7 @@ describe('legacyRoutes', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
+        Option.some({
           _tag: 'PageResponse',
           status: StatusCodes.NotFound,
           title: expect.anything(),
@@ -208,7 +207,7 @@ describe('legacyRoutes', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
+        Option.some({
           _tag: 'PageResponse',
           status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
@@ -236,7 +235,7 @@ describe('legacyRoutes', () => {
       })()
 
       expect(actual).toStrictEqual(
-        E.right({
+        Option.some({
           _tag: 'RedirectResponse',
           status: StatusCodes.MovedPermanently,
           location: format(preprintReviewsMatch.formatter, { id }),
@@ -255,7 +254,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.NotFound,
             title: expect.anything(),
@@ -277,7 +276,7 @@ describe('legacyRoutes', () => {
         })()
 
         expect(actual).toStrictEqual(
-          E.right({
+          Option.some({
             _tag: 'PageResponse',
             status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),

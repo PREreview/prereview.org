@@ -4,7 +4,6 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import httpErrors from 'http-errors'
 import type * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
@@ -66,20 +65,15 @@ export const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | Redi
   concatAll(P.getParserMonoid()),
 )
 
-export const legacyRoutes: (
-  url: string,
-) => RTE.ReaderTaskEither<
-  LegacyEnv,
-  httpErrors.HttpError<typeof StatusCodes.NotFound>,
-  PageResponse | RedirectResponse
-> = flow(
-  Option.liftThrowable(url => P.Route.parse(url)),
-  Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
-  Option.match({
-    onNone: () => RTE.left(new httpErrors.NotFound()),
-    onSome: ([response]) => RTE.rightReaderTask(response),
-  }),
-)
+export const legacyRoutes: (url: string) => RT.ReaderTask<LegacyEnv, Option.Option<PageResponse | RedirectResponse>> =
+  flow(
+    Option.liftThrowable(url => P.Route.parse(url)),
+    Option.andThen(FptsToEffect.optionK(legacyRouter.run)),
+    Option.match({
+      onNone: () => RT.of(Option.none()),
+      onSome: ([response]) => pipe(response, RT.map(Option.some)),
+    }),
+  )
 
 const redirectToPreprintReviews = flow(
   getPreprintIdFromUuid,
