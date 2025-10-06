@@ -1,6 +1,5 @@
 import { Array, Boolean, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
 import { type Html, type PlainText, html, rawHtml } from './html.ts'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.ts'
@@ -43,12 +42,6 @@ export interface Page {
   readonly userOnboarding?: UserOnboarding
   readonly pageUrls?: Router.PageUrls
 }
-
-export interface TemplatePageEnv {
-  templatePage: (page: Page) => Html
-}
-
-export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
 
 export const page = ({
   page: { locale, title, description, type, content, skipLinks = [], current, js = [], user, userOnboarding, pageUrls },
