@@ -641,6 +641,24 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2024-11-04'),
     leads: [{ name: 'Kornelija Aleksejeva', orcid: OrcidId('0009-0004-3328-1862') }],
   },
+  'padua-biomedical-sciences': {
+    name: 'PhD Program in Biomedical Sciences, University of Padua',
+    description: html`
+      <p>
+        The Graduate School in Biomedical Sciences at the University of Padua offers cutting-edge training and research
+        opportunities across a broad spectrum of biomedical disciplines. The School trains early-career researcher in
+        molecular, cellular, and clinical sciences, fostering international collaboration and open science. Its mission
+        is to prepare the next generation of scientists.
+      </p>
+      <p>
+        The PREreview Club engages PhD students in collaborative preprint peer review, helping them develop critical
+        reading, constructive feedback, and scholarly communication skills. This initiative complements the School’s
+        Journal Club, while contributing openly to the scientific community through published community reviews.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2025-10-06'),
+    leads: [{ name: 'Domenico Azarnia Tehran', orcid: OrcidId('0000-0001-8955-7240') }],
+  },
   'plant-biotechnology': {
     name: 'Plant Biotechnology Club',
     description: html`
