@@ -7,7 +7,6 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error.ts'
@@ -27,7 +26,12 @@ import { connectSlackPage } from './connect-slack-page.ts'
 import { failureMessage } from './failure-message.ts'
 
 export interface SlackOAuthEnv {
-  slackOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
+  slackOauth: {
+    readonly authorizeUrl: URL
+    readonly clientId: string
+    readonly clientSecret: string
+    readonly tokenUrl: URL
+  }
 }
 
 const authorizationRequestUrl = (state: string) =>

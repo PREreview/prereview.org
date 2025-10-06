@@ -9,7 +9,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
@@ -32,6 +31,16 @@ import type { Pseudonym } from '../types/Pseudonym.ts'
 import { SessionId, newSessionForUser } from '../user.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
 import { failureMessage } from './failure-message.ts'
+
+interface OAuthEnv {
+  readonly oauth: {
+    readonly authorizeUrl: URL
+    readonly clientId: string
+    readonly clientSecret: string
+    readonly redirectUri: URL
+    readonly tokenUrl: URL
+  }
+}
 
 export interface OrcidOAuthEnv {
   orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>

@@ -4,7 +4,6 @@ import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import type { SessionEnv } from 'hyper-ts-session'
 import type { Decoder } from 'io-ts/lib/Decoder.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { Encoder } from 'io-ts/lib/Encoder.js'
@@ -128,6 +127,10 @@ export interface OrcidTokenStoreEnv {
 
 export interface ReviewRequestStoreEnv {
   reviewRequestStore: Keyv
+}
+
+export interface SessionStoreEnv {
+  sessionStore: Keyv
 }
 
 export interface SlackUserIdStoreEnv {
@@ -469,7 +472,7 @@ export const addToSession = (sessionId: string, key: string, value: Json) =>
     RTE.chain(session =>
       setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: value }),
     ),
-    RTE.local((env: Pick<SessionEnv, 'sessionStore'> & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
   )
 
 export const popFromSession = (sessionId: string, key: string) =>
@@ -485,7 +488,7 @@ export const popFromSession = (sessionId: string, key: string) =>
       setKey(EN.id<string>(), EN.id<Record<string, unknown>>())(sessionId, { ...session, [key]: undefined }),
     ),
     RTE.map(({ value }) => value),
-    RTE.local((env: Pick<SessionEnv, 'sessionStore'> & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
+    RTE.local((env: SessionStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.sessionStore })),
   )
 
 async function toArray<T>(asyncIterator: AsyncIterable<T>): Promise<ReadonlyArray<T>> {
