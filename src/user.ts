@@ -1,8 +1,7 @@
-import { Context, Data, Effect, flow, Option, Record, Schema } from 'effect'
+import { Context, Data, Effect, flow, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as FptsToEffect from './FptsToEffect.ts'
 import { NonEmptyString, OrcidId, Pseudonym } from './types/index.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 
@@ -27,11 +26,6 @@ export const UserSchema = Schema.Struct({
 })
 
 export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => Record.singleton('user', user))
-
-export const getUserFromSession: (session: JsonRecord) => Option.Option<User> = flow(
-  Record.get<string>('user'),
-  Option.flatMap(flow(FptsToEffect.eitherK(UserC.decode), Option.getRight)),
-)
 
 export const EnsureUserIsLoggedIn: Effect.Effect<User, UserIsNotLoggedIn> = Effect.mapError(
   Effect.serviceOptional(LoggedInUser),
