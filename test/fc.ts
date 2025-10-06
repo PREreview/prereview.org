@@ -1028,7 +1028,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDa
   )
 
 export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintId> =>
-  fc.oneof(africarxivUbuntunetPreprintId(), arcadiaSciencePreprintId(), psychArchivesPreprintId())
+  fc.oneof(arcadiaSciencePreprintId(), psychArchivesPreprintId())
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
