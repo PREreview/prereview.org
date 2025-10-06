@@ -8,7 +8,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
 import { withEnv } from './Fpts.ts'
 
 export interface EffectEnv<R> {
@@ -23,17 +22,6 @@ export const either: <R, L>(either: Either.Either<R, L>) => E.Either<L, R> = Eit
 export const ord = <A>(order: Order.Order<A>): Ord.Ord<A> => Ord.fromCompare(order)
 
 export const eq = <A>(equivalence: Equivalence.Equivalence<A>): Eq.Eq<A> => Eq.fromEquals(equivalence)
-
-export const toReaderMiddlewareK =
-  <A extends ReadonlyArray<unknown>, B, I, E, R>(
-    f: (...a: A) => Effect.Effect<B, E, R>,
-  ): ((...a: A) => RM.ReaderMiddleware<EffectEnv<R>, I, I, E, B>) =>
-  (...a) =>
-    toReaderMiddleware(f(...a))
-
-export const toReaderMiddleware = <A, I, E, R>(
-  effect: Effect.Effect<A, E, R>,
-): RM.ReaderMiddleware<EffectEnv<R>, I, I, E, A> => RM.fromReaderTaskEither(toReaderTaskEither(effect))
 
 export const toReaderTaskEitherK =
   <A extends ReadonlyArray<unknown>, B, E, R>(
