@@ -87,7 +87,6 @@
     "@typescript/analyze-trace": "^0.10.1",
     "babel-loader": "^10.0.0",
     "cdigit": "^4.0.2",
-    "cookie-signature": "^1.2.2",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
     "del-cli": "^7.0.0",
