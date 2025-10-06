@@ -1,19 +1,12 @@
-import { Array, Schema, Struct, flow, pipe } from 'effect'
-import * as R from 'fp-ts/lib/Reader.js'
-import { type HeadersOpen, MediaType, type ResponseEnded, type StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware.js'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware.js'
-import * as D from 'io-ts/lib/Decoder.js'
-import { P, match } from 'ts-pattern'
-import { deleteFlashMessage, getFlashMessage } from './flash-message.ts'
+import { Array, Schema } from 'effect'
+import { match } from 'ts-pattern'
 import { type Html, html, rawHtml } from './html.ts'
 import { type SupportedLocale, translate } from './locales/index.ts'
 import { showNotificationBanner } from './notification-banner.ts'
-import { type Page, type TemplatePageEnv, templatePage } from './page.ts'
-import type { PublicUrlEnv } from './public-url.ts'
+import type { Page } from './page.ts'
 import type * as Router from './Router/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
-import { type GetUserOnboardingEnv, type UserOnboarding, maybeGetUserOnboarding } from './user-onboarding.ts'
+import type { UserOnboarding } from './user-onboarding.ts'
 import type { User } from './user.ts'
 
 export type Response =
@@ -134,21 +127,6 @@ export const ForceLogInResponse = (args: Omit<ForceLogInResponse, '_tag'>): Forc
   ...args,
 })
 
-export function handleResponse({
-  response,
-  user,
-  locale,
-}: {
-  response: PageResponse | RedirectResponse
-  user?: User
-  locale: SupportedLocale
-}): RM.ReaderMiddleware<GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> {
-  return match({ response, user, locale })
-    .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
-    .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
-    .exhaustive()
-}
-
 export const FlashMessageSchema = Schema.Literal(
   'logged-out',
   'logged-in',
@@ -165,8 +143,6 @@ export const FlashMessageSchema = Schema.Literal(
   'avatar-removed',
 )
 
-const FlashMessageD = D.literal(...FlashMessageSchema.literals)
-
 export const toPage = ({
   locale,
   message,
@@ -176,7 +152,7 @@ export const toPage = ({
   user,
 }: {
   locale: SupportedLocale
-  message?: D.TypeOf<typeof FlashMessageD>
+  message?: (typeof FlashMessageSchema.literals)[number]
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
   pageUrls?: Router.PageUrls
@@ -238,98 +214,7 @@ export const toPage = ({
         userOnboarding,
       }
 
-export const handlePageResponse = ({
-  response,
-  user,
-  locale,
-}: {
-  response: PageResponse
-  user?: User
-  locale: SupportedLocale
-}): RM.ReaderMiddleware<
-  GetUserOnboardingEnv & PublicUrlEnv & TemplatePageEnv,
-  StatusOpen,
-  ResponseEnded,
-  never,
-  void
-> =>
-  pipe(
-    RM.of({}),
-    RM.apS('locale', RM.of(locale)),
-    RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
-    RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
-    RM.apSW(
-      'canonical',
-      RM.rightReader(
-        match(response.canonical)
-          .with(P.string, canonical =>
-            R.asks(
-              ({ publicUrl }: PublicUrlEnv) =>
-                new URL(`${publicUrl.origin}${encodeURI(canonical).replace(/^([^/])/, '/$1')}`).href,
-            ),
-          )
-          .with(undefined, R.of)
-          .exhaustive(),
-      ),
-    ),
-    RM.bindW(
-      'body',
-      RM.fromReaderK(({ locale, userOnboarding, message }) =>
-        templatePage(toPage({ locale, userOnboarding, message, response, user })),
-      ),
-    ),
-    RM.ichainFirst(() => RM.status(response.status)),
-    RM.ichainFirst(() =>
-      !StatusCodes.isCacheable(response.status)
-        ? RM.header('Cache-Control', 'no-store, must-revalidate')
-        : pipe(
-            user ? RM.header('Cache-Control', 'no-cache, private') : RM.header('Cache-Control', 'no-cache, public'),
-            RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
-          ),
-    ),
-    RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
-    RM.ichainFirst(props =>
-      RM.fromMiddleware(
-        match(props.canonical)
-          .with(P.string, canonical => M.header('Link', `<${canonical}>; rel="canonical"`))
-          .with(undefined, M.of<HeadersOpen>)
-          .exhaustive(),
-      ),
-    ),
-    RM.ichainFirst(() =>
-      RM.fromMiddleware(
-        match(response.allowRobots)
-          .with(false, () => M.header('X-Robots-Tag', 'none, noarchive'))
-          .with(undefined, M.of<HeadersOpen>)
-          .exhaustive(),
-      ),
-    ),
-    RM.ichainMiddlewareK(flow(Struct.get('body'), sendHtml)),
-  )
-
-const handleRedirectResponse = ({
-  response,
-  user,
-}: {
-  response: RedirectResponse
-  user?: User
-}): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
-  pipe(
-    M.status(response.status),
-    M.ichain(() =>
-      !StatusCodes.isCacheable(response.status)
-        ? M.header('Cache-Control', 'no-store, must-revalidate')
-        : user
-          ? M.header('Cache-Control', 'no-cache, private')
-          : M.header('Cache-Control', 'no-cache, public'),
-    ),
-    M.ichain(() => M.header('Vary', 'Cookie')),
-    M.ichain(() => M.header('Location', response.location.toString())),
-    M.ichain(() => M.closeHeaders()),
-    M.ichain(() => M.end()),
-  )
-
-function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: SupportedLocale) {
+function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
   return match(message)
     .with('logged-out', () =>
       showNotificationBanner({
@@ -423,14 +308,6 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>, locale: Suppo
       }),
     )
     .exhaustive()
-}
-
-function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, never, void> {
-  return pipe(
-    M.contentType(MediaType.textHTML),
-    M.ichainFirst(() => M.closeHeaders()),
-    M.ichain(() => M.send(html.toString())),
-  )
 }
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742
