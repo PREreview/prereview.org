@@ -13,19 +13,9 @@ import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
-import type { Request as ExpressRequest, Response as ExpressResponse } from 'express'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
-import type * as H from 'hyper-ts'
-import { ExpressConnection } from 'hyper-ts/lib/express.js'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
-import {
-  type Body,
-  type Headers as RequestHeaders,
-  type RequestMethod,
-  createRequest,
-  createResponse,
-} from 'node-mocks-http'
 import { Uuid } from 'uuid-ts'
 import type {
   AssignedAuthorInvite,
@@ -1358,44 +1348,6 @@ export const fetchResponse = ({
         },
       )
     })
-
-export const request = ({
-  body,
-  headers,
-  method,
-  path,
-}: {
-  body?: fc.Arbitrary<Body>
-  headers?: fc.Arbitrary<RequestHeaders>
-  method?: fc.Arbitrary<RequestMethod>
-  path?: fc.Arbitrary<string>
-} = {}): fc.Arbitrary<ExpressRequest> =>
-  fc
-    .record({
-      body: body ?? constant(undefined),
-      headers: headers ?? constant({}),
-      method: method ?? requestMethod(),
-      url: path
-        ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href)
-        : fc.webUrl({ withQueryParameters: true }),
-    })
-    .map(args =>
-      Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
-    )
-
-export const response = (): fc.Arbitrary<ExpressResponse> =>
-  fc
-    .record({ req: request() })
-    .map(args =>
-      Object.defineProperties(createResponse(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
-    )
-
-export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>): fc.Arbitrary<ExpressConnection<S>> =>
-  fc.tuple(request(...args), response()).map(args =>
-    Object.defineProperties(new ExpressConnection(...args), {
-      [fc.toStringMethod]: { value: () => fc.stringify(args[0]) },
-    }),
-  )
 
 export const nonEmptyArray = <T>(
   arb: fc.Arbitrary<T>,
