@@ -1,39 +1,23 @@
-import { FetchHttpClient } from '@effect/platform'
 import { Effect, pipe } from 'effect'
 import { Datacite } from '../../ExternalApis/index.ts'
-import * as FptsToEffect from '../../FptsToEffect.ts'
 import * as Preprint from '../Preprint.ts'
-import type { IndeterminatePreprintId } from '../PreprintId.ts'
-import * as LegacyDatacite from './legacy-datacite.ts'
 import { recordToPreprint } from './Preprint.ts'
-import { type IndeterminateDatacitePreprintId, isDatacitePreprintId as isDatacitePreprintId_ } from './PreprintId.ts'
+import type { IndeterminateDatacitePreprintId } from './PreprintId.ts'
 
-export const isDatacitePreprintId = (
-  id: IndeterminatePreprintId,
-): id is IndeterminateDatacitePreprintId | LegacyDatacite.IndeterminateDatacitePreprintId =>
-  isDatacitePreprintId_(id) || (id._tag !== 'PhilsciPreprintId' && LegacyDatacite.isDatacitePreprintDoi(id.value))
+export { isDatacitePreprintId } from './PreprintId.ts'
 
 export const getPreprintFromDatacite = (
-  id: IndeterminateDatacitePreprintId | LegacyDatacite.IndeterminateDatacitePreprintId,
+  id: IndeterminateDatacitePreprintId,
 ): Effect.Effect<
   Preprint.Preprint,
   Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
-  Datacite.Datacite | FetchHttpClient.Fetch
+  Datacite.Datacite
 > =>
-  Effect.if(LegacyDatacite.isDatacitePreprintDoi(id.value), {
-    onTrue: () =>
-      Effect.gen(function* () {
-        const fetch = yield* FetchHttpClient.Fetch
-
-        return yield* FptsToEffect.readerTaskEither(LegacyDatacite.getPreprintFromDatacite(id as never), { fetch })
-      }),
-    onFalse: () =>
-      pipe(
-        Datacite.getRecord(id.value),
-        Effect.andThen(recordToPreprint),
-        Effect.catchTags({
-          RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),
-          RecordIsUnavailable: error => new Preprint.PreprintIsUnavailable({ cause: error }),
-        }),
-      ),
-  })
+  pipe(
+    Datacite.getRecord(id.value),
+    Effect.andThen(recordToPreprint),
+    Effect.catchTags({
+      RecordIsNotFound: error => new Preprint.PreprintIsNotFound({ cause: error }),
+      RecordIsUnavailable: error => new Preprint.PreprintIsUnavailable({ cause: error }),
+    }),
+  )

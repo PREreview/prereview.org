@@ -56,7 +56,6 @@ import type { OrcidToken } from '../src/orcid-token.ts'
 import * as Personas from '../src/Personas/index.ts'
 import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.ts'
 import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.ts'
-import type { DatacitePreprintId as LegacyDatacitePreprintId } from '../src/Preprints/Datacite/legacy-datacite.ts'
 import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.ts'
 import {
   AdvancePreprintId,
@@ -581,11 +580,8 @@ export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value'] 
 export const legacyCrossrefPreprintDoi = (): fc.Arbitrary<LegacyCrossrefPreprintId['value']> =>
   legacyCrossrefPreprintId().map(id => id.value)
 
-export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value'] | LegacyDatacitePreprintId['value']> =>
+export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
-
-export const legacyDatacitePreprintDoi = (): fc.Arbitrary<LegacyDatacitePreprintId['value']> =>
-  legacyDatacitePreprintId().map(id => id.value)
 
 export const japanLinkCenterPreprintDoi = (): fc.Arbitrary<JapanLinkCenterPreprintId['value']> =>
   japanLinkCenterPreprintId().map(id => id.value)
@@ -1015,7 +1011,7 @@ export const legacyCrossrefPreprintId = (): fc.Arbitrary<LegacyCrossrefPreprintI
     techrxivPreprintId(),
   )
 
-export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDatacitePreprintId> =>
+export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(
     africarxivFigsharePreprintId(),
     africarxivUbuntunetPreprintId(),
@@ -1026,11 +1022,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDa
     osfPreprintId(),
     psychArchivesPreprintId(),
     zenodoPreprintId(),
-    legacyDatacitePreprintId(),
   )
-
-export const legacyDatacitePreprintId = (): fc.Arbitrary<LegacyDatacitePreprintId> =>
-  fc.oneof(arcadiaSciencePreprintId())
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
