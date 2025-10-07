@@ -71,7 +71,7 @@ RUN npm run build:assets && npm run build:app
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.55.1-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.56.0-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .
