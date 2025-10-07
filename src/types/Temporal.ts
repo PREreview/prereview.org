@@ -1,9 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Clock, Effect, type Order, ParseResult, Schema } from 'effect'
 
+export type Instant = Temporal.Instant
 export type PlainDate = Temporal.PlainDate
 
-export const { PlainDate } = Temporal
+export const { Instant, PlainDate } = Temporal
 
 export const currentInstant = Effect.andThen(Clock.currentTimeMillis, millis =>
   Temporal.Instant.fromEpochMilliseconds(millis),

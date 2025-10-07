@@ -1,18 +1,13 @@
-import type { Temporal } from '@js-temporal/polyfill'
-import { flow, Function, pipe } from 'effect'
-import type { Json } from 'fp-ts/lib/Json.js'
+import { Either, flow, Function, pipe, Schema } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
-import * as E from 'io-ts/lib/Encoder.js'
-import safeStableStringify from 'safe-stable-stringify'
 import type { CareerStage } from '../career-stage.ts'
 import type { Location } from '../location.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
-import type { OrcidId } from '../types/OrcidId.ts'
+import { NonEmptyString, OrcidId, Temporal } from '../types/index.ts'
 
 export interface User {
-  orcid: OrcidId
+  orcid: OrcidId.OrcidId
   timestamp: Temporal.Instant
   careerStage?: CareerStage['value'] | undefined
   location?: Location['value'] | undefined
@@ -25,34 +20,33 @@ export interface GetUsersEnv {
 const getUsers = (): RTE.ReaderTaskEither<GetUsersEnv, 'unavailable', ReadonlyArray<User>> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getUsers }) => getUsers()))
 
-const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
-
-const StringE: E.Encoder<string, string | { toString: () => string }> = { encode: String }
-
-const OrcidE: E.Encoder<string, OrcidId> = StringE
-
-const InstantE: E.Encoder<string, Temporal.Instant> = StringE
-
-const ReadonlyArrayE = flow(E.array, E.readonly)
-
-const UserE = pipe(
-  E.struct({
-    orcid: OrcidE,
-    timestamp: InstantE,
-  }),
-  E.intersect(E.partial({ careerStage: E.id<CareerStage['value']>(), location: E.id<Location['value']>() })),
-)
-
-const UsersE = ReadonlyArrayE(UserE)
+const UserSchema = Schema.Struct({
+  orcid: OrcidId.OrcidIdSchema,
+  timestamp: Temporal.InstantSchema,
+  careerStage: Schema.optional(Schema.Literal('early', 'mid', 'late')),
+  location: Schema.optional(NonEmptyString.NonEmptyStringSchema),
+})
 
 const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
-    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.chainEitherK(env =>
+      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
+    ),
     RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
 
 export const usersData = (
   authorizationHeader: string,
 ): RTE.ReaderTaskEither<ScietyListEnv & GetUsersEnv, 'forbidden' | 'unavailable', string> =>
-  pipe(authorizationHeader, isAllowed, RTE.chainW(getUsers), RTE.map(UsersE.encode), RTE.map(JsonE.encode))
+  pipe(
+    authorizationHeader,
+    isAllowed,
+    RTE.chainW(getUsers),
+    RTE.chainEitherKW(
+      flow(
+        Schema.encodeEither(Schema.parseJson(Schema.Array(UserSchema))),
+        Either.mapLeft(() => 'unavailable' as const),
+      ),
+    ),
+  )
