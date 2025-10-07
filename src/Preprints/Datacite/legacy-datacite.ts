@@ -8,19 +8,13 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import * as StatusCodes from '../../StatusCodes.ts'
-import { detectLanguageFrom } from '../../detect-language.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { sanitizeHtml } from '../../html.ts'
 import { OrcidId } from '../../types/index.ts'
 import * as Preprint from '../Preprint.ts'
-import {
-  ArcadiaSciencePreprintId,
-  type IndeterminatePreprintId,
-  type PreprintId,
-  PsychArchivesPreprintId,
-} from '../PreprintId.ts'
+import { ArcadiaSciencePreprintId, type IndeterminatePreprintId, type PreprintId } from '../PreprintId.ts'
 
-const dataciteDoiPrefixes = ['23668', '57844'] as const
+const dataciteDoiPrefixes = ['57844'] as const
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 
@@ -38,7 +32,6 @@ export const getPreprintFromDatacite = flow(
   RTE.mapLeft(error =>
     match(error)
       .with({ status: StatusCodes.NotFound }, response => new Preprint.PreprintIsNotFound({ cause: response }))
-      .with('not a preprint', () => new Preprint.NotAPreprint({}))
       .otherwise(error => new Preprint.PreprintIsUnavailable({ cause: error })),
   ),
 )
@@ -46,15 +39,6 @@ export const getPreprintFromDatacite = flow(
 function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint.Preprint> {
   return pipe(
     E.Do,
-    E.filterOrElse(
-      () =>
-        work.types.resourceType?.toLowerCase() === 'preprint' ||
-        work.types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
-        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('60763')(work.doi)) ||
-        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668', '60763')(work.doi)) ||
-        hasRegistrant('57844')(work.doi),
-      () => 'not a preprint',
-    ),
     E.apSW(
       'authors',
       pipe(
@@ -108,7 +92,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
-              .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
           ),
         ),
@@ -131,7 +114,6 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .returnType<Option.Option<LanguageCode>>()
               .with({ type: 'ArcadiaSciencePreprintId' }, () => Option.some('en' as const))
-              .with({ type: 'PsychArchivesPreprintId', text: P.select() }, detectLanguageFrom('de', 'en'))
               .exhaustive(),
           ),
         ),
@@ -163,13 +145,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
       publisher: D.literal('Arcadia Science'),
     }),
     D.map(work => new ArcadiaSciencePreprintId({ value: work.doi })),
-  ),
-  pipe(
-    D.fromStruct({
-      doi: D.fromRefinement(hasRegistrant('23668'), 'DOI'),
-      publisher: D.literal('PsychArchives', 'Leibniz Institut für Psychologie (ZPID)'),
-    }),
-    D.map(work => new PsychArchivesPreprintId({ value: work.doi })),
   ),
 )
 
