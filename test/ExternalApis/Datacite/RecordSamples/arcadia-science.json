@@ -1,0 +1,295 @@
+{
+  "data": {
+    "id": "10.57844/arcadia-085e-3ecf",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.57844/arcadia-085e-3ecf",
+      "prefix": "10.57844",
+      "suffix": "arcadia-085e-3ecf",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Avasthi, Prachee",
+          "nameType": "Personal",
+          "givenName": "Prachee",
+          "familyName": "Avasthi",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-1688-722X",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Bigge, Brae M.",
+          "nameType": "Personal",
+          "givenName": "Brae M.",
+          "familyName": "Bigge",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-0907-4597",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Braverman, Ben",
+          "nameType": "Personal",
+          "givenName": "Ben",
+          "familyName": "Braverman",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0009-0005-0334-7004",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Essock-Burns, Tara",
+          "nameType": "Personal",
+          "givenName": "Tara",
+          "familyName": "Essock-Burns",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-4159-6974",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Lane, Ryan",
+          "nameType": "Personal",
+          "givenName": "Ryan",
+          "familyName": "Lane",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-5887-2069",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Mets, David G.",
+          "nameType": "Personal",
+          "givenName": "David G.",
+          "familyName": "Mets",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-0803-0912",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Patton, Austin H.",
+          "nameType": "Personal",
+          "givenName": "Austin H.",
+          "familyName": "Patton",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-1286-9005",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "York, Ryan",
+          "nameType": "Personal",
+          "givenName": "Ryan",
+          "familyName": "York",
+          "affiliation": ["Arcadia Science"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-1073-1494",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "lang": "en-US",
+          "title": "Raman spectroscopy enables rapid and inexpensive exploration of biology",
+          "titleType": null
+        }
+      ],
+      "publisher": "Arcadia Science",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        {
+          "subject": "FOS: Biological sciences",
+          "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)",
+          "classificationCode": "1.6"
+        }
+      ],
+      "contributors": [
+        {
+          "name": "Bell, Audrey",
+          "nameType": "Personal",
+          "givenName": "Audrey",
+          "familyName": "Bell",
+          "affiliation": ["Arcadia Science"],
+          "contributorType": "Other",
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Hochstrasser, Megan L.",
+          "nameType": "Personal",
+          "givenName": "Megan L.",
+          "familyName": "Hochstrasser",
+          "affiliation": ["Arcadia Science"],
+          "contributorType": "Other",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-4404-078X",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "MacQuarrie, Cameron Dale",
+          "nameType": "Personal",
+          "givenName": "Cameron Dale",
+          "familyName": "MacQuarrie",
+          "affiliation": ["Arcadia Science"],
+          "contributorType": "Other",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-9504-6375",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Sun, Dennis A.",
+          "nameType": "Personal",
+          "givenName": "Dennis A.",
+          "familyName": "Sun",
+          "affiliation": ["Arcadia Science"],
+          "contributorType": "Other",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-1000-7276",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Wood, Harper",
+          "nameType": "Personal",
+          "givenName": "Harper",
+          "familyName": "Wood",
+          "affiliation": ["Arcadia Science"],
+          "contributorType": "Other",
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0009-0006-0277-1855",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "dates": [{ "date": "2024", "dateType": "Issued", "dateInformation": null }],
+      "language": "en",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "Article",
+        "resourceTypeGeneral": "Other"
+      },
+      "relatedIdentifiers": [
+        {
+          "schemeUri": null,
+          "schemeType": null,
+          "relationType": "IsSupplementedBy",
+          "relatedIdentifier": "https://github.com/Arcadia-Science/2024-disco-raman-hackathon/tree/v1.0",
+          "resourceTypeGeneral": "Other",
+          "relatedIdentifierType": "URL",
+          "relatedMetadataScheme": null
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["4020 words"],
+      "formats": ["text/html"],
+      "version": "",
+      "rightsList": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "lang": "en",
+          "description": "Raman spectroscopy is a non-destructive technique that provides a unique chemical fingerprint based only on the interaction of light with a sample. It’s been used extensively in materials science applications and more recently, in biology. This technique doesn’t require molecular or chemical labeling (it’s “label-free”), making it a potentially useful tool for studying organisms without genetic tools.\n\nWe wondered if we could build a Raman spectrometer using open-source protocols and use it to rapidly distinguish samples based on chemical properties in a label-free way, with minimal data processing. We decided to try a hackathon to test this idea — we selected three types of samples (beer, chilis, and algae) and found that the spectra were reproducible and had sufficient dynamic range to do comparative analyses. We were able to use the Raman spectra to differentiate the three types of samples and to distinguish subgroups of samples within a given type. Beer sample spectra varied by alcohol content and by type. Chili pepper data clustered by perceived heat (Scoville units) and color. We could differentiate algae by genetic background. Finally, we found that specific spectral regions correlate with quantitative characteristics of beer (alcohol by volume) and chilis (perceived heat).\n\nOur work highlights the utility and ease of this technique. We hope it will empower scientists to capture the chemical composition of samples and extract a great degree of high-dimensional data from Raman spectra. We imagine this report could also be useful for science educators who want to use the OpenRAMAN resource and our code to run a lab class on Raman spectroscopy. We’d love to know if you try this technique and whether it allows you to distinguish features in a way that isn’t possible or is more difficult using other methods.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTc4NDQvQVJDQURJQS0wODVFLTNFQ0Y8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkF2YXN0aGksIFByYWNoZWU8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlByYWNoZWU8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+QXZhc3RoaTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTE2ODgtNzIyWDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5CaWdnZSwgQnJhZSBNLjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QnJhZSBNLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5CaWdnZTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTA5MDctNDU5NzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5CcmF2ZXJtYW4sIEJlbjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QmVuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkJyYXZlcm1hbjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwOS0wMDA1LTAzMzQtNzAwNDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Fc3NvY2stQnVybnMsIFRhcmE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlRhcmE8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RXNzb2NrLUJ1cm5zPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDMtNDE1OS02OTc0PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA1MnpkNHY2OCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5BcmNhZGlhIFNjaWVuY2U8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkxhbmUsIFJ5YW48L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlJ5YW48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TGFuZTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTU4ODctMjA2OTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NZXRzLCBEYXZpZCBHLjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+RGF2aWQgRy48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TWV0czwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTA4MDMtMDkxMjwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5QYXR0b24sIEF1c3RpbiBILjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QXVzdGluIEguPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPlBhdHRvbjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAzLTEyODYtOTAwNTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Zb3JrLCBSeWFuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5SeWFuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPllvcms8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDAtMDAwMi0xMDczLTE0OTQ8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDUyemQ0djY4IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkFyY2FkaWEgU2NpZW5jZTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlIHhtbDpsYW5nPSJlbi1VUyI+UmFtYW4gc3BlY3Ryb3Njb3B5IGVuYWJsZXMgcmFwaWQgYW5kIGluZXhwZW5zaXZlIGV4cGxvcmF0aW9uIG9mIGJpb2xvZ3k8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+QXJjYWRpYSBTY2llbmNlPC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI0PC9wdWJsaWNhdGlvblllYXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJPdGhlciI+QXJ0aWNsZTwvcmVzb3VyY2VUeXBlPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9IkZpZWxkcyBvZiBTY2llbmNlIGFuZCBUZWNobm9sb2d5IChGT1MpIiBzY2hlbWVVUkk9Imh0dHBzOi8vd2ViLWFyY2hpdmUub2VjZC5vcmcvMjAxMi0wNi0xNS8xMzg1NzUtMzgyMzUxNDcucGRmIiBjbGFzc2lmaWNhdGlvbkNvZGU9IjEuNiI+Rk9TOiBCaW9sb2dpY2FsIHNjaWVuY2VzPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGNvbnRyaWJ1dG9ycz4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9Ik90aGVyIj4KICAgICAgPGNvbnRyaWJ1dG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkJlbGwsIEF1ZHJleTwvY29udHJpYnV0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkF1ZHJleTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5CZWxsPC9mYW1pbHlOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDUyemQ0djY4IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkFyY2FkaWEgU2NpZW5jZTwvYWZmaWxpYXRpb24+CiAgICA8L2NvbnRyaWJ1dG9yPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iT3RoZXIiPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+SG9jaHN0cmFzc2VyLCBNZWdhbiBMLjwvY29udHJpYnV0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk1lZ2FuIEwuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkhvY2hzdHJhc3NlcjwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTQ0MDQtMDc4WDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY29udHJpYnV0b3I+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJPdGhlciI+CiAgICAgIDxjb250cmlidXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NYWNRdWFycmllLCBDYW1lcm9uIERhbGU8L2NvbnRyaWJ1dG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5DYW1lcm9uIERhbGU8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TWFjUXVhcnJpZTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAxLTk1MDQtNjM3NTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNTJ6ZDR2NjgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+QXJjYWRpYSBTY2llbmNlPC9hZmZpbGlhdGlvbj4KICAgIDwvY29udHJpYnV0b3I+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJPdGhlciI+CiAgICAgIDxjb250cmlidXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5TdW4sIERlbm5pcyBBLjwvY29udHJpYnV0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkRlbm5pcyBBLjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5TdW48L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDAtMDAwMy0xMDAwLTcyNzY8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDUyemQ0djY4IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkFyY2FkaWEgU2NpZW5jZTwvYWZmaWxpYXRpb24+CiAgICA8L2NvbnRyaWJ1dG9yPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iT3RoZXIiPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+V29vZCwgSGFycGVyPC9jb250cmlidXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+SGFycGVyPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPldvb2Q8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDktMDAwNi0wMjc3LTE4NTU8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDUyemQ0djY4IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkFyY2FkaWEgU2NpZW5jZTwvYWZmaWxpYXRpb24+CiAgICA8L2NvbnRyaWJ1dG9yPgogIDwvY29udHJpYnV0b3JzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjQ8L2RhdGU+CiAgPC9kYXRlcz4KICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJVUkwiIHJlbGF0aW9uVHlwZT0iSXNTdXBwbGVtZW50ZWRCeSIgcmVzb3VyY2VUeXBlR2VuZXJhbD0iT3RoZXIiPmh0dHBzOi8vZ2l0aHViLmNvbS9BcmNhZGlhLVNjaWVuY2UvMjAyNC1kaXNjby1yYW1hbi1oYWNrYXRob24vdHJlZS92MS4wPC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXM+CiAgICA8c2l6ZT40MDIwIHdvcmRzPC9zaXplPgogIDwvc2l6ZXM+CiAgPGZvcm1hdHM+CiAgICA8Zm9ybWF0PnRleHQvaHRtbDwvZm9ybWF0PgogIDwvZm9ybWF0cz4KICA8dmVyc2lvbi8+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC9sZWdhbGNvZGUiIHhtbDpsYW5nPSJlbi1VUyI+Q3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiA0LjAgSW50ZXJuYXRpb25hbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIHhtbDpsYW5nPSJlbiIgZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+UmFtYW4gc3BlY3Ryb3Njb3B5IGlzIGEgbm9uLWRlc3RydWN0aXZlIHRlY2huaXF1ZSB0aGF0IHByb3ZpZGVzIGEgdW5pcXVlIGNoZW1pY2FsIGZpbmdlcnByaW50IGJhc2VkIG9ubHkgb24gdGhlIGludGVyYWN0aW9uIG9mIGxpZ2h0IHdpdGggYSBzYW1wbGUuIEl04oCZcyBiZWVuIHVzZWQgZXh0ZW5zaXZlbHkgaW4gbWF0ZXJpYWxzIHNjaWVuY2UgYXBwbGljYXRpb25zIGFuZCBtb3JlIHJlY2VudGx5LCBpbiBiaW9sb2d5LiBUaGlzIHRlY2huaXF1ZSBkb2VzbuKAmXQgcmVxdWlyZSBtb2xlY3VsYXIgb3IgY2hlbWljYWwgbGFiZWxpbmcgKGl04oCZcyDigJxsYWJlbC1mcmVl4oCdKSwgbWFraW5nIGl0IGEgcG90ZW50aWFsbHkgdXNlZnVsIHRvb2wgZm9yIHN0dWR5aW5nIG9yZ2FuaXNtcyB3aXRob3V0IGdlbmV0aWMgdG9vbHMuCgpXZSB3b25kZXJlZCBpZiB3ZSBjb3VsZCBidWlsZCBhIFJhbWFuIHNwZWN0cm9tZXRlciB1c2luZyBvcGVuLXNvdXJjZSBwcm90b2NvbHMgYW5kIHVzZSBpdCB0byByYXBpZGx5IGRpc3Rpbmd1aXNoIHNhbXBsZXMgYmFzZWQgb24gY2hlbWljYWwgcHJvcGVydGllcyBpbiBhIGxhYmVsLWZyZWUgd2F5LCB3aXRoIG1pbmltYWwgZGF0YSBwcm9jZXNzaW5nLiBXZSBkZWNpZGVkIHRvIHRyeSBhIGhhY2thdGhvbiB0byB0ZXN0IHRoaXMgaWRlYSDigJQgd2Ugc2VsZWN0ZWQgdGhyZWUgdHlwZXMgb2Ygc2FtcGxlcyAoYmVlciwgY2hpbGlzLCBhbmQgYWxnYWUpIGFuZCBmb3VuZCB0aGF0IHRoZSBzcGVjdHJhIHdlcmUgcmVwcm9kdWNpYmxlIGFuZCBoYWQgc3VmZmljaWVudCBkeW5hbWljIHJhbmdlIHRvIGRvIGNvbXBhcmF0aXZlIGFuYWx5c2VzLiBXZSB3ZXJlIGFibGUgdG8gdXNlIHRoZSBSYW1hbiBzcGVjdHJhIHRvIGRpZmZlcmVudGlhdGUgdGhlIHRocmVlIHR5cGVzIG9mIHNhbXBsZXMgYW5kIHRvIGRpc3Rpbmd1aXNoIHN1Ymdyb3VwcyBvZiBzYW1wbGVzIHdpdGhpbiBhIGdpdmVuIHR5cGUuIEJlZXIgc2FtcGxlIHNwZWN0cmEgdmFyaWVkIGJ5IGFsY29ob2wgY29udGVudCBhbmQgYnkgdHlwZS4gQ2hpbGkgcGVwcGVyIGRhdGEgY2x1c3RlcmVkIGJ5IHBlcmNlaXZlZCBoZWF0IChTY292aWxsZSB1bml0cykgYW5kIGNvbG9yLiBXZSBjb3VsZCBkaWZmZXJlbnRpYXRlIGFsZ2FlIGJ5IGdlbmV0aWMgYmFja2dyb3VuZC4gRmluYWxseSwgd2UgZm91bmQgdGhhdCBzcGVjaWZpYyBzcGVjdHJhbCByZWdpb25zIGNvcnJlbGF0ZSB3aXRoIHF1YW50aXRhdGl2ZSBjaGFyYWN0ZXJpc3RpY3Mgb2YgYmVlciAoYWxjb2hvbCBieSB2b2x1bWUpIGFuZCBjaGlsaXMgKHBlcmNlaXZlZCBoZWF0KS4KCk91ciB3b3JrIGhpZ2hsaWdodHMgdGhlIHV0aWxpdHkgYW5kIGVhc2Ugb2YgdGhpcyB0ZWNobmlxdWUuIFdlIGhvcGUgaXQgd2lsbCBlbXBvd2VyIHNjaWVudGlzdHMgdG8gY2FwdHVyZSB0aGUgY2hlbWljYWwgY29tcG9zaXRpb24gb2Ygc2FtcGxlcyBhbmQgZXh0cmFjdCBhIGdyZWF0IGRlZ3JlZSBvZiBoaWdoLWRpbWVuc2lvbmFsIGRhdGEgZnJvbSBSYW1hbiBzcGVjdHJhLiBXZSBpbWFnaW5lIHRoaXMgcmVwb3J0IGNvdWxkIGFsc28gYmUgdXNlZnVsIGZvciBzY2llbmNlIGVkdWNhdG9ycyB3aG8gd2FudCB0byB1c2UgdGhlIE9wZW5SQU1BTiByZXNvdXJjZSBhbmQgb3VyIGNvZGUgdG8gcnVuIGEgbGFiIGNsYXNzIG9uIFJhbWFuIHNwZWN0cm9zY29weS4gV2XigJlkIGxvdmUgdG8ga25vdyBpZiB5b3UgdHJ5IHRoaXMgdGVjaG5pcXVlIGFuZCB3aGV0aGVyIGl0IGFsbG93cyB5b3UgdG8gZGlzdGluZ3Vpc2ggZmVhdHVyZXMgaW4gYSB3YXkgdGhhdCBpc27igJl0IHBvc3NpYmxlIG9yIGlzIG1vcmUgZGlmZmljdWx0IHVzaW5nIG90aGVyIG1ldGhvZHMuPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4K",
+      "url": "https://research.arcadiascience.com/pub/result-easy-raman-spectroscopy",
+      "contentUrl": null,
+      "metadataVersion": 4,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "fabricaForm",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2024-05-31T23:42:05.000Z",
+      "registered": "2024-05-31T23:42:05.000Z",
+      "published": "2024",
+      "updated": "2025-09-30T21:10:42.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "anbe.sfiyeb", "type": "clients" } },
+      "provider": { "data": { "id": "anbe", "type": "providers" } },
+      "media": { "data": { "id": "10.57844/arcadia-085e-3ecf", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

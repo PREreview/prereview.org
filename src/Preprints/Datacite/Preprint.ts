@@ -28,7 +28,8 @@ export const recordToPreprint = (
       (id._tag !== 'LifecycleJournalPreprintId' ||
         !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never)) &&
       (id._tag !== 'AfricarxivUbuntunetPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
-      (id._tag !== 'ArxivPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text')
+      (id._tag !== 'ArxivPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
+      (id._tag !== 'ArcadiaSciencePreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'other')
     ) {
       yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
     }
@@ -178,6 +179,7 @@ const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: H
     AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
+    ArcadiaSciencePreprintId: () => Option.some('en' as const),
     ArxivPreprintId: () => Option.some('en' as const),
     LifecycleJournalPreprintId: () => Option.some('en' as const),
     OsfPreprintId: () => detectLanguage(text),

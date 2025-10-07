@@ -12,6 +12,7 @@ import {
   AfricarxivFigsharePreprintId,
   AfricarxivUbuntunetPreprintId,
   AfricarxivZenodoPreprintId,
+  ArcadiaSciencePreprintId,
   ArxivPreprintId,
   LifecycleJournalPreprintId,
   OsfPreprintId,
@@ -321,6 +322,34 @@ test.each([
         ),
       },
       url: new URL('https://www.psycharchives.org/jspui/handle/20.500.12034/8684.2'),
+    }),
+  },
+  {
+    response: 'arcadia-science',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Raman spectroscopy is a non-destructive technique that provides a unique chemical fingerprint based only on the interaction of light with a sample. It’s been used extensively in materials science applications and more recently, in biology. This technique doesn’t require molecular or chemical labeling (it’s “label-free”), making it a potentially useful tool for studying organisms without genetic tools.\n\nWe wondered if we could build a Raman spectrometer using open-source protocols and use it to rapidly distinguish samples based on chemical properties in a label-free way, with minimal data processing. We decided to try a hackathon to test this idea — we selected three types of samples (beer, chilis, and algae) and found that the spectra were reproducible and had sufficient dynamic range to do comparative analyses. We were able to use the Raman spectra to differentiate the three types of samples and to distinguish subgroups of samples within a given type. Beer sample spectra varied by alcohol content and by type. Chili pepper data clustered by perceived heat (Scoville units) and color. We could differentiate algae by genetic background. Finally, we found that specific spectral regions correlate with quantitative characteristics of beer (alcohol by volume) and chilis (perceived heat).\n\nOur work highlights the utility and ease of this technique. We hope it will empower scientists to capture the chemical composition of samples and extract a great degree of high-dimensional data from Raman spectra. We imagine this report could also be useful for science educators who want to use the OpenRAMAN resource and our code to run a lab class on Raman spectroscopy. We’d love to know if you try this technique and whether it allows you to distinguish features in a way that isn’t possible or is more difficult using other methods.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Prachee Avasthi', orcid: OrcidId('0000-0002-1688-722X') },
+        { name: 'Brae M. Bigge', orcid: OrcidId('0000-0002-0907-4597') },
+        { name: 'Ben Braverman', orcid: OrcidId('0009-0005-0334-7004') },
+        { name: 'Tara Essock-Burns', orcid: OrcidId('0000-0003-4159-6974') },
+        { name: 'Ryan Lane', orcid: OrcidId('0000-0002-5887-2069') },
+        { name: 'David G. Mets', orcid: OrcidId('0000-0002-0803-0912') },
+        { name: 'Austin H. Patton', orcid: OrcidId('0000-0003-1286-9005') },
+        { name: 'Ryan York', orcid: OrcidId('0000-0002-1073-1494') },
+      ],
+      id: new ArcadiaSciencePreprintId({ value: Doi('10.57844/arcadia-085e-3ecf') }),
+      posted: 2024,
+      title: {
+        language: 'en',
+        text: rawHtml('Raman spectroscopy enables rapid and inexpensive exploration of biology'),
+      },
+      url: new URL('https://research.arcadiascience.com/pub/result-easy-raman-spectroscopy'),
     }),
   },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>

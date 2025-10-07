@@ -7,6 +7,7 @@ import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 import africarxivJournalArticle from '../RecordSamples/africarxiv-journal-article.json' with { type: 'json' }
 import africarxiv from '../RecordSamples/africarxiv.json' with { type: 'json' }
+import arcadiaScience from '../RecordSamples/arcadia-science.json' with { type: 'json' }
 import arxiv from '../RecordSamples/arxiv.json' with { type: 'json' }
 import dryadHtml from '../RecordSamples/dryad-html.json' with { type: 'json' }
 import dryad from '../RecordSamples/dryad.json' with { type: 'json' }
@@ -34,6 +35,7 @@ describe('HandleResponse', () => {
           json: fc.constantFrom(
             africarxivJournalArticle,
             africarxiv,
+            arcadiaScience,
             arxiv,
             dryadHtml,
             dryad,

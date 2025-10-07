@@ -1020,6 +1020,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDa
     africarxivFigsharePreprintId(),
     africarxivUbuntunetPreprintId(),
     africarxivZenodoPreprintId(),
+    arcadiaSciencePreprintId(),
     arxivPreprintId(),
     lifecycleJournalPreprintId(),
     osfPreprintId(),
