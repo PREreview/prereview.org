@@ -14,6 +14,4 @@ export function decodeEnv(process: NodeJS.Process) {
   )
 }
 
-const EnvD = D.partial({
-  LOG_FORMAT: D.literal('json'),
-})
+const EnvD = D.partial({})

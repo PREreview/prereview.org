@@ -1,6 +1,7 @@
 import {
   Array,
   Cause,
+  Config,
   DateTime,
   Effect,
   FiberId,
@@ -16,17 +17,18 @@ import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO.js'
-import { DeprecatedEnvVars, DeprecatedLoggerEnv } from './Context.ts'
+import { DeprecatedLoggerEnv } from './Context.ts'
 import * as EffectToFpts from './EffectToFpts.ts'
 import { decodeEnv } from './env.ts'
 
 export const makeDeprecatedEnvVars = decodeEnv(process)
 
 export const makeDeprecatedLoggerEnv = Effect.gen(function* () {
-  const env = yield* DeprecatedEnvVars
+  const logFormat = yield* Config.withDefault(Config.literal('json')('LOG_FORMAT'), 'pretty')
+
   return {
     clock: yield* EffectToFpts.makeIO(Effect.andThen(DateTime.now, DateTime.toDate)),
-    logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
+    logger: pipe(C.log, L.withShow(logFormat === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
   } satisfies typeof DeprecatedLoggerEnv.Service
 })
 
