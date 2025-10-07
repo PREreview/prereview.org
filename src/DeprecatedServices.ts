@@ -19,9 +19,6 @@ import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO.js'
 import { DeprecatedLoggerEnv } from './Context.ts'
 import * as EffectToFpts from './EffectToFpts.ts'
-import { decodeEnv } from './env.ts'
-
-export const makeDeprecatedEnvVars = decodeEnv(process)
 
 export const makeDeprecatedLoggerEnv = Effect.gen(function* () {
   const logFormat = yield* Config.withDefault(Config.literal('json')('LOG_FORMAT'), 'pretty')

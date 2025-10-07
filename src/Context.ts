@@ -1,12 +1,9 @@
 import { Context, type Redacted } from 'effect'
 import type { LoggerEnv } from 'logger-fp-ts'
-import type { EnvVars } from './env.ts'
 import type * as Keyv from './keyv.ts'
 import type { SupportedLocale } from './locales/index.ts'
 import type { FlashMessageSchema } from './Response/index.ts'
 import type { NonEmptyString } from './types/index.ts'
-
-export class DeprecatedEnvVars extends Context.Tag('DeprecatedEnvVars')<DeprecatedEnvVars, EnvVars>() {}
 
 export class DeprecatedLoggerEnv extends Context.Tag('DeprecatedLoggerEnv')<DeprecatedLoggerEnv, LoggerEnv>() {}
 

@@ -5,11 +5,10 @@ import { Array, Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema 
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
-import { AllowSiteCrawlers, DeprecatedEnvVars, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from './Context.ts'
-import { DeprecatedLogger, makeDeprecatedEnvVars, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
+import { AllowSiteCrawlers, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from './Context.ts'
+import { DeprecatedLogger, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
-import * as FptsToEffect from './FptsToEffect.ts'
 import * as Keyv from './keyv.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import { IsUserBlocked } from './log-in/index.ts'
@@ -186,7 +185,6 @@ pipe(
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
   Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
-  Effect.provideServiceEffect(DeprecatedEnvVars, FptsToEffect.io(makeDeprecatedEnvVars)),
   Effect.scoped,
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )
