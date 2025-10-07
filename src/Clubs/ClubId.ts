@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 
@@ -49,6 +49,8 @@ export const clubIds = [
 ] as const
 
 export type ClubId = (typeof clubIds)[number]
+
+export const ClubIdSchema = Schema.Literal(...clubIds)
 
 export const ClubIdC = C.fromDecoder(pipe(D.string, D.refine(isClubId, 'ClubID')))
 

@@ -1,31 +1,26 @@
-import type { Temporal } from '@js-temporal/polyfill'
-import { type Doi, isDoi } from 'doi-ts'
-import { Array, flow, Function, Match, pipe } from 'effect'
-import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
+import { Array, Either, flow, Function, Match, pipe, Schema, Tuple } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
-import * as E from 'io-ts/lib/Encoder.js'
 import type { LanguageCode } from 'iso-639-1'
-import safeStableStringify from 'safe-stable-stringify'
-import { match, P } from 'ts-pattern'
-import type { ClubId } from '../Clubs/index.ts'
+import * as Clubs from '../Clubs/index.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
+import * as Preprints from '../Preprints/index.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
-import type { DomainId } from '../types/domain.ts'
-import type { FieldId } from '../types/field.ts'
+import { DomainIdSchema, type DomainId } from '../types/domain.ts'
+import { FieldIdSchema, type FieldId } from '../types/field.ts'
+import { Doi, Iso639, Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { isPseudonym } from '../types/Pseudonym.ts'
-import type { SubfieldId } from '../types/subfield.ts'
+import { SubfieldIdSchema, type SubfieldId } from '../types/subfield.ts'
 
 export interface Prereview {
   preprint: PreprintId
   createdAt: Temporal.PlainDate
-  doi: Doi
+  doi: Doi.Doi
   authors: ReadonlyArray<{ name: string; orcid?: OrcidId }>
   language?: LanguageCode
   type: 'full' | 'structured'
-  club?: ClubId
+  club?: Clubs.ClubId
   live: boolean
   requested: boolean
   domains: ReadonlyArray<DomainId>
@@ -40,96 +35,101 @@ export interface GetPrereviewsEnv {
 const getPrereviews = (): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews()))
 
-const ReadonlyArrayE = flow(E.array, E.readonly)
+const PreprintIdWithDoiSchema = Schema.transform(
+  Schema.TemplateLiteralParser('doi:', Preprints.IndeterminatePreprintIdFromDoiSchema),
+  Schema.typeSchema(Preprints.IndeterminatePreprintIdWithDoi),
+  {
+    strict: true,
+    decode: Tuple.getSecond,
+    encode: id => Tuple.make('doi:' as const, id),
+  },
+)
 
-const StringE: E.Encoder<string, string | { toString: () => string }> = { encode: String }
+const PreprintIdFromPhilsciIdSchema = Schema.transform(
+  Schema.NonNegativeInt,
+  Schema.typeSchema(Preprints.PhilsciPreprintId),
+  { strict: true, decode: id => new Preprints.PhilsciPreprintId({ value: id }), encode: id => id.value },
+)
 
-const DoiE: E.Encoder<string, Doi> = StringE
+const PhilsciPreprintIdSchema = Schema.transform(
+  Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PreprintIdFromPhilsciIdSchema, '/'),
+  Schema.typeSchema(Preprints.PhilsciPreprintId),
+  {
+    strict: true,
+    decode: Tuple.at(1),
+    encode: id => Tuple.make('https://philsci-archive.pitt.edu/' as const, id, '/' as const),
+  },
+)
 
-const PlainDateE: E.Encoder<string, Temporal.PlainDate> = StringE
+const PreprintIdSchema = Schema.Union(PreprintIdWithDoiSchema, PhilsciPreprintIdSchema)
 
-const PreprintIdE = {
-  encode: id =>
-    match(id)
-      .with({ _tag: 'PhilsciPreprintId' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
-      .with({ value: P.when(isDoi) }, ({ value }) => `doi:${value}`)
-      .exhaustive(),
-} satisfies E.Encoder<string, IndeterminatePreprintId>
+const ServerSchema = Schema.Literal(
+  'advance',
+  'africarxiv',
+  'arcadia-science',
+  'arxiv',
+  'authorea',
+  'biorxiv',
+  'chemrxiv',
+  'curvenote',
+  'eartharxiv',
+  'ecoevorxiv',
+  'edarxiv',
+  'engrxiv',
+  'jxiv',
+  'lifecycle-journal',
+  'medrxiv',
+  'metaarxiv',
+  'neurolibre',
+  'osf',
+  'osf-preprints',
+  'philsci',
+  'preprints.org',
+  'psyarxiv',
+  'psycharchives',
+  'research-square',
+  'scielo',
+  'science-open',
+  'socarxiv',
+  'ssrn',
+  'techrxiv',
+  'verixiv',
+  'zenodo',
+)
 
-const PrereviewE = pipe(
-  E.struct({
-    preprint: PreprintIdE,
-    server: E.id<Server>(),
-    createdAt: PlainDateE,
-    doi: DoiE,
-    authors: ReadonlyArrayE(E.struct({ author: StringE, authorType: StringE })),
-    type: StringE,
-    live: E.id(),
-    requested: E.id(),
-    domains: ReadonlyArrayE(StringE),
-    fields: ReadonlyArrayE(StringE),
-    subfields: ReadonlyArrayE(StringE),
-  }),
-  E.intersect(
-    E.partial({
-      language: StringE,
-      club: StringE,
-    }),
-  ),
-) satisfies E.Encoder<JsonRecord, TransformedPrereview>
+const PrereviewSchema = Schema.Struct({
+  preprint: PreprintIdSchema,
+  server: ServerSchema,
+  createdAt: Temporal.PlainDateSchema,
+  doi: Doi.DoiSchema,
+  authors: Schema.Array(Schema.Struct({ author: Schema.String, authorType: Schema.Literal('public', 'pseudonym') })),
+  language: Schema.optional(Iso639.Iso6391Schema),
+  type: Schema.Literal('full', 'structured'),
+  club: Schema.optional(Clubs.ClubIdSchema),
+  live: Schema.Boolean,
+  requested: Schema.Boolean,
+  domains: Schema.Array(DomainIdSchema),
+  fields: Schema.Array(FieldIdSchema),
+  subfields: Schema.Array(SubfieldIdSchema),
+})
 
-type Server =
-  | 'advance'
-  | 'africarxiv'
-  | 'arcadia-science'
-  | 'arxiv'
-  | 'authorea'
-  | 'biorxiv'
-  | 'chemrxiv'
-  | 'curvenote'
-  | 'eartharxiv'
-  | 'ecoevorxiv'
-  | 'edarxiv'
-  | 'engrxiv'
-  | 'jxiv'
-  | 'lifecycle-journal'
-  | 'medrxiv'
-  | 'metaarxiv'
-  | 'neurolibre'
-  | 'osf'
-  | 'osf-preprints'
-  | 'philsci'
-  | 'preprints.org'
-  | 'psyarxiv'
-  | 'psycharchives'
-  | 'research-square'
-  | 'scielo'
-  | 'science-open'
-  | 'socarxiv'
-  | 'ssrn'
-  | 'techrxiv'
-  | 'verixiv'
-  | 'zenodo'
+type Server = (typeof ServerSchema.literals)[number]
 
 interface TransformedPrereview {
   preprint: IndeterminatePreprintId
   server: Server
   createdAt: Temporal.PlainDate
-  doi: Doi
+  doi: Doi.Doi
   authors: ReadonlyArray<{ author: string; authorType: 'public' | 'pseudonym' }>
   language?: LanguageCode
   type: 'full' | 'structured'
-  club?: ClubId
+  club?: Clubs.ClubId
   live: boolean
   requested: boolean
-  domains: ReadonlyArray<string>
-  fields: ReadonlyArray<string>
-  subfields: ReadonlyArray<string>
+  domains: ReadonlyArray<DomainId>
+  fields: ReadonlyArray<FieldId>
+  subfields: ReadonlyArray<SubfieldId>
 }
-
-const PrereviewsE = ReadonlyArrayE(PrereviewE)
-
-const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
 
 const preprintIdToServer = Match.typeTags<PreprintId, Server>()({
   AdvancePreprintId: () => 'advance',
@@ -171,7 +171,9 @@ const preprintIdToServer = Match.typeTags<PreprintId, Server>()({
 const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
-    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.chainEitherK(env =>
+      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
+    ),
     RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
 
@@ -206,6 +208,10 @@ export const reviewsData = (
     isAllowed,
     RTE.chainW(getPrereviews),
     RTE.map(Array.map(transform)),
-    RTE.map(PrereviewsE.encode),
-    RTE.map(JsonE.encode),
+    RTE.chainEitherKW(
+      flow(
+        Schema.encodeEither(Schema.parseJson(Schema.Array(PrereviewSchema))),
+        Either.mapLeft(() => 'unavailable' as const),
+      ),
+    ),
   )
