@@ -168,7 +168,7 @@ const detectLanguageForServer = ({
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EdarxivPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'PsyarxivPreprintId' }, () => Option.some('en' as const))
+    .with({ type: 'PsyarxivPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'ScienceOpenPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
