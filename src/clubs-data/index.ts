@@ -1,7 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Function, Schema, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
 import { type ClubId, clubIds, getClubAddedDate, getClubName } from '../Clubs/index.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
 import { PlainDateSchema } from '../types/Temporal.ts'
@@ -33,7 +32,9 @@ const ClubsSchema = Schema.Array(ClubSchema)
 const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
-    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.chainEitherK(env =>
+      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
+    ),
     RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
 
