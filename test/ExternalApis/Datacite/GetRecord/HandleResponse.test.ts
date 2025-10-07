@@ -18,6 +18,7 @@ import lifecycleJournalRegistration from '../RecordSamples/lifecycle-journal-reg
 import osfFile from '../RecordSamples/osf-file.json' with { type: 'json' }
 import osfProject from '../RecordSamples/osf-project.json' with { type: 'json' }
 import osfRegistration from '../RecordSamples/osf-registration.json' with { type: 'json' }
+import psycharchives from '../RecordSamples/psycharchives.json' with { type: 'json' }
 import zenodoAfricarxiv from '../RecordSamples/zenodo-africarxiv.json' with { type: 'json' }
 import zenodoEmptyResourceType from '../RecordSamples/zenodo-empty-resource-type.json' with { type: 'json' }
 import zenodoJournalArticle from '../RecordSamples/zenodo-journal-article.json' with { type: 'json' }
@@ -44,6 +45,7 @@ describe('HandleResponse', () => {
             osfFile,
             osfProject,
             osfRegistration,
+            psycharchives,
             zenodoAfricarxiv,
             zenodoEmptyResourceType,
             zenodoJournalArticle,

@@ -16,6 +16,7 @@ import {
   LifecycleJournalPreprintId,
   OsfPreprintId,
   Preprint,
+  PsychArchivesPreprintId,
   ZenodoPreprintId,
 } from '../../../src/Preprints/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -299,6 +300,27 @@ test.each([
         ),
       },
       url: new URL('https://africarxiv.ubuntunet.net/handle/1/1649'),
+    }),
+  },
+  {
+    response: 'psycharchives',
+    expected: Preprint({
+      abstract: {
+        language: 'de',
+        text: rawHtml(
+          '<p>Das Ziel dieser Arbeit ist es, bewusst und greifbar aufzuzeigen, wie und unter welchen Bedingungen wir unsere inneren Kräfte optimal entfalten können, um eine Antwort auf die Frage zu liefern: Wie können wir als Individuum infinit wachsen? Die Arbeit definiert ein mathematisches Modell, das die Dynamik des individuellen Wachstums aufzeigen soll und beschreibt detailliert und spekulativ die einzelnen dazugehörigen Größen. Es werden hypothetische Verläufe beschrieben: Unter welchen Bedingungen ein Individuum im Laufe der Zeit wächst und regressiert. Die Arbeit schließt mit einem ethischen Dilemma ab, was es bedeutet Mensch zu sein und zu bleiben, der in der Lage ist seine animalischen Triebe zu kontrollieren und wonach wir unser individuelles Wachstum im Kern ein Leben lang ausrichten sollten und für welche von zwei Optionen in dem ethischen Dilemma, sich künstliche Intelligenzen entscheiden würden.</p>',
+        ),
+      },
+      authors: [{ name: 'Philipp Ganster' }],
+      id: new PsychArchivesPreprintId({ value: Doi('10.23668/psycharchives.13965') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 12, day: 12 }),
+      title: {
+        language: 'de',
+        text: rawHtml(
+          'Infinit wachsen - Welche Bedingungen müssen wir schaffen, um unser individuelles Wachstum optimal zu fördern?',
+        ),
+      },
+      url: new URL('https://www.psycharchives.org/jspui/handle/20.500.12034/8684.2'),
     }),
   },
 ])('can parse a DataCite record ($response)', ({ response, expected }) =>

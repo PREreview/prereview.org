@@ -1023,6 +1023,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId | LegacyDa
     arxivPreprintId(),
     lifecycleJournalPreprintId(),
     osfPreprintId(),
+    psychArchivesPreprintId(),
     zenodoPreprintId(),
     legacyDatacitePreprintId(),
   )

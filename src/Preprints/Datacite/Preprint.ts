@@ -181,5 +181,6 @@ const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: H
     ArxivPreprintId: () => Option.some('en' as const),
     LifecycleJournalPreprintId: () => Option.some('en' as const),
     OsfPreprintId: () => detectLanguage(text),
+    PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text),
     ZenodoPreprintId: () => detectLanguage(text),
   })
