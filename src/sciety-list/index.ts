@@ -1,24 +1,18 @@
-import type { Temporal } from '@js-temporal/polyfill'
-import { type Doi, isDoi } from 'doi-ts'
-import { flow, Function, pipe } from 'effect'
-import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
+import { Either, flow, Function, pipe, Schema, Tuple } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
-import * as E from 'io-ts/lib/Encoder.js'
-import safeStableStringify from 'safe-stable-stringify'
-import { match, P } from 'ts-pattern'
-import type { IndeterminatePreprintId } from '../Preprints/index.ts'
+import * as Preprints from '../Preprints/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
+import { Doi, Temporal } from '../types/index.ts'
 
 export interface ScietyListEnv {
   scietyListToken: NonEmptyString
 }
 
 export interface Prereview {
-  preprint: IndeterminatePreprintId
+  preprint: Preprints.IndeterminatePreprintId
   createdAt: Temporal.PlainDate
-  doi: Doi
+  doi: Doi.Doi
   authors: ReadonlyArray<{ name: string }>
 }
 
@@ -29,41 +23,61 @@ export interface GetPrereviewsEnv {
 const getPrereviews = (): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews()))
 
-const ReadonlyArrayE = flow(E.array, E.readonly)
+const PreprintIdWithDoiSchema = Schema.transform(
+  Schema.TemplateLiteralParser('doi:', Preprints.IndeterminatePreprintIdFromDoiSchema),
+  Schema.typeSchema(Preprints.IndeterminatePreprintIdWithDoi),
+  {
+    strict: true,
+    decode: Tuple.at(1),
+    encode: id => Tuple.make('doi:' as const, id),
+  },
+)
 
-const StringE: E.Encoder<string, string | { toString: () => string }> = { encode: String }
+const PreprintIdFromPhilsciIdSchema = Schema.transform(
+  Schema.NonNegativeInt,
+  Schema.typeSchema(Preprints.PhilsciPreprintId),
+  { strict: true, decode: id => new Preprints.PhilsciPreprintId({ value: id }), encode: id => id.value },
+)
 
-const DoiE: E.Encoder<string, Doi> = StringE
+const PhilsciPreprintIdSchema = Schema.transform(
+  Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PreprintIdFromPhilsciIdSchema, '/'),
+  Schema.typeSchema(Preprints.PhilsciPreprintId),
+  {
+    strict: true,
+    decode: Tuple.at(1),
+    encode: id => Tuple.make('https://philsci-archive.pitt.edu/' as const, id, '/' as const),
+  },
+)
 
-const PlainDateE: E.Encoder<string, Temporal.PlainDate> = StringE
+const PreprintIdSchema = Schema.Union(PreprintIdWithDoiSchema, PhilsciPreprintIdSchema)
 
-const PreprintIdE = {
-  encode: id =>
-    match(id)
-      .with({ _tag: 'PhilsciPreprintId' }, ({ value }) => `https://philsci-archive.pitt.edu/${value}/`)
-      .with({ value: P.when(isDoi) }, ({ value }) => `doi:${value}`)
-      .exhaustive(),
-} satisfies E.Encoder<string, IndeterminatePreprintId>
-
-const PrereviewE = E.struct({
-  preprint: PreprintIdE,
-  createdAt: PlainDateE,
-  doi: DoiE,
-  authors: ReadonlyArrayE(E.struct({ name: StringE })),
-}) satisfies E.Encoder<JsonRecord, Prereview>
-
-const PrereviewsE = ReadonlyArrayE(PrereviewE)
-
-const JsonE: E.Encoder<string, Json> = { encode: safeStableStringify }
+const PrereviewSchema = Schema.Struct({
+  preprint: PreprintIdSchema,
+  createdAt: Temporal.PlainDateSchema,
+  doi: Doi.DoiSchema,
+  authors: Schema.Array(Schema.Struct({ name: Schema.String })),
+})
 
 const isAllowed = (authorizationHeader: string) =>
   pipe(
     RTE.ask<ScietyListEnv>(),
-    RTE.chainEitherK(env => D.literal(`Bearer ${env.scietyListToken}`).decode(authorizationHeader)),
+    RTE.chainEitherK(env =>
+      Schema.decodeUnknownEither(Schema.TemplateLiteralParser('Bearer ', env.scietyListToken))(authorizationHeader),
+    ),
     RTE.bimap(() => 'forbidden' as const, Function.constVoid),
   )
 
 export const scietyList = (
   authorizationHeader: string,
 ): RTE.ReaderTaskEither<ScietyListEnv & GetPrereviewsEnv, 'forbidden' | 'unavailable', string> =>
-  pipe(authorizationHeader, isAllowed, RTE.chainW(getPrereviews), RTE.map(PrereviewsE.encode), RTE.map(JsonE.encode))
+  pipe(
+    authorizationHeader,
+    isAllowed,
+    RTE.chainW(getPrereviews),
+    RTE.chainEitherKW(
+      flow(
+        Schema.encodeEither(Schema.parseJson(Schema.Array(PrereviewSchema))),
+        Either.mapLeft(() => 'unavailable' as const),
+      ),
+    ),
+  )
