@@ -1,10 +1,11 @@
 import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
-import type { OrcidId, Uuid } from '../../types/index.ts'
+import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Command {
   readonly rating: 'excellent' | 'fair' | 'poor' | 'unsure'
+  readonly detail: Option.Option<NonEmptyString.NonEmptyString>
   readonly datasetReviewId: Uuid.Uuid
   readonly userId: OrcidId.OrcidId
 }
@@ -22,6 +23,7 @@ export class NotRated extends Data.TaggedClass('NotRated')<{ authorId: OrcidId.O
 
 export class HasBeenRated extends Data.TaggedClass('HasBeenRated')<{
   rating: Events.RatedTheQualityOfTheDataset['rating']
+  detail: Events.RatedTheQualityOfTheDataset['detail']
   authorId: OrcidId.OrcidId
 }> {}
 
@@ -55,7 +57,7 @@ export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>, data
 
       return Option.match(Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset')), {
         onNone: () => new NotRated({ authorId }),
-        onSome: ({ rating }) => new HasBeenRated({ rating, authorId }),
+        onSome: ({ rating, detail }) => new HasBeenRated({ rating, detail, authorId }),
       })
     },
   })
@@ -84,20 +86,20 @@ export const decide: {
           Option.some(
             new Events.RatedTheQualityOfTheDataset({
               rating: command.rating,
-              detail: Option.none(),
+              detail: command.detail,
               datasetReviewId: command.datasetReviewId,
             }),
           ),
         ),
-      HasBeenRated: ({ rating }) =>
-        Boolean.match(Equal.equals(command.rating, rating), {
+      HasBeenRated: ({ rating, detail }) =>
+        Boolean.match(Boolean.and(Equal.equals(command.rating, rating), Equal.equals(command.detail, detail)), {
           onTrue: () => Either.right(Option.none()),
           onFalse: () =>
             Either.right(
               Option.some(
                 new Events.RatedTheQualityOfTheDataset({
                   rating: command.rating,
-                  detail: Option.none(),
+                  detail: command.detail,
                   datasetReviewId: command.datasetReviewId,
                 }),
               ),

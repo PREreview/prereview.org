@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/RateTheQuality.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -34,6 +34,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+    detail: fc.maybe(fc.nonEmptyString()),
     datasetReviewId: fc.uuid(),
     userId: fc.orcidId(),
   })
@@ -79,19 +80,21 @@ describe('foldState', () => {
           ),
         )
         .map(([started, rated]) =>
-          Tuple.make(Array.make(started, rated), rated.rating, started.datasetReviewId, started.authorId),
+          Tuple.make(Array.make(started, rated), rated.rating, rated.detail, started.datasetReviewId, started.authorId),
         ),
     ],
     {
       examples: [
-        [[[started, rated1], rated1.rating, datasetReviewId, authorId]], // one rating
-        [[[started, rated1, rated2], rated2.rating, datasetReviewId, authorId]], // two ratings
+        [[[started, rated1], rated1.rating, rated1.detail, datasetReviewId, authorId]], // one rating
+        [[[started, rated1, rated2], rated2.rating, rated2.detail, datasetReviewId, authorId]], // two ratings
       ],
     },
-  )('has been rated', ([events, expectedRating, datasetReviewId, expectedAuthorId]) => {
+  )('has been rated', ([events, expectedRating, expectedDetail, datasetReviewId, expectedAuthorId]) => {
     const state = _.foldState(events, datasetReviewId)
 
-    expect(state).toStrictEqual(new _.HasBeenRated({ rating: expectedRating, authorId: expectedAuthorId }))
+    expect(state).toStrictEqual(
+      new _.HasBeenRated({ rating: expectedRating, detail: expectedDetail, authorId: expectedAuthorId }),
+    )
   })
 
   test.prop(
@@ -185,23 +188,25 @@ describe('authorize', () => {
   })
 
   describe('has been rated', () => {
-    test.prop([command(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure')])(
+    test.prop([command(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure'), fc.maybe(fc.nonEmptyString())])(
       'with the same user',
-      (command, rating) => {
-        const result = _.authorize(new _.HasBeenRated({ rating, authorId: command.userId }), command)
+      (command, rating, detail) => {
+        const result = _.authorize(new _.HasBeenRated({ rating, detail, authorId: command.userId }), command)
 
         expect(result).toBeTruthy()
       },
     )
 
-    test.prop([command(), fc.orcidId(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure')])(
-      'with a different user',
-      (command, authorId, rating) => {
-        const result = _.authorize(new _.HasBeenRated({ rating, authorId }), command)
+    test.prop([
+      command(),
+      fc.orcidId(),
+      fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+      fc.maybe(fc.nonEmptyString()),
+    ])('with a different user', (command, authorId, rating, detail) => {
+      const result = _.authorize(new _.HasBeenRated({ rating, detail, authorId }), command)
 
-        expect(result).toBeFalsy()
-      },
-    )
+      expect(result).toBeFalsy()
+    })
   })
 
   describe('is being published', () => {
@@ -248,7 +253,7 @@ describe('decide', () => {
         Option.some(
           new DatasetReviews.RatedTheQualityOfTheDataset({
             rating: command.rating,
-            detail: Option.none(),
+            detail: command.detail,
             datasetReviewId: command.datasetReviewId,
           }),
         ),
@@ -263,14 +268,35 @@ describe('decide', () => {
         .tuple(command(), fc.constantFrom('excellent', 'fair', 'poor', 'unsure'))
         .filter(([command, rating]) => command.rating !== rating),
     ])('with a different rating', (authorId, [command, rating]) => {
-      const result = _.decide(new _.HasBeenRated({ rating, authorId }), command)
+      const result = _.decide(new _.HasBeenRated({ rating, detail: command.detail, authorId }), command)
 
       expect(result).toStrictEqual(
         Either.right(
           Option.some(
             new DatasetReviews.RatedTheQualityOfTheDataset({
               rating: command.rating,
-              detail: Option.none(),
+              detail: command.detail,
+              datasetReviewId: command.datasetReviewId,
+            }),
+          ),
+        ),
+      )
+    })
+
+    test.prop([
+      fc.orcidId(),
+      fc
+        .tuple(command(), fc.maybe(fc.nonEmptyString()))
+        .filter(([command, detail]) => !Equal.equals(command.detail, detail)),
+    ])('with different detail', (authorId, [command, detail]) => {
+      const result = _.decide(new _.HasBeenRated({ rating: command.rating, detail, authorId }), command)
+
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new DatasetReviews.RatedTheQualityOfTheDataset({
+              rating: command.rating,
+              detail: command.detail,
               datasetReviewId: command.datasetReviewId,
             }),
           ),
@@ -279,7 +305,7 @@ describe('decide', () => {
     })
 
     test.prop([fc.orcidId(), command()])('with the same rating', (authorId, command) => {
-      const result = _.decide(new _.HasBeenRated({ rating: command.rating, authorId }), command)
+      const result = _.decide(new _.HasBeenRated({ rating: command.rating, detail: command.detail, authorId }), command)
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
