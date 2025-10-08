@@ -9,9 +9,7 @@ import { AllowSiteCrawlers, Locale } from '../Context.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { EdiaStatementPage } from '../EdiaStatementPage.ts'
-import * as EffectToFpts from '../EffectToFpts.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
-import * as FptsToEffect from '../FptsToEffect.ts'
 import { FundingPage } from '../FundingPage.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
@@ -22,7 +20,6 @@ import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
-import * as Prereviews from '../Prereviews/index.ts'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
 import { DataStoreRedis } from '../Redis.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
@@ -416,29 +413,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
-    MakeRoute(
-      'GET',
-      Routes.ClubProfile,
-      Effect.fn(function* ({ id }) {
-        const locale = yield* Locale
-        const runtime = yield* Effect.runtime<Prereviews.Prereviews>()
-
-        return yield* FptsToEffect.task(
-          clubProfile(
-            id,
-            locale,
-          )({
-            getPrereviews: EffectToFpts.toTaskEitherK(
-              flow(
-                Prereviews.getForClub,
-                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
-              ),
-              runtime,
-            ),
-          }),
-        )
-      }),
-    ),
+    MakeRoute('GET', Routes.ClubProfile, clubProfile),
   ]),
   HttpRouter.concat(AuthRouter),
   HttpRouter.concat(DatasetReviewPages),
