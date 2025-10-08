@@ -2,7 +2,9 @@ import { pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 
-export const clubIds = [
+export type ClubId = typeof ClubIdSchema.Type
+
+export const ClubIdSchema = Schema.Literal(
   'asapbio-cancer-biology',
   'asapbio-cell-biology',
   'asapbio-immunology',
@@ -47,14 +49,6 @@ export const clubIds = [
   'sun-bioinformatics',
   'surrey-microbiology',
   'tsl-preprint-club',
-] as const
+)
 
-export type ClubId = (typeof clubIds)[number]
-
-export const ClubIdSchema = Schema.Literal(...clubIds)
-
-export const ClubIdC = C.fromDecoder(pipe(D.string, D.refine(isClubId, 'ClubID')))
-
-export function isClubId(value: string): value is ClubId {
-  return (clubIds as ReadonlyArray<string>).includes(value)
-}
+export const ClubIdC = C.fromDecoder(pipe(D.string, D.refine(Schema.is(ClubIdSchema), 'ClubID')))

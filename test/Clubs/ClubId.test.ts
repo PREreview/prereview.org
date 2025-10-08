@@ -31,13 +31,3 @@ describe('ClubIdC', () => {
     expect(actual).toStrictEqual(clubId)
   })
 })
-
-describe('isClubId', () => {
-  test.prop([fc.clubId()])('with a club ID', string => {
-    expect(_.isClubId(string)).toBe(true)
-  })
-
-  test.prop([fc.string()])('with a non-club ID', string => {
-    expect(_.isClubId(string)).toBe(false)
-  })
-})
