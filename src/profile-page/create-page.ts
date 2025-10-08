@@ -5,7 +5,8 @@ import { getClubName } from '../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import { PageResponse } from '../Response/index.ts'
-import { clubProfileMatch, profileMatch } from '../routes.ts'
+import * as Routes from '../routes.ts'
+import { profileMatch } from '../routes.ts'
 import { ProfileId } from '../types/index.ts'
 import type { OrcidProfile } from './orcid-profile.ts'
 import type { PseudonymProfile } from './pseudonym-profile.ts'
@@ -118,8 +119,7 @@ function renderContentForOrcidId(
                     ${pipe(
                       clubs,
                       Array.map(
-                        club =>
-                          html`<a href="${format(clubProfileMatch.formatter, { id: club })}">${getClubName(club)}</a>`,
+                        club => html`<a href="${Routes.ClubProfile.href({ id: club })}">${getClubName(club)}</a>`,
                       ),
                       formatList(locale),
                     )}

@@ -6,7 +6,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
-import { ClubIdC } from './Clubs/index.ts'
+import { ClubIdSchema, type ClubId } from './Clubs/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
@@ -52,6 +52,12 @@ const DatasetIdSchema = Schema.transform(
       Tuple.make('doi-' as const, value.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
   },
 )
+
+export const ClubProfile: Route<{ id: ClubId }> = {
+  path: '/clubs/:id',
+  href: params => `/clubs/${Schema.encodeSync(ClubIdSchema)(params.id)}`,
+  schema: Schema.Struct({ id: Schema.compose(Schema.String, ClubIdSchema) }),
+}
 
 export const DatasetReviews: Route<{ datasetId: Datasets.DatasetId }> = {
   path: '/datasets/:datasetId',
@@ -474,8 +480,6 @@ export const verifyContactEmailAddressMatch = pipe(
   P.then(query(C.struct({ verify: UuidC }))),
   P.then(P.end),
 )
-
-export const clubProfileMatch = pipe(P.lit('clubs'), P.then(type('id', ClubIdC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
 

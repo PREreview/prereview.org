@@ -7,7 +7,8 @@ import { getClubName } from '../../Clubs/index.ts'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import { PageResponse } from '../../Response/index.ts'
-import { authorInviteDeclineMatch, clubProfileMatch, profileMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
+import { authorInviteDeclineMatch, profileMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
@@ -73,7 +74,7 @@ export const declinePage = ({
                         ),
                         formatList(locale),
                       ).toString(),
-                      club: html`<a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                      club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
                         >${getClubName(review.club)}</a
                       >`.toString(),
                       hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),

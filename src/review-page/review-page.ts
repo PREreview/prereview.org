@@ -8,7 +8,7 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.t
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
-import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.ts'
+import { preprintReviewsMatch, profileMatch, reviewMatch } from '../routes.ts'
 import { renderDate } from '../time.ts'
 import { ProfileId } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -122,7 +122,7 @@ export const createPage = ({
                     ),
                     formatList(locale),
                   ).toString(),
-                  club: html`<a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                  club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
                     >${getClubName(review.club)}</a
                   >`.toString(),
                   hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),

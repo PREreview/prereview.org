@@ -13,12 +13,12 @@ import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-erro
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import type { Prereview } from '../Prereview.ts'
 import { PageResponse, RedirectResponse } from '../Response/index.ts'
+import * as Routes from '../routes.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
-  clubProfileMatch,
   profileMatch,
 } from '../routes.ts'
 import { renderDate } from '../time.ts'
@@ -144,7 +144,7 @@ function startPage({
                       ),
                       formatList(locale),
                     ).toString(),
-                    club: html`<a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                    club: html`<a href="${Routes.ClubProfile.href({ id: review.club })}"
                       >${getClubName(review.club)}</a
                     >`.toString(),
                     hide: text => html`<span class="visually-hidden">${text}</span>`.toString(),

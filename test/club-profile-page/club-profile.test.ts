@@ -1,12 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { encode } from 'html-entities'
 import { getClubName } from '../../src/Clubs/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/club-profile-page/index.ts'
-import { clubProfileMatch } from '../../src/routes.ts'
+import * as Routes from '../../src/routes.ts'
 import * as fc from '../fc.ts'
 
 describe('clubProfile', () => {
@@ -30,7 +29,7 @@ describe('clubProfile', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      canonical: format(clubProfileMatch.formatter, { id: clubId }),
+      canonical: Routes.ClubProfile.href({ id: clubId }),
       status: StatusCodes.OK,
       title: expect.plainTextContaining(getClubName(clubId)),
       main: expect.htmlContaining(encode(getClubName(clubId))),

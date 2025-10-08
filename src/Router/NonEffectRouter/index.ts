@@ -30,7 +30,6 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
-import { clubProfile } from '../../club-profile-page/index.ts'
 import { DeprecatedLoggerEnv, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
@@ -266,25 +265,6 @@ const routerWithoutHyperTs = pipe(
     pipe(
       Routes.partnersMatch.parser,
       P.map(() => (env: Env) => T.of(partners(env.locale))),
-    ),
-    pipe(
-      Routes.clubProfileMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            clubProfile(
-              id,
-              env.locale,
-            )({
-              getPrereviews: EffectToFpts.toTaskEitherK(
-                flow(
-                  Prereviews.getForClub,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
-                ),
-                env.runtime,
-              ),
-            }),
-      ),
     ),
     pipe(
       Routes.homeMatch.parser,
