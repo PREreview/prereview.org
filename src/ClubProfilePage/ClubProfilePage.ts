@@ -1,7 +1,6 @@
-import { Array, flow, pipe } from 'effect'
+import { Array, flow, Match, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { P, match } from 'ts-pattern'
 import type { Club, ClubId } from '../Clubs/index.ts'
 import { html, plainText, rawHtml, type Html } from '../html.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
@@ -31,22 +30,24 @@ export function createPage({
     main: html`
       <h1>${club.name}</h1>
 
-      ${match(id)
-        .with(
-          P.string.startsWith('asapbio-'),
+      ${pipe(
+        Match.value(id),
+        Match.when(
+          String.startsWith('asapbio-'),
           () => html`
             <img src="${assets['asapbio.svg']}" width="1851" height="308" alt="ASAPbio" class="club-logo" />
           `,
-        )
-        .with(
+        ),
+        Match.when(
           'jmir-publications',
           () => html`
             <a href="https://jmirpublications.com/"
               ><img src="${assets['jmir.svg']}" width="537" height="86" alt="JMIR Publications" class="club-logo"
             /></a>
           `,
-        )
-        .otherwise(() => '')}
+        ),
+        Match.orElse(() => ''),
+      )}
       ${club.description}
 
       <dl>
@@ -117,7 +118,7 @@ export function createPage({
                             ),
                             Array.map(name => html`<b>${name}</b>`),
                             formatList(locale),
-                            String,
+                            list => list.toString(),
                           ),
                           preprint: html`
                             <cite
