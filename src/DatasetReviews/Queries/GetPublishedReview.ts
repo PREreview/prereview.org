@@ -12,6 +12,7 @@ export interface PublishedReview {
   id: Uuid.Uuid
   questions: {
     qualityRating: Option.Option<'excellent' | 'fair' | 'poor' | 'unsure'>
+    qualityRatingDetail: Option.Option<NonEmptyString.NonEmptyString>
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -55,7 +56,7 @@ export const GetPublishedReview = (
 
   const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
-  const qualityRating = Option.map(Array.findLast(events, hasTag('RatedTheQualityOfTheDataset')), Struct.get('rating'))
+  const ratedTheQualityOfTheDataset = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
   const answerToIfTheDatasetHasEnoughMetadata = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata')),
@@ -124,7 +125,8 @@ export const GetPublishedReview = (
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {
-          qualityRating,
+          qualityRating: Option.andThen(ratedTheQualityOfTheDataset, Struct.get('rating')),
+          qualityRatingDetail: Option.andThen(ratedTheQualityOfTheDataset, Struct.get('detail')),
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
           answerToIfTheDatasetHasEnoughMetadata,

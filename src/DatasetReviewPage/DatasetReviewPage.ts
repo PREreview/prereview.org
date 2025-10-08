@@ -82,6 +82,10 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(datasetReview.questions.qualityRatingDetail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         <dt>Does this dataset follow FAIR and CARE principles?</dt>

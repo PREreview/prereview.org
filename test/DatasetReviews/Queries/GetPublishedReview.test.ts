@@ -165,6 +165,7 @@ describe('GetPublishedReview', () => {
                 id: events[0].datasetReviewId,
                 questions: {
                   qualityRating: Option.none(),
+                  qualityRatingDetail: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   answerToIfTheDatasetHasTrackedChanges: Option.none(),
@@ -215,6 +216,7 @@ describe('GetPublishedReview', () => {
                   id: datasetReviewId,
                   questions: {
                     qualityRating: Option.some(ratedTheQualityOfTheDataset1.rating),
+                    qualityRatingDetail: ratedTheQualityOfTheDataset1.detail,
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
@@ -288,6 +290,7 @@ describe('GetPublishedReview', () => {
                   id: datasetReviewId,
                   questions: {
                     qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
+                    qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
@@ -329,6 +332,7 @@ describe('GetPublishedReview', () => {
                   id: datasetReviewId,
                   questions: {
                     qualityRating: Option.none(),
+                    qualityRatingDetail: Option.none(),
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),

@@ -23,6 +23,7 @@ describe('DatasetReviewsPage', () => {
       id: fc.uuid(),
       questions: fc.record({
         qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -95,6 +96,7 @@ describe('DatasetReviewsPage', () => {
       id: fc.uuid(),
       questions: fc.record({
         qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -207,6 +209,7 @@ describe('DatasetReviewsPage', () => {
       id: fc.uuid(),
       questions: fc.record({
         qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -281,6 +284,7 @@ describe('DatasetReviewsPage', () => {
       id: fc.uuid(),
       questions: fc.record({
         qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),

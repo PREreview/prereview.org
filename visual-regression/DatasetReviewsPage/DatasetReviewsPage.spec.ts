@@ -67,6 +67,7 @@ const prereview1: _.DatasetReview = {
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
     qualityRating: Option.some('excellent'),
+    qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
@@ -95,6 +96,7 @@ const prereview2: _.DatasetReview = {
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {
     qualityRating: Option.none(),
+    qualityRatingDetail: Option.none(),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
     answerToIfTheDatasetHasTrackedChanges: Option.none(),
