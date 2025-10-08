@@ -2,16 +2,16 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
-import { getClubName } from '../../src/Clubs/index.ts'
-import { Locale } from '../../src/Context.ts'
-import * as Prereviews from '../../src/Prereviews/index.ts'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as _ from '../../src/club-profile-page/index.ts'
-import * as Routes from '../../src/routes.ts'
-import * as EffectTest from '../EffectTest.ts'
-import * as fc from '../fc.ts'
+import * as _ from '../src/ClubProfilePage/index.ts'
+import { getClubName } from '../src/Clubs/index.ts'
+import { Locale } from '../src/Context.ts'
+import * as Prereviews from '../src/Prereviews/index.ts'
+import * as Routes from '../src/routes.ts'
+import * as StatusCodes from '../src/StatusCodes.ts'
+import * as EffectTest from './EffectTest.ts'
+import * as fc from './fc.ts'
 
-describe('clubProfile', () => {
+describe('ClubProfilePage', () => {
   test.prop([
     fc.clubId(),
     fc.array(
@@ -30,7 +30,7 @@ describe('clubProfile', () => {
       const getForClub = jest.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
 
       const actual = yield* pipe(
-        _.clubProfile({ id: clubId }),
+        _.ClubProfilePage({ id: clubId }),
         Effect.provide(Layer.mock(Prereviews.Prereviews, { getForClub })),
       )
 
@@ -50,7 +50,7 @@ describe('clubProfile', () => {
   test.prop([fc.clubId(), fc.supportedLocale()])('when the PREreviews are unavailable', (clubId, locale) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
-        _.clubProfile({ id: clubId }),
+        _.ClubProfilePage({ id: clubId }),
         Effect.provide(
           Layer.mock(Prereviews.Prereviews, { getForClub: () => new Prereviews.PrereviewsAreUnavailable() }),
         ),

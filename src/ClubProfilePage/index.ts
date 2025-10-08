@@ -3,9 +3,9 @@ import * as Clubs from '../Clubs/index.ts'
 import { Locale } from '../Context.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import * as Prereviews from '../Prereviews/index.ts'
-import { createPage } from './club-profile-page.ts'
+import { createPage } from './ClubProfilePage.ts'
 
-export const clubProfile = Effect.fn(
+export const ClubProfilePage = Effect.fn(
   function* ({ id }: { id: Clubs.ClubId }) {
     const club = Clubs.getClubDetails(id)
     const locale = yield* Locale

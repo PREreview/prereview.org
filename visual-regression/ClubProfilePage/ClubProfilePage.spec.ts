@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { createPage } from '../../src/club-profile-page/club-profile-page.ts'
+import { createPage } from '../../src/ClubProfilePage/ClubProfilePage.ts'
 import type { Club, ClubId } from '../../src/Clubs/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'

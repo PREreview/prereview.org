@@ -2,7 +2,7 @@ import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpSe
 import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
-import { clubProfile } from '../club-profile-page/index.ts'
+import { ClubProfilePage } from '../ClubProfilePage/index.ts'
 import { ClubsPage } from '../ClubsPage.ts'
 import { CodeOfConductPage } from '../CodeOfConductPage.ts'
 import { AllowSiteCrawlers, Locale } from '../Context.ts'
@@ -413,7 +413,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
-    MakeRoute('GET', Routes.ClubProfile, clubProfile),
+    MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
   ]),
   HttpRouter.concat(AuthRouter),
   HttpRouter.concat(DatasetReviewPages),
