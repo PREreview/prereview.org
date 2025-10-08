@@ -12,7 +12,11 @@ export class DatasetReviewWasStarted extends Schema.TaggedClass<DatasetReviewWas
 
 export class RatedTheQualityOfTheDataset extends Schema.TaggedClass<RatedTheQualityOfTheDataset>()(
   'RatedTheQualityOfTheDataset',
-  { rating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    rating: Schema.Literal('excellent', 'fair', 'poor', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.TaggedClass<AnsweredIfTheDatasetFollowsFairAndCarePrinciples>()(

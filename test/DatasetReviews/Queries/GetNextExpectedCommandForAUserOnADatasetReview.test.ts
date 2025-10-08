@@ -12,8 +12,16 @@ const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'poor', datasetReviewId })
-const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'fair', datasetReviewId })
+const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({
+  rating: 'poor',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({
+  rating: 'fair',
+  detail: Option.some(NonEmptyString.NonEmptyString('some detail')),
+  datasetReviewId,
+})
 const answeredIfTheDatasetFollowsFairAndCarePrinciples1 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
