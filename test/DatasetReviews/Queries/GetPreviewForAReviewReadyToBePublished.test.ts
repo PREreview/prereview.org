@@ -14,9 +14,14 @@ const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.ws
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({
   rating: 'excellent',
+  detail: Option.none(),
   datasetReviewId,
 })
-const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({ rating: 'fair', datasetReviewId })
+const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({
+  rating: 'fair',
+  detail: Option.some(NonEmptyString.NonEmptyString('some detail')),
+  datasetReviewId,
+})
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =

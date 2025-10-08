@@ -1625,6 +1625,7 @@ export const ratedTheQualityOfTheDataset = ({
   fc
     .record({
       rating: constantFrom('excellent', 'fair', 'poor', 'unsure'),
+      detail: maybe(nonEmptyString()),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new Events.RatedTheQualityOfTheDataset(data))
