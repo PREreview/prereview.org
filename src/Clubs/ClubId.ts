@@ -37,6 +37,7 @@ export const clubIds = [
   'oxplants',
   'padua-biomedical-sciences',
   'plant-biotechnology',
+  'plant-pathology-genomics',
   'prosac',
   'review-curate-network',
   'reviewing-dental-articles-club',

@@ -670,6 +670,21 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2025-09-09'),
     leads: [{ name: 'Lessa Tchohou Fabrice', orcid: OrcidId('0000-0002-5644-7632') }],
   },
+  'plant-pathology-genomics': {
+    name: 'Plant Pathology & Genomics Preprint Club',
+    description: html`
+      <p>We are early-career researchers studying plant pathology and genomics based in Japan.</p>
+      <p>
+        Our aim is to learn from the most recent preprints in the field of plant-microbe interactions and to train
+        ourselves to provide constructive feedback on manuscripts, thereby encouraging open science.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2025-10-08'),
+    leads: [
+      { name: 'Ren Ujimatsu', orcid: OrcidId('0009-0006-7429-6694') },
+      { name: 'Aoi Kudoh', orcid: OrcidId('0000-0002-2271-9193') },
+    ],
+  },
   prosac: {
     name: 'Proteostasis and Cancer Team INSERM U1242',
     description: html`
