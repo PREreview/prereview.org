@@ -1,6 +1,6 @@
 import { type Locator, test as baseTest } from '@playwright/test'
+import { Match, String, pipe } from 'effect'
 import path from 'path'
-import { P, match } from 'ts-pattern'
 import type { Html } from '../src/html.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
 import { type Page, page as templatePage } from '../src/page.ts'
@@ -26,18 +26,20 @@ export const test = baseTest.extend<ShowPage>({
     await use('http://example.com')
   },
   page: async ({ page }, use) => {
-    await page.route('**/*', (route, request) => {
-      return match(request.url())
-        .with(P.string.startsWith('https://placehold.co/'), () => route.continue())
-        .with('http://example.com/', () =>
+    await page.route('**/*', (route, request) =>
+      pipe(
+        Match.value(request.url()),
+        Match.when(String.startsWith('https://placehold.co/'), () => route.continue()),
+        Match.when('http://example.com/', () =>
           route.fulfill({
             status: 200,
             headers: { 'Content-type': 'text/html; charset=utf-8' },
           }),
-        )
-        .with(P.string.startsWith('https://fonts.googleapis.com/'), () => route.fulfill({ status: 404 }))
-        .otherwise(url => route.fulfill({ path: path.join('dist/assets', new URL(url).pathname) }))
-    })
+        ),
+        Match.when(String.startsWith('https://fonts.googleapis.com/'), () => route.fulfill({ status: 404 })),
+        Match.orElse(url => route.fulfill({ path: path.join('dist/assets', new URL(url).pathname) })),
+      ),
+    )
 
     await page.goto('http://example.com', { waitUntil: 'commit' })
 
@@ -87,6 +89,6 @@ export const test = baseTest.extend<ShowPage>({
     })
   },
   templatePage: async ({ baseURL }, use) => {
-    await use(page => templatePage({ page, publicUrl: new URL(String(baseURL)), useCrowdinInContext: false }))
+    await use(page => templatePage({ page, publicUrl: new URL(baseURL ?? ''), useCrowdinInContext: false }))
   },
 })
