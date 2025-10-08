@@ -12,6 +12,7 @@ export interface DatasetReviewPreview {
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
+  readonly qualityRatingDetail: Events.RatedTheQualityOfTheDataset['detail']
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
@@ -116,6 +117,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
         dataset: started.datasetId,
         competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
+        qualityRatingDetail: Option.andThen(qualityRating, Struct.get('detail')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),

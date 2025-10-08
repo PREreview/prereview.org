@@ -181,6 +181,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
               qualityRating: Option.some(events[1].rating),
+              qualityRatingDetail: events[1].detail,
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
@@ -205,6 +206,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: Option.none(),
                 qualityRating: Option.none(),
+                qualityRatingDetail: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
@@ -261,6 +263,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
                 qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
+                qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),

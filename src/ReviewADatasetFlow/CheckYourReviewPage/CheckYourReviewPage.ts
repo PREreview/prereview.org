@@ -111,6 +111,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(review.qualityRatingDetail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">how you rate the quality</span>

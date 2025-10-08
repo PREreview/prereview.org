@@ -37,6 +37,7 @@ const review = {
     language: 'en',
   }),
   qualityRating: Option.some('excellent'),
+  qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
