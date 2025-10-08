@@ -31,6 +31,10 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
               Match.exhaustive,
             )}
           </dd>
+          ${Option.match(review.qualityRatingDetail, {
+            onNone: () => '',
+            onSome: detail => html`<dd>${detail}</dd>`,
+          })}
         `,
       })}
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
