@@ -318,7 +318,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       { name: 'Francisco Silva-Garcés', orcid: OrcidId('0000-0002-2635-1293') },
       { name: 'Rosario Rogel-Salazar', orcid: OrcidId('0000-0002-6018-0635') },
     ],
-    joinLink: new URL('https://cienciaabierta.info/'),
+    joinLink: new URL('https://openlab.ec/club-cibca'),
   },
   'elife-ambassadors': {
     name: 'eLife Community Ambassadors',
