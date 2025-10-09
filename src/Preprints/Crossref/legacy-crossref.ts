@@ -24,7 +24,6 @@ import {
   EngrxivPreprintId,
   type IndeterminatePreprintId,
   type PreprintId,
-  PsyarxivPreprintId,
   ScienceOpenPreprintId,
   TechrxivPreprintId,
 } from '../PreprintId.ts'
@@ -36,7 +35,6 @@ const crossrefDoiPrefixes = [
   '31124',
   '31223',
   '31224',
-  '31234',
   '31730',
   '32942',
   '35542',
@@ -168,7 +166,6 @@ const detectLanguageForServer = ({
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EdarxivPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'PsyarxivPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'ScienceOpenPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
@@ -244,14 +241,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Open Engineering Inc'),
     }),
     D.map(work => new EngrxivPreprintId({ value: work.DOI })),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31234'), 'DOI'),
-      publisher: D.literal('Center for Open Science'),
-      'group-title': D.literal('PsyArXiv'),
-    }),
-    D.map(work => new PsyarxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
