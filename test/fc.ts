@@ -440,7 +440,12 @@ export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmail
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
-export const httpBody = (): fc.Arbitrary<HttpBody.HttpBody> => fc.string().map(HttpBody.text)
+export const httpBody = (): fc.Arbitrary<HttpBody.HttpBody> =>
+  fc.string().map(text =>
+    Object.defineProperties(HttpBody.text(text), {
+      [fc.toStringMethod]: { value: () => fc.stringify(text) },
+    }),
+  )
 
 export const httpClientRequest = ({
   method,
@@ -456,7 +461,11 @@ export const httpClientRequest = ({
       method: method ?? requestMethod(),
       url: _url ?? url(),
     })
-    .map(({ method, url, ...options }) => HttpClientRequest.make(method)(url, options))
+    .map(({ method, url, ...options }) =>
+      Object.defineProperties(HttpClientRequest.make(method)(url, options), {
+        [fc.toStringMethod]: { value: () => fc.stringify({ method, url, ...options }) },
+      }),
+    )
 
 export const httpClientResponse = ({
   request,
@@ -469,7 +478,11 @@ export const httpClientResponse = ({
       request: request ?? httpClientRequest(),
       response: fetchResponse(response),
     })
-    .map(({ request, response }) => HttpClientResponse.fromWeb(request, response))
+    .map(({ request, response }) =>
+      Object.defineProperties(HttpClientResponse.fromWeb(request, response), {
+        [fc.toStringMethod]: { value: () => fc.stringify({ request, response }) },
+      }),
+    )
 
 export const httpClientRequestError = ({
   reason,
