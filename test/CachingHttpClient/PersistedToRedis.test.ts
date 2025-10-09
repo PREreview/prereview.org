@@ -99,7 +99,7 @@ describe('writeToRedis', () => {
 
   describe('the value can be written', () => {
     it.prop([
-      fc.string().chain(text => fc.tuple(fc.httpClientResponse({ text: fc.constant(text) }), fc.constant(text))),
+      fc.string().chain(text => fc.tuple(fc.httpClientResponse({ body: fc.constant(text) }), fc.constant(text))),
       fc.dateTimeUtc(),
     ])('succeeds', ([response, body], staleAt) =>
       Effect.gen(function* () {

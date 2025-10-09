@@ -1315,12 +1315,12 @@ export const fetchResponse = ({
   headers: headers_,
   status,
   json,
-  text,
+  body,
 }: {
   headers?: fc.Arbitrary<Headers>
   status?: fc.Arbitrary<StatusCodes.StatusCode>
   json?: fc.Arbitrary<Json>
-  text?: fc.Arbitrary<string>
+  body?: fc.Arbitrary<BodyInit>
 } = {}): fc.Arbitrary<Response> =>
   fc
     .record({
@@ -1328,19 +1328,19 @@ export const fetchResponse = ({
       status:
         status ??
         statusCode().filter(status =>
-          (json ?? text)
+          (json ?? body)
             ? ![StatusCodes.NoContent, StatusCodes.ResetContent].includes(status as never) &&
               (status < 300 || status >= 400)
             : true,
         ),
-      text: json ? json.map(JSON.stringify) : (text ?? fc.string()),
+      body: json ? json.map(JSON.stringify) : (body ?? fc.string()),
     })
     .map(args => {
       return Object.defineProperties(
         new Response(
           ![StatusCodes.NoContent, StatusCodes.ResetContent].includes(args.status as never) &&
           (args.status < 300 || args.status >= 400)
-            ? args.text
+            ? args.body
             : undefined,
           {
             headers: args.headers,

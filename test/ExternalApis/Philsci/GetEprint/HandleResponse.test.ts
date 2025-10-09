@@ -47,7 +47,7 @@ describe('HandleResponse', () => {
       test.prop([
         fc.httpClientResponse({
           status: fc.constant(StatusCodes.OK),
-          text: fc.lorem(),
+          body: fc.lorem(),
         }),
       ])('returns an error', response =>
         Effect.gen(function* () {
