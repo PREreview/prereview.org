@@ -2,7 +2,7 @@ import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
 import { GetWork } from './GetWork/index.ts'
 
-export { ResponseSchema, Work } from './Work.ts'
+export { Work, WorkResponseSchema } from './Work.ts'
 
 export class Crossref extends Context.Tag('Crossref')<
   Crossref,

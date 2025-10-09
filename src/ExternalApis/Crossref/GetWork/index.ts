@@ -2,7 +2,7 @@ import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe } from 'effect'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Doi } from '../../../types/index.ts'
-import { ResponseSchema, Work, WorkIsNotFound, WorkIsUnavailable } from '../Work.ts'
+import { type Work, WorkIsNotFound, WorkIsUnavailable, WorkResponseSchema } from '../Work.ts'
 
 export const GetWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | WorkIsUnavailable, HttpClient.HttpClient> =>
   pipe(
@@ -15,8 +15,7 @@ export const GetWork = (doi: Doi.Doi): Effect.Effect<Work, WorkIsNotFound | Work
         orElse: response => new WorkIsUnavailable({ cause: response }),
       }),
     ),
-    Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseSchema(Work))),
-    Effect.andThen(body => body.message),
+    Effect.andThen(HttpClientResponse.schemaBodyJson(WorkResponseSchema)),
     Effect.catchTags({
       ParseError: error => new WorkIsUnavailable({ cause: error }),
       ResponseError: error => new WorkIsUnavailable({ cause: error }),

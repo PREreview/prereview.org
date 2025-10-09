@@ -1,4 +1,4 @@
-import { Array, Data, Schema, Tuple } from 'effect'
+import { Array, Data, Schema, Struct, Tuple } from 'effect'
 import { Doi, OrcidId, Temporal } from '../../types/index.ts'
 
 const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
@@ -72,11 +72,15 @@ export class Work extends Schema.Class<Work>('Work')({
   subtype: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
 }) {}
 
-export const ResponseSchema = <A, I, R>(message: Schema.Schema<A, I, R>) =>
-  Schema.Struct({
-    status: Schema.Literal('ok'),
-    message,
-  })
+export const WorkResponseSchema = Schema.transform(
+  Schema.Struct({ status: Schema.Literal('ok'), message: Work }),
+  Schema.typeSchema(Work),
+  {
+    strict: true,
+    decode: Struct.get('message'),
+    encode: message => ({ status: 'ok' as const, message }),
+  },
+)
 
 export class WorkIsNotFound extends Data.TaggedError('WorkIsNotFound')<{ cause?: unknown }> {}
 

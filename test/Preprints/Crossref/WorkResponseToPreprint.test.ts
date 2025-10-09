@@ -4,7 +4,7 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, Schema, Struct } from 'effect'
+import { Effect, pipe, Schema } from 'effect'
 import { Crossref } from '../../../src/ExternalApis/index.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
@@ -423,8 +423,7 @@ test.each([
     const actual = yield* pipe(
       FileSystem.FileSystem,
       Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
-      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.ResponseSchema(Crossref.Work)))),
-      Effect.andThen(Struct.get('message')),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
       Effect.andThen(workToPreprint),
     )
 
@@ -439,8 +438,7 @@ test.each(['csh-press-journal.json', 'f1000.json', 'scielo-journal.json', 'wellc
       const actual = yield* pipe(
         FileSystem.FileSystem,
         Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.ResponseSchema(Crossref.Work)))),
-        Effect.andThen(Struct.get('message')),
+        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
         Effect.andThen(workToPreprint),
         Effect.flip,
       )
