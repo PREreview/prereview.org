@@ -86,7 +86,7 @@ export const decide: {
           Option.some(
             new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
               answer: command.answer,
-              detail: Option.none(),
+              detail: command.detail,
               datasetReviewId: command.datasetReviewId,
             }),
           ),

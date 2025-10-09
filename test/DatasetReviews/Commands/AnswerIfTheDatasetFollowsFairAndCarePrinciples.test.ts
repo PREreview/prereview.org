@@ -261,7 +261,7 @@ describe('decide', () => {
         Option.some(
           new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
             answer: command.answer,
-            detail: Option.none(),
+            detail: command.detail,
             datasetReviewId: command.datasetReviewId,
           }),
         ),
