@@ -10,7 +10,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  Option.Option<Events.RatedTheQualityOfTheDataset['rating']>,
+  Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -50,7 +50,10 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
       return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
     }
 
-    return Option.map(Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset')), Struct.get('rating'))
+    return Option.map(
+      Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset')),
+      Struct.pick('rating', 'detail'),
+    )
   })
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

@@ -18,7 +18,12 @@ describe('RateTheQualityQuestion', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
+      fc.maybe(
+        fc.record({
+          rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
+      ),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
         const actual = yield* _.RateTheQualityQuestion({ datasetReviewId })

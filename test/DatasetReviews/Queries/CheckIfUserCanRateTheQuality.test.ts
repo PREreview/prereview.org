@@ -101,19 +101,19 @@ describe('query', () => {
           ),
         )
         .map(([started, rated]) =>
-          Tuple.make(Array.make(started, rated), started.datasetReviewId, started.authorId, rated.rating),
+          Tuple.make(Array.make(started, rated), started.datasetReviewId, started.authorId, rated.rating, rated.detail),
         ),
     ],
     {
       examples: [
-        [[[started, rated1], datasetReviewId, authorId, rated1.rating]], // one rating
-        [[[started, rated1, rated2], datasetReviewId, authorId, rated2.rating]], // two ratings
+        [[[started, rated1], datasetReviewId, authorId, rated1.rating, rated1.detail]], // one rating
+        [[[started, rated1, rated2], datasetReviewId, authorId, rated2.rating, rated2.detail]], // two ratings
       ],
     },
-  )('has been rated', ([events, datasetReviewId, userId, expectedRating]) => {
+  )('has been rated', ([events, datasetReviewId, userId, expectedRating, expectedDetail]) => {
     const actual = _.query(events, { datasetReviewId, userId })
 
-    expect(actual).toStrictEqual(Either.right(Option.some(expectedRating)))
+    expect(actual).toStrictEqual(Either.right(Option.some({ rating: expectedRating, detail: expectedDetail })))
   })
 
   test.prop(
