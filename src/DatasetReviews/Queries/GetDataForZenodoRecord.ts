@@ -11,6 +11,7 @@ export interface DataForZenodoRecord {
   readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
   readonly qualityRatingDetail: Events.RatedTheQualityOfTheDataset['detail']
   readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
+  readonly answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['detail']
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
@@ -111,6 +112,7 @@ export const GetDataForZenodoRecord = (
         qualityRating: Option.map(qualityRating, Struct.get('rating')),
         qualityRatingDetail: Option.andThen(qualityRating, Struct.get('detail')),
         answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
+        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: answerToIfTheDatasetFollowsFairAndCarePrinciples.detail,
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(

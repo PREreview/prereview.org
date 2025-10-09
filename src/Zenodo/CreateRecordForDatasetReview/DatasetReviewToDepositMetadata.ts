@@ -48,6 +48,10 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
           Match.exhaustive,
         )}
       </dd>
+      ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+        onNone: () => '',
+        onSome: detail => html`<dd>${detail}</dd>`,
+      })}
       ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
         onNone: () => '',
         onSome: answerToIfTheDatasetHasEnoughMetadata => html`

@@ -25,6 +25,7 @@ const cases = [
       qualityRating: Option.some('excellent'),
       qualityRatingDetail: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.none(),
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
@@ -53,6 +54,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
           <dt>Does the dataset have enough metadata?</dt>
           <dd>
@@ -159,6 +161,9 @@ const cases = [
       qualityRating: Option.some('excellent'),
       qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Some detail about the excellent rating.')),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
+        NonEmptyString.NonEmptyString('Some detail about the yes.'),
+      ),
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
@@ -187,6 +192,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      <dd>Some detail about the yes.</dd>
       
           <dt>Does the dataset have enough metadata?</dt>
           <dd>
@@ -286,6 +292,7 @@ const cases = [
       qualityRating: Option.none(),
       qualityRatingDetail: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.none(),
       answerToIfTheDatasetHasEnoughMetadata: Option.none(),
       answerToIfTheDatasetHasTrackedChanges: Option.none(),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -306,6 +313,7 @@ const cases = [
       <dd>
         Yes
       </dd>
+      
       
       
       

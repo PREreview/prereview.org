@@ -21,6 +21,9 @@ describe('CreateRecordOnZenodo', () => {
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
           .map(Struct.get('answer')),
+        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc
+          .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+          .map(Struct.get('detail')),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
           fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
         ),
@@ -83,6 +86,9 @@ describe('CreateRecordOnZenodo', () => {
         answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
           .map(Struct.get('answer')),
+        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc
+          .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+          .map(Struct.get('detail')),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
           fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
         ),
@@ -146,6 +152,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+        .map(Struct.get('detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
@@ -218,6 +227,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+        .map(Struct.get('detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
@@ -283,6 +295,9 @@ describe('CreateRecordOnZenodo', () => {
       answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.get('answer')),
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc
+        .answeredIfTheDatasetFollowsFairAndCarePrinciples()
+        .map(Struct.get('detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
       ),
