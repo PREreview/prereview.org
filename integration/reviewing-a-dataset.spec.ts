@@ -148,7 +148,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Fair').check()
+    await page.getByLabel('Fair', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
 
@@ -362,7 +362,8 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
 test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publishing', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair').check()
+  await page.getByLabel('Fair', { exact: true }).check()
+  await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -395,7 +396,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await expect(details).toContainText('Published name Josiah Carberry')
   await expect(details).toContainText('Competing interests None declared')
-  await expect(review).toContainText('How would you rate the quality of this data set? Fair')
+  await expect(review).toContainText('How would you rate the quality of this data set? Fair Cras lobortis quam vitae.')
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
   await expect(page.getByRole('main')).toContainText(
@@ -436,6 +437,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(details).toContainText('Competing interests Maecenas sed dapibus massa.')
+
+  await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
+
+  await page.getByLabel('Why is it fair quality?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('How would you rate the quality of this data set? Fair')
+  await expect(review).not.toContainText('Fair Cras lobortis quam vitae.')
 
   await page.getByRole('link', { name: 'Change how you rate the quality' }).click()
 
@@ -545,7 +554,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair').check()
+  await page.getByLabel('Fair', { exact: true }).check()
+  await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -640,7 +650,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('Fair')).toBeChecked()
+  await expect(page.getByLabel('Fair', { exact: true })).toBeChecked()
+  await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
 
   await page.goBack()
 
@@ -650,7 +661,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a step', async ({ page }) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Fair').check()
+  await page.getByLabel('Fair', { exact: true }).check()
+  await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -745,7 +757,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  await expect(page.getByLabel('Fair')).toBeChecked()
+  await expect(page.getByLabel('Fair', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it fair quality?')).toHaveValue('Cras lobortis quam vitae.')
   await expect(page.getByRole('link', { name: 'Back' })).not.toBeVisible()
 })
 
@@ -786,6 +799,10 @@ test.extend(canLogIn).extend(areLoggedIn)('have to rate the quality', async ({ j
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.goto(`${page.url()}/../rate-the-quality`, { waitUntil: 'commit' })
 
+  if (!javaScriptEnabled) {
+    await page.getByLabel('Why is it excellent quality?').fill('   \n Cras lobortis quam vitae. ')
+  }
+
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   if (javaScriptEnabled) {
@@ -800,7 +817,10 @@ test.extend(canLogIn).extend(areLoggedIn)('have to rate the quality', async ({ j
 
   await page.getByRole('link', { name: 'Select how you rate the quality' }).click()
 
-  await expect(page.getByLabel('Excellent')).toBeFocused()
+  await expect(page.getByLabel('Excellent', { exact: true })).toBeFocused()
+  if (!javaScriptEnabled) {
+    await expect(page.getByLabel('Why is it excellent quality?')).toHaveValue('   \n Cras lobortis quam vitae. ')
+  }
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(

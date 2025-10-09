@@ -35,7 +35,7 @@ describe('RateTheQualityQuestion', () => {
           title: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -180,7 +180,17 @@ describe('RateTheQualitySubmission', () => {
     describe('when the answer can be saved', () => {
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+              qualityRatingExcellentDetail: fc.string(),
+              qualityRatingFairDetail: fc.string(),
+              qualityRatingPoorDetail: fc.string(),
+            },
+            { requiredKeys: ['qualityRating'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewNextExpectedCommand(),
@@ -212,7 +222,17 @@ describe('RateTheQualitySubmission', () => {
 
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+              qualityRatingExcellentDetail: fc.string(),
+              qualityRatingFairDetail: fc.string(),
+              qualityRatingPoorDetail: fc.string(),
+            },
+            { requiredKeys: ['qualityRating'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
@@ -252,7 +272,17 @@ describe('RateTheQualitySubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            qualityRating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+            qualityRatingExcellentDetail: fc.string(),
+            qualityRatingFairDetail: fc.string(),
+            qualityRatingPoorDetail: fc.string(),
+          },
+          { requiredKeys: ['qualityRating'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -293,9 +323,15 @@ describe('RateTheQualitySubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'qualityRating'))),
       fc.urlParams(
-        fc.record({
-          qualityRating: fc.string().filter(string => !['excellent', 'fair', 'poor', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            qualityRating: fc.string().filter(string => !['excellent', 'fair', 'poor', 'unsure'].includes(string)),
+            qualityRatingExcellentDetail: fc.string(),
+            qualityRatingFairDetail: fc.string(),
+            qualityRatingPoorDetail: fc.string(),
+          },
+          { requiredKeys: ['qualityRating'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -311,7 +347,7 @@ describe('RateTheQualitySubmission', () => {
         title: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),

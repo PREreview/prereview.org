@@ -1,7 +1,7 @@
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import * as RateTheQualityForm from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,9 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new RateTheQualityForm.CompletedForm({
       qualityRating: 'excellent',
+      qualityRatingExcellentDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
+      qualityRatingFairDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the fair rating.')),
+      qualityRatingPoorDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the poor rating.')),
     }),
   })
 
@@ -34,6 +37,15 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new RateTheQualityForm.InvalidForm({
       qualityRating: Either.left(new RateTheQualityForm.Missing()),
+      qualityRatingExcellentDetail: Either.right(
+        Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
+      ),
+      qualityRatingFairDetail: Either.right(
+        Option.some(NonEmptyString.NonEmptyString('Detail about the fair rating.')),
+      ),
+      qualityRatingPoorDetail: Either.right(
+        Option.some(NonEmptyString.NonEmptyString('Detail about the poor rating.')),
+      ),
     }),
   })
 

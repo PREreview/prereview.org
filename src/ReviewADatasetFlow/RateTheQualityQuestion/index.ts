@@ -1,12 +1,12 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match, Option } from 'effect'
+import { Effect, Match, Option, pipe } from 'effect'
 import type { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import type { Uuid } from '../../types/index.ts'
+import type { NonEmptyString, Uuid } from '../../types/index.js'
 import { LoggedInUser } from '../../user.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 import * as RateTheQualityForm from './RateTheQualityForm.ts'
@@ -65,7 +65,14 @@ export const RateTheQualitySubmission = ({
         function* (form: RateTheQualityForm.CompletedForm) {
           yield* DatasetReviews.rateTheQuality({
             rating: form.qualityRating,
-            detail: Option.none(),
+            detail: pipe(
+              Match.value(form.qualityRating),
+              Match.when('excellent', () => form.qualityRatingExcellentDetail),
+              Match.when('fair', () => form.qualityRatingFairDetail),
+              Match.when('poor', () => form.qualityRatingPoorDetail),
+              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+              Match.exhaustive,
+            ),
             datasetReviewId,
             userId: user.orcid,
           })
