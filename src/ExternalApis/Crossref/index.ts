@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer } from 'effect'
-import { GetWork } from './Work.ts'
+import { GetWork } from './GetWork/index.ts'
 
 export { ResponseSchema, Work } from './Work.ts'
 

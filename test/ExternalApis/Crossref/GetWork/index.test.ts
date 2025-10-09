@@ -3,9 +3,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
-import * as _ from '../../../src/ExternalApis/Crossref/Work.ts'
-import * as EffectTest from '../../EffectTest.ts'
-import * as fc from '../../fc.ts'
+import * as _ from '../../../../src/ExternalApis/Crossref/GetWork/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../../../fc.ts'
 
 describe('GetWork', () => {
   test.prop(
