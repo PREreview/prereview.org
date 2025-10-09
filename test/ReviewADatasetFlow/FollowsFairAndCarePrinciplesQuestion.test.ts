@@ -36,7 +36,7 @@ describe('FollowsFairAndCarePrinciplesQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -185,7 +185,17 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
     describe('when the answer can be saved', () => {
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              followsFairAndCarePrinciplesYesDetail: fc.string(),
+              followsFairAndCarePrinciplesPartlyDetail: fc.string(),
+              followsFairAndCarePrinciplesNoDetail: fc.string(),
+            },
+            { requiredKeys: ['followsFairAndCarePrinciples'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewNextExpectedCommand(),
@@ -217,7 +227,17 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              followsFairAndCarePrinciplesYesDetail: fc.string(),
+              followsFairAndCarePrinciplesPartlyDetail: fc.string(),
+              followsFairAndCarePrinciplesNoDetail: fc.string(),
+            },
+            { requiredKeys: ['followsFairAndCarePrinciples'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
@@ -257,7 +277,17 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            followsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            followsFairAndCarePrinciplesYesDetail: fc.string(),
+            followsFairAndCarePrinciplesPartlyDetail: fc.string(),
+            followsFairAndCarePrinciplesNoDetail: fc.string(),
+          },
+          { requiredKeys: ['followsFairAndCarePrinciples'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -298,11 +328,17 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'followsFairAndCarePrinciples'))),
       fc.urlParams(
-        fc.record({
-          followsFairAndCarePrinciples: fc
-            .string()
-            .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            followsFairAndCarePrinciples: fc
+              .string()
+              .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            followsFairAndCarePrinciplesYesDetail: fc.string(),
+            followsFairAndCarePrinciplesPartlyDetail: fc.string(),
+            followsFairAndCarePrinciplesNoDetail: fc.string(),
+          },
+          { requiredKeys: ['followsFairAndCarePrinciples'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -319,7 +355,7 @@ describe('FollowsFairAndCarePrinciplesSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),

@@ -365,7 +365,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Fair', { exact: true }).check()
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByLabel('How does it partly follow the principles?')
+    .fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -397,7 +400,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(details).toContainText('Published name Josiah Carberry')
   await expect(details).toContainText('Competing interests None declared')
   await expect(review).toContainText('How would you rate the quality of this data set? Fair Cras lobortis quam vitae.')
-  await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+  await expect(review).toContainText(
+    'Does this dataset follow FAIR and CARE principles? Partly Nullam vestibulum neque efficitur porta ornare.',
+  )
   await expect(review).toContainText('Does the dataset have enough metadata? Partly')
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly',
@@ -452,6 +457,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(review).toContainText('How would you rate the quality of this data set? I don’t know')
+
+  await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
+
+  await page.getByLabel('How does it partly follow the principles?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+  await expect(review).not.toContainText('Partly Nullam vestibulum neque efficitur porta ornare.')
 
   await page.getByRole('link', { name: 'Change if the dataset follows FAIR and CARE principles' }).click()
 
@@ -558,6 +571,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -647,6 +661,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByLabel('How does it follow the principles?')).toHaveValue(
+    'Nullam vestibulum neque efficitur porta ornare.',
+  )
 
   await page.goBack()
 
@@ -665,6 +682,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -754,6 +772,9 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByLabel('How does it follow the principles?')).toHaveValue(
+    'Nullam vestibulum neque efficitur porta ornare.',
+  )
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -830,6 +851,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../follows-fair-and-care-principles`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page
+        .getByLabel('How does it follow the principles?')
+        .fill('   \n Nullam vestibulum neque efficitur porta ornare. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -844,6 +871,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset follows FAIR and CARE principles' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('How does it follow the principles?')).toHaveValue(
+        '   \n Nullam vestibulum neque efficitur porta ornare. ',
+      )
+    }
   },
 )
 

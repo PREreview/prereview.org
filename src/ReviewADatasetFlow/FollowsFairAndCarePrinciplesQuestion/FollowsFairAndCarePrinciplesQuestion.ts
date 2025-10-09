@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
@@ -51,114 +51,188 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
           : ''}
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
-          <fieldset
-            role="group"
-            ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
-                ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
-                : '',
-            )}
-          >
-            <legend>
-              <h1>Does this dataset follow FAIR and CARE principles?</h1>
-            </legend>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
+                  ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
+                  : '',
+              )}
+            >
+              <legend>
+                <h1>Does this dataset follow FAIR and CARE principles?</h1>
+              </legend>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
-              ? html`
-                  <div class="error-message" id="findings-next-steps-error">
-                    <span class="visually-hidden">Error:</span>
-                    ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
-                      Missing: () => 'Select if the dataset follows FAIR and CARE principles',
-                    })}
+              ${form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
+                ? html`
+                    <div class="error-message" id="findings-next-steps-error">
+                      <span class="visually-hidden">Error:</span>
+                      ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
+                        Missing: () => 'Select if the dataset follows FAIR and CARE principles',
+                      })}
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="followsFairAndCarePrinciples"
+                      id="follows-fair-and-care-principles-yes"
+                      type="radio"
+                      value="yes"
+                      aria-describedby="follows-fair-and-care-principles-tip-yes"
+                      aria-controls="follows-fair-and-care-principles-yes-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'yes' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>Yes</span>
+                  </label>
+                  <p id="follows-fair-and-care-principles-tip-yes" role="note">
+                    The dataset has enough metadata and follows the FAIR and CARE principles.
+                  </p>
+                  <div class="conditional" id="follows-fair-and-care-principles-yes-control">
+                    <div>
+                      <label for="follows-fair-and-care-principles-yes-detail" class="textarea"
+                        >How does it follow the principles? (optional)</label
+                      >
+                      <textarea
+                        name="followsFairAndCarePrinciplesYesDetail"
+                        id="follows-fair-and-care-principles-yes-detail"
+                        rows="5"
+                      >
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesYesDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form =>
+                            Option.getOrElse(form.followsFairAndCarePrinciplesYesDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
                   </div>
-                `
-              : ''}
-
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="followsFairAndCarePrinciples"
-                    id="follows-fair-and-care-principles-yes"
-                    type="radio"
-                    value="yes"
-                    aria-describedby="follows-fair-and-care-principles-tip-yes"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'yes' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>Yes</span>
-                </label>
-                <p id="follows-fair-and-care-principles-tip-yes" role="note">
-                  The dataset has enough metadata and follows the FAIR and CARE principles.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="followsFairAndCarePrinciples"
-                    type="radio"
-                    value="partly"
-                    aria-describedby="follows-fair-and-care-principles-tip-partly"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'partly' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>Partly</span>
-                </label>
-                <p id="follows-fair-and-care-principles-tip-partly" role="note">
-                  The dataset has some metadata and follows some FAIR and CARE principles, but minor problems exist.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="followsFairAndCarePrinciples"
-                    type="radio"
-                    value="no"
-                    aria-describedby="follows-fair-and-care-principles-tip-no"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'no' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>No</span>
-                </label>
-                <p id="follows-fair-and-care-principles-tip-no" role="note">
-                  The dataset lacks enough metadata and does not follow the FAIR and CARE principles.
-                </p>
-              </li>
-              <li>
-                <span>or</span>
-                <label>
-                  <input
-                    name="followsFairAndCarePrinciples"
-                    type="radio"
-                    value="unsure"
-                    aria-describedby="follows-fair-and-care-principles-tip-unsure"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'unsure' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>I don’t know</span>
-                </label>
-              </li>
-            </ol>
-          </fieldset>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="followsFairAndCarePrinciples"
+                      type="radio"
+                      value="partly"
+                      aria-describedby="follows-fair-and-care-principles-tip-partly"
+                      aria-controls="follows-fair-and-care-principles-partly-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'partly' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>Partly</span>
+                  </label>
+                  <p id="follows-fair-and-care-principles-tip-partly" role="note">
+                    The dataset has some metadata and follows some FAIR and CARE principles, but minor problems exist.
+                  </p>
+                  <div class="conditional" id="follows-fair-and-care-principles-partly-control">
+                    <div>
+                      <label for="follows-fair-and-care-principles-partly-detail" class="textarea"
+                        >How does it partly follow the principles? (optional)</label
+                      >
+                      <textarea
+                        name="followsFairAndCarePrinciplesPartlyDetail"
+                        id="follows-fair-and-care-principles-partly-detail"
+                        rows="5"
+                      >
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesPartlyDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form =>
+                            Option.getOrElse(form.followsFairAndCarePrinciplesPartlyDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="followsFairAndCarePrinciples"
+                      type="radio"
+                      value="no"
+                      aria-describedby="follows-fair-and-care-principles-tip-no"
+                      aria-controls="follows-fair-and-care-principles-no-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'no' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>No</span>
+                  </label>
+                  <p id="follows-fair-and-care-principles-tip-no" role="note">
+                    The dataset lacks enough metadata and does not follow the FAIR and CARE principles.
+                  </p>
+                  <div class="conditional" id="follows-fair-and-care-principles-no-control">
+                    <div>
+                      <label for="follows-fair-and-care-principles-no-detail" class="textarea"
+                        >How does it not follow the principles? (optional)</label
+                      >
+                      <textarea
+                        name="followsFairAndCarePrinciplesNoDetail"
+                        id="follows-fair-and-care-principles-no-detail"
+                        rows="5"
+                      >
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.followsFairAndCarePrinciplesNoDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form =>
+                            Option.getOrElse(form.followsFairAndCarePrinciplesNoDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input
+                      name="followsFairAndCarePrinciples"
+                      type="radio"
+                      value="unsure"
+                      aria-describedby="follows-fair-and-care-principles-tip-unsure"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', followsFairAndCarePrinciples: 'unsure' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>I don’t know</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
         </div>
 
         <button>Save and continue</button>
       </form>
     `,
     canonical: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
+    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
