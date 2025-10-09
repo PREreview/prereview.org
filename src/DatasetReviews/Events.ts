@@ -21,7 +21,11 @@ export class RatedTheQualityOfTheDataset extends Schema.TaggedClass<RatedTheQual
 
 export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.TaggedClass<AnsweredIfTheDatasetFollowsFairAndCarePrinciples>()(
   'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<AnsweredIfTheDatasetHasEnoughMetadata>()(

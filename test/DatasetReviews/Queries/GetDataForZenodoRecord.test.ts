@@ -23,9 +23,17 @@ const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheData
   datasetReviewId,
 })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+    answer: 'no',
+    detail: Option.none(),
+    datasetReviewId,
+  })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'yes', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+    answer: 'yes',
+    detail: Option.some(NonEmptyString.NonEmptyString('Some detail about yes')),
+    datasetReviewId,
+  })
 const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'no',
   datasetReviewId,

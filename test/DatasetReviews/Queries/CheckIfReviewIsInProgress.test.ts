@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, identity, Predicate } from 'effect'
+import { Array, Either, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfReviewIsInProgress.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -13,7 +13,11 @@ const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+    answer: 'no',
+    detail: Option.none(),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })

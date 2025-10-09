@@ -13,7 +13,11 @@ const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+    answer: 'no',
+    detail: Option.none(),
+    datasetReviewId,
+  })
 const answeredIfTheDatasetHasEnoughMetadata = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'yes',
   datasetReviewId,

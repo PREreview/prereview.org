@@ -5,7 +5,7 @@ import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
@@ -13,9 +13,14 @@ const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answered1 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({ answer: 'no', datasetReviewId })
+const answered1 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
 const answered2 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'yes',
+  detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
@@ -245,6 +250,7 @@ describe('decide', () => {
         Option.some(
           new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
             answer: command.answer,
+            detail: Option.none(),
             datasetReviewId: command.datasetReviewId,
           }),
         ),
@@ -266,6 +272,7 @@ describe('decide', () => {
           Option.some(
             new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
               answer: command.answer,
+              detail: Option.none(),
               datasetReviewId: command.datasetReviewId,
             }),
           ),
