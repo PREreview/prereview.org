@@ -135,6 +135,10 @@ export const CheckYourReviewPage = ({
                       Match.exhaustive,
                     )}
                   </dd>
+                  ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+                    onNone: () => '',
+                    onSome: detail => html`<dd>${detail}</dd>`,
+                  })}
                   <dd>
                     <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}">
                       Change <span class="visually-hidden">if the dataset follows FAIR and CARE principles</span>

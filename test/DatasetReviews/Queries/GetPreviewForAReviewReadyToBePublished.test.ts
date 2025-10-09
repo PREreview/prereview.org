@@ -191,6 +191,7 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               qualityRating: Option.some(events[1].rating),
               qualityRatingDetail: events[1].detail,
               answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
+              answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: events[2].detail,
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
@@ -217,6 +218,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 qualityRatingDetail: Option.none(),
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -274,6 +277,8 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
                 answerToIfTheDatasetFollowsFairAndCarePrinciples:
                   answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
