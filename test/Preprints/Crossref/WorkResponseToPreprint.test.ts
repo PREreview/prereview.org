@@ -16,6 +16,7 @@ import {
   OsfPreprintsPreprintId,
   Preprint,
   PreprintsorgPreprintId,
+  PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
   SocarxivPreprintId,
@@ -416,6 +417,25 @@ test.each([
         ),
       },
       url: new URL('https://osf.io/t9gbj'),
+    }),
+  },
+  {
+    response: 'psyarxiv.json',
+    expected: Preprint({
+      authors: [{ name: 'JingHao MA' }],
+      id: new PsyarxivPreprintId({ value: Doi('10.31234/osf.io/hq8sd_v1') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 8, day: 21 }),
+      title: {
+        language: 'ja',
+        text: rawHtml('意味的類似度を用いたテキストからの未知知見検出法 --ディープラーニングによるアプローチ--'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          "<p>This study explores an efficient method to extract novel insights from free-text data using Semantic Textual Similarity (STS). With the growing use of social media platforms like X (formerly Twitter), large-scale free-text data has become a valuable resource for real-time analysis in various fields. Traditional manual classification methods struggle with the vast and diverse datasets, necessitating computational approaches like Natural Language Processing (NLP).The proposed method employs STS to prioritize text analysis by measuring semantic similarity between existing insights and new data, streamlining the discovery process for previously unobserved insights. Evaluations using two datasets—one on public opinions about a film company and another on microaggressions experienced by Chinese students in Japan—demonstrated the model's effectiveness. Results showed that the STS-based approach significantly outperforms random sampling in detecting novel insights efficiently, even in multilingual and small datasets.</p>",
+        ),
+      },
+      url: new URL('https://osf.io/hq8sd_v1'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

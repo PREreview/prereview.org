@@ -24,6 +24,10 @@ const determineCrossrefPreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
     }
 
+    if (Doi.hasRegistrant('31234')(doi) && work['group-title'] !== 'PsyArXiv') {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+    }
+
     const indeterminateId = fromPreprintDoi(doi)
 
     if (indeterminateId._tag !== 'BiorxivOrMedrxivPreprintId') {
@@ -122,6 +126,7 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
     NeurolibrePreprintId: () => Option.some('en' as const),
     OsfPreprintsPreprintId: () => detectLanguage(text),
     PreprintsorgPreprintId: () => Option.some('en' as const),
+    PsyarxivPreprintId: () => detectLanguage(text),
     ResearchSquarePreprintId: () => Option.some('en' as const),
     ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text),
     SocarxivPreprintId: () => detectLanguage(text),
