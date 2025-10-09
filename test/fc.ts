@@ -15,7 +15,9 @@ import { Doi, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
+import fs from 'fs'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
+import path from 'path'
 import { Uuid } from 'uuid-ts'
 import type {
   AssignedAuthorInvite,
@@ -439,6 +441,15 @@ export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmail
     .map(data => new VerifiedContactEmailAddress(data))
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
+
+export const fileInDirectory = (directory: string): fc.Arbitrary<NonSharedBuffer> =>
+  constantFrom(...fs.readdirSync(directory))
+    .map(sample => path.resolve(directory, sample))
+    .map(file =>
+      Object.defineProperties(fs.readFileSync(file), {
+        [fc.toStringMethod]: { value: () => fc.stringify(file) },
+      }),
+    )
 
 export const httpBody = (): fc.Arbitrary<HttpBody.HttpBody> =>
   fc.string().map(text =>

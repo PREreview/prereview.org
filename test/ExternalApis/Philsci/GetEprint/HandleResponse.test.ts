@@ -6,17 +6,13 @@ import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/HandleRespons
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
-import eprintOther from '../Samples/eprint-other.json' with { type: 'json' }
-import eprintPittpreprintNoDate from '../Samples/eprint-pittpreprint-no-date.json' with { type: 'json' }
-import eprintPittpreprint from '../Samples/eprint-pittpreprint.json' with { type: 'json' }
-import eprintPublishedArticle from '../Samples/eprint-published-article.json' with { type: 'json' }
 
 describe('HandleResponse', () => {
   describe('with a 200 status code', () => {
     describe('with a decodable body', () => {
       test.prop([
         fc.httpClientResponse({
-          json: fc.constantFrom(eprintOther, eprintPittpreprint, eprintPittpreprintNoDate, eprintPublishedArticle),
+          body: fc.fileInDirectory('test/ExternalApis/Philsci/Samples'),
           status: fc.constant(StatusCodes.OK),
         }),
       ])('decodes the response', response =>

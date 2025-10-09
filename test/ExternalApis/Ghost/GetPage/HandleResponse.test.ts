@@ -5,14 +5,13 @@ import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.ts
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
-import page from '../Samples/page.json' with { type: 'json' }
 
 describe('HandleResponse', () => {
   describe('with a 200 status code', () => {
     describe('with a decodable body', () => {
       test.prop([
         fc.httpClientResponse({
-          json: fc.constant(page),
+          body: fc.fileInDirectory('test/ExternalApis/Ghost/Samples'),
           status: fc.constant(StatusCodes.OK),
         }),
       ])('decodes the response', response =>

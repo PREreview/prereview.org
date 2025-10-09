@@ -6,22 +6,13 @@ import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/Handle
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
-import personalDetailsCreditName from '../Samples/personal-details-credit-name.json' with { type: 'json' }
-import personalDetailsNoFamilyName from '../Samples/personal-details-no-family-name.json' with { type: 'json' }
-import personalDetailsNoName from '../Samples/personal-details-no-name.json' with { type: 'json' }
-import personalDetails from '../Samples/personal-details.json' with { type: 'json' }
 
 describe('HandleResponse', () => {
   describe('with a 200 status code', () => {
     describe('with a decodable body', () => {
       test.prop([
         fc.httpClientResponse({
-          json: fc.constantFrom(
-            personalDetails,
-            personalDetailsCreditName,
-            personalDetailsNoFamilyName,
-            personalDetailsNoName,
-          ),
+          body: fc.fileInDirectory('test/ExternalApis/Orcid/Samples'),
           status: fc.constant(StatusCodes.OK),
         }),
       ])('decodes the response', response =>
