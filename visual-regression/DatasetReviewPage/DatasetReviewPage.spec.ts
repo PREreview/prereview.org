@@ -34,6 +34,9 @@ const datasetReview: _.DatasetReview = {
     qualityRating: Option.some('excellent'),
     qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
+      NonEmptyString.NonEmptyString('Detail about the yes.'),
+    ),
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),

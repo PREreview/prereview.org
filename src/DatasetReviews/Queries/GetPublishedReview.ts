@@ -14,6 +14,7 @@ export interface PublishedReview {
     qualityRating: Option.Option<'excellent' | 'fair' | 'poor' | 'unsure'>
     qualityRatingDetail: Option.Option<NonEmptyString.NonEmptyString>
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
+    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.Option<NonEmptyString.NonEmptyString>
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -129,6 +130,8 @@ export const GetPublishedReview = (
           qualityRatingDetail: Option.andThen(ratedTheQualityOfTheDataset, Struct.get('detail')),
           answerToIfTheDatasetFollowsFairAndCarePrinciples:
             data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
+          answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+            data.answerToIfTheDatasetFollowsFairAndCarePrinciples.detail,
           answerToIfTheDatasetHasEnoughMetadata,
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,

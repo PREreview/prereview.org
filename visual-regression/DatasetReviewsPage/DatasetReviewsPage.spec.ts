@@ -69,6 +69,9 @@ const prereview1: _.DatasetReview = {
     qualityRating: Option.some('excellent'),
     qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
+    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
+      NonEmptyString.NonEmptyString('Detail about the yes.'),
+    ),
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
@@ -98,6 +101,7 @@ const prereview2: _.DatasetReview = {
     qualityRating: Option.none(),
     qualityRatingDetail: Option.none(),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
+    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.none(),
     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
     answerToIfTheDatasetHasTrackedChanges: Option.none(),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),

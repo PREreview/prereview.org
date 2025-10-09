@@ -99,6 +99,10 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             Match.exhaustive,
           )}
         </dd>
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+          onNone: () => '',
+          onSome: detail => html`<dd>${detail}</dd>`,
+        })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetHasEnoughMetadata, {
           onNone: () => '',
           onSome: answerToIfTheDatasetHasEnoughMetadata => html`

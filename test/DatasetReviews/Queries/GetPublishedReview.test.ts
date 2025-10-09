@@ -175,6 +175,7 @@ describe('GetPublishedReview', () => {
                   qualityRating: Option.none(),
                   qualityRatingDetail: Option.none(),
                   answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
+                  answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: events[1].detail,
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -227,6 +228,8 @@ describe('GetPublishedReview', () => {
                     qualityRatingDetail: ratedTheQualityOfTheDataset1.detail,
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
@@ -301,6 +304,8 @@ describe('GetPublishedReview', () => {
                     qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+                      answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
@@ -343,6 +348,8 @@ describe('GetPublishedReview', () => {
                     qualityRatingDetail: Option.none(),
                     answerToIfTheDatasetFollowsFairAndCarePrinciples:
                       answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
+                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                     answerToIfTheDatasetHasTrackedChanges: Option.none(),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
