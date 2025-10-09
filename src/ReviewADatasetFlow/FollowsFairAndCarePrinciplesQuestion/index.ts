@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match } from 'effect'
+import { Effect, Match, Option } from 'effect'
 import type { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -65,6 +65,7 @@ export const FollowsFairAndCarePrinciplesSubmission = ({
         function* (form: FollowsFairAndCarePrinciplesForm.CompletedForm) {
           yield* DatasetReviews.answerIfTheDatasetFollowsFairAndCarePrinciples({
             answer: form.followsFairAndCarePrinciples,
+            detail: Option.none(),
             datasetReviewId,
             userId: user.orcid,
           })
