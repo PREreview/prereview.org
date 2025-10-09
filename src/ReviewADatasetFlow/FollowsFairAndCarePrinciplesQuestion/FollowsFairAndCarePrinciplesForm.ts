@@ -27,10 +27,10 @@ export const fromBody = Effect.fn(
 )
 
 export const fromAnswer: (
-  answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>,
+  answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>,
 ) => FollowsFairAndCarePrinciplesForm = Option.match({
   onNone: () => new EmptyForm(),
-  onSome: answer => new CompletedForm({ followsFairAndCarePrinciples: answer }),
+  onSome: ({ answer }) => new CompletedForm({ followsFairAndCarePrinciples: answer }),
 })
 
 const FollowsFairAndCarePrinciplesFieldSchema = UrlParams.schemaRecord(
