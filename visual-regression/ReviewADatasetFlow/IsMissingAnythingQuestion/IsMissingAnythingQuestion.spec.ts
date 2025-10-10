@@ -1,4 +1,3 @@
-import { Option } from 'effect'
 import * as IsMissingAnythingForm from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -20,9 +19,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
   const response = _.IsMissingAnythingQuestion({
     datasetReviewId,
     form: new IsMissingAnythingForm.CompletedForm({
-      isMissingAnything: Option.some(
-        NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
-      ),
+      isMissingAnything: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     }),
   })
 

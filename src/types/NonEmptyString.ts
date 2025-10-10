@@ -1,4 +1,4 @@
-import { type Brand, Either, pipe, Schema } from 'effect'
+import { type Brand, Either, Option, pipe, Schema } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as EffectToFpts from '../EffectToFpts.ts'
@@ -10,14 +10,7 @@ export type NonEmptyString = string & Brand.Brand<typeof NonEmptyStringBrand>
 export const NonEmptyStringC = C.fromDecoder(
   pipe(
     D.string,
-    D.parse(s =>
-      EffectToFpts.either(
-        Either.try({
-          try: () => NonEmptyString(s),
-          catch: () => D.error(s, 'NonEmptyString'),
-        }),
-      ),
-    ),
+    D.parse(s => EffectToFpts.either(Either.fromOption(fromString(s), () => D.error(s, 'NonEmptyString')))),
   ),
 )
 
@@ -32,3 +25,5 @@ export function isNonEmptyString(value: string): value is NonEmptyString {
 }
 
 export const NonEmptyString = (nonEmptyString: string) => NonEmptyStringSchema.make(nonEmptyString)
+
+export const fromString: (string: string) => Option.Option<NonEmptyString> = Option.liftThrowable(NonEmptyString)

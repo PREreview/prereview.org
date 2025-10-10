@@ -20,9 +20,7 @@ const competingInterestsForADatasetReviewWereDeclared1 =
   })
 const competingInterestsForADatasetReviewWereDeclared2 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
-    competingInterests: Option.some(
-      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
-    ),
+    competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

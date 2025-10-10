@@ -1,4 +1,4 @@
-import { Either, Option } from 'effect'
+import { Either } from 'effect'
 import * as DeclareCompetingInterestsForm from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
@@ -20,9 +20,7 @@ test('content looks right when there is a choice', async ({ showPage }) => {
     datasetReviewId,
     form: new DeclareCompetingInterestsForm.CompletedForm({
       declareCompetingInterests: 'yes',
-      competingInterestsDetails: Option.some(
-        NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
-      ),
+      competingInterestsDetails: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     }),
   })
 

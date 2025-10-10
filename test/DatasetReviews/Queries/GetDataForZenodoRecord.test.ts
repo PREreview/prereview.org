@@ -19,7 +19,7 @@ const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheData
 })
 const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({
   rating: 'poor',
-  detail: Option.some(NonEmptyString.NonEmptyString('some detail')),
+  detail: NonEmptyString.fromString('some detail'),
   datasetReviewId,
 })
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
@@ -31,7 +31,7 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples =
 const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
     answer: 'yes',
-    detail: Option.some(NonEmptyString.NonEmptyString('Some detail about yes')),
+    detail: NonEmptyString.fromString('Some detail about yes'),
     datasetReviewId,
   })
 const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
@@ -41,7 +41,7 @@ const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheD
 })
 const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'yes',
-  detail: Option.some(NonEmptyString.NonEmptyString('Some detail about no')),
+  detail: NonEmptyString.fromString('Some detail about no'),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
@@ -117,7 +117,7 @@ const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheD
   datasetReviewId,
 })
 const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
-  answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  answer: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
   datasetReviewId,
 })
 const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
@@ -135,9 +135,7 @@ const competingInterestsForADatasetReviewWereDeclared1 =
   })
 const competingInterestsForADatasetReviewWereDeclared2 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
-    competingInterests: Option.some(
-      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
-    ),
+    competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
 const zenodoRecordForDatasetReviewWasCreated = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({

@@ -26,10 +26,8 @@ const review = {
       orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     }),
   ),
-  competingInterests: Option.some(
-    NonEmptyString.NonEmptyString(
-      'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
-    ),
+  competingInterests: NonEmptyString.fromString(
+    'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
@@ -37,11 +35,9 @@ const review = {
     language: 'en',
   }),
   qualityRating: Option.some('excellent'),
-  qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
+  qualityRatingDetail: NonEmptyString.fromString('Detail about the excellent rating.'),
   answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-  answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
-    NonEmptyString.NonEmptyString('Detail about the yes.'),
-  ),
+  answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: NonEmptyString.fromString('Detail about the yes.'),
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
@@ -52,6 +48,6 @@ const review = {
   answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
   answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
   answerToIfTheDatasetIsMissingAnything: Option.some(
-    Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+    NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
   ),
 } satisfies _.DatasetReviewPreview

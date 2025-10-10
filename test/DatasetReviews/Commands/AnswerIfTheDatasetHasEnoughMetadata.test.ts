@@ -20,7 +20,7 @@ const answered1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
 })
 const answered2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'yes',
-  detail: Option.some(NonEmptyString.NonEmptyString('Some detail about yes')),
+  detail: NonEmptyString.fromString('Some detail about yes'),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

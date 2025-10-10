@@ -18,7 +18,7 @@ const answered1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
   datasetReviewId,
 })
 const answered2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
-  answer: Option.some(NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')),
+  answer: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

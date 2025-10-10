@@ -17,10 +17,8 @@ const cases = [
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-      competingInterests: Option.some(
-        NonEmptyString.NonEmptyString(
-          'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
-        ),
+      competingInterests: NonEmptyString.fromString(
+        'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
       ),
       qualityRating: Option.some('excellent'),
       qualityRatingDetail: Option.none(),
@@ -35,8 +33,8 @@ const cases = [
       answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
       answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
       answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
-      answerToIfTheDatasetIsMissingAnything: Option.some(
-        NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+      answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
     },
     {
@@ -153,17 +151,13 @@ const cases = [
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-      competingInterests: Option.some(
-        NonEmptyString.NonEmptyString(
-          'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
-        ),
+      competingInterests: NonEmptyString.fromString(
+        'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
       ),
       qualityRating: Option.some('excellent'),
-      qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Some detail about the excellent rating.')),
+      qualityRatingDetail: NonEmptyString.fromString('Some detail about the excellent rating.'),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
-        NonEmptyString.NonEmptyString('Some detail about the yes.'),
-      ),
+      answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: NonEmptyString.fromString('Some detail about the yes.'),
       answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
@@ -173,8 +167,8 @@ const cases = [
       answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
       answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
       answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
-      answerToIfTheDatasetIsMissingAnything: Option.some(
-        NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+      answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
     },
     {

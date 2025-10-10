@@ -20,7 +20,7 @@ const rated1 = new DatasetReviews.RatedTheQualityOfTheDataset({
 })
 const rated2 = new DatasetReviews.RatedTheQualityOfTheDataset({
   rating: 'excellent',
-  detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+  detail: NonEmptyString.fromString('Some detail'),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

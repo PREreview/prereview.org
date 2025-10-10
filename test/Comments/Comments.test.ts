@@ -154,13 +154,13 @@ describe('when ready for publication', () => {
       .when(
         new _.DeclareCompetingInterests({
           commentId,
-          competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
+          competingInterests: NonEmptyString.fromString('Some competing interests.'),
         }),
       )
       .then(
         new _.CompetingInterestsForCommentWereDeclared({
           commentId,
-          competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests.')),
+          competingInterests: NonEmptyString.fromString('Some competing interests.'),
         }),
       ))
 

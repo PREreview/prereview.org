@@ -32,11 +32,9 @@ const datasetReview: _.DatasetReview = {
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
     qualityRating: Option.some('excellent'),
-    qualityRatingDetail: Option.some(NonEmptyString.NonEmptyString('Detail about the excellent rating.')),
+    qualityRatingDetail: NonEmptyString.fromString('Detail about the excellent rating.'),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.some(
-      NonEmptyString.NonEmptyString('Detail about the yes.'),
-    ),
+    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: NonEmptyString.fromString('Detail about the yes.'),
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
@@ -46,14 +44,12 @@ const datasetReview: _.DatasetReview = {
     answerToIfTheDatasetIsErrorFree: Option.some('yes'),
     answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
     answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
-    answerToIfTheDatasetIsMissingAnything: Option.some(
-      NonEmptyString.NonEmptyString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+    answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     ),
   },
-  competingInterests: Option.some(
-    NonEmptyString.NonEmptyString(
-      'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
-    ),
+  competingInterests: NonEmptyString.fromString(
+    'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
   ),
   published: Temporal.PlainDate.from('2025-08-06'),
 }
