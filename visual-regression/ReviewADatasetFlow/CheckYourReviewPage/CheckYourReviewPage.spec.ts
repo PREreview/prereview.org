@@ -46,7 +46,10 @@ const review = {
     answer: 'yes',
     detail: NonEmptyString.fromString('Detail about the yes.'),
   }),
-  answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
+  answerToIfTheDatasetHasTrackedChanges: Option.some({
+    answer: 'yes',
+    detail: NonEmptyString.fromString('Detail about the yes.'),
+  }),
   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
   answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
   answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),

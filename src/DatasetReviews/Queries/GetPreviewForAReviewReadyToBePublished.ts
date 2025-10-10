@@ -19,7 +19,9 @@ export interface DatasetReviewPreview {
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<
     Pick<Events.AnsweredIfTheDatasetHasEnoughMetadata, 'answer' | 'detail'>
   >
-  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
+  readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetHasTrackedChanges, 'answer' | 'detail'>
+  >
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
     Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
   >
@@ -130,7 +132,10 @@ export const GetPreviewForAReviewReadyToBePublished = (
           answerToIfTheDatasetHasEnoughMetadata,
           Struct.pick('answer', 'detail'),
         ),
-        answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
+        answerToIfTheDatasetHasTrackedChanges: Option.map(
+          answerToIfTheDatasetHasTrackedChanges,
+          Struct.pick('answer', 'detail'),
+        ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
           answerToIfTheDatasetHasDataCensoredOrDeleted,
           Struct.get('answer'),

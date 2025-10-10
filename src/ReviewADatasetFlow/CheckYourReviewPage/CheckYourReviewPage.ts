@@ -174,7 +174,7 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetHasTrackedChanges, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetHasTrackedChanges => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span
@@ -184,7 +184,7 @@ export const CheckYourReviewPage = ({
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetHasTrackedChanges),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -192,6 +192,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}">
                           Change
