@@ -69,6 +69,9 @@ export const createMenuPage = ({
             <li>
               <a href="${Routes.Resources}">${t('menuResources')()}</a>
             </li>
+            <li>
+              <a href="https://stats.prereview.org/">Statistics</a>
+            </li>
           </ul>
         </div>
 

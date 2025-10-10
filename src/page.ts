@@ -253,6 +253,9 @@ export const page = ({
                             >${translate(locale, 'header', 'menuResources')()}</a
                           >
                         </li>
+                        <li>
+                          <a href="https://stats.prereview.org/">Statistics</a>
+                        </li>
                       </ul>
                     </div>
 
