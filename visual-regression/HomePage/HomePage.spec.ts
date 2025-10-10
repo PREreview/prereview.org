@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { createPage } from '../../src/home-page/home-page.ts'
+import { createPage } from '../../src/HomePage/HomePage.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
