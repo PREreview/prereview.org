@@ -681,7 +681,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Fair', { exact: true })).toBeChecked()
-  await page.getByLabel('Why is it fair quality?').fill('Cras lobortis quam vitae.')
+  await expect(page.getByLabel('Why is it fair quality?')).toHaveValue('Cras lobortis quam vitae.')
 
   await page.goBack()
 
