@@ -54,11 +54,11 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
       })}
       ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
         onNone: () => '',
-        onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+        onSome: ({ answer, detail }) => html`
           <dt>Does the dataset have enough metadata?</dt>
           <dd>
             ${pipe(
-              Match.value(answerToIfTheDatasetHasEnoughMetadata),
+              Match.value(answer),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),
@@ -66,6 +66,10 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
               Match.exhaustive,
             )}
           </dd>
+          ${Option.match(detail, {
+            onNone: () => '',
+            onSome: detail => html`<dd>${detail}</dd>`,
+          })}
         `,
       })}
       ${Option.match(review.answerToIfTheDatasetHasTrackedChanges, {

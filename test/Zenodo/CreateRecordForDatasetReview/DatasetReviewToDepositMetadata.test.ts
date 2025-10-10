@@ -22,7 +22,7 @@ const cases = [
       ),
       qualityRating: Option.some({ rating: 'excellent', detail: Option.none() }),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'yes', detail: Option.none() },
-      answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
+      answerToIfTheDatasetHasEnoughMetadata: Option.some({ answer: 'partly', detail: Option.none() }),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
@@ -56,6 +56,7 @@ const cases = [
           <dd>
             Partly
           </dd>
+          
         
       
           <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
@@ -160,7 +161,10 @@ const cases = [
         answer: 'yes',
         detail: NonEmptyString.fromString('Some detail about the yes.'),
       },
-      answerToIfTheDatasetHasEnoughMetadata: Option.some('partly'),
+      answerToIfTheDatasetHasEnoughMetadata: Option.some({
+        answer: 'partly',
+        detail: NonEmptyString.fromString('Some detail about the partly.'),
+      }),
       answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
@@ -194,6 +198,7 @@ const cases = [
           <dd>
             Partly
           </dd>
+          <dd>Some detail about the partly.</dd>
         
       
           <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>

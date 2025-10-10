@@ -13,7 +13,9 @@ export interface DataForZenodoRecord {
     Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
     'answer' | 'detail'
   >
-  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
+  readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetHasEnoughMetadata, 'answer' | 'detail'>
+  >
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
     Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
@@ -116,7 +118,10 @@ export const GetDataForZenodoRecord = (
           'answer',
           'detail',
         ),
-        answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
+        answerToIfTheDatasetHasEnoughMetadata: Option.map(
+          answerToIfTheDatasetHasEnoughMetadata,
+          Struct.pick('answer', 'detail'),
+        ),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
           answerToIfTheDatasetHasDataCensoredOrDeleted,

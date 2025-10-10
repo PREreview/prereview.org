@@ -21,7 +21,7 @@ describe('CreateRecordOnZenodo', () => {
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
           .map(Struct.pick('answer', 'detail')),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(
           fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
@@ -82,7 +82,7 @@ describe('CreateRecordOnZenodo', () => {
           .answeredIfTheDatasetFollowsFairAndCarePrinciples()
           .map(Struct.pick('answer', 'detail')),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(
           fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
@@ -144,7 +144,7 @@ describe('CreateRecordOnZenodo', () => {
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.pick('answer', 'detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
@@ -215,7 +215,7 @@ describe('CreateRecordOnZenodo', () => {
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.pick('answer', 'detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
@@ -279,7 +279,7 @@ describe('CreateRecordOnZenodo', () => {
         .answeredIfTheDatasetFollowsFairAndCarePrinciples()
         .map(Struct.pick('answer', 'detail')),
       answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
         fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
