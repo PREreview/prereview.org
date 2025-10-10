@@ -8,10 +8,11 @@ export interface DataForZenodoRecord {
   readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
-  readonly qualityRating: Option.Option<Events.RatedTheQualityOfTheDataset['rating']>
-  readonly qualityRatingDetail: Events.RatedTheQualityOfTheDataset['detail']
-  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['answer']
-  readonly answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples['detail']
+  readonly qualityRating: Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>
+  readonly answerToIfTheDatasetFollowsFairAndCarePrinciples: Pick<
+    Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples,
+    'answer' | 'detail'
+  >
   readonly answerToIfTheDatasetHasEnoughMetadata: Option.Option<Events.AnsweredIfTheDatasetHasEnoughMetadata['answer']>
   readonly answerToIfTheDatasetHasTrackedChanges: Option.Option<Events.AnsweredIfTheDatasetHasTrackedChanges['answer']>
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
@@ -109,10 +110,12 @@ export const GetDataForZenodoRecord = (
         },
         dataset: started.datasetId,
         competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
-        qualityRating: Option.map(qualityRating, Struct.get('rating')),
-        qualityRatingDetail: Option.andThen(qualityRating, Struct.get('detail')),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
-        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: answerToIfTheDatasetFollowsFairAndCarePrinciples.detail,
+        qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
+          answerToIfTheDatasetFollowsFairAndCarePrinciples,
+          'answer',
+          'detail',
+        ),
         answerToIfTheDatasetHasEnoughMetadata: Option.map(answerToIfTheDatasetHasEnoughMetadata, Struct.get('answer')),
         answerToIfTheDatasetHasTrackedChanges: Option.map(answerToIfTheDatasetHasTrackedChanges, Struct.get('answer')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(

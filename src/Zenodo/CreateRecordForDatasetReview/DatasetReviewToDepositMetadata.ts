@@ -19,11 +19,11 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
     <dl>
       ${Option.match(review.qualityRating, {
         onNone: () => '',
-        onSome: qualityRating => html`
+        onSome: ({ rating, detail }) => html`
           <dt>How would you rate the quality of this data set?</dt>
           <dd>
             ${pipe(
-              Match.value(qualityRating),
+              Match.value(rating),
               Match.when('excellent', () => 'Excellent'),
               Match.when('fair', () => 'Fair'),
               Match.when('poor', () => 'Poor'),
@@ -31,7 +31,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
               Match.exhaustive,
             )}
           </dd>
-          ${Option.match(review.qualityRatingDetail, {
+          ${Option.match(detail, {
             onNone: () => '',
             onSome: detail => html`<dd>${detail}</dd>`,
           })}
@@ -40,7 +40,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
       <dt>Does this dataset follow FAIR and CARE principles?</dt>
       <dd>
         ${pipe(
-          Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples),
+          Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer),
           Match.when('yes', () => 'Yes'),
           Match.when('partly', () => 'Partly'),
           Match.when('no', () => 'No'),
@@ -48,7 +48,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
           Match.exhaustive,
         )}
       </dd>
-      ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+      ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.detail, {
         onNone: () => '',
         onSome: detail => html`<dd>${detail}</dd>`,
       })}

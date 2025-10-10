@@ -191,10 +191,8 @@ describe('GetDataForZenodoRecord', () => {
               author: { orcidId: events[0].authorId, persona: events[13].persona },
               dataset: events[0].datasetId,
               competingInterests: events[14].competingInterests,
-              qualityRating: Option.some(events[1].rating),
-              qualityRatingDetail: events[1].detail,
-              answerToIfTheDatasetFollowsFairAndCarePrinciples: events[2].answer,
-              answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: events[2].detail,
+              qualityRating: Option.some({ rating: events[1].rating, detail: events[1].detail }),
+              answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
               answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
@@ -222,11 +220,10 @@ describe('GetDataForZenodoRecord', () => {
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: Option.none(),
                 qualityRating: Option.none(),
-                qualityRatingDetail: Option.none(),
-                answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
-                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                  answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                  detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                },
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -281,12 +278,14 @@ describe('GetDataForZenodoRecord', () => {
                 },
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
-                qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
-                qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
-                answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
-                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
+                qualityRating: Option.some({
+                  rating: ratedTheQualityOfTheDataset2.rating,
+                  detail: ratedTheQualityOfTheDataset2.detail,
+                }),
+                answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                  answer: answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                  detail: answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
+                },
                 answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
@@ -318,11 +317,10 @@ describe('GetDataForZenodoRecord', () => {
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: Option.none(),
                 qualityRating: Option.none(),
-                qualityRatingDetail: Option.none(),
-                answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
-                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                  answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                  detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                },
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -349,11 +347,10 @@ describe('GetDataForZenodoRecord', () => {
                 dataset: datasetReviewWasStarted.datasetId,
                 competingInterests: Option.none(),
                 qualityRating: Option.none(),
-                qualityRatingDetail: Option.none(),
-                answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
-                answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                  answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                  answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                  detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                },
                 answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                 answerToIfTheDatasetHasTrackedChanges: Option.none(),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
