@@ -26,11 +26,12 @@ export const fromBody = Effect.fn(
   ),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => HasTrackedChangesForm =
-  Option.match({
-    onNone: () => new EmptyForm(),
-    onSome: answer => new CompletedForm({ hasTrackedChanges: answer }),
-  })
+export const fromAnswer: (
+  answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>,
+) => HasTrackedChangesForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: ({ answer }) => new CompletedForm({ hasTrackedChanges: answer }),
+})
 
 const HasTrackedChangesFieldSchema = UrlParams.schemaRecord(
   Schema.Struct({
