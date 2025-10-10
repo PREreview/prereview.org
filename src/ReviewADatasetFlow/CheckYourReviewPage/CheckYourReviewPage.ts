@@ -98,12 +98,12 @@ export const CheckYourReviewPage = ({
               <dl class="summary-list">
                 ${Option.match(review.qualityRating, {
                   onNone: () => '',
-                  onSome: qualityRating => html`
+                  onSome: ({ rating, detail }) => html`
                     <div>
                       <dt><span>How would you rate the quality of this data set?</span></dt>
                       <dd>
                         ${pipe(
-                          Match.value(qualityRating),
+                          Match.value(rating),
                           Match.when('excellent', () => 'Excellent'),
                           Match.when('fair', () => 'Fair'),
                           Match.when('poor', () => 'Poor'),
@@ -111,7 +111,7 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
-                      ${Option.match(review.qualityRatingDetail, {
+                      ${Option.match(detail, {
                         onNone: () => '',
                         onSome: detail => html`<dd>${detail}</dd>`,
                       })}
@@ -127,7 +127,7 @@ export const CheckYourReviewPage = ({
                   <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
                   <dd>
                     ${pipe(
-                      Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples),
+                      Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer),
                       Match.when('yes', () => 'Yes'),
                       Match.when('partly', () => 'Partly'),
                       Match.when('no', () => 'No'),
@@ -135,7 +135,7 @@ export const CheckYourReviewPage = ({
                       Match.exhaustive,
                     )}
                   </dd>
-                  ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+                  ${Option.match(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.detail, {
                     onNone: () => '',
                     onSome: detail => html`<dd>${detail}</dd>`,
                   })}

@@ -34,10 +34,14 @@ const review = {
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
     language: 'en',
   }),
-  qualityRating: Option.some('excellent'),
-  qualityRatingDetail: NonEmptyString.fromString('Detail about the excellent rating.'),
-  answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-  answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: NonEmptyString.fromString('Detail about the yes.'),
+  qualityRating: Option.some({
+    rating: 'excellent',
+    detail: NonEmptyString.fromString('Detail about the excellent rating.'),
+  }),
+  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+    answer: 'yes',
+    detail: NonEmptyString.fromString('Detail about the yes.'),
+  },
   answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
   answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
