@@ -371,6 +371,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     .fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
+  await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -403,7 +404,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(review).toContainText(
     'Does this dataset follow FAIR and CARE principles? Partly Nullam vestibulum neque efficitur porta ornare.',
   )
-  await expect(review).toContainText('Does the dataset have enough metadata? Partly')
+  await expect(review).toContainText('Does the dataset have enough metadata? Partly Donec sed sodales ligula.')
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly',
   )
@@ -472,6 +473,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(review).toContainText('Does this dataset follow FAIR and CARE principles? I don’t know')
+
+  await page.getByRole('link', { name: 'Change if the dataset has enough metadata' }).click()
+
+  await page.getByLabel('What metadata does it have, and what is missing?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(review).toContainText('Does the dataset have enough metadata? Partly')
+  await expect(review).not.toContainText('Partly Donec sed sodales ligula.')
 
   await page.getByRole('link', { name: 'Change if the dataset has enough metadata' }).click()
 
@@ -573,7 +582,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Yes').check()
   await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I don’t know').check()
+  await page.getByLabel('Partly').check()
+  await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -656,7 +666,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('I don’t know')).toBeChecked()
+  await expect(page.getByLabel('Partly')).toBeChecked()
+  await expect(page.getByLabel('What metadata does it have, and what is missing?')).toHaveValue(
+    'Donec sed sodales ligula.',
+  )
 
   await page.goBack()
 
@@ -684,7 +697,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Yes').check()
   await page.getByLabel('How does it follow the principles?').fill('Nullam vestibulum neque efficitur porta ornare.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I don’t know').check()
+  await page.getByLabel('Partly').check()
+  await page.getByLabel('What metadata does it have, and what is missing?').fill('Donec sed sodales ligula.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -767,7 +781,10 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  await expect(page.getByLabel('I don’t know')).toBeChecked()
+  await expect(page.getByLabel('Partly')).toBeChecked()
+  await expect(page.getByLabel('What metadata does it have, and what is missing?')).toHaveValue(
+    'Donec sed sodales ligula.',
+  )
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -887,6 +904,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../has-enough-metadata`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('What metadata does it have?').fill('   \n Donec sed sodales ligula. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -902,6 +923,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset has enough metadata' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('What metadata does it have?')).toHaveValue('   \n Donec sed sodales ligula. ')
+    }
   },
 )
 
