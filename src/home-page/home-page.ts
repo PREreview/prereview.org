@@ -342,7 +342,9 @@ export const createPage = ({
         </ul>
 
         <nav>
-          <a href="https://stats.prereview.org/" class="forward"><span>See more statistics</span></a>
+          <a href="https://stats.prereview.org/" class="forward"
+            ><span>${translate(locale, 'home-page', 'statisticsLink')()}</span></a
+          >
         </nav>
       </section>
 

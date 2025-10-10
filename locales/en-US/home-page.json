@@ -78,6 +78,10 @@
   "statisticsUsers": {
     "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
   },
+  "statisticsLink": {
+    "message": "See more statistics",
+    "description": "Text of a link to see more statistics about PREreview, e.g. the number of PREreviews per language published."
+  },
   "reviewsTitle": {
     "message": "Recent PREreviews"
   },
