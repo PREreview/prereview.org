@@ -20,6 +20,7 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   })
 const answeredIfTheDatasetHasEnoughMetadata = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'yes',
+  detail: Option.none(),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

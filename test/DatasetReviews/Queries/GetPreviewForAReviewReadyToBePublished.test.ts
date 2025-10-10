@@ -36,10 +36,12 @@ const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
   })
 const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'no',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
   answer: 'yes',
+  detail: Option.some(NonEmptyString.NonEmptyString('Some detail about yes')),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({

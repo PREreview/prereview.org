@@ -30,7 +30,11 @@ export class AnsweredIfTheDatasetFollowsFairAndCarePrinciples extends Schema.Tag
 
 export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<AnsweredIfTheDatasetHasEnoughMetadata>()(
   'AnsweredIfTheDatasetHasEnoughMetadata',
-  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetHasTrackedChanges extends Schema.TaggedClass<AnsweredIfTheDatasetHasTrackedChanges>()(
