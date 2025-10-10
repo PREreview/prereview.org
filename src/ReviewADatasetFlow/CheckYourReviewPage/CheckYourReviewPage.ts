@@ -147,12 +147,12 @@ export const CheckYourReviewPage = ({
                 </div>
                 ${Option.match(review.answerToIfTheDatasetHasEnoughMetadata, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt><span>Does the dataset have enough metadata?</span></dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetHasEnoughMetadata),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -160,6 +160,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset has enough metadata</span>

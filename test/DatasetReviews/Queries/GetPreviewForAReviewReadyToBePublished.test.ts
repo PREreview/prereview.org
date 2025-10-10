@@ -190,7 +190,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
               competingInterests: events[14].competingInterests,
               qualityRating: Option.some({ rating: events[1].rating, detail: events[1].detail }),
               answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: events[2].answer, detail: events[2].detail },
-              answerToIfTheDatasetHasEnoughMetadata: Option.some(events[3].answer),
+              answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                answer: events[3].answer,
+                detail: events[3].detail,
+              }),
               answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
               answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
@@ -278,7 +281,10 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answer: answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                   detail: answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
                 },
-                answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
+                answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                  answer: answeredIfTheDatasetHasEnoughMetadata2.answer,
+                  detail: answeredIfTheDatasetHasEnoughMetadata2.detail,
+                }),
                 answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                   answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
