@@ -6,9 +6,6 @@ import { createPage } from './home-page.ts'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.ts'
 import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.ts'
 
-export { type RecentPrereview } from './recent-prereviews.ts'
-export { type RecentReviewRequest } from './recent-review-requests.ts'
-
 export const home = ({
   canReviewDatasets = false,
   locale,

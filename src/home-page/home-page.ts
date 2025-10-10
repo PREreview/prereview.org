@@ -6,7 +6,9 @@ import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import * as PreprintServers from '../PreprintServers/index.ts'
+import type * as Prereviews from '../Prereviews/index.ts'
 import { PageResponse } from '../Response/index.ts'
+import type * as ReviewRequests from '../ReviewRequests/index.ts'
 import * as Routes from '../routes.ts'
 import {
   homeMatch,
@@ -19,8 +21,6 @@ import {
 } from '../routes.ts'
 import { renderDate } from '../time.ts'
 import { getSubfieldName } from '../types/subfield.ts'
-import type { RecentPrereview } from './recent-prereviews.ts'
-import type { RecentReviewRequest } from './recent-review-requests.ts'
 
 export const createPage = ({
   canReviewDatasets = false,
@@ -31,8 +31,8 @@ export const createPage = ({
 }: {
   canReviewDatasets?: boolean
   locale: SupportedLocale
-  recentPrereviews: ReadonlyArray<RecentPrereview>
-  recentReviewRequests: ReadonlyArray<RecentReviewRequest>
+  recentPrereviews: ReadonlyArray<Prereviews.RecentPrereview>
+  recentReviewRequests: ReadonlyArray<ReviewRequests.ReviewRequest>
   statistics: { prereviews: number; servers: number; users: number }
 }) =>
   PageResponse({

@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { createPage } from '../../src/home-page/home-page.ts'
-import type { RecentPrereview } from '../../src/home-page/index.ts'
-import type { RecentReviewRequest } from '../../src/home-page/recent-review-requests.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import type * as Prereviews from '../../src/Prereviews/index.ts'
+import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
@@ -51,7 +51,7 @@ const recentPrereview1 = {
     language: 'en',
     title: rawHtml('AlphaFold Meets Flow Matching for Generating Protein Ensembles'),
   },
-} satisfies RecentPrereview
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview2 = {
   id: 10888905,
@@ -65,7 +65,7 @@ const recentPrereview2 = {
     language: 'es',
     title: rawHtml('Grado de avance en Metas Sanitarias de salud bucal infantil en la Región del Maule'),
   },
-} satisfies RecentPrereview
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview3 = {
   id: 10870479,
@@ -99,7 +99,7 @@ const recentPrereview3 = {
     language: 'en',
     title: rawHtml('A population perspective on international students in Australian universities'),
   },
-} satisfies RecentPrereview
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview4 = {
   id: 10779310,
@@ -126,7 +126,7 @@ const recentPrereview4 = {
     language: 'en',
     title: rawHtml('Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants'),
   },
-} satisfies RecentPrereview
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview5 = {
   id: 10411168,
@@ -151,7 +151,7 @@ const recentPrereview5 = {
     language: 'pt',
     title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
   },
-} satisfies RecentPrereview
+} satisfies Prereviews.RecentPrereview
 
 const recentReviewRequest1 = {
   published: Temporal.PlainDate.from('2024-04-24'),
@@ -162,7 +162,7 @@ const recentReviewRequest1 = {
     language: 'pt',
     title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
   },
-} satisfies RecentReviewRequest
+} satisfies ReviewRequests.ReviewRequest
 
 const recentReviewRequest2 = {
   published: Temporal.PlainDate.from('2024-04-24'),
@@ -173,7 +173,7 @@ const recentReviewRequest2 = {
     language: 'pt',
     title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
   },
-} satisfies RecentReviewRequest
+} satisfies ReviewRequests.ReviewRequest
 
 const recentReviewRequest3 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -184,7 +184,7 @@ const recentReviewRequest3 = {
     language: 'en',
     title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
   },
-} satisfies RecentReviewRequest
+} satisfies ReviewRequests.ReviewRequest
 
 const recentReviewRequest4 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -195,7 +195,7 @@ const recentReviewRequest4 = {
     language: 'es',
     title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
   },
-} satisfies RecentReviewRequest
+} satisfies ReviewRequests.ReviewRequest
 
 const recentReviewRequest5 = {
   published: Temporal.PlainDate.from('2024-04-22'),
@@ -206,6 +206,6 @@ const recentReviewRequest5 = {
     language: 'pt',
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },
-} satisfies RecentReviewRequest
+} satisfies ReviewRequests.ReviewRequest
 
 const statistics = { prereviews: 887, servers: 22, users: 2736 }
