@@ -26,11 +26,12 @@ export const fromBody = Effect.fn(
   ),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => HasEnoughMetadataForm =
-  Option.match({
-    onNone: () => new EmptyForm(),
-    onSome: answer => new CompletedForm({ hasEnoughMetadata: answer }),
-  })
+export const fromAnswer: (
+  answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>,
+) => HasEnoughMetadataForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: ({ answer }) => new CompletedForm({ hasEnoughMetadata: answer }),
+})
 
 const HasEnoughMetadataFieldSchema = UrlParams.schemaRecord(
   Schema.Struct({
