@@ -7,7 +7,8 @@ import type { InvalidE } from '../form.ts'
 import { html, plainText, rawHtml } from '../html.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
 import { PageResponse } from '../Response/index.ts'
-import { homeMatch, reviewAPreprintMatch } from '../routes.ts'
+import * as Routes from '../routes.ts'
+import { reviewAPreprintMatch } from '../routes.ts'
 import { errorPrefix } from '../shared-translation-elements.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 
@@ -22,7 +23,7 @@ export const createPage = (whichPreprint: WhichPreprint, locale: SupportedLocale
   return PageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('review-a-preprint', 'whichPreprint')(), errorPrefix(locale, error), plainText),
-    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
+    nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(reviewAPreprintMatch.formatter, {})}" novalidate>
         ${error

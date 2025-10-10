@@ -367,8 +367,6 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-export const homeMatch = pipe(query(C.partial({})), P.then(P.end))
-
 export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
 
 export const orcidCodeMatch = pipe(

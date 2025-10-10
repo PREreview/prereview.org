@@ -3,7 +3,8 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import { PageResponse } from '../Response/index.ts'
-import { homeMatch, requestAPrereviewMatch } from '../routes.ts'
+import * as Routes from '../routes.ts'
+import { requestAPrereviewMatch } from '../routes.ts'
 import { errorPrefix } from '../shared-translation-elements.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import type * as Form from './form.ts'
@@ -15,7 +16,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
   return PageResponse({
     status: error ? StatusCodes.BadRequest : StatusCodes.OK,
     title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, error), plainText),
-    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
+    nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
         ${error

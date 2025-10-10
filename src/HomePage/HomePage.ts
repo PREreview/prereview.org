@@ -11,7 +11,6 @@ import { PageResponse } from '../Response/index.ts'
 import type * as ReviewRequests from '../ReviewRequests/index.ts'
 import * as Routes from '../routes.ts'
 import {
-  homeMatch,
   requestAPrereviewMatch,
   reviewAPreprintMatch,
   reviewMatch,
@@ -394,7 +393,7 @@ export const createPage = ({
         </ol>
       </section>
     `,
-    canonical: format(homeMatch.formatter, {}),
+    canonical: Routes.HomePage,
     current: 'home',
   })
 

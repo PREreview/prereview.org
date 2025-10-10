@@ -2,7 +2,6 @@ import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
 import { Boolean, Context, Duration, Effect, Function, Match, Redacted, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as F from 'fetch-fp-ts'
-import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
@@ -23,7 +22,7 @@ import { OrcidOauth } from '../OrcidOauth.ts'
 import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url.ts'
 import { FlashMessageResponse, LogInResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
-import { homeMatch, orcidCodeMatch } from '../routes.ts'
+import { orcidCodeMatch } from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { NonEmptyString, Uuid } from '../types/index.ts'
 import { type OrcidId, isOrcidId } from '../types/OrcidId.ts'
@@ -61,7 +60,7 @@ export interface IsUserBlockedEnv {
   isUserBlocked: (user: OrcidId) => boolean
 }
 
-export const logIn = LogInResponse({ location: format(homeMatch.formatter, {}) })
+export const logIn = LogInResponse({ location: Routes.HomePage })
 
 export const LogOut = Effect.gen(function* () {
   const { cookie, store } = yield* SessionStore
@@ -72,7 +71,7 @@ export const LogOut = Effect.gen(function* () {
     Effect.ignore,
   )
 
-  return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+  return yield* HttpServerResponse.redirect(Routes.HomePage, {
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
       Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
@@ -180,7 +179,7 @@ export const authenticate = Effect.fn(
         path: '/',
       }),
       Effect.andThen(
-        Boolean.match(referer === format(homeMatch.formatter, {}), {
+        Boolean.match(referer === Routes.HomePage, {
           onTrue: () => HttpServerResponse.setCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
           onFalse: () => identity<HttpServerResponse.HttpServerResponse>,
         }),
@@ -190,9 +189,7 @@ export const authenticate = Effect.fn(
   Effect.catchAll(
     flow(
       Match.value,
-      Match.when('blocked', () =>
-        Effect.fail(FlashMessageResponse({ location: format(Routes.homeMatch.formatter, {}), message: 'blocked' })),
-      ),
+      Match.when('blocked', () => Effect.fail(FlashMessageResponse({ location: Routes.HomePage, message: 'blocked' }))),
       Match.orElse(() => Effect.flip(Effect.andThen(Locale, failureMessage))),
     ),
   ),
@@ -208,7 +205,7 @@ function getReferer(state: string) {
     RE.fromEither(E.tryCatch(() => new URL(state), Function.constant('not-a-url'))),
     RE.chain(ifHasSameOrigin),
     RE.match(
-      () => format(homeMatch.formatter, {}),
+      () => Routes.HomePage,
       referer => referer.href,
     ),
   )

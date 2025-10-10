@@ -6,7 +6,6 @@ import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate }
 import assets from './manifest.json' with { type: 'json' }
 import type * as Response from './Response/index.ts'
 import * as Routes from './routes.ts'
-import { homeMatch } from './routes.ts'
 import type { UserOnboarding } from './user-onboarding.ts'
 import type { User } from './user.ts'
 
@@ -136,7 +135,7 @@ export const page = ({
           <nav>
             <div class="header">
               <div class="logo">
-                <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
+                <a href="${Routes.HomePage}" ${current === 'home' ? html`aria-current="page"` : ''}>
                   <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                 </a>
               </div>

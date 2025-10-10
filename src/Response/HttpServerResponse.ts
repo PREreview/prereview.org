@@ -38,10 +38,7 @@ export const toHttpServerResponse = (
 
       const location = yield* generateAuthorizationRequestUrl({
         scope: '/authenticate',
-        state:
-          response.location !== format(Routes.homeMatch.formatter, {})
-            ? new URL(`${publicUrl.origin}${response.location}`).href
-            : '',
+        state: response.location !== Routes.HomePage ? new URL(`${publicUrl.origin}${response.location}`).href : '',
       })
 
       return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
@@ -113,7 +110,7 @@ export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogI
 
   yield* Effect.tryPromise(() => store.set(encodedSessionId, encodedSession))
 
-  return yield* HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+  return yield* HttpServerResponse.redirect(Routes.HomePage, {
     status: StatusCodes.SeeOther,
     cookies: Cookies.fromIterable([
       Cookies.unsafeMakeCookie('flash-message', 'logged-in-demo', { httpOnly: true, path: '/' }),

@@ -4,7 +4,6 @@ import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
-import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
 import { DeprecatedLoggerEnv, Locale, SessionSecret, SessionStore } from '../../src/Context.ts'
@@ -13,7 +12,6 @@ import * as _ from '../../src/log-in/index.ts'
 import { OrcidOauth } from '../../src/OrcidOauth.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import * as Routes from '../../src/routes.ts'
-import { homeMatch } from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { Uuid } from '../../src/types/index.ts'
 import { SessionId, UserC } from '../../src/user.ts'
@@ -44,7 +42,7 @@ describe('LogOut', () => {
 
       expect(yield* Effect.tryPromise(() => store.has(sessionId))).toBeFalsy()
       expect(actual).toStrictEqual(
-        HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+        HttpServerResponse.redirect(Routes.HomePage, {
           status: StatusCodes.SeeOther,
           cookies: Cookies.fromIterable([
             Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
@@ -71,7 +69,7 @@ describe('LogOut', () => {
 
         expect(yield* Effect.tryPromise(() => store.has(sessionId))).toBeTruthy()
         expect(actual).toStrictEqual(
-          HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+          HttpServerResponse.redirect(Routes.HomePage, {
             status: StatusCodes.SeeOther,
             cookies: Cookies.fromIterable([
               Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
@@ -89,7 +87,7 @@ describe('LogOut', () => {
       const actual = yield* pipe(_.LogOut, Effect.provideService(SessionStore, { cookie, store }))
 
       expect(actual).toStrictEqual(
-        HttpServerResponse.redirect(format(Routes.homeMatch.formatter, {}), {
+        HttpServerResponse.redirect(Routes.HomePage, {
           status: StatusCodes.SeeOther,
           cookies: Cookies.fromIterable([
             Cookies.unsafeMakeCookie('flash-message', 'logged-out', { httpOnly: true, path: '/' }),
@@ -256,7 +254,7 @@ describe('authenticate', () => {
       expect(sessions).toStrictEqual([])
       expect(actual).toStrictEqual({
         _tag: 'FlashMessageResponse',
-        location: format(homeMatch.formatter, {}),
+        location: Routes.HomePage,
         message: 'blocked',
       })
       expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
@@ -388,7 +386,7 @@ describe('authenticate', () => {
           [sessionId, { user: { name: expect.anything(), orcid: accessToken.orcid, pseudonym } }],
         ])
         expect(actual).toStrictEqual(
-          HttpServerResponse.redirect(format(homeMatch.formatter, {}), {
+          HttpServerResponse.redirect(Routes.HomePage, {
             status: StatusCodes.Found,
             cookies: Cookies.fromIterable([
               Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),

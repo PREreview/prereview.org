@@ -143,14 +143,14 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ id }) => movedPermanently(format(Routes.writeReviewReviewTypeMatch.formatter, { id }))),
     ),
   ),
-  MakeStaticRoute('*', '/prereview.org', movedPermanently(format(Routes.homeMatch.formatter, {}))),
+  MakeStaticRoute('*', '/prereview.org', movedPermanently(Routes.HomePage)),
   MakeRoute('*', '/prereviewers', showRemovedForNowMessage),
   MakeStaticRoute('*', '/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute('*', '/settings/api', showRemovedForNowMessage),
   MakeRoute('*', '/settings/drafts', showRemovedForNowMessage),
   MakeStaticRoute('*', '/signup', movedPermanently(Routes.LogIn)),
-  MakeStaticRoute('*', '/)', movedPermanently(format(Routes.homeMatch.formatter, {}))),
-  MakeStaticRoute('*', '/),', movedPermanently(format(Routes.homeMatch.formatter, {}))),
+  MakeStaticRoute('*', '/)', movedPermanently(Routes.HomePage)),
+  MakeStaticRoute('*', '/),', movedPermanently(Routes.HomePage)),
 ])
 
 function movedPermanently(location: string) {
