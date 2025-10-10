@@ -28,7 +28,6 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as T from 'fp-ts/lib/Task.js'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { DeprecatedLoggerEnv, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
@@ -44,7 +43,6 @@ import type { SupportedLocale } from '../../locales/index.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
 import { Nodemailer } from '../../nodemailer.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
-import { partners } from '../../partners.ts'
 import * as Personas from '../../Personas/index.ts'
 import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -261,10 +259,6 @@ const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A 
 
 const routerWithoutHyperTs = pipe(
   [
-    pipe(
-      Routes.partnersMatch.parser,
-      P.map(() => (env: Env) => T.of(partners(env.locale))),
-    ),
     pipe(
       Routes.myPrereviewsMatch.parser,
       P.map(

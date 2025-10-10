@@ -20,6 +20,7 @@ import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
+import { PartnersPage } from '../PartnersPage/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
 import { DataStoreRedis } from '../Redis.ts'
@@ -411,6 +412,7 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.HowToUse, HowToUsePage),
     MakeStaticRoute('GET', Routes.LiveReviews, LiveReviewsPage),
     MakeStaticRoute('GET', Routes.Menu, MenuPage),
+    MakeStaticRoute('GET', Routes.Partners, PartnersPage),
     MakeStaticRoute('GET', Routes.People, PeoplePage),
     MakeStaticRoute('GET', Routes.PrivacyPolicy, PrivacyPolicyPage),
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),

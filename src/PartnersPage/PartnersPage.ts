@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from './html.ts'
-import { type SupportedLocale, translate } from './locales/index.ts'
-import assets from './manifest.json' with { type: 'json' }
-import { PageResponse } from './Response/index.ts'
-import { partnersMatch } from './routes.ts'
+import { html, plainText } from '../html.ts'
+import { type SupportedLocale, translate } from '../locales/index.ts'
+import assets from '../manifest.json' with { type: 'json' }
+import { PageResponse } from '../Response/index.ts'
+import { partnersMatch } from '../routes.ts'
 
-export const partners = (locale: SupportedLocale) => {
+export const createPage = (locale: SupportedLocale) => {
   const t = translate(locale)
 
   return PageResponse({
