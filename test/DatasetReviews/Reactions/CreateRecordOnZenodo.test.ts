@@ -24,7 +24,7 @@ describe('CreateRecordOnZenodo', () => {
           fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
           fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
@@ -85,7 +85,7 @@ describe('CreateRecordOnZenodo', () => {
           fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
         ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
           fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
@@ -147,7 +147,7 @@ describe('CreateRecordOnZenodo', () => {
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
@@ -218,7 +218,7 @@ describe('CreateRecordOnZenodo', () => {
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
@@ -282,7 +282,7 @@ describe('CreateRecordOnZenodo', () => {
         fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.get('answer')),
+        fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
       ),
       answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
         fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),

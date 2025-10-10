@@ -199,7 +199,10 @@ describe('GetDataForZenodoRecord', () => {
                 answer: events[3].answer,
                 detail: events[3].detail,
               }),
-              answerToIfTheDatasetHasTrackedChanges: Option.some(events[4].answer),
+              answerToIfTheDatasetHasTrackedChanges: Option.some({
+                answer: events[4].answer,
+                detail: events[4].detail,
+              }),
               answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
               answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
               answerToIfTheDatasetSupportsRelatedConclusions: Option.some(events[7].answer),
@@ -295,7 +298,10 @@ describe('GetDataForZenodoRecord', () => {
                   answer: answeredIfTheDatasetHasEnoughMetadata2.answer,
                   detail: answeredIfTheDatasetHasEnoughMetadata2.detail,
                 }),
-                answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
+                answerToIfTheDatasetHasTrackedChanges: Option.some({
+                  answer: answeredIfTheDatasetHasTrackedChanges2.answer,
+                  detail: answeredIfTheDatasetHasTrackedChanges2.detail,
+                }),
                 answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                   answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
                 ),

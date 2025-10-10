@@ -23,7 +23,7 @@ const cases = [
       qualityRating: Option.some({ rating: 'excellent', detail: Option.none() }),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'yes', detail: Option.none() },
       answerToIfTheDatasetHasEnoughMetadata: Option.some({ answer: 'partly', detail: Option.none() }),
-      answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
+      answerToIfTheDatasetHasTrackedChanges: Option.some({ answer: 'no', detail: Option.none() }),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
@@ -63,6 +63,7 @@ const cases = [
           <dd>
             No
           </dd>
+          
         
       
           <dt>
@@ -165,7 +166,10 @@ const cases = [
         answer: 'partly',
         detail: NonEmptyString.fromString('Some detail about the partly.'),
       }),
-      answerToIfTheDatasetHasTrackedChanges: Option.some('no'),
+      answerToIfTheDatasetHasTrackedChanges: Option.some({
+        answer: 'no',
+        detail: NonEmptyString.fromString('Some detail about the no.'),
+      }),
       answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
       answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
       answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
@@ -205,6 +209,7 @@ const cases = [
           <dd>
             No
           </dd>
+          <dd>Some detail about the no.</dd>
         
       
           <dt>

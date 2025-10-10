@@ -74,11 +74,11 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
       })}
       ${Option.match(review.answerToIfTheDatasetHasTrackedChanges, {
         onNone: () => '',
-        onSome: answerToIfTheDatasetHasTrackedChanges => html`
+        onSome: ({ answer, detail }) => html`
           <dt>Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?</dt>
           <dd>
             ${pipe(
-              Match.value(answerToIfTheDatasetHasTrackedChanges),
+              Match.value(answer),
               Match.when('yes', () => 'Yes'),
               Match.when('partly', () => 'Partly'),
               Match.when('no', () => 'No'),
@@ -86,6 +86,10 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
               Match.exhaustive,
             )}
           </dd>
+          ${Option.match(detail, {
+            onNone: () => '',
+            onSome: detail => html`<dd>${detail}</dd>`,
+          })}
         `,
       })}
       ${Option.match(review.answerToIfTheDatasetHasDataCensoredOrDeleted, {
