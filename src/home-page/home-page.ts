@@ -340,6 +340,10 @@ export const createPage = ({
             >
           </li>
         </ul>
+
+        <nav>
+          <a href="https://stats.prereview.org/" class="forward"><span>See more statistics</span></a>
+        </nav>
       </section>
 
       <section aria-labelledby="funders-title">
