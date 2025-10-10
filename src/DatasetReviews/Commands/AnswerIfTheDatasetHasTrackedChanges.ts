@@ -84,6 +84,7 @@ export const decide: {
           Option.some(
             new Events.AnsweredIfTheDatasetHasTrackedChanges({
               answer: command.answer,
+              detail: Option.none(),
               datasetReviewId: command.datasetReviewId,
             }),
           ),
@@ -96,6 +97,7 @@ export const decide: {
               Option.some(
                 new Events.AnsweredIfTheDatasetHasTrackedChanges({
                   answer: command.answer,
+                  detail: Option.none(),
                   datasetReviewId: command.datasetReviewId,
                 }),
               ),

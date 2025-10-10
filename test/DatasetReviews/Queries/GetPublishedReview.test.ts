@@ -46,10 +46,12 @@ const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheD
 })
 const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
   answer: 'partly',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
   answer: 'unsure',
+  detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({

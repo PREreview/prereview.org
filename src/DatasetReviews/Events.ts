@@ -39,7 +39,11 @@ export class AnsweredIfTheDatasetHasEnoughMetadata extends Schema.TaggedClass<An
 
 export class AnsweredIfTheDatasetHasTrackedChanges extends Schema.TaggedClass<AnsweredIfTheDatasetHasTrackedChanges>()(
   'AnsweredIfTheDatasetHasTrackedChanges',
-  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedClass<AnsweredIfTheDatasetHasDataCensoredOrDeleted>()(
