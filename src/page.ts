@@ -233,9 +233,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a
-                            href="${format(Routes.partnersMatch.formatter, {})}"
-                            ${current === 'partners' ? html`aria-current="page"` : ''}
+                          <a href="${Routes.Partners}" ${current === 'partners' ? html`aria-current="page"` : ''}
                             >${translate(locale, 'header', 'menuPartners')()}</a
                           >
                         </li>

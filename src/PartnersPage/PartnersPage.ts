@@ -1,9 +1,8 @@
-import { format } from 'fp-ts-routing'
 import { html, plainText } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import assets from '../manifest.json' with { type: 'json' }
 import { PageResponse } from '../Response/index.ts'
-import { partnersMatch } from '../routes.ts'
+import * as Routes from '../routes.ts'
 
 export const createPage = (locale: SupportedLocale) => {
   const t = translate(locale)
@@ -76,7 +75,7 @@ export const createPage = (locale: SupportedLocale) => {
         </li>
       </ol>
     `,
-    canonical: format(partnersMatch.formatter, {}),
+    canonical: Routes.Partners,
     current: 'partners',
   })
 }
