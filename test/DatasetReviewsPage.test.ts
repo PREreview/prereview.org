@@ -38,7 +38,12 @@ describe('DatasetReviewsPage', () => {
             detail: fc.maybe(fc.nonEmptyString()),
           }),
         ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.record({
+            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
           fc.constantFrom('yes', 'partly', 'no', 'unsure'),
@@ -123,7 +128,12 @@ describe('DatasetReviewsPage', () => {
             detail: fc.maybe(fc.nonEmptyString()),
           }),
         ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.record({
+            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
           fc.constantFrom('yes', 'partly', 'no', 'unsure'),
@@ -248,7 +258,12 @@ describe('DatasetReviewsPage', () => {
             detail: fc.maybe(fc.nonEmptyString()),
           }),
         ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.record({
+            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
           fc.constantFrom('yes', 'partly', 'no', 'unsure'),
@@ -335,7 +350,12 @@ describe('DatasetReviewsPage', () => {
             detail: fc.maybe(fc.nonEmptyString()),
           }),
         ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
+        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
+          fc.record({
+            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
           fc.constantFrom('yes', 'partly', 'no', 'unsure'),

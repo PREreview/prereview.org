@@ -23,7 +23,10 @@ export interface PublishedReview {
       answer: 'yes' | 'partly' | 'no' | 'unsure'
       detail: Option.Option<NonEmptyString.NonEmptyString>
     }>
-    answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetHasTrackedChanges: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -70,7 +73,7 @@ export const GetPublishedReview = (
 
   const answerToIfTheDatasetHasTrackedChanges = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetHasDataCensoredOrDeleted = Option.map(
