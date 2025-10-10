@@ -1,24 +1,26 @@
-import { pipe } from 'effect'
-import * as RT from 'fp-ts/lib/ReaderTask.js'
-import type { SupportedLocale } from '../locales/index.ts'
+import { Effect, pipe } from 'effect'
+import { Locale } from '../Context.ts'
+import * as FeatureFlags from '../FeatureFlags.ts'
+import * as Prereviews from '../Prereviews/index.ts'
 import type { PageResponse } from '../Response/index.ts'
+import * as ReviewRequests from '../ReviewRequests/index.ts'
 import { createPage } from './home-page.ts'
-import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.ts'
-import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests.ts'
 
-export const home = ({
-  canReviewDatasets = false,
-  locale,
-}: {
-  canReviewDatasets?: boolean
-  locale: SupportedLocale
-}): RT.ReaderTask<GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv, PageResponse> =>
-  pipe(
-    RT.Do,
-    RT.apS('recentPrereviews', getRecentPrereviews()),
-    RT.apSW('recentReviewRequests', getRecentReviewRequests()),
-    RT.let('statistics', () => ({ prereviews: 1395, servers: 30, users: 3747 })),
-    RT.let('locale', () => locale),
-    RT.let('canReviewDatasets', () => canReviewDatasets),
-    RT.map(createPage),
-  )
+export const HomePage: Effect.Effect<
+  PageResponse,
+  never,
+  Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale | FeatureFlags.FeatureFlags
+> = pipe(
+  Effect.Do,
+  Effect.bindAll(
+    () => ({
+      locale: Locale,
+      recentPrereviews: Prereviews.getFiveMostRecent,
+      recentReviewRequests: ReviewRequests.getFiveMostRecent,
+      canReviewDatasets: FeatureFlags.canReviewDatasets,
+    }),
+    { concurrency: 'inherit' },
+  ),
+  Effect.let('statistics', () => ({ prereviews: 1395, servers: 30, users: 3747 })),
+  Effect.andThen(createPage),
+)

@@ -1,26 +1,53 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { format } from 'fp-ts-routing'
-import * as T from 'fp-ts/lib/Task.js'
+import { Effect, Layer } from 'effect'
+import { Locale } from '../../src/Context.ts'
+import * as FeatureFlags from '../../src/FeatureFlags.ts'
+import * as Prereviews from '../../src/Prereviews/index.ts'
+import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/home-page/index.ts'
-import { homeMatch } from '../../src/routes.ts'
+import * as Routes from '../../src/routes.ts'
+import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
+import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
-test.prop([fc.supportedLocale()])('home', async locale => {
-  const actual = await _.home({ locale })({
-    getRecentPrereviews: () => T.of([]),
-    getRecentReviewRequests: () => T.of([]),
-  })()
+test.prop([fc.supportedLocale()])('HomePage', locale =>
+  Effect.gen(function* () {
+    const actual = yield* _.HomePage
 
-  expect(actual).toStrictEqual({
-    _tag: 'PageResponse',
-    canonical: format(homeMatch.formatter, {}),
-    current: 'home',
-    status: StatusCodes.OK,
-    title: expect.anything(),
-    main: expect.anything(),
-    skipToLabel: 'main',
-    js: [],
-  })
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: Routes.HomePage,
+      current: 'home',
+      status: StatusCodes.OK,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  }).pipe(
+    Effect.provide(
+      Layer.mock(Prereviews.Prereviews, {
+        getFiveMostRecent: Effect.succeed([]),
+      }),
+    ),
+    Effect.provide(
+      Layer.mock(ReviewRequests.ReviewRequests, {
+        getFiveMostRecent: Effect.succeed([]),
+      }),
+    ),
+    Effect.provide(featureFlagsLayer),
+    Effect.provideService(Locale, locale),
+    EffectTest.run,
+  ),
+)
+
+const featureFlagsLayer = FeatureFlags.layer({
+  aiReviewsAsCc0: shouldNotBeCalled,
+  askAiReviewEarly: shouldNotBeCalled,
+  canAddMultipleAuthors: shouldNotBeCalled,
+  canLogInAsDemoUser: false,
+  canReviewDatasets: false,
+  useCrowdinInContext: false,
 })

@@ -37,7 +37,6 @@ import { Cloudinary, type OpenAlex, Slack, Zenodo } from '../../ExternalApis/ind
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
-import { home } from '../../home-page/index.ts'
 import * as Keyv from '../../keyv.ts'
 import * as LegacyPrereview from '../../legacy-prereview.ts'
 import { LegacyPrereviewApi } from '../../legacy-prereview.ts'
@@ -265,16 +264,6 @@ const routerWithoutHyperTs = pipe(
     pipe(
       Routes.partnersMatch.parser,
       P.map(() => (env: Env) => T.of(partners(env.locale))),
-    ),
-    pipe(
-      Routes.homeMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          home({ canReviewDatasets: env.featureFlags.canReviewDatasets, locale: env.locale })({
-            getRecentPrereviews: () => EffectToFpts.toTask(Prereviews.getFiveMostRecent, env.runtime),
-            getRecentReviewRequests: () => EffectToFpts.toTask(ReviewRequests.getFiveMostRecent, env.runtime),
-          }),
-      ),
     ),
     pipe(
       Routes.myPrereviewsMatch.parser,

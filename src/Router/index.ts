@@ -12,6 +12,7 @@ import { EdiaStatementPage } from '../EdiaStatementPage.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { FundingPage } from '../FundingPage.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { HomePage } from '../home-page/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
@@ -400,6 +401,7 @@ const AuthRouter = HttpRouter.fromIterable([
 
 export const Router = pipe(
   HttpRouter.fromIterable([
+    MakeStaticRoute('GET', Routes.HomePage, HomePage),
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
     MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
