@@ -6,7 +6,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
-import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
+import { detectLanguage } from '../../detect-language.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, sanitizeHtml } from '../../html.ts'
 import { transformJatsToHtml } from '../../jats.ts'
@@ -14,7 +14,6 @@ import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
 import {
   AdvancePreprintId,
-  AfricarxivOsfPreprintId,
   AuthoreaPreprintId,
   ChemrxivPreprintId,
   CurvenotePreprintId,
@@ -35,7 +34,6 @@ const crossrefDoiPrefixes = [
   '31124',
   '31223',
   '31224',
-  '31730',
   '32942',
   '35542',
   '36227',
@@ -158,7 +156,6 @@ const detectLanguageForServer = ({
 }): Option.Option<LanguageCode> =>
   match({ type, text })
     .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'AfricarxivOsfPreprintId', text: P.select() }, detectLanguageFrom('en', 'fr'))
     .with({ type: 'AuthoreaPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'ChemrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
@@ -177,14 +174,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       institution: D.fromTuple(D.struct({ name: D.literal('Advance') })),
     }),
     D.map(work => new AdvancePreprintId({ value: work.DOI })),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31730'), 'DOI'),
-      publisher: D.literal('Center for Open Science'),
-      'group-title': D.literal('AfricArXiv'),
-    }),
-    D.map(work => new AfricarxivOsfPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.union(

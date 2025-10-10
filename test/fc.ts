@@ -1024,7 +1024,6 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCr
 export const legacyCrossrefPreprintId = (): fc.Arbitrary<LegacyCrossrefPreprintId> =>
   fc.oneof(
     advancePreprintId(),
-    africarxivOsfPreprintId(),
     authoreaPreprintId(),
     chemrxivPreprintId(),
     curvenotePreprintId(),
