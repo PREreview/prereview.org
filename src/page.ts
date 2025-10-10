@@ -254,7 +254,7 @@ export const page = ({
                           >
                         </li>
                         <li>
-                          <a href="https://stats.prereview.org/">Statistics</a>
+                          <a href="https://stats.prereview.org/">${translate(locale, 'header', 'menuStatistics')()}</a>
                         </li>
                       </ul>
                     </div>

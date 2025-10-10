@@ -69,6 +69,10 @@
   "menuResources": {
     "message": "Resources"
   },
+  "menuStatistics": {
+    "message": "Statistics",
+    "description": "Link in the menu to statistics pages, e.g. the number of PREreviews published."
+  },
   "menuClubs": {
     "message": "Clubs"
   },
