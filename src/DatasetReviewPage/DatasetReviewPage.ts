@@ -70,11 +70,11 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
       <dl>
         ${Option.match(datasetReview.questions.qualityRating, {
           onNone: () => '',
-          onSome: qualityRating => html`
+          onSome: ({ rating, detail }) => html`
             <dt>How would you rate the quality of this data set?</dt>
             <dd>
               ${pipe(
-                Match.value(qualityRating),
+                Match.value(rating),
                 Match.when('excellent', () => 'Excellent'),
                 Match.when('fair', () => 'Fair'),
                 Match.when('poor', () => 'Poor'),
@@ -82,7 +82,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
-            ${Option.match(datasetReview.questions.qualityRatingDetail, {
+            ${Option.match(detail, {
               onNone: () => '',
               onSome: detail => html`<dd>${detail}</dd>`,
             })}
@@ -91,7 +91,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
         <dt>Does this dataset follow FAIR and CARE principles?</dt>
         <dd>
           ${pipe(
-            Match.value(datasetReview.questions.answerToIfTheDatasetFollowsFairAndCarePrinciples),
+            Match.value(datasetReview.questions.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer),
             Match.when('yes', () => 'Yes'),
             Match.when('partly', () => 'Partly'),
             Match.when('no', () => 'No'),
@@ -99,7 +99,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             Match.exhaustive,
           )}
         </dd>
-        ${Option.match(datasetReview.questions.answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail, {
+        ${Option.match(datasetReview.questions.answerToIfTheDatasetFollowsFairAndCarePrinciples.detail, {
           onNone: () => '',
           onSome: detail => html`<dd>${detail}</dd>`,
         })}

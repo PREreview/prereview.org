@@ -11,10 +11,14 @@ export interface PublishedReview {
   doi: Doi.Doi
   id: Uuid.Uuid
   questions: {
-    qualityRating: Option.Option<'excellent' | 'fair' | 'poor' | 'unsure'>
-    qualityRatingDetail: Option.Option<NonEmptyString.NonEmptyString>
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes' | 'partly' | 'no' | 'unsure'
-    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.Option<NonEmptyString.NonEmptyString>
+    qualityRating: Option.Option<{
+      rating: 'excellent' | 'fair' | 'poor' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }
     answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -126,12 +130,12 @@ export const GetPublishedReview = (
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,
         questions: {
-          qualityRating: Option.andThen(ratedTheQualityOfTheDataset, Struct.get('rating')),
-          qualityRatingDetail: Option.andThen(ratedTheQualityOfTheDataset, Struct.get('detail')),
-          answerToIfTheDatasetFollowsFairAndCarePrinciples:
-            data.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer,
-          answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-            data.answerToIfTheDatasetFollowsFairAndCarePrinciples.detail,
+          qualityRating: Option.andThen(ratedTheQualityOfTheDataset, Struct.pick('rating', 'detail')),
+          answerToIfTheDatasetFollowsFairAndCarePrinciples: Struct.pick(
+            data.answerToIfTheDatasetFollowsFairAndCarePrinciples,
+            'answer',
+            'detail',
+          ),
           answerToIfTheDatasetHasEnoughMetadata,
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,

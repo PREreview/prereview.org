@@ -173,9 +173,10 @@ describe('GetPublishedReview', () => {
                 id: events[0].datasetReviewId,
                 questions: {
                   qualityRating: Option.none(),
-                  qualityRatingDetail: Option.none(),
-                  answerToIfTheDatasetFollowsFairAndCarePrinciples: events[1].answer,
-                  answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: events[1].detail,
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: events[1].answer,
+                    detail: events[1].detail,
+                  },
                   answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                   answerToIfTheDatasetHasTrackedChanges: Option.none(),
                   answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
@@ -224,12 +225,14 @@ describe('GetPublishedReview', () => {
                   doi: datasetReviewWasAssignedADoi1.doi,
                   id: datasetReviewId,
                   questions: {
-                    qualityRating: Option.some(ratedTheQualityOfTheDataset1.rating),
-                    qualityRatingDetail: ratedTheQualityOfTheDataset1.detail,
-                    answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
-                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                    qualityRating: Option.some({
+                      rating: ratedTheQualityOfTheDataset1.rating,
+                      detail: ratedTheQualityOfTheDataset1.detail,
+                    }),
+                    answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                      answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                      detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                    },
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
@@ -300,12 +303,14 @@ describe('GetPublishedReview', () => {
                   doi: datasetReviewWasAssignedADoi2.doi,
                   id: datasetReviewId,
                   questions: {
-                    qualityRating: Option.some(ratedTheQualityOfTheDataset2.rating),
-                    qualityRatingDetail: ratedTheQualityOfTheDataset2.detail,
-                    answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
-                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
+                    qualityRating: Option.some({
+                      rating: ratedTheQualityOfTheDataset2.rating,
+                      detail: ratedTheQualityOfTheDataset2.detail,
+                    }),
+                    answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                      answer: answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
+                      detail: answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
+                    },
                     answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
@@ -345,11 +350,10 @@ describe('GetPublishedReview', () => {
                   id: datasetReviewId,
                   questions: {
                     qualityRating: Option.none(),
-                    qualityRatingDetail: Option.none(),
-                    answerToIfTheDatasetFollowsFairAndCarePrinciples:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
-                    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail:
-                      answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                    answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                      answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                      detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                    },
                     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
                     answerToIfTheDatasetHasTrackedChanges: Option.none(),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),

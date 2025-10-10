@@ -66,10 +66,14 @@ const prereview1: _.DatasetReview = {
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
-    qualityRating: Option.some('excellent'),
-    qualityRatingDetail: NonEmptyString.fromString('Detail about the excellent rating.'),
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: 'yes',
-    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: NonEmptyString.fromString('Detail about the yes.'),
+    qualityRating: Option.some({
+      rating: 'excellent',
+      detail: NonEmptyString.fromString('Detail about the excellent rating.'),
+    }),
+    answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    },
     answerToIfTheDatasetHasEnoughMetadata: Option.some('yes'),
     answerToIfTheDatasetHasTrackedChanges: Option.some('yes'),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
@@ -95,9 +99,7 @@ const prereview2: _.DatasetReview = {
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {
     qualityRating: Option.none(),
-    qualityRatingDetail: Option.none(),
-    answerToIfTheDatasetFollowsFairAndCarePrinciples: 'unsure',
-    answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: Option.none(),
+    answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'unsure', detail: Option.none() },
     answerToIfTheDatasetHasEnoughMetadata: Option.none(),
     answerToIfTheDatasetHasTrackedChanges: Option.none(),
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),

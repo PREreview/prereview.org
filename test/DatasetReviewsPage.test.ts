@@ -22,10 +22,16 @@ describe('DatasetReviewsPage', () => {
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
-        qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
-        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc.maybe(fc.nonEmptyString()),
+        qualityRating: fc.maybe(
+          fc.record({
+            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -96,10 +102,16 @@ describe('DatasetReviewsPage', () => {
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
-        qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
-        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc.maybe(fc.nonEmptyString()),
+        qualityRating: fc.maybe(
+          fc.record({
+            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -210,10 +222,16 @@ describe('DatasetReviewsPage', () => {
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
-        qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
-        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc.maybe(fc.nonEmptyString()),
+        qualityRating: fc.maybe(
+          fc.record({
+            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
@@ -286,10 +304,16 @@ describe('DatasetReviewsPage', () => {
       doi: fc.doi(),
       id: fc.uuid(),
       questions: fc.record({
-        qualityRating: fc.maybe(fc.constantFrom('excellent', 'fair', 'poor', 'unsure')),
-        qualityRatingDetail: fc.maybe(fc.nonEmptyString()),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        answerToIfTheDatasetFollowsFairAndCarePrinciplesDetail: fc.maybe(fc.nonEmptyString()),
+        qualityRating: fc.maybe(
+          fc.record({
+            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
+          }),
+        ),
+        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
         answerToIfTheDatasetHasEnoughMetadata: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasTrackedChanges: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
         answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
