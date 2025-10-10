@@ -105,11 +105,11 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetHasEnoughMetadata, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetHasEnoughMetadata => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Does the dataset have enough metadata?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetHasEnoughMetadata),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -117,6 +117,10 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetHasTrackedChanges, {

@@ -19,7 +19,10 @@ export interface PublishedReview {
       answer: 'yes' | 'partly' | 'no' | 'unsure'
       detail: Option.Option<NonEmptyString.NonEmptyString>
     }
-    answerToIfTheDatasetHasEnoughMetadata: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
+    answerToIfTheDatasetHasEnoughMetadata: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
     answerToIfTheDatasetHasTrackedChanges: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
@@ -63,10 +66,7 @@ export const GetPublishedReview = (
 
   const ratedTheQualityOfTheDataset = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
-  const answerToIfTheDatasetHasEnoughMetadata = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata')),
-    Struct.get('answer'),
-  )
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata'))
 
   const answerToIfTheDatasetHasTrackedChanges = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
@@ -136,7 +136,10 @@ export const GetPublishedReview = (
             'answer',
             'detail',
           ),
-          answerToIfTheDatasetHasEnoughMetadata,
+          answerToIfTheDatasetHasEnoughMetadata: Option.andThen(
+            answerToIfTheDatasetHasEnoughMetadata,
+            Struct.pick('answer', 'detail'),
+          ),
           answerToIfTheDatasetHasTrackedChanges,
           answerToIfTheDatasetHasDataCensoredOrDeleted,
           answerToIfTheDatasetIsAppropriateForThisKindOfResearch,

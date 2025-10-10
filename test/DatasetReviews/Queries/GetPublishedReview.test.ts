@@ -233,7 +233,10 @@ describe('GetPublishedReview', () => {
                       answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
                       detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
                     },
-                    answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata1.answer),
+                    answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                      answer: answeredIfTheDatasetHasEnoughMetadata1.answer,
+                      detail: answeredIfTheDatasetHasEnoughMetadata1.detail,
+                    }),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges1.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                       answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
@@ -311,7 +314,10 @@ describe('GetPublishedReview', () => {
                       answer: answeredIfTheDatasetFollowsFairAndCarePrinciples2.answer,
                       detail: answeredIfTheDatasetFollowsFairAndCarePrinciples2.detail,
                     },
-                    answerToIfTheDatasetHasEnoughMetadata: Option.some(answeredIfTheDatasetHasEnoughMetadata2.answer),
+                    answerToIfTheDatasetHasEnoughMetadata: Option.some({
+                      answer: answeredIfTheDatasetHasEnoughMetadata2.answer,
+                      detail: answeredIfTheDatasetHasEnoughMetadata2.detail,
+                    }),
                     answerToIfTheDatasetHasTrackedChanges: Option.some(answeredIfTheDatasetHasTrackedChanges2.answer),
                     answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
                       answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
