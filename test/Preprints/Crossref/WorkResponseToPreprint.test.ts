@@ -9,6 +9,7 @@ import { Crossref } from '../../../src/ExternalApis/index.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
 import {
+  AfricarxivOsfPreprintId,
   BiorxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
@@ -436,6 +437,25 @@ test.each([
         ),
       },
       url: new URL('https://osf.io/hq8sd_v1'),
+    }),
+  },
+  {
+    response: 'africarxiv-osf.json',
+    expected: Preprint({
+      authors: [{ name: 'Abdoul kafid Chabi TOKO KOUTOGUI' }],
+      id: new AfricarxivOsfPreprintId({ value: Doi('10.31730/osf.io/yv9az') }),
+      posted: Temporal.PlainDate.from({ year: 2019, month: 9, day: 10 }),
+      title: {
+        language: 'fr',
+        text: rawHtml('LE FINANCEMENT PARTICIPATIF\u00a0: UNE ALTERNATIVE AU FINANCEMENT AGRICOLE AU BENIN'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The Beninese agricultural sector suffers mainly from a lack of financing. This study, conducted on a random sample of 150 households in Parakou commune, shows that participatory financing with a counterpart in agricultural product is an alternative to financing the production of local farms. Food among the population of Parakou consists mainly of cereals, particularly maize (according to 75% of households surveyed). Non-agricultural households purchase agricultural products according to their purchasing power and the economic situation. This study confirms that people are suffering from social injustice caused by an increase in product prices caused by the agricultural financing activity of loan sharks.  It should be noted that 75% of households are willing to adopt the participatory financing proposed in this article. Households are ready to buy at an average price of 12.172 XOF/Kg.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/yv9az'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

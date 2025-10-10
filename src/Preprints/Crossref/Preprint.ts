@@ -28,6 +28,10 @@ const determineCrossrefPreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
     }
 
+    if (Doi.hasRegistrant('31730')(doi) && work['group-title'] !== 'AfricArXiv') {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+    }
+
     const indeterminateId = fromPreprintDoi(doi)
 
     if (indeterminateId._tag !== 'BiorxivOrMedrxivPreprintId') {
@@ -120,6 +124,7 @@ export const workToPreprint = (
 
 const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
+    AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     BiorxivPreprintId: () => Option.some('en' as const),
     MedrxivPreprintId: () => Option.some('en' as const),
     MetaarxivPreprintId: () => Option.some('en' as const),
