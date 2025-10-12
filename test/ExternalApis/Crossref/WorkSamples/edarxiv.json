@@ -1,0 +1,64 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 6, 20]],
+      "date-time": "2025-06-20T11:45:46Z",
+      "timestamp": 1750419946123,
+      "version": "3.40.5"
+    },
+    "posted": { "date-parts": [[2022, 5, 16]] },
+    "group-title": "EdArXiv",
+    "reference-count": 0,
+    "publisher": "Center for Open Science",
+    "license": [
+      {
+        "start": { "date-parts": [[2022, 5, 16]], "date-time": "2022-05-16T00:00:00Z", "timestamp": 1652659200000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/legalcode"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<p>Einer ihrer Kernt\u00e4tigkeiten nachkommend, erarbeiten Hochschuldozierende jedesSemester unter Einsatz personeller, zeitlicher und finanzieller Ressourcen eineVielzahl an Lehrkonzepten und Lehr-\/Lernmaterialien. Lehrbezogenem Wissensmanagement, d. h. der systematischen, effizienten und nachhaltigen Nutzung von Wissen im Kontext Lehre, wird bis dato h\u00e4ufig wenig Bedeutung beigemessen. Das \u00fcbergreifende Ziel bestand deshalb darin, ein theoriebasiertes und praktikables Reflexionsinstrument zu entwickeln, das es Dozierenden erm\u00f6glicht, ihr p\u00e4dagogisches Arbeitshandeln respektive ihren Umgang mit lehrbezogenem Wissen aus einer wissensmanagementtheoretischen Perspektive in den Blick zu nehmen. In diesem Beitrag beschreiben wir die theoretische Fundierung, die Entwicklung, den Aufbau und wesentliche Einsatzm\u00f6glichkeiten des Instruments (LeWiMa). Es soll Dozierenden dabei helfen, ihr lehrbezogenes Wissensmanagement systematisch zu reflektieren, etwaige  Verbesserungspotenziale, Kompetenz- und Fortbildungsbedarfe zu erkennen und bedarfsorientierte Ma\u00dfnahmen zu ergreifen, durch die sie ihre Lehre mittel- und langfristig effizienter, systematischer, offener und nachhaltiger gestalten k\u00f6nnen.<\/p>",
+    "DOI": "10.35542\/osf.io\/dqw5h",
+    "type": "posted-content",
+    "created": { "date-parts": [[2022, 5, 16]], "date-time": "2022-05-16T15:52:23Z", "timestamp": 1652716343000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 1,
+    "title": [
+      "Lehrbezogenes Wissensmanagement in der Hochschullehre: Entwicklung, Beschreibung und Einsatzm\u00f6glichkeiten des Reflexionsinstruments LeWiMa"
+    ],
+    "prefix": "10.35542",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7065-1306",
+        "authenticated-orcid": true,
+        "given": "Stefan T.",
+        "family": "Siegel",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Astrid", "family": "Krummenauer-Grasser", "sequence": "additional", "affiliation": [] },
+      { "given": "Christine", "family": "Stahl", "sequence": "additional", "affiliation": [] }
+    ],
+    "member": "15934",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2022, 8, 31]], "date-time": "2022-08-31T00:29:16Z", "timestamp": 1661905756000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/osf.io\/dqw5h" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2022, 5, 16]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.35542\/osf.io\/dqw5h",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2022, 5, 16]] },
+    "subtype": "preprint"
+  }
+}

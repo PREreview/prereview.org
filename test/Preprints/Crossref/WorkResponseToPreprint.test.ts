@@ -11,6 +11,7 @@ import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
 import {
   AfricarxivOsfPreprintId,
   BiorxivPreprintId,
+  EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   NeurolibrePreprintId,
@@ -480,6 +481,31 @@ test.each([
         ),
       },
       url: new URL('https://scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPX3EC5.v1'),
+    }),
+  },
+  {
+    response: 'edarxiv.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Stefan T. Siegel', orcid: OrcidId('0000-0002-7065-1306') },
+        { name: 'Astrid Krummenauer-Grasser' },
+        { name: 'Christine Stahl' },
+      ],
+      id: new EdarxivPreprintId({ value: Doi('10.35542/osf.io/dqw5h') }),
+      posted: Temporal.PlainDate.from({ year: 2022, month: 5, day: 16 }),
+      title: {
+        language: 'de',
+        text: rawHtml(
+          'Lehrbezogenes Wissensmanagement in der Hochschullehre: Entwicklung, Beschreibung und Einsatzmöglichkeiten des Reflexionsinstruments LeWiMa',
+        ),
+      },
+      abstract: {
+        language: 'de',
+        text: rawHtml(
+          '<p>Einer ihrer Kerntätigkeiten nachkommend, erarbeiten Hochschuldozierende jedesSemester unter Einsatz personeller, zeitlicher und finanzieller Ressourcen eineVielzahl an Lehrkonzepten und Lehr-/Lernmaterialien. Lehrbezogenem Wissensmanagement, d. h. der systematischen, effizienten und nachhaltigen Nutzung von Wissen im Kontext Lehre, wird bis dato häufig wenig Bedeutung beigemessen. Das übergreifende Ziel bestand deshalb darin, ein theoriebasiertes und praktikables Reflexionsinstrument zu entwickeln, das es Dozierenden ermöglicht, ihr pädagogisches Arbeitshandeln respektive ihren Umgang mit lehrbezogenem Wissen aus einer wissensmanagementtheoretischen Perspektive in den Blick zu nehmen. In diesem Beitrag beschreiben wir die theoretische Fundierung, die Entwicklung, den Aufbau und wesentliche Einsatzmöglichkeiten des Instruments (LeWiMa). Es soll Dozierenden dabei helfen, ihr lehrbezogenes Wissensmanagement systematisch zu reflektieren, etwaige  Verbesserungspotenziale, Kompetenz- und Fortbildungsbedarfe zu erkennen und bedarfsorientierte Maßnahmen zu ergreifen, durch die sie ihre Lehre mittel- und langfristig effizienter, systematischer, offener und nachhaltiger gestalten können.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/dqw5h'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

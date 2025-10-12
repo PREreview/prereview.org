@@ -32,6 +32,10 @@ const determineCrossrefPreprintId = (
       return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
     }
 
+    if (Doi.hasRegistrant('35542')(doi) && work['group-title'] !== 'EdArXiv') {
+      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+    }
+
     const indeterminateId = fromPreprintDoi(doi)
 
     if (indeterminateId._tag !== 'BiorxivOrMedrxivPreprintId') {
@@ -126,6 +130,7 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
   Match.valueTags(id, {
     AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     BiorxivPreprintId: () => Option.some('en' as const),
+    EdarxivPreprintId: () => detectLanguage(text),
     MedrxivPreprintId: () => Option.some('en' as const),
     MetaarxivPreprintId: () => Option.some('en' as const),
     NeurolibrePreprintId: () => Option.some('en' as const),
