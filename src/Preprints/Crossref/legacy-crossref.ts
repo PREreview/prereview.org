@@ -19,14 +19,13 @@ import {
   CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
-  EdarxivPreprintId,
   EngrxivPreprintId,
   type IndeterminatePreprintId,
   type PreprintId,
   TechrxivPreprintId,
 } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['22541', '26434', '31124', '31223', '31224', '32942', '35542', '36227', '62329'] as const
+const crossrefDoiPrefixes = ['22541', '26434', '31124', '31223', '31224', '32942', '36227', '62329'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -149,7 +148,6 @@ const detectLanguageForServer = ({
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'EdarxivPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
@@ -202,14 +200,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('California Digital Library (CDL)'),
     }),
     D.map(work => new EcoevorxivPreprintId({ value: work.DOI })),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('35542'), 'DOI'),
-      publisher: D.literal('Center for Open Science'),
-      'group-title': D.literal('EdArXiv'),
-    }),
-    D.map(work => new EdarxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
