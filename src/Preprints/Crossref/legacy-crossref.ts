@@ -15,7 +15,6 @@ import * as Preprint from '../Preprint.ts'
 import {
   AdvancePreprintId,
   AuthoreaPreprintId,
-  ChemrxivPreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
@@ -25,7 +24,7 @@ import {
   TechrxivPreprintId,
 } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['22541', '26434', '31124', '31223', '31224', '32942', '36227', '62329'] as const
+const crossrefDoiPrefixes = ['22541', '31124', '31223', '31224', '32942', '36227', '62329'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -144,7 +143,6 @@ const detectLanguageForServer = ({
   match({ type, text })
     .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'AuthoreaPreprintId', text: P.select() }, detectLanguage)
-    .with({ type: 'ChemrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
@@ -172,13 +170,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       }),
     ),
     D.map(work => new AuthoreaPreprintId({ value: work.DOI })),
-  ),
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('26434'), 'DOI'),
-      publisher: D.literal('American Chemical Society (ACS)'),
-    }),
-    D.map(work => new ChemrxivPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
