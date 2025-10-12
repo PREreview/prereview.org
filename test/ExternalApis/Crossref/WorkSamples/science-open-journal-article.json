@@ -1,0 +1,181 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": { "date-parts": [[2024, 3, 3]], "date-time": "2024-03-03T02:07:48Z", "timestamp": 1709431668673 },
+    "reference-count": 14,
+    "publisher": "ScienceOpen",
+    "issue": "0",
+    "license": [
+      {
+        "start": { "date-parts": [[2015, 9, 4]], "date-time": "2015-09-04T00:00:00Z", "timestamp": 1441324800000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "published-print": { "date-parts": [[2015, 9, 4]] },
+    "abstract": "<jats:title id=\"a4\">Abstract<\/jats:title>\n<jats:p id=\"a5\">For decades, scientific journals were the only way to communicate new research findings. Up until today, very little has changed in that respect. The overwhelming majority of all scientific journals still functions as they did in the times when there was no Internet, no social networks, or crowd-based knowledge platforms. Is this form of dissemination of research findings still suitable in the 21st century? The author says: no.<\/jats:p>",
+    "DOI": "10.14293\/s2199-1006.1.sor-socsci.acke0y.v1",
+    "type": "journal-article",
+    "created": { "date-parts": [[2015, 9, 4]], "date-time": "2015-09-04T10:14:53Z", "timestamp": 1441361693000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 3,
+    "title": ["Publishing in transition \u2013 do we still need scientific journals?"],
+    "prefix": "10.14293",
+    "volume": "0",
+    "author": [
+      {
+        "given": "Alexander",
+        "family": "Grossmann",
+        "sequence": "first",
+        "affiliation": [
+          { "name": "HTWK University for Applied Sciences Leipzig, Gustav-Freytag-Strasse 42, 04277 Leipzig, Germany" }
+        ]
+      }
+    ],
+    "member": "5403",
+    "reference": [
+      {
+        "issue": "8",
+        "key": "cit0001",
+        "first-page": "22",
+        "article-title": "Digitale Steinzeit",
+        "volume": "7",
+        "author": "B Brembs",
+        "year": "2014",
+        "journal-title": "Laborjournal"
+      },
+      {
+        "key": "cit0002",
+        "article-title": "Wie Open Access die Forschung ver\u00e4ndert: Weg mit den Wissenskonserven",
+        "author": "A Degkwitz",
+        "journal-title": "Tagesspiegel"
+      },
+      {
+        "key": "cit0003",
+        "article-title": "Einsiedler verschm\u00e4ht Mathe-Medaille",
+        "journal-title": "SpiegelOnline"
+      },
+      {
+        "key": "cit0004",
+        "article-title": "Where did our Peer Review Mojo go?",
+        "author": "A Grossmann",
+        "journal-title": "ScienceOpen Blog"
+      },
+      {
+        "key": "cit0005",
+        "doi-asserted-by": "publisher",
+        "first-page": "497",
+        "DOI": "10.1136\/bmj.314.7079.497",
+        "article-title": "Why the impact factor of journals should not be used for evaluating research",
+        "volume": "314",
+        "author": "PO Seglen",
+        "year": "1997",
+        "journal-title": "BMJ"
+      },
+      {
+        "issue": "8",
+        "key": "cit0006",
+        "first-page": "979",
+        "article-title": "Journal impact factor: a brief review",
+        "volume": "161",
+        "author": "E Garfield",
+        "year": "1999",
+        "journal-title": "CMAJ"
+      },
+      {
+        "issue": "7045",
+        "key": "cit0007",
+        "first-page": "1003",
+        "article-title": "Editorial",
+        "volume": "435",
+        "year": "2005",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "cit0008",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.14293\/S2199-1006.1.SOR-EDU.EYYXOX.v1",
+        "article-title": "A welcome to authors, users, and readers who want to explore a new way to collect scholarly content",
+        "author": "A Grossmann",
+        "year": "2015",
+        "journal-title": "ScienceOpen Res"
+      },
+      {
+        "key": "cit0009",
+        "doi-asserted-by": "publisher",
+        "DOI": "10.14293\/S2199-1006.1.SOR-EDU.CLSSV9W.v1",
+        "article-title": "Perspectives in scholarly publishing",
+        "author": "A Grossmann",
+        "year": "2015",
+        "journal-title": "ScienceOpen"
+      },
+      {
+        "issue": "1",
+        "key": "cit0010",
+        "doi-asserted-by": "publisher",
+        "first-page": "3",
+        "DOI": "10.1186\/1475-4924-1-3",
+        "article-title": "Open access to the scientific journal literature",
+        "volume": "1",
+        "author": "P Suber",
+        "year": "2002",
+        "journal-title": "J Biol"
+      },
+      { "key": "cit0011", "author": "T Gowers", "journal-title": "Gower's Weblog Blog" },
+      {
+        "issue": "79",
+        "key": "cit0012",
+        "first-page": "1",
+        "article-title": "Open evaluation: a vision for entirely transparent post-publication peer review and rating for science",
+        "volume": "6",
+        "author": "N Kriegeskorte",
+        "year": "2012",
+        "journal-title": "Front Comput Neurosci"
+      },
+      { "key": "cit0013", "volume-title": "Vortrag", "author": "W van de Stelt", "year": "2015" },
+      { "key": "cit0014", "unstructured": "Available from: http:\/\/www.scienceopen.com." }
+    ],
+    "container-title": ["ScienceOpen Research"],
+    "original-title": [],
+    "language": "en",
+    "link": [
+      {
+        "URL": "https:\/\/scienceopen.com\/document_file\/e1dd3665-6406-4a32-befc-e00d84a72cd1\/ScienceOpen\/3077_XE696973259861784096.pdf",
+        "content-type": "application\/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https:\/\/scienceopen.com\/hosted-document?doi=10.14293\/S2199-1006.1.SOR-SOCSCI.ACKE0Y.v1",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2023, 5, 25]], "date-time": "2023-05-25T13:45:22Z", "timestamp": 1685022322000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/scienceopen.com\/hosted-document?doi=10.14293\/S2199-1006.1.SOR-SOCSCI.ACKE0Y.v1" }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2015, 9, 4]] },
+    "references-count": 14,
+    "journal-issue": { "issue": "0" },
+    "URL": "https:\/\/doi.org\/10.14293\/s2199-1006.1.sor-socsci.acke0y.v1",
+    "relation": {
+      "has-review": [
+        { "id-type": "doi", "id": "10.14293\/S2199-1006.1.SOR-SOCSCI.ACKE0Y.v1.REAGXX", "asserted-by": "object" }
+      ]
+    },
+    "ISSN": ["2199-1006"],
+    "issn-type": [{ "value": "2199-1006", "type": "electronic" }],
+    "subject": [],
+    "published": { "date-parts": [[2015, 9, 4]] }
+  }
+}

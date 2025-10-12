@@ -20,6 +20,7 @@ import {
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
+  ScienceOpenPreprintId,
   SocarxivPreprintId,
   SsrnPreprintId,
   VerixivPreprintId,
@@ -458,6 +459,29 @@ test.each([
       url: new URL('https://osf.io/yv9az'),
     }),
   },
+  {
+    response: 'science-open.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Antonia Schrader', orcid: OrcidId('0000-0001-7080-634X') },
+        { name: 'Alexander Grossmann', orcid: OrcidId('0000-0001-9169-5685') },
+        { name: 'Michael Reiche' },
+      ],
+      id: new ScienceOpenPreprintId({ value: Doi('10.14293/s2199-1006.1.sor-.ppx3ec5.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2018, month: 9, day: 17 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Towards a sustainable Open Access monograph publishing workflow for academic institutions'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Across the world, there is a growing interest in Open Access (OA) publishing. Therefore, OA publishing has become a trend and is of key importance to the scientific community. However, observing the publication landscape in Germany leads to a striking finding of very different approaches. In particular, OA book publishing is still in relatively early stages, leading to OA books being much less frequently published than OA journal articles. However, although well-established publishers offer the publication of OA books, only certain researchers can actually publish, because of high Book Processing Charges (BPCs). In contrast to such publishers, university presses publish books as OA without any or at significantly lower charges; however, university presses are often inadequately staffed and do not have the technical know-how of the state-of-the-art publishing of OA books possessed by well-established publishers.</p>\n                <p>For these reasons, our research project aims to develop an ideal and transferable publication workflow for OA books that is both cost-effective and personnel-efficient as well as media-neutral to enable universities to publish their publications as OA. To this end, a one-day meeting with stakeholders of the publication landscape was held in June 2018 at the University of Applied Science in Leipzig, Germany. During the meeting, the stakeholders were asked to present their views on the current situation and also the lessons learned and the shortcomings of the existing approaches.</p>\n                <p>As a result, the observation was confirmed that the publication landscape is very heterogeneous and that there are no standardised interfaces and no harmonised practices for publishing OA books. Furthermore, in a discussion with the stakeholders during the second part of the meeting, further various issues of OA book publishing were revealed that have to be considered. Additionally, the various challenges and wishes of the stakeholders could be classified into five topic areas.</p>\n                <p>These findings illustrate that the primary task of the research project has to be the analysis of the existing publishing workflows and abstracting generally valid processes that are needed to publish OA books. Additionally, the further issues of OA book publishing, mentioned by the stakeholders, have to be addressed during the development. The five topic areas will help reduce the complexity of this project.</p>',
+        ),
+      },
+      url: new URL('https://scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPX3EC5.v1'),
+    }),
+  },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -471,18 +495,22 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['csh-press-journal.json', 'f1000.json', 'scielo-journal.json', 'wellcome-open-research.json'])(
-  'returns a specific error for non-Preprint work (%s)',
-  response =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
-        Effect.andThen(workToPreprint),
-        Effect.flip,
-      )
+test.each([
+  'csh-press-journal.json',
+  'f1000.json',
+  'scielo-journal.json',
+  'science-open-journal-article.json',
+  'wellcome-open-research.json',
+])('returns a specific error for non-Preprint work (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Crossref/WorkSamples/${response}`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Crossref.WorkResponseSchema))),
+      Effect.andThen(workToPreprint),
+      Effect.flip,
+    )
 
-      expect(actual._tag).toStrictEqual('NotAPreprint')
-    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+    expect(actual._tag).toStrictEqual('NotAPreprint')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )

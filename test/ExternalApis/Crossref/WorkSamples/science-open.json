@@ -1,0 +1,84 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "institution": [{ "name": "ScienceOpen" }],
+    "indexed": {
+      "date-parts": [[2025, 5, 14]],
+      "date-time": "2025-05-14T04:30:33Z",
+      "timestamp": 1747197033316,
+      "version": "3.40.5"
+    },
+    "posted": { "date-parts": [[2018, 9, 17]] },
+    "reference-count": 0,
+    "publisher": "ScienceOpen",
+    "license": [
+      {
+        "start": { "date-parts": [[2018, 9, 17]], "date-time": "2018-09-17T00:00:00Z", "timestamp": 1537142400000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>Across the world, there is a growing interest in Open Access (OA) publishing. Therefore, OA publishing has become a trend and is of key importance to the scientific community. However, observing the publication landscape in Germany leads to a striking finding of very different approaches. In particular, OA book publishing is still in relatively early stages, leading to OA books being much less frequently published than OA journal articles. However, although well-established publishers offer the publication of OA books, only certain researchers can actually publish, because of high Book Processing Charges (BPCs). In contrast to such publishers, university presses publish books as OA without any or at significantly lower charges; however, university presses are often inadequately staffed and do not have the technical know-how of the state-of-the-art publishing of OA books possessed by well-established publishers.<\/jats:p>\n                <jats:p>For these reasons, our research project aims to develop an ideal and transferable publication workflow for OA books that is both cost-effective and personnel-efficient as well as media-neutral to enable universities to publish their publications as OA. To this end, a one-day meeting with stakeholders of the publication landscape was held in June 2018 at the University of Applied Science in Leipzig, Germany. During the meeting, the stakeholders were asked to present their views on the current situation and also the lessons learned and the shortcomings of the existing approaches.<\/jats:p>\n                <jats:p>As a result, the observation was confirmed that the publication landscape is very heterogeneous and that there are no standardised interfaces and no harmonised practices for publishing OA books. Furthermore, in a discussion with the stakeholders during the second part of the meeting, further various issues of OA book publishing were revealed that have to be considered. Additionally, the various challenges and wishes of the stakeholders could be classified into five topic areas.<\/jats:p>\n                <jats:p>These findings illustrate that the primary task of the research project has to be the analysis of the existing publishing workflows and abstracting generally valid processes that are needed to publish OA books. Additionally, the further issues of OA book publishing, mentioned by the stakeholders, have to be addressed during the development. The five topic areas will help reduce the complexity of this project.<\/jats:p>",
+    "DOI": "10.14293\/s2199-1006.1.sor-.ppx3ec5.v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2018, 9, 19]], "date-time": "2018-09-19T11:27:37Z", "timestamp": 1537356457000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 1,
+    "title": ["Towards a sustainable Open Access monograph publishing workflow for academic institutions"],
+    "prefix": "10.14293",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-7080-634X",
+        "authenticated-orcid": false,
+        "given": "Antonia",
+        "family": "Schrader",
+        "sequence": "first",
+        "affiliation": [{ "name": "HTWK Leipzig - Leipzig University of Applied Sciences, 04251 Leipzig, Germany" }]
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-9169-5685",
+        "authenticated-orcid": false,
+        "given": "Alexander",
+        "family": "Grossmann",
+        "sequence": "additional",
+        "affiliation": [{ "name": "HTWK Leipzig - Leipzig University of Applied Sciences, 04251 Leipzig, Germany" }]
+      },
+      {
+        "given": "Michael",
+        "family": "Reiche",
+        "sequence": "additional",
+        "affiliation": [{ "name": "HTWK Leipzig - Leipzig University of Applied Sciences, 04251 Leipzig, Germany" }]
+      }
+    ],
+    "member": "5403",
+    "container-title": [],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https:\/\/scienceopen.com\/hosted-document?doi=10.14293\/S2199-1006.1.SOR-.PPX3EC5.v1",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": { "date-parts": [[2023, 5, 25]], "date-time": "2023-05-25T07:52:26Z", "timestamp": 1685001146000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/scienceopen.com\/hosted-document?doi=10.14293\/S2199-1006.1.SOR-.PPX3EC5.v1" }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2018, 9, 17]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.14293\/s2199-1006.1.sor-.ppx3ec5.v1",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2018, 9, 17]] },
+    "subtype": "preprint"
+  }
+}
