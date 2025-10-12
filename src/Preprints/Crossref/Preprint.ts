@@ -130,6 +130,7 @@ const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: H
   Match.valueTags(id, {
     AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     BiorxivPreprintId: () => Option.some('en' as const),
+    ChemrxivPreprintId: () => Option.some('en' as const),
     EdarxivPreprintId: () => detectLanguage(text),
     MedrxivPreprintId: () => Option.some('en' as const),
     MetaarxivPreprintId: () => Option.some('en' as const),

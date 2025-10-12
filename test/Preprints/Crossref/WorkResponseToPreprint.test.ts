@@ -11,6 +11,7 @@ import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
 import {
   AfricarxivOsfPreprintId,
   BiorxivPreprintId,
+  ChemrxivPreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
@@ -506,6 +507,33 @@ test.each([
         ),
       },
       url: new URL('https://osf.io/dqw5h'),
+    }),
+  },
+  {
+    response: 'chemrxiv.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Benjamin Mudrak', orcid: OrcidId('0000-0002-2805-5690') },
+        { name: 'Sara Bosshart' },
+        { name: 'Wolfram Koch' },
+        { name: 'Allison Leung' },
+        { name: 'Donna Minton' },
+        { name: 'Mitsuo Sawamoto' },
+        { name: 'Sarah Tegen' },
+      ],
+      id: new ChemrxivPreprintId({ value: Doi('10.26434/chemrxiv-2022-w0jzh-v2') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 1, day: 18 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Five Years of ChemRxiv: Where We Are and Where We Go From Here'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>ChemRxiv was launched on August 15, 2017 to provide researchers in chemistry and related fields a home for the immediate sharing of their latest research. In the past five years, ChemRxiv has grown into the premier preprint server for the chemical sciences, with a global audience and a wide array of scholarly content that helps advance science more rapidly. On the service\u2019s fifth anniversary, we would like to reflect on the past five years and take a look at what is next for ChemRxiv.</p>',
+        ),
+      },
+      url: new URL('https://chemrxiv.org/engage/chemrxiv/article-details/63c6eb6f5ab313638caace49'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
