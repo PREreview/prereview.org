@@ -26,10 +26,11 @@ export const fromBody = Effect.fn(
   ),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'no' | 'unsure'>) => IsReadyToBeSharedForm = Option.match({
-  onNone: () => new EmptyForm(),
-  onSome: answer => new CompletedForm({ isReadyToBeShared: answer }),
-})
+export const fromAnswer: (answer: Option.Option<{ answer: 'yes' | 'no' | 'unsure' }>) => IsReadyToBeSharedForm =
+  Option.match({
+    onNone: () => new EmptyForm(),
+    onSome: ({ answer }) => new CompletedForm({ isReadyToBeShared: answer }),
+  })
 
 const IsReadyToBeSharedSchema = UrlParams.schemaRecord(
   Schema.Struct({

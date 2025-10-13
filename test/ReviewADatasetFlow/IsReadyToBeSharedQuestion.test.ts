@@ -14,32 +14,35 @@ import * as fc from '../fc.ts'
 
 describe('IsReadyToBeSharedQuestion', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([fc.uuid(), fc.supportedLocale(), fc.user(), fc.maybe(fc.constantFrom('yes', 'no', 'unsure'))])(
-      'when the dataset review is in progress',
-      (datasetReviewId, locale, user, answer) =>
-        Effect.gen(function* () {
-          const actual = yield* _.IsReadyToBeSharedQuestion({ datasetReviewId })
+    test.prop([
+      fc.uuid(),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.maybe(fc.record({ answer: fc.constantFrom('yes', 'no', 'unsure'), detail: fc.maybe(fc.nonEmptyString()) })),
+    ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
+      Effect.gen(function* () {
+        const actual = yield* _.IsReadyToBeSharedQuestion({ datasetReviewId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            canonical: Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId }),
-            status: StatusCodes.OK,
-            title: expect.anything(),
-            nav: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'form',
-            js: [],
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: () => Effect.succeed(answer),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: () => Effect.succeed(answer),
+          }),
         ),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
     )
 
     test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(

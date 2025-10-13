@@ -10,7 +10,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>,
+  Option.Option<Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -52,7 +52,7 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
 
     return Option.map(
       Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
-      Struct.get('answer'),
+      Struct.pick('answer', 'detail'),
     )
   })
 
