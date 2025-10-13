@@ -120,10 +120,12 @@ const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfT
 })
 const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'no',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'unsure',
+  detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({

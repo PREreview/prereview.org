@@ -102,7 +102,11 @@ export class AnsweredIfTheDatasetMattersToItsAudience extends Schema.TaggedClass
 
 export class AnsweredIfTheDatasetIsReadyToBeShared extends Schema.TaggedClass<AnsweredIfTheDatasetIsReadyToBeShared>()(
   'AnsweredIfTheDatasetIsReadyToBeShared',
-  { answer: Schema.Literal('yes', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetIsMissingAnything extends Schema.TaggedClass<AnsweredIfTheDatasetIsMissingAnything>()(

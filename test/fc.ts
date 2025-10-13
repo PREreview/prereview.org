@@ -1779,6 +1779,7 @@ export const answeredIfTheDatasetIsReadyToBeShared = ({
   fc
     .record({
       answer: constantFrom('yes', 'no', 'unsure'),
+      detail: maybe(nonEmptyString()),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new Events.AnsweredIfTheDatasetIsReadyToBeShared(data))
