@@ -23,20 +23,26 @@ export interface DatasetReviewPreview {
     Pick<Events.AnsweredIfTheDatasetHasTrackedChanges, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<
-    Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted['answer']
+    Pick<Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<
-    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
+    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
   >
   readonly answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<
-    Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']
+    Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>
   >
-  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<Events.AnsweredIfTheDatasetIsDetailedEnough['answer']>
-  readonly answerToIfTheDatasetIsErrorFree: Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>
+  readonly answerToIfTheDatasetIsDetailedEnough: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsDetailedEnough, 'answer' | 'detail'>
+  >
+  readonly answerToIfTheDatasetIsErrorFree: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsErrorFree, 'answer' | 'detail'>
+  >
   readonly answerToIfTheDatasetMattersToItsAudience: Option.Option<
-    Events.AnsweredIfTheDatasetMattersToItsAudience['answer']
+    Pick<Events.AnsweredIfTheDatasetMattersToItsAudience, 'answer' | 'detail'>
   >
-  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<Events.AnsweredIfTheDatasetIsReadyToBeShared['answer']>
+  readonly answerToIfTheDatasetIsReadyToBeShared: Option.Option<
+    Pick<Events.AnsweredIfTheDatasetIsReadyToBeShared, 'answer' | 'detail'>
+  >
   readonly answerToIfTheDatasetIsMissingAnything: Option.Option<Events.AnsweredIfTheDatasetIsMissingAnything['answer']>
 }
 
@@ -138,23 +144,29 @@ export const GetPreviewForAReviewReadyToBePublished = (
         ),
         answerToIfTheDatasetHasDataCensoredOrDeleted: Option.map(
           answerToIfTheDatasetHasDataCensoredOrDeleted,
-          Struct.get('answer'),
+          Struct.pick('answer', 'detail'),
         ),
         answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.map(
           answerToIfTheDatasetIsAppropriateForThisKindOfResearch,
-          Struct.get('answer'),
+          Struct.pick('answer', 'detail'),
         ),
         answerToIfTheDatasetSupportsRelatedConclusions: Option.map(
           answerToIfTheDatasetSupportsRelatedConclusions,
-          Struct.get('answer'),
+          Struct.pick('answer', 'detail'),
         ),
-        answerToIfTheDatasetIsDetailedEnough: Option.map(answerToIfTheDatasetIsDetailedEnough, Struct.get('answer')),
-        answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.get('answer')),
+        answerToIfTheDatasetIsDetailedEnough: Option.map(
+          answerToIfTheDatasetIsDetailedEnough,
+          Struct.pick('answer', 'detail'),
+        ),
+        answerToIfTheDatasetIsErrorFree: Option.map(answerToIfTheDatasetIsErrorFree, Struct.pick('answer', 'detail')),
         answerToIfTheDatasetMattersToItsAudience: Option.map(
           answerToIfTheDatasetMattersToItsAudience,
-          Struct.get('answer'),
+          Struct.pick('answer', 'detail'),
         ),
-        answerToIfTheDatasetIsReadyToBeShared: Option.map(answerToIfTheDatasetIsReadyToBeShared, Struct.get('answer')),
+        answerToIfTheDatasetIsReadyToBeShared: Option.map(
+          answerToIfTheDatasetIsReadyToBeShared,
+          Struct.pick('answer', 'detail'),
+        ),
         answerToIfTheDatasetIsMissingAnything: Option.map(answerToIfTheDatasetIsMissingAnything, Struct.get('answer')),
       }),
   })

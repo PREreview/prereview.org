@@ -209,7 +209,7 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetHasDataCensoredOrDeleted, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetHasDataCensoredOrDeleted => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span
@@ -219,7 +219,7 @@ export const CheckYourReviewPage = ({
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetHasDataCensoredOrDeleted),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -227,6 +227,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset shows signs of alteration</span>
@@ -237,14 +241,14 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetIsAppropriateForThisKindOfResearch, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetIsAppropriateForThisKindOfResearch => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span>Is the dataset well-suited to support its stated research purpose?</span>
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetIsAppropriateForThisKindOfResearch),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -252,6 +256,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset is well-suited</span>
@@ -262,14 +270,14 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetSupportsRelatedConclusions, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetSupportsRelatedConclusions => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span>Does this dataset support the researcher’s stated conclusions?</span>
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -277,6 +285,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset supports the conclusions</span>
@@ -287,14 +299,14 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetIsDetailedEnough, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetIsDetailedEnough => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span>Is the dataset granular enough to be a reliable standard of measurement?</span>
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetIsDetailedEnough),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -302,6 +314,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset is granular enough</span>
@@ -312,14 +328,14 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetIsErrorFree, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetIsErrorFree => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span>Is the dataset relatively error-free?</span>
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetIsErrorFree),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('partly', () => 'Partly'),
                           Match.when('no', () => 'No'),
@@ -327,6 +343,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset is relatively error-free</span>
@@ -337,7 +357,7 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetMattersToItsAudience, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetMattersToItsAudience => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span
@@ -348,7 +368,7 @@ export const CheckYourReviewPage = ({
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetMattersToItsAudience),
+                          Match.value(answer),
                           Match.when('very-consequential', () => 'Very consequential'),
                           Match.when('somewhat-consequential', () => 'Somewhat consequential'),
                           Match.when('not-consequential', () => 'Not consequential'),
@@ -356,6 +376,10 @@ export const CheckYourReviewPage = ({
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">how consequential the dataset is likely to seem</span>
@@ -366,20 +390,24 @@ export const CheckYourReviewPage = ({
                 })}
                 ${Option.match(review.answerToIfTheDatasetIsReadyToBeShared, {
                   onNone: () => '',
-                  onSome: answerToIfTheDatasetIsReadyToBeShared => html`
+                  onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
                         <span>Is this dataset ready to be shared?</span>
                       </dt>
                       <dd>
                         ${pipe(
-                          Match.value(answerToIfTheDatasetIsReadyToBeShared),
+                          Match.value(answer),
                           Match.when('yes', () => 'Yes'),
                           Match.when('no', () => 'No'),
                           Match.when('unsure', () => 'I don’t know'),
                           Match.exhaustive,
                         )}
                       </dd>
+                      ${Option.match(detail, {
+                        onNone: () => '',
+                        onSome: detail => html`<dd>${detail}</dd>`,
+                      })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}">
                           Change <span class="visually-hidden">if the dataset is ready to be shared</span>

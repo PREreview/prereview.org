@@ -1626,20 +1626,24 @@ export const datasetReviewPreview = ({
       answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(
-      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(
-      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetSupportsRelatedConclusions: maybe(
-      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
+      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.pick('answer', 'detail')),
     ),
-    answerToIfTheDatasetIsDetailedEnough: maybe(answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer'))),
-    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
+    answerToIfTheDatasetIsDetailedEnough: maybe(
+      answeredIfTheDatasetIsDetailedEnough().map(Struct.pick('answer', 'detail')),
+    ),
+    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.pick('answer', 'detail'))),
     answerToIfTheDatasetMattersToItsAudience: maybe(
-      answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
+      answeredIfTheDatasetMattersToItsAudience().map(Struct.pick('answer', 'detail')),
     ),
-    answerToIfTheDatasetIsReadyToBeShared: maybe(answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer'))),
+    answerToIfTheDatasetIsReadyToBeShared: maybe(
+      answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
+    ),
     answerToIfTheDatasetIsMissingAnything: maybe(answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer'))),
   })
 

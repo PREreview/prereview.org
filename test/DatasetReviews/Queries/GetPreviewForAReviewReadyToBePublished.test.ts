@@ -214,13 +214,34 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 answer: events[4].answer,
                 detail: events[4].detail,
               }),
-              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(events[5].answer),
-              answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(events[6].answer),
-              answerToIfTheDatasetSupportsRelatedConclusions: Option.some(events[7].answer),
-              answerToIfTheDatasetIsDetailedEnough: Option.some(events[8].answer),
-              answerToIfTheDatasetIsErrorFree: Option.some(events[9].answer),
-              answerToIfTheDatasetMattersToItsAudience: Option.some(events[10].answer),
-              answerToIfTheDatasetIsReadyToBeShared: Option.some(events[11].answer),
+              answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                answer: events[5].answer,
+                detail: events[5].detail,
+              }),
+              answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                answer: events[6].answer,
+                detail: events[6].detail,
+              }),
+              answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                answer: events[7].answer,
+                detail: events[7].detail,
+              }),
+              answerToIfTheDatasetIsDetailedEnough: Option.some({
+                answer: events[8].answer,
+                detail: events[8].detail,
+              }),
+              answerToIfTheDatasetIsErrorFree: Option.some({
+                answer: events[9].answer,
+                detail: events[9].detail,
+              }),
+              answerToIfTheDatasetMattersToItsAudience: Option.some({
+                answer: events[10].answer,
+                detail: events[10].detail,
+              }),
+              answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                answer: events[11].answer,
+                detail: events[11].detail,
+              }),
               answerToIfTheDatasetIsMissingAnything: Option.some(events[12].answer),
             }),
           ),
@@ -308,19 +329,34 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                   answer: answeredIfTheDatasetHasTrackedChanges2.answer,
                   detail: answeredIfTheDatasetHasTrackedChanges2.detail,
                 }),
-                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
-                  answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
-                ),
-                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
-                  answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
-                ),
-                answerToIfTheDatasetSupportsRelatedConclusions: Option.some(
-                  answeredIfTheDatasetSupportsRelatedConclusions2.answer,
-                ),
-                answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
-                answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
-                answerToIfTheDatasetMattersToItsAudience: Option.some(answeredIfTheDatasetMattersToItsAudience2.answer),
-                answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
+                answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                  answer: answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                  detail: answeredIfTheDatasetHasDataCensoredOrDeleted2.detail,
+                }),
+                answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                  answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
+                  detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.detail,
+                }),
+                answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                  answer: answeredIfTheDatasetSupportsRelatedConclusions2.answer,
+                  detail: answeredIfTheDatasetSupportsRelatedConclusions2.detail,
+                }),
+                answerToIfTheDatasetIsDetailedEnough: Option.some({
+                  answer: answeredIfTheDatasetIsDetailedEnough2.answer,
+                  detail: answeredIfTheDatasetIsDetailedEnough2.detail,
+                }),
+                answerToIfTheDatasetIsErrorFree: Option.some({
+                  answer: answeredIfTheDatasetIsErrorFree2.answer,
+                  detail: answeredIfTheDatasetIsErrorFree2.detail,
+                }),
+                answerToIfTheDatasetMattersToItsAudience: Option.some({
+                  answer: answeredIfTheDatasetMattersToItsAudience2.answer,
+                  detail: answeredIfTheDatasetMattersToItsAudience2.detail,
+                }),
+                answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                  answer: answeredIfTheDatasetIsReadyToBeShared2.answer,
+                  detail: answeredIfTheDatasetIsReadyToBeShared2.detail,
+                }),
                 answerToIfTheDatasetIsMissingAnything: Option.some(answeredIfTheDatasetIsMissingAnything2.answer),
               },
             ],
