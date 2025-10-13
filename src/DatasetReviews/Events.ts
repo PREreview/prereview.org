@@ -66,7 +66,11 @@ export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Sche
 
 export class AnsweredIfTheDatasetSupportsRelatedConclusions extends Schema.TaggedClass<AnsweredIfTheDatasetSupportsRelatedConclusions>()(
   'AnsweredIfTheDatasetSupportsRelatedConclusions',
-  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetIsErrorFree extends Schema.TaggedClass<AnsweredIfTheDatasetIsErrorFree>()(

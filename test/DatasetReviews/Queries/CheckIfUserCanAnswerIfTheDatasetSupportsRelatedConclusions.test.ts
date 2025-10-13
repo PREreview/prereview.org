@@ -5,7 +5,7 @@ import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
@@ -16,10 +16,12 @@ const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.ws
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
 const answered1 = new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
   answer: 'no',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answered2 = new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
   answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
   datasetReviewId,
 })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({

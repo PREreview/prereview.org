@@ -77,9 +77,17 @@ const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
     datasetReviewId,
   })
 const answeredIfTheDatasetSupportsRelatedConclusion1 =
-  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({ answer: 'no', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
+    answer: 'no',
+    detail: Option.none(),
+    datasetReviewId,
+  })
 const answeredIfTheDatasetSupportsRelatedConclusion2 =
-  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({ answer: 'yes', datasetReviewId })
+  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
+    answer: 'yes',
+    detail: NonEmptyString.fromString('Some detail about yes'),
+    datasetReviewId,
+  })
 const answeredIfTheDatasetIsDetailedEnough1 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
   answer: 'partly',
   datasetReviewId,

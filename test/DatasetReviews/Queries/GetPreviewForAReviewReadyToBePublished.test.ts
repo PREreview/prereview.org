@@ -79,11 +79,13 @@ const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
 const answeredIfTheDatasetSupportsRelatedConclusions1 =
   new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
     answer: 'yes',
+    detail: Option.none(),
     datasetReviewId,
   })
 const answeredIfTheDatasetSupportsRelatedConclusions2 =
   new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
     answer: 'no',
+    detail: NonEmptyString.fromString('Some detail about no'),
     datasetReviewId,
   })
 const answeredIfTheDatasetIsDetailedEnough1 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
