@@ -87,6 +87,7 @@ export const decide: {
           Option.some(
             new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
               answer: command.answer,
+              detail: Option.none(),
               datasetReviewId: command.datasetReviewId,
             }),
           ),
@@ -99,6 +100,7 @@ export const decide: {
               Option.some(
                 new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
                   answer: command.answer,
+                  detail: Option.none(),
                   datasetReviewId: command.datasetReviewId,
                 }),
               ),

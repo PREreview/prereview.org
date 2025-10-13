@@ -67,11 +67,13 @@ const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.Answere
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
   new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
     answer: 'partly',
+    detail: Option.none(),
     datasetReviewId,
   })
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
   new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
     answer: 'unsure',
+    detail: NonEmptyString.fromString('Some detail about unsure'),
     datasetReviewId,
   })
 const answeredIfTheDatasetSupportsRelatedConclusions1 =

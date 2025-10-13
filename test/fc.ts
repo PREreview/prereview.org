@@ -1714,6 +1714,7 @@ export const answeredIfTheDatasetIsAppropriateForThisKindOfResearch = ({
   fc
     .record({
       answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+      detail: maybe(nonEmptyString()),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch(data))

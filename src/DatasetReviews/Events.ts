@@ -57,7 +57,11 @@ export class AnsweredIfTheDatasetHasDataCensoredOrDeleted extends Schema.TaggedC
 
 export class AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch extends Schema.TaggedClass<AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch>()(
   'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-  { answer: Schema.Literal('yes', 'partly', 'no', 'unsure'), datasetReviewId: Uuid.UuidSchema },
+  {
+    answer: Schema.Literal('yes', 'partly', 'no', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    datasetReviewId: Uuid.UuidSchema,
+  },
 ) {}
 
 export class AnsweredIfTheDatasetSupportsRelatedConclusions extends Schema.TaggedClass<AnsweredIfTheDatasetSupportsRelatedConclusions>()(
