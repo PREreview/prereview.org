@@ -377,6 +377,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('What’s missing?').fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
+  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -410,7 +411,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? Partly Duis sollicitudin blandit scelerisque.',
   )
   await expect(page.getByRole('main')).toContainText(
-    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly',
+    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly Morbi ac suscipit justo.',
   )
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset well-suited to support its stated research purpose? Partly',
@@ -515,6 +516,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset shows signs of alteration' }).click()
 
+  await page.getByLabel('Which parts have been altered?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly',
+  )
+  await expect(review).not.toContainText('Partly Morbi ac suscipit justo.')
+
+  await page.getByRole('link', { name: 'Change if the dataset shows signs of alteration' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -604,6 +615,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -675,6 +687,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Which parts have been altered?')).toHaveValue('Morbi ac suscipit justo.')
 
   await page.goBack()
 
@@ -725,6 +738,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -796,6 +810,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Partly')).toBeChecked()
+  await expect(page.getByLabel('Which parts have been altered?')).toHaveValue('Morbi ac suscipit justo.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -997,6 +1012,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../has-data-censored-or-deleted`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('How has it been altered?').fill('   \n Morbi ac suscipit justo. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1013,6 +1032,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset shows signs of alteration' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('How has it been altered?')).toHaveValue('   \n Morbi ac suscipit justo. ')
+    }
   },
 )
 

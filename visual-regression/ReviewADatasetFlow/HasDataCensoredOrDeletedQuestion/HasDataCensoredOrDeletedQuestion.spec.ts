@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as HasDataCensoredOrDeletedForm from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,9 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new HasDataCensoredOrDeletedForm.CompletedForm({
       hasDataCensoredOrDeleted: 'yes',
+      hasDataCensoredOrDeletedYesDetail: NonEmptyString.fromString('Detail about the yes.'),
+      hasDataCensoredOrDeletedPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
+      hasDataCensoredOrDeletedNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
   })
 
@@ -34,6 +37,9 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new HasDataCensoredOrDeletedForm.InvalidForm({
       hasDataCensoredOrDeleted: Either.left(new HasDataCensoredOrDeletedForm.Missing()),
+      hasDataCensoredOrDeletedYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
+      hasDataCensoredOrDeletedPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
+      hasDataCensoredOrDeletedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
   })
 
