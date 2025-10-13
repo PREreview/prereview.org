@@ -26,11 +26,12 @@ export const fromBody = Effect.fn(
   ),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => SupportsRelatedConclusionsForm =
-  Option.match({
-    onNone: () => new EmptyForm(),
-    onSome: answer => new CompletedForm({ supportsRelatedConclusions: answer }),
-  })
+export const fromAnswer: (
+  answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>,
+) => SupportsRelatedConclusionsForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: ({ answer }) => new CompletedForm({ supportsRelatedConclusions: answer }),
+})
 
 const SupportsRelatedConclusionsSchema = UrlParams.schemaRecord(
   Schema.Struct({
