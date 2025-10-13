@@ -90,10 +90,12 @@ const answeredIfTheDatasetSupportsRelatedConclusion2 =
   })
 const answeredIfTheDatasetIsDetailedEnough1 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
   answer: 'partly',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
   answer: 'unsure',
+  detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
