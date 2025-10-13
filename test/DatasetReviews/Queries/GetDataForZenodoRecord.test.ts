@@ -56,10 +56,12 @@ const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheD
 })
 const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
   answer: 'no',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
   answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
