@@ -27,15 +27,34 @@ export interface PublishedReview {
       answer: 'yes' | 'partly' | 'no' | 'unsure'
       detail: Option.Option<NonEmptyString.NonEmptyString>
     }>
-    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
-    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
-    answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
-    answerToIfTheDatasetIsDetailedEnough: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
-    answerToIfTheDatasetIsErrorFree: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>
-    answerToIfTheDatasetMattersToItsAudience: Option.Option<
-      'very-consequential' | 'somewhat-consequential' | 'not-consequential' | 'unsure'
-    >
-    answerToIfTheDatasetIsReadyToBeShared: Option.Option<'yes' | 'no' | 'unsure'>
+    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetSupportsRelatedConclusions: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetIsDetailedEnough: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetIsErrorFree: Option.Option<{
+      answer: 'yes' | 'partly' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetMattersToItsAudience: Option.Option<{
+      answer: 'very-consequential' | 'somewhat-consequential' | 'not-consequential' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
+    answerToIfTheDatasetIsReadyToBeShared: Option.Option<{
+      answer: 'yes' | 'no' | 'unsure'
+      detail: Option.Option<NonEmptyString.NonEmptyString>
+    }>
     answerToIfTheDatasetIsMissingAnything: Option.Option<NonEmptyString.NonEmptyString>
   }
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
@@ -78,37 +97,37 @@ export const GetPublishedReview = (
 
   const answerToIfTheDatasetHasDataCensoredOrDeleted = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetSupportsRelatedConclusions = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsDetailedEnough = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetIsDetailedEnough')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsErrorFree = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetIsErrorFree')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetMattersToItsAudience = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetMattersToItsAudience')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsReadyToBeShared = Option.map(
     Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
-    Struct.get('answer'),
+    Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsMissingAnything = Option.andThen(

@@ -145,14 +145,14 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetHasDataCensoredOrDeleted, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetHasDataCensoredOrDeleted => html`
+          onSome: ({ answer, detail }) => html`
             <dt>
               Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
               deletion, or redaction, that are not accounted for otherwise?
             </dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetHasDataCensoredOrDeleted),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -160,15 +160,19 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsAppropriateForThisKindOfResearch, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetIsAppropriateForThisKindOfResearch => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Is the dataset well-suited to support its stated research purpose?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetIsAppropriateForThisKindOfResearch),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -176,15 +180,19 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetSupportsRelatedConclusions, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetSupportsRelatedConclusions => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Does this dataset support the researcher’s stated conclusions?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetSupportsRelatedConclusions),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -192,15 +200,19 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsDetailedEnough, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetIsDetailedEnough => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetIsDetailedEnough),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -208,15 +220,19 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsErrorFree, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetIsErrorFree => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Is the dataset relatively error-free?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetIsErrorFree),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('partly', () => 'Partly'),
                 Match.when('no', () => 'No'),
@@ -224,11 +240,15 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetMattersToItsAudience, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetMattersToItsAudience => html`
+          onSome: ({ answer, detail }) => html`
             <dt>
               Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
               researchers, or to the general public? How consequential is it likely to seem to that audience or those
@@ -236,7 +256,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
             </dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetMattersToItsAudience),
+                Match.value(answer),
                 Match.when('very-consequential', () => 'Very consequential'),
                 Match.when('somewhat-consequential', () => 'Somewhat consequential'),
                 Match.when('not-consequential', () => 'Not consequential'),
@@ -244,21 +264,29 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsReadyToBeShared, {
           onNone: () => '',
-          onSome: answerToIfTheDatasetIsReadyToBeShared => html`
+          onSome: ({ answer, detail }) => html`
             <dt>Is this dataset ready to be shared?</dt>
             <dd>
               ${pipe(
-                Match.value(answerToIfTheDatasetIsReadyToBeShared),
+                Match.value(answer),
                 Match.when('yes', () => 'Yes'),
                 Match.when('no', () => 'No'),
                 Match.when('unsure', () => 'I don’t know'),
                 Match.exhaustive,
               )}
             </dd>
+            ${Option.match(detail, {
+              onNone: () => '',
+              onSome: detail => html`<dd>${detail}</dd>`,
+            })}
           `,
         })}
         ${Option.match(datasetReview.questions.answerToIfTheDatasetIsMissingAnything, {

@@ -47,13 +47,34 @@ const datasetReview: _.DatasetReview = {
       answer: 'yes',
       detail: NonEmptyString.fromString('Detail about the yes.'),
     }),
-    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('yes'),
-    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
-    answerToIfTheDatasetSupportsRelatedConclusions: Option.some('yes'),
-    answerToIfTheDatasetIsDetailedEnough: Option.some('yes'),
-    answerToIfTheDatasetIsErrorFree: Option.some('yes'),
-    answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
-    answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
+    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
+    answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
+    answerToIfTheDatasetIsDetailedEnough: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
+    answerToIfTheDatasetIsErrorFree: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
+    answerToIfTheDatasetMattersToItsAudience: Option.some({
+      answer: 'very-consequential',
+      detail: NonEmptyString.fromString('Detail about the very-consequential.'),
+    }),
+    answerToIfTheDatasetIsReadyToBeShared: Option.some({
+      answer: 'yes',
+      detail: NonEmptyString.fromString('Detail about the yes.'),
+    }),
     answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     ),

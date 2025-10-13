@@ -1558,15 +1558,48 @@ export const publishedDatasetReview = ({
           detail: maybe(nonEmptyString()),
         }),
       ),
-      answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
-      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
-      answerToIfTheDatasetSupportsRelatedConclusions: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
-      answerToIfTheDatasetIsDetailedEnough: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
-      answerToIfTheDatasetIsErrorFree: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
-      answerToIfTheDatasetMattersToItsAudience: maybe(
-        constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
       ),
-      answerToIfTheDatasetIsReadyToBeShared: maybe(constantFrom('yes', 'no', 'unsure')),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetSupportsRelatedConclusions: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetIsDetailedEnough: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetIsErrorFree: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetMattersToItsAudience: maybe(
+        fc.record({
+          answer: constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetIsReadyToBeShared: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
       answerToIfTheDatasetIsMissingAnything: maybe(nonEmptyString()),
     }),
     competingInterests: maybe(nonEmptyString()),

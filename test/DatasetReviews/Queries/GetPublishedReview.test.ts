@@ -263,21 +263,34 @@ describe('GetPublishedReview', () => {
                       answer: answeredIfTheDatasetHasTrackedChanges1.answer,
                       detail: answeredIfTheDatasetHasTrackedChanges1.detail,
                     }),
-                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
-                      answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
-                    ),
-                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
-                      answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
-                    ),
-                    answerToIfTheDatasetSupportsRelatedConclusions: Option.some(
-                      answeredIfTheDatasetSupportsRelatedConclusion1.answer,
-                    ),
-                    answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough1.answer),
-                    answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree1.answer),
-                    answerToIfTheDatasetMattersToItsAudience: Option.some(
-                      answeredIfTheDatasetMattersToItsAudience1.answer,
-                    ),
-                    answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared1.answer),
+                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                      answer: answeredIfTheDatasetHasDataCensoredOrDeleted1.answer,
+                      detail: answeredIfTheDatasetHasDataCensoredOrDeleted1.detail,
+                    }),
+                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                      answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.answer,
+                      detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch1.detail,
+                    }),
+                    answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                      answer: answeredIfTheDatasetSupportsRelatedConclusion1.answer,
+                      detail: answeredIfTheDatasetSupportsRelatedConclusion1.detail,
+                    }),
+                    answerToIfTheDatasetIsDetailedEnough: Option.some({
+                      answer: answeredIfTheDatasetIsDetailedEnough1.answer,
+                      detail: answeredIfTheDatasetIsDetailedEnough1.detail,
+                    }),
+                    answerToIfTheDatasetIsErrorFree: Option.some({
+                      answer: answeredIfTheDatasetIsErrorFree1.answer,
+                      detail: answeredIfTheDatasetIsErrorFree1.detail,
+                    }),
+                    answerToIfTheDatasetMattersToItsAudience: Option.some({
+                      answer: answeredIfTheDatasetMattersToItsAudience1.answer,
+                      detail: answeredIfTheDatasetMattersToItsAudience1.detail,
+                    }),
+                    answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                      answer: answeredIfTheDatasetIsReadyToBeShared1.answer,
+                      detail: answeredIfTheDatasetIsReadyToBeShared1.detail,
+                    }),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything1.answer,
                   },
                   competingInterests: competingInterestsForADatasetReviewWereDeclared1.competingInterests,
@@ -347,21 +360,34 @@ describe('GetPublishedReview', () => {
                       answer: answeredIfTheDatasetHasTrackedChanges2.answer,
                       detail: answeredIfTheDatasetHasTrackedChanges2.detail,
                     }),
-                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some(
-                      answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
-                    ),
-                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some(
-                      answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
-                    ),
-                    answerToIfTheDatasetSupportsRelatedConclusions: Option.some(
-                      answeredIfTheDatasetSupportsRelatedConclusion2.answer,
-                    ),
-                    answerToIfTheDatasetIsDetailedEnough: Option.some(answeredIfTheDatasetIsDetailedEnough2.answer),
-                    answerToIfTheDatasetIsErrorFree: Option.some(answeredIfTheDatasetIsErrorFree2.answer),
-                    answerToIfTheDatasetMattersToItsAudience: Option.some(
-                      answeredIfTheDatasetMattersToItsAudience2.answer,
-                    ),
-                    answerToIfTheDatasetIsReadyToBeShared: Option.some(answeredIfTheDatasetIsReadyToBeShared2.answer),
+                    answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+                      answer: answeredIfTheDatasetHasDataCensoredOrDeleted2.answer,
+                      detail: answeredIfTheDatasetHasDataCensoredOrDeleted2.detail,
+                    }),
+                    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+                      answer: answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.answer,
+                      detail: answeredIfTheDatasetIsAppropriateForThisKindOfResearch2.detail,
+                    }),
+                    answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+                      answer: answeredIfTheDatasetSupportsRelatedConclusion2.answer,
+                      detail: answeredIfTheDatasetSupportsRelatedConclusion2.detail,
+                    }),
+                    answerToIfTheDatasetIsDetailedEnough: Option.some({
+                      answer: answeredIfTheDatasetIsDetailedEnough2.answer,
+                      detail: answeredIfTheDatasetIsDetailedEnough2.detail,
+                    }),
+                    answerToIfTheDatasetIsErrorFree: Option.some({
+                      answer: answeredIfTheDatasetIsErrorFree2.answer,
+                      detail: answeredIfTheDatasetIsErrorFree2.detail,
+                    }),
+                    answerToIfTheDatasetMattersToItsAudience: Option.some({
+                      answer: answeredIfTheDatasetMattersToItsAudience2.answer,
+                      detail: answeredIfTheDatasetMattersToItsAudience2.detail,
+                    }),
+                    answerToIfTheDatasetIsReadyToBeShared: Option.some({
+                      answer: answeredIfTheDatasetIsReadyToBeShared2.answer,
+                      detail: answeredIfTheDatasetIsReadyToBeShared2.detail,
+                    }),
                     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything2.answer,
                   },
                   competingInterests: competingInterestsForADatasetReviewWereDeclared2.competingInterests,
