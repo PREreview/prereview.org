@@ -1,4 +1,4 @@
-import { Either, Match, pipe } from 'effect'
+import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
@@ -47,117 +47,177 @@ export const IsDetailedEnoughQuestion = ({
           : ''}
 
         <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
-          <fieldset
-            role="group"
-            ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.isDetailedEnough)
-                ? 'aria-invalid="true" aria-errormessage="is-detailed-enough-error"'
-                : '',
-            )}
-          >
-            <legend>
-              <h1>Is the dataset granular enough to be a reliable standard of measurement?</h1>
-            </legend>
+          <conditional-inputs>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                form._tag === 'InvalidForm' && Either.isLeft(form.isDetailedEnough)
+                  ? 'aria-invalid="true" aria-errormessage="is-detailed-enough-error"'
+                  : '',
+              )}
+            >
+              <legend>
+                <h1>Is the dataset granular enough to be a reliable standard of measurement?</h1>
+              </legend>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.isDetailedEnough)
-              ? html`
-                  <div class="error-message" id="is-detailed-enough-error">
-                    <span class="visually-hidden">Error:</span>
-                    ${Match.valueTags(form.isDetailedEnough.left, {
-                      Missing: () => 'Select if the dataset is granular enough',
-                    })}
+              ${form._tag === 'InvalidForm' && Either.isLeft(form.isDetailedEnough)
+                ? html`
+                    <div class="error-message" id="is-detailed-enough-error">
+                      <span class="visually-hidden">Error:</span>
+                      ${Match.valueTags(form.isDetailedEnough.left, {
+                        Missing: () => 'Select if the dataset is granular enough',
+                      })}
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="isDetailedEnough"
+                      id="is-detailed-enough-yes"
+                      type="radio"
+                      value="yes"
+                      aria-describedby="is-detailed-enough-tip-yes"
+                      aria-controls="is-detailed-enough-yes-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'yes' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>Yes</span>
+                  </label>
+                  <p id="is-detailed-enough-tip-yes" role="note">
+                    The dataset provides data at a detailed or granular enough level to seem trustworthy as a standard
+                    of measurement or truth.
+                  </p>
+                  <div class="conditional" id="is-detailed-enough-yes-control">
+                    <div>
+                      <label for="is-detailed-enough-yes-detail" class="textarea"
+                        >How is it detailed enough? (optional)</label
+                      >
+                      <textarea name="isDetailedEnoughYesDetail" id="is-detailed-enough-yes-detail" rows="5">
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.isDetailedEnoughYesDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form => Option.getOrElse(form.isDetailedEnoughYesDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
                   </div>
-                `
-              : ''}
-
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="isDetailedEnough"
-                    id="is-detailed-enough-yes"
-                    type="radio"
-                    value="yes"
-                    aria-describedby="is-detailed-enough-tip-yes"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'yes' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>Yes</span>
-                </label>
-                <p id="is-detailed-enough-tip-yes" role="note">
-                  The dataset provides data at a detailed or granular enough level to seem trustworthy as a standard of
-                  measurement or truth.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="isDetailedEnough"
-                    type="radio"
-                    value="partly"
-                    aria-describedby="is-detailed-enough-tip-partly"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'partly' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>Partly</span>
-                </label>
-                <p id="is-detailed-enough-tip-partly" role="note">
-                  Some of the data in the dataset provides data at a detailed or granular enough level to seem
-                  trustworthy as a standard of measurement or truth, but not all of it.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="isDetailedEnough"
-                    type="radio"
-                    value="no"
-                    aria-describedby="is-detailed-enough-tip-no"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'no' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>No</span>
-                </label>
-                <p id="is-detailed-enough-tip-no" role="note">
-                  The dataset doesn’t provide data at a detailed or granular enough level to seem trustworthy as a
-                  standard of measurement or truth.
-                </p>
-              </li>
-              <li>
-                <span>or</span>
-                <label>
-                  <input
-                    name="isDetailedEnough"
-                    type="radio"
-                    value="unsure"
-                    aria-describedby="is-detailed-enough-tip-unsure"
-                    ${pipe(
-                      Match.value(form),
-                      Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'unsure' }, () => 'checked'),
-                      Match.orElse(() => ''),
-                    )}
-                  />
-                  <span>I don’t know</span>
-                </label>
-              </li>
-            </ol>
-          </fieldset>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="isDetailedEnough"
+                      type="radio"
+                      value="partly"
+                      aria-describedby="is-detailed-enough-tip-partly"
+                      aria-controls="is-detailed-enough-partly-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'partly' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>Partly</span>
+                  </label>
+                  <p id="is-detailed-enough-tip-partly" role="note">
+                    Some of the data in the dataset provides data at a detailed or granular enough level to seem
+                    trustworthy as a standard of measurement or truth, but not all of it.
+                  </p>
+                  <div class="conditional" id="is-detailed-enough-partly-control">
+                    <div>
+                      <label for="is-detailed-enough-partly-detail" class="textarea"
+                        >Which data is detailed enough and which isn’t? (optional)</label
+                      >
+                      <textarea name="isDetailedEnoughPartlyDetail" id="is-detailed-enough-partly-detail" rows="5">
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.isDetailedEnoughPartlyDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form =>
+                            Option.getOrElse(form.isDetailedEnoughPartlyDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="isDetailedEnough"
+                      type="radio"
+                      value="no"
+                      aria-describedby="is-detailed-enough-tip-no"
+                      aria-controls="is-detailed-enough-no-control"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'no' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>No</span>
+                  </label>
+                  <p id="is-detailed-enough-tip-no" role="note">
+                    The dataset doesn’t provide data at a detailed or granular enough level to seem trustworthy as a
+                    standard of measurement or truth.
+                  </p>
+                  <div class="conditional" id="is-detailed-enough-no-control">
+                    <div>
+                      <label for="is-detailed-enough-no-detail" class="textarea"
+                        >How is it not detailed enough? (optional)</label
+                      >
+                      <textarea name="isDetailedEnoughNoDetail" id="is-detailed-enough-no-detail" rows="5">
+${Match.valueTags(form, {
+                          EmptyForm: () => '',
+                          InvalidForm: form =>
+                            Option.getOrElse(
+                              Option.flatten(Either.getRight(form.isDetailedEnoughNoDetail)),
+                              () => String.empty,
+                            ),
+                          CompletedForm: form => Option.getOrElse(form.isDetailedEnoughNoDetail, () => String.empty),
+                        })}</textarea
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input
+                      name="isDetailedEnough"
+                      type="radio"
+                      value="unsure"
+                      aria-describedby="is-detailed-enough-tip-unsure"
+                      ${pipe(
+                        Match.value(form),
+                        Match.when({ _tag: 'CompletedForm', isDetailedEnough: 'unsure' }, () => 'checked'),
+                        Match.orElse(() => ''),
+                      )}
+                    />
+                    <span>I don’t know</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </conditional-inputs>
         </div>
 
         <button>Save and continue</button>
       </form>
     `,
     canonical: Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
+    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }

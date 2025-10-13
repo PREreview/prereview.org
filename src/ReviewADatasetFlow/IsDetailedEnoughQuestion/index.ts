@@ -1,12 +1,12 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match, Option } from 'effect'
+import { Effect, Match, Option, pipe } from 'effect'
 import type { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import type { Uuid } from '../../types/index.ts'
+import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 import * as IsDetailedEnoughForm from './IsDetailedEnoughForm.ts'
@@ -65,7 +65,14 @@ export const IsDetailedEnoughSubmission = ({
         function* (form: IsDetailedEnoughForm.CompletedForm) {
           yield* DatasetReviews.answerIfTheDatasetIsDetailedEnough({
             answer: form.isDetailedEnough,
-            detail: Option.none(),
+            detail: pipe(
+              Match.value(form.isDetailedEnough),
+              Match.when('yes', () => form.isDetailedEnoughYesDetail),
+              Match.when('partly', () => form.isDetailedEnoughPartlyDetail),
+              Match.when('no', () => form.isDetailedEnoughNoDetail),
+              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+              Match.exhaustive,
+            ),
             datasetReviewId,
             userId: user.orcid,
           })

@@ -19,7 +19,10 @@ describe('IsDetailedEnoughQuestion', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.maybe(
-        fc.record({ answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'), detail: fc.maybe(fc.nonEmptyString()) }),
+        fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
       ),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
@@ -33,7 +36,7 @@ describe('IsDetailedEnoughQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -181,7 +184,17 @@ describe('IsDetailedEnoughSubmission', () => {
     describe('when the answer can be saved', () => {
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isDetailedEnoughYesDetail: fc.string(),
+              isDetailedEnoughPartlyDetail: fc.string(),
+              isDetailedEnoughNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isDetailedEnough'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewNextExpectedCommand(),
@@ -213,7 +226,17 @@ describe('IsDetailedEnoughSubmission', () => {
 
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isDetailedEnoughYesDetail: fc.string(),
+              isDetailedEnoughPartlyDetail: fc.string(),
+              isDetailedEnoughNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isDetailedEnough'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
@@ -253,7 +276,17 @@ describe('IsDetailedEnoughSubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            isDetailedEnoughYesDetail: fc.string(),
+            isDetailedEnoughPartlyDetail: fc.string(),
+            isDetailedEnoughNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isDetailedEnough'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -294,9 +327,15 @@ describe('IsDetailedEnoughSubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'isDetailedEnough'))),
       fc.urlParams(
-        fc.record({
-          isDetailedEnough: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            isDetailedEnough: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            isDetailedEnoughYesDetail: fc.string(),
+            isDetailedEnoughPartlyDetail: fc.string(),
+            isDetailedEnoughNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isDetailedEnough'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -313,7 +352,7 @@ describe('IsDetailedEnoughSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),

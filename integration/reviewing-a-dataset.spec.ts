@@ -386,6 +386,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('How does it partly support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
+  await page.getByLabel('Which data is detailed enough and which isn’t?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -422,7 +423,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     'Does this dataset support the researcher’s stated conclusions? Partly Etiam non nibh velit.',
   )
   await expect(page.getByRole('main')).toContainText(
-    'Is the dataset granular enough to be a reliable standard of measurement? Partly',
+    'Is the dataset granular enough to be a reliable standard of measurement? Partly In sollicitudin dignissim placerat.',
   )
   await expect(page.getByRole('main')).toContainText('Is the dataset relatively error-free? Partly')
   await expect(page.getByRole('main')).toContainText(
@@ -575,6 +576,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is granular enough' }).click()
 
+  await page.getByLabel('Which data is detailed enough and which isn’t?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Is the dataset granular enough to be a reliable standard of measurement? Partly',
+  )
+  await expect(page.getByRole('main')).not.toContainText('Partly In sollicitudin dignissim placerat.')
+
+  await page.getByRole('link', { name: 'Change if the dataset is granular enough' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -646,6 +657,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
+  await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -699,6 +711,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('No', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How is it not detailed enough?')).toHaveValue('In sollicitudin dignissim placerat.')
 
   await page.goBack()
 
@@ -773,6 +786,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
+  await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -826,6 +840,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('No', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How is it not detailed enough?')).toHaveValue('In sollicitudin dignissim placerat.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1137,6 +1152,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../is-detailed-enough`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('How is it detailed enough?').fill('   \n In sollicitudin dignissim placerat. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1151,6 +1170,11 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset is granular enough' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('How is it detailed enough?')).toHaveValue(
+        '   \n In sollicitudin dignissim placerat. ',
+      )
+    }
   },
 )
 

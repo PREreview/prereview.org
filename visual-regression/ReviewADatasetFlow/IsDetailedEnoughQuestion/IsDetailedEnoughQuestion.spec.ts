@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as IsDetailedEnoughForm from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,9 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new IsDetailedEnoughForm.CompletedForm({
       isDetailedEnough: 'yes',
+      isDetailedEnoughYesDetail: NonEmptyString.fromString('Detail about the yes.'),
+      isDetailedEnoughPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
+      isDetailedEnoughNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
   })
 
@@ -34,6 +37,9 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new IsDetailedEnoughForm.InvalidForm({
       isDetailedEnough: Either.left(new IsDetailedEnoughForm.Missing()),
+      isDetailedEnoughYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
+      isDetailedEnoughPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
+      isDetailedEnoughNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
   })
 
