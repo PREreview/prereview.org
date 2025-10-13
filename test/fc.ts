@@ -1766,6 +1766,7 @@ export const answeredIfTheDatasetMattersToItsAudience = ({
   fc
     .record({
       answer: constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+      detail: maybe(nonEmptyString()),
       datasetReviewId: datasetReviewId ?? uuid(),
     })
     .map(data => new Events.AnsweredIfTheDatasetMattersToItsAudience(data))

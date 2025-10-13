@@ -110,10 +110,12 @@ const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDataset
 })
 const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
   answer: 'not-consequential',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
   answer: 'very-consequential',
+  detail: NonEmptyString.fromString('Some detail about very-consequential'),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({

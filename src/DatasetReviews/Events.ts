@@ -95,6 +95,7 @@ export class AnsweredIfTheDatasetMattersToItsAudience extends Schema.TaggedClass
   'AnsweredIfTheDatasetMattersToItsAudience',
   {
     answer: Schema.Literal('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+    detail: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
     datasetReviewId: Uuid.UuidSchema,
   },
 ) {}
