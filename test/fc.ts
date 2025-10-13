@@ -1610,6 +1610,43 @@ export const datasetReviewPreview = ({
     answerToIfTheDatasetIsMissingAnything: maybe(answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer'))),
   })
 
+export const datasetReviewDataForZenodoRecord = ({
+  author,
+}: {
+  author?: fc.Arbitrary<DatasetReviews.DataForZenodoRecord['author']>
+} = {}): fc.Arbitrary<DatasetReviews.DataForZenodoRecord> =>
+  fc.record({
+    author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
+    dataset: datasetId(),
+    competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
+    qualityRating: maybe(ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
+    answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(
+      Struct.pick('answer', 'detail'),
+    ),
+    answerToIfTheDatasetHasEnoughMetadata: maybe(
+      answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
+    ),
+    answerToIfTheDatasetHasTrackedChanges: maybe(
+      answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
+    ),
+    answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(
+      answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
+    ),
+    answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(
+      answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
+    ),
+    answerToIfTheDatasetSupportsRelatedConclusions: maybe(
+      answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
+    ),
+    answerToIfTheDatasetIsDetailedEnough: maybe(answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer'))),
+    answerToIfTheDatasetIsErrorFree: maybe(answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
+    answerToIfTheDatasetMattersToItsAudience: maybe(
+      answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
+    ),
+    answerToIfTheDatasetIsReadyToBeShared: maybe(answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer'))),
+    answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
+  })
+
 export const commentWasStarted = ({
   commentId,
 }: {
