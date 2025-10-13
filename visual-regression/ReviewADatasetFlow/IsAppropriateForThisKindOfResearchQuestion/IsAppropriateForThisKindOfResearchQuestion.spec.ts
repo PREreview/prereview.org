@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as IsAppropriateForThisKindOfResearchForm from '../../../src/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,9 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new IsAppropriateForThisKindOfResearchForm.CompletedForm({
       isAppropriateForThisKindOfResearch: 'yes',
+      isAppropriateForThisKindOfResearchYesDetail: NonEmptyString.fromString('Detail about the yes.'),
+      isAppropriateForThisKindOfResearchPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
+      isAppropriateForThisKindOfResearchNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
   })
 
@@ -34,6 +37,11 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new IsAppropriateForThisKindOfResearchForm.InvalidForm({
       isAppropriateForThisKindOfResearch: Either.left(new IsAppropriateForThisKindOfResearchForm.Missing()),
+      isAppropriateForThisKindOfResearchYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
+      isAppropriateForThisKindOfResearchPartlyDetail: Either.right(
+        NonEmptyString.fromString('Detail about the partly.'),
+      ),
+      isAppropriateForThisKindOfResearchNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
   })
 

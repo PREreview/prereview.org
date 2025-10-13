@@ -380,6 +380,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
+  await page.getByLabel('What would have been better?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -414,7 +415,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? Partly Morbi ac suscipit justo.',
   )
   await expect(page.getByRole('main')).toContainText(
-    'Is the dataset well-suited to support its stated research purpose? Partly',
+    'Is the dataset well-suited to support its stated research purpose? Partly Proin porttitor feugiat ipsum.',
   )
   await expect(page.getByRole('main')).toContainText(
     'Does this dataset support the researcher’s stated conclusions? Partly',
@@ -535,6 +536,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is well-suited' }).click()
 
+  await page.getByLabel('What would have been better?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Is the dataset well-suited to support its stated research purpose? Partly',
+  )
+  await expect(review).not.toContainText('Partly Proin porttitor feugiat ipsum.')
+
+  await page.getByRole('link', { name: 'Change if the dataset is well-suited' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -618,6 +629,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
+  await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -683,6 +695,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Yes', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How is it well-suited?')).toHaveValue('Proin porttitor feugiat ipsum.')
 
   await page.goBack()
 
@@ -741,6 +754,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -806,6 +820,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByLabel('How is it well-suited?')).toHaveValue('Proin porttitor feugiat ipsum.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1045,6 +1060,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../is-appropriate-for-this-kind-of-research`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('How is it well-suited?').fill('   \n Proin porttitor feugiat ipsum. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1059,6 +1078,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset is well-suited' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('How is it well-suited?')).toHaveValue('   \n Proin porttitor feugiat ipsum. ')
+    }
   },
 )
 

@@ -6,8 +6,8 @@ import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as _ from '../../src/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/index.ts'
 import { RouteForCommand } from '../../src/ReviewADatasetFlow/RouteForCommand.ts'
-import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as Routes from '../../src/routes.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../src/user.ts'
 import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
@@ -19,7 +19,10 @@ describe('IsAppropriateForThisKindOfResearchQuestion', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.maybe(
-        fc.record({ answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'), detail: fc.maybe(fc.nonEmptyString()) }),
+        fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
       ),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
@@ -33,7 +36,7 @@ describe('IsAppropriateForThisKindOfResearchQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -184,7 +187,15 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
       test.prop([
         fc.uuid(),
         fc.urlParams(
-          fc.record({ isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure') }),
+          fc.record(
+            {
+              isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isAppropriateForThisKindOfResearchYesDetail: fc.string(),
+              isAppropriateForThisKindOfResearchPartlyDetail: fc.string(),
+              isAppropriateForThisKindOfResearchNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isAppropriateForThisKindOfResearch'] },
+          ),
         ),
         fc.supportedLocale(),
         fc.user(),
@@ -218,7 +229,15 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
       test.prop([
         fc.uuid(),
         fc.urlParams(
-          fc.record({ isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure') }),
+          fc.record(
+            {
+              isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isAppropriateForThisKindOfResearchYesDetail: fc.string(),
+              isAppropriateForThisKindOfResearchPartlyDetail: fc.string(),
+              isAppropriateForThisKindOfResearchNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isAppropriateForThisKindOfResearch'] },
+          ),
         ),
         fc.supportedLocale(),
         fc.user(),
@@ -259,7 +278,17 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            isAppropriateForThisKindOfResearch: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            isAppropriateForThisKindOfResearchYesDetail: fc.string(),
+            isAppropriateForThisKindOfResearchPartlyDetail: fc.string(),
+            isAppropriateForThisKindOfResearchNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isAppropriateForThisKindOfResearch'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -302,11 +331,17 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
         .urlParams()
         .filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'isAppropriateForThisKindOfResearch'))),
       fc.urlParams(
-        fc.record({
-          isAppropriateForThisKindOfResearch: fc
-            .string()
-            .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            isAppropriateForThisKindOfResearch: fc
+              .string()
+              .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            isAppropriateForThisKindOfResearchYesDetail: fc.string(),
+            isAppropriateForThisKindOfResearchPartlyDetail: fc.string(),
+            isAppropriateForThisKindOfResearchNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isAppropriateForThisKindOfResearch'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -323,7 +358,7 @@ describe('IsAppropriateForThisKindOfResearchSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
