@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Predicate, Tuple } from 'effect'
+import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/AnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -34,6 +34,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+    detail: fc.maybe(fc.nonEmptyString()),
     datasetReviewId: fc.uuid(),
     userId: fc.orcidId(),
   })
@@ -81,19 +82,27 @@ describe('foldState', () => {
           ),
         )
         .map(([started, answered]) =>
-          Tuple.make(Array.make(started, answered), answered.answer, started.datasetReviewId, started.authorId),
+          Tuple.make(
+            Array.make(started, answered),
+            answered.answer,
+            answered.detail,
+            started.datasetReviewId,
+            started.authorId,
+          ),
         ),
     ],
     {
       examples: [
-        [[[started, answered1], answered1.answer, datasetReviewId, authorId]], // one answer
-        [[[started, answered1, answered2], answered2.answer, datasetReviewId, authorId]], // two answers
+        [[[started, answered1], answered1.answer, answered1.detail, datasetReviewId, authorId]], // one answer
+        [[[started, answered1, answered2], answered2.answer, answered2.detail, datasetReviewId, authorId]], // two answers
       ],
     },
-  )('has been answered', ([events, expectedAnswer, datasetReviewId, expectedAuthorId]) => {
+  )('has been answered', ([events, expectedAnswer, expectedDetail, datasetReviewId, expectedAuthorId]) => {
     const state = _.foldState(events, datasetReviewId)
 
-    expect(state).toStrictEqual(new _.HasBeenAnswered({ answer: expectedAnswer, authorId: expectedAuthorId }))
+    expect(state).toStrictEqual(
+      new _.HasBeenAnswered({ answer: expectedAnswer, detail: expectedDetail, authorId: expectedAuthorId }),
+    )
   })
 
   test.prop(
@@ -187,23 +196,25 @@ describe('authorize', () => {
   })
 
   describe('has been answered', () => {
-    test.prop([command(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
+    test.prop([command(), fc.constantFrom('yes', 'partly', 'no', 'unsure'), fc.maybe(fc.nonEmptyString())])(
       'with the same user',
-      (command, answer) => {
-        const result = _.authorize(new _.HasBeenAnswered({ answer, authorId: command.userId }), command)
+      (command, answer, detail) => {
+        const result = _.authorize(new _.HasBeenAnswered({ answer, detail, authorId: command.userId }), command)
 
         expect(result).toBeTruthy()
       },
     )
 
-    test.prop([command(), fc.orcidId(), fc.constantFrom('yes', 'partly', 'no', 'unsure')])(
-      'with a different user',
-      (command, authorId, answer) => {
-        const result = _.authorize(new _.HasBeenAnswered({ answer, authorId }), command)
+    test.prop([
+      command(),
+      fc.orcidId(),
+      fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+      fc.maybe(fc.nonEmptyString()),
+    ])('with a different user', (command, authorId, answer, detail) => {
+      const result = _.authorize(new _.HasBeenAnswered({ answer, detail, authorId }), command)
 
-        expect(result).toBeFalsy()
-      },
-    )
+      expect(result).toBeFalsy()
+    })
   })
 
   describe('is being published', () => {
@@ -250,7 +261,7 @@ describe('decide', () => {
         Option.some(
           new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
             answer: command.answer,
-            detail: Option.none(),
+            detail: command.detail,
             datasetReviewId: command.datasetReviewId,
           }),
         ),
@@ -265,14 +276,35 @@ describe('decide', () => {
         .tuple(command(), fc.constantFrom('yes', 'partly', 'no', 'unsure'))
         .filter(([command, answer]) => command.answer !== answer),
     ])('with a different answer', (authorId, [command, answer]) => {
-      const result = _.decide(new _.HasBeenAnswered({ answer, authorId }), command)
+      const result = _.decide(new _.HasBeenAnswered({ answer, detail: command.detail, authorId }), command)
 
       expect(result).toStrictEqual(
         Either.right(
           Option.some(
             new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
               answer: command.answer,
-              detail: Option.none(),
+              detail: command.detail,
+              datasetReviewId: command.datasetReviewId,
+            }),
+          ),
+        ),
+      )
+    })
+
+    test.prop([
+      fc.orcidId(),
+      fc
+        .tuple(command(), fc.maybe(fc.nonEmptyString()))
+        .filter(([command, detail]) => !Equal.equals(command.detail, detail)),
+    ])('with different detail', (authorId, [command, detail]) => {
+      const result = _.decide(new _.HasBeenAnswered({ answer: command.answer, detail, authorId }), command)
+
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
+              answer: command.answer,
+              detail: command.detail,
               datasetReviewId: command.datasetReviewId,
             }),
           ),
@@ -281,7 +313,10 @@ describe('decide', () => {
     })
 
     test.prop([fc.orcidId(), command()])('with the same answer', (authorId, command) => {
-      const result = _.decide(new _.HasBeenAnswered({ answer: command.answer, authorId }), command)
+      const result = _.decide(
+        new _.HasBeenAnswered({ answer: command.answer, detail: command.detail, authorId }),
+        command,
+      )
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
