@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as MattersToItsAudienceForm from '../../../src/ReviewADatasetFlow/MattersToItsAudienceQuestion/MattersToItsAudienceForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/MattersToItsAudienceQuestion/MattersToItsAudienceQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,11 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new MattersToItsAudienceForm.CompletedForm({
       mattersToItsAudience: 'very-consequential',
+      mattersToItsAudienceVeryConsequentialDetail: NonEmptyString.fromString('Detail about the very-consequential.'),
+      mattersToItsAudienceSomewhatConsequentialDetail: NonEmptyString.fromString(
+        'Detail about the somewhat-consequential.',
+      ),
+      mattersToItsAudienceNotConsequentialDetail: NonEmptyString.fromString('Detail about the not-consequential.'),
     }),
   })
 
@@ -34,6 +39,15 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new MattersToItsAudienceForm.InvalidForm({
       mattersToItsAudience: Either.left(new MattersToItsAudienceForm.Missing()),
+      mattersToItsAudienceVeryConsequentialDetail: Either.right(
+        NonEmptyString.fromString('Detail about the very-consequential.'),
+      ),
+      mattersToItsAudienceSomewhatConsequentialDetail: Either.right(
+        NonEmptyString.fromString('Detail about the somewhat-consequential.'),
+      ),
+      mattersToItsAudienceNotConsequentialDetail: Either.right(
+        NonEmptyString.fromString('Detail about the not-consequential.'),
+      ),
     }),
   })
 

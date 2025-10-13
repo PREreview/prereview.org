@@ -36,7 +36,7 @@ describe('MattersToItsAudienceQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -186,14 +186,20 @@ describe('MattersToItsAudienceSubmission', () => {
       test.prop([
         fc.uuid(),
         fc.urlParams(
-          fc.record({
-            mattersToItsAudience: fc.constantFrom(
-              'very-consequential',
-              'somewhat-consequential',
-              'not-consequential',
-              'unsure',
-            ),
-          }),
+          fc.record(
+            {
+              mattersToItsAudience: fc.constantFrom(
+                'very-consequential',
+                'somewhat-consequential',
+                'not-consequential',
+                'unsure',
+              ),
+              mattersToItsAudienceVeryConsequentialDetail: fc.string(),
+              mattersToItsAudienceSomewhatConsequentialDetail: fc.string(),
+              mattersToItsAudienceNotConsequentialDetail: fc.string(),
+            },
+            { requiredKeys: ['mattersToItsAudience'] },
+          ),
         ),
         fc.supportedLocale(),
         fc.user(),
@@ -227,14 +233,20 @@ describe('MattersToItsAudienceSubmission', () => {
       test.prop([
         fc.uuid(),
         fc.urlParams(
-          fc.record({
-            mattersToItsAudience: fc.constantFrom(
-              'very-consequential',
-              'somewhat-consequential',
-              'not-consequential',
-              'unsure',
-            ),
-          }),
+          fc.record(
+            {
+              mattersToItsAudience: fc.constantFrom(
+                'very-consequential',
+                'somewhat-consequential',
+                'not-consequential',
+                'unsure',
+              ),
+              mattersToItsAudienceVeryConsequentialDetail: fc.string(),
+              mattersToItsAudienceSomewhatConsequentialDetail: fc.string(),
+              mattersToItsAudienceNotConsequentialDetail: fc.string(),
+            },
+            { requiredKeys: ['mattersToItsAudience'] },
+          ),
         ),
         fc.supportedLocale(),
         fc.user(),
@@ -276,14 +288,20 @@ describe('MattersToItsAudienceSubmission', () => {
     test.prop([
       fc.uuid(),
       fc.urlParams(
-        fc.record({
-          mattersToItsAudience: fc.constantFrom(
-            'very-consequential',
-            'somewhat-consequential',
-            'not-consequential',
-            'unsure',
-          ),
-        }),
+        fc.record(
+          {
+            mattersToItsAudience: fc.constantFrom(
+              'very-consequential',
+              'somewhat-consequential',
+              'not-consequential',
+              'unsure',
+            ),
+            mattersToItsAudienceVeryConsequentialDetail: fc.string(),
+            mattersToItsAudienceSomewhatConsequentialDetail: fc.string(),
+            mattersToItsAudienceNotConsequentialDetail: fc.string(),
+          },
+          { requiredKeys: ['mattersToItsAudience'] },
+        ),
       ),
       fc.supportedLocale(),
       fc.user(),
@@ -325,14 +343,15 @@ describe('MattersToItsAudienceSubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'mattersToItsAudience'))),
       fc.urlParams(
-        fc.record({
-          mattersToItsAudience: fc
-            .string()
-            .filter(
-              string =>
-                !['very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'].includes(string),
-            ),
-        }),
+        fc.record(
+          {
+            mattersToItsAudience: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            mattersToItsAudienceVeryConsequentialDetail: fc.string(),
+            mattersToItsAudienceSomewhatConsequentialDetail: fc.string(),
+            mattersToItsAudienceNotConsequentialDetail: fc.string(),
+          },
+          { requiredKeys: ['mattersToItsAudience'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -349,7 +368,7 @@ describe('MattersToItsAudienceSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),

@@ -392,6 +392,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -430,7 +431,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     'Is the dataset relatively error-free? Partly Nulla at laoreet neque.',
   )
   await expect(page.getByRole('main')).toContainText(
-    'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential',
+    'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential Mauris id tincidunt enim.',
   )
   await expect(page.getByRole('main')).toContainText('Is this dataset ready to be shared? Yes')
   await expect(page.getByRole('main')).toContainText(
@@ -613,6 +614,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change how consequential the dataset is likely to seem' }).click()
 
+  await page.getByLabel('Why is it somewhat consequential?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential',
+  )
+  await expect(page.getByRole('main')).not.toContainText('Somewhat consequential Mauris id tincidunt enim.')
+
+  await page.getByRole('link', { name: 'Change how consequential the dataset is likely to seem' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -674,6 +685,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -714,7 +726,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('Somewhat consequential')).toBeChecked()
+  await expect(page.getByLabel('Somewhat consequential', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
 
   await page.goBack()
 
@@ -805,6 +818,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
+  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -845,7 +859,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  await expect(page.getByLabel('Somewhat consequential')).toBeChecked()
+  await expect(page.getByLabel('Somewhat consequential', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1232,6 +1247,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../matters-to-its-audience`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('Why is it very consequential?').fill('   \n Mauris id tincidunt enim. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1247,7 +1266,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Select how consequential is it likely to seem' }).click()
 
-    await expect(page.getByLabel('Very consequential')).toBeFocused()
+    await expect(page.getByLabel('Very consequential', { exact: true })).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('Why is it very consequential?')).toHaveValue('   \n Mauris id tincidunt enim. ')
+    }
   },
 )
 
