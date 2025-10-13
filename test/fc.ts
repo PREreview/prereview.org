@@ -1525,6 +1525,54 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
     })
     .map(args => new Prereview(args))
 
+export const publishedDatasetReview = ({
+  author,
+}: {
+  author?: fc.Arbitrary<DatasetReviews.PublishedReview['author']>
+} = {}): fc.Arbitrary<DatasetReviews.PublishedReview> =>
+  fc.record({
+    author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
+    dataset: datasetId(),
+    doi: doi(),
+    id: uuid(),
+    questions: fc.record({
+      qualityRating: maybe(
+        fc.record({
+          rating: constantFrom('excellent', 'fair', 'poor', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
+        answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+        detail: maybe(nonEmptyString()),
+      }),
+      answerToIfTheDatasetHasEnoughMetadata: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetHasTrackedChanges: maybe(
+        fc.record({
+          answer: constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: maybe(nonEmptyString()),
+        }),
+      ),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
+      answerToIfTheDatasetSupportsRelatedConclusions: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
+      answerToIfTheDatasetIsDetailedEnough: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
+      answerToIfTheDatasetIsErrorFree: maybe(constantFrom('yes', 'partly', 'no', 'unsure')),
+      answerToIfTheDatasetMattersToItsAudience: maybe(
+        constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+      ),
+      answerToIfTheDatasetIsReadyToBeShared: maybe(constantFrom('yes', 'no', 'unsure')),
+      answerToIfTheDatasetIsMissingAnything: maybe(nonEmptyString()),
+    }),
+    competingInterests: maybe(nonEmptyString()),
+    published: plainDate(),
+  })
+
 export const commentWasStarted = ({
   commentId,
 }: {

@@ -16,50 +16,7 @@ describe('DatasetReviewsPage', () => {
     fc.supportedLocale(),
     fc.datasetId(),
     fc.array(fc.uuid()),
-    fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
-      dataset: fc.datasetId(),
-      doi: fc.doi(),
-      id: fc.uuid(),
-      questions: fc.record({
-        qualityRating: fc.maybe(
-          fc.record({
-            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
-          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-          detail: fc.maybe(fc.nonEmptyString()),
-        }),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
-      }),
-      competingInterests: fc.maybe(fc.nonEmptyString()),
-      published: fc.plainDate(),
-    }),
+    fc.publishedDatasetReview(),
     fc.dataset(),
     fc.publicPersona(),
     fc.pseudonymPersona(),
@@ -106,50 +63,7 @@ describe('DatasetReviewsPage', () => {
     fc.supportedLocale(),
     fc.datasetId(),
     fc.nonEmptyArray(fc.uuid()),
-    fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
-      dataset: fc.datasetId(),
-      doi: fc.doi(),
-      id: fc.uuid(),
-      questions: fc.record({
-        qualityRating: fc.maybe(
-          fc.record({
-            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
-          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-          detail: fc.maybe(fc.nonEmptyString()),
-        }),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
-      }),
-      competingInterests: fc.maybe(fc.nonEmptyString()),
-      published: fc.plainDate(),
-    }),
+    fc.publishedDatasetReview(),
     fc.dataset(),
     fc.anything(),
   ])("when personas can't be loaded", (locale, datasetId, datasetReviewIds, datasetReview, dataset, error) =>
@@ -236,50 +150,7 @@ describe('DatasetReviewsPage', () => {
       new DatasetReviews.UnableToQuery({}),
       new DatasetReviews.UnknownDatasetReview({}),
     ),
-    fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
-      dataset: fc.datasetId(),
-      doi: fc.doi(),
-      id: fc.uuid(),
-      questions: fc.record({
-        qualityRating: fc.maybe(
-          fc.record({
-            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
-          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-          detail: fc.maybe(fc.nonEmptyString()),
-        }),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
-      }),
-      competingInterests: fc.maybe(fc.nonEmptyString()),
-      published: fc.plainDate(),
-    }),
+    fc.publishedDatasetReview(),
     fc.publicPersona(),
     fc.pseudonymPersona(),
   ])(
@@ -328,50 +199,7 @@ describe('DatasetReviewsPage', () => {
       new DatasetReviews.UnableToQuery({}),
       new DatasetReviews.UnknownDatasetReview({}),
     ),
-    fc.record<DatasetReviews.PublishedReview>({
-      author: fc.record({ orcidId: fc.orcidId(), persona: fc.constantFrom('pseudonym', 'public') }),
-      dataset: fc.datasetId(),
-      doi: fc.doi(),
-      id: fc.uuid(),
-      questions: fc.record({
-        qualityRating: fc.maybe(
-          fc.record({
-            rating: fc.constantFrom('excellent', 'fair', 'poor', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc.record({
-          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-          detail: fc.maybe(fc.nonEmptyString()),
-        }),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.record({
-            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            detail: fc.maybe(fc.nonEmptyString()),
-          }),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.constantFrom('yes', 'partly', 'no', 'unsure')),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(fc.constantFrom('yes', 'no', 'unsure')),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(fc.nonEmptyString()),
-      }),
-      competingInterests: fc.maybe(fc.nonEmptyString()),
-      published: fc.plainDate(),
-    }),
+    fc.publishedDatasetReview(),
     fc.publicPersona(),
     fc.pseudonymPersona(),
   ])(
