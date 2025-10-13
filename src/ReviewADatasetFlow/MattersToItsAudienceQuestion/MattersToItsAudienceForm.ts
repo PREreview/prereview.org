@@ -27,10 +27,10 @@ export const fromBody = Effect.fn(
 )
 
 export const fromAnswer: (
-  answer: Option.Option<'very-consequential' | 'somewhat-consequential' | 'not-consequential' | 'unsure'>,
+  answer: Option.Option<{ answer: 'very-consequential' | 'somewhat-consequential' | 'not-consequential' | 'unsure' }>,
 ) => MattersToItsAudienceForm = Option.match({
   onNone: () => new EmptyForm(),
-  onSome: answer => new CompletedForm({ mattersToItsAudience: answer }),
+  onSome: ({ answer }) => new CompletedForm({ mattersToItsAudience: answer }),
 })
 
 const MattersToItsAudienceSchema = UrlParams.schemaRecord(

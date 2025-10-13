@@ -18,7 +18,12 @@ describe('MattersToItsAudienceQuestion', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.maybe(fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure')),
+      fc.maybe(
+        fc.record({
+          answer: fc.constantFrom('very-consequential', 'somewhat-consequential', 'not-consequential', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
+      ),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
         const actual = yield* _.MattersToItsAudienceQuestion({ datasetReviewId })
