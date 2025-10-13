@@ -382,7 +382,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Partly').check()
   await page.getByLabel('What would have been better?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByLabel('How does it partly support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -418,7 +419,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     'Is the dataset well-suited to support its stated research purpose? Partly Proin porttitor feugiat ipsum.',
   )
   await expect(page.getByRole('main')).toContainText(
-    'Does this dataset support the researcher’s stated conclusions? Partly',
+    'Does this dataset support the researcher’s stated conclusions? Partly Etiam non nibh velit.',
   )
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset granular enough to be a reliable standard of measurement? Partly',
@@ -555,6 +556,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset supports the conclusions' }).click()
 
+  await page.getByLabel('How does it partly support the conclusions?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Does this dataset support the researcher’s stated conclusions? Partly',
+  )
+  await expect(page.getByRole('main')).not.toContainText('Partly Etiam non nibh velit.')
+
+  await page.getByRole('link', { name: 'Change if the dataset supports the conclusions' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -631,7 +642,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I don’t know', { exact: true }).check()
+  await page.getByLabel('Yes', { exact: true }).check()
+  await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -690,7 +702,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('I don’t know', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Yes', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How does it support the conclusions?')).toHaveValue('Etiam non nibh velit.')
 
   await page.goBack()
 
@@ -756,7 +769,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Yes').check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I don’t know').check()
+  await page.getByLabel('Yes').check()
+  await page.getByLabel('How does it support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -815,7 +829,8 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
 
   await page.getByRole('link', { name: 'Back' }).click()
 
-  await expect(page.getByLabel('I don’t know')).toBeChecked()
+  await expect(page.getByLabel('Yes')).toBeChecked()
+  await expect(page.getByLabel('How does it support the conclusions?')).toHaveValue('Etiam non nibh velit.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1091,6 +1106,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../supports-related-conclusions`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('How does it support the conclusions?').fill('   \n Etiam non nibh velit. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1105,6 +1124,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset supports the conclusions' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('How does it support the conclusions?')).toHaveValue('   \n Etiam non nibh velit. ')
+    }
   },
 )
 

@@ -19,7 +19,10 @@ describe('SupportsRelatedConclusionsQuestion', () => {
       fc.supportedLocale(),
       fc.user(),
       fc.maybe(
-        fc.record({ answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'), detail: fc.maybe(fc.nonEmptyString()) }),
+        fc.record({
+          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+          detail: fc.maybe(fc.nonEmptyString()),
+        }),
       ),
     ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
       Effect.gen(function* () {
@@ -33,7 +36,7 @@ describe('SupportsRelatedConclusionsQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -182,7 +185,17 @@ describe('SupportsRelatedConclusionsSubmission', () => {
     describe('when the answer can be saved', () => {
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              supportsRelatedConclusionsYesDetail: fc.string(),
+              supportsRelatedConclusionsPartlyDetail: fc.string(),
+              supportsRelatedConclusionsNoDetail: fc.string(),
+            },
+            { requiredKeys: ['supportsRelatedConclusions'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewNextExpectedCommand(),
@@ -214,7 +227,17 @@ describe('SupportsRelatedConclusionsSubmission', () => {
 
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              supportsRelatedConclusionsYesDetail: fc.string(),
+              supportsRelatedConclusionsPartlyDetail: fc.string(),
+              supportsRelatedConclusionsNoDetail: fc.string(),
+            },
+            { requiredKeys: ['supportsRelatedConclusions'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
@@ -254,7 +277,17 @@ describe('SupportsRelatedConclusionsSubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            supportsRelatedConclusions: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            supportsRelatedConclusionsYesDetail: fc.string(),
+            supportsRelatedConclusionsPartlyDetail: fc.string(),
+            supportsRelatedConclusionsNoDetail: fc.string(),
+          },
+          { requiredKeys: ['supportsRelatedConclusions'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -295,9 +328,17 @@ describe('SupportsRelatedConclusionsSubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'supportsRelatedConclusions'))),
       fc.urlParams(
-        fc.record({
-          supportsRelatedConclusions: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            supportsRelatedConclusions: fc
+              .string()
+              .filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            supportsRelatedConclusionsYesDetail: fc.string(),
+            supportsRelatedConclusionsPartlyDetail: fc.string(),
+            supportsRelatedConclusionsNoDetail: fc.string(),
+          },
+          { requiredKeys: ['supportsRelatedConclusions'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -314,7 +355,7 @@ describe('SupportsRelatedConclusionsSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
