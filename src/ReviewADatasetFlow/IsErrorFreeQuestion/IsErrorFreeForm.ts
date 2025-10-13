@@ -24,10 +24,11 @@ export const fromBody = Effect.fn(
   Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ isErrorFree: Either.left(new Missing()) }))),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => IsErrorFreeForm = Option.match({
-  onNone: () => new EmptyForm(),
-  onSome: answer => new CompletedForm({ isErrorFree: answer }),
-})
+export const fromAnswer: (answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>) => IsErrorFreeForm =
+  Option.match({
+    onNone: () => new EmptyForm(),
+    onSome: ({ answer }) => new CompletedForm({ isErrorFree: answer }),
+  })
 
 const IsErrorFreeSchema = UrlParams.schemaRecord(
   Schema.Struct({

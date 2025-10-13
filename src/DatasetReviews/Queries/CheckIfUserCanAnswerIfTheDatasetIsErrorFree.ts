@@ -10,7 +10,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  Option.Option<Events.AnsweredIfTheDatasetIsErrorFree['answer']>,
+  Option.Option<Pick<Events.AnsweredIfTheDatasetIsErrorFree, 'answer' | 'detail'>>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -50,7 +50,10 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
       return yield* Either.left(new Errors.DatasetReviewIsBeingPublished())
     }
 
-    return Option.map(Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree')), Struct.get('answer'))
+    return Option.map(
+      Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree')),
+      Struct.pick('answer', 'detail'),
+    )
   })
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
