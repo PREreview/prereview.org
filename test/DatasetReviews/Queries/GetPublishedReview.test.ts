@@ -98,10 +98,12 @@ const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDa
 })
 const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
   answer: 'yes',
+  detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
   answer: 'no',
+  detail: NonEmptyString.fromString('Some detail about no'),
   datasetReviewId,
 })
 const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
