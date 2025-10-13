@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Equal, Layer, Option, Struct, Tuple } from 'effect'
+import { Effect, Equal, Layer, Option, Tuple } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
@@ -20,44 +20,8 @@ describe('CheckYourReviewPage', () => {
         fc.uuid(),
         fc.supportedLocale(),
         fc.user(),
-        fc.record<DatasetReviews.DatasetReviewPreview>({
+        fc.datasetReviewPreview({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('public')) }),
-          dataset: fc.datasetId(),
-          competingInterests: fc
-            .competingInterestsForADatasetReviewWereDeclared()
-            .map(Struct.get('competingInterests')),
-          qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
-          answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-            .answeredIfTheDatasetFollowsFairAndCarePrinciples()
-            .map(Struct.pick('answer', 'detail')),
-          answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-            fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-            fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-            fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-            fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
-            fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsDetailedEnough: fc.maybe(
-            fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
-          answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-            fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
-            fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsMissingAnything: fc.maybe(
-            fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
-          ),
         }),
         fc.datasetTitle(),
         fc.publicPersona(),
@@ -101,44 +65,8 @@ describe('CheckYourReviewPage', () => {
         fc.uuid(),
         fc.supportedLocale(),
         fc.user(),
-        fc.record<DatasetReviews.DatasetReviewPreview>({
+        fc.datasetReviewPreview({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.some('pseudonym')) }),
-          dataset: fc.datasetId(),
-          competingInterests: fc
-            .competingInterestsForADatasetReviewWereDeclared()
-            .map(Struct.get('competingInterests')),
-          qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
-          answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-            .answeredIfTheDatasetFollowsFairAndCarePrinciples()
-            .map(Struct.pick('answer', 'detail')),
-          answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-            fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-            fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-            fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-            fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
-            fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsDetailedEnough: fc.maybe(
-            fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
-          answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-            fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
-            fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsMissingAnything: fc.maybe(
-            fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
-          ),
         }),
         fc.datasetTitle(),
         fc.pseudonymPersona(),
@@ -182,44 +110,8 @@ describe('CheckYourReviewPage', () => {
         fc.uuid(),
         fc.supportedLocale(),
         fc.user(),
-        fc.record<DatasetReviews.DatasetReviewPreview>({
+        fc.datasetReviewPreview({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant(Option.none()) }),
-          dataset: fc.datasetId(),
-          competingInterests: fc
-            .competingInterestsForADatasetReviewWereDeclared()
-            .map(Struct.get('competingInterests')),
-          qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
-          answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-            .answeredIfTheDatasetFollowsFairAndCarePrinciples()
-            .map(Struct.pick('answer', 'detail')),
-          answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-            fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-            fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-          ),
-          answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-            fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-            fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
-            fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsDetailedEnough: fc.maybe(
-            fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
-          answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-            fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
-            fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
-          ),
-          answerToIfTheDatasetIsMissingAnything: fc.maybe(
-            fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
-          ),
         }),
         fc.datasetTitle(),
       ])('without a persona', (datasetReviewId, locale, user, preview, dataset) =>
@@ -259,43 +151,7 @@ describe('CheckYourReviewPage', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.record<DatasetReviews.DatasetReviewPreview>({
-        author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
-        dataset: fc.datasetId(),
-        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
-        qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-          .answeredIfTheDatasetFollowsFairAndCarePrinciples()
-          .map(Struct.pick('answer', 'detail')),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-          fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
-          fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(
-          fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
-          fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(
-          fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
-        ),
-      }),
+      fc.datasetReviewPreview(),
       fc
         .tuple(fc.anything(), fc.datasetId())
         .chain(([cause, datasetId]) =>
@@ -348,42 +204,8 @@ describe('CheckYourReviewPage', () => {
       fc.uuid(),
       fc.supportedLocale(),
       fc.user(),
-      fc.record<DatasetReviews.DatasetReviewPreview>({
+      fc.datasetReviewPreview({
         author: fc.record({ orcidId: fc.orcidId(), persona: fc.some(fc.constantFrom('public', 'pseudonym')) }),
-        dataset: fc.datasetId(),
-        competingInterests: fc.competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
-        qualityRating: fc.maybe(fc.ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
-        answerToIfTheDatasetFollowsFairAndCarePrinciples: fc
-          .answeredIfTheDatasetFollowsFairAndCarePrinciples()
-          .map(Struct.pick('answer', 'detail')),
-        answerToIfTheDatasetHasEnoughMetadata: fc.maybe(
-          fc.answeredIfTheDatasetHasEnoughMetadata().map(Struct.pick('answer', 'detail')),
-        ),
-        answerToIfTheDatasetHasTrackedChanges: fc.maybe(
-          fc.answeredIfTheDatasetHasTrackedChanges().map(Struct.pick('answer', 'detail')),
-        ),
-        answerToIfTheDatasetHasDataCensoredOrDeleted: fc.maybe(
-          fc.answeredIfTheDatasetHasDataCensoredOrDeleted().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsAppropriateForThisKindOfResearch: fc.maybe(
-          fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetSupportsRelatedConclusions: fc.maybe(
-          fc.answeredIfTheDatasetSupportsRelatedConclusions().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsDetailedEnough: fc.maybe(
-          fc.answeredIfTheDatasetIsDetailedEnough().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsErrorFree: fc.maybe(fc.answeredIfTheDatasetIsErrorFree().map(Struct.get('answer'))),
-        answerToIfTheDatasetMattersToItsAudience: fc.maybe(
-          fc.answeredIfTheDatasetMattersToItsAudience().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsReadyToBeShared: fc.maybe(
-          fc.answeredIfTheDatasetIsReadyToBeShared().map(Struct.get('answer')),
-        ),
-        answerToIfTheDatasetIsMissingAnything: fc.maybe(
-          fc.answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
-        ),
       }),
       fc.datasetTitle(),
       fc.anything(),
