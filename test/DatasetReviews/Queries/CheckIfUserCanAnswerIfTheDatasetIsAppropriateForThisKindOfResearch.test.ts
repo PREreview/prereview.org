@@ -103,19 +103,25 @@ describe('query', () => {
           ),
         )
         .map(([started, answered]) =>
-          Tuple.make(Array.make(started, answered), started.datasetReviewId, started.authorId, answered.answer),
+          Tuple.make(
+            Array.make(started, answered),
+            started.datasetReviewId,
+            started.authorId,
+            answered.answer,
+            answered.detail,
+          ),
         ),
     ],
     {
       examples: [
-        [[[started, answered1], datasetReviewId, authorId, answered1.answer]], // one answer
-        [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer]], // two answers
+        [[[started, answered1], datasetReviewId, authorId, answered1.answer, answered1.detail]], // one answer
+        [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer, answered2.detail]], // two answers
       ],
     },
-  )('has been answered', ([events, datasetReviewId, userId, expectedAnswer]) => {
+  )('has been answered', ([events, datasetReviewId, userId, expectedAnswer, expectedDetail]) => {
     const actual = _.query(events, { datasetReviewId, userId })
 
-    expect(actual).toStrictEqual(Either.right(Option.some(expectedAnswer)))
+    expect(actual).toStrictEqual(Either.right(Option.some({ answer: expectedAnswer, detail: expectedDetail })))
   })
 
   test.prop(

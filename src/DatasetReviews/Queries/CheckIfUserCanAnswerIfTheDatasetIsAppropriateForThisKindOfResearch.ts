@@ -10,7 +10,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  Option.Option<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch['answer']>,
+  Option.Option<Pick<Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch, 'answer' | 'detail'>>,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -52,7 +52,7 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
 
     return Option.map(
       Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
-      Struct.get('answer'),
+      Struct.pick('answer', 'detail'),
     )
   })
 
