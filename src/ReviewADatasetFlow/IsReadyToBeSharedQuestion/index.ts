@@ -1,12 +1,12 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect, Match, Option } from 'effect'
+import { Effect, Match, Option, pipe } from 'effect'
 import type { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import type { Uuid } from '../../types/index.ts'
+import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 import * as IsReadyToBeSharedForm from './IsReadyToBeSharedForm.ts'
@@ -65,7 +65,13 @@ export const IsReadyToBeSharedSubmission = ({
         function* (form: IsReadyToBeSharedForm.CompletedForm) {
           yield* DatasetReviews.answerIfTheDatasetIsReadyToBeShared({
             answer: form.isReadyToBeShared,
-            detail: Option.none(),
+            detail: pipe(
+              Match.value(form.isReadyToBeShared),
+              Match.when('yes', () => form.isReadyToBeSharedYesDetail),
+              Match.when('no', () => form.isReadyToBeSharedNoDetail),
+              Match.when('unsure', Option.none<NonEmptyString.NonEmptyString>),
+              Match.exhaustive,
+            ),
             datasetReviewId,
             userId: user.orcid,
           })

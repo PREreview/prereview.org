@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as IsReadyToBeSharedForm from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,8 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new IsReadyToBeSharedForm.CompletedForm({
       isReadyToBeShared: 'yes',
+      isReadyToBeSharedYesDetail: NonEmptyString.fromString('Detail about the yes.'),
+      isReadyToBeSharedNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
   })
 
@@ -34,6 +36,8 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new IsReadyToBeSharedForm.InvalidForm({
       isReadyToBeShared: Either.left(new IsReadyToBeSharedForm.Missing()),
+      isReadyToBeSharedYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
+      isReadyToBeSharedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
   })
 

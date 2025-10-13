@@ -395,6 +395,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
@@ -433,7 +434,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(page.getByRole('main')).toContainText(
     'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential Mauris id tincidunt enim.',
   )
-  await expect(page.getByRole('main')).toContainText('Is this dataset ready to be shared? Yes')
+  await expect(page.getByRole('main')).toContainText('Is this dataset ready to be shared? Yes Quisque eu velit risus.')
   await expect(page.getByRole('main')).toContainText(
     'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? No answer',
   )
@@ -633,6 +634,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is ready to be shared' }).click()
 
+  await page.getByLabel('Why is it ready to be shared?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Is this dataset ready to be shared? Yes')
+  await expect(page.getByRole('main')).not.toContainText('Yes Quisque eu velit risus.')
+
+  await page.getByRole('link', { name: 'Change if the dataset is ready to be shared' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -688,6 +697,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
+  await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page
     .getByLabel(
@@ -723,6 +733,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Yes', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it ready to be shared?')).toHaveValue('Quisque eu velit risus.')
 
   await page.goBack()
 
@@ -821,6 +832,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
+  await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page
     .getByLabel(
@@ -856,6 +868,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Yes', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it ready to be shared?')).toHaveValue('Quisque eu velit risus.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1280,6 +1293,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../is-ready-to-be-shared`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('Why is it ready to be shared?').fill('   \n Quisque eu velit risus. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1295,6 +1312,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset is ready to be shared' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('Why is it ready to be shared?')).toHaveValue('   \n Quisque eu velit risus. ')
+    }
   },
 )
 
