@@ -24,13 +24,13 @@ const cases = [
       answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'yes', detail: Option.none() },
       answerToIfTheDatasetHasEnoughMetadata: Option.some({ answer: 'partly', detail: Option.none() }),
       answerToIfTheDatasetHasTrackedChanges: Option.some({ answer: 'no', detail: Option.none() }),
-      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
-      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
-      answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
-      answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
-      answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
-      answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
-      answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({ answer: 'unsure', detail: Option.none() }),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({ answer: 'yes', detail: Option.none() }),
+      answerToIfTheDatasetSupportsRelatedConclusions: Option.some({ answer: 'partly', detail: Option.none() }),
+      answerToIfTheDatasetIsDetailedEnough: Option.some({ answer: 'no', detail: Option.none() }),
+      answerToIfTheDatasetIsErrorFree: Option.some({ answer: 'unsure', detail: Option.none() }),
+      answerToIfTheDatasetMattersToItsAudience: Option.some({ answer: 'very-consequential', detail: Option.none() }),
+      answerToIfTheDatasetIsReadyToBeShared: Option.some({ answer: 'yes', detail: Option.none() }),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -73,30 +73,35 @@ const cases = [
           <dd>
             I don’t know
           </dd>
+          
         
       
           <dt>Is the dataset well-suited to support its stated research purpose?</dt>
           <dd>
             Yes
           </dd>
+          
         
       
           <dt>Does this dataset support the researcher’s stated conclusions?</dt>
           <dd>
             Partly
           </dd>
+          
         
       
           <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
           <dd>
             No
           </dd>
+          
         
       
           <dt>Is the dataset relatively error-free?</dt>
           <dd>
             I don’t know
           </dd>
+          
         
       
           <dt>
@@ -107,12 +112,14 @@ const cases = [
           <dd>
             Very consequential
           </dd>
+          
         
       
           <dt>Is this dataset ready to be shared?</dt>
           <dd>
             Yes
           </dd>
+          
         
       
           <dt>
@@ -170,13 +177,34 @@ const cases = [
         answer: 'no',
         detail: NonEmptyString.fromString('Some detail about the no.'),
       }),
-      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some('unsure'),
-      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some('yes'),
-      answerToIfTheDatasetSupportsRelatedConclusions: Option.some('partly'),
-      answerToIfTheDatasetIsDetailedEnough: Option.some('no'),
-      answerToIfTheDatasetIsErrorFree: Option.some('unsure'),
-      answerToIfTheDatasetMattersToItsAudience: Option.some('very-consequential'),
-      answerToIfTheDatasetIsReadyToBeShared: Option.some('yes'),
+      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.some({
+        answer: 'unsure',
+        detail: NonEmptyString.fromString('Some detail about the unsure.'),
+      }),
+      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.some({
+        answer: 'yes',
+        detail: NonEmptyString.fromString('Some detail about the yes.'),
+      }),
+      answerToIfTheDatasetSupportsRelatedConclusions: Option.some({
+        answer: 'partly',
+        detail: NonEmptyString.fromString('Some detail about the partly.'),
+      }),
+      answerToIfTheDatasetIsDetailedEnough: Option.some({
+        answer: 'no',
+        detail: NonEmptyString.fromString('Some detail about the no.'),
+      }),
+      answerToIfTheDatasetIsErrorFree: Option.some({
+        answer: 'unsure',
+        detail: NonEmptyString.fromString('Some detail about the unsure.'),
+      }),
+      answerToIfTheDatasetMattersToItsAudience: Option.some({
+        answer: 'very-consequential',
+        detail: NonEmptyString.fromString('Some detail about the very-consequential.'),
+      }),
+      answerToIfTheDatasetIsReadyToBeShared: Option.some({
+        answer: 'yes',
+        detail: NonEmptyString.fromString('Some detail about the yes.'),
+      }),
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
@@ -219,30 +247,35 @@ const cases = [
           <dd>
             I don’t know
           </dd>
+          <dd>Some detail about the unsure.</dd>
         
       
           <dt>Is the dataset well-suited to support its stated research purpose?</dt>
           <dd>
             Yes
           </dd>
+          <dd>Some detail about the yes.</dd>
         
       
           <dt>Does this dataset support the researcher’s stated conclusions?</dt>
           <dd>
             Partly
           </dd>
+          <dd>Some detail about the partly.</dd>
         
       
           <dt>Is the dataset granular enough to be a reliable standard of measurement?</dt>
           <dd>
             No
           </dd>
+          <dd>Some detail about the no.</dd>
         
       
           <dt>Is the dataset relatively error-free?</dt>
           <dd>
             I don’t know
           </dd>
+          <dd>Some detail about the unsure.</dd>
         
       
           <dt>
@@ -253,12 +286,14 @@ const cases = [
           <dd>
             Very consequential
           </dd>
+          <dd>Some detail about the very-consequential.</dd>
         
       
           <dt>Is this dataset ready to be shared?</dt>
           <dd>
             Yes
           </dd>
+          <dd>Some detail about the yes.</dd>
         
       
           <dt>
