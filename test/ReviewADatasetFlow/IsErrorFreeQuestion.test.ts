@@ -33,7 +33,7 @@ describe('IsErrorFreeQuestion', () => {
           nav: expect.anything(),
           main: expect.anything(),
           skipToLabel: 'form',
-          js: [],
+          js: ['conditional-inputs.js'],
         })
       }).pipe(
         Effect.provide(
@@ -179,7 +179,17 @@ describe('IsErrorFreeSubmission', () => {
     describe('when the answer can be saved', () => {
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isErrorFreeYesDetail: fc.string(),
+              isErrorFreePartlyDetail: fc.string(),
+              isErrorFreeNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isErrorFree'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.datasetReviewNextExpectedCommand(),
@@ -211,7 +221,17 @@ describe('IsErrorFreeSubmission', () => {
 
       test.prop([
         fc.uuid(),
-        fc.urlParams(fc.record({ isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+        fc.urlParams(
+          fc.record(
+            {
+              isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+              isErrorFreeYesDetail: fc.string(),
+              isErrorFreePartlyDetail: fc.string(),
+              isErrorFreeNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isErrorFree'] },
+          ),
+        ),
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
@@ -251,7 +271,17 @@ describe('IsErrorFreeSubmission', () => {
 
     test.prop([
       fc.uuid(),
-      fc.urlParams(fc.record({ isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure') })),
+      fc.urlParams(
+        fc.record(
+          {
+            isErrorFree: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            isErrorFreeYesDetail: fc.string(),
+            isErrorFreePartlyDetail: fc.string(),
+            isErrorFreeNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isErrorFree'] },
+        ),
+      ),
       fc.supportedLocale(),
       fc.user(),
       fc.constantFrom(
@@ -292,9 +322,15 @@ describe('IsErrorFreeSubmission', () => {
     fc.oneof(
       fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'isErrorFree'))),
       fc.urlParams(
-        fc.record({
-          isErrorFree: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-        }),
+        fc.record(
+          {
+            isErrorFree: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+            isErrorFreeYesDetail: fc.string(),
+            isErrorFreePartlyDetail: fc.string(),
+            isErrorFreeNoDetail: fc.string(),
+          },
+          { requiredKeys: ['isErrorFree'] },
+        ),
       ),
     ),
     fc.supportedLocale(),
@@ -311,7 +347,7 @@ describe('IsErrorFreeSubmission', () => {
         nav: expect.anything(),
         main: expect.anything(),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['conditional-inputs.js', 'error-summary.js'],
       })
     }).pipe(
       Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),

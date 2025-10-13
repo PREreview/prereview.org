@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as IsErrorFreeForm from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
 import * as _ from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
-import { Uuid } from '../../../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
@@ -21,6 +21,9 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     datasetReviewId,
     form: new IsErrorFreeForm.CompletedForm({
       isErrorFree: 'yes',
+      isErrorFreeYesDetail: NonEmptyString.fromString('Detail about the yes.'),
+      isErrorFreePartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
+      isErrorFreeNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
   })
 
@@ -34,6 +37,9 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
     datasetReviewId,
     form: new IsErrorFreeForm.InvalidForm({
       isErrorFree: Either.left(new IsErrorFreeForm.Missing()),
+      isErrorFreeYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
+      isErrorFreePartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
+      isErrorFreeNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
   })
 

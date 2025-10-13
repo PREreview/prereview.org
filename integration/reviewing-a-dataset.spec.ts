@@ -389,6 +389,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Which data is detailed enough and which isn’t?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
+  await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -425,7 +426,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await expect(page.getByRole('main')).toContainText(
     'Is the dataset granular enough to be a reliable standard of measurement? Partly In sollicitudin dignissim placerat.',
   )
-  await expect(page.getByRole('main')).toContainText('Is the dataset relatively error-free? Partly')
+  await expect(page.getByRole('main')).toContainText(
+    'Is the dataset relatively error-free? Partly Nulla at laoreet neque.',
+  )
   await expect(page.getByRole('main')).toContainText(
     'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential',
   )
@@ -595,6 +598,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is relatively error-free' }).click()
 
+  await page.getByLabel('What errors are there?').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Is the dataset relatively error-free? Partly')
+  await expect(page.getByRole('main')).not.toContainText('Partly Nulla at laoreet neque.')
+
+  await page.getByRole('link', { name: 'Change if the dataset is relatively error-free' }).click()
+
   await page.getByLabel('I don’t know').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -660,6 +671,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -707,6 +719,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('What errors are there?')).toHaveValue('Nulla at laoreet neque.')
 
   await page.goBack()
 
@@ -789,6 +802,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('How is it not detailed enough?').fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
+  await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -836,6 +850,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('What errors are there?')).toHaveValue('Nulla at laoreet neque.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1185,6 +1200,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.goto(`${page.url()}/../is-error-free`, { waitUntil: 'commit' })
 
+    if (!javaScriptEnabled) {
+      await page.getByLabel('Are there any errors?').fill('   \n Nulla at laoreet neque. ')
+    }
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1200,6 +1219,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select if the dataset is relatively error-free' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+    if (!javaScriptEnabled) {
+      await expect(page.getByLabel('Are there any errors?')).toHaveValue('   \n Nulla at laoreet neque. ')
+    }
   },
 )
 
