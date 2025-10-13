@@ -26,11 +26,12 @@ export const fromBody = Effect.fn(
   ),
 )
 
-export const fromAnswer: (answer: Option.Option<'yes' | 'partly' | 'no' | 'unsure'>) => IsDetailedEnoughForm =
-  Option.match({
-    onNone: () => new EmptyForm(),
-    onSome: answer => new CompletedForm({ isDetailedEnough: answer }),
-  })
+export const fromAnswer: (
+  answer: Option.Option<{ answer: 'yes' | 'partly' | 'no' | 'unsure' }>,
+) => IsDetailedEnoughForm = Option.match({
+  onNone: () => new EmptyForm(),
+  onSome: ({ answer }) => new CompletedForm({ isDetailedEnough: answer }),
+})
 
 const IsDetailedEnoughSchema = UrlParams.schemaRecord(
   Schema.Struct({
