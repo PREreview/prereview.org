@@ -222,10 +222,9 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const context = yield* Effect.context<Personas.Personas>()
+    const context = yield* Effect.context<Personas.Personas | Prereviews.Prereviews>()
     const fetch = yield* FetchHttpClient.Fetch
     const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
-    const getPrereview = yield* Prereview.GetPrereview
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
@@ -240,7 +239,7 @@ const createRecordOnZenodoForComment = Layer.effect(
     return comment =>
       Effect.gen(function* () {
         const prereview = yield* pipe(
-          getPrereview(comment.prereviewId),
+          Prereviews.getPrereview(comment.prereviewId),
           Effect.mapError(
             flow(
               Match.value,
