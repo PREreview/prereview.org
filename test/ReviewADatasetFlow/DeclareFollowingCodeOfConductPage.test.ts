@@ -166,21 +166,19 @@ describe('DeclareFollowingCodeOfConductPage', () => {
   )
 })
 
-test.prop([
-  fc.uuid(),
-  fc.urlParams(fc.record({ chooseYourPersona: fc.constantFrom('public', 'pseudonym') })),
-  fc.supportedLocale(),
-])('DeclareFollowingCodeOfConductSubmission', (datasetReviewId, body, locale) =>
-  Effect.gen(function* () {
-    const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
+test.prop([fc.uuid(), fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })), fc.supportedLocale()])(
+  'DeclareFollowingCodeOfConductSubmission',
+  (datasetReviewId, body, locale) =>
+    Effect.gen(function* () {
+      const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
 )
