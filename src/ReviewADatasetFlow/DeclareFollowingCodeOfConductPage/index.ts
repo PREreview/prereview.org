@@ -6,8 +6,9 @@ import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import type { Uuid } from '../../types/index.ts'
+import { Temporal, type Uuid } from '../../types/index.ts'
 import { LoggedInUser } from '../../user.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as DeclareFollowingCodeOfConductForm from './DeclareFollowingCodeOfConductForm.ts'
 import { DeclareFollowingCodeOfConductPage as MakeResponse } from './DeclareFollowingCodeOfConductPage.ts'
 
@@ -49,12 +50,35 @@ export const DeclareFollowingCodeOfConductSubmission = ({
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}): Effect.Effect<Response.Response, never, Locale> =>
+}): Effect.Effect<
+  Response.Response,
+  never,
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+> =>
   Effect.gen(function* () {
+    const user = yield* LoggedInUser
+
     const form = yield* DeclareFollowingCodeOfConductForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fn(
+        function* () {
+          yield* DatasetReviews.declareFollowingCodeOfConduct({
+            timestamp: yield* Temporal.currentInstant,
+            datasetReviewId,
+            userId: user.orcid,
+          })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
       InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
     })
   })

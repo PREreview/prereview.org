@@ -5,6 +5,7 @@ import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as _ from '../../src/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/index.ts'
+import { RouteForCommand } from '../../src/ReviewADatasetFlow/RouteForCommand.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../src/user.ts'
@@ -168,9 +169,93 @@ describe('DeclareFollowingCodeOfConductPage', () => {
 })
 
 describe('DeclareFollowingCodeOfConductSubmission', () => {
-  test.prop([fc.uuid(), fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })), fc.supportedLocale()])(
-    'when there is a declaration',
-    (datasetReviewId, body, locale) =>
+  describe('when there is a declaration', () => {
+    describe('when the declaration can be saved', () => {
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.datasetReviewNextExpectedCommand(),
+      ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
+        Effect.gen(function* () {
+          const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              declareFollowingCodeOfConduct: () => Effect.void,
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+
+      test.prop([
+        fc.uuid(),
+        fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.oneof(
+          fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+          fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
+          fc.constant(Effect.succeedNone),
+        ),
+      ])("the next expected command can't be found", (datasetReviewId, body, locale, user, result) =>
+        Effect.gen(function* () {
+          const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewCommands, {
+              declareFollowingCodeOfConduct: () => Effect.void,
+            }),
+          ),
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getNextExpectedCommandForAUserOnADatasetReview: () => result,
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
+      )
+    })
+
+    test.prop([
+      fc.uuid(),
+      fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })),
+      fc.supportedLocale(),
+      fc.user(),
+      fc.constantFrom(
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
+        new DatasetReviews.UnableToHandleCommand({}),
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewIsBeingPublished(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+      ),
+    ])("when the declaration can't be saved", (datasetReviewId, body, locale, user, error) =>
       Effect.gen(function* () {
         const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
 
@@ -182,8 +267,19 @@ describe('DeclareFollowingCodeOfConductSubmission', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
-  )
+      }).pipe(
+        Effect.provide(
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {
+            declareFollowingCodeOfConduct: () => error,
+          }),
+        ),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(LoggedInUser, user),
+        EffectTest.run,
+      ),
+    )
+  })
 
   test.prop([
     fc.uuid(),
@@ -192,7 +288,8 @@ describe('DeclareFollowingCodeOfConductSubmission', () => {
       fc.urlParams(fc.record({ followingCodeOfConduct: fc.string().filter(string => string !== 'yes') })),
     ),
     fc.supportedLocale(),
-  ])("when there isn't a declaration", (datasetReviewId, body, locale) =>
+    fc.user(),
+  ])("when there isn't a declaration", (datasetReviewId, body, locale, user) =>
     Effect.gen(function* () {
       const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
 
@@ -205,6 +302,12 @@ describe('DeclareFollowingCodeOfConductSubmission', () => {
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })
-    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+    }).pipe(
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
+      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
+      Effect.provideService(Locale, locale),
+      Effect.provideService(LoggedInUser, user),
+      EffectTest.run,
+    ),
   )
 })
