@@ -223,7 +223,7 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     flow(
       Effect.succeed,
       Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(ReviewADatasetFlow.DeclareFollowingCodeOfConductPage),
+      Effect.andThen(ReviewADatasetFlow.DeclareFollowingCodeOfConductSubmission),
     ),
   ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
