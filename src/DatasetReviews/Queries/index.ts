@@ -19,6 +19,7 @@ import * as CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience from './CheckIf
 import * as CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions from './CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as CheckIfUserCanChoosePersona from './CheckIfUserCanChoosePersona.ts'
 import * as CheckIfUserCanDeclareCompetingInterests from './CheckIfUserCanDeclareCompetingInterests.ts'
+import * as CheckIfUserCanDeclareFollowingCodeOfConduct from './CheckIfUserCanDeclareFollowingCodeOfConduct.ts'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.ts'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.ts'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
@@ -101,6 +102,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
     checkIfUserCanDeclareCompetingInterests: Query<
       (input: CheckIfUserCanDeclareCompetingInterests.Input) => CheckIfUserCanDeclareCompetingInterests.Result
     >
+    checkIfUserCanDeclareFollowingCodeOfConduct: Query<
+      (input: CheckIfUserCanDeclareFollowingCodeOfConduct.Input) => CheckIfUserCanDeclareFollowingCodeOfConduct.Result
+    >
     findInProgressReviewForADataset: Query<ReturnType<typeof FindInProgressReviewForADataset>>
     findPublishedReviewsForADataset: Query<ReturnType<typeof FindPublishedReviewsForADataset>>
     getAuthor: Query<(datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetAuthor>, Errors.UnknownDatasetReview>
@@ -156,6 +160,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
   checkIfUserCanChoosePersona,
   checkIfUserCanDeclareCompetingInterests,
+  checkIfUserCanDeclareFollowingCodeOfConduct,
   getPublishedDoi,
   getPublishedReview,
   findInProgressReviewForADataset,
@@ -283,6 +288,10 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       checkIfUserCanDeclareCompetingInterests: handleQuery(
         CheckIfUserCanDeclareCompetingInterests.createFilter,
         CheckIfUserCanDeclareCompetingInterests.query,
+      ),
+      checkIfUserCanDeclareFollowingCodeOfConduct: handleQuery(
+        CheckIfUserCanDeclareFollowingCodeOfConduct.createFilter,
+        CheckIfUserCanDeclareFollowingCodeOfConduct.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
