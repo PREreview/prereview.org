@@ -68,6 +68,9 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -402,6 +405,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   const details = page.getByRole('region', { name: 'Your details' })
   const review = page.getByRole('region', { name: 'Your review' })
@@ -710,8 +715,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
 
   await page.goBack()
 
@@ -845,8 +856,14 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('Yes').check()
   await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
 
   await page.getByRole('link', { name: 'Back' }).click()
 

@@ -25,7 +25,7 @@ export const CheckYourReviewPage = ({
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
     nav: html`
-      <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
+      <a href="${Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId })}" class="back"
         ><span>Back</span></a
       >
     `,

@@ -16,6 +16,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetIsMissingAnything'
   | 'ChoosePersona'
   | 'DeclareCompetingInterests'
+  | 'DeclareFollowingCodeOfConduct'
   | 'PublishDatasetReview'
 
 export const GetNextExpectedCommandForAUserOnADatasetReview = (
@@ -83,6 +84,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
   if (!hasEvent(events, 'CompetingInterestsForADatasetReviewWereDeclared')) {
     return Option.some('DeclareCompetingInterests')
+  }
+
+  if (!hasEvent(events, 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview')) {
+    return Option.some('DeclareFollowingCodeOfConduct')
   }
 
   return Option.some('PublishDatasetReview')

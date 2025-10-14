@@ -154,6 +154,16 @@ const competingInterestsForADatasetReviewWereDeclared2 =
     competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
+const declaredThatTheCodeOfConductWasFollowedForADatasetReview1 =
+  new DatasetReviews.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
+    timestamp: Temporal.Now.instant().subtract({ minutes: 1 }),
+    datasetReviewId,
+  })
+const declaredThatTheCodeOfConductWasFollowedForADatasetReview2 =
+  new DatasetReviews.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
+    timestamp: Temporal.Now.instant(),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -196,6 +206,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsMissingAnything(),
             fc.personaForDatasetReviewWasChosen(),
             fc.competingInterestsForADatasetReviewWereDeclared(),
+            fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
           )
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
@@ -380,11 +391,33 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               personaForDatasetReviewWasChosen1,
               competingInterestsForADatasetReviewWereDeclared1,
             ],
-            'PublishDatasetReview',
+            'DeclareFollowingCodeOfConduct',
           ], // competing interests declared
           [
             [
               datasetReviewWasStarted,
+              ratedTheQualityOfTheDataset1,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              answeredIfTheDatasetHasEnoughMetadata1,
+              answeredIfTheDatasetHasTrackedChanges1,
+              answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              answeredIfTheDatasetSupportsRelatedConclusions1,
+              answeredIfTheDatasetIsDetailedEnough1,
+              answeredIfTheDatasetIsErrorFree1,
+              answeredIfTheDatasetMattersToItsAudience1,
+              answeredIfTheDatasetIsReadyToBeShared1,
+              answeredIfTheDatasetIsMissingAnything1,
+              personaForDatasetReviewWasChosen1,
+              competingInterestsForADatasetReviewWereDeclared1,
+              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+            ],
+            'PublishDatasetReview',
+          ], // declared following code of conduct
+          [
+            [
+              datasetReviewWasStarted,
+              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
               competingInterestsForADatasetReviewWereDeclared1,
               answeredIfTheDatasetIsMissingAnything1,
               answeredIfTheDatasetIsReadyToBeShared1,
@@ -399,6 +432,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
               answeredIfTheDatasetIsDetailedEnough1,
               ratedTheQualityOfTheDataset1,
               personaForDatasetReviewWasChosen1,
+              declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
               competingInterestsForADatasetReviewWereDeclared2,
               answeredIfTheDatasetIsMissingAnything2,
               answeredIfTheDatasetIsReadyToBeShared2,

@@ -16,6 +16,11 @@ export const DeclareFollowingCodeOfConductPage = ({
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
     title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Code of Conduct`,
+    nav: html`
+      <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
+        ><span>Back</span></a
+      >
+    `,
     main: html`
       <form
         method="post"

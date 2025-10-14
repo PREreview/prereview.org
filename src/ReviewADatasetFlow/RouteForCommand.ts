@@ -21,5 +21,6 @@ const commandRoutes = {
   AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   ChoosePersona: Routes.ReviewADatasetChooseYourPersona,
   DeclareCompetingInterests: Routes.ReviewADatasetDeclareCompetingInterests,
+  DeclareFollowingCodeOfConduct: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
 } satisfies Record<DatasetReviews.NextExpectedCommand, Routes.Route<{ datasetReviewId: Uuid.Uuid }>>
