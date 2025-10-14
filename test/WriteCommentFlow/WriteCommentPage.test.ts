@@ -1,9 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, identity } from 'effect'
+import { Effect, identity, Layer } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as Prereview from '../../src/Prereview.ts'
+import * as Prereviews from '../../src/Prereviews/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../src/user.ts'
@@ -34,7 +35,7 @@ describe('WriteCommentPage', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed(expectedCommand)),
-            Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
+            Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,
           ),
@@ -58,7 +59,7 @@ describe('WriteCommentPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () => Effect.succeed(expectedCommand)),
-          Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -84,7 +85,7 @@ describe('WriteCommentPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-          Effect.provideService(Prereview.GetPrereview, () => Effect.succeed(prereview)),
+          Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           EffectTest.run,
         ),
     )
@@ -107,7 +108,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-        Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewWasRemoved())),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewWasRemoved() })),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,
       ),
@@ -130,7 +131,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-        Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsNotFound())),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsNotFound() })),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,
       ),
@@ -153,7 +154,9 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-        Effect.provideService(Prereview.GetPrereview, () => Effect.fail(new Prereview.PrereviewIsUnavailable())),
+        Effect.provide(
+          Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsUnavailable() }),
+        ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,
       ),

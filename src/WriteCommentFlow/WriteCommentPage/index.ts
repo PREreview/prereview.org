@@ -3,7 +3,7 @@ import * as Comments from '../../Comments/index.ts'
 import { Locale } from '../../Context.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
-import { GetPrereview } from '../../Prereview.ts'
+import * as Prereviews from '../../Prereviews/index.ts'
 import * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { LoggedInUser } from '../../user.ts'
@@ -16,15 +16,14 @@ export const WriteCommentPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.RedirectResponse,
   never,
-  Comments.GetNextExpectedCommandForUser | GetPrereview | Locale
+  Comments.GetNextExpectedCommandForUser | Prereviews.Prereviews | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* Effect.serviceOption(LoggedInUser)
 
-    const getPrereview = yield* GetPrereview
     const locale = yield* Locale
 
-    const prereview = yield* getPrereview(id)
+    const prereview = yield* Prereviews.getPrereview(id)
 
     return yield* Option.match(user, {
       onNone: () => Effect.succeed(MakeResponse({ prereview, locale })),
