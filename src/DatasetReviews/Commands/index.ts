@@ -16,6 +16,7 @@ import * as AnswerIfTheDatasetMattersToItsAudience from './AnswerIfTheDatasetMat
 import * as AnswerIfTheDatasetSupportsRelatedConclusions from './AnswerIfTheDatasetSupportsRelatedConclusions.ts'
 import * as ChoosePersona from './ChoosePersona.ts'
 import * as DeclareCompetingInterests from './DeclareCompetingInterests.ts'
+import * as DeclareFollowingCodeOfConduct from './DeclareFollowingCodeOfConduct.ts'
 import * as MarkDatasetReviewAsPublished from './MarkDatasetReviewAsPublished.ts'
 import * as MarkDoiAsActivated from './MarkDoiAsActivated.ts'
 import * as MarkDoiAsAssigned from './MarkDoiAsAssigned.ts'
@@ -76,6 +77,10 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     >
     choosePersona: CommandHandler<ChoosePersona.Command, ChoosePersona.Error>
     declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
+    declareFollowingCodeOfConduct: CommandHandler<
+      DeclareFollowingCodeOfConduct.Command,
+      DeclareFollowingCodeOfConduct.Error
+    >
     markRecordCreatedOnZenodo: CommandHandler<MarkRecordCreatedOnZenodo.Command, MarkRecordCreatedOnZenodo.Error>
     markRecordAsPublishedOnZenodo: CommandHandler<
       MarkRecordAsPublishedOnZenodo.Command,
@@ -115,6 +120,7 @@ export const {
   answerIfTheDatasetIsMissingAnything,
   choosePersona,
   declareCompetingInterests,
+  declareFollowingCodeOfConduct,
   markRecordCreatedOnZenodo,
   markRecordAsPublishedOnZenodo,
   markDoiAsAssigned,
@@ -262,6 +268,12 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         DeclareCompetingInterests.foldState,
         DeclareCompetingInterests.authorize,
         DeclareCompetingInterests.decide,
+      ),
+      declareFollowingCodeOfConduct: handleCommand(
+        DeclareFollowingCodeOfConduct.createFilter,
+        DeclareFollowingCodeOfConduct.foldState,
+        DeclareFollowingCodeOfConduct.authorize,
+        DeclareFollowingCodeOfConduct.decide,
       ),
       markRecordCreatedOnZenodo: handleCommand(
         datasetReviewId => ({
