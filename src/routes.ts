@@ -170,6 +170,12 @@ export const ReviewADatasetDeclareCompetingInterests: Route<{ datasetReviewId: U
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 }
 
+export const ReviewADatasetAgreeToCodeOfConduct: Route<{ datasetReviewId: Uuid.Uuid }> = {
+  path: '/review-a-dataset/:datasetReviewId/agree-to-code-of-conduct',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/agree-to-code-of-conduct`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+}
+
 export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,

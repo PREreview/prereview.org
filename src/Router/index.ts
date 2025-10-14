@@ -212,6 +212,16 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.DeclareCompetingInterestsSubmission),
     ),
   ),
+  MakeRoute('GET', Routes.ReviewADatasetAgreeToCodeOfConduct, ReviewADatasetFlow.AgreeToCodeOfConductPage),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetAgreeToCodeOfConduct,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.AgreeToCodeOfConductSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewPage),
   MakeRoute('POST', Routes.ReviewADatasetCheckYourReview, ReviewADatasetFlow.CheckYourReviewSubmission),
   MakeRoute('GET', Routes.ReviewADatasetReviewBeingPublished, ReviewADatasetFlow.ReviewBeingPublishedPage),

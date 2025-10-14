@@ -1,3 +1,4 @@
+export * from './AgreeToCodeOfConductPage/index.ts'
 export * from './CheckYourReviewPage/index.ts'
 export * from './ChooseYourPersonaPage/index.ts'
 export * from './DeclareCompetingInterestsPage/index.ts'
