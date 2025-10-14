@@ -114,8 +114,8 @@ export class AnsweredIfTheDatasetIsMissingAnything extends Schema.TaggedClass<An
   { answer: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema), datasetReviewId: Uuid.UuidSchema },
 ) {}
 
-export class CodeOfConductForADatasetReviewWasAgreed extends Schema.TaggedClass<CodeOfConductForADatasetReviewWasAgreed>()(
-  'CodeOfConductForADatasetReviewWasAgreed',
+export class DeclaredThatTheCodeOfConductWasFollowedForADatasetReview extends Schema.TaggedClass<DeclaredThatTheCodeOfConductWasFollowedForADatasetReview>()(
+  'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
   {
     datasetReviewId: Uuid.UuidSchema,
     timestamp: Temporal.InstantSchema,
@@ -190,7 +190,7 @@ export const DatasetReviewEvent = Schema.Union(
   AnsweredIfTheDatasetIsMissingAnything,
   PublicationOfDatasetReviewWasRequested,
   ZenodoRecordForDatasetReviewWasCreated,
-  CodeOfConductForADatasetReviewWasAgreed,
+  DeclaredThatTheCodeOfConductWasFollowedForADatasetReview,
   PersonaForDatasetReviewWasChosen,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,

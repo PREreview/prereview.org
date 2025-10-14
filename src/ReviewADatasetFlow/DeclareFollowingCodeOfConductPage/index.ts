@@ -3,9 +3,10 @@ import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import type { Uuid } from '../../types/index.ts'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const AgreeToCodeOfConductPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) => HavingProblemsPage
+export const DeclareFollowingCodeOfConductPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) =>
+  HavingProblemsPage
 
-export const AgreeToCodeOfConductSubmission = ({
+export const DeclareFollowingCodeOfConductSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

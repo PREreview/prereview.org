@@ -1959,17 +1959,17 @@ export const answeredIfTheDatasetIsMissingAnything = ({
     })
     .map(data => new Events.AnsweredIfTheDatasetIsMissingAnything(data))
 
-export const codeOfConductForADatasetReviewWasAgreed = ({
+export const declaredThatTheCodeOfConductWasFollowedForADatasetReview = ({
   datasetReviewId,
 }: {
-  datasetReviewId?: fc.Arbitrary<Events.CodeOfConductForADatasetReviewWasAgreed['datasetReviewId']>
-} = {}): fc.Arbitrary<Events.CodeOfConductForADatasetReviewWasAgreed> =>
+  datasetReviewId?: fc.Arbitrary<Events.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview> =>
   fc
     .record({
       datasetReviewId: datasetReviewId ?? uuid(),
       timestamp: instant(),
     })
-    .map(data => new Events.CodeOfConductForADatasetReviewWasAgreed(data))
+    .map(data => new Events.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview(data))
 
 export const personaForDatasetReviewWasChosen = ({
   datasetReviewId,
@@ -2072,7 +2072,7 @@ export const datasetReviewEvent = (
     answeredIfTheDatasetMattersToItsAudience(args),
     answeredIfTheDatasetIsReadyToBeShared(args),
     answeredIfTheDatasetIsMissingAnything(args),
-    codeOfConductForADatasetReviewWasAgreed(args),
+    declaredThatTheCodeOfConductWasFollowedForADatasetReview(args),
     personaForDatasetReviewWasChosen(args),
     competingInterestsForADatasetReviewWereDeclared(args),
     publicationOfDatasetReviewWasRequested(args),
