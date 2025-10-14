@@ -1,4 +1,4 @@
-import { Data, type Either } from 'effect'
+import { Boolean, Data, type Either } from 'effect'
 
 export type DeclareFollowingCodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
 
@@ -13,3 +13,8 @@ export class InvalidForm extends Data.TaggedClass('InvalidForm')<{
 export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
   followingCodeOfConduct: 'yes'
 }> {}
+
+export const fromHasBeenDeclared: (hasBeenDeclared: boolean) => DeclareFollowingCodeOfConductForm = Boolean.match({
+  onFalse: () => new EmptyForm(),
+  onTrue: () => new CompletedForm({ followingCodeOfConduct: 'yes' }),
+})
