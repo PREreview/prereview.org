@@ -9,7 +9,6 @@ import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { AddAnnotationsToLogger } from './DeprecatedServices.ts'
-import * as EffectToFpts from './EffectToFpts.ts'
 import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, Ghost, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
@@ -26,7 +25,6 @@ import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as Personas from './Personas/index.ts'
 import * as Preprints from './Preprints/index.ts'
-import * as Prereview from './Prereview.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import { DataStoreRedis } from './Redis.ts'
@@ -36,34 +34,8 @@ import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import { Uuid } from './types/index.ts'
 import { WebApp } from './WebApp.ts'
-import { createCommentOnZenodo, getPrereviewFromZenodo, publishDepositionOnZenodo } from './zenodo.ts'
+import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
 import * as ZenodoInteractions from './Zenodo/index.ts'
-
-const getPrereview = Layer.effect(
-  Prereview.GetPrereview,
-  Effect.gen(function* () {
-    const wasPrereviewRemoved = yield* Prereviews.WasPrereviewRemoved
-    const fetch = yield* FetchHttpClient.Fetch
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
-    const zenodoApi = yield* Zenodo.ZenodoApi
-
-    const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
-
-    return Effect.fn(function* (id) {
-      const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
-
-      return yield* FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
-        fetch,
-        getPreprint,
-        wasPrereviewRemoved,
-        zenodoApiKey: Redacted.value(zenodoApi.key),
-        zenodoUrl: zenodoApi.origin,
-        clock,
-        logger,
-      })
-    })
-  }),
-)
 
 const getPseudonym = Layer.effect(
   GetPseudonym,
@@ -366,11 +338,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
-    Layer.mergeAll(
-      getPrereview,
-      Prereviews.layer,
-      Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes')),
-    ),
+    Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
   ),
   Layer.provide(
     Layer.mergeAll(

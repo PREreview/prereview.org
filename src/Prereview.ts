@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
-import { type Array, Context, Data, type Effect } from 'effect'
+import { type Array, Data } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubId } from './Clubs/index.ts'
 import type { Html } from './html.ts'
@@ -36,8 +36,3 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   structured: boolean
   text: Html
 }> {}
-
-export class GetPrereview extends Context.Tag('GetPrereview')<
-  GetPrereview,
-  (id: number) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
->() {}
