@@ -5,8 +5,33 @@ import type { Orcid as OrcidId } from 'orcid-id-ts'
 import type { ClubId } from '../Clubs/index.ts'
 import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
+import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
 import type { SubfieldId } from '../types/subfield.ts'
+
+export class Prereview extends Data.TaggedClass('Prereview')<{
+  addendum?: Html
+  authors: {
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
+    anonymous: number
+  }
+  club?: ClubId
+  doi: Doi
+  id: number
+  language?: LanguageCode
+  license: 'CC0-1.0' | 'CC-BY-4.0'
+  published: Temporal.PlainDate
+  preprint: {
+    id: PreprintId
+    language: LanguageCode
+    title: Html
+    url: URL
+  }
+  live: boolean
+  requested: boolean
+  structured: boolean
+  text: Html
+}> {}
 
 export interface RecentPrereview {
   readonly id: number
@@ -56,6 +81,12 @@ export interface RapidPrereview {
     reproducibility: 'yes' | 'unsure' | 'na' | 'no'
   }
 }
+
+export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
+
+export class PrereviewIsUnavailable extends Data.TaggedError('PrereviewIsUnavailable') {}
+
+export class PrereviewWasRemoved extends Data.TaggedError('PrereviewWasRemoved') {}
 
 export class PrereviewsAreUnavailable extends Data.TaggedError('PrereviewsAreUnavailable') {}
 

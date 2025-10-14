@@ -3,7 +3,6 @@ import { describe, expect } from '@jest/globals'
 import { Effect, identity, Layer } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import { Locale } from '../../src/Context.ts'
-import * as Prereview from '../../src/Prereview.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -108,7 +107,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewWasRemoved() })),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewWasRemoved() })),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,
       ),
@@ -131,7 +130,7 @@ describe('WriteCommentPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
-        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsNotFound() })),
+        Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewIsNotFound() })),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,
       ),
@@ -155,7 +154,7 @@ describe('WriteCommentPage', () => {
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provide(
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereview.PrereviewIsUnavailable() }),
+          Layer.mock(Prereviews.Prereviews, { getPrereview: () => new Prereviews.PrereviewIsUnavailable() }),
         ),
         user ? Effect.provideService(LoggedInUser, user) : identity,
         EffectTest.run,

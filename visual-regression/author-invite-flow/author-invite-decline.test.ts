@@ -6,7 +6,7 @@ import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/in
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { Prereview } from '../../src/Prereview.ts'
+import { Prereview } from '../../src/Prereviews/index.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { expect, test } from '../base.ts'
 

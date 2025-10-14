@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
-import * as Prereview from '../../../src/Prereview.ts'
+import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -23,7 +23,7 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const prereview = new Prereview.Prereview({
+const prereview = new Prereviews.Prereview({
   authors: {
     named: [
       { name: 'James Fraser', orcid: OrcidId('0000-0002-5080-2859') },

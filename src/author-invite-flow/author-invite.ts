@@ -11,7 +11,7 @@ import { getClubName } from '../Clubs/index.ts'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
-import type { Prereview } from '../Prereview.ts'
+import type { Prereview } from '../Prereviews/index.ts'
 import { PageResponse, RedirectResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
 import {

@@ -107,7 +107,7 @@ import {
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
 import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.ts'
-import { Prereview } from '../src/Prereview.ts'
+import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
 import {
   type FlashMessageResponse,

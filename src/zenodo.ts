@@ -55,8 +55,8 @@ import {
   fromPreprintDoi,
   fromUrl,
 } from './Preprints/index.ts'
-import * as Prereview from './Prereview.ts'
-import type { PreprintPrereview } from './Prereviews/index.ts'
+// eslint-disable-next-line import/no-internal-modules
+import * as Prereview from './Prereviews/Prereview.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
 import type { RecentPrereviews } from './reviews-page/index.ts'
@@ -779,7 +779,7 @@ function recordToPrereview(
 
 function recordToPreprintPrereview(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, 'text-not-found' | 'text-unavailable', PreprintPrereview> {
+): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, 'text-not-found' | 'text-unavailable', Prereview.PreprintPrereview> {
   return pipe(
     RTE.fromOption(() => 'text-not-found' as const)(getReviewUrl(record)),
     RTE.chainW(reviewTextUrl =>
