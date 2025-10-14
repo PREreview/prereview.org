@@ -9,6 +9,7 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../html.t
 import { translate, type SupportedLocale } from '../locales/index.ts'
 import type { Preprint } from '../Preprints/index.ts'
 import * as PreprintServers from '../PreprintServers/index.ts'
+import type { PreprintPrereview, RapidPrereview } from '../Prereviews/index.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 import { isReviewRequestPreprintId } from '../review-request.ts'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../routes.ts'
@@ -16,8 +17,6 @@ import { renderDate } from '../time.ts'
 import { ProfileId } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { isPseudonym } from '../types/Pseudonym.ts'
-import type { Prereview } from './prereviews.ts'
-import type { RapidPrereview } from './rapid-prereviews.ts'
 
 export const createPage = ({
   locale,
@@ -27,7 +26,7 @@ export const createPage = ({
 }: {
   locale: SupportedLocale
   preprint: Preprint
-  reviews: ReadonlyArray<Prereview>
+  reviews: ReadonlyArray<PreprintPrereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) =>
   TwoUpPageResponse({
@@ -162,7 +161,7 @@ export const createPage = ({
     type: 'preprint',
   })
 
-function showReview(review: Prereview, locale: SupportedLocale) {
+function showReview(review: PreprintPrereview, locale: SupportedLocale) {
   const t = translate(locale, 'preprint-reviews')
   return html`
     <li>
@@ -404,6 +403,6 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions'
   )
 }
 
-const countAuthors = (prereview: Prereview) => prereview.authors.named.length + prereview.authors.anonymous
+const countAuthors = (prereview: PreprintPrereview) => prereview.authors.named.length + prereview.authors.anonymous
 
 const visuallyHidden = (text: string) => html`<span class="visually-hidden">${text}</span>`.toString()

@@ -12,8 +12,8 @@ import { createPage } from './preprint-reviews.ts'
 import { type GetPrereviewsEnv, getPrereviews } from './prereviews.ts'
 import { type GetRapidPrereviewsEnv, getRapidPrereviews } from './rapid-prereviews.ts'
 
-export type { GetPrereviewsEnv, Prereview } from './prereviews.ts'
-export type { GetRapidPrereviewsEnv, RapidPrereview } from './rapid-prereviews.ts'
+export type { GetPrereviewsEnv } from './prereviews.ts'
+export type { GetRapidPrereviewsEnv } from './rapid-prereviews.ts'
 
 export const preprintReviews = ({
   id,

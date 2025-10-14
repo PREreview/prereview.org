@@ -2,9 +2,9 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import type { Prereview, RapidPrereview } from '../../src/preprint-reviews-page/index.ts'
 import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
+import type { PreprintPrereview, RapidPrereview } from '../../src/Prereviews/index.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { expect, test } from '../base.ts'
 
@@ -278,7 +278,7 @@ const prereview1 = {
     <p>UCSF</p>
     <h2>Competing interests</h2>
     <p>The authors declare that they have no competing interests.</p>`,
-} satisfies Prereview
+} satisfies PreprintPrereview
 
 const prereview2 = {
   id: 10888905,
@@ -361,7 +361,7 @@ const prereview2 = {
     <h2>Competing interests</h2>
 
     <p>The author declares that they have no competing interests.</p>`,
-} satisfies Prereview
+} satisfies PreprintPrereview
 
 const prereview3 = {
   id: 10870479,
@@ -644,7 +644,7 @@ const prereview3 = {
     <h2>Competing interests</h2>
 
     <p>The authors declare that they have no competing interests.</p>`,
-} satisfies Prereview
+} satisfies PreprintPrereview
 
 const prereview4 = {
   id: 10779310,
@@ -732,7 +732,7 @@ const prereview4 = {
     <h2>Competing interests</h2>
 
     <p>The author declares that they have no competing interests.</p>`,
-} satisfies Prereview
+} satisfies PreprintPrereview
 
 const prereview5 = {
   id: 10411168,
@@ -951,7 +951,7 @@ const prereview5 = {
     <h2>Competing interests</h2>
 
     <p>The author declares that they have no competing interests.</p>`,
-} satisfies Prereview
+} satisfies PreprintPrereview
 
 const rapidPrereview1 = {
   author: { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },

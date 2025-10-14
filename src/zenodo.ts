@@ -37,7 +37,6 @@ import { type ClubId, getClubByName, getClubName } from './Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { type Html, plainText, sanitizeHtml } from './html.ts'
-import type { Prereview as PreprintPrereview } from './preprint-reviews-page/index.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -57,6 +56,7 @@ import {
   fromUrl,
 } from './Preprints/index.ts'
 import * as Prereview from './Prereview.ts'
+import type { PreprintPrereview } from './Prereviews/index.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
 import type { RecentPrereviews } from './reviews-page/index.ts'

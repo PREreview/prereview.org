@@ -14,13 +14,13 @@ import {
   isLegacyCompatiblePreprint,
   LegacyPrereviewApi,
 } from '../legacy-prereview.ts'
-import type { Prereview as PreprintPrereview, RapidPrereview } from '../preprint-reviews-page/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import type { Prereview, PrereviewIsNotFound, PrereviewIsUnavailable, PrereviewWasRemoved } from '../Prereview.ts'
 import type { RecentPrereviews } from '../reviews-page/index.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
 import type { ProfileId } from '../types/profile-id.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 import type { User } from '../user.ts'
@@ -47,6 +47,38 @@ export interface RecentPrereview {
     readonly id: PreprintId
     readonly language: LanguageCode
     readonly title: Html
+  }
+}
+
+export interface PreprintPrereview {
+  authors: {
+    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
+    anonymous: number
+  }
+  club?: ClubId
+  id: number
+  language?: LanguageCode
+  text: Html
+}
+
+export interface RapidPrereview {
+  author: {
+    name: string
+    orcid?: OrcidId
+  }
+  questions: {
+    availableCode: 'yes' | 'unsure' | 'na' | 'no'
+    availableData: 'yes' | 'unsure' | 'na' | 'no'
+    coherent: 'yes' | 'unsure' | 'na' | 'no'
+    ethics: 'yes' | 'unsure' | 'na' | 'no'
+    future: 'yes' | 'unsure' | 'na' | 'no'
+    limitations: 'yes' | 'unsure' | 'na' | 'no'
+    methods: 'yes' | 'unsure' | 'na' | 'no'
+    newData: 'yes' | 'unsure' | 'na' | 'no'
+    novel: 'yes' | 'unsure' | 'na' | 'no'
+    peerReview: 'yes' | 'unsure' | 'na' | 'no'
+    recommend: 'yes' | 'unsure' | 'na' | 'no'
+    reproducibility: 'yes' | 'unsure' | 'na' | 'no'
   }
 }
 
