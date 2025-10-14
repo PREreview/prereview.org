@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Match } from 'effect'
 import type { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -44,11 +44,17 @@ export const DeclareFollowingCodeOfConductPage = ({
   )
 
 export const DeclareFollowingCodeOfConductSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
-}) => HavingProblemsPage
+}): Effect.Effect<Response.Response, never, Locale> =>
+  Effect.gen(function* () {
+    const form = yield* DeclareFollowingCodeOfConductForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: () => HavingProblemsPage,
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
+    })
+  })

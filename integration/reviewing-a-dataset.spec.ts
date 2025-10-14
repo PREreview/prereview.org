@@ -1379,3 +1379,25 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('What are they?')).toBeFocused()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to declare following the Code of Conduct',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.goto(`${page.url()}/../declare-following-code-of-conduct`, { waitUntil: 'commit' })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Code of Conduct' })).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Confirm that you are following the Code of Conduct' }).click()
+
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
+  },
+)

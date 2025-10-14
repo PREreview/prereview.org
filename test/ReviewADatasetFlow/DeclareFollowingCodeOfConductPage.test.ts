@@ -1,6 +1,7 @@
+import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as _ from '../../src/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/index.ts'
@@ -166,19 +167,44 @@ describe('DeclareFollowingCodeOfConductPage', () => {
   )
 })
 
-test.prop([fc.uuid(), fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })), fc.supportedLocale()])(
-  'DeclareFollowingCodeOfConductSubmission',
-  (datasetReviewId, body, locale) =>
+describe('DeclareFollowingCodeOfConductSubmission', () => {
+  test.prop([fc.uuid(), fc.urlParams(fc.constant({ followingCodeOfConduct: 'yes' })), fc.supportedLocale()])(
+    'when there is a declaration',
+    (datasetReviewId, body, locale) =>
+      Effect.gen(function* () {
+        const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+  )
+
+  test.prop([
+    fc.uuid(),
+    fc.oneof(
+      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'followingCodeOfConduct'))),
+      fc.urlParams(fc.record({ followingCodeOfConduct: fc.string().filter(string => string !== 'yes') })),
+    ),
+    fc.supportedLocale(),
+  ])("when there isn't a declaration", (datasetReviewId, body, locale) =>
     Effect.gen(function* () {
       const actual = yield* _.DeclareFollowingCodeOfConductSubmission({ body, datasetReviewId })
 
       expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
+        _tag: 'StreamlinePageResponse',
+        canonical: Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId }),
+        status: StatusCodes.BadRequest,
         title: expect.anything(),
         main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
       })
     }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
-)
+  )
+})
