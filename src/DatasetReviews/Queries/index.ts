@@ -5,7 +5,6 @@ import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
-import { CheckIfReviewIsInProgress } from './CheckIfReviewIsInProgress.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.ts'
@@ -34,10 +33,6 @@ import { GetZenodoRecordId } from './GetZenodoRecordId.ts'
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
   DatasetReviewQueries,
   {
-    checkIfReviewIsInProgress: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsInProgress>,
-      Errors.UnknownDatasetReview
-    >
     checkIfReviewIsBeingPublished: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof CheckIfReviewIsBeingPublished>,
       Errors.UnknownDatasetReview
@@ -144,7 +139,6 @@ type Query<F extends (...args: never) => unknown, E = never> = (
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
 export const {
-  checkIfReviewIsInProgress,
   checkIfReviewIsBeingPublished,
   checkIfUserCanRateTheQuality,
   checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples,
@@ -207,19 +201,6 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
       )
 
     return {
-      checkIfReviewIsInProgress: Effect.fn(
-        function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
-
-          return yield* CheckIfReviewIsInProgress(events)
-        },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      ),
       checkIfReviewIsBeingPublished: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
