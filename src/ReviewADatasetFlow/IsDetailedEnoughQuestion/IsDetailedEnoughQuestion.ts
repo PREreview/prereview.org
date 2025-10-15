@@ -135,7 +135,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="is-detailed-enough-partly-control">
                     <div>
                       <label for="is-detailed-enough-partly-detail" class="textarea"
-                        >Which data is detailed enough and which isn’t? (optional)</label
+                        >How is it only partly granular enough? Which parts need to be more detailed? (optional)</label
                       >
                       <textarea name="isDetailedEnoughPartlyDetail" id="is-detailed-enough-partly-detail" rows="5">
 ${Match.valueTags(form, {

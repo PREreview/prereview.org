@@ -394,8 +394,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByLabel('How does it partly support the conclusions?').fill('Etiam non nibh velit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
-  await page.getByLabel('Which data is detailed enough and which isn’t?').fill('In sollicitudin dignissim placerat.')
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByLabel('How is it only partly granular enough? Which parts need to be more detailed?')
+    .fill('In sollicitudin dignissim placerat.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
@@ -592,7 +594,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is granular enough' }).click()
 
-  await page.getByLabel('Which data is detailed enough and which isn’t?').clear()
+  await page.getByLabel('How is it only partly granular enough? Which parts need to be more detailed?').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
