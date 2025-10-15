@@ -136,6 +136,133 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
   await expect(page.getByRole('article', { name: 'PREreview by Josiah Carberry' })).toBeVisible()
 })
 
+test.extend(canLogIn).extend(willPublishADatasetReview)(
+  'can review a dataset using a pseudonym',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/', { waitUntil: 'commit' })
+    await page.getByRole('link', { name: 'Review a dataset' }).click()
+    await page.getByLabel('Which dataset are you reviewing?').fill('10.5061/dryad.wstqjq2n3')
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await page.getByLabel('Fair', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I don’t know', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Somewhat consequential', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page
+      .getByLabel(
+        'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? (optional)',
+      )
+      .fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your PREreview')
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('We’re publishing your PREreview')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible()
+
+      await page.getByRole('link', { name: 'Continue' }).click()
+    } else {
+      await expect(async () => {
+        await page.getByRole('link', { name: 'Reload page' }).click()
+
+        await expect(page.getByRole('link', { name: 'Reload page' })).not.toBeVisible()
+      }).toPass()
+    }
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+
+    await page.getByRole('link', { name: 'See your review' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Structured PREreview of Metadata collected from 500 articles in the field of ecology and evolution',
+    )
+    await expect(page.getByRole('main')).toContainText('by Orange Panda')
+    await expect(page.getByRole('main')).toContainText('How would you rate the quality of this data set? Fair')
+    await expect(page.getByRole('main')).toContainText('Does this dataset follow FAIR and CARE principles? Partly')
+    await expect(page.getByRole('main')).toContainText('Does the dataset have enough metadata? Yes')
+    await expect(page.getByRole('main')).toContainText(
+      'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate? No',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise? I don’t know',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Is the dataset well-suited to support its stated research purpose? Partly',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Does this dataset support the researcher’s stated conclusions? Yes',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Is the dataset granular enough to be a reliable standard of measurement? No',
+    )
+    await expect(page.getByRole('main')).toContainText('Is the dataset relatively error-free? I don’t know')
+    await expect(page.getByRole('main')).toContainText(
+      'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences? Somewhat consequential',
+    )
+    await expect(page.getByRole('main')).toContainText('Is this dataset ready to be shared? Yes')
+    await expect(page.getByRole('main')).toContainText(
+      'What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways? Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The author declares that they have no competing interests.',
+    )
+
+    await page.getByRole('link', { name: 'Back to all reviews' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'PREreviews of Metadata collected from 500 articles in the field of ecology and evolution',
+    )
+    await expect(page.getByRole('article', { name: 'PREreview by Orange Panda' })).toBeVisible()
+  },
+)
+
 test('can choose a locale before starting', async ({ page }, testInfo) => {
   await page.goto('/datasets/doi-10.5061-dryad.wstqjq2n3/review-this-dataset', { waitUntil: 'commit' })
 
