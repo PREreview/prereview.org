@@ -386,8 +386,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
     .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Partly').check()
-  await page.getByLabel('What would have been better?').fill('Proin porttitor feugiat ipsum.')
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByLabel('How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?')
+    .fill('Proin porttitor feugiat ipsum.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
   await page.getByLabel('How does it partly support the conclusions?').fill('Etiam non nibh velit.')
@@ -552,7 +554,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset is well-suited' }).click()
 
-  await page.getByLabel('What would have been better?').clear()
+  await page.getByLabel('How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(

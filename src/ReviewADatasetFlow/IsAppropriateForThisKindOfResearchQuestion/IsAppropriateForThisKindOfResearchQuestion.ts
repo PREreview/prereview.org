@@ -150,7 +150,8 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="is-appropriate-for-this-kind-of-research-question-partly-control">
                     <div>
                       <label for="is-appropriate-for-this-kind-of-research-question-partly-detail" class="textarea"
-                        >What would have been better? (optional)</label
+                        >How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?
+                        (optional)</label
                       >
                       <textarea
                         name="isAppropriateForThisKindOfResearchPartlyDetail"
@@ -197,7 +198,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="is-appropriate-for-this-kind-of-research-question-no-control">
                     <div>
                       <label for="is-appropriate-for-this-kind-of-research-question-no-detail" class="textarea"
-                        >How are they not well-suited? (optional)</label
+                        >How is it not well-suited for its purpose? (optional)</label
                       >
                       <textarea
                         name="isAppropriateForThisKindOfResearchNoDetail"
