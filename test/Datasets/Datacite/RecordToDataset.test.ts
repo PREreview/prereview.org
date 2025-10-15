@@ -66,6 +66,36 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.5061/dryad.b2rbnzst9'),
     }),
   },
+  {
+    response: 'dryad-cdl',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Cancer-associated fibroblasts (CAFs) are a prominent stromal cell type in\n solid tumors and molecules secreted by CAFs play an important role in\n tumor progression and metastasis. CAFs coexist as heterogeneous\n populations with potentially different biological functions. Although CAFs\n are a major component of the breast cancer stroma, molecular and\n phenotypic heterogeneity of CAFs in breast cancer is poorly understood. In\n this study, we investigated CAF heterogeneity in triple-negative breast\n cancer (TNBC) using a syngeneic mouse model, BALB/c-derived 4T1 mammary\n tumors. Using single-cell RNA sequencing (scRNA-seq), we identified six\n CAF subpopulations in 4T1 tumors including: 1) myofibroblastic CAFs,\n enriched for α-smooth muscle actin and several other contractile proteins;\n 2) ‘inflammatory’ CAFs with elevated expression of inflammatory cytokines;\n and 3) a CAF subpopulation expressing major histocompatibility complex\n (MHC) class II proteins that are generally expressed in antigen-presenting\n cells. Comparison of 4T1-derived CAFs to CAFs from pancreatic cancer\n revealed that these three CAF subpopulations exist in both tumor types.\n Interestingly, cells with inflammatory and MHC class II-expressing CAF\n profiles were also detected in normal breast/pancreas tissue, suggesting\n that these phenotypes are not tumor microenvironment-induced. This work\n enhances our understanding of CAF heterogeneity, and specifically\n targeting these CAF subpopulations could be an effective therapeutic\n approach for treating highly aggressive TNBCs.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Nicholas Hum', orcid: OrcidId.OrcidId('0000-0003-1605-3193') },
+        { name: 'Aimy Sebastian', orcid: OrcidId.OrcidId('0000-0002-7822-7040') },
+        { name: 'Kelly Martin' },
+        { name: 'Sean Gilmore' },
+        { name: 'Stephen Byers' },
+        { name: 'Elizabeth Wheeler' },
+        { name: 'Matthew Coleman' },
+        { name: 'Gabriela Loots' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.6071/m3238r') }),
+      posted: Temporal.PlainDate.from({ year: 2020, month: 5, day: 22 }),
+      title: {
+        text: rawHtml(
+          'Data from: Single-cell transcriptomic analysis of tumor-derived fibroblasts and normal tissue-resident fibroblasts reveals fibroblast heterogeneity in breast cancer',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.6071/M3238R'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

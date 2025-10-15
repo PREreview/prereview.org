@@ -1,0 +1,346 @@
+{
+  "data": {
+    "id": "10.6071/m3238r",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6071/m3238r",
+      "prefix": "10.6071",
+      "suffix": "m3238r",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Hum, Nicholas",
+          "nameType": "Personal",
+          "givenName": "Nicholas",
+          "familyName": "Hum",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-1605-3193",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Sebastian, Aimy",
+          "nameType": "Personal",
+          "givenName": "Aimy",
+          "familyName": "Sebastian",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7822-7040",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Martin, Kelly",
+          "nameType": "Personal",
+          "givenName": "Kelly",
+          "familyName": "Martin",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Gilmore, Sean",
+          "nameType": "Personal",
+          "givenName": "Sean",
+          "familyName": "Gilmore",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Byers, Stephen",
+          "nameType": "Personal",
+          "givenName": "Stephen",
+          "familyName": "Byers",
+          "affiliation": ["Georgetown University in Qatar"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Wheeler, Elizabeth",
+          "nameType": "Personal",
+          "givenName": "Elizabeth",
+          "familyName": "Wheeler",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Coleman, Matthew",
+          "nameType": "Personal",
+          "givenName": "Matthew",
+          "familyName": "Coleman",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Loots, Gabriela",
+          "nameType": "Personal",
+          "givenName": "Gabriela",
+          "familyName": "Loots",
+          "affiliation": ["Lawrence Livermore National Laboratory"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Data from: Single-cell transcriptomic analysis of tumor-derived fibroblasts and normal tissue-resident fibroblasts reveals fibroblast heterogeneity in breast cancer"
+        }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2020,
+      "subjects": [
+        { "subject": "cancer-associated fibroblasts" },
+        { "subject": "breast cancer" },
+        { "subject": "mammary fat pad" },
+        { "subject": "gene expression profiling" },
+        { "subject": "scRNA-seq" },
+        { "subject": "CAF heterogeneity" },
+        { "subject": "normal fibroblasts" },
+        { "subject": "myofibroblasts" },
+        { "subject": "inflammatory fibroblasts" },
+        {
+          "subject": "Pancreatic cancer",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2020-05-07T01:33:02Z", "dateType": "Submitted" },
+        { "date": "2020-05-22T00:00:00Z", "dateType": "Issued" },
+        { "date": "2020-05-22T00:00:00Z", "dateType": "Available" },
+        { "date": "2020-08-08T00:00:00Z", "dateType": "Updated" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.3390/cancers12051307", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": ["395966784 bytes"],
+      "formats": [],
+      "version": "8",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Cancer-associated fibroblasts (CAFs) are a prominent stromal cell type in\n solid tumors and molecules secreted by CAFs play an important role in\n tumor progression and metastasis. CAFs coexist as heterogeneous\n populations with potentially different biological functions. Although CAFs\n are a major component of the breast cancer stroma, molecular and\n phenotypic heterogeneity of CAFs in breast cancer is poorly understood. In\n this study, we investigated CAF heterogeneity in triple-negative breast\n cancer (TNBC) using a syngeneic mouse model, BALB/c-derived 4T1 mammary\n tumors. Using single-cell RNA sequencing (scRNA-seq), we identified six\n CAF subpopulations in 4T1 tumors including: 1) myofibroblastic CAFs,\n enriched for α-smooth muscle actin and several other contractile proteins;\n 2) ‘inflammatory’ CAFs with elevated expression of inflammatory cytokines;\n and 3) a CAF subpopulation expressing major histocompatibility complex\n (MHC) class II proteins that are generally expressed in antigen-presenting\n cells. Comparison of 4T1-derived CAFs to CAFs from pancreatic cancer\n revealed that these three CAF subpopulations exist in both tumor types.\n Interestingly, cells with inflammatory and MHC class II-expressing CAF\n profiles were also detected in normal breast/pancreas tissue, suggesting\n that these phenotypes are not tumor microenvironment-induced. This work\n enhances our understanding of CAF heterogeneity, and specifically\n targeting these CAF subpopulations could be an effective therapeutic\n approach for treating highly aggressive TNBCs.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "We performed scRNA-seq of all viable cells from 4T1 tumors,\n immune-depleted stromal cells from 4T1-Thy1.1 tumor, immune-depleted cells\n from mT3 subcutaneous tumors and fibroblasts isolated from normal mammary\n fat pads. Tissues were processed to obtain single cell suspensions of cell\n populations of interest as described before (Hum et al, Cancers 2020;\n doi.org/10.3390/cancers12030690) and prepared for single cell sequencing\n using Chromium Single Cell 3ʹ GEM, Library \u0026amp; Gel Bead Kit v3 (10X\n Genomics, Pleasanton, CA, USA; Catalog no. 1000075) on a 10X Genomics\n Chromium Controller following manufacturers protocol. scRNA-Seq libraries\n were sequenced using Illumina NextSeq 500. The Cell Ranger Single-Cell\n Software Suite (10X Genomics, Pleasanton, CA, USA) was used to perform\n sample demultiplexing, barcode processing, and single-cell 3′gene\n counting. Samples were aligned to the mouse genome (mm10) using\n “cellranger mkfastq” with default parameters. Unique molecular identifier\n (UMI) counts were generated using “cellranger count”. Further analysis was\n performed in R using the Seurat package.",
+          "descriptionType": "Methods"
+        },
+        {
+          "description": "Raw gene expression counts are provided for: all viable cells from 4T1\n tumors (4T1_vaibale_raw_counts.txt), CAFs from 4T1-Thy1.1 tumor\n (4T1_Thy1.1_CAF_raw.txt), CAFs from mT3 tumor (MT3_CAF_raw.txt) and normal\n mammary fibroblasts (Normal_mammary_fibroblasts_raw.txt). ",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Los Alamos National Laboratory",
+          "awardNumber": "19-SI-003",
+          "funderIdentifier": "https://ror.org/01e41cf67",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Lawrence Livermore National Laboratory",
+          "awardNumber": "LDRD-19-SI-003, LDRD-17-ER-121",
+          "funderIdentifier": "https://ror.org/041nk4h53",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Foundation for the National Institutes of Health",
+          "awardNumber": "P30CA093373",
+          "funderIdentifier": "https://ror.org/00k86s890",
+          "funderIdentifierType": "ROR"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA3MS9NMzIzOFI8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkh1bSwgTmljaG9sYXM8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDMtMTYwNS0zMTkzPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0MW5rNGg1MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5MYXdyZW5jZSBMaXZlcm1vcmUgTmF0aW9uYWwgTGFib3JhdG9yeTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+U2ViYXN0aWFuLCBBaW15PC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAyLTc4MjItNzA0MDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNDFuazRoNTMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+TGF3cmVuY2UgTGl2ZXJtb3JlIE5hdGlvbmFsIExhYm9yYXRvcnk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1hcnRpbiwgS2VsbHk8L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDQxbms0aDUzIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkxhd3JlbmNlIExpdmVybW9yZSBOYXRpb25hbCBMYWJvcmF0b3J5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5HaWxtb3JlLCBTZWFuPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0MW5rNGg1MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5MYXdyZW5jZSBMaXZlcm1vcmUgTmF0aW9uYWwgTGFib3JhdG9yeTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+QnllcnMsIFN0ZXBoZW48L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDI5ZTQ3eDczIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkdlb3JnZXRvd24gVW5pdmVyc2l0eSBpbiBRYXRhcjwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+V2hlZWxlciwgRWxpemFiZXRoPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0MW5rNGg1MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5MYXdyZW5jZSBMaXZlcm1vcmUgTmF0aW9uYWwgTGFib3JhdG9yeTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+Q29sZW1hbiwgTWF0dGhldzwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNDFuazRoNTMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+TGF3cmVuY2UgTGl2ZXJtb3JlIE5hdGlvbmFsIExhYm9yYXRvcnk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkxvb3RzLCBHYWJyaWVsYTwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNDFuazRoNTMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+TGF3cmVuY2UgTGl2ZXJtb3JlIE5hdGlvbmFsIExhYm9yYXRvcnk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT4KICAgICAgRGF0YSBmcm9tOiBTaW5nbGUtY2VsbCB0cmFuc2NyaXB0b21pYyBhbmFseXNpcyBvZiB0dW1vci1kZXJpdmVkCiAgICAgIGZpYnJvYmxhc3RzIGFuZCBub3JtYWwgdGlzc3VlLXJlc2lkZW50IGZpYnJvYmxhc3RzIHJldmVhbHMgZmlicm9ibGFzdAogICAgICBoZXRlcm9nZW5laXR5IGluIGJyZWFzdCBjYW5jZXIKICAgIDwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlciBwdWJsaXNoZXJJZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDB4Nmg1bjk1IiBwdWJsaXNoZXJJZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnLyI+RHJ5YWQ8L3B1Ymxpc2hlcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiPmRhdGFzZXQ8L3Jlc291cmNlVHlwZT4KICA8cHVibGljYXRpb25ZZWFyPjIwMjA8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5jYW5jZXItYXNzb2NpYXRlZCBmaWJyb2JsYXN0czwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmJyZWFzdCBjYW5jZXI8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5tYW1tYXJ5IGZhdCBwYWQ8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5nZW5lIGV4cHJlc3Npb24gcHJvZmlsaW5nPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+c2NSTkEtc2VxPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+Q0FGIGhldGVyb2dlbmVpdHk8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5ub3JtYWwgZmlicm9ibGFzdHM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5teW9maWJyb2JsYXN0czwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmluZmxhbW1hdG9yeSBmaWJyb2JsYXN0czwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9IlBMT1MgU3ViamVjdCBBcmVhIFRoZXNhdXJ1cyIgc2NoZW1lVVJJPSJodHRwczovL2dpdGh1Yi5jb20vUExPUy9wbG9zLXRoZXNhdXJ1cyI+UGFuY3JlYXRpYyBjYW5jZXI8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZnVuZGluZ1JlZmVyZW5jZXM+CiAgICA8ZnVuZGluZ1JlZmVyZW5jZT4KICAgICAgPGZ1bmRlck5hbWU+TG9zIEFsYW1vcyBOYXRpb25hbCBMYWJvcmF0b3J5PC9mdW5kZXJOYW1lPgogICAgICA8ZnVuZGVySWRlbnRpZmllciBmdW5kZXJJZGVudGlmaWVyVHlwZT0iUk9SIj5odHRwczovL3Jvci5vcmcvMDFlNDFjZjY3PC9mdW5kZXJJZGVudGlmaWVyPgogICAgICA8YXdhcmROdW1iZXI+MTktU0ktMDAzPC9hd2FyZE51bWJlcj4KICAgIDwvZnVuZGluZ1JlZmVyZW5jZT4KICAgIDxmdW5kaW5nUmVmZXJlbmNlPgogICAgICA8ZnVuZGVyTmFtZT5MYXdyZW5jZSBMaXZlcm1vcmUgTmF0aW9uYWwgTGFib3JhdG9yeTwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA0MW5rNGg1MzwvZnVuZGVySWRlbnRpZmllcj4KICAgICAgPGF3YXJkTnVtYmVyPkxEUkQtMTktU0ktMDAzLCBMRFJELTE3LUVSLTEyMTwvYXdhcmROdW1iZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgICA8ZnVuZGluZ1JlZmVyZW5jZT4KICAgICAgPGZ1bmRlck5hbWU+Rm91bmRhdGlvbiBmb3IgdGhlIE5hdGlvbmFsIEluc3RpdHV0ZXMgb2YgSGVhbHRoPC9mdW5kZXJOYW1lPgogICAgICA8ZnVuZGVySWRlbnRpZmllciBmdW5kZXJJZGVudGlmaWVyVHlwZT0iUk9SIj5odHRwczovL3Jvci5vcmcvMDBrODZzODkwPC9mdW5kZXJJZGVudGlmaWVyPgogICAgICA8YXdhcmROdW1iZXI+UDMwQ0EwOTMzNzM8L2F3YXJkTnVtYmVyPgogICAgPC9mdW5kaW5nUmVmZXJlbmNlPgogIDwvZnVuZGluZ1JlZmVyZW5jZXM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCI+MjAyMC0wNS0wN1QwMTozMzowMlo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDIwLTA1LTIyVDAwOjAwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiPjIwMjAtMDUtMjJUMDA6MDA6MDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjAtMDgtMDhUMDA6MDA6MDBaPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjMzOTAvY2FuY2VyczEyMDUxMzA3PC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXM+CiAgICA8c2l6ZT4zOTU5NjY3ODQgYnl0ZXM8L3NpemU+CiAgPC9zaXplcz4KICA8dmVyc2lvbj44PC92ZXJzaW9uPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vc3BkeC5vcmcvbGljZW5zZXMvQ0MwLTEuMC5odG1sIj5DcmVhdGl2ZSBDb21tb25zIFplcm8gdjEuMCBVbml2ZXJzYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij4KICAgICAgQ2FuY2VyLWFzc29jaWF0ZWQgZmlicm9ibGFzdHMgKENBRnMpIGFyZSBhIHByb21pbmVudCBzdHJvbWFsIGNlbGwgdHlwZSBpbgogICAgICBzb2xpZCB0dW1vcnMgYW5kIG1vbGVjdWxlcyBzZWNyZXRlZCBieSBDQUZzIHBsYXkgYW4gaW1wb3J0YW50IHJvbGUgaW4KICAgICAgdHVtb3IgcHJvZ3Jlc3Npb24gYW5kIG1ldGFzdGFzaXMuIENBRnMgY29leGlzdCBhcyBoZXRlcm9nZW5lb3VzCiAgICAgIHBvcHVsYXRpb25zIHdpdGggcG90ZW50aWFsbHkgZGlmZmVyZW50IGJpb2xvZ2ljYWwgZnVuY3Rpb25zLiBBbHRob3VnaCBDQUZzCiAgICAgIGFyZSBhIG1ham9yIGNvbXBvbmVudCBvZiB0aGUgYnJlYXN0IGNhbmNlciBzdHJvbWEsIG1vbGVjdWxhciBhbmQKICAgICAgcGhlbm90eXBpYyBoZXRlcm9nZW5laXR5IG9mIENBRnMgaW4gYnJlYXN0IGNhbmNlciBpcyBwb29ybHkgdW5kZXJzdG9vZC4gSW4KICAgICAgdGhpcyBzdHVkeSwgd2UgaW52ZXN0aWdhdGVkIENBRiBoZXRlcm9nZW5laXR5IGluIHRyaXBsZS1uZWdhdGl2ZSBicmVhc3QKICAgICAgY2FuY2VyIChUTkJDKSB1c2luZyBhIHN5bmdlbmVpYyBtb3VzZSBtb2RlbCwgQkFMQi9jLWRlcml2ZWQgNFQxIG1hbW1hcnkKICAgICAgdHVtb3JzLiBVc2luZyBzaW5nbGUtY2VsbCBSTkEgc2VxdWVuY2luZyAoc2NSTkEtc2VxKSwgd2UgaWRlbnRpZmllZCBzaXgKICAgICAgQ0FGIHN1YnBvcHVsYXRpb25zIGluIDRUMSB0dW1vcnMgaW5jbHVkaW5nOiAxKSBteW9maWJyb2JsYXN0aWMgQ0FGcywKICAgICAgZW5yaWNoZWQgZm9yIM6xLXNtb290aCBtdXNjbGUgYWN0aW4gYW5kIHNldmVyYWwgb3RoZXIgY29udHJhY3RpbGUgcHJvdGVpbnM7CiAgICAgIDIpIOKAmGluZmxhbW1hdG9yeeKAmSBDQUZzIHdpdGggZWxldmF0ZWQgZXhwcmVzc2lvbiBvZiBpbmZsYW1tYXRvcnkgY3l0b2tpbmVzOwogICAgICBhbmQgMykgYSBDQUYgc3VicG9wdWxhdGlvbiBleHByZXNzaW5nIG1ham9yIGhpc3RvY29tcGF0aWJpbGl0eSBjb21wbGV4CiAgICAgIChNSEMpIGNsYXNzIElJIHByb3RlaW5zIHRoYXQgYXJlIGdlbmVyYWxseSBleHByZXNzZWQgaW4gYW50aWdlbi1wcmVzZW50aW5nCiAgICAgIGNlbGxzLiBDb21wYXJpc29uIG9mIDRUMS1kZXJpdmVkIENBRnMgdG8gQ0FGcyBmcm9tIHBhbmNyZWF0aWMgY2FuY2VyCiAgICAgIHJldmVhbGVkIHRoYXQgdGhlc2UgdGhyZWUgQ0FGIHN1YnBvcHVsYXRpb25zIGV4aXN0IGluIGJvdGggdHVtb3IgdHlwZXMuCiAgICAgIEludGVyZXN0aW5nbHksIGNlbGxzIHdpdGggaW5mbGFtbWF0b3J5IGFuZCBNSEMgY2xhc3MgSUktZXhwcmVzc2luZyBDQUYKICAgICAgcHJvZmlsZXMgd2VyZSBhbHNvIGRldGVjdGVkIGluIG5vcm1hbCBicmVhc3QvcGFuY3JlYXMgdGlzc3VlLCBzdWdnZXN0aW5nCiAgICAgIHRoYXQgdGhlc2UgcGhlbm90eXBlcyBhcmUgbm90IHR1bW9yIG1pY3JvZW52aXJvbm1lbnQtaW5kdWNlZC4gVGhpcyB3b3JrCiAgICAgIGVuaGFuY2VzIG91ciB1bmRlcnN0YW5kaW5nIG9mIENBRiBoZXRlcm9nZW5laXR5LCBhbmQgc3BlY2lmaWNhbGx5CiAgICAgIHRhcmdldGluZyB0aGVzZSBDQUYgc3VicG9wdWxhdGlvbnMgY291bGQgYmUgYW4gZWZmZWN0aXZlIHRoZXJhcGV1dGljCiAgICAgIGFwcHJvYWNoIGZvciB0cmVhdGluZyBoaWdobHkgYWdncmVzc2l2ZSBUTkJDcy4KICAgIDwvZGVzY3JpcHRpb24+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJNZXRob2RzIj4KICAgICAgV2UgcGVyZm9ybWVkIHNjUk5BLXNlcSBvZiBhbGwgdmlhYmxlIGNlbGxzIGZyb20gNFQxIHR1bW9ycywKICAgICAgaW1tdW5lLWRlcGxldGVkIHN0cm9tYWwgY2VsbHMgZnJvbSA0VDEtVGh5MS4xIHR1bW9yLCBpbW11bmUtZGVwbGV0ZWQgY2VsbHMKICAgICAgZnJvbSBtVDMgc3ViY3V0YW5lb3VzIHR1bW9ycyBhbmQgZmlicm9ibGFzdHMgaXNvbGF0ZWQgZnJvbSBub3JtYWwgbWFtbWFyeQogICAgICBmYXQgcGFkcy4gVGlzc3VlcyB3ZXJlIHByb2Nlc3NlZCB0byBvYnRhaW4gc2luZ2xlIGNlbGwgc3VzcGVuc2lvbnMgb2YgY2VsbAogICAgICBwb3B1bGF0aW9ucyBvZiBpbnRlcmVzdCBhcyBkZXNjcmliZWQgYmVmb3JlIChIdW0gZXQgYWwsIENhbmNlcnMgMjAyMDsKICAgICAgZG9pLm9yZy8xMC4zMzkwL2NhbmNlcnMxMjAzMDY5MCkgYW5kIHByZXBhcmVkIGZvciBzaW5nbGUgY2VsbCBzZXF1ZW5jaW5nCiAgICAgIHVzaW5nIENocm9taXVtIFNpbmdsZSBDZWxsIDPKuSBHRU0sIExpYnJhcnkgJmFtcDthbXA7IEdlbCBCZWFkIEtpdCB2MyAoMTBYCiAgICAgIEdlbm9taWNzLCBQbGVhc2FudG9uLCBDQSwgVVNBOyBDYXRhbG9nIG5vLiAxMDAwMDc1KSBvbiBhIDEwWCBHZW5vbWljcwogICAgICBDaHJvbWl1bSBDb250cm9sbGVyIGZvbGxvd2luZyBtYW51ZmFjdHVyZXJzIHByb3RvY29sLiBzY1JOQS1TZXEgbGlicmFyaWVzCiAgICAgIHdlcmUgc2VxdWVuY2VkIHVzaW5nIElsbHVtaW5hIE5leHRTZXEgNTAwLiBUaGUgQ2VsbCBSYW5nZXIgU2luZ2xlLUNlbGwKICAgICAgU29mdHdhcmUgU3VpdGUgKDEwWCBHZW5vbWljcywgUGxlYXNhbnRvbiwgQ0EsIFVTQSkgd2FzIHVzZWQgdG8gcGVyZm9ybQogICAgICBzYW1wbGUgZGVtdWx0aXBsZXhpbmcsIGJhcmNvZGUgcHJvY2Vzc2luZywgYW5kIHNpbmdsZS1jZWxsIDPigLJnZW5lCiAgICAgIGNvdW50aW5nLiBTYW1wbGVzIHdlcmUgYWxpZ25lZCB0byB0aGUgbW91c2UgZ2Vub21lIChtbTEwKSB1c2luZwogICAgICDigJxjZWxscmFuZ2VyIG1rZmFzdHHigJ0gd2l0aCBkZWZhdWx0IHBhcmFtZXRlcnMuIFVuaXF1ZSBtb2xlY3VsYXIgaWRlbnRpZmllcgogICAgICAoVU1JKSBjb3VudHMgd2VyZSBnZW5lcmF0ZWQgdXNpbmcg4oCcY2VsbHJhbmdlciBjb3VudOKAnS4gRnVydGhlciBhbmFseXNpcyB3YXMKICAgICAgcGVyZm9ybWVkIGluIFIgdXNpbmcgdGhlIFNldXJhdCBwYWNrYWdlLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik90aGVyIj4KICAgICAgUmF3IGdlbmUgZXhwcmVzc2lvbiBjb3VudHMgYXJlIHByb3ZpZGVkIGZvcjogYWxsIHZpYWJsZSBjZWxscyBmcm9tIDRUMQogICAgICB0dW1vcnMgKDRUMV92YWliYWxlX3Jhd19jb3VudHMudHh0KSwgQ0FGcyBmcm9tIDRUMS1UaHkxLjEgdHVtb3IKICAgICAgKDRUMV9UaHkxLjFfQ0FGX3Jhdy50eHQpLCBDQUZzIGZyb20gbVQzIHR1bW9yIChNVDNfQ0FGX3Jhdy50eHQpIGFuZCBub3JtYWwKICAgICAgbWFtbWFyeSBmaWJyb2JsYXN0cyAoTm9ybWFsX21hbW1hcnlfZmlicm9ibGFzdHNfcmF3LnR4dCkuJmFtcDtuYnNwOwogICAgPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/dataset/doi:10.6071/M3238R",
+      "contentUrl": null,
+      "metadataVersion": 15,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 1665,
+      "viewsOverTime": [
+        { "yearMonth": "2020-05", "total": 9 },
+        { "yearMonth": "2020-06", "total": 24 },
+        { "yearMonth": "2020-07", "total": 15 },
+        { "yearMonth": "2020-08", "total": 1 },
+        { "yearMonth": "2020-09", "total": 17 },
+        { "yearMonth": "2020-10", "total": 15 },
+        { "yearMonth": "2020-11", "total": 9 },
+        { "yearMonth": "2020-12", "total": 27 },
+        { "yearMonth": "2021-01", "total": 17 },
+        { "yearMonth": "2021-02", "total": 9 },
+        { "yearMonth": "2021-03", "total": 11 },
+        { "yearMonth": "2021-04", "total": 8 },
+        { "yearMonth": "2021-05", "total": 4 },
+        { "yearMonth": "2021-06", "total": 7 },
+        { "yearMonth": "2021-07", "total": 14 },
+        { "yearMonth": "2021-08", "total": 15 },
+        { "yearMonth": "2021-09", "total": 22 },
+        { "yearMonth": "2021-10", "total": 23 },
+        { "yearMonth": "2021-11", "total": 25 },
+        { "yearMonth": "2021-12", "total": 28 },
+        { "yearMonth": "2022-01", "total": 25 },
+        { "yearMonth": "2022-02", "total": 31 },
+        { "yearMonth": "2022-03", "total": 36 },
+        { "yearMonth": "2022-04", "total": 31 },
+        { "yearMonth": "2022-05", "total": 26 },
+        { "yearMonth": "2022-06", "total": 42 },
+        { "yearMonth": "2022-07", "total": 37 },
+        { "yearMonth": "2022-08", "total": 36 },
+        { "yearMonth": "2022-09", "total": 33 },
+        { "yearMonth": "2022-10", "total": 93 },
+        { "yearMonth": "2022-11", "total": 23 },
+        { "yearMonth": "2022-12", "total": 28 },
+        { "yearMonth": "2023-01", "total": 9 },
+        { "yearMonth": "2023-02", "total": 31 },
+        { "yearMonth": "2023-03", "total": 45 },
+        { "yearMonth": "2023-04", "total": 51 },
+        { "yearMonth": "2023-05", "total": 22 },
+        { "yearMonth": "2023-06", "total": 32 },
+        { "yearMonth": "2023-07", "total": 29 },
+        { "yearMonth": "2023-08", "total": 90 },
+        { "yearMonth": "2023-09", "total": 91 },
+        { "yearMonth": "2023-10", "total": 76 },
+        { "yearMonth": "2023-11", "total": 49 },
+        { "yearMonth": "2023-12", "total": 12 },
+        { "yearMonth": "2024-03", "total": 24 },
+        { "yearMonth": "2024-04", "total": 22 },
+        { "yearMonth": "2024-05", "total": 21 },
+        { "yearMonth": "2024-06", "total": 13 },
+        { "yearMonth": "2024-07", "total": 21 },
+        { "yearMonth": "2024-08", "total": 21 },
+        { "yearMonth": "2024-09", "total": 23 },
+        { "yearMonth": "2024-10", "total": 15 },
+        { "yearMonth": "2024-11", "total": 20 },
+        { "yearMonth": "2024-12", "total": 16 },
+        { "yearMonth": "2025-01", "total": 23 },
+        { "yearMonth": "2025-02", "total": 22 },
+        { "yearMonth": "2025-03", "total": 32 },
+        { "yearMonth": "2025-04", "total": 19 },
+        { "yearMonth": "2025-05", "total": 25 },
+        { "yearMonth": "2025-06", "total": 8 },
+        { "yearMonth": "2025-07", "total": 18 },
+        { "yearMonth": "2025-08", "total": 16 },
+        { "yearMonth": "2025-09", "total": 28 }
+      ],
+      "downloadCount": 507,
+      "downloadsOverTime": [
+        { "yearMonth": "2020-05", "total": 3 },
+        { "yearMonth": "2020-06", "total": 11 },
+        { "yearMonth": "2020-07", "total": 4 },
+        { "yearMonth": "2020-08", "total": 1 },
+        { "yearMonth": "2020-09", "total": 2 },
+        { "yearMonth": "2020-10", "total": 5 },
+        { "yearMonth": "2020-11", "total": 1 },
+        { "yearMonth": "2020-12", "total": 5 },
+        { "yearMonth": "2021-01", "total": 2 },
+        { "yearMonth": "2021-02", "total": 4 },
+        { "yearMonth": "2021-03", "total": 3 },
+        { "yearMonth": "2021-06", "total": 1 },
+        { "yearMonth": "2021-07", "total": 3 },
+        { "yearMonth": "2021-08", "total": 5 },
+        { "yearMonth": "2021-09", "total": 6 },
+        { "yearMonth": "2021-10", "total": 6 },
+        { "yearMonth": "2021-11", "total": 7 },
+        { "yearMonth": "2021-12", "total": 10 },
+        { "yearMonth": "2022-01", "total": 6 },
+        { "yearMonth": "2022-02", "total": 6 },
+        { "yearMonth": "2022-03", "total": 9 },
+        { "yearMonth": "2022-04", "total": 9 },
+        { "yearMonth": "2022-05", "total": 5 },
+        { "yearMonth": "2022-06", "total": 11 },
+        { "yearMonth": "2022-07", "total": 12 },
+        { "yearMonth": "2022-08", "total": 9 },
+        { "yearMonth": "2022-09", "total": 10 },
+        { "yearMonth": "2022-10", "total": 59 },
+        { "yearMonth": "2022-11", "total": 6 },
+        { "yearMonth": "2022-12", "total": 8 },
+        { "yearMonth": "2023-01", "total": 1 },
+        { "yearMonth": "2023-02", "total": 10 },
+        { "yearMonth": "2023-03", "total": 11 },
+        { "yearMonth": "2023-04", "total": 16 },
+        { "yearMonth": "2023-05", "total": 6 },
+        { "yearMonth": "2023-06", "total": 13 },
+        { "yearMonth": "2023-07", "total": 11 },
+        { "yearMonth": "2023-08", "total": 19 },
+        { "yearMonth": "2023-09", "total": 16 },
+        { "yearMonth": "2023-10", "total": 24 },
+        { "yearMonth": "2023-11", "total": 13 },
+        { "yearMonth": "2023-12", "total": 5 },
+        { "yearMonth": "2024-03", "total": 12 },
+        { "yearMonth": "2024-04", "total": 10 },
+        { "yearMonth": "2024-05", "total": 7 },
+        { "yearMonth": "2024-06", "total": 7 },
+        { "yearMonth": "2024-07", "total": 10 },
+        { "yearMonth": "2024-08", "total": 10 },
+        { "yearMonth": "2024-09", "total": 6 },
+        { "yearMonth": "2024-10", "total": 7 },
+        { "yearMonth": "2024-11", "total": 2 },
+        { "yearMonth": "2024-12", "total": 3 },
+        { "yearMonth": "2025-01", "total": 11 },
+        { "yearMonth": "2025-02", "total": 11 },
+        { "yearMonth": "2025-03", "total": 10 },
+        { "yearMonth": "2025-04", "total": 4 },
+        { "yearMonth": "2025-05", "total": 5 },
+        { "yearMonth": "2025-06", "total": 1 },
+        { "yearMonth": "2025-07", "total": 8 },
+        { "yearMonth": "2025-08", "total": 3 },
+        { "yearMonth": "2025-09", "total": 6 }
+      ],
+      "referenceCount": 1,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2021", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2020-05-22T14:43:51.000Z",
+      "registered": "2020-05-22T14:43:53.000Z",
+      "published": "2020",
+      "updated": "2025-07-22T15:32:53.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.6071/m3238r", "type": "media" } },
+      "references": { "data": [{ "id": "10.3390/cancers12051307", "type": "dois" }] },
+      "citations": { "data": [{ "id": "10.3390/cancers12051307", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

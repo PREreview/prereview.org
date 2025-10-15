@@ -5,7 +5,7 @@ import { Doi } from '../types/index.ts'
 export type DatasetId = typeof DatasetId.Type
 
 export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadDatasetId', {
-  value: Doi.RegistrantDoiSchema('5061'),
+  value: Doi.RegistrantDoiSchema('5061', '6071'),
 }) {}
 
 export const DatasetId = Schema.Union(DryadDatasetId)
@@ -63,6 +63,6 @@ const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
 const extractFromDryadPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
-  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061'))),
+  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061', '6071'))),
   Option.andThen(doi => new DryadDatasetId({ value: doi })),
 )
