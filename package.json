@@ -120,7 +120,7 @@
     "stylelint-use-logical-spec": "^5.0.1",
     "ts-deepmerge": "^7.0.3",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.0",
+    "typescript-eslint": "^8.46.1",
     "webpack": "^5.102.1",
     "webpack-cli": "^6.0.1",
     "webpack-manifest-plugin": "^5.0.1",
