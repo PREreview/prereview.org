@@ -1,4 +1,5 @@
 import { Effect } from 'effect'
+import * as Datasets from '../../Datasets/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import { PublicUrl } from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -14,11 +15,17 @@ export const CreateRecordOnZenodo = Effect.fn(
 
     const datasetReview = yield* Queries.getDataForZenodoRecord(datasetReviewId)
 
-    const author = yield* Personas.getPersona(datasetReview.author)
+    const { author, dataset } = yield* Effect.all(
+      {
+        author: Personas.getPersona(datasetReview.author),
+        dataset: Datasets.getDatasetTitle(datasetReview.dataset),
+      },
+      { concurrency: 'inherit' },
+    )
 
     const url = new URL(`${publicUrl.origin}${Routes.DatasetReview.href({ datasetReviewId })}`)
 
-    const recordId = yield* Zenodo.createRecordForDatasetReview({ ...datasetReview, author, url })
+    const recordId = yield* Zenodo.createRecordForDatasetReview({ ...datasetReview, author, dataset, url })
 
     yield* Commands.markRecordCreatedOnZenodo({ recordId, datasetReviewId })
   },

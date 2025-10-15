@@ -5,7 +5,7 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
-import { rawHtml } from '../../../src/html.ts'
+import { html, rawHtml } from '../../../src/html.ts'
 import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 
 const cases = [
@@ -16,7 +16,11 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
-      dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+      dataset: new Datasets.DatasetTitle({
+        id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        language: 'en',
+        title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      }),
       competingInterests: NonEmptyString.fromString(
         'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
       ),
@@ -137,7 +141,7 @@ const cases = [
       Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
     </p>
   `),
-      title: 'Dataset review',
+      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {
@@ -164,7 +168,11 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
-      dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+      dataset: new Datasets.DatasetTitle({
+        id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        language: 'en',
+        title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      }),
       competingInterests: NonEmptyString.fromString(
         'Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.',
       ),
@@ -318,7 +326,7 @@ const cases = [
       Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
     </p>
   `),
-      title: 'Dataset review',
+      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {
@@ -342,7 +350,11 @@ const cases = [
     'minimal questions answered',
     {
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
-      dataset: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+      dataset: new Datasets.DatasetTitle({
+        id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+        language: 'en',
+        title: html`Metadata collected from 500 articles in the field of ecology and evolution`,
+      }),
       competingInterests: Option.none(),
       qualityRating: Option.none(),
       answerToIfTheDatasetFollowsFairAndCarePrinciples: { answer: 'yes', detail: Option.none() },
@@ -386,7 +398,7 @@ const cases = [
       The author declares that they have no competing interests.
     </p>
   `),
-      title: 'Dataset review',
+      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {

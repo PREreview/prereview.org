@@ -1,11 +1,13 @@
 import { Match, Option, pipe } from 'effect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
+import type * as Datasets from '../../Datasets/index.ts'
 import type { Zenodo } from '../../ExternalApis/index.ts'
-import { html } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import * as Personas from '../../Personas/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
+export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
+  readonly dataset: Datasets.DatasetTitle
   readonly url: URL
 }
 
@@ -257,11 +259,11 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
       ${Option.getOrElse(review.competingInterests, () => 'The author declares that they have no competing interests.')}
     </p>
   `,
-  title: 'Dataset review',
+  title: `Structured PREreview of “${plainText(review.dataset.title).toString()}”`,
   communities: [{ identifier: 'prereview-reviews' }],
   relatedIdentifiers: [
     {
-      identifier: review.dataset.value,
+      identifier: review.dataset.id.value,
       relation: 'reviews',
       resourceType: 'dataset',
       scheme: 'doi',
