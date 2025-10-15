@@ -1881,6 +1881,12 @@ export const willPublishADatasetReview: Fixtures<
             scheme: 'doi',
           },
           {
+            identifier: 'http://example.com/review-1055806',
+            relation: 'isIdenticalTo',
+            resource_type: 'publication-peerreview',
+            scheme: 'url',
+          },
+          {
             identifier: '10.5072/zenodo.1061863',
             relation: 'isVersionOf',
             scheme: 'doi',
@@ -1909,7 +1915,7 @@ export const willPublishADatasetReview: Fixtures<
           prereserve_doi: {
             doi: record.metadata.doi,
           },
-          related_identifiers: [record.metadata.related_identifiers[0]],
+          related_identifiers: [record.metadata.related_identifiers[0], record.metadata.related_identifiers[1]],
           upload_type: 'publication',
           publication_type: 'peerreview',
         },
@@ -1940,7 +1946,7 @@ export const willPublishADatasetReview: Fixtures<
             prereserve_doi: {
               doi: record.metadata.doi,
             },
-            related_identifiers: [record.metadata.related_identifiers[0]],
+            related_identifiers: [record.metadata.related_identifiers[0], record.metadata.related_identifiers[1]],
             upload_type: 'publication',
             publication_type: 'peerreview',
           },
