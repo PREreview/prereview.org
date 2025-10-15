@@ -21,9 +21,9 @@ export const ReviewPublishedPage = ({
       return yield* PageNotFound
     }
 
-    const doi = yield* DatasetReviews.getPublishedDoi(datasetReviewId)
+    const datasetReview = yield* DatasetReviews.getPublishedReviewDetails(datasetReviewId)
 
-    return MakeResponse({ datasetReviewId, doi })
+    return MakeResponse({ datasetReview })
   }).pipe(
     Effect.catchTags({
       DatasetReviewIsBeingPublished: () => PageNotFound,

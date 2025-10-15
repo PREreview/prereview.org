@@ -1,9 +1,9 @@
+import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import { html, plainText } from '../../html.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
-import type { Doi, Uuid } from '../../types/index.ts'
 
-export const ReviewPublishedPage = ({ datasetReviewId, doi }: { datasetReviewId: Uuid.Uuid; doi: Doi.Doi }) => {
+export const ReviewPublishedPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReviewDetails }) => {
   return StreamlinePageResponse({
     title: plainText('PREreview published'),
     main: html`
@@ -12,7 +12,7 @@ export const ReviewPublishedPage = ({ datasetReviewId, doi }: { datasetReviewId:
 
         <div>
           Your DOI
-          <div><strong class="doi" translate="no">${doi}</strong></div>
+          <div><strong class="doi" translate="no">${datasetReview.doi}</strong></div>
         </div>
       </div>
 
@@ -53,8 +53,8 @@ export const ReviewPublishedPage = ({ datasetReviewId, doi }: { datasetReviewId:
         >.
       </p>
 
-      <a href="${Routes.DatasetReview.href({ datasetReviewId })}" class="button">See your review</a>
+      <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="button">See your review</a>
     `,
-    canonical: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
+    canonical: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId: datasetReview.id }),
   })
 }

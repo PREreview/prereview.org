@@ -2,7 +2,7 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
-import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedDoi.ts'
+import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReviewDetails.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
@@ -34,7 +34,7 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
 
-describe('GetPublishedDoi', () => {
+describe('GetPublishedReviewDetails', () => {
   describe('when it has been published', () => {
     describe('when there is a DOI', () => {
       it.prop(
@@ -42,9 +42,12 @@ describe('GetPublishedDoi', () => {
           fc
             .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi(), fc.datasetReviewWasPublished())
             .map(events =>
-              Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Doi.Doi]>(
+              Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReviewDetails]>(
                 events,
-                events[1].doi,
+                {
+                  doi: events[1].doi,
+                  id: events[1].datasetReviewId,
+                },
               ),
             ),
         ],
@@ -58,7 +61,7 @@ describe('GetPublishedDoi', () => {
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished,
                 ],
-                datasetReviewWasAssignedADoi1.doi,
+                { doi: datasetReviewWasAssignedADoi1.doi, id: datasetReviewWasStarted.datasetReviewId },
               ],
             ], // was published
             [
@@ -70,7 +73,7 @@ describe('GetPublishedDoi', () => {
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished,
                 ],
-                datasetReviewWasAssignedADoi2.doi,
+                { doi: datasetReviewWasAssignedADoi2.doi, id: datasetReviewWasStarted.datasetReviewId },
               ],
             ], // multiple DOIs
             [
@@ -81,13 +84,13 @@ describe('GetPublishedDoi', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   datasetReviewWasAssignedADoi1,
                 ],
-                datasetReviewWasAssignedADoi1.doi,
+                { doi: datasetReviewWasAssignedADoi1.doi, id: datasetReviewWasStarted.datasetReviewId },
               ],
             ], // different order
           ],
         },
       )('returns the DOI', ([events, expected]) => {
-        const actual = _.GetPublishedDoi(events)
+        const actual = _.GetPublishedReviewDetails(events)
 
         expect(actual).toStrictEqual(Either.right(expected))
       })
@@ -108,7 +111,7 @@ describe('GetPublishedDoi', () => {
           ],
         },
       )('returns an error', events => {
-        const actual = _.GetPublishedDoi(events)
+        const actual = _.GetPublishedReviewDetails(events)
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
       })
@@ -143,7 +146,7 @@ describe('GetPublishedDoi', () => {
         ],
       },
     )('returns an error', events => {
-      const actual = _.GetPublishedDoi(events)
+      const actual = _.GetPublishedReviewDetails(events)
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
     })
@@ -156,7 +159,7 @@ describe('GetPublishedDoi', () => {
         [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // with answer
       ],
     })('returns an error', events => {
-      const actual = _.GetPublishedDoi(events)
+      const actual = _.GetPublishedReviewDetails(events)
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsInProgress()))
     })
@@ -169,7 +172,7 @@ describe('GetPublishedDoi', () => {
         [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
       ],
     })('returns an error', events => {
-      const actual = _.GetPublishedDoi(events)
+      const actual = _.GetPublishedReviewDetails(events)
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
     })

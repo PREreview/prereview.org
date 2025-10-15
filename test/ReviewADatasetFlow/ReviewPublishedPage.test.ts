@@ -12,15 +12,15 @@ import * as fc from '../fc.ts'
 
 describe('ReviewPublishedPage', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([fc.uuid(), fc.doi(), fc.supportedLocale(), fc.user()])(
+    test.prop([fc.uuid(), fc.publishedDatasetReviewDetails(), fc.supportedLocale(), fc.user()])(
       'when the dataset review has been published',
-      (datasetReviewId, doi, locale, user) =>
+      (datasetReviewId, datasetReview, locale, user) =>
         Effect.gen(function* () {
           const actual = yield* _.ReviewPublishedPage({ datasetReviewId })
 
           expect(actual).toStrictEqual({
             _tag: 'StreamlinePageResponse',
-            canonical: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
+            canonical: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId: datasetReview.id }),
             status: StatusCodes.OK,
             title: expect.anything(),
             main: expect.anything(),
@@ -31,7 +31,7 @@ describe('ReviewPublishedPage', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
-              getPublishedDoi: () => Effect.succeed(doi),
+              getPublishedReviewDetails: () => Effect.succeed(datasetReview),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -58,7 +58,7 @@ describe('ReviewPublishedPage', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
-              getPublishedDoi: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
+              getPublishedReviewDetails: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
             }),
           ),
           Effect.provideService(Locale, locale),
@@ -85,7 +85,7 @@ describe('ReviewPublishedPage', () => {
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getAuthor: () => Effect.succeed(user.orcid),
-              getPublishedDoi: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
+              getPublishedReviewDetails: () => new DatasetReviews.DatasetReviewIsBeingPublished(),
             }),
           ),
           Effect.provideService(Locale, locale),

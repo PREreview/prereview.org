@@ -1606,6 +1606,12 @@ export const publishedDatasetReview = ({
     published: plainDate(),
   })
 
+export const publishedDatasetReviewDetails = (): fc.Arbitrary<DatasetReviews.PublishedReviewDetails> =>
+  fc.record({
+    doi: doi(),
+    id: uuid(),
+  })
+
 export const datasetReviewPreview = ({
   author,
 }: {

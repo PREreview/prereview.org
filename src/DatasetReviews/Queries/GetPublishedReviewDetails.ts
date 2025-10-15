@@ -1,12 +1,17 @@
 import { Array, Either, Option } from 'effect'
-import type { Doi } from '../../types/index.ts'
+import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 
-export const GetPublishedDoi = (
+export interface PublishedReviewDetails {
+  doi: Doi.Doi
+  id: Uuid.Uuid
+}
+
+export const GetPublishedReviewDetails = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,
 ): Either.Either<
-  Doi.Doi,
+  PublishedReviewDetails,
   Errors.DatasetReviewIsBeingPublished | Errors.DatasetReviewIsInProgress | Errors.UnexpectedSequenceOfEvents
 > => {
   if (!hasEvent(events, 'DatasetReviewWasStarted')) {
@@ -17,7 +22,11 @@ export const GetPublishedDoi = (
     return Option.match(Array.findLast(events, hasTag('DatasetReviewWasAssignedADoi')), {
       onNone: () =>
         Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasAssignedADoi event found' })),
-      onSome: datasetReviewWasAssignedADoi => Either.right(datasetReviewWasAssignedADoi.doi),
+      onSome: datasetReviewWasAssignedADoi =>
+        Either.right({
+          doi: datasetReviewWasAssignedADoi.doi,
+          id: datasetReviewWasAssignedADoi.datasetReviewId,
+        }),
     })
   }
 

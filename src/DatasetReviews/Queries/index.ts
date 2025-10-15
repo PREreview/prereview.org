@@ -26,8 +26,8 @@ import { GetAuthor } from './GetAuthor.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
-import { GetPublishedDoi } from './GetPublishedDoi.ts'
 import { GetPublishedReview } from './GetPublishedReview.ts'
+import { GetPublishedReviewDetails } from './GetPublishedReviewDetails.ts'
 import { GetZenodoRecordId } from './GetZenodoRecordId.ts'
 
 export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
@@ -111,12 +111,12 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
     >
-    getPublishedDoi: Query<
-      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedDoi>,
-      Errors.UnknownDatasetReview
-    >
     getPublishedReview: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedReview>,
+      Errors.UnknownDatasetReview
+    >
+    getPublishedReviewDetails: Query<
+      (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPublishedReviewDetails>,
       Errors.UnknownDatasetReview
     >
     getDataForZenodoRecord: Query<
@@ -155,8 +155,8 @@ export const {
   checkIfUserCanChoosePersona,
   checkIfUserCanDeclareCompetingInterests,
   checkIfUserCanDeclareFollowingCodeOfConduct,
-  getPublishedDoi,
   getPublishedReview,
+  getPublishedReviewDetails,
   findInProgressReviewForADataset,
   findPublishedReviewsForADataset,
   getAuthor,
@@ -171,6 +171,8 @@ export type { DataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 export type { DatasetReviewPreview } from './GetPreviewForAReviewReadyToBePublished.ts'
 
 export type { PublishedReview } from './GetPublishedReview.ts'
+
+export type { PublishedReviewDetails } from './GetPublishedReviewDetails.ts'
 
 export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
 
@@ -337,19 +339,6 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       ),
-      getPublishedDoi: Effect.fn(
-        function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
-
-          return yield* GetPublishedDoi(events)
-        },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      ),
       getPublishedReview: Effect.fn(
         function* (datasetReviewId) {
           const { events } = yield* EventStore.query({
@@ -358,6 +347,19 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
           })
 
           return yield* GetPublishedReview(events)
+        },
+        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      ),
+      getPublishedReviewDetails: Effect.fn(
+        function* (datasetReviewId) {
+          const { events } = yield* EventStore.query({
+            types: DatasetReviewEventTypes,
+            predicates: { datasetReviewId },
+          })
+
+          return yield* GetPublishedReviewDetails(events)
         },
         Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
         Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
