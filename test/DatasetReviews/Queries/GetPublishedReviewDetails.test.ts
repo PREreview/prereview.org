@@ -40,13 +40,19 @@ describe('GetPublishedReviewDetails', () => {
       it.prop(
         [
           fc
-            .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi(), fc.datasetReviewWasPublished())
+            .tuple(
+              fc.datasetReviewWasStarted(),
+              fc.personaForDatasetReviewWasChosen(),
+              fc.datasetReviewWasAssignedADoi(),
+              fc.datasetReviewWasPublished(),
+            )
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReviewDetails]>(
                 events,
                 {
-                  doi: events[1].doi,
-                  id: events[1].datasetReviewId,
+                  doi: events[2].doi,
+                  id: events[2].datasetReviewId,
+                  persona: events[1].persona,
                 },
               ),
             ),
@@ -61,7 +67,11 @@ describe('GetPublishedReviewDetails', () => {
                   datasetReviewWasAssignedADoi1,
                   datasetReviewWasPublished,
                 ],
-                { doi: datasetReviewWasAssignedADoi1.doi, id: datasetReviewWasStarted.datasetReviewId },
+                {
+                  doi: datasetReviewWasAssignedADoi1.doi,
+                  id: datasetReviewWasStarted.datasetReviewId,
+                  persona: 'public',
+                },
               ],
             ], // was published
             [
@@ -73,7 +83,11 @@ describe('GetPublishedReviewDetails', () => {
                   datasetReviewWasAssignedADoi2,
                   datasetReviewWasPublished,
                 ],
-                { doi: datasetReviewWasAssignedADoi2.doi, id: datasetReviewWasStarted.datasetReviewId },
+                {
+                  doi: datasetReviewWasAssignedADoi2.doi,
+                  id: datasetReviewWasStarted.datasetReviewId,
+                  persona: 'public',
+                },
               ],
             ], // multiple DOIs
             [
@@ -84,7 +98,11 @@ describe('GetPublishedReviewDetails', () => {
                   answeredIfTheDatasetFollowsFairAndCarePrinciples,
                   datasetReviewWasAssignedADoi1,
                 ],
-                { doi: datasetReviewWasAssignedADoi1.doi, id: datasetReviewWasStarted.datasetReviewId },
+                {
+                  doi: datasetReviewWasAssignedADoi1.doi,
+                  id: datasetReviewWasStarted.datasetReviewId,
+                  persona: 'public',
+                },
               ],
             ], // different order
           ],

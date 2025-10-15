@@ -11,7 +11,16 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right when using a pseudonym', async ({ showPage }) => {
+  const response = _.ReviewPublishedPage({ datasetReview: { ...datasetReview, persona: 'pseudonym' } })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const datasetReview = {
   doi: Doi.Doi('10.5072/zenodo.1061864'),
   id: Uuid.Uuid('6c7c36e6-e843-4c95-9c56-18279e9ca84f'),
+  persona: 'public',
 } satisfies DatasetReviews.PublishedReviewDetails

@@ -1,4 +1,4 @@
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, Struct } from 'effect'
 import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
@@ -6,6 +6,7 @@ import type * as Events from '../Events.ts'
 export interface PublishedReviewDetails {
   doi: Doi.Doi
   id: Uuid.Uuid
+  persona: 'public' | 'pseudonym'
 }
 
 export const GetPublishedReviewDetails = (
@@ -19,6 +20,8 @@ export const GetPublishedReviewDetails = (
   }
 
   if (hasEvent(events, 'DatasetReviewWasPublished')) {
+    const persona = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
+
     return Option.match(Array.findLast(events, hasTag('DatasetReviewWasAssignedADoi')), {
       onNone: () =>
         Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasAssignedADoi event found' })),
@@ -26,6 +29,7 @@ export const GetPublishedReviewDetails = (
         Either.right({
           doi: datasetReviewWasAssignedADoi.doi,
           id: datasetReviewWasAssignedADoi.datasetReviewId,
+          persona: Option.match(persona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         }),
     })
   }

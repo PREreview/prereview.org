@@ -30,6 +30,16 @@ export const ReviewPublishedPage = ({ datasetReview }: { datasetReview: DatasetR
         >.
       </p>
 
+      ${datasetReview.persona === 'public'
+        ? html`
+            <h2>Share your review</h2>
+
+            <p>
+              Please let the authors know that you published your review. They may have contact details on the dataset.
+            </p>
+          `
+        : ''}
+
       <h2>Let us know how it went</h2>
 
       <p>

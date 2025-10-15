@@ -1610,6 +1610,7 @@ export const publishedDatasetReviewDetails = (): fc.Arbitrary<DatasetReviews.Pub
   fc.record({
     doi: doi(),
     id: uuid(),
+    persona: constantFrom('public', 'pseudonym'),
   })
 
 export const datasetReviewPreview = ({

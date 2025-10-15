@@ -91,6 +91,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', 
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
   await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+  await expect(page.getByRole('main')).toContainText('Share your review')
 
   await page.getByRole('link', { name: 'See your review' }).click()
 
@@ -217,6 +218,7 @@ test.extend(canLogIn).extend(willPublishADatasetReview)(
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    await expect(page.getByRole('main')).not.toContainText('Share your review')
 
     await page.getByRole('link', { name: 'See your review' }).click()
 
