@@ -17,7 +17,7 @@ export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('Datase
 }> {}
 
 export class PublicationOfDatasetReviewWasNotRequested extends Data.TaggedError(
-  'DatasetReviewPublicationOfDatasetReviewWasNotRequestedNotReadyToBePublished',
+  'PublicationOfDatasetReviewWasNotRequested',
 ) {}
 
 export class DatasetReviewNotReadyToBeMarkedAsPublished extends Data.TaggedError(
