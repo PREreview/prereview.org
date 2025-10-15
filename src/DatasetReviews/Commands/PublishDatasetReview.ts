@@ -19,7 +19,21 @@ export class NotStarted extends Data.TaggedClass('NotStarted') {}
 
 export class NotReady extends Data.TaggedClass('NotReady')<{
   missing: Array.NonEmptyReadonlyArray<
-    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples' | 'AnsweredIfTheDatasetHasEnoughMetadata'
+    | 'RatedTheQualityOfTheDataset'
+    | 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'
+    | 'AnsweredIfTheDatasetHasEnoughMetadata'
+    | 'AnsweredIfTheDatasetHasTrackedChanges'
+    | 'AnsweredIfTheDatasetHasDataCensoredOrDeleted'
+    | 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'
+    | 'AnsweredIfTheDatasetSupportsRelatedConclusions'
+    | 'AnsweredIfTheDatasetIsDetailedEnough'
+    | 'AnsweredIfTheDatasetMattersToItsAudience'
+    | 'AnsweredIfTheDatasetIsErrorFree'
+    | 'AnsweredIfTheDatasetIsReadyToBeShared'
+    | 'AnsweredIfTheDatasetIsMissingAnything'
+    | 'PersonaForDatasetReviewWasChosen'
+    | 'CompetingInterestsForADatasetReviewWereDeclared'
+    | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
   >
 }> {}
 
@@ -30,8 +44,21 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished') {}
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
 const requirementToBeReady = [
+  'RatedTheQualityOfTheDataset',
   'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
   'AnsweredIfTheDatasetHasEnoughMetadata',
+  'AnsweredIfTheDatasetHasTrackedChanges',
+  'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+  'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+  'AnsweredIfTheDatasetSupportsRelatedConclusions',
+  'AnsweredIfTheDatasetIsDetailedEnough',
+  'AnsweredIfTheDatasetMattersToItsAudience',
+  'AnsweredIfTheDatasetIsErrorFree',
+  'AnsweredIfTheDatasetIsReadyToBeShared',
+  'AnsweredIfTheDatasetIsMissingAnything',
+  'PersonaForDatasetReviewWasChosen',
+  'CompetingInterestsForADatasetReviewWereDeclared',
+  'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
 ] satisfies ReadonlyArray<NotReady['missing'][number]>
 
 export const foldState = (events: ReadonlyArray<Events.DatasetReviewEvent>): State => {

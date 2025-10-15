@@ -12,7 +12,21 @@ export class DatasetReviewIsInProgress extends Data.TaggedError('DatasetReviewIs
 
 export class DatasetReviewNotReadyToBePublished extends Data.TaggedError('DatasetReviewNotReadyToBePublished')<{
   missing: Array.NonEmptyReadonlyArray<
-    'AnsweredIfTheDatasetFollowsFairAndCarePrinciples' | 'AnsweredIfTheDatasetHasEnoughMetadata'
+    | 'RatedTheQualityOfTheDataset'
+    | 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'
+    | 'AnsweredIfTheDatasetHasEnoughMetadata'
+    | 'AnsweredIfTheDatasetHasTrackedChanges'
+    | 'AnsweredIfTheDatasetHasDataCensoredOrDeleted'
+    | 'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch'
+    | 'AnsweredIfTheDatasetSupportsRelatedConclusions'
+    | 'AnsweredIfTheDatasetIsDetailedEnough'
+    | 'AnsweredIfTheDatasetMattersToItsAudience'
+    | 'AnsweredIfTheDatasetIsErrorFree'
+    | 'AnsweredIfTheDatasetIsReadyToBeShared'
+    | 'AnsweredIfTheDatasetIsMissingAnything'
+    | 'PersonaForDatasetReviewWasChosen'
+    | 'CompetingInterestsForADatasetReviewWereDeclared'
+    | 'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'
   >
 }> {}
 

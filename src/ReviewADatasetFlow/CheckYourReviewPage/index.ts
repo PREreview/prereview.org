@@ -94,8 +94,21 @@ export const CheckYourReviewSubmission = ({
   )
 
 const routeForMissing = {
+  RatedTheQualityOfTheDataset: Routes.ReviewADatasetRateTheQuality,
   AnsweredIfTheDatasetFollowsFairAndCarePrinciples: Routes.ReviewADatasetFollowsFairAndCarePrinciples,
   AnsweredIfTheDatasetHasEnoughMetadata: Routes.ReviewADatasetHasEnoughMetadata,
+  AnsweredIfTheDatasetHasTrackedChanges: Routes.ReviewADatasetHasTrackedChanges,
+  AnsweredIfTheDatasetHasDataCensoredOrDeleted: Routes.ReviewADatasetHasDataCensoredOrDeleted,
+  AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch: Routes.ReviewADatasetIsAppropriateForThisKindOfResearch,
+  AnsweredIfTheDatasetSupportsRelatedConclusions: Routes.ReviewADatasetSupportsRelatedConclusions,
+  AnsweredIfTheDatasetIsDetailedEnough: Routes.ReviewADatasetIsDetailedEnough,
+  AnsweredIfTheDatasetMattersToItsAudience: Routes.ReviewADatasetMattersToItsAudience,
+  AnsweredIfTheDatasetIsErrorFree: Routes.ReviewADatasetIsErrorFree,
+  AnsweredIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
+  AnsweredIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
+  PersonaForDatasetReviewWasChosen: Routes.ReviewADatasetChooseYourPersona,
+  CompetingInterestsForADatasetReviewWereDeclared: Routes.ReviewADatasetDeclareCompetingInterests,
+  DeclaredThatTheCodeOfConductWasFollowedForADatasetReview: Routes.ReviewADatasetDeclareCompetingInterests,
 } satisfies Record<
   DatasetReviews.DatasetReviewNotReadyToBePublished['missing'][number],
   Routes.Route<{ datasetReviewId: Uuid.Uuid }>

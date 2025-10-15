@@ -5,13 +5,18 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Commands/PublishDatasetReview.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const ratedTheQualityOfTheDataset = new DatasetReviews.RatedTheQualityOfTheDataset({
+  rating: 'poor',
+  detail: Option.none(),
+  datasetReviewId,
+})
 const answeredIfTheDatasetFollowsFairAndCarePrinciples =
   new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
     answer: 'no',
@@ -23,6 +28,66 @@ const answeredIfTheDatasetHasEnoughMetadata = new DatasetReviews.AnsweredIfTheDa
   detail: Option.none(),
   datasetReviewId,
 })
+const answeredIfTheDatasetHasTrackedChanges = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+  answer: 'partly',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsAppropriateForThisKindOfResearch =
+  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+    answer: 'no',
+    detail: NonEmptyString.fromString('Some detail about no'),
+    datasetReviewId,
+  })
+const answeredIfTheDatasetSupportsRelatedConclusions =
+  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
+    answer: 'yes',
+    detail: NonEmptyString.fromString('Some detail about yes'),
+    datasetReviewId,
+  })
+const answeredIfTheDatasetIsDetailedEnough = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+  answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsErrorFree = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetMattersToItsAudience = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+  answer: 'unsure',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsReadyToBeShared = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+  answer: 'no',
+  detail: NonEmptyString.fromString('Some detail about no'),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsMissingAnything = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+  answer: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+  datasetReviewId,
+})
+const personaForDatasetReviewWasChosen = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+  persona: 'public',
+  datasetReviewId,
+})
+const competingInterestsForADatasetReviewWereDeclared =
+  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
+    competingInterests: Option.none(),
+    datasetReviewId,
+  })
+const declaredThatTheCodeOfConductWasFollowedForADatasetReview =
+  new DatasetReviews.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
+    timestamp: Temporal.Now.instant(),
+    datasetReviewId,
+  })
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -50,14 +115,93 @@ describe('foldState', () => {
         .map(event =>
           Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NotReady['missing']]>(
             Array.of(event),
-            ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+            [
+              'RatedTheQualityOfTheDataset',
+              'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+              'AnsweredIfTheDatasetHasEnoughMetadata',
+              'AnsweredIfTheDatasetHasTrackedChanges',
+              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+              'AnsweredIfTheDatasetSupportsRelatedConclusions',
+              'AnsweredIfTheDatasetIsDetailedEnough',
+              'AnsweredIfTheDatasetMattersToItsAudience',
+              'AnsweredIfTheDatasetIsErrorFree',
+              'AnsweredIfTheDatasetIsReadyToBeShared',
+              'AnsweredIfTheDatasetIsMissingAnything',
+              'PersonaForDatasetReviewWasChosen',
+              'CompetingInterestsForADatasetReviewWereDeclared',
+              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+            ],
           ),
         ),
     ],
     {
       examples: [
-        [[[started], ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata']]], // was started
-        [[[started, answeredIfTheDatasetFollowsFairAndCarePrinciples], ['AnsweredIfTheDatasetHasEnoughMetadata']]], // one question answered
+        [
+          [
+            [started],
+            [
+              'RatedTheQualityOfTheDataset',
+              'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+              'AnsweredIfTheDatasetHasEnoughMetadata',
+              'AnsweredIfTheDatasetHasTrackedChanges',
+              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+              'AnsweredIfTheDatasetSupportsRelatedConclusions',
+              'AnsweredIfTheDatasetIsDetailedEnough',
+              'AnsweredIfTheDatasetMattersToItsAudience',
+              'AnsweredIfTheDatasetIsErrorFree',
+              'AnsweredIfTheDatasetIsReadyToBeShared',
+              'AnsweredIfTheDatasetIsMissingAnything',
+              'PersonaForDatasetReviewWasChosen',
+              'CompetingInterestsForADatasetReviewWereDeclared',
+              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+            ],
+          ],
+        ], // was started
+        [
+          [
+            [started, answeredIfTheDatasetFollowsFairAndCarePrinciples],
+            [
+              'RatedTheQualityOfTheDataset',
+              'AnsweredIfTheDatasetHasEnoughMetadata',
+              'AnsweredIfTheDatasetHasTrackedChanges',
+              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+              'AnsweredIfTheDatasetSupportsRelatedConclusions',
+              'AnsweredIfTheDatasetIsDetailedEnough',
+              'AnsweredIfTheDatasetMattersToItsAudience',
+              'AnsweredIfTheDatasetIsErrorFree',
+              'AnsweredIfTheDatasetIsReadyToBeShared',
+              'AnsweredIfTheDatasetIsMissingAnything',
+              'PersonaForDatasetReviewWasChosen',
+              'CompetingInterestsForADatasetReviewWereDeclared',
+              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+            ],
+          ],
+        ], // one question answered
+        [
+          [
+            [
+              started,
+              ratedTheQualityOfTheDataset,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+              answeredIfTheDatasetHasEnoughMetadata,
+              answeredIfTheDatasetHasTrackedChanges,
+              answeredIfTheDatasetHasDataCensoredOrDeleted,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+              answeredIfTheDatasetSupportsRelatedConclusions,
+              answeredIfTheDatasetIsDetailedEnough,
+              answeredIfTheDatasetMattersToItsAudience,
+              answeredIfTheDatasetIsErrorFree,
+              answeredIfTheDatasetIsReadyToBeShared,
+              answeredIfTheDatasetIsMissingAnything,
+              personaForDatasetReviewWasChosen,
+              competingInterestsForADatasetReviewWereDeclared,
+            ],
+            ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
+          ],
+        ], // one missing
       ],
     },
   )('not ready', ([events, expected]) => {
@@ -71,15 +215,67 @@ describe('foldState', () => {
       fc
         .tuple(
           fc.datasetReviewWasStarted(),
+          fc.ratedTheQualityOfTheDataset(),
           fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
           fc.answeredIfTheDatasetHasEnoughMetadata(),
+          fc.answeredIfTheDatasetHasEnoughMetadata(),
+          fc.answeredIfTheDatasetHasTrackedChanges(),
+          fc.answeredIfTheDatasetHasDataCensoredOrDeleted(),
+          fc.answeredIfTheDatasetIsAppropriateForThisKindOfResearch(),
+          fc.answeredIfTheDatasetSupportsRelatedConclusions(),
+          fc.answeredIfTheDatasetIsDetailedEnough(),
+          fc.answeredIfTheDatasetMattersToItsAudience(),
+          fc.answeredIfTheDatasetIsErrorFree(),
+          fc.answeredIfTheDatasetIsReadyToBeShared(),
+          fc.answeredIfTheDatasetIsMissingAnything(),
+          fc.personaForDatasetReviewWasChosen(),
+          fc.competingInterestsForADatasetReviewWereDeclared(),
+          fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
         )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
     {
       examples: [
-        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, answeredIfTheDatasetHasEnoughMetadata]], // answered
-        [[answeredIfTheDatasetHasEnoughMetadata, answeredIfTheDatasetFollowsFairAndCarePrinciples, started]], // different order
+        [
+          [
+            started,
+            ratedTheQualityOfTheDataset,
+            answeredIfTheDatasetFollowsFairAndCarePrinciples,
+            answeredIfTheDatasetHasEnoughMetadata,
+            answeredIfTheDatasetHasTrackedChanges,
+            answeredIfTheDatasetHasDataCensoredOrDeleted,
+            answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+            answeredIfTheDatasetSupportsRelatedConclusions,
+            answeredIfTheDatasetIsDetailedEnough,
+            answeredIfTheDatasetMattersToItsAudience,
+            answeredIfTheDatasetIsErrorFree,
+            answeredIfTheDatasetIsReadyToBeShared,
+            answeredIfTheDatasetIsMissingAnything,
+            personaForDatasetReviewWasChosen,
+            competingInterestsForADatasetReviewWereDeclared,
+            declaredThatTheCodeOfConductWasFollowedForADatasetReview,
+          ],
+        ], // answered
+        [
+          [
+            declaredThatTheCodeOfConductWasFollowedForADatasetReview,
+            competingInterestsForADatasetReviewWereDeclared,
+            personaForDatasetReviewWasChosen,
+            answeredIfTheDatasetIsMissingAnything,
+            answeredIfTheDatasetIsReadyToBeShared,
+            answeredIfTheDatasetIsErrorFree,
+            answeredIfTheDatasetMattersToItsAudience,
+            answeredIfTheDatasetIsDetailedEnough,
+            answeredIfTheDatasetSupportsRelatedConclusions,
+            answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+            answeredIfTheDatasetHasDataCensoredOrDeleted,
+            answeredIfTheDatasetHasTrackedChanges,
+            answeredIfTheDatasetHasEnoughMetadata,
+            answeredIfTheDatasetFollowsFairAndCarePrinciples,
+            ratedTheQualityOfTheDataset,
+            started,
+          ],
+        ], // different order
       ],
     },
   )('is ready', events => {
