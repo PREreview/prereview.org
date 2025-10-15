@@ -10,6 +10,7 @@ strategy = "bluegreen"
 [env]
 AI_REVIEWS_AS_CC0 = "true"
 ASK_AI_REVIEW_EARLY = "true"
+CAN_REVIEW_DATASETS = "true"
 COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
 ENVIRONMENT_LABEL = "sandbox"
 HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache-sandbox.internal?family=6"
