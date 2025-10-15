@@ -147,7 +147,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="has-data-censored-or-deleted-partly-control">
                     <div>
                       <label for="has-data-censored-or-deleted-partly-detail" class="textarea"
-                        >Which parts have been altered? (optional)</label
+                        >Which parts seem intact? Which parts seem altered? How do they seem altered? (optional)</label
                       >
                       <textarea
                         name="hasDataCensoredOrDeletedPartlyDetail"
@@ -190,7 +190,8 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="has-data-censored-or-deleted-no-control">
                     <div>
                       <label for="has-data-censored-or-deleted-no-detail" class="textarea"
-                        >How do you know it hasn’t been altered? (optional)</label
+                        >What makes this dataset seem mostly intact to you? What trust markers make you believe it
+                        hasn’t been altered? (optional)</label
                       >
                       <textarea
                         name="hasDataCensoredOrDeletedNoDetail"

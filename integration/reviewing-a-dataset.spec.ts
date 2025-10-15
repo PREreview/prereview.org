@@ -382,7 +382,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
-  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
+  await page
+    .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
+    .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly').check()
   await page.getByLabel('What would have been better?').fill('Proin porttitor feugiat ipsum.')
@@ -531,7 +533,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change if the dataset shows signs of alteration' }).click()
 
-  await page.getByLabel('Which parts have been altered?').clear()
+  await page.getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
@@ -686,7 +688,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
-  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
+  await page
+    .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
+    .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
@@ -776,7 +780,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
-  await expect(page.getByLabel('Which parts have been altered?')).toHaveValue('Morbi ac suscipit justo.')
+  await expect(
+    page.getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?'),
+  ).toHaveValue('Morbi ac suscipit justo.')
 
   await page.goBack()
 
@@ -827,7 +833,9 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
     .fill('Duis sollicitudin blandit scelerisque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Partly', { exact: true }).check()
-  await page.getByLabel('Which parts have been altered?').fill('Morbi ac suscipit justo.')
+  await page
+    .getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?')
+    .fill('Morbi ac suscipit justo.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByLabel('How is it well-suited?').fill('Proin porttitor feugiat ipsum.')
@@ -917,7 +925,9 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Partly')).toBeChecked()
-  await expect(page.getByLabel('Which parts have been altered?')).toHaveValue('Morbi ac suscipit justo.')
+  await expect(
+    page.getByLabel('Which parts seem intact? Which parts seem altered? How do they seem altered?'),
+  ).toHaveValue('Morbi ac suscipit justo.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
