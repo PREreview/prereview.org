@@ -14,7 +14,13 @@
     "access_right": "open",
     "creators": [{ "name": "A PREreviewer", "affiliation": null }],
     "related_identifiers": [
-      { "identifier": "10.5061/dryad.wstqjq2n3", "relation": "reviews", "resource_type": "dataset", "scheme": "doi" }
+      { "identifier": "10.5061/dryad.wstqjq2n3", "relation": "reviews", "resource_type": "dataset", "scheme": "doi" },
+      {
+        "identifier": "https://sandbox.prereview.org/reviews/302552",
+        "relation": "isIdenticalTo",
+        "resource_type": "publication-peerreview",
+        "scheme": "url"
+      }
     ],
     "license": "cc-by-4.0",
     "imprint_publisher": "Zenodo",

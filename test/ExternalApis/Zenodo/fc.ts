@@ -22,6 +22,12 @@ export const depositMetadata = (): fc.Arbitrary<Zenodo.DepositMetadata> =>
         resourceType: fc.constant('dataset'),
         scheme: fc.constant('doi'),
       }),
+      fc.record({
+        identifier: fc.url(),
+        relation: fc.constant('isIdenticalTo'),
+        resourceType: fc.constant('publication-peerreview'),
+        scheme: fc.constant('url'),
+      }),
     ),
     uploadType: fc.constant('publication'),
     publicationType: fc.constant('peerreview'),

@@ -1655,6 +1655,7 @@ export const datasetReviewDataForZenodoRecord = ({
   fc.record({
     author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
     dataset: datasetId(),
+    datasetReviewId: uuid(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),
     qualityRating: maybe(ratedTheQualityOfTheDataset().map(Struct.pick('rating', 'detail'))),
     answerToIfTheDatasetFollowsFairAndCarePrinciples: answeredIfTheDatasetFollowsFairAndCarePrinciples().map(

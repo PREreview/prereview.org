@@ -6,6 +6,7 @@ import * as Personas from '../../Personas/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author'> & {
   readonly author: Personas.Persona
+  readonly url: URL
 }
 
 export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.DepositMetadata => ({
@@ -264,6 +265,12 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
       relation: 'reviews',
       resourceType: 'dataset',
       scheme: 'doi',
+    },
+    {
+      identifier: review.url,
+      relation: 'isIdenticalTo',
+      resourceType: 'publication-peerreview',
+      scheme: 'url',
     },
   ],
   uploadType: 'publication',

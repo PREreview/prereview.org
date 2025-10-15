@@ -29,6 +29,14 @@ export const DepositMetadata = Schema.Struct({
         resourceType: Schema.propertySignature(Schema.Literal('dataset')).pipe(Schema.fromKey('resource_type')),
         scheme: Schema.Literal('doi'),
       }),
+      Schema.Struct({
+        identifier: Schema.URL,
+        relation: Schema.Literal('isIdenticalTo'),
+        resourceType: Schema.propertySignature(Schema.Literal('publication-peerreview')).pipe(
+          Schema.fromKey('resource_type'),
+        ),
+        scheme: Schema.Literal('url'),
+      }),
     ),
   ).pipe(Schema.fromKey('related_identifiers')),
   uploadType: Schema.propertySignature(Schema.Literal('publication')).pipe(Schema.fromKey('upload_type')),

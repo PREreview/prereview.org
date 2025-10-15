@@ -34,6 +34,7 @@ const cases = [
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
+      url: new URL('http://example.com/dataset-review'),
     },
     {
       creators: [{ name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') }],
@@ -145,6 +146,12 @@ const cases = [
           resourceType: 'dataset',
           scheme: 'doi',
         },
+        {
+          identifier: new URL('http://example.com/dataset-review'),
+          relation: 'isIdenticalTo',
+          resourceType: 'publication-peerreview',
+          scheme: 'url',
+        },
       ],
       uploadType: 'publication',
       publicationType: 'peerreview',
@@ -208,6 +215,7 @@ const cases = [
       answerToIfTheDatasetIsMissingAnything: NonEmptyString.fromString(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       ),
+      url: new URL('http://example.com/dataset-review'),
     },
     {
       creators: [{ name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') }],
@@ -319,6 +327,12 @@ const cases = [
           resourceType: 'dataset',
           scheme: 'doi',
         },
+        {
+          identifier: new URL('http://example.com/dataset-review'),
+          relation: 'isIdenticalTo',
+          resourceType: 'publication-peerreview',
+          scheme: 'url',
+        },
       ],
       uploadType: 'publication',
       publicationType: 'peerreview',
@@ -342,6 +356,7 @@ const cases = [
       answerToIfTheDatasetMattersToItsAudience: Option.none(),
       answerToIfTheDatasetIsReadyToBeShared: Option.none(),
       answerToIfTheDatasetIsMissingAnything: Option.none(),
+      url: new URL('http://example.com/dataset-review'),
     },
     {
       creators: [{ name: 'Orange Panda' }],
@@ -379,6 +394,12 @@ const cases = [
           relation: 'reviews',
           resourceType: 'dataset',
           scheme: 'doi',
+        },
+        {
+          identifier: new URL('http://example.com/dataset-review'),
+          relation: 'isIdenticalTo',
+          resourceType: 'publication-peerreview',
+          scheme: 'url',
         },
       ],
       uploadType: 'publication',
