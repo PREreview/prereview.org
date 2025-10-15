@@ -5,7 +5,7 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import type { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import * as _ from '../../../src/Zenodo/CreateRecordForDatasetReview/DatasetReviewToDepositMetadata.ts'
-import { html, rawHtml } from '../../../src/html.ts'
+import { html, plainText, rawHtml } from '../../../src/html.ts'
 import { Doi, NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 
 const cases = [
@@ -141,7 +141,9 @@ const cases = [
       Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
     </p>
   `),
-      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      title: plainText(
+        'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      ),
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {
@@ -326,7 +328,9 @@ const cases = [
       Donec egestas, ante non hendrerit commodo, magna arcu ultricies augue, et pulvinar purus nisi quis sem.
     </p>
   `),
-      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      title: plainText(
+        'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      ),
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {
@@ -398,7 +402,9 @@ const cases = [
       The author declares that they have no competing interests.
     </p>
   `),
-      title: 'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      title: plainText(
+        'Structured PREreview of “Metadata collected from 500 articles in the field of ecology and evolution”',
+      ),
       communities: [{ identifier: 'prereview-reviews' }],
       relatedIdentifiers: [
         {

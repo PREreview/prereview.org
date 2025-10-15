@@ -13,7 +13,7 @@ export const depositMetadata = (): fc.Arbitrary<Zenodo.DepositMetadata> =>
   fc.record({
     creators: fc.tuple(fc.record({ name: fc.string() })),
     description: fc.html(),
-    title: fc.string(),
+    title: fc.plainText(),
     communities: fc.constant([{ identifier: 'prereview-reviews' }]),
     relatedIdentifiers: fc.tuple(
       fc.record({

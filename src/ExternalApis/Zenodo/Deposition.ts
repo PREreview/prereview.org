@@ -1,5 +1,5 @@
 import { Array, Schema } from 'effect'
-import { Html, rawHtml } from '../../html.ts'
+import { Html, plainText, PlainText, rawHtml } from '../../html.ts'
 import { Doi, OrcidId } from '../../types/index.ts'
 
 export type DepositMetadata = typeof DepositMetadata.Type
@@ -14,10 +14,20 @@ const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, 
   encode: String,
 })
 
+const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
+  Schema.String,
+  Schema.instanceOf(PlainText),
+  {
+    strict: true,
+    decode: plainText,
+    encode: String,
+  },
+)
+
 export const DepositMetadata = Schema.Struct({
   creators: Schema.Tuple(Schema.Struct({ name: Schema.String, orcid: Schema.optional(OrcidId.OrcidIdSchema) })),
   description: HtmlSchema,
-  title: Schema.String,
+  title: PlainTextSchema,
   communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {
     default: Array.empty,
   }),
