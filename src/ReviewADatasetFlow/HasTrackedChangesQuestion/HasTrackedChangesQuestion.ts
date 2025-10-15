@@ -100,7 +100,7 @@ export const HasTrackedChangesQuestion = ({
                   <div class="conditional" id="has-tracked-changes-yes-control">
                     <div>
                       <label for="has-tracked-changes-yes-detail" class="textarea"
-                        >Do you have any further details about the version history? (optional)</label
+                        >How does the dataset share its metadata? (optional)</label
                       >
                       <textarea name="hasTrackedChangesYesDetail" id="has-tracked-changes-yes-detail" rows="5">
 ${Match.valueTags(form, {
@@ -138,7 +138,9 @@ ${Match.valueTags(form, {
                   </p>
                   <div class="conditional" id="has-tracked-changes-partly-control">
                     <div>
-                      <label for="has-tracked-changes-partly-detail" class="textarea">What’s missing? (optional)</label>
+                      <label for="has-tracked-changes-partly-detail" class="textarea"
+                        >How does the dataset share its metadata? What’s missing? (optional)</label
+                      >
                       <textarea name="hasTrackedChangesPartlyDetail" id="has-tracked-changes-partly-detail" rows="5">
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
@@ -173,7 +175,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="has-tracked-changes-no-control">
                     <div>
                       <label for="has-tracked-changes-no-detail" class="textarea"
-                        >Do you have any comments on the missing version history? (optional)</label
+                        >How should the dataset present its missing metadata? (optional)</label
                       >
                       <textarea name="hasTrackedChangesNoDetail" id="has-tracked-changes-no-detail" rows="5">
 ${Match.valueTags(form, {
