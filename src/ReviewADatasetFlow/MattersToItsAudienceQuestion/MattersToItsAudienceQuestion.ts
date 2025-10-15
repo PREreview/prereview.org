@@ -100,7 +100,7 @@ export const MattersToItsAudienceQuestion = ({
                   <div class="conditional" id="matters-to-its-audience-very-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-very-consequential-detail" class="textarea"
-                        >Why is it very consequential? (optional)</label
+                        >How is it very consequential? (optional)</label
                       >
                       <textarea
                         name="mattersToItsAudienceVeryConsequentialDetail"
@@ -146,7 +146,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="matters-to-its-audience-somewhat-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-somewhat-consequential-detail" class="textarea"
-                        >Why is it somewhat consequential? (optional)</label
+                        >How is it somewhat consequential? (optional)</label
                       >
                       <textarea
                         name="mattersToItsAudienceSomewhatConsequentialDetail"
@@ -192,7 +192,7 @@ ${Match.valueTags(form, {
                   <div class="conditional" id="matters-to-its-audience-not-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-not-consequential-detail" class="textarea"
-                        >Why is it not consequential? (optional)</label
+                        >How is it not consequential? (optional)</label
                       >
                       <textarea
                         name="mattersToItsAudienceNotConsequentialDetail"

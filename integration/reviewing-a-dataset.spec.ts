@@ -403,7 +403,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
-  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
+  await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
@@ -628,7 +628,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change your answers before publis
 
   await page.getByRole('link', { name: 'Change how consequential the dataset is likely to seem' }).click()
 
-  await page.getByLabel('Why is it somewhat consequential?').clear()
+  await page.getByLabel('How is it somewhat consequential?').clear()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
@@ -709,7 +709,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
-  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
+  await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes', { exact: true }).check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
@@ -759,7 +759,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('Somewhat consequential', { exact: true })).toBeChecked()
-  await expect(page.getByLabel('Why is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
+  await expect(page.getByLabel('How is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
 
   await page.goBack()
 
@@ -854,7 +854,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByLabel('What errors are there?').fill('Nulla at laoreet neque.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Somewhat consequential', { exact: true }).check()
-  await page.getByLabel('Why is it somewhat consequential?').fill('Mauris id tincidunt enim.')
+  await page.getByLabel('How is it somewhat consequential?').fill('Mauris id tincidunt enim.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Yes').check()
   await page.getByLabel('Why is it ready to be shared?').fill('Quisque eu velit risus.')
@@ -904,7 +904,7 @@ test.extend(canLogIn).extend(areLoggedIn)('see existing values when going back a
   await page.getByRole('link', { name: 'Back' }).click()
 
   await expect(page.getByLabel('Somewhat consequential', { exact: true })).toBeChecked()
-  await expect(page.getByLabel('Why is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
+  await expect(page.getByLabel('How is it somewhat consequential?')).toHaveValue('Mauris id tincidunt enim.')
 
   await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1298,7 +1298,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.goto(`${page.url()}/../matters-to-its-audience`, { waitUntil: 'commit' })
 
     if (!javaScriptEnabled) {
-      await page.getByLabel('Why is it very consequential?').fill('   \n Mauris id tincidunt enim. ')
+      await page.getByLabel('How is it very consequential?').fill('   \n Mauris id tincidunt enim. ')
     }
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1318,7 +1318,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByLabel('Very consequential', { exact: true })).toBeFocused()
     if (!javaScriptEnabled) {
-      await expect(page.getByLabel('Why is it very consequential?')).toHaveValue('   \n Mauris id tincidunt enim. ')
+      await expect(page.getByLabel('How is it very consequential?')).toHaveValue('   \n Mauris id tincidunt enim. ')
     }
   },
 )
