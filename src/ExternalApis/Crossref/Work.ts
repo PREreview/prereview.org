@@ -1,4 +1,4 @@
-import { Array, Data, Schema, Struct, Tuple } from 'effect'
+import { Array, Data, Schema, Tuple } from 'effect'
 import { Doi, OrcidId, Temporal } from '../../types/index.ts'
 
 const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
@@ -28,16 +28,19 @@ const PlainDateFromTupleSchema = Schema.transform(
 )
 
 const PublishedSchema = Schema.transform(
-  Schema.Struct({
-    'date-parts': Schema.Tuple(
-      Schema.Union(PlainYearFromTupleSchema, PlainYearMonthFromTupleSchema, PlainDateFromTupleSchema),
-    ),
-  }),
+  Schema.pluck(
+    Schema.Struct({
+      'date-parts': Schema.Tuple(
+        Schema.Union(PlainYearFromTupleSchema, PlainYearMonthFromTupleSchema, PlainDateFromTupleSchema),
+      ),
+    }),
+    'date-parts',
+  ),
   Schema.Union(Temporal.PlainDateFromSelfSchema, Temporal.PlainYearMonthFromSelfSchema, Schema.Number),
   {
     strict: true,
-    decode: input => input['date-parts'][0],
-    encode: date => ({ 'date-parts': Tuple.make(date) }),
+    decode: Tuple.at(0),
+    encode: date => Tuple.make(date),
   },
 )
 
@@ -72,15 +75,7 @@ export class Work extends Schema.Class<Work>('Work')({
   subtype: Schema.optional(Schema.compose(Schema.Trim, Schema.NonEmptyString)),
 }) {}
 
-export const WorkResponseSchema = Schema.transform(
-  Schema.Struct({ status: Schema.Literal('ok'), message: Work }),
-  Schema.typeSchema(Work),
-  {
-    strict: true,
-    decode: Struct.get('message'),
-    encode: message => ({ status: 'ok' as const, message }),
-  },
-)
+export const WorkResponseSchema = Schema.pluck(Schema.Struct({ message: Work }), 'message')
 
 export class WorkIsNotFound extends Data.TaggedError('WorkIsNotFound')<{ cause?: unknown }> {}
 
