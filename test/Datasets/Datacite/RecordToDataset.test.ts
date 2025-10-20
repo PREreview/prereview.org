@@ -67,7 +67,7 @@ test.each([
     }),
   },
   {
-    response: 'dryad-cdl-ucsf',
+    response: 'cdl-ucm-dryad',
     expected: new Datasets.Dataset({
       abstract: {
         language: 'en',
@@ -97,7 +97,7 @@ test.each([
     }),
   },
   {
-    response: 'dryad-cdl-ucm',
+    response: 'cdl-ucsf-dryad',
     expected: new Datasets.Dataset({
       abstract: {
         language: 'en',

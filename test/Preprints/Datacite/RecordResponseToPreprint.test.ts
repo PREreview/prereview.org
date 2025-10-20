@@ -385,7 +385,7 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['dryad', 'dryad-html', 'figshare'])(
+test.each(['cdl-ucm-dryad', 'cdl-ucsf-dryad', 'dryad', 'dryad-collection', 'dryad-html', 'figshare'])(
   'returns a specific error for an unsupported DOI record (%s)',
   response =>
     Effect.gen(function* () {
