@@ -12,7 +12,6 @@ import { transformJatsToHtml } from '../../jats.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
 import {
-  AdvancePreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
@@ -22,7 +21,7 @@ import {
   TechrxivPreprintId,
 } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['31124', '31223', '31224', '32942', '36227', '62329'] as const
+const crossrefDoiPrefixes = ['31223', '31224', '32942', '36227', '62329'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -134,7 +133,6 @@ const detectLanguageForServer = ({
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
@@ -143,13 +141,6 @@ const detectLanguageForServer = ({
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31124'), 'DOI'),
-      institution: D.fromTuple(D.struct({ name: D.literal('Advance') })),
-    }),
-    D.map(work => new AdvancePreprintId({ value: work.DOI })),
-  ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('62329'), 'DOI'),
