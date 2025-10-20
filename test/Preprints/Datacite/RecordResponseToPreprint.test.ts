@@ -385,18 +385,25 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
-test.each(['cdl-ucm-dryad', 'cdl-ucsf-dryad', 'dryad', 'dryad-collection', 'dryad-html', 'figshare'])(
-  'returns a specific error for an unsupported DOI record (%s)',
-  response =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        FileSystem.FileSystem,
-        Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
-        Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
-        Effect.andThen(recordToPreprint),
-        Effect.flip,
-      )
+test.each([
+  'cdl-ucm-dryad',
+  'cdl-ucm',
+  'cdl-ucsf-dryad',
+  'cdl-ucsf',
+  'dryad',
+  'dryad-collection',
+  'dryad-html',
+  'figshare',
+])('returns a specific error for an unsupported DOI record (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(recordToPreprint),
+      Effect.flip,
+    )
 
-      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )

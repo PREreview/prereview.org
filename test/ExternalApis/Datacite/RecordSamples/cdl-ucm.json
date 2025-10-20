@@ -1,0 +1,86 @@
+{
+  "data": {
+    "id": "10.6071/h8rn35sm",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6071/h8rn35sm",
+      "prefix": "10.6071",
+      "suffix": "h8rn35sm",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Whelan, Mary",
+          "nameType": "Personal",
+          "givenName": "Mary",
+          "familyName": "Whelan",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Data from Whelan, M.E. and R.C. Rhew, 2014 - Carbonyl sulfide produced by abiotic thermal and photo-degradation of soil organic matter from wheat field substrate"
+        }
+      ],
+      "publisher": "UC3 Merritt",
+      "container": {},
+      "publicationYear": 2014,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2014", "dateType": "Issued" }],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [],
+      "descriptions": [],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMyIKICB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIgogIHhzaTpzY2hlbWFMb2NhdGlvbj0iaHR0cDovL2RhdGFjaXRlLm9yZy9zY2hlbWEva2VybmVsLTMKICAgIGh0dHA6Ly9zY2hlbWEuZGF0YWNpdGUub3JnL21ldGEva2VybmVsLTMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC42MDcxL0g4Uk4zNVNNPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+TWFyeSBXaGVsYW48L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5EYXRhIGZyb20gV2hlbGFuLCBNLkUuIGFuZCBSLkMuIFJoZXcsIDIwMTQgLSBDYXJib255bCBzdWxmaWRlIHByb2R1Y2VkIGJ5IGFiaW90aWMgdGhlcm1hbCBhbmQgcGhvdG8tZGVncmFkYXRpb24gb2Ygc29pbCBvcmdhbmljIG1hdHRlciBmcm9tIHdoZWF0IGZpZWxkIHN1YnN0cmF0ZTwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5VQzMgTWVycml0dDwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAxNDwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iRGF0YXNldCIvPgo8L3Jlc291cmNlPgo=",
+      "url": "http://n2t.net/ark:/13030/m51g217t",
+      "contentUrl": null,
+      "metadataVersion": 2,
+      "schemaVersion": null,
+      "source": null,
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2014-03-14T20:29:03.000Z",
+      "registered": "2014-03-14T20:29:04.000Z",
+      "published": "2014",
+      "updated": "2020-08-02T15:47:05.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cdl.ucm", "type": "clients" } },
+      "provider": { "data": { "id": "wkdt", "type": "providers" } },
+      "media": { "data": { "id": "10.6071/h8rn35sm", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

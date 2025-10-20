@@ -19,6 +19,10 @@ export const RecordToDataset = (
       () => new RecordIsNotSupported({ cause: record.doi }),
     )
 
+    if (record.relationships.provider.toLowerCase() !== 'dryad') {
+      return yield* Either.left(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, 'provider') }))
+    }
+
     if (record.types.resourceType?.toLowerCase() !== 'dataset') {
       return yield* Either.left(new Dataset.NotADataset({ cause: record.types, datasetId }))
     }

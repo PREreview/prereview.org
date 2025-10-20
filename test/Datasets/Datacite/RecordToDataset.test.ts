@@ -144,6 +144,8 @@ test.each(['dryad-collection'])('returns a specific error for a non-dataset reco
 
 test.each([
   'arxiv',
+  'cdl-ucm',
+  'cdl-ucsf',
   'lifecycle-journal-article',
   'lifecycle-journal-registration',
   'osf-file',

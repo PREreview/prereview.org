@@ -1,0 +1,79 @@
+{
+  "data": {
+    "id": "10.7272/q63x84km",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.7272/q63x84km",
+      "prefix": "10.7272",
+      "suffix": "q63x84km",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Cardenas, Valerie ; Samuelson, Kristin ; Lenoci, Maryann; Studholme, Colin ; Neylan, Thomas ; Marmar, Charles ; Schuff, Norbert; Weiner, Michael",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [{ "title": "Changes in brain anatomy during the course of PTSD" }],
+      "publisher": "University of California, San Francisco",
+      "container": {},
+      "publicationYear": 2012,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2012", "dateType": "Issued" }],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [],
+      "descriptions": [],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMi4yIgogIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiCiAgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMi4yCiAgICBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC0yLjIvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC43MjcyL1E2M1g4NEtNPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+Q2FyZGVuYXMsIFZhbGVyaWUgOyBTYW11ZWxzb24sIEtyaXN0aW4gOyBMZW5vY2ksIE1hcnlhbm47IFN0dWRob2xtZSwgQ29saW4gOyBOZXlsYW4sIFRob21hcyA7IE1hcm1hciwgQ2hhcmxlcyA7IFNjaHVmZiwgTm9yYmVydDsgV2VpbmVyLCBNaWNoYWVsPC9jcmVhdG9yTmFtZT4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+Q2hhbmdlcyBpbiBicmFpbiBhbmF0b215IGR1cmluZyB0aGUgY291cnNlIG9mIFBUU0Q8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBTYW4gRnJhbmNpc2NvPC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDEyPC9wdWJsaWNhdGlvblllYXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ii8+CjwvcmVzb3VyY2U+Cg==",
+      "url": "http://merritt.cdlib.org/m/ark%3a%2fb7272%2fq6rn35sz",
+      "contentUrl": null,
+      "metadataVersion": 2,
+      "schemaVersion": null,
+      "source": null,
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2012-10-11T21:32:26.000Z",
+      "registered": "2012-10-11T21:32:26.000Z",
+      "published": "2012",
+      "updated": "2020-08-02T09:40:41.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cdl.ucsf", "type": "clients" } },
+      "provider": { "data": { "id": "xzvi", "type": "providers" } },
+      "media": { "data": { "id": "10.7272/q63x84km", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Array, Data, Function, Schema, String } from 'effect'
+import { Array, Data, Function, pipe, Schema, String } from 'effect'
 import { Doi, Temporal } from '../../types/index.ts'
 
 const EmptyStringAsUndefinedSchema = Schema.transform(
@@ -9,6 +9,13 @@ const EmptyStringAsUndefinedSchema = Schema.transform(
     decode: Function.constUndefined,
     encode: Function.constant(String.empty),
   },
+)
+
+const DataIdSchema = Schema.pluck(
+  Schema.Struct({
+    data: Schema.pluck(Schema.Struct({ id: Schema.compose(Schema.Trim, Schema.NonEmptyString) }), 'id'),
+  }),
+  'data',
 )
 
 export class Record extends Schema.Class<Record>('Record')({
@@ -81,10 +88,26 @@ export class Record extends Schema.Class<Record>('Record')({
     }),
   ),
   url: Schema.URL,
+  relationships: Schema.Struct({
+    provider: DataIdSchema,
+  }),
 }) {}
 
 export const RecordResponseSchema = Schema.pluck(
-  Schema.Struct({ data: Schema.pluck(Schema.Struct({ attributes: Record }), 'attributes') }),
+  Schema.Struct({
+    data: Schema.transform(
+      Schema.Struct({
+        attributes: pipe(Schema.encodedSchema(Record), Schema.omit('relationships')),
+        relationships: Schema.encodedSchema(Record.fields.relationships),
+      }),
+      Record,
+      {
+        strict: true,
+        decode: ({ attributes, relationships }) => ({ ...attributes, relationships }),
+        encode: ({ relationships, ...attributes }) => ({ attributes, relationships }),
+      },
+    ),
+  }),
   'data',
 )
 

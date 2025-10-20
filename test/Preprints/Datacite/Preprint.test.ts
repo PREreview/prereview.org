@@ -156,4 +156,5 @@ const stubRecord = {
     },
   ],
   url: new URL('https://osf.io/eq8bk/'),
+  relationships: { provider: 'cos' },
 } satisfies typeof Datacite.Record.Type
