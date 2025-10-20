@@ -1,0 +1,220 @@
+{
+  "data": {
+    "id": "10.5061/dryad.bnzs7h4h4",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5061/dryad.bnzs7h4h4",
+      "prefix": "10.5061",
+      "suffix": "dryad.bnzs7h4h4",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Pisor, Anne C.",
+          "nameType": "Personal",
+          "givenName": "Anne C.",
+          "familyName": "Pisor",
+          "affiliation": [","],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-5780-4542",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Lansing, J. Stephen",
+          "nameType": "Personal",
+          "givenName": "J. Stephen",
+          "familyName": "Lansing",
+          "affiliation": [","],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Magargal, Kate",
+          "nameType": "Personal",
+          "givenName": "Kate",
+          "familyName": "Magargal",
+          "affiliation": [","],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7444-7847",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [{ "title": "Phil Trans B special issue: Climate change adaptation needs a science of culture" }],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [
+        {
+          "subject": "Climate change",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "adaptation" },
+        {
+          "subject": "Culture",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "Cultural evolution",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "climate change adaptation" },
+        {
+          "subject": "FOS: Earth and related environmental sciences",
+          "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+          "subjectScheme": "fos"
+        },
+        {
+          "subject": "FOS: Earth and related environmental sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2023-08-15T13:30:00Z", "dateType": "Created" },
+        { "date": "2023-08-15T13:30:32Z", "dateType": "Submitted" },
+        { "date": "2023-09-17T00:00:00Z", "dateType": "Issued" },
+        { "date": "2023-09-17T00:00:00Z", "dateType": "Updated" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "Collection",
+        "resourceType": "collection",
+        "resourceTypeGeneral": "Collection"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.2bvq83bwm", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.k98sf7mcv", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.mkkwh715m", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.0vt4b8h4n", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.k3j9kd5dv", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.xwdbrv1k8", "relatedIdentifierType": "DOI" },
+        { "relationType": "HasPart", "relatedIdentifier": "10.5061/dryad.qjq2bvqnk", "relatedIdentifierType": "DOI" },
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.31219/osf.io/at4wr", "relatedIdentifierType": "DOI" },
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.1098/rstb.2022.0390", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": ["163784 bytes"],
+      "formats": [],
+      "version": "9",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "The IPCC underscores that climate change adaptation—by which\n decision-makers usually mean change in response to or anticipation of\n climate change—must be a priority now. Decision-makers, including\n scientists and policymakers, urge “entirely new practices” and\n “transformative change,” yet have very little data on whether these new\n practices actually reduce the risks communities face, even over the short\n term. Risk reduction is key to biological adaptation, including cultural\n adaptation, and humans have long used cultural adaptations to respond to\n climate change—including everything from migration to crop diversification\n to creating infrastructure.The contributors to this special issue in\n Philosophical Transactions of the Royal Society: Biological Sciences are\n ecology-minded scientists working at the intersection of climate change\n and culture, and we already know a lot about what has worked, and what has\n not worked, for humans past and present; however, this research has\n largely not reached the scientists and policymakers who are in the\n position to make policy decisions and to direct funding. Climate change\n adaptation needs a science of culture, and we need to reach\n decision-makers now, before priorities are set without sufficient\n information about how humans actually adapt to climate change.Here, we\n offer a portal for those curious, showcasing our existing understanding of\n cultural adaptation to climate change. The data span millennia and\n geographic scales, from the individual level to the country level, and\n include everything from hunting data to archaeological data to emissions\n data. Each record contains details that walk users through the\n data, facilitating further analysis and discovery. For questions about a\n given dataset and its use, users can reach the authors through the email\n address provided on that record.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTA2MS9EUllBRC5CTlpTN0g0SDQ8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlBpc29yLCBBbm5lIEMuPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAxLTU3ODAtNDU0MjwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj4sPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5MYW5zaW5nLCBKLiBTdGVwaGVuPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uPiw8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1hZ2FyZ2FsLCBLYXRlPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAyLTc0NDQtNzg0NzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj4sPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+CiAgICAgIFBoaWwgVHJhbnMgQiBzcGVjaWFsIGlzc3VlOiBDbGltYXRlIGNoYW5nZSBhZGFwdGF0aW9uIG5lZWRzIGEgc2NpZW5jZSBvZgogICAgICBjdWx0dXJlCiAgICA8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXIgcHVibGlzaGVySWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAweDZoNW45NSIgcHVibGlzaGVySWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZy8iPkRyeWFkPC9wdWJsaXNoZXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJDb2xsZWN0aW9uIj5jb2xsZWN0aW9uPC9yZXNvdXJjZVR5cGU+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDIzPC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iUExPUyBTdWJqZWN0IEFyZWEgVGhlc2F1cnVzIiBzY2hlbWVVUkk9Imh0dHBzOi8vZ2l0aHViLmNvbS9QTE9TL3Bsb3MtdGhlc2F1cnVzIj5DbGltYXRlIGNoYW5nZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmFkYXB0YXRpb248L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPkN1bHR1cmU8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPkN1bHR1cmFsIGV2b2x1dGlvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmNsaW1hdGUgY2hhbmdlIGFkYXB0YXRpb248L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJmb3MiIHNjaGVtZVVSST0iaHR0cHM6Ly93ZWItYXJjaGl2ZS5vZWNkLm9yZy8yMDEyLTA2LTE1LzEzODU3NS0zODIzNTE0Ny5wZGYiPkZPUzogRWFydGggYW5kIHJlbGF0ZWQgZW52aXJvbm1lbnRhbCBzY2llbmNlczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJDcmVhdGVkIj4yMDIzLTA4LTE1VDEzOjMwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiPjIwMjMtMDgtMTVUMTM6MzA6MzJaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAyMy0wOS0xN1QwMDowMDowMFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCI+MjAyMy0wOS0xN1QwMDowMDowMFo8L2RhdGU+CiAgPC9kYXRlcz4KICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjUwNjEvZHJ5YWQuMmJ2cTgzYndtPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9Ikhhc1BhcnQiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj5odHRwczovL2RvaS5vcmcvMTAuNTA2MS9kcnlhZC5rOThzZjdtY3Y8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPmh0dHBzOi8vZG9pLm9yZy8xMC41MDYxL2RyeWFkLm1ra3doNzE1bTwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjUwNjEvZHJ5YWQuMHZ0NGI4aDRuPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9Ikhhc1BhcnQiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj5odHRwczovL2RvaS5vcmcvMTAuNTA2MS9kcnlhZC5rM2o5a2Q1ZHY8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPmh0dHBzOi8vZG9pLm9yZy8xMC41MDYxL2RyeWFkLnh3ZGJydjFrODwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjUwNjEvZHJ5YWQucWpxMmJ2cW5rPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9IklzQ2l0ZWRCeSIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPmh0dHBzOi8vZG9pLm9yZy8xMC4zMTIxOS9vc2YuaW8vYXQ0d3I8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjEwOTgvcnN0Yi4yMDIyLjAzOTA8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcz4KICAgIDxzaXplPjE2Mzc4NCBieXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDx2ZXJzaW9uPjk8L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9zcGR4Lm9yZy9saWNlbnNlcy9DQzAtMS4wLmh0bWwiPkNyZWF0aXZlIENvbW1vbnMgWmVybyB2MS4wIFVuaXZlcnNhbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPgogICAgICBUaGUgSVBDQyB1bmRlcnNjb3JlcyB0aGF0IGNsaW1hdGUgY2hhbmdlIGFkYXB0YXRpb27igJRieSB3aGljaAogICAgICBkZWNpc2lvbi1tYWtlcnMgdXN1YWxseSBtZWFuIGNoYW5nZSBpbiByZXNwb25zZSB0byBvciBhbnRpY2lwYXRpb24gb2YKICAgICAgY2xpbWF0ZSBjaGFuZ2XigJRtdXN0IGJlIGEgcHJpb3JpdHkgbm93LiBEZWNpc2lvbi1tYWtlcnMsIGluY2x1ZGluZwogICAgICBzY2llbnRpc3RzIGFuZCBwb2xpY3ltYWtlcnMsIHVyZ2Ug4oCcZW50aXJlbHkgbmV3IHByYWN0aWNlc+KAnSBhbmQKICAgICAg4oCcdHJhbnNmb3JtYXRpdmUgY2hhbmdlLOKAnSB5ZXQgaGF2ZSB2ZXJ5IGxpdHRsZSBkYXRhIG9uIHdoZXRoZXIgdGhlc2UgbmV3CiAgICAgIHByYWN0aWNlcyBhY3R1YWxseSByZWR1Y2UgdGhlIHJpc2tzIGNvbW11bml0aWVzIGZhY2UsIGV2ZW4gb3ZlciB0aGUgc2hvcnQKICAgICAgdGVybS4gUmlzayByZWR1Y3Rpb24gaXMga2V5IHRvIGJpb2xvZ2ljYWwgYWRhcHRhdGlvbiwgaW5jbHVkaW5nIGN1bHR1cmFsCiAgICAgIGFkYXB0YXRpb24sIGFuZCBodW1hbnMgaGF2ZSBsb25nIHVzZWQgY3VsdHVyYWwgYWRhcHRhdGlvbnMgdG8gcmVzcG9uZCB0bwogICAgICBjbGltYXRlIGNoYW5nZeKAlGluY2x1ZGluZyBldmVyeXRoaW5nIGZyb20gbWlncmF0aW9uIHRvIGNyb3AgZGl2ZXJzaWZpY2F0aW9uCiAgICAgIHRvIGNyZWF0aW5nIGluZnJhc3RydWN0dXJlLlRoZSBjb250cmlidXRvcnMgdG8gdGhpcyBzcGVjaWFsIGlzc3VlIGluCiAgICAgIFBoaWxvc29waGljYWwgVHJhbnNhY3Rpb25zIG9mIHRoZSBSb3lhbCBTb2NpZXR5OiBCaW9sb2dpY2FsIFNjaWVuY2VzIGFyZQogICAgICBlY29sb2d5LW1pbmRlZCBzY2llbnRpc3RzIHdvcmtpbmcgYXQgdGhlIGludGVyc2VjdGlvbiBvZiBjbGltYXRlIGNoYW5nZQogICAgICBhbmQgY3VsdHVyZSwgYW5kIHdlIGFscmVhZHkga25vdyBhIGxvdCBhYm91dCB3aGF0IGhhcyB3b3JrZWQsIGFuZCB3aGF0IGhhcwogICAgICBub3Qgd29ya2VkLCBmb3IgaHVtYW5zIHBhc3QgYW5kIHByZXNlbnQ7IGhvd2V2ZXIsIHRoaXMgcmVzZWFyY2ggaGFzCiAgICAgIGxhcmdlbHkgbm90IHJlYWNoZWQgdGhlIHNjaWVudGlzdHMgYW5kIHBvbGljeW1ha2VycyB3aG8gYXJlIGluIHRoZQogICAgICBwb3NpdGlvbiB0byBtYWtlIHBvbGljeSBkZWNpc2lvbnMgYW5kIHRvIGRpcmVjdCBmdW5kaW5nLiBDbGltYXRlIGNoYW5nZQogICAgICBhZGFwdGF0aW9uIG5lZWRzIGEgc2NpZW5jZSBvZiBjdWx0dXJlLCBhbmQgd2UgbmVlZCB0byByZWFjaAogICAgICBkZWNpc2lvbi1tYWtlcnMgbm93LCBiZWZvcmUgcHJpb3JpdGllcyBhcmUgc2V0IHdpdGhvdXQgc3VmZmljaWVudAogICAgICBpbmZvcm1hdGlvbiBhYm91dCBob3cgaHVtYW5zIGFjdHVhbGx5IGFkYXB0IHRvIGNsaW1hdGUgY2hhbmdlLkhlcmUsIHdlCiAgICAgIG9mZmVyIGEgcG9ydGFsIGZvciB0aG9zZSBjdXJpb3VzLCBzaG93Y2FzaW5nIG91ciBleGlzdGluZyB1bmRlcnN0YW5kaW5nIG9mCiAgICAgIGN1bHR1cmFsIGFkYXB0YXRpb24gdG8gY2xpbWF0ZSBjaGFuZ2UuIFRoZSBkYXRhIHNwYW4gbWlsbGVubmlhIGFuZAogICAgICBnZW9ncmFwaGljIHNjYWxlcywgZnJvbSB0aGUgaW5kaXZpZHVhbCBsZXZlbCB0byB0aGUgY291bnRyeSBsZXZlbCwgYW5kCiAgICAgIGluY2x1ZGUgZXZlcnl0aGluZyBmcm9tIGh1bnRpbmcgZGF0YSB0byBhcmNoYWVvbG9naWNhbCBkYXRhIHRvIGVtaXNzaW9ucwogICAgICBkYXRhLiZhbXA7bmJzcDtFYWNoIHJlY29yZCBjb250YWlucyBkZXRhaWxzIHRoYXQgd2FsayB1c2VycyB0aHJvdWdoIHRoZQogICAgICBkYXRhLCBmYWNpbGl0YXRpbmcgZnVydGhlciBhbmFseXNpcyBhbmQgZGlzY292ZXJ5LiBGb3IgcXVlc3Rpb25zIGFib3V0IGEKICAgICAgZ2l2ZW4gZGF0YXNldCBhbmQgaXRzIHVzZSwgdXNlcnMgY2FuIHJlYWNoIHRoZSBhdXRob3JzIHRocm91Z2ggdGhlIGVtYWlsCiAgICAgIGFkZHJlc3MgcHJvdmlkZWQgb24gdGhhdCByZWNvcmQuCiAgICA8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://datadryad.org/dataset/doi:10.5061/dryad.bnzs7h4h4",
+      "contentUrl": null,
+      "metadataVersion": 6,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 204,
+      "viewsOverTime": [
+        { "yearMonth": "2023-09", "total": 70 },
+        { "yearMonth": "2023-10", "total": 30 },
+        { "yearMonth": "2023-11", "total": 25 },
+        { "yearMonth": "2023-12", "total": 11 },
+        { "yearMonth": "2024-03", "total": 5 },
+        { "yearMonth": "2024-04", "total": 5 },
+        { "yearMonth": "2024-05", "total": 5 },
+        { "yearMonth": "2024-06", "total": 3 },
+        { "yearMonth": "2024-07", "total": 4 },
+        { "yearMonth": "2024-08", "total": 4 },
+        { "yearMonth": "2024-09", "total": 4 },
+        { "yearMonth": "2024-10", "total": 5 },
+        { "yearMonth": "2024-11", "total": 9 },
+        { "yearMonth": "2024-12", "total": 7 },
+        { "yearMonth": "2025-01", "total": 3 },
+        { "yearMonth": "2025-02", "total": 1 },
+        { "yearMonth": "2025-03", "total": 3 },
+        { "yearMonth": "2025-04", "total": 5 },
+        { "yearMonth": "2025-08", "total": 1 },
+        { "yearMonth": "2025-09", "total": 4 }
+      ],
+      "downloadCount": 0,
+      "downloadsOverTime": [
+        { "yearMonth": "2024-03", "total": 0 },
+        { "yearMonth": "2024-04", "total": 0 },
+        { "yearMonth": "2024-05", "total": 0 },
+        { "yearMonth": "2024-06", "total": 0 },
+        { "yearMonth": "2024-07", "total": 0 },
+        { "yearMonth": "2024-08", "total": 0 },
+        { "yearMonth": "2024-09", "total": 0 },
+        { "yearMonth": "2024-10", "total": 0 },
+        { "yearMonth": "2024-11", "total": 0 },
+        { "yearMonth": "2024-12", "total": 0 },
+        { "yearMonth": "2025-01", "total": 0 },
+        { "yearMonth": "2025-02", "total": 0 },
+        { "yearMonth": "2025-03", "total": 0 },
+        { "yearMonth": "2025-04", "total": 0 },
+        { "yearMonth": "2025-08", "total": 0 },
+        { "yearMonth": "2025-09", "total": 0 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 2,
+      "citationsOverTime": [{ "year": "2025", "total": 2 }],
+      "partCount": 7,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-09-18T04:49:51.000Z",
+      "registered": "2023-09-18T04:49:52.000Z",
+      "published": "2023",
+      "updated": "2025-10-14T14:22:59.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.5061/dryad.bnzs7h4h4", "type": "media" } },
+      "references": { "data": [] },
+      "citations": {
+        "data": [
+          { "id": "10.31219/osf.io/at4wr", "type": "dois" },
+          { "id": "10.1098/rstb.2022.0390", "type": "dois" }
+        ]
+      },
+      "parts": {
+        "data": [
+          { "id": "10.5061/dryad.2bvq83bwm", "type": "dois" },
+          { "id": "10.5061/dryad.k98sf7mcv", "type": "dois" },
+          { "id": "10.5061/dryad.mkkwh715m", "type": "dois" },
+          { "id": "10.5061/dryad.0vt4b8h4n", "type": "dois" },
+          { "id": "10.5061/dryad.k3j9kd5dv", "type": "dois" },
+          { "id": "10.5061/dryad.xwdbrv1k8", "type": "dois" },
+          { "id": "10.5061/dryad.qjq2bvqnk", "type": "dois" }
+        ]
+      },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

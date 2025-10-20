@@ -128,6 +128,20 @@ test.each([
   }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
 )
 
+test.each(['dryad-collection'])('returns a specific error for a non-dataset record (%s)', response =>
+  Effect.gen(function* () {
+    const actual = yield* pipe(
+      FileSystem.FileSystem,
+      Effect.andThen(fs => fs.readFileString(`test/ExternalApis/Datacite/RecordSamples/${response}.json`)),
+      Effect.andThen(Schema.decodeUnknown(Schema.parseJson(Datacite.RecordResponseSchema))),
+      Effect.andThen(_.RecordToDataset),
+      Effect.flip,
+    )
+
+    expect(actual._tag).toStrictEqual('NotADataset')
+  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+)
+
 test.each([
   'arxiv',
   'lifecycle-journal-article',
@@ -141,7 +155,7 @@ test.each([
   'zenodo-no-abstract',
   'zenodo-trailing-space',
   'zenodo',
-])('returns a specific error for non-dataset record (%s)', response =>
+])('returns a specific error for non-supported record (%s)', response =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
