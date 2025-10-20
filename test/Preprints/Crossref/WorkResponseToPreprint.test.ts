@@ -10,6 +10,7 @@ import { rawHtml } from '../../../src/html.ts'
 import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
 import {
   AfricarxivOsfPreprintId,
+  AuthoreaPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   EdarxivPreprintId,
@@ -534,6 +535,32 @@ test.each([
         ),
       },
       url: new URL('https://chemrxiv.org/engage/chemrxiv/article-details/63c6eb6f5ab313638caace49'),
+    }),
+  },
+  {
+    response: 'authorea.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Some properties of the Dawson Integral are presented first in the\ncurrent work, followed by the introduction of the Dawson Integral\nTransform. Iteration identities and relationships, similar to the\nParseval Goldstein type, are established involving various well-known\nintegral transforms, such as the Laplace Transform, the L 2 -Transform,\nand the Dawson Integral for the new integral transform. Furthermore,\nimproper integrals of well-known functions, including the Dawson\nIntegral, Exponential Integral, and the Macdonald Function, are\nevaluated using the results obtained.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Osman Yurekli', orcid: OrcidId('0000-0002-2160-6138') },
+        { name: 'Durmuş ALBAYRAK' },
+        { name: 'Fatih AYLIKCI' },
+        { name: 'Neşe Dernek' },
+      ],
+      id: new AuthoreaPreprintId({ value: Doi('10.22541/au.169147825.53935627/v1') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 8, day: 8 }),
+      title: {
+        language: 'en',
+        text: rawHtml('The Dawson Transform and its Applications'),
+      },
+      url: new URL(
+        'https://www.authorea.com/users/650382/articles/658890-the-dawson-transform-and-its-applications?commit=01d29945f3c355adc7d8a88d50b80a32f9ec078e',
+      ),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
