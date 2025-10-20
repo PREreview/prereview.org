@@ -67,7 +67,7 @@ test.each([
     }),
   },
   {
-    response: 'dryad-cdl',
+    response: 'dryad-cdl-ucsf',
     expected: new Datasets.Dataset({
       abstract: {
         language: 'en',
@@ -94,6 +94,25 @@ test.each([
         language: 'en',
       },
       url: new URL('https://datadryad.org/dataset/doi:10.6071/M3238R'),
+    }),
+  },
+  {
+    response: 'dryad-cdl-ucm',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Isolated Lacrimal gland for Single Cell RNA sequence data from E16 and P4\n mice. These are the raw read count matrices along side the barcode for the\n cells and genes that span the sparse matrix. These results are published\n in Development: Defining epithelial cell dynamics and lineage\n relationships in the developing lacrimal gland.Abstract:The tear producing\n lacrimal gland is a tubular organ that protects and lubricates the ocular\n surface. While the lacrimal gland possesses many features that make it an\n excellent model to understand tubulogenesis, the cell types and lineage\n relationships that drive lacrimal gland formation are unclear. Using\n single cell sequencing and other molecular tools, we reveal novel cell\n identities and epithelial lineage dynamics that underlie lacrimal gland\n development. We show that the lacrimal gland from its earliest\n developmental stages is composed of multiple subpopulations of immune,\n epithelial, and mesenchymal cell lineages. The epithelial lineage exhibits\n the most substantiative cellular changes, transitioning through a series\n of unique transcriptional states to become terminally differentiated\n acinar, ductal and myoepithelial cells. Furthermore, lineage tracing in\n postnatal and adult glands provides the first direct evidence of unipotent\n KRT5+ epithelial cells in the lacrimal gland. Finally, we show\n conservation of developmental markers between the developing mouse and\n human lacrimal gland, supporting the use of mice to understand human\n development. Together, our data reveal critical features of lacrimal gland\n development that have broad implications for understanding epithelial\n organogenesis.</p>',
+        ),
+      },
+      authors: [{ name: 'Shengyang Yu' }, { name: 'Aaron Tward' }, { name: 'Sarah Knox' }],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.7272/q6w37t8b') }),
+      posted: Temporal.PlainDate.from({ year: 2017, month: 6, day: 13 }),
+      title: {
+        text: rawHtml('10x Lacrimal Gland scRNA seq data matrix'),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.7272/Q6W37T8B'),
     }),
   },
 ])('can parse a record ($response)', ({ response, expected }) =>
