@@ -9,6 +9,7 @@ import { Crossref } from '../../../src/ExternalApis/index.ts'
 import { rawHtml } from '../../../src/html.ts'
 import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
 import {
+  AdvancePreprintId,
   AfricarxivOsfPreprintId,
   AuthoreaPreprintId,
   BiorxivPreprintId,
@@ -560,6 +561,30 @@ test.each([
       },
       url: new URL(
         'https://www.authorea.com/users/650382/articles/658890-the-dawson-transform-and-its-applications?commit=01d29945f3c355adc7d8a88d50b80a32f9ec078e',
+      ),
+    }),
+  },
+  {
+    response: 'advance.json',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [
+        { name: 'Le Khanh Tuan', orcid: OrcidId('0000-0002-7115-1725') },
+        { name: 'Thi Ngoc Nguyen' },
+        { name: 'Kieu Hung Ly' },
+        { name: 'Thi Thanh' },
+        { name: 'Ha Dang' },
+        { name: 'Van Anh' },
+        { name: 'Hai Tong' },
+      ],
+      id: new AdvancePreprintId({ value: Doi('10.31124/advance.172416255.59522334/v1') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 8, day: 20 }),
+      title: {
+        language: 'en',
+        text: rawHtml("Policy Recommendations for Blended Learning in Vietnam's Colleges and Universities"),
+      },
+      url: new URL(
+        'https://advance.sagepub.com/users/812679/articles/1216107-policy-recommendations-for-blended-learning-in-vietnam-s-colleges-and-universities?commit=59bf4695a5ff4b5ed0ca0b35ac8f48928a94aaae',
       ),
     }),
   },

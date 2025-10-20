@@ -128,6 +128,7 @@ export const workToPreprint = (
 
 const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
+    AdvancePreprintId: () => Option.some('en' as const),
     AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AuthoreaPreprintId: () => detectLanguage(text),
     BiorxivPreprintId: () => Option.some('en' as const),

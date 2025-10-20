@@ -1005,6 +1005,7 @@ export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<IndeterminatePrep
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCrossrefPreprintId> =>
   fc.oneof(
+    advancePreprintId(),
     africarxivOsfPreprintId(),
     authoreaPreprintId(),
     biorxivPreprintId(),
