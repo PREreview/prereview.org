@@ -1,11 +1,14 @@
 import { Array, Data, Schema, Tuple } from 'effect'
 import { Doi, OrcidId, Temporal } from '../../types/index.ts'
 
-const PlainYearFromTupleSchema = Schema.transform(Schema.Tuple(Schema.Number), Schema.Number, {
-  strict: true,
-  decode: parts => parts[0],
-  encode: date => Tuple.make(date),
-})
+const ValueFromTupleSchema = <A, I, R>(schema: Schema.Schema<A, I, R>): Schema.Schema<A, readonly [I], R> =>
+  Schema.transform(Schema.Tuple(schema), Schema.typeSchema(schema), {
+    strict: true,
+    decode: Tuple.at(0),
+    encode: value => Tuple.make(value),
+  })
+
+const PlainYearFromTupleSchema = ValueFromTupleSchema(Schema.Number)
 
 const PlainYearMonthFromTupleSchema = Schema.transform(
   Schema.Tuple(Schema.Number, Schema.Number),
@@ -27,21 +30,13 @@ const PlainDateFromTupleSchema = Schema.transform(
   },
 )
 
-const PublishedSchema = Schema.transform(
-  Schema.pluck(
-    Schema.Struct({
-      'date-parts': Schema.Tuple(
-        Schema.Union(PlainYearFromTupleSchema, PlainYearMonthFromTupleSchema, PlainDateFromTupleSchema),
-      ),
-    }),
-    'date-parts',
-  ),
-  Schema.Union(Temporal.PlainDateFromSelfSchema, Temporal.PlainYearMonthFromSelfSchema, Schema.Number),
-  {
-    strict: true,
-    decode: Tuple.at(0),
-    encode: date => Tuple.make(date),
-  },
+const PublishedSchema = Schema.pluck(
+  Schema.Struct({
+    'date-parts': ValueFromTupleSchema(
+      Schema.Union(PlainYearFromTupleSchema, PlainYearMonthFromTupleSchema, PlainDateFromTupleSchema),
+    ),
+  }),
+  'date-parts',
 )
 
 export class Work extends Schema.Class<Work>('Work')({
