@@ -6,7 +6,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, isMatching, match } from 'ts-pattern'
-import { detectLanguage } from '../../detect-language.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, sanitizeHtml } from '../../html.ts'
 import { transformJatsToHtml } from '../../jats.ts'
@@ -14,7 +13,6 @@ import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
 import {
   AdvancePreprintId,
-  AuthoreaPreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
@@ -24,7 +22,7 @@ import {
   TechrxivPreprintId,
 } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['22541', '31124', '31223', '31224', '32942', '36227', '62329'] as const
+const crossrefDoiPrefixes = ['31124', '31223', '31224', '32942', '36227', '62329'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -120,12 +118,7 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const isAPreprint: (work: Work) => boolean = isMatching(
-  P.union(
-    { type: 'posted-content', subtype: 'preprint' },
-    { description: 'Authorea status: Preprint', DOI: P.when(hasRegistrant('22541')), type: 'dataset' },
-  ),
-)
+const isAPreprint: (work: Work) => boolean = isMatching({ type: 'posted-content', subtype: 'preprint' })
 
 const findPublishedDate = (work: Work) =>
   pipe(
@@ -142,7 +135,6 @@ const detectLanguageForServer = ({
 }): Option.Option<LanguageCode> =>
   match({ type, text })
     .with({ type: 'AdvancePreprintId' }, () => Option.some('en' as const))
-    .with({ type: 'AuthoreaPreprintId', text: P.select() }, detectLanguage)
     .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
@@ -157,19 +149,6 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       institution: D.fromTuple(D.struct({ name: D.literal('Advance') })),
     }),
     D.map(work => new AdvancePreprintId({ value: work.DOI })),
-  ),
-  pipe(
-    D.union(
-      D.fromStruct({
-        DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
-        publisher: D.literal('Authorea, Inc.'),
-      }),
-      D.fromStruct({
-        DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
-        institution: D.fromTuple(D.struct({ name: D.literal('Authorea, Inc.') })),
-      }),
-    ),
-    D.map(work => new AuthoreaPreprintId({ value: work.DOI })),
   ),
   pipe(
     D.fromStruct({
