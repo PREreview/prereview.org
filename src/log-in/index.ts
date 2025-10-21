@@ -10,11 +10,9 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
-import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { timeoutRequest } from '../fetch.ts'
 import * as FptsToEffect from '../FptsToEffect.ts'
 import type { SupportedLocale } from '../locales/index.ts'
@@ -108,28 +106,29 @@ export const authenticate = Effect.fn(
     const isUserBlocked = yield* IsUserBlocked
     const getPseudonym = yield* GetPseudonym
 
-    const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
 
-    const user = yield* FptsToEffect.readerTaskEither(
-      pipe(
-        exchangeAuthorizationCode(code),
-        R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
-        RTE.local(timeoutRequest(2000)),
-        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
-      ),
-      {
-        fetch,
-        ...loggerEnv,
-        orcidOauth: {
-          authorizeUrl: orcidOauth.authorizeUrl,
-          clientId: orcidOauth.clientId,
-          clientSecret: Redacted.value(orcidOauth.clientSecret),
-          tokenUrl: orcidOauth.tokenUrl,
+    const user = yield* pipe(
+      FptsToEffect.readerTaskEither(
+        pipe(
+          exchangeAuthorizationCode(code),
+          R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
+          RTE.local(timeoutRequest(2000)),
+        ),
+        {
+          fetch,
+          orcidOauth: {
+            authorizeUrl: orcidOauth.authorizeUrl,
+            clientId: orcidOauth.clientId,
+            clientSecret: Redacted.value(orcidOauth.clientSecret),
+            tokenUrl: orcidOauth.tokenUrl,
+          },
+          publicUrl,
         },
-        publicUrl,
-      },
+      ),
+      Effect.tapError(error =>
+        Effect.annotateLogs(Effect.logWarning('Unable to exchange authorization code'), { error }),
+      ),
     )
 
     yield* Effect.if(isUserBlocked(user.orcid), {
