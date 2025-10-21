@@ -126,6 +126,12 @@ describe('fromUrl', () => {
       ],
       [
         [
+          new URL('https://datadryad.org/dataset/doi:10.15146/zf0j-5m50'), // older DOI registrant
+          new _.DryadDatasetId({ value: Doi.Doi('10.15146/zf0j-5m50') }),
+        ],
+      ],
+      [
+        [
           new URL('https://datadryad.org/dataset/doi:10.25338/B8CK5N'), // older DOI registrant
           new _.DryadDatasetId({ value: Doi.Doi('10.25338/B8CK5N') }),
         ],

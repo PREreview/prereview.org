@@ -211,6 +211,37 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.25349/D9VG9J'),
     }),
   },
+  {
+    response: 'dryad-alt',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Grounding line, elevation changes, and melt rates maps of Denman Glacier,\n East Antarctica. Using satellite radar interferometry from the\n COSMO-SkyMed mission we map the grounding line of Denman Glacier, East\n Antarctica. We complement these data with some historical interferometric\n radar acquisition from the European satellite ERS-1/2. We present new maps\n of elevation changes on the grounded and floating portions of Denman\n Glacier obtained by temporally differencing TanDEM-X Digital Elevation\n Models.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Virginia Brancato', orcid: OrcidId.OrcidId('0000-0001-6322-0439') },
+        { name: 'Eric Rignot' },
+        { name: 'Pietro Milillo' },
+        { name: 'Mathieu Morlighem', orcid: OrcidId.OrcidId('0000-0001-5219-1310') },
+        { name: 'Jeremie Mouginot' },
+        { name: 'Lu An', orcid: OrcidId.OrcidId('0000-0003-3507-5953') },
+        { name: 'Bernd Scheuchl' },
+        { name: 'Seong Su Jeong', orcid: OrcidId.OrcidId('0000-0002-6844-5925') },
+        { name: 'Paola Rizzoli' },
+        { name: 'Jose Luiz Bueso Bello' },
+        { name: 'Pau Prats-Iraola' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.15146/zf0j-5m50') }),
+      posted: Temporal.PlainDate.from({ year: 2020, month: 2, day: 28 }),
+      title: {
+        text: rawHtml('Grounding line of Denman Glacier, East Antarctica from satellite radar interferometry'),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.15146/zf0j-5m50'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

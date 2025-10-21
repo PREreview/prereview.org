@@ -1,0 +1,343 @@
+{
+  "data": {
+    "id": "10.15146/zf0j-5m50",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.15146/zf0j-5m50",
+      "prefix": "10.15146",
+      "suffix": "zf0j-5m50",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Brancato, Virginia",
+          "nameType": "Personal",
+          "givenName": "Virginia",
+          "familyName": "Brancato",
+          "affiliation": ["Jet Propulsion Lab"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-6322-0439",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Rignot, Eric",
+          "nameType": "Personal",
+          "givenName": "Eric",
+          "familyName": "Rignot",
+          "affiliation": ["Jet Propulsion Lab"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Milillo, Pietro",
+          "nameType": "Personal",
+          "givenName": "Pietro",
+          "familyName": "Milillo",
+          "affiliation": ["Jet Propulsion Lab"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Morlighem, Mathieu",
+          "nameType": "Personal",
+          "givenName": "Mathieu",
+          "familyName": "Morlighem",
+          "affiliation": ["University of California, Irvine"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-5219-1310",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Mouginot, Jeremie",
+          "nameType": "Personal",
+          "givenName": "Jeremie",
+          "familyName": "Mouginot",
+          "affiliation": ["Université Grenoble Alpes"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "An, Lu",
+          "nameType": "Personal",
+          "givenName": "Lu",
+          "familyName": "An",
+          "affiliation": ["University of California, Irvine"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-3507-5953",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Scheuchl, Bernd",
+          "nameType": "Personal",
+          "givenName": "Bernd",
+          "familyName": "Scheuchl",
+          "affiliation": ["University of California, Irvine"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Jeong, Seong Su",
+          "nameType": "Personal",
+          "givenName": "Seong Su",
+          "familyName": "Jeong",
+          "affiliation": ["University of California, Irvine"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-6844-5925",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Rizzoli, Paola",
+          "nameType": "Personal",
+          "givenName": "Paola",
+          "familyName": "Rizzoli",
+          "affiliation": ["Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Bueso Bello, Jose Luiz",
+          "nameType": "Personal",
+          "givenName": "Jose Luiz",
+          "familyName": "Bueso Bello",
+          "affiliation": ["Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Prats-Iraola, Pau",
+          "nameType": "Personal",
+          "givenName": "Pau",
+          "familyName": "Prats-Iraola",
+          "affiliation": ["Deutsches Zentrum für Luft- und Raumfahrt e. V. (DLR)"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [{ "title": "Grounding line of Denman Glacier, East Antarctica from satellite radar interferometry" }],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2020,
+      "subjects": [
+        {
+          "subject": "Glaciers",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "Interferometry" }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2020-03-20T19:18:22Z", "dateType": "Submitted" },
+        { "date": "2020-02-28T00:00:00Z", "dateType": "Issued" },
+        { "date": "2020-02-28T00:00:00Z", "dateType": "Available" },
+        { "date": "2020-03-05T00:00:00Z", "dateType": "Updated" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.3390/rs4092753", "relatedIdentifierType": "DOI" },
+        {
+          "relationType": "IsSupplementedBy",
+          "relatedIdentifier": "10.1594/pangaea.896940",
+          "relatedIdentifierType": "DOI"
+        },
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.1029/2019gl086291", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": ["1324475871 bytes"],
+      "formats": [],
+      "version": "5",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Grounding line, elevation changes, and melt rates maps of Denman Glacier,\n East Antarctica. Using satellite radar interferometry from the\n COSMO-SkyMed mission we map the grounding line of Denman Glacier, East\n Antarctica. We complement these data with some historical interferometric\n radar acquisition from the European satellite ERS-1/2. We present new maps\n of elevation changes on the grounded and floating portions of Denman\n Glacier obtained by temporally differencing TanDEM-X Digital Elevation\n Models.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "To map the grounding line of Denman Glacier, we form SAR interferograms\n with a one day time interval by coherently combining SAR acquisitions from\n ERS-1/2 satellites in 1996 and from the Agenzia Spaziale Italiana (ASI)\n COSMO-SkyMed (CSK) mission between 2016 and 2018. We multi-look each\n interferogram with a 8x8 averaging window and remove the topographic\n signal affecting each interferometric acquisition with a TanDEM-X (TDX) at\n 30 m spacing. We form 29 CSK Differential Interferogram (DInSAR) (i.e.\n difference between two SAR interferograms) to reveal the vertical motion\n of ice in response to changes in oceanic tides. We generate a time series\n of Digital Elevation Model at 12 m spacing and meter-scale vertical\n precision using SAR bistatic acquisition from the TDX mission. The\n processing chain includes: a) spaceborne monostatic TerraSAR-X processing;\n b) bistatic TDX processing; c) interferometric combination of images; d)\n phase unwrapping; e) phase-to-height conversion; f) geocoding to a\n latitude/longitude grid. We differentiate temporally separated TDX DEMs to\n generate elevation changes map on grounded ice and ocean-induced melt\n rates maps on floating ice. We smooth elevation changes maps\n (dh/dt) using a 15x15 pixels moving average window to obatain dh/dt maps\n at 1.5 km spacing. On floating ice, we differentiate TDX DEMs by tracking\n ice parcel with time and correcting for ice flow divergence. We use a chip\n size of 30x30 pixels with steps of 16 pixels in both horizontal and\n vertical directions and smooth the results with a 15x15 moving average\n window to obtain ocean-induced melt rate maps at 1.5 km spacing.",
+          "descriptionType": "Methods"
+        },
+        {
+          "description": "The grounding line  data are formatted in an ESRI shapefile\n format storing nontopological and attribute information (e.g. acquisition\n dates, orbit numbers) for the spatial features in the dataset. The title\n of each file carries information on the acquisition dates of the doub;e\n difference used to generate the grounding line shapefile. The DInSAR\n interferograms are stored in a GeoTiff format. The title of each file\n carries information on the acquisition dates of the SAR images used to\n generate the DInSAR Interferogram. The elevation change rates maps and the\n ocean-induced melt rates are similarly stored in GeoTiff files. Spatial\n coverage The dataset spans the area covered by Denman Glacier, \n East Antarctica. All the data is in polar stereographic projection with\n true scale at 71S. As a condition to use the data, please cite the\n following publication, Brancato, V., Rignot, E., Milillo, P., Morlighem,\n M., An, L., Scheuchl, B., ..., Prats-Iraola, \"Grounding line retreat\n of Denman Glacier, East Antarctica, measured with COSMO-SkyMed radar\n interferometry\", Geophys. Res. Lett., in press",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuMTUxNDYvWkYwSi01TTUwPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5CcmFuY2F0bywgVmlyZ2luaWE8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDEtNjMyMi0wNDM5PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAyN2s2NTkxNiIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5KZXQgUHJvcHVsc2lvbiBMYWI8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlJpZ25vdCwgRXJpYzwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMjdrNjU5MTYiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+SmV0IFByb3B1bHNpb24gTGFiPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NaWxpbGxvLCBQaWV0cm88L2NyZWF0b3JOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDI3azY1OTE2IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPkpldCBQcm9wdWxzaW9uIExhYjwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TW9ybGlnaGVtLCBNYXRoaWV1PC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAxLTUyMTktMTMxMDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNGd5ZjE3NzEiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBJcnZpbmU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk1vdWdpbm90LCBKZXJlbWllPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAycngzYjE4NyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Vbml2ZXJzaXTDqSBHcmVub2JsZSBBbHBlczwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+QW4sIEx1PC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAzLTM1MDctNTk1MzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNGd5ZjE3NzEiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBJcnZpbmU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNjaGV1Y2hsLCBCZXJuZDwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNGd5ZjE3NzEiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBJcnZpbmU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkplb25nLCBTZW9uZyBTdTwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cDovL29yY2lkLm9yZy8iPjAwMDAtMDAwMi02ODQ0LTU5MjU8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDRneWYxNzcxIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPlVuaXZlcnNpdHkgb2YgQ2FsaWZvcm5pYSwgSXJ2aW5lPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5SaXp6b2xpLCBQYW9sYTwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNGJ3ZjNlMzQiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+RGV1dHNjaGVzIFplbnRydW0gZsO8ciBMdWZ0LSB1bmQgUmF1bWZhaHJ0IGUuIFYuIChETFIpPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5CdWVzbyBCZWxsbywgSm9zZSBMdWl6PC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0YndmM2UzNCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5EZXV0c2NoZXMgWmVudHJ1bSBmw7xyIEx1ZnQtIHVuZCBSYXVtZmFocnQgZS4gVi4gKERMUik8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlByYXRzLUlyYW9sYSwgUGF1PC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzA0YndmM2UzNCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5EZXV0c2NoZXMgWmVudHJ1bSBmw7xyIEx1ZnQtIHVuZCBSYXVtZmFocnQgZS4gVi4gKERMUik8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT4KICAgICAgR3JvdW5kaW5nIGxpbmUgb2YgRGVubWFuIEdsYWNpZXIsIEVhc3QgQW50YXJjdGljYSBmcm9tIHNhdGVsbGl0ZSByYWRhcgogICAgICBpbnRlcmZlcm9tZXRyeQogICAgPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyIHB1Ymxpc2hlcklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMHg2aDVuOTUiIHB1Ymxpc2hlcklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmcvIj5EcnlhZDwvcHVibGlzaGVyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iRGF0YXNldCI+ZGF0YXNldDwvcmVzb3VyY2VUeXBlPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMDwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9IlBMT1MgU3ViamVjdCBBcmVhIFRoZXNhdXJ1cyIgc2NoZW1lVVJJPSJodHRwczovL2dpdGh1Yi5jb20vUExPUy9wbG9zLXRoZXNhdXJ1cyI+R2xhY2llcnM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5JbnRlcmZlcm9tZXRyeTwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiPjIwMjAtMDMtMjBUMTk6MTg6MjJaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9Iklzc3VlZCI+MjAyMC0wMi0yOFQwMDowMDowMFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQXZhaWxhYmxlIj4yMDIwLTAyLTI4VDAwOjAwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDIwLTAzLTA1VDAwOjAwOjAwWjwvZGF0ZT4KICA8L2RhdGVzPgogIDxsYW5ndWFnZT5lbjwvbGFuZ3VhZ2U+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9IklzQ2l0ZWRCeSIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPmh0dHBzOi8vZG9pLm9yZy8xMC4zMzkwL3JzNDA5Mjc1MzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJJc1N1cHBsZW1lbnRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjE1OTQvUEFOR0FFQS44OTY5NDA8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjEwMjkvMjAxOUdMMDg2MjkxPC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXM+CiAgICA8c2l6ZT4xMzI0NDc1ODcxIGJ5dGVzPC9zaXplPgogIDwvc2l6ZXM+CiAgPHZlcnNpb24+NTwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL3NwZHgub3JnL2xpY2Vuc2VzL0NDMC0xLjAuaHRtbCI+Q3JlYXRpdmUgQ29tbW9ucyBaZXJvIHYxLjAgVW5pdmVyc2FsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+CiAgICAgIEdyb3VuZGluZyBsaW5lLCBlbGV2YXRpb24gY2hhbmdlcywgYW5kIG1lbHQgcmF0ZXMgbWFwcyBvZiBEZW5tYW4gR2xhY2llciwKICAgICAgRWFzdCBBbnRhcmN0aWNhLiBVc2luZyBzYXRlbGxpdGUgcmFkYXIgaW50ZXJmZXJvbWV0cnkgZnJvbSB0aGUKICAgICAgQ09TTU8tU2t5TWVkIG1pc3Npb24gd2UgbWFwIHRoZSBncm91bmRpbmcgbGluZSBvZiBEZW5tYW4gR2xhY2llciwgRWFzdAogICAgICBBbnRhcmN0aWNhLiBXZSBjb21wbGVtZW50IHRoZXNlIGRhdGEgd2l0aCBzb21lIGhpc3RvcmljYWwgaW50ZXJmZXJvbWV0cmljCiAgICAgIHJhZGFyIGFjcXVpc2l0aW9uIGZyb20gdGhlIEV1cm9wZWFuIHNhdGVsbGl0ZSBFUlMtMS8yLiBXZSBwcmVzZW50IG5ldyBtYXBzCiAgICAgIG9mIGVsZXZhdGlvbiBjaGFuZ2VzIG9uIHRoZSBncm91bmRlZCBhbmQgZmxvYXRpbmcgcG9ydGlvbnMgb2YgRGVubWFuCiAgICAgIEdsYWNpZXIgb2J0YWluZWQgYnkgdGVtcG9yYWxseSBkaWZmZXJlbmNpbmcgVGFuREVNLVggRGlnaXRhbCBFbGV2YXRpb24KICAgICAgTW9kZWxzLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik1ldGhvZHMiPgogICAgICBUbyBtYXAgdGhlIGdyb3VuZGluZyBsaW5lIG9mIERlbm1hbiBHbGFjaWVyLCB3ZSBmb3JtIFNBUiBpbnRlcmZlcm9ncmFtcwogICAgICB3aXRoIGEgb25lIGRheSB0aW1lIGludGVydmFsIGJ5IGNvaGVyZW50bHkgY29tYmluaW5nIFNBUiBhY3F1aXNpdGlvbnMgZnJvbQogICAgICBFUlMtMS8yIHNhdGVsbGl0ZXMgaW4gMTk5NiBhbmQgZnJvbSB0aGUgQWdlbnppYSBTcGF6aWFsZSBJdGFsaWFuYSAoQVNJKQogICAgICBDT1NNTy1Ta3lNZWQgKENTSykgbWlzc2lvbiBiZXR3ZWVuIDIwMTYgYW5kIDIwMTguIFdlIG11bHRpLWxvb2sgZWFjaAogICAgICBpbnRlcmZlcm9ncmFtIHdpdGggYSA4eDggYXZlcmFnaW5nIHdpbmRvdyBhbmQgcmVtb3ZlIHRoZSB0b3BvZ3JhcGhpYwogICAgICBzaWduYWwgYWZmZWN0aW5nIGVhY2ggaW50ZXJmZXJvbWV0cmljIGFjcXVpc2l0aW9uIHdpdGggYSBUYW5ERU0tWCAoVERYKSBhdAogICAgICAzMCBtIHNwYWNpbmcuIFdlIGZvcm0gMjkgQ1NLIERpZmZlcmVudGlhbCBJbnRlcmZlcm9ncmFtIChESW5TQVIpIChpLmUuCiAgICAgIGRpZmZlcmVuY2UgYmV0d2VlbiB0d28gU0FSIGludGVyZmVyb2dyYW1zKSB0byByZXZlYWwgdGhlIHZlcnRpY2FsIG1vdGlvbgogICAgICBvZiBpY2UgaW4gcmVzcG9uc2UgdG8gY2hhbmdlcyBpbiBvY2VhbmljIHRpZGVzLiBXZSBnZW5lcmF0ZSBhIHRpbWUgc2VyaWVzCiAgICAgIG9mIERpZ2l0YWwgRWxldmF0aW9uIE1vZGVsIGF0IDEyIG0gc3BhY2luZyBhbmQgbWV0ZXItc2NhbGUgdmVydGljYWwKICAgICAgcHJlY2lzaW9uIHVzaW5nIFNBUiBiaXN0YXRpYyBhY3F1aXNpdGlvbiBmcm9tIHRoZSBURFggbWlzc2lvbi4gVGhlCiAgICAgIHByb2Nlc3NpbmcgY2hhaW4gaW5jbHVkZXM6IGEpIHNwYWNlYm9ybmUgbW9ub3N0YXRpYyBUZXJyYVNBUi1YIHByb2Nlc3Npbmc7CiAgICAgIGIpIGJpc3RhdGljIFREWCBwcm9jZXNzaW5nOyBjKSBpbnRlcmZlcm9tZXRyaWMgY29tYmluYXRpb24gb2YgaW1hZ2VzOyBkKQogICAgICBwaGFzZSB1bndyYXBwaW5nOyBlKSBwaGFzZS10by1oZWlnaHQgY29udmVyc2lvbjsgZikgZ2VvY29kaW5nIHRvIGEKICAgICAgbGF0aXR1ZGUvbG9uZ2l0dWRlIGdyaWQuIFdlIGRpZmZlcmVudGlhdGUgdGVtcG9yYWxseSBzZXBhcmF0ZWQgVERYIERFTXMgdG8KICAgICAgZ2VuZXJhdGUgZWxldmF0aW9uIGNoYW5nZXMgbWFwIG9uIGdyb3VuZGVkIGljZSBhbmQgb2NlYW4taW5kdWNlZCBtZWx0CiAgICAgIHJhdGVzIG1hcHMgb24gZmxvYXRpbmcgaWNlLiZhbXA7bmJzcDtXZSBzbW9vdGggZWxldmF0aW9uIGNoYW5nZXMgbWFwcwogICAgICAoZGgvZHQpIHVzaW5nIGEgMTV4MTUgcGl4ZWxzIG1vdmluZyBhdmVyYWdlIHdpbmRvdyB0byBvYmF0YWluIGRoL2R0IG1hcHMKICAgICAgYXQgMS41IGttIHNwYWNpbmcuIE9uIGZsb2F0aW5nIGljZSwgd2UgZGlmZmVyZW50aWF0ZSBURFggREVNcyBieSB0cmFja2luZwogICAgICBpY2UgcGFyY2VsIHdpdGggdGltZSBhbmQgY29ycmVjdGluZyBmb3IgaWNlIGZsb3cgZGl2ZXJnZW5jZS4gV2UgdXNlIGEgY2hpcAogICAgICBzaXplIG9mIDMweDMwIHBpeGVscyB3aXRoIHN0ZXBzIG9mIDE2IHBpeGVscyBpbiBib3RoIGhvcml6b250YWwgYW5kCiAgICAgIHZlcnRpY2FsIGRpcmVjdGlvbnMgYW5kIHNtb290aCB0aGUgcmVzdWx0cyB3aXRoIGEgMTV4MTUgbW92aW5nIGF2ZXJhZ2UKICAgICAgd2luZG93IHRvIG9idGFpbiBvY2Vhbi1pbmR1Y2VkIG1lbHQgcmF0ZSBtYXBzIGF0IDEuNSBrbSBzcGFjaW5nLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik90aGVyIj4KICAgICAgVGhlIGdyb3VuZGluZyBsaW5lJmFtcDtuYnNwOyBkYXRhIGFyZSBmb3JtYXR0ZWQgaW4gYW4gRVNSSSBzaGFwZWZpbGUKICAgICAgZm9ybWF0IHN0b3Jpbmcgbm9udG9wb2xvZ2ljYWwgYW5kIGF0dHJpYnV0ZSBpbmZvcm1hdGlvbiAoZS5nLiBhY3F1aXNpdGlvbgogICAgICBkYXRlcywgb3JiaXQgbnVtYmVycykgZm9yIHRoZSBzcGF0aWFsIGZlYXR1cmVzIGluIHRoZSBkYXRhc2V0LiBUaGUgdGl0bGUKICAgICAgb2YgZWFjaCBmaWxlIGNhcnJpZXMgaW5mb3JtYXRpb24gb24gdGhlIGFjcXVpc2l0aW9uIGRhdGVzIG9mIHRoZSBkb3ViO2UKICAgICAgZGlmZmVyZW5jZSB1c2VkIHRvIGdlbmVyYXRlIHRoZSBncm91bmRpbmcgbGluZSBzaGFwZWZpbGUuIFRoZSBESW5TQVIKICAgICAgaW50ZXJmZXJvZ3JhbXMgYXJlIHN0b3JlZCBpbiBhIEdlb1RpZmYgZm9ybWF0LiBUaGUgdGl0bGUgb2YgZWFjaCBmaWxlCiAgICAgIGNhcnJpZXMgaW5mb3JtYXRpb24gb24gdGhlIGFjcXVpc2l0aW9uIGRhdGVzIG9mIHRoZSBTQVIgaW1hZ2VzIHVzZWQgdG8KICAgICAgZ2VuZXJhdGUgdGhlIERJblNBUiBJbnRlcmZlcm9ncmFtLiBUaGUgZWxldmF0aW9uIGNoYW5nZSByYXRlcyBtYXBzIGFuZCB0aGUKICAgICAgb2NlYW4taW5kdWNlZCBtZWx0IHJhdGVzIGFyZSBzaW1pbGFybHkgc3RvcmVkIGluIEdlb1RpZmYgZmlsZXMuIFNwYXRpYWwKICAgICAgY292ZXJhZ2UgVGhlIGRhdGFzZXQgc3BhbnMgdGhlIGFyZWEgY292ZXJlZCBieSBEZW5tYW4gR2xhY2llciwmYW1wO25ic3A7CiAgICAgIEVhc3QgQW50YXJjdGljYS4gQWxsIHRoZSBkYXRhIGlzIGluIHBvbGFyIHN0ZXJlb2dyYXBoaWMgcHJvamVjdGlvbiB3aXRoCiAgICAgIHRydWUgc2NhbGUgYXQgNzFTLiBBcyBhIGNvbmRpdGlvbiB0byB1c2UgdGhlIGRhdGEsIHBsZWFzZSBjaXRlIHRoZQogICAgICBmb2xsb3dpbmcgcHVibGljYXRpb24sIEJyYW5jYXRvLCBWLiwgUmlnbm90LCBFLiwgTWlsaWxsbywgUC4sIE1vcmxpZ2hlbSwKICAgICAgTS4sIEFuLCBMLiwgU2NoZXVjaGwsIEIuLCAuLi4sIFByYXRzLUlyYW9sYSwgIkdyb3VuZGluZyBsaW5lIHJldHJlYXQKICAgICAgb2YgRGVubWFuIEdsYWNpZXIsIEVhc3QgQW50YXJjdGljYSwgbWVhc3VyZWQgd2l0aCBDT1NNTy1Ta3lNZWQgcmFkYXIKICAgICAgaW50ZXJmZXJvbWV0cnkiLCBHZW9waHlzLiBSZXMuIExldHQuLCBpbiBwcmVzcwogICAgPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/dataset/doi:10.15146/zf0j-5m50",
+      "contentUrl": null,
+      "metadataVersion": 21,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 4668,
+      "viewsOverTime": [
+        { "yearMonth": "2019-10", "total": 2 },
+        { "yearMonth": "2019-12", "total": 342 },
+        { "yearMonth": "2020-01", "total": 55 },
+        { "yearMonth": "2020-02", "total": 28 },
+        { "yearMonth": "2020-03", "total": 587 },
+        { "yearMonth": "2020-04", "total": 978 },
+        { "yearMonth": "2020-05", "total": 227 },
+        { "yearMonth": "2020-06", "total": 16 },
+        { "yearMonth": "2020-07", "total": 35 },
+        { "yearMonth": "2020-08", "total": 15 },
+        { "yearMonth": "2020-09", "total": 20 },
+        { "yearMonth": "2020-10", "total": 15 },
+        { "yearMonth": "2020-11", "total": 21 },
+        { "yearMonth": "2020-12", "total": 17 },
+        { "yearMonth": "2021-01", "total": 22 },
+        { "yearMonth": "2021-02", "total": 10 },
+        { "yearMonth": "2021-03", "total": 32 },
+        { "yearMonth": "2021-04", "total": 3 },
+        { "yearMonth": "2021-05", "total": 6 },
+        { "yearMonth": "2021-06", "total": 7 },
+        { "yearMonth": "2021-07", "total": 299 },
+        { "yearMonth": "2021-08", "total": 308 },
+        { "yearMonth": "2021-09", "total": 4 },
+        { "yearMonth": "2021-10", "total": 3 },
+        { "yearMonth": "2021-11", "total": 11 },
+        { "yearMonth": "2021-12", "total": 5 },
+        { "yearMonth": "2022-01", "total": 9 },
+        { "yearMonth": "2022-02", "total": 44 },
+        { "yearMonth": "2022-03", "total": 78 },
+        { "yearMonth": "2022-04", "total": 8 },
+        { "yearMonth": "2022-05", "total": 18 },
+        { "yearMonth": "2022-06", "total": 12 },
+        { "yearMonth": "2022-07", "total": 9 },
+        { "yearMonth": "2022-08", "total": 218 },
+        { "yearMonth": "2022-09", "total": 9 },
+        { "yearMonth": "2022-10", "total": 5 },
+        { "yearMonth": "2022-11", "total": 13 },
+        { "yearMonth": "2022-12", "total": 15 },
+        { "yearMonth": "2023-01", "total": 75 },
+        { "yearMonth": "2023-02", "total": 42 },
+        { "yearMonth": "2023-03", "total": 10 },
+        { "yearMonth": "2023-04", "total": 12 },
+        { "yearMonth": "2023-05", "total": 14 },
+        { "yearMonth": "2023-06", "total": 11 },
+        { "yearMonth": "2023-07", "total": 10 },
+        { "yearMonth": "2023-08", "total": 544 },
+        { "yearMonth": "2023-09", "total": 212 },
+        { "yearMonth": "2023-10", "total": 63 },
+        { "yearMonth": "2023-11", "total": 45 },
+        { "yearMonth": "2023-12", "total": 81 },
+        { "yearMonth": "2024-03", "total": 5 },
+        { "yearMonth": "2024-05", "total": 6 },
+        { "yearMonth": "2024-06", "total": 1 },
+        { "yearMonth": "2024-07", "total": 1 },
+        { "yearMonth": "2024-11", "total": 8 },
+        { "yearMonth": "2025-03", "total": 5 },
+        { "yearMonth": "2025-04", "total": 4 },
+        { "yearMonth": "2025-06", "total": 3 },
+        { "yearMonth": "2025-07", "total": 4 },
+        { "yearMonth": "2025-08", "total": 1 },
+        { "yearMonth": "2025-09", "total": 5 }
+      ],
+      "downloadCount": 2213,
+      "downloadsOverTime": [
+        { "yearMonth": "2019-12", "total": 333 },
+        { "yearMonth": "2020-01", "total": 52 },
+        { "yearMonth": "2020-02", "total": 21 },
+        { "yearMonth": "2020-03", "total": 5 },
+        { "yearMonth": "2020-04", "total": 4 },
+        { "yearMonth": "2020-05", "total": 1 },
+        { "yearMonth": "2020-06", "total": 1 },
+        { "yearMonth": "2020-07", "total": 2 },
+        { "yearMonth": "2020-09", "total": 1 },
+        { "yearMonth": "2021-01", "total": 1 },
+        { "yearMonth": "2021-03", "total": 1 },
+        { "yearMonth": "2021-07", "total": 293 },
+        { "yearMonth": "2021-08", "total": 304 },
+        { "yearMonth": "2022-01", "total": 3 },
+        { "yearMonth": "2022-02", "total": 32 },
+        { "yearMonth": "2022-03", "total": 67 },
+        { "yearMonth": "2022-05", "total": 7 },
+        { "yearMonth": "2022-07", "total": 3 },
+        { "yearMonth": "2022-08", "total": 215 },
+        { "yearMonth": "2022-09", "total": 3 },
+        { "yearMonth": "2022-11", "total": 1 },
+        { "yearMonth": "2022-12", "total": 1 },
+        { "yearMonth": "2023-01", "total": 10 },
+        { "yearMonth": "2023-02", "total": 6 },
+        { "yearMonth": "2023-06", "total": 2 },
+        { "yearMonth": "2023-07", "total": 1 },
+        { "yearMonth": "2023-08", "total": 502 },
+        { "yearMonth": "2023-09", "total": 166 },
+        { "yearMonth": "2023-10", "total": 54 },
+        { "yearMonth": "2023-11", "total": 35 },
+        { "yearMonth": "2023-12", "total": 77 },
+        { "yearMonth": "2024-03", "total": 0 },
+        { "yearMonth": "2024-05", "total": 3 },
+        { "yearMonth": "2024-06", "total": 0 },
+        { "yearMonth": "2024-07", "total": 0 },
+        { "yearMonth": "2024-11", "total": 3 },
+        { "yearMonth": "2025-03", "total": 0 },
+        { "yearMonth": "2025-04", "total": 0 },
+        { "yearMonth": "2025-06", "total": 2 },
+        { "yearMonth": "2025-07", "total": 0 },
+        { "yearMonth": "2025-08", "total": 0 },
+        { "yearMonth": "2025-09", "total": 1 }
+      ],
+      "referenceCount": 2,
+      "citationCount": 2,
+      "citationsOverTime": [{ "year": "2025", "total": 2 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2019-09-05T17:38:15.000Z",
+      "registered": "2019-09-05T17:38:16.000Z",
+      "published": "2020",
+      "updated": "2025-07-22T11:55:07.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.15146/zf0j-5m50", "type": "media" } },
+      "references": {
+        "data": [
+          { "id": "10.1594/pangaea.896940", "type": "dois" },
+          { "id": "10.1029/2019gl086291", "type": "dois" }
+        ]
+      },
+      "citations": {
+        "data": [
+          { "id": "10.3390/rs4092753", "type": "dois" },
+          { "id": "10.1029/2019gl086291", "type": "dois" }
+        ]
+      },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

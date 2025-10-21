@@ -398,6 +398,7 @@ test.each([
   'cdl-ucsf-dryad',
   'cdl-ucsf',
   'dryad',
+  'dryad-alt',
   'dryad-collection',
   'dryad-html',
   'figshare',
