@@ -1,12 +1,10 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { SystemClock } from 'clock-ts'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
-import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
-import { DeprecatedLoggerEnv, Locale, SessionSecret, SessionStore } from '../../src/Context.ts'
+import { Locale, SessionSecret, SessionStore } from '../../src/Context.ts'
 import { CookieSignature } from '../../src/CookieSignature.ts'
 import * as _ from '../../src/log-in/index.ts'
 import { OrcidOauth } from '../../src/OrcidOauth.ts'
@@ -143,7 +141,6 @@ describe('authenticate', () => {
           )
         }).pipe(
           Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(DeprecatedLoggerEnv, { logger: () => IO.of(undefined), clock: SystemClock }),
           Effect.provideService(
             FetchHttpClient.Fetch,
             fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
@@ -204,7 +201,6 @@ describe('authenticate', () => {
           )
         }).pipe(
           Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(DeprecatedLoggerEnv, { logger: () => IO.of(undefined), clock: SystemClock }),
           Effect.provideService(
             FetchHttpClient.Fetch,
             fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
@@ -260,7 +256,6 @@ describe('authenticate', () => {
       expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provideService(DeprecatedLoggerEnv, { logger: () => IO.of(undefined), clock: SystemClock }),
       Effect.provideService(
         FetchHttpClient.Fetch,
         fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
@@ -320,7 +315,6 @@ describe('authenticate', () => {
       expect(fetch.done()).toBeTruthy()
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provideService(DeprecatedLoggerEnv, { logger: () => IO.of(undefined), clock: SystemClock }),
       Effect.provideService(
         FetchHttpClient.Fetch,
         fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
@@ -396,7 +390,6 @@ describe('authenticate', () => {
         )
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-        Effect.provideService(DeprecatedLoggerEnv, { logger: () => IO.of(undefined), clock: SystemClock }),
         Effect.provideService(
           FetchHttpClient.Fetch,
           fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
