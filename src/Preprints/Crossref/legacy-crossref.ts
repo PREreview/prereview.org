@@ -11,15 +11,9 @@ import { type Html, sanitizeHtml } from '../../html.ts'
 import { transformJatsToHtml } from '../../jats.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
-import {
-  EcoevorxivPreprintId,
-  EngrxivPreprintId,
-  type IndeterminatePreprintId,
-  type PreprintId,
-  TechrxivPreprintId,
-} from '../PreprintId.ts'
+import { EngrxivPreprintId, type IndeterminatePreprintId, type PreprintId, TechrxivPreprintId } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['31224', '32942', '36227'] as const
+const crossrefDoiPrefixes = ['31224', '36227'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -131,19 +125,11 @@ const detectLanguageForServer = ({
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('32942'), 'DOI'),
-      publisher: D.literal('California Digital Library (CDL)'),
-    }),
-    D.map(work => new EcoevorxivPreprintId({ value: work.DOI })),
-  ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31224'), 'DOI'),
