@@ -1110,7 +1110,9 @@ export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
 export const supportedDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DatasetId]> => fc.oneof(dryadDatasetUrl())
 
 export const dryadDatasetId = (): fc.Arbitrary<Datasets.DryadDatasetId> =>
-  doi(constantFrom('5061', '6071', '6078', '7272', '25338')).map(doi => new Datasets.DryadDatasetId({ value: doi }))
+  doi(constantFrom('5061', '6071', '6078', '7272', '7280', '25338')).map(
+    doi => new Datasets.DryadDatasetId({ value: doi }),
+  )
 
 export const dryadDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DryadDatasetId]> =>
   dryadDatasetId()

@@ -165,6 +165,33 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.6078/D1941T'),
     }),
   },
+  {
+    response: 'cdl-uci-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Ocean acidification and warming are expected to have negative impacts on\n marine organisms, and particularly on shell-building species.\n Acidification and warming may operate independently or interactively,\n amplifying or mitigating impacts on individuals. Previous results have\n primarily come from lab studies of single species, yet these climate\n stressors are occurring within naturally dynamic systems with high abiotic\n and biotic variability. As a result, the impacts of these stressors in\n situ remains poorly understood. We conducted a 6-month field manipulation\n to determine the effects of ocean acidification and warming on a\n habitat-forming shellfish, the Pacific blue mussel (Mytilus trossulus), in\n a dynamic coastal system. Twenty tide pools were factorially manipulated,\n including unmanipulated control, CO2 added, warmed, and combined CO2 added\n and warmed treatments. We measured mussel shell thickness, strength, and\n corrosion at 0, 3, and 6 months of exposure to treatment conditions. CO2\n addition led to a decrease in shell thickness and strength and an increase\n in shell corrosion. However, we also detected an increase in shell\n strength for mussels exposed to both CO2 addition and warming. These\n findings indicate that ocean acidification negatively impacted shellfish\n in situ and that these effects might be mitigated when exposed\n concurrently to moderate warming, leading to an interactive effect of\n acidification and warming on this critical habitat-forming shellfish.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Racine Rangel', orcid: OrcidId.OrcidId('0000-0002-2833-0832') },
+        { name: 'Matthew Bracken' },
+        { name: 'Kristy Kroeker' },
+        { name: 'Luke Miller' },
+        { name: 'Cascade Sorte' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.7280/d1p10v') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 10, day: 3 }),
+      title: {
+        text: rawHtml(
+          'Factorial field manipulation reveals multi-stressor effects on a critical habitat-forming shellfish',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.7280/D1P10V'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -196,6 +223,7 @@ test.each([
   'arxiv',
   'cdl-ucb',
   'cdl-ucd',
+  'cdl-uci',
   'cdl-ucm',
   'cdl-ucsf',
   'lifecycle-journal-article',
