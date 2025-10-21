@@ -56,7 +56,6 @@ import type { OAuthEnv } from '../src/log-in/index.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
 import * as Personas from '../src/Personas/index.ts'
-import type { CrossrefPreprintId as LegacyCrossrefPreprintId } from '../src/Preprints/Crossref/legacy-crossref.ts'
 import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.ts'
 import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.ts'
 import {
@@ -598,11 +597,8 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, Array.NonEmptyReadonl
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
 
-export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value'] | LegacyCrossrefPreprintId['value']> =>
+export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)
-
-export const legacyCrossrefPreprintDoi = (): fc.Arbitrary<LegacyCrossrefPreprintId['value']> =>
-  legacyCrossrefPreprintId().map(id => id.value)
 
 export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']> =>
   datacitePreprintId().map(id => id.value)
@@ -1003,7 +999,7 @@ export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<IndeterminatePrep
     zenodoOrAfricarxivPreprintId(),
   )
 
-export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCrossrefPreprintId> =>
+export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
     advancePreprintId(),
     africarxivOsfPreprintId(),
@@ -1028,10 +1024,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCr
     ssrnPreprintId(),
     techrxivPreprintId(),
     verixivPreprintId(),
-    legacyCrossrefPreprintId(),
   )
-
-export const legacyCrossrefPreprintId = (): fc.Arbitrary<LegacyCrossrefPreprintId> => fc.oneof(techrxivPreprintId())
 
 export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(
