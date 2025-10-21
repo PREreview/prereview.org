@@ -1028,13 +1028,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCr
   )
 
 export const legacyCrossrefPreprintId = (): fc.Arbitrary<LegacyCrossrefPreprintId> =>
-  fc.oneof(
-    curvenotePreprintId(),
-    eartharxivPreprintId(),
-    ecoevorxivPreprintId(),
-    engrxivPreprintId(),
-    techrxivPreprintId(),
-  )
+  fc.oneof(eartharxivPreprintId(), ecoevorxivPreprintId(), engrxivPreprintId(), techrxivPreprintId())
 
 export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
   fc.oneof(

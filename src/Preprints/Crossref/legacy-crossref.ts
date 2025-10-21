@@ -12,7 +12,6 @@ import { transformJatsToHtml } from '../../jats.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
 import {
-  CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EngrxivPreprintId,
@@ -21,7 +20,7 @@ import {
   TechrxivPreprintId,
 } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['31223', '31224', '32942', '36227', '62329'] as const
+const crossrefDoiPrefixes = ['31223', '31224', '32942', '36227'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -133,7 +132,6 @@ const detectLanguageForServer = ({
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'CurvenotePreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EartharxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EcoevorxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
@@ -141,13 +139,6 @@ const detectLanguageForServer = ({
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('62329'), 'DOI'),
-      publisher: D.literal('Curvenote Inc.'),
-    }),
-    D.map(work => new CurvenotePreprintId({ value: work.DOI })),
-  ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31223'), 'DOI'),
