@@ -5,7 +5,7 @@ import { Doi } from '../types/index.ts'
 export type DatasetId = typeof DatasetId.Type
 
 export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadDatasetId', {
-  value: Doi.RegistrantDoiSchema('5061', '5068', '6071', '6078', '7272', '7280', '15146', '25338', '25349'),
+  value: Doi.RegistrantDoiSchema('5061', '5068', '6071', '6078', '7272', '7280', '7291', '15146', '25338', '25349'),
 }) {}
 
 export const DatasetId = Schema.Union(DryadDatasetId)

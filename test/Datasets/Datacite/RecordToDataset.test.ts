@@ -268,6 +268,34 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.5068/D1339F'),
     }),
   },
+  {
+    response: 'cdl-ucsc-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Monitoring planktonic larvae is important for understanding changes in\n recruitment, range shifts, and reproductive behavior. Here, we used light\n traps to examine the abundance, community diversity, and ontogenetic\n structure of ichthyoplankton and octopus paralarvae at three sites around\n Santa Catalina Island, California, USA across two seasons between 2018 and\n 2019. We identified 15,919 fish larvae and 205 octopus paralarvae using\n morphology supplemented by DNA barcoding. We found no differences in\n larval fish diversity or abundance between years or seasons. All octopus\n paralarvae were captured in the summer and were identified as Octopus\n bimaculatus. Cryptic substrate-associated fishes dominated samples,\n especially those from suborder Blennioidei and family Gobiidae. We\n conclude that light traps can be a valuable tool and useful supplement to\n other zooplankton sampling methods, especially in providing a more\n complete assessment of nearshore plankton communities and taxa which have\n been poorly represented in traditional, offshore monitoring programs. They\n may be particularly useful for studying cryptic and substrate-associated\n species whose larvae are often poorly described in the existing\n identification literature.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Katherine Dale', orcid: OrcidId.OrcidId('0000-0002-8544-1571') },
+        { name: 'Elena Pilch' },
+        { name: 'Mary Gomes' },
+        { name: 'Nora Laszlo' },
+        { name: 'Adam Mercer' },
+        { name: 'Rita Mehta' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.7291/d1s38t') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 9, day: 9 }),
+      title: {
+        text: rawHtml(
+          'Using light traps to assess larval fish and octopus paralarvae diversity and ontogenetic structure around Santa Catalina Island, CA',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.7291/D1S38T'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -301,6 +329,7 @@ test.each([
   'cdl-ucd',
   'cdl-uci',
   'cdl-ucm',
+  'cdl-ucsc',
   'cdl-ucsf',
   'lifecycle-journal-article',
   'lifecycle-journal-registration',
