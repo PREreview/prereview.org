@@ -141,6 +141,30 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.25338/B8CK5N'),
     }),
   },
+  {
+    response: 'cdl-ucb-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The snowpack of the Sierra Nevada Mountains is an indispensable freshwater\n resource for large portions of western North America. The Central Sierra\n Snow Laboratory (CSSL) has had an integral role in the measurement of\n snowfall and snowpack properties within the Sierra Nevada Mountains, and\n has worked to develop a physical understanding of the processes that\n govern snow since 1946. This dataset contains measurements of temperature,\n precipitation quantity, snowfall, and snowpack characteristics, including\n 24-hour snowfall, snowpack depth, and snow water equivalent for each water\n year (October 1 to September 30) from 1971 to 2025 at CSSL except for\n Water Year 2020. Measurements were made at the same location at CSSL for\n the entirety of the 53-year measurement period to ensure continuity of\n record with minimal effects from differences in measurement location.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Andrew Schwartz', orcid: OrcidId.OrcidId('0000-0002-2623-5962') },
+        { name: 'Randall Osterhuber' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.6078/d1941t') }),
+      posted: Temporal.PlainDate.from({ year: 2021, month: 6, day: 22 }),
+      title: {
+        text: rawHtml(
+          'Snowpack, precipitation, and temperature measurements at the Central Sierra Snow Laboratory for water years 1971 to 2025',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.6078/D1941T'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -170,6 +194,8 @@ test.each(['dryad-collection'])('returns a specific error for a non-dataset reco
 
 test.each([
   'arxiv',
+  'cdl-ucb',
+  'cdl-ucd',
   'cdl-ucm',
   'cdl-ucsf',
   'lifecycle-journal-article',

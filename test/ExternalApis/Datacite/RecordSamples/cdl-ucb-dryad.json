@@ -1,0 +1,249 @@
+{
+  "data": {
+    "id": "10.6078/d1941t",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6078/d1941t",
+      "prefix": "10.6078",
+      "suffix": "d1941t",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Schwartz, Andrew",
+          "nameType": "Personal",
+          "givenName": "Andrew",
+          "familyName": "Schwartz",
+          "affiliation": ["University of California, Berkeley"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-2623-5962",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Osterhuber, Randall",
+          "nameType": "Personal",
+          "givenName": "Randall",
+          "familyName": "Osterhuber",
+          "affiliation": ["University of California, Berkeley"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        {
+          "title": "Snowpack, precipitation, and temperature measurements at the Central Sierra Snow Laboratory for water years 1971 to 2025"
+        }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        {
+          "subject": "FOS: Earth and related environmental sciences",
+          "schemeUri": "https://web-archive.oecd.org/2012-06-15/138575-38235147.pdf",
+          "subjectScheme": "fos"
+        },
+        {
+          "subject": "FOS: Earth and related environmental sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        { "subject": "snowpack" },
+        { "subject": "snowfall" },
+        { "subject": "federal sampler" },
+        { "subject": "Central Sierra Snow Lab" }
+      ],
+      "contributors": [
+        {
+          "name": "Central Sierra Snow Laboratory",
+          "affiliation": [],
+          "contributorType": "Sponsor",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2025-08-05T18:20:05Z", "dateType": "Created" },
+        { "date": "2021-06-15T17:26:03Z", "dateType": "Submitted" },
+        { "date": "2021-06-22T00:00:00Z", "dateType": "Issued" },
+        { "date": "2021-06-22T00:00:00Z", "dateType": "Available" },
+        { "date": "2025-10-01T00:00:00Z", "dateType": "Updated" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": ["987904 bytes"],
+      "formats": [],
+      "version": "13",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "The snowpack of the Sierra Nevada Mountains is an indispensable freshwater\n resource for large portions of western North America. The Central Sierra\n Snow Laboratory (CSSL) has had an integral role in the measurement of\n snowfall and snowpack properties within the Sierra Nevada Mountains, and\n has worked to develop a physical understanding of the processes that\n govern snow since 1946. This dataset contains measurements of temperature,\n precipitation quantity, snowfall, and snowpack characteristics, including\n 24-hour snowfall, snowpack depth, and snow water equivalent for each water\n year (October 1 to September 30) from 1971 to 2025 at CSSL except for\n Water Year 2020. Measurements were made at the same location at CSSL for\n the entirety of the 53-year measurement period to ensure continuity of\n record with minimal effects from differences in measurement location.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "Data on snowpack depth and snow water equivalent (SWE) were collected\n using a federal sampler and/or a large snow stake at 9:00 Pacific Standard\n Time (PST) each day. New snowfall measurements used a snow board and ruler\n at 8:00 and 16:00 PST on days when snowfall occurred and were\n then totaled for daily new snow quantity.",
+          "descriptionType": "Methods"
+        },
+        {
+          "description": "Snowfall amounts \u0026lt; 0.5 cm when measured with the snow board and\n ruler were labelled as \"Trace\" or \"T\" accumulations.\n Periods with no measurement and/or missing values are recorded as\n \"--\". References to \"patchy\", \"patches\",\n \"small patches\", or \"large patches\" are in reference\n to snow cover on the site.  Water Years 1971 through 2019 include\n SWE measurements from a federal sampler on the site. Beginning in Water\n Year 2021, SWE values that are used are obtained from the USDA NRCS SNOTEL\n site at the lab. ",
+          "descriptionType": "Other"
+        },
+        {
+          "description": "# Snowpack, precipitation, and temperature measurements at the Central\n Sierra Snow Laboratory for water years 1971 to 2025 Dataset DOI:\n [10.6078/D1941T](10.6078/D1941T) ## Description of the data and file\n structure Water Years 1971 through 2019 include data on snow depth and SWE\n measurements that were collected using a federal sampler and/or a large\n snow stake at 9:00 Pacific Standard Time (PST) each day. New snowfall\n measurements used a snow board and ruler at 8:00 and 16:00 Pacific\n Standard Time on days when snowfall occurred and were then totaled for\n daily new snow quantity. Beginning in Water Year 2021, SWE values were\n obtained from the USDA NRCS SNOTEL site at the lab at 00:00 local time and\n snow depth measurements were obtained from a snow depth pole permanently\n installed at the site measurement location at 8am PST. New\n snowfall measurements used a snow board and ruler at 8:00 and 16:00\n Pacific Standard Time on days when snowfall occurred and were then totaled\n for daily new snow quantity. Measurement Notes: Measurements of snowfall\n were rounded to the nearest 0.5 cm and measurements of precipitation were\n rounded to the nearest mm. Snowfall amounts \u0026lt; 0.5 cm when measured\n with the snow board and ruler were labelled as \"Trace\" or\n \"T\" accumulations. Periods with no measurement and/or missing\n values are recorded as \"--\". References to \"patchy\",\n \"patches\", \"small patches\", or \"large\n patches\" are in reference to snow cover on the site.  ###\n Change log: 2025-08-05 1. Expanded dataset by including .csv files for\n 2021-2024 water years. 2. Standardized date format between all files. 3.\n Previously, absent values were reported with either 'NA' or\n '--'. These have all been changed to '--' for\n continuity.  4. Remarks were checked and additional context was\n added to existing daily remarks for clarification. 5. A typo was corrected\n in Water Year 2006 where a value was \"209\" and was changed to\n \"290\". 2025-10-01 1. Added Water Year 2025 data (WY2025.csv)",
+          "descriptionType": "TechnicalInfo"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA3OC9EMTk0MVQ8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNjaHdhcnR6LCBBbmRyZXc8L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDItMjYyMy01OTYyPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAxYW43cTIzOCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Vbml2ZXJzaXR5IG9mIENhbGlmb3JuaWEsIEJlcmtlbGV5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Pc3Rlcmh1YmVyLCBSYW5kYWxsPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAxYW43cTIzOCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Vbml2ZXJzaXR5IG9mIENhbGlmb3JuaWEsIEJlcmtlbGV5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+CiAgICAgIFNub3dwYWNrLCBwcmVjaXBpdGF0aW9uLCBhbmQgdGVtcGVyYXR1cmUgbWVhc3VyZW1lbnRzIGF0IHRoZSBDZW50cmFsCiAgICAgIFNpZXJyYSBTbm93IExhYm9yYXRvcnkgZm9yIHdhdGVyIHllYXJzIDE5NzEgdG8gMjAyNQogICAgPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyIHB1Ymxpc2hlcklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMHg2aDVuOTUiIHB1Ymxpc2hlcklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmcvIj5EcnlhZDwvcHVibGlzaGVyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iRGF0YXNldCI+ZGF0YXNldDwvcmVzb3VyY2VUeXBlPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNTwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9ImZvcyIgc2NoZW1lVVJJPSJodHRwczovL3dlYi1hcmNoaXZlLm9lY2Qub3JnLzIwMTItMDYtMTUvMTM4NTc1LTM4MjM1MTQ3LnBkZiI+Rk9TOiBFYXJ0aCBhbmQgcmVsYXRlZCBlbnZpcm9ubWVudGFsIHNjaWVuY2VzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+c25vd3BhY2s8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5zbm93ZmFsbDwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmZlZGVyYWwgc2FtcGxlcjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkNlbnRyYWwgU2llcnJhIFNub3cgTGFiPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGNvbnRyaWJ1dG9ycz4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9IlNwb25zb3IiPgogICAgICA8Y29udHJpYnV0b3JOYW1lPkNlbnRyYWwgU2llcnJhIFNub3cgTGFib3JhdG9yeTwvY29udHJpYnV0b3JOYW1lPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyNS0wOC0wNVQxODoyMDowNVo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDIxLTA2LTE1VDE3OjI2OjAzWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjEtMDYtMjJUMDA6MDA6MDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyMS0wNi0yMlQwMDowMDowMFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCI+MjAyNS0xMC0wMVQwMDowMDowMFo8L2RhdGU+CiAgPC9kYXRlcz4KICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogIDxzaXplcz4KICAgIDxzaXplPjk4NzkwNCBieXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDx2ZXJzaW9uPjEzPC92ZXJzaW9uPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vc3BkeC5vcmcvbGljZW5zZXMvQ0MwLTEuMC5odG1sIj5DcmVhdGl2ZSBDb21tb25zIFplcm8gdjEuMCBVbml2ZXJzYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij4KICAgICAgVGhlIHNub3dwYWNrIG9mIHRoZSBTaWVycmEgTmV2YWRhIE1vdW50YWlucyBpcyBhbiBpbmRpc3BlbnNhYmxlIGZyZXNod2F0ZXIKICAgICAgcmVzb3VyY2UgZm9yIGxhcmdlIHBvcnRpb25zIG9mIHdlc3Rlcm4gTm9ydGggQW1lcmljYS4gVGhlIENlbnRyYWwgU2llcnJhCiAgICAgIFNub3cgTGFib3JhdG9yeSAoQ1NTTCkgaGFzIGhhZCBhbiBpbnRlZ3JhbCByb2xlIGluIHRoZSBtZWFzdXJlbWVudCBvZgogICAgICBzbm93ZmFsbCBhbmQgc25vd3BhY2sgcHJvcGVydGllcyB3aXRoaW4gdGhlIFNpZXJyYSBOZXZhZGEgTW91bnRhaW5zLCBhbmQKICAgICAgaGFzIHdvcmtlZCB0byBkZXZlbG9wIGEgcGh5c2ljYWwgdW5kZXJzdGFuZGluZyBvZiB0aGUgcHJvY2Vzc2VzIHRoYXQKICAgICAgZ292ZXJuIHNub3cgc2luY2UgMTk0Ni4gVGhpcyBkYXRhc2V0IGNvbnRhaW5zIG1lYXN1cmVtZW50cyBvZiB0ZW1wZXJhdHVyZSwKICAgICAgcHJlY2lwaXRhdGlvbiBxdWFudGl0eSwgc25vd2ZhbGwsIGFuZCBzbm93cGFjayBjaGFyYWN0ZXJpc3RpY3MsIGluY2x1ZGluZwogICAgICAyNC1ob3VyIHNub3dmYWxsLCBzbm93cGFjayBkZXB0aCwgYW5kIHNub3cgd2F0ZXIgZXF1aXZhbGVudCBmb3IgZWFjaCB3YXRlcgogICAgICB5ZWFyIChPY3RvYmVyIDEgdG8gU2VwdGVtYmVyIDMwKSBmcm9tIDE5NzEgdG8gMjAyNSBhdCBDU1NMIGV4Y2VwdCBmb3IKICAgICAgV2F0ZXIgWWVhciAyMDIwLiBNZWFzdXJlbWVudHMgd2VyZSBtYWRlIGF0IHRoZSBzYW1lIGxvY2F0aW9uIGF0IENTU0wgZm9yCiAgICAgIHRoZSBlbnRpcmV0eSBvZiB0aGUgNTMteWVhciBtZWFzdXJlbWVudCBwZXJpb2QgdG8gZW5zdXJlIGNvbnRpbnVpdHkgb2YKICAgICAgcmVjb3JkIHdpdGggbWluaW1hbCBlZmZlY3RzIGZyb20gZGlmZmVyZW5jZXMgaW4gbWVhc3VyZW1lbnQgbG9jYXRpb24uCiAgICA8L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iTWV0aG9kcyI+CiAgICAgIERhdGEgb24gc25vd3BhY2sgZGVwdGggYW5kIHNub3cgd2F0ZXIgZXF1aXZhbGVudCAoU1dFKSB3ZXJlIGNvbGxlY3RlZAogICAgICB1c2luZyBhIGZlZGVyYWwgc2FtcGxlciBhbmQvb3IgYSBsYXJnZSBzbm93IHN0YWtlIGF0IDk6MDAgUGFjaWZpYyBTdGFuZGFyZAogICAgICBUaW1lIChQU1QpIGVhY2ggZGF5LiBOZXcgc25vd2ZhbGwgbWVhc3VyZW1lbnRzIHVzZWQgYSBzbm93IGJvYXJkIGFuZCBydWxlcgogICAgICBhdCA4OjAwIGFuZCAxNjowMCBQU1Qgb24gZGF5cyB3aGVuIHNub3dmYWxsIG9jY3VycmVkJmFtcDtuYnNwO2FuZCB3ZXJlCiAgICAgIHRoZW4gdG90YWxlZCBmb3IgZGFpbHkgbmV3IHNub3cgcXVhbnRpdHkuCiAgICA8L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iT3RoZXIiPgogICAgICBTbm93ZmFsbCBhbW91bnRzICZhbXA7bHQ7IDAuNSBjbSB3aGVuIG1lYXN1cmVkIHdpdGggdGhlIHNub3cgYm9hcmQgYW5kCiAgICAgIHJ1bGVyIHdlcmUgbGFiZWxsZWQgYXMgIlRyYWNlIiBvciAiVCIgYWNjdW11bGF0aW9ucy4KICAgICAgUGVyaW9kcyB3aXRoIG5vIG1lYXN1cmVtZW50IGFuZC9vciBtaXNzaW5nIHZhbHVlcyBhcmUgcmVjb3JkZWQgYXMKICAgICAgIi0tIi4gUmVmZXJlbmNlcyB0byAicGF0Y2h5IiwgInBhdGNoZXMiLAogICAgICAic21hbGwgcGF0Y2hlcyIsIG9yICJsYXJnZSBwYXRjaGVzIiBhcmUgaW4gcmVmZXJlbmNlCiAgICAgIHRvIHNub3cgY292ZXIgb24gdGhlIHNpdGUuJmFtcDtuYnNwOyBXYXRlciBZZWFycyAxOTcxIHRocm91Z2ggMjAxOSBpbmNsdWRlCiAgICAgIFNXRSBtZWFzdXJlbWVudHMgZnJvbSBhIGZlZGVyYWwgc2FtcGxlciBvbiB0aGUgc2l0ZS4gQmVnaW5uaW5nIGluIFdhdGVyCiAgICAgIFllYXIgMjAyMSwgU1dFIHZhbHVlcyB0aGF0IGFyZSB1c2VkIGFyZSBvYnRhaW5lZCBmcm9tIHRoZSBVU0RBIE5SQ1MgU05PVEVMCiAgICAgIHNpdGUgYXQgdGhlIGxhYi4mYW1wO25ic3A7CiAgICA8L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iVGVjaG5pY2FsSW5mbyI+CiAgICAgICMgU25vd3BhY2ssIHByZWNpcGl0YXRpb24sIGFuZCB0ZW1wZXJhdHVyZSBtZWFzdXJlbWVudHMgYXQgdGhlIENlbnRyYWwKICAgICAgU2llcnJhIFNub3cgTGFib3JhdG9yeSBmb3Igd2F0ZXIgeWVhcnMgMTk3MSB0byAyMDI1IERhdGFzZXQgRE9JOgogICAgICBbMTAuNjA3OC9EMTk0MVRdKDEwLjYwNzgvRDE5NDFUKSAjIyBEZXNjcmlwdGlvbiBvZiB0aGUgZGF0YSBhbmQgZmlsZQogICAgICBzdHJ1Y3R1cmUgV2F0ZXIgWWVhcnMgMTk3MSB0aHJvdWdoIDIwMTkgaW5jbHVkZSBkYXRhIG9uIHNub3cgZGVwdGggYW5kIFNXRQogICAgICBtZWFzdXJlbWVudHMgdGhhdCB3ZXJlIGNvbGxlY3RlZCB1c2luZyBhIGZlZGVyYWwgc2FtcGxlciBhbmQvb3IgYSBsYXJnZQogICAgICBzbm93IHN0YWtlIGF0IDk6MDAgUGFjaWZpYyBTdGFuZGFyZCBUaW1lIChQU1QpIGVhY2ggZGF5LiBOZXcgc25vd2ZhbGwKICAgICAgbWVhc3VyZW1lbnRzIHVzZWQgYSBzbm93IGJvYXJkIGFuZCBydWxlciBhdCA4OjAwIGFuZCAxNjowMCBQYWNpZmljCiAgICAgIFN0YW5kYXJkIFRpbWUgb24gZGF5cyB3aGVuIHNub3dmYWxsIG9jY3VycmVkIGFuZCB3ZXJlIHRoZW4gdG90YWxlZCBmb3IKICAgICAgZGFpbHkgbmV3IHNub3cgcXVhbnRpdHkuIEJlZ2lubmluZyBpbiBXYXRlciBZZWFyIDIwMjEsIFNXRSB2YWx1ZXMgd2VyZQogICAgICBvYnRhaW5lZCBmcm9tIHRoZSBVU0RBIE5SQ1MgU05PVEVMIHNpdGUgYXQgdGhlIGxhYiBhdCAwMDowMCBsb2NhbCB0aW1lIGFuZAogICAgICBzbm93IGRlcHRoIG1lYXN1cmVtZW50cyB3ZXJlIG9idGFpbmVkIGZyb20gYSBzbm93IGRlcHRoIHBvbGUgcGVybWFuZW50bHkKICAgICAgaW5zdGFsbGVkIGF0IHRoZSBzaXRlIG1lYXN1cmVtZW50IGxvY2F0aW9uIGF0IDhhbSBQU1QuJmFtcDtuYnNwO05ldwogICAgICBzbm93ZmFsbCBtZWFzdXJlbWVudHMgdXNlZCBhIHNub3cgYm9hcmQgYW5kIHJ1bGVyIGF0IDg6MDAgYW5kIDE2OjAwCiAgICAgIFBhY2lmaWMgU3RhbmRhcmQgVGltZSBvbiBkYXlzIHdoZW4gc25vd2ZhbGwgb2NjdXJyZWQgYW5kIHdlcmUgdGhlbiB0b3RhbGVkCiAgICAgIGZvciBkYWlseSBuZXcgc25vdyBxdWFudGl0eS4gTWVhc3VyZW1lbnQgTm90ZXM6IE1lYXN1cmVtZW50cyBvZiBzbm93ZmFsbAogICAgICB3ZXJlIHJvdW5kZWQgdG8gdGhlIG5lYXJlc3QgMC41IGNtIGFuZCBtZWFzdXJlbWVudHMgb2YgcHJlY2lwaXRhdGlvbiB3ZXJlCiAgICAgIHJvdW5kZWQgdG8gdGhlIG5lYXJlc3QgbW0uIFNub3dmYWxsIGFtb3VudHMgJmFtcDtsdDsgMC41IGNtIHdoZW4gbWVhc3VyZWQKICAgICAgd2l0aCB0aGUgc25vdyBib2FyZCBhbmQgcnVsZXIgd2VyZSBsYWJlbGxlZCBhcyAiVHJhY2UiIG9yCiAgICAgICJUIiBhY2N1bXVsYXRpb25zLiBQZXJpb2RzIHdpdGggbm8gbWVhc3VyZW1lbnQgYW5kL29yIG1pc3NpbmcKICAgICAgdmFsdWVzIGFyZSByZWNvcmRlZCBhcyAiLS0iLiBSZWZlcmVuY2VzIHRvICJwYXRjaHkiLAogICAgICAicGF0Y2hlcyIsICJzbWFsbCBwYXRjaGVzIiwgb3IgImxhcmdlCiAgICAgIHBhdGNoZXMiIGFyZSBpbiByZWZlcmVuY2UgdG8gc25vdyBjb3ZlciBvbiB0aGUgc2l0ZS4mYW1wO25ic3A7ICMjIwogICAgICBDaGFuZ2UgbG9nOiAyMDI1LTA4LTA1IDEuIEV4cGFuZGVkIGRhdGFzZXQgYnkgaW5jbHVkaW5nIC5jc3YgZmlsZXMgZm9yCiAgICAgIDIwMjEtMjAyNCB3YXRlciB5ZWFycy4gMi4gU3RhbmRhcmRpemVkIGRhdGUgZm9ybWF0IGJldHdlZW4gYWxsIGZpbGVzLiAzLgogICAgICBQcmV2aW91c2x5LCBhYnNlbnQgdmFsdWVzIHdlcmUgcmVwb3J0ZWQgd2l0aCBlaXRoZXIgJ05BJyBvcgogICAgICAnLS0nLiBUaGVzZSBoYXZlIGFsbCBiZWVuIGNoYW5nZWQgdG8gJy0tJyBmb3IKICAgICAgY29udGludWl0eS4mYW1wO25ic3A7IDQuIFJlbWFya3Mgd2VyZSBjaGVja2VkIGFuZCBhZGRpdGlvbmFsIGNvbnRleHQgd2FzCiAgICAgIGFkZGVkIHRvIGV4aXN0aW5nIGRhaWx5IHJlbWFya3MgZm9yIGNsYXJpZmljYXRpb24uIDUuIEEgdHlwbyB3YXMgY29ycmVjdGVkCiAgICAgIGluIFdhdGVyIFllYXIgMjAwNiB3aGVyZSBhIHZhbHVlIHdhcyAiMjA5IiBhbmQgd2FzIGNoYW5nZWQgdG8KICAgICAgIjI5MCIuIDIwMjUtMTAtMDEgMS4gQWRkZWQgV2F0ZXIgWWVhciAyMDI1IGRhdGEgKFdZMjAyNS5jc3YpCiAgICA8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://datadryad.org/dataset/doi:10.6078/D1941T",
+      "contentUrl": null,
+      "metadataVersion": 10,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 6964,
+      "viewsOverTime": [
+        { "yearMonth": "2021-06", "total": 10 },
+        { "yearMonth": "2021-07", "total": 26 },
+        { "yearMonth": "2021-08", "total": 28 },
+        { "yearMonth": "2021-09", "total": 23 },
+        { "yearMonth": "2021-10", "total": 45 },
+        { "yearMonth": "2021-11", "total": 75 },
+        { "yearMonth": "2021-12", "total": 499 },
+        { "yearMonth": "2022-01", "total": 328 },
+        { "yearMonth": "2022-02", "total": 93 },
+        { "yearMonth": "2022-03", "total": 106 },
+        { "yearMonth": "2022-04", "total": 132 },
+        { "yearMonth": "2022-05", "total": 86 },
+        { "yearMonth": "2022-06", "total": 21 },
+        { "yearMonth": "2022-07", "total": 22 },
+        { "yearMonth": "2022-08", "total": 37 },
+        { "yearMonth": "2022-09", "total": 55 },
+        { "yearMonth": "2022-10", "total": 125 },
+        { "yearMonth": "2022-11", "total": 482 },
+        { "yearMonth": "2022-12", "total": 288 },
+        { "yearMonth": "2023-01", "total": 355 },
+        { "yearMonth": "2023-02", "total": 266 },
+        { "yearMonth": "2023-03", "total": 2045 },
+        { "yearMonth": "2023-04", "total": 347 },
+        { "yearMonth": "2023-05", "total": 136 },
+        { "yearMonth": "2023-06", "total": 105 },
+        { "yearMonth": "2023-07", "total": 47 },
+        { "yearMonth": "2023-08", "total": 141 },
+        { "yearMonth": "2023-09", "total": 142 },
+        { "yearMonth": "2023-10", "total": 126 },
+        { "yearMonth": "2023-11", "total": 137 },
+        { "yearMonth": "2023-12", "total": 52 },
+        { "yearMonth": "2024-03", "total": 188 },
+        { "yearMonth": "2024-04", "total": 67 },
+        { "yearMonth": "2024-05", "total": 68 },
+        { "yearMonth": "2024-06", "total": 19 },
+        { "yearMonth": "2024-07", "total": 19 },
+        { "yearMonth": "2024-08", "total": 26 },
+        { "yearMonth": "2024-09", "total": 32 },
+        { "yearMonth": "2024-10", "total": 59 },
+        { "yearMonth": "2024-11", "total": 13 },
+        { "yearMonth": "2025-01", "total": 1 },
+        { "yearMonth": "2025-07", "total": 1 },
+        { "yearMonth": "2025-08", "total": 45 },
+        { "yearMonth": "2025-09", "total": 46 }
+      ],
+      "downloadCount": 1647,
+      "downloadsOverTime": [
+        { "yearMonth": "2021-06", "total": 1 },
+        { "yearMonth": "2021-07", "total": 6 },
+        { "yearMonth": "2021-08", "total": 4 },
+        { "yearMonth": "2021-09", "total": 6 },
+        { "yearMonth": "2021-10", "total": 5 },
+        { "yearMonth": "2021-11", "total": 17 },
+        { "yearMonth": "2021-12", "total": 126 },
+        { "yearMonth": "2022-01", "total": 54 },
+        { "yearMonth": "2022-02", "total": 23 },
+        { "yearMonth": "2022-03", "total": 17 },
+        { "yearMonth": "2022-04", "total": 25 },
+        { "yearMonth": "2022-05", "total": 17 },
+        { "yearMonth": "2022-06", "total": 3 },
+        { "yearMonth": "2022-07", "total": 3 },
+        { "yearMonth": "2022-08", "total": 9 },
+        { "yearMonth": "2022-09", "total": 13 },
+        { "yearMonth": "2022-10", "total": 42 },
+        { "yearMonth": "2022-11", "total": 109 },
+        { "yearMonth": "2022-12", "total": 55 },
+        { "yearMonth": "2023-01", "total": 86 },
+        { "yearMonth": "2023-02", "total": 94 },
+        { "yearMonth": "2023-03", "total": 448 },
+        { "yearMonth": "2023-04", "total": 61 },
+        { "yearMonth": "2023-05", "total": 25 },
+        { "yearMonth": "2023-06", "total": 16 },
+        { "yearMonth": "2023-07", "total": 4 },
+        { "yearMonth": "2023-08", "total": 53 },
+        { "yearMonth": "2023-09", "total": 39 },
+        { "yearMonth": "2023-10", "total": 25 },
+        { "yearMonth": "2023-11", "total": 40 },
+        { "yearMonth": "2023-12", "total": 12 },
+        { "yearMonth": "2024-03", "total": 62 },
+        { "yearMonth": "2024-04", "total": 23 },
+        { "yearMonth": "2024-05", "total": 19 },
+        { "yearMonth": "2024-06", "total": 6 },
+        { "yearMonth": "2024-07", "total": 6 },
+        { "yearMonth": "2024-08", "total": 8 },
+        { "yearMonth": "2024-09", "total": 14 },
+        { "yearMonth": "2024-10", "total": 24 },
+        { "yearMonth": "2024-11", "total": 4 },
+        { "yearMonth": "2025-01", "total": 0 },
+        { "yearMonth": "2025-07", "total": 0 },
+        { "yearMonth": "2025-08", "total": 17 },
+        { "yearMonth": "2025-09", "total": 26 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 2,
+      "citationsOverTime": [{ "year": "2023", "total": 2 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2021-06-23T00:47:06.000Z",
+      "registered": "2021-06-23T00:47:07.000Z",
+      "published": "2025",
+      "updated": "2025-10-02T00:43:13.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.6078/d1941t", "type": "media" } },
+      "references": { "data": [] },
+      "citations": {
+        "data": [
+          { "id": "10.1029/2023ms003793", "type": "dois" },
+          { "id": "10.1111/gcb.17044", "type": "dois" }
+        ]
+      },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

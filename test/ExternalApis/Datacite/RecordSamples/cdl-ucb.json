@@ -1,0 +1,82 @@
+{
+  "data": {
+    "id": "10.6078/m7z036b5",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6078/m7z036b5",
+      "prefix": "10.6078",
+      "suffix": "m7z036b5",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Nikki Oakden, Shawne Hansen",
+          "nameType": "Personal",
+          "givenName": "Shawne Hansen",
+          "familyName": "Nikki Oakden",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [{ "title": "Data Table of `Umayri Lithics" }],
+      "publisher": "Open Context",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2025", "dateType": "Issued" }],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [],
+      "descriptions": [],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCAgICAgaHR0cDovL3NjaGVtYS5kYXRhY2l0ZS5vcmcvbWV0YS9rZXJuZWwtNC9tZXRhZGF0YS54c2QiPgogIDxpZGVudGlmaWVyIGlkZW50aWZpZXJUeXBlPSJET0kiPjEwLjYwNzgvTTdaMDM2QjU8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5OaWtraSBPYWtkZW4sIFNoYXduZSBIYW5zZW4sIEplc3NpY2EgRmFoZXksIEtlbHNleSBNYWNLZW56aWUsIExhdXJpZSBMYXljb2NrLCBFcmlrYSBNaWtzaGEsIFJvYnluIEdyYXksIENocmlzdGluYSBMYXJzZW4sIEVtaWx5IEJhdGVzLCBHcmFudCBTbWl0aCwgTmljaG9sYXMgU3RldmVuc29uLCBBbm5lLU1hcmllIEVzcGlub2xhPC9jcmVhdG9yTmFtZT4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+RGF0YSBUYWJsZSBvZiBgVW1heXJpIExpdGhpY3M8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+T3BlbiBDb250ZXh0PC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI1PC9wdWJsaWNhdGlvblllYXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ii8+CjwvcmVzb3VyY2U+",
+      "url": "https://opencontext.org/tables/dac9b2f8-35fb-4ed7-a2d4-92ecea86fd6b",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2025-09-06T15:53:28.000Z",
+      "registered": "2025-09-06T15:53:29.000Z",
+      "published": "2025",
+      "updated": "2025-09-06T15:53:29.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cdl.ucb", "type": "clients" } },
+      "provider": { "data": { "id": "clfr", "type": "providers" } },
+      "media": { "data": { "id": "10.6078/m7z036b5", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}
