@@ -18,6 +18,7 @@ import {
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
+  EngrxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   NeurolibrePreprintId,
@@ -658,6 +659,20 @@ test.each([
         ),
       },
       url: new URL('https://ecoevorxiv.org/repository/view/4833/'),
+    }),
+  },
+  {
+    response: 'engrxiv.json',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [{ name: 'Yoji Yamato' }],
+      id: new EngrxivPreprintId({ value: Doi('10.31224/2632') }),
+      posted: Temporal.PlainDate.from({ year: 2022, month: 10, day: 20 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Study of FPGA logic reconfiguration during operation'),
+      },
+      url: new URL('https://engrxiv.org/preprint/view/2632/version/3806'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

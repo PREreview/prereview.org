@@ -1014,6 +1014,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId | LegacyCr
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
+    engrxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
     neurolibrePreprintId(),
