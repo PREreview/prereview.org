@@ -1,5 +1,5 @@
 import { Url } from '@effect/platform'
-import { Data, Either, flow, Match, Option, pipe, Predicate, Schema, Tuple } from 'effect'
+import { Data, Either, flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.ts'
 
 export type DatasetId = typeof DatasetId.Type
@@ -63,6 +63,6 @@ const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
 const extractFromDryadPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
-  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061', '6071', '7272'))),
+  Option.filter(Schema.is(DryadDatasetId.fields.value)),
   Option.andThen(doi => new DryadDatasetId({ value: doi })),
 )
