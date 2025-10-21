@@ -16,6 +16,7 @@ import {
   ChemrxivPreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
+  EcoevorxivPreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
@@ -628,6 +629,35 @@ test.each([
         ),
       },
       url: new URL('https://eartharxiv.org/repository/view/4603/'),
+    }),
+  },
+  {
+    response: 'ecoevorxiv.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Coral reefs are under threat from disease as climate change alters environmental conditions. Rising temperatures exacerbate coral disease, but this relationship is likely complex as other factors also influence coral disease prevalence. To better understand this relationship, we meta-analytically examined 108 studies for changes in global coral disease over time alongside temperature, expressed using average summer sea surface temperature (SST) and cumulative heat stress as weekly sea surface temperature anomalies (WSSTAs). We found both rising average summer SST and WSSTA were associated with global increases in the mean and variability in coral disease prevalence. We showed global coral disease prevalence reached 9.92% compared to 3.16% in 1992, and the effect of \u2018year\u2019 became more stable (i.e., has lower variance), contrasting to the effects of the two temperature stressors. Regional patterns diverged over time and differed in response to average summer SST. Our model predicted that, under the same trajectory, 76.8% of corals would be diseased globally by 2100, even assuming moderate average summer SST and WSSTA. These results highlight the need for urgent action to mitigate coral disease. Mitigating the impact of rising ocean temperatures on coral disease alone is a complex challenge requiring global discussion and further study.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Samantha Burke' },
+        { name: 'Patrice Pottier' },
+        { name: 'Malgorzata Lagisz' },
+        { name: 'Erin Macartney' },
+        { name: 'Tracy Ainsworth' },
+        { name: 'Szymon Drobniak', orcid: OrcidId('0000-0001-8101-6247') },
+        { name: 'Shinichi Nakagawa' },
+      ],
+      id: new EcoevorxivPreprintId({ value: Doi('10.32942/x2hp4p') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 1, day: 23 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'The impact of rising temperatures on the prevalence of coral diseases and its predictability: a global meta-analysis',
+        ),
+      },
+      url: new URL('https://ecoevorxiv.org/repository/view/4833/'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
