@@ -21,7 +21,6 @@
     "cloudinary": "^2.7.0",
     "content-security-policy-builder": "^2.3.0",
     "cookie-signature": "^1.2.2",
-    "crossref-ts": "^0.1.6",
     "deep-object-diff": "^1.1.9",
     "doi-ts": "^0.1.10",
     "effect": "^3.17.14",
