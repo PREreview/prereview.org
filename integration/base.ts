@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Reactivity } from '@effect/experimental'
-import { FetchHttpClient, HttpClient, HttpClientResponse, Url } from '@effect/platform'
-import { NodeHttpServer } from '@effect/platform-node'
+import { FetchHttpClient, HttpClient, HttpClientResponse, PlatformLogger, Url } from '@effect/platform'
+import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
@@ -12,25 +12,12 @@ import {
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
 } from '@playwright/test'
-import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
-import {
-  Config,
-  Effect,
-  Logger as EffectLogger,
-  Fiber,
-  Layer,
-  LogLevel,
-  Option,
-  pipe,
-  Redacted,
-  Schedule,
-} from 'effect'
+import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
 import Keyv from 'keyv'
-import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import type { BrowserContextOptions, Page } from 'playwright-core'
@@ -52,8 +39,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
-import { AllowSiteCrawlers, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from '../src/Context.ts'
-import { DeprecatedLogger } from '../src/DeprecatedServices.ts'
+import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
@@ -91,7 +77,6 @@ export { expect } from '@playwright/test'
 interface AppFixtures {
   sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
   fetch: fetchMock.FetchMockSandbox
-  logger: L.Logger
   oauthServer: OAuth2Server
   port: number
   server: Fiber.RuntimeFiber<never>
@@ -1181,14 +1166,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   locationStore: async ({}, use) => {
     await use(new Keyv())
   },
-  logger: async ({}, use, testInfo) => {
-    const logs: Array<L.LogEntry> = []
-    const logger: L.Logger = entry => () => logs.push(entry)
-
-    await use(logger)
-
-    await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
-  },
   emails: async ({}, use, testInfo) => {
     const emails: Array<nodemailer.SendMailOptions> = []
 
@@ -1235,7 +1212,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     async (
       {
         fetch,
-        logger,
         oauthServer,
         port,
         updatesLegacyPrereview,
@@ -1259,6 +1235,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         sqlClientLayer,
       },
       use,
+      testInfo,
     ) => {
       const server = pipe(
         Program,
@@ -1342,9 +1319,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         ),
         Effect.provide(sqlClientLayer),
         Effect.tapErrorCause(Effect.logError),
-        Effect.provide(EffectLogger.replaceEffect(EffectLogger.defaultLogger, DeprecatedLogger)),
-        EffectLogger.withMinimumLogLevel(LogLevel.Debug),
-        Effect.provideService(DeprecatedLoggerEnv, { clock: SystemClock, logger }),
+        Effect.provide(
+          Logger.replaceScoped(
+            Logger.defaultLogger,
+            PlatformLogger.toFile(Logger.logfmtLogger, testInfo.outputPath('server.log')),
+          ),
+        ),
+        Effect.provide(NodeFileSystem.layer),
+        Logger.withMinimumLogLevel(LogLevel.Debug),
         Effect.orDie,
       )
 
