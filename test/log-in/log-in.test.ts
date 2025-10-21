@@ -236,7 +236,7 @@ describe('authenticate', () => {
   ])('when the user is blocked', (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie) =>
     Effect.gen(function* () {
       const sessionStore = new Keyv()
-      const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
+      const isUserBlocked = jest.fn<typeof _.IsUserBlocked.Service>(_ => true)
 
       const actual = yield* pipe(
         _.authenticate(code, referer.href),

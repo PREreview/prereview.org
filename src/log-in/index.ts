@@ -1,5 +1,5 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
-import { Boolean, Context, Duration, Effect, Function, Match, Redacted, flow, identity, pipe } from 'effect'
+import { Boolean, Context, Duration, Effect, Function, Match, Redacted, Struct, flow, identity, pipe } from 'effect'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
@@ -56,10 +56,6 @@ export interface GetPseudonymEnv {
 
 export class IsUserBlocked extends Context.Tag('IsUserBlocked')<IsUserBlocked, (user: OrcidId) => boolean>() {}
 
-export interface IsUserBlockedEnv {
-  isUserBlocked: (user: OrcidId) => boolean
-}
-
 export const logIn = LogInResponse({ location: Routes.HomePage })
 
 export const LogOut = Effect.gen(function* () {
@@ -88,15 +84,6 @@ const OrcidUserC = C.struct({
 })
 
 type OrcidUser = C.TypeOf<typeof OrcidUserC>
-
-const isUserBlocked = (user: OrcidId): R.Reader<IsUserBlockedEnv, boolean> =>
-  R.asks(({ isUserBlocked }) => isUserBlocked(user))
-
-const filterBlockedUsers = <T extends OrcidUser>(user: T): RE.ReaderEither<IsUserBlockedEnv, T, T> =>
-  pipe(
-    isUserBlocked(user.orcid),
-    R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
-  )
 
 function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
   return env => ({
@@ -131,17 +118,9 @@ export const authenticate = Effect.fn(
         R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
-        RTE.chainFirstW(
-          flow(
-            RTE.fromReaderEitherK(filterBlockedUsers),
-            RTE.orElseFirstW(RTE.fromReaderIOK(flow(OrcidUserC.encode, L.infoP('Blocked user from logging in')))),
-            RTE.mapLeft(() => 'blocked' as const),
-          ),
-        ),
       ),
       {
         fetch,
-        isUserBlocked,
         ...loggerEnv,
         orcidOauth: {
           authorizeUrl: orcidOauth.authorizeUrl,
@@ -152,6 +131,16 @@ export const authenticate = Effect.fn(
         publicUrl,
       },
     )
+
+    yield* Effect.if(isUserBlocked(user.orcid), {
+      onFalse: () => Effect.void,
+      onTrue: () =>
+        pipe(
+          Effect.fail('blocked' as const),
+          Effect.tapError(() => Effect.logInfo('Blocked user from logging in')),
+          Effect.annotateLogs('user', Struct.pick(user, 'name', 'orcid')),
+        ),
+    })
 
     const pseudonym = yield* Effect.tapError(getPseudonym(user), () => Effect.logWarning('Unable to get pseudonym'))
 
