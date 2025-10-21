@@ -72,7 +72,7 @@
     "@types/katex": "^0.16.7",
     "@types/markdown-it": "^14.1.2",
     "@types/mjml": "^4.7.4",
-    "@types/node": "^22.18.10",
+    "@types/node": "^22.18.12",
     "@types/nodemailer": "^7.0.2",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.16.0",
