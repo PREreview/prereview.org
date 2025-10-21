@@ -1,12 +1,11 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { Array, Config, Effect, Function, Layer, Logger, LogLevel, pipe, Schema } from 'effect'
+import { Array, Config, Effect, flow, Function, Layer, Logger, LogLevel, Match, pipe, Schema } from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
-import { AllowSiteCrawlers, DeprecatedLoggerEnv, ScietyListToken, SessionSecret } from './Context.ts'
-import { DeprecatedLogger, makeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
+import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from './Context.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
@@ -183,8 +182,19 @@ pipe(
     ),
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),
-  Effect.provide(Logger.replaceEffect(Logger.defaultLogger, DeprecatedLogger)),
-  Effect.provideServiceEffect(DeprecatedLoggerEnv, makeDeprecatedLoggerEnv),
+  Effect.provide(
+    Layer.unwrapEffect(
+      Effect.andThen(
+        Config.withDefault(Config.literal('json')('LOG_FORMAT'), 'pretty'),
+        flow(
+          Match.value,
+          Match.when('json', () => Logger.json),
+          Match.when('pretty', () => Logger.pretty),
+          Match.exhaustive,
+        ),
+      ),
+    ),
+  ),
   Effect.scoped,
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )
