@@ -115,6 +115,32 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.7272/Q6W37T8B'),
     }),
   },
+  {
+    response: 'cdl-ucd-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>All experiments were conducted during the Fire Influence on Regional to\n Global Environments Experiment (FIREX) lab study, which took place at the\n Missoula Fire Sciences Lab in Missoula, MT, USA during November,\n 2016. Experiments focused on refining our understanding of\n emissions and short timescale processing. The focus was on measuring fuels\n or combustion conditions that are characteristic of the western U.S. that\n may be under-sampled by the fire research community. Numerous\n types of biomass were combusted in a large chamber (12 x 12 x 19 m) and\n the smoke sampled to provide information on the physical, chemical, and\n optical properties of the resulting smoke (i.e., particulate and gas\n emissions). The general fuels types combusted included (exclusively or in\n combination): duff, dung, excelsior, straw, litter, untreated lumber,\n rotten debris, woody debris, shrub, herbaceous, and canopy biomass. Smoke\n from these burns was sampled into a small photochemical reaction chamber\n (the "mini Chamber"). The smoke from the mini Chamber was\n characterized using a variety of instrumentation: an Aerodyne high\n resolution aerosol mass spectrometer (HR-AMS) for non-refractory submicron\n particulate matter (NR-PM); an Aerodyne soot photometer aerosol\n mass spectrometer (SP-AMS) in "laser-only" mode, for refractory\n black carbon and NR-PM components mixed with BC; a DMT single\n particle soot photometer (SP2) for refractory black carbon;\n a Brechtel scanning electrical mobility sizer (SEMS), for\n particle size distributions; the UC Davis cavity\n ringdown/photoacoustic spectrometer (CRD-PAS), for particle absorption and\n extinction at 405 nm and 532 nm; a DMT PASS-3, for absorption and\n extinction at 781 nm; a thermodenuder, for heating particles to 300 degC\n for ~ 5 seconds; a proton transfer reaction mass spectrometer (PTRMS); and\n an iodide reagent ion chemical ionization mass spectrometer (I-CIMS). Not\n all measurements from all of these instruments are archived here; full\n data sets can be downloded from the National Oceanic and Atmospheric\n Administration\n at https://www.esrl.noaa.gov/csd/projects/firex/firelab/.  Measurements were made of both unprocessed (fresh) and photochemically aged particles and gases.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Christopher Cappa', orcid: OrcidId.OrcidId('0000-0002-3528-3368') },
+        { name: 'Christopher Lim' },
+        { name: 'David Hagan' },
+        { name: 'Jesse Kroll' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.25338/b8ck5n') }),
+      posted: Temporal.PlainDate.from({ year: 2019, month: 8, day: 6 }),
+      title: {
+        text: rawHtml(
+          'Measurements from the Fire Influence on Regional and Global Environments Experiment (FIREX) Fire Lab Mini Chamber Experiment',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.25338/B8CK5N'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

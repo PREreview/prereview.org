@@ -112,6 +112,12 @@ describe('fromUrl', () => {
           new _.DryadDatasetId({ value: Doi.Doi('10.7272/Q6W37T8B') }),
         ],
       ],
+      [
+        [
+          new URL('https://datadryad.org/dataset/doi:10.25338/B8CK5N'), // older DOI registrant
+          new _.DryadDatasetId({ value: Doi.Doi('10.25338/B8CK5N') }),
+        ],
+      ],
     ],
   })('with a Dryad URL', ([url, id]) => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some(id))
