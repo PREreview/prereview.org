@@ -1,0 +1,198 @@
+{
+  "data": {
+    "id": "10.6086/d11974",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6086/d11974",
+      "prefix": "10.6086",
+      "suffix": "d11974",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Peng, Dongbo",
+          "nameType": "Personal",
+          "givenName": "Dongbo",
+          "familyName": "Peng",
+          "affiliation": ["University of California, Riverside"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-9857-3303",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Wu, Guoyuan",
+          "nameType": "Personal",
+          "givenName": "Guoyuan",
+          "familyName": "Wu",
+          "affiliation": ["University of California, Riverside"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Boriboonsomsin, Kanok",
+          "nameType": "Personal",
+          "givenName": "Kanok",
+          "familyName": "Boriboonsomsin",
+          "affiliation": ["University of California, Riverside"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        { "title": "Developing an efficient dispatching strategy to support commercial fleet electrification" }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        {
+          "subject": "FOS: Electrical engineering, electronic engineering, information engineering",
+          "subjectScheme": "fos"
+        },
+        {
+          "subject": "FOS: Electrical engineering, electronic engineering, information engineering",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        { "subject": "Battery eletric truck dispatching" },
+        { "subject": "Fleet operation" },
+        { "subject": "Vehicle routing problem with backhauls" }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2023-06-29T06:24:07Z", "dateType": "Created" },
+        { "date": "2023-06-29T06:25:10Z", "dateType": "Submitted" },
+        { "date": "2023-07-05T00:00:00Z", "dateType": "Issued" },
+        { "date": "2023-07-05T00:00:00Z", "dateType": "Available" },
+        { "date": "2024-01-02T00:00:00Z", "dateType": "Updated" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        { "relationType": "IsCitedBy", "relatedIdentifier": "10.3390/su15020925", "relatedIdentifierType": "DOI" }
+      ],
+      "relatedItems": [],
+      "sizes": ["450126 bytes"],
+      "formats": [],
+      "version": "4",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "This is a real-world dataset in a full-service supply chain company to\n evaluate the performance of our proposed battery electric truck\n dispatching strategy. We generated four instances ranging from 47 to 90\n customers based on the real-world dataset, the typical one-day historical\n movements of a heavy-duty diesel truck fleet that operated in the\n Riverside and San Bernardino County regions of California.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "## Developing an Efficient Dispatching Strategy to Support Commercial\n Fleet Electrification \\[dataset] The generated four fleet operation\n instances ranging from 47 to 90 customers are based on a real-world\n dataset, the typical one-day historical movements of a heavy-duty diesel\n truck fleet that operated in the Riverside and San Bernardino County\n regions of California. ## Description of the data and file structure There\n are three types of CSV files: problem instance (BETVRPB), related distance\n matrix (BETVRPB_dist), and time matrix (BETVRPB_time). The distance matrix\n and time matrix files are used for the calculation. The detailed\n information is illustrated in the following. For the problem instances,\n the generated battery electric truck (vehicle) routing problem with\n backhauls (denoted BETVRPB) instances in our case study are described in\n the CSV files, i.e., BETVRPB1-BETVRPB4. It contains delivery ID, tractor\n ID, delivery types (i.e., pickups and deliveries), service time duration,\n required demands, and city name. That information is shown in the columns\n of the file BETVRPB from left to right, respectively. The depot time\n window section is shown in the last row of each problem instance. For each\n dispatching instance, the distance [in meter] and travel duration [in\n second] matrices are generated by OpenRouteService (openrouteservice.org)\n for the truck routes between node-to-node locations, which can be used to\n estimate the trip energy consumption. There is an example illustrating how\n to use the generated instances. Take the problem instance BETVRPB1 as an\n example. It contains 47 nodes, where the depot ID is 0, and others are\n customers (from 1 to 46). The related distance and trip time information\n is illustrated in files 'BETVRPB1_dist' and\n 'BETVRPB1_time' for calculation steps. For example, the truck\n travel distance from the depot (0) to the customer ID1 is the element\n (0,1) in the distance matrix file (i.e., BETVRPB1_dist). The calculation\n of travel time is similar to the travel distance.",
+          "descriptionType": "TechnicalInfo"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "United States Department of Transportation",
+          "awardNumber": "69A3551747114",
+          "funderIdentifier": "https://ror.org/02xfw2e90",
+          "funderIdentifierType": "ROR"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA4Ni9EMTE5NzQ8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlBlbmcsIERvbmdibzwvY3JlYXRvck5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cDovL29yY2lkLm9yZy8iPjAwMDAtMDAwMi05ODU3LTMzMDM8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDNuYXdodjQzIiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmciPlVuaXZlcnNpdHkgb2YgQ2FsaWZvcm5pYSwgUml2ZXJzaWRlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5XdSwgR3VveXVhbjwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM25hd2h2NDMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBSaXZlcnNpZGU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkJvcmlib29uc29tc2luLCBLYW5vazwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wM25hd2h2NDMiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBSaXZlcnNpZGU8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT4KICAgICAgRGV2ZWxvcGluZyBhbiBlZmZpY2llbnQgZGlzcGF0Y2hpbmcgc3RyYXRlZ3kgdG8gc3VwcG9ydCBjb21tZXJjaWFsIGZsZWV0CiAgICAgIGVsZWN0cmlmaWNhdGlvbgogICAgPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyIHB1Ymxpc2hlcklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMHg2aDVuOTUiIHB1Ymxpc2hlcklkZW50aWZpZXJTY2hlbWU9IlJPUiIgc2NoZW1lVVJJPSJodHRwczovL3Jvci5vcmcvIj5EcnlhZDwvcHVibGlzaGVyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iRGF0YXNldCI+ZGF0YXNldDwvcmVzb3VyY2VUeXBlPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNDwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9ImZvcyI+Rk9TOiBFbGVjdHJpY2FsIGVuZ2luZWVyaW5nLCBlbGVjdHJvbmljIGVuZ2luZWVyaW5nLCBpbmZvcm1hdGlvbiBlbmdpbmVlcmluZzwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkJhdHRlcnkgZWxldHJpYyB0cnVjayBkaXNwYXRjaGluZzwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkZsZWV0IG9wZXJhdGlvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlZlaGljbGUgcm91dGluZyBwcm9ibGVtIHdpdGggYmFja2hhdWxzPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPlVuaXRlZCBTdGF0ZXMgRGVwYXJ0bWVudCBvZiBUcmFuc3BvcnRhdGlvbjwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzAyeGZ3MmU5MDwvZnVuZGVySWRlbnRpZmllcj4KICAgICAgPGF3YXJkTnVtYmVyPjY5QTM1NTE3NDcxMTQ8L2F3YXJkTnVtYmVyPgogICAgPC9mdW5kaW5nUmVmZXJlbmNlPgogIDwvZnVuZGluZ1JlZmVyZW5jZXM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNyZWF0ZWQiPjIwMjMtMDYtMjlUMDY6MjQ6MDdaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCI+MjAyMy0wNi0yOVQwNjoyNToxMFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDIzLTA3LTA1VDAwOjAwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiPjIwMjMtMDctMDVUMDA6MDA6MDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjQtMDEtMDJUMDA6MDA6MDBaPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjMzOTAvc3UxNTAyMDkyNTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzPgogICAgPHNpemU+NDUwMTI2IGJ5dGVzPC9zaXplPgogIDwvc2l6ZXM+CiAgPHZlcnNpb24+NDwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL3NwZHgub3JnL2xpY2Vuc2VzL0NDMC0xLjAuaHRtbCI+Q3JlYXRpdmUgQ29tbW9ucyBaZXJvIHYxLjAgVW5pdmVyc2FsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+CiAgICAgIFRoaXMgaXMgYSByZWFsLXdvcmxkIGRhdGFzZXQgaW4gYSBmdWxsLXNlcnZpY2Ugc3VwcGx5IGNoYWluIGNvbXBhbnkgdG8KICAgICAgZXZhbHVhdGUgdGhlIHBlcmZvcm1hbmNlIG9mIG91ciBwcm9wb3NlZCBiYXR0ZXJ5IGVsZWN0cmljIHRydWNrCiAgICAgIGRpc3BhdGNoaW5nIHN0cmF0ZWd5LiBXZSBnZW5lcmF0ZWQgZm91ciBpbnN0YW5jZXMgcmFuZ2luZyBmcm9tIDQ3IHRvIDkwCiAgICAgIGN1c3RvbWVycyBiYXNlZCBvbiB0aGUgcmVhbC13b3JsZCBkYXRhc2V0LCB0aGUgdHlwaWNhbCBvbmUtZGF5IGhpc3RvcmljYWwKICAgICAgbW92ZW1lbnRzIG9mIGEgaGVhdnktZHV0eSBkaWVzZWwgdHJ1Y2sgZmxlZXQgdGhhdCBvcGVyYXRlZCBpbiB0aGUKICAgICAgUml2ZXJzaWRlIGFuZCBTYW4gQmVybmFyZGlubyBDb3VudHkgcmVnaW9ucyBvZiBDYWxpZm9ybmlhLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IlRlY2huaWNhbEluZm8iPgogICAgICAjIyBEZXZlbG9waW5nIGFuIEVmZmljaWVudCBEaXNwYXRjaGluZyBTdHJhdGVneSB0byBTdXBwb3J0IENvbW1lcmNpYWwKICAgICAgRmxlZXQgRWxlY3RyaWZpY2F0aW9uIFxbZGF0YXNldF0gVGhlIGdlbmVyYXRlZCBmb3VyIGZsZWV0IG9wZXJhdGlvbgogICAgICBpbnN0YW5jZXMgcmFuZ2luZyBmcm9tIDQ3IHRvIDkwIGN1c3RvbWVycyBhcmUgYmFzZWQgb24gYSByZWFsLXdvcmxkCiAgICAgIGRhdGFzZXQsIHRoZSB0eXBpY2FsIG9uZS1kYXkgaGlzdG9yaWNhbCBtb3ZlbWVudHMgb2YgYSBoZWF2eS1kdXR5IGRpZXNlbAogICAgICB0cnVjayBmbGVldCB0aGF0IG9wZXJhdGVkIGluIHRoZSBSaXZlcnNpZGUgYW5kIFNhbiBCZXJuYXJkaW5vIENvdW50eQogICAgICByZWdpb25zIG9mIENhbGlmb3JuaWEuICMjIERlc2NyaXB0aW9uIG9mIHRoZSBkYXRhIGFuZCBmaWxlIHN0cnVjdHVyZSBUaGVyZQogICAgICBhcmUgdGhyZWUgdHlwZXMgb2YgQ1NWIGZpbGVzOiBwcm9ibGVtIGluc3RhbmNlIChCRVRWUlBCKSwgcmVsYXRlZCBkaXN0YW5jZQogICAgICBtYXRyaXggKEJFVFZSUEJfZGlzdCksIGFuZCB0aW1lIG1hdHJpeCAoQkVUVlJQQl90aW1lKS4gVGhlIGRpc3RhbmNlIG1hdHJpeAogICAgICBhbmQgdGltZSBtYXRyaXggZmlsZXMgYXJlIHVzZWQgZm9yIHRoZSBjYWxjdWxhdGlvbi4gVGhlIGRldGFpbGVkCiAgICAgIGluZm9ybWF0aW9uIGlzIGlsbHVzdHJhdGVkIGluIHRoZSBmb2xsb3dpbmcuIEZvciB0aGUgcHJvYmxlbSBpbnN0YW5jZXMsCiAgICAgIHRoZSBnZW5lcmF0ZWQgYmF0dGVyeSBlbGVjdHJpYyB0cnVjayAodmVoaWNsZSkgcm91dGluZyBwcm9ibGVtIHdpdGgKICAgICAgYmFja2hhdWxzIChkZW5vdGVkIEJFVFZSUEIpIGluc3RhbmNlcyBpbiBvdXIgY2FzZSBzdHVkeSBhcmUgZGVzY3JpYmVkIGluCiAgICAgIHRoZSBDU1YgZmlsZXMsIGkuZS4sIEJFVFZSUEIxLUJFVFZSUEI0LiBJdCBjb250YWlucyBkZWxpdmVyeSBJRCwgdHJhY3RvcgogICAgICBJRCwgZGVsaXZlcnkgdHlwZXMgKGkuZS4sIHBpY2t1cHMgYW5kIGRlbGl2ZXJpZXMpLCBzZXJ2aWNlIHRpbWUgZHVyYXRpb24sCiAgICAgIHJlcXVpcmVkIGRlbWFuZHMsIGFuZCBjaXR5IG5hbWUuIFRoYXQgaW5mb3JtYXRpb24gaXMgc2hvd24gaW4gdGhlIGNvbHVtbnMKICAgICAgb2YgdGhlIGZpbGUgQkVUVlJQQiBmcm9tIGxlZnQgdG8gcmlnaHQsIHJlc3BlY3RpdmVseS4gVGhlIGRlcG90IHRpbWUKICAgICAgd2luZG93IHNlY3Rpb24gaXMgc2hvd24gaW4gdGhlIGxhc3Qgcm93IG9mIGVhY2ggcHJvYmxlbSBpbnN0YW5jZS4gRm9yIGVhY2gKICAgICAgZGlzcGF0Y2hpbmcgaW5zdGFuY2UsIHRoZSBkaXN0YW5jZSBbaW4gbWV0ZXJdIGFuZCB0cmF2ZWwgZHVyYXRpb24gW2luCiAgICAgIHNlY29uZF0gbWF0cmljZXMgYXJlIGdlbmVyYXRlZCBieSBPcGVuUm91dGVTZXJ2aWNlIChvcGVucm91dGVzZXJ2aWNlLm9yZykKICAgICAgZm9yIHRoZSB0cnVjayByb3V0ZXMgYmV0d2VlbiBub2RlLXRvLW5vZGUgbG9jYXRpb25zLCB3aGljaCBjYW4gYmUgdXNlZCB0bwogICAgICBlc3RpbWF0ZSB0aGUgdHJpcCBlbmVyZ3kgY29uc3VtcHRpb24uIFRoZXJlIGlzIGFuIGV4YW1wbGUgaWxsdXN0cmF0aW5nIGhvdwogICAgICB0byB1c2UgdGhlIGdlbmVyYXRlZCBpbnN0YW5jZXMuIFRha2UgdGhlIHByb2JsZW0gaW5zdGFuY2UgQkVUVlJQQjEgYXMgYW4KICAgICAgZXhhbXBsZS4gSXQgY29udGFpbnMgNDcgbm9kZXMsIHdoZXJlIHRoZSBkZXBvdCBJRCBpcyAwLCBhbmQgb3RoZXJzIGFyZQogICAgICBjdXN0b21lcnMgKGZyb20gMSB0byA0NikuIFRoZSByZWxhdGVkIGRpc3RhbmNlIGFuZCB0cmlwIHRpbWUgaW5mb3JtYXRpb24KICAgICAgaXMgaWxsdXN0cmF0ZWQgaW4gZmlsZXMgJ0JFVFZSUEIxX2Rpc3QnIGFuZAogICAgICAnQkVUVlJQQjFfdGltZScgZm9yIGNhbGN1bGF0aW9uIHN0ZXBzLiBGb3IgZXhhbXBsZSwgdGhlIHRydWNrCiAgICAgIHRyYXZlbCBkaXN0YW5jZSBmcm9tIHRoZSBkZXBvdCAoMCkgdG8gdGhlIGN1c3RvbWVyIElEMSBpcyB0aGUgZWxlbWVudAogICAgICAoMCwxKSBpbiB0aGUgZGlzdGFuY2UgbWF0cml4IGZpbGUgKGkuZS4sIEJFVFZSUEIxX2Rpc3QpLiBUaGUgY2FsY3VsYXRpb24KICAgICAgb2YgdHJhdmVsIHRpbWUgaXMgc2ltaWxhciB0byB0aGUgdHJhdmVsIGRpc3RhbmNlLgogICAgPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/dataset/doi:10.6086/D11974",
+      "contentUrl": null,
+      "metadataVersion": 6,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 146,
+      "viewsOverTime": [
+        { "yearMonth": "2023-07", "total": 6 },
+        { "yearMonth": "2023-08", "total": 44 },
+        { "yearMonth": "2023-09", "total": 38 },
+        { "yearMonth": "2023-11", "total": 3 },
+        { "yearMonth": "2023-12", "total": 11 },
+        { "yearMonth": "2024-03", "total": 4 },
+        { "yearMonth": "2024-04", "total": 2 },
+        { "yearMonth": "2024-05", "total": 2 },
+        { "yearMonth": "2024-06", "total": 3 },
+        { "yearMonth": "2024-07", "total": 2 },
+        { "yearMonth": "2024-08", "total": 3 },
+        { "yearMonth": "2024-09", "total": 2 },
+        { "yearMonth": "2024-10", "total": 6 },
+        { "yearMonth": "2024-11", "total": 1 },
+        { "yearMonth": "2024-12", "total": 1 },
+        { "yearMonth": "2025-01", "total": 1 },
+        { "yearMonth": "2025-02", "total": 1 },
+        { "yearMonth": "2025-04", "total": 4 },
+        { "yearMonth": "2025-05", "total": 1 },
+        { "yearMonth": "2025-06", "total": 2 },
+        { "yearMonth": "2025-07", "total": 4 },
+        { "yearMonth": "2025-08", "total": 1 },
+        { "yearMonth": "2025-09", "total": 4 }
+      ],
+      "downloadCount": 15,
+      "downloadsOverTime": [
+        { "yearMonth": "2023-07", "total": 1 },
+        { "yearMonth": "2023-12", "total": 1 },
+        { "yearMonth": "2024-03", "total": 1 },
+        { "yearMonth": "2024-04", "total": 1 },
+        { "yearMonth": "2024-05", "total": 0 },
+        { "yearMonth": "2024-06", "total": 0 },
+        { "yearMonth": "2024-07", "total": 2 },
+        { "yearMonth": "2024-08", "total": 0 },
+        { "yearMonth": "2024-09", "total": 1 },
+        { "yearMonth": "2024-10", "total": 1 },
+        { "yearMonth": "2024-11", "total": 0 },
+        { "yearMonth": "2024-12", "total": 0 },
+        { "yearMonth": "2025-01", "total": 1 },
+        { "yearMonth": "2025-02", "total": 0 },
+        { "yearMonth": "2025-04", "total": 2 },
+        { "yearMonth": "2025-05", "total": 1 },
+        { "yearMonth": "2025-06", "total": 0 },
+        { "yearMonth": "2025-07", "total": 1 },
+        { "yearMonth": "2025-08", "total": 0 },
+        { "yearMonth": "2025-09", "total": 2 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2024", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-07-05T17:59:51.000Z",
+      "registered": "2023-07-05T17:59:52.000Z",
+      "published": "2024",
+      "updated": "2025-07-23T09:29:50.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.6086/d11974", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [{ "id": "10.3390/su15020925", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

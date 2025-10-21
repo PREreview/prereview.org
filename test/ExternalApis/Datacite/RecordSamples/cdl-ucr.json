@@ -1,0 +1,122 @@
+{
+  "data": {
+    "id": "10.6086/n1668b70",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.6086/n1668b70",
+      "prefix": "10.6086",
+      "suffix": "n1668b70",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Eldawy, Ahmed",
+          "nameType": "Personal",
+          "givenName": "Ahmed",
+          "familyName": "Eldawy",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Mokbel, Mohamed F.",
+          "nameType": "Personal",
+          "givenName": "Mohamed F.",
+          "familyName": "Mokbel",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        { "title": "OSM2015/lakes" },
+        {
+          "title": "All water areas in the world from OpenStreetMap. This includes coastal lines, lakes, rivers, pools, and others.",
+          "titleType": "Subtitle"
+        }
+      ],
+      "publisher": "UCR-Star",
+      "container": {},
+      "publicationYear": 2019,
+      "subjects": [],
+      "contributors": [],
+      "dates": [
+        { "date": "2015", "dateType": "Created" },
+        { "date": "2019", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": ["6.44 gb", "8,419,324 records", "377,089,429 points"],
+      "formats": ["CSV"],
+      "version": null,
+      "rightsList": [],
+      "descriptions": [
+        {
+          "description": "All water areas in the world from OpenStreetMap. This includes coastal lines, lakes, rivers, pools, and others.",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [
+        {
+          "geoLocationBox": {
+            "eastBoundLongitude": "180",
+            "northBoundLatitude": "83.666",
+            "southBoundLatitude": "-89.968",
+            "westBoundLongitude": "-180"
+          }
+        }
+      ],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNjA4Ni9OMTY2OEI3MDwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkVsZGF3eSwgQWhtZWQ8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZT5Nb2tiZWwsIE1vaGFtZWQgRi48L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5PU00yMDE1L2xha2VzPC90aXRsZT4KICAgIDx0aXRsZSB0aXRsZVR5cGU9IlN1YnRpdGxlIj5BbGwgd2F0ZXIgYXJlYXMgaW4gdGhlIHdvcmxkIGZyb20gT3BlblN0cmVldE1hcC4gVGhpcyBpbmNsdWRlcyBjb2FzdGFsIGxpbmVzLCBsYWtlcywgcml2ZXJzLCBwb29scywgYW5kIG90aGVycy48L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+VUNSLVN0YXI8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMTk8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiLz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAxNTwvZGF0ZT4KICA8L2RhdGVzPgogIDxzaXplcz4KICAgIDxzaXplPjYuNDQgZ2I8L3NpemU+CiAgICA8c2l6ZT44LDQxOSwzMjQgcmVjb3Jkczwvc2l6ZT4KICAgIDxzaXplPjM3NywwODksNDI5IHBvaW50czwvc2l6ZT4KICA8L3NpemVzPgogIDxmb3JtYXRzPgogICAgPGZvcm1hdD5DU1Y8L2Zvcm1hdD4KICA8L2Zvcm1hdHM+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik90aGVyIj5BbGwgd2F0ZXIgYXJlYXMgaW4gdGhlIHdvcmxkIGZyb20gT3BlblN0cmVldE1hcC4gVGhpcyBpbmNsdWRlcyBjb2FzdGFsIGxpbmVzLCBsYWtlcywgcml2ZXJzLCBwb29scywgYW5kIG90aGVycy48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgogIDxnZW9Mb2NhdGlvbnM+CiAgICA8Z2VvTG9jYXRpb24+CiAgICAgIDxnZW9Mb2NhdGlvbkJveD4KICAgICAgICA8d2VzdEJvdW5kTG9uZ2l0dWRlPi0xODA8L3dlc3RCb3VuZExvbmdpdHVkZT4KICAgICAgICA8ZWFzdEJvdW5kTG9uZ2l0dWRlPjE4MDwvZWFzdEJvdW5kTG9uZ2l0dWRlPgogICAgICAgIDxzb3V0aEJvdW5kTGF0aXR1ZGU+LTg5Ljk2ODwvc291dGhCb3VuZExhdGl0dWRlPgogICAgICAgIDxub3J0aEJvdW5kTGF0aXR1ZGU+ODMuNjY2PC9ub3J0aEJvdW5kTGF0aXR1ZGU+CiAgICAgIDwvZ2VvTG9jYXRpb25Cb3g+CiAgICA8L2dlb0xvY2F0aW9uPgogIDwvZ2VvTG9jYXRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://star.cs.ucr.edu/?OSM2015/lakes\u0026d",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 3,
+      "citationsOverTime": [
+        { "year": "2023", "total": 1 },
+        { "year": "2024", "total": 2 }
+      ],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2020-03-03T23:54:54.000Z",
+      "registered": "2020-03-03T23:54:55.000Z",
+      "published": "2019",
+      "updated": "2024-10-31T08:55:31.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cdl.ucr", "type": "clients" } },
+      "provider": { "data": { "id": "pcdn", "type": "providers" } },
+      "media": { "data": { "id": "10.6086/n1668b70", "type": "media" } },
+      "references": { "data": [] },
+      "citations": {
+        "data": [
+          { "id": "10.1145/3474717.3484217", "type": "dois" },
+          { "id": "10.1007/s00778-024-00836-1", "type": "dois" },
+          { "id": "10.1145/3603719.3603728", "type": "dois" }
+        ]
+      },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

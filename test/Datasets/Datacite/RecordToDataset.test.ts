@@ -296,6 +296,29 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.7291/D1S38T'),
     }),
   },
+  {
+    response: 'cdl-ucr-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>This is a real-world dataset in a full-service supply chain company to\n evaluate the performance of our proposed battery electric truck\n dispatching strategy. We generated four instances ranging from 47 to 90\n customers based on the real-world dataset, the typical one-day historical\n movements of a heavy-duty diesel truck fleet that operated in the\n Riverside and San Bernardino County regions of California.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Dongbo Peng', orcid: OrcidId.OrcidId('0000-0002-9857-3303') },
+        { name: 'Guoyuan Wu' },
+        { name: 'Kanok Boriboonsomsin' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.6086/d11974') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 7, day: 5 }),
+      title: {
+        text: rawHtml('Developing an efficient dispatching strategy to support commercial fleet electrification'),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.6086/D11974'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -329,6 +352,7 @@ test.each([
   'cdl-ucd',
   'cdl-uci',
   'cdl-ucm',
+  'cdl-ucr',
   'cdl-ucsc',
   'cdl-ucsf',
   'lifecycle-journal-article',
