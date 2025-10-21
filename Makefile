@@ -33,10 +33,10 @@ start-app: .env node_modules start-services src/manifest.json
 	REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
-  node --watch --watch-preserve-output --require dotenv/config src/index.ts
+  node --watch --watch-preserve-output --env-file=.env src/index.ts
 
 start:
-	watchexec --restart --watch assets --watch locales --watch .env --ignore assets/locales/ -- make start-app
+	watchexec --restart --watch assets --watch locales --ignore assets/locales/ -- make start-app
 
 prod: .env
 	docker compose up --build
