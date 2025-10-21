@@ -14,6 +14,7 @@ import {
   AuthoreaPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
+  CurvenotePreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
@@ -586,6 +587,25 @@ test.each([
       url: new URL(
         'https://advance.sagepub.com/users/812679/articles/1216107-policy-recommendations-for-blended-learning-in-vietnam-s-colleges-and-universities?commit=59bf4695a5ff4b5ed0ca0b35ac8f48928a94aaae',
       ),
+    }),
+  },
+  {
+    response: 'curvenote.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The ability to build upon existing knowledge is fundamental to the process of\n          science. Yet, despite the rapid advancement of science, the methods for citing and\n          referencing content have remained surprisingly static. Today, we’re on the brink of\n          transforming how we interact with scientific literature and educational content. The\n          Curvenote team has been working in the MyST Markdown ecosystem to simplify the ways to\n          reference and embed figures directly into publications. We are starting this process by\n          integrating a <a href="https://mystmd.org/guide/external-references#tbl-syntax-xref">simple\n            markdown syntax for hover-references</a>, which aims to not only streamline\n          referencing academic citations but also enhance the readability and interactive capacity\n          of scholarly articles. This blog post explores the importance of scientific reuse, as the\n          driving FAIR principle, and introduces new tools to reshape how knowledge is reused,\n          shared, and improved in the scientific community.</p>',
+        ),
+      },
+      authors: [{ name: 'Rowan Cockett', orcid: OrcidId('0000-0002-7859-8394') }],
+      id: new CurvenotePreprintId({ value: Doi('10.62329/fmdw8234') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 5, day: 11 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Embracing Reuse in Scientific Communication'),
+      },
+      url: new URL('https://doi.curvenote.com/10.62329/FMDW8234'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

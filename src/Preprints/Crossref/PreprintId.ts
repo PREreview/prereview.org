@@ -19,6 +19,7 @@ const crossrefDoiPrefixes = [
   '31730',
   '35542',
   '55458',
+  '62329',
 ] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]

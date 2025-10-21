@@ -1,0 +1,65 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 5, 14]],
+      "date-time": "2025-05-14T14:13:38Z",
+      "timestamp": 1747232018540,
+      "version": "3.40.5"
+    },
+    "posted": { "date-parts": [[2024, 5, 11]] },
+    "reference-count": 0,
+    "publisher": "Curvenote Inc.",
+    "license": [
+      {
+        "start": { "date-parts": [[2024, 5, 11]], "date-time": "2024-05-11T00:00:00Z", "timestamp": 1715385600000 },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>The ability to build upon existing knowledge is fundamental to the process of\n          science. Yet, despite the rapid advancement of science, the methods for citing and\n          referencing content have remained surprisingly static. Today, we\u2019re on the brink of\n          transforming how we interact with scientific literature and educational content. The\n          Curvenote team has been working in the MyST Markdown ecosystem to simplify the ways to\n          reference and embed figures directly into publications. We are starting this process by\n          integrating a <jats:ext-link xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" ext-link-type=\"uri\" xlink:href=\"https:\/\/mystmd.org\/guide\/external-references#tbl-syntax-xref\">simple\n            markdown syntax for hover-references<\/jats:ext-link>, which aims to not only streamline\n          referencing academic citations but also enhance the readability and interactive capacity\n          of scholarly articles. This blog post explores the importance of scientific reuse, as the\n          driving FAIR principle, and introduces new tools to reshape how knowledge is reused,\n          shared, and improved in the scientific community.<\/jats:p>",
+    "DOI": "10.62329\/fmdw8234",
+    "type": "posted-content",
+    "created": { "date-parts": [[2024, 6, 26]], "date-time": "2024-06-26T22:53:58Z", "timestamp": 1719442438000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 1,
+    "title": ["Embracing Reuse in Scientific Communication"],
+    "prefix": "10.62329",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7859-8394",
+        "authenticated-orcid": false,
+        "given": "Rowan",
+        "family": "Cockett",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "id": [{ "id": "https:\/\/ror.org\/02mz0e468", "id-type": "ROR", "asserted-by": "publisher" }],
+            "name": "Curvenote Inc."
+          },
+          { "name": "Executable Books" }
+        ]
+      }
+    ],
+    "member": "48717",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2024, 6, 26]], "date-time": "2024-06-26T22:53:58Z", "timestamp": 1719442438000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/doi.curvenote.com\/10.62329\/FMDW8234" } },
+    "subtitle": ["Introducing MyST based tools for easily reusing scientific content"],
+    "short-title": [],
+    "issued": { "date-parts": [[2024, 5, 11]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.62329\/fmdw8234",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2024, 5, 11]] },
+    "subtype": "preprint"
+  }
+}
