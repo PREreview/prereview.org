@@ -15,6 +15,7 @@ import {
   BiorxivPreprintId,
   ChemrxivPreprintId,
   CurvenotePreprintId,
+  EartharxivPreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
@@ -606,6 +607,27 @@ test.each([
         text: rawHtml('Embracing Reuse in Scientific Communication'),
       },
       url: new URL('https://doi.curvenote.com/10.62329/FMDW8234'),
+    }),
+  },
+  {
+    response: 'eartharxiv.json',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>For many applications in environmental remote sensing, the interpretation of a given measurement depends strongly on what time of year the measurement was taken. This is particularly the case for phenology studies concerned with identifying when plant developmental transitions occur, but it is also true for a wide range of applications including vegetation species classification, crop yield estimation, and more. This study explores the use of Fisher Discriminant Analysis (FDA) as a method for extracting time-resolved information from multivariate environmental time series data. FDA is useful because it can be applied to multivariate input data and, for phenological estimation problems, produces a transformation that is physically interpretable. This work contains both theoretical and applied components. First, we use FDA to demonstrate the time-resolved nature of phenological information. Where curve-fitting and other commonly used data transformations that are sensitive to variation throughout a full time series, we show how FDA identifies application-relevant variation in specific variables at specific points in time. Next, we apply FDA to estimate county-average corn planting dates in the United States corn belt. We find that using multivariate data inputs can reduce prediction RMSE (in days) by 20% relative to models using only univariate inputs. We also compare FDA (which is linear) to nonlinear planting date estimation models based on curve-fitting and random forest estimators. We find that multivariate FDA models significantly improve on univariate curve-fitting and have comparable performance when using the same univariate inputs (despite the linearity of FDA). We also find that FDA-based approaches have lower RMSE than random forest in all configurations. Finally, we interpret FDA coefficients for individual measurements sensitive to vegetation density, land surface temperature, and soil moisture by relating them to physical mechanisms indicative of earlier or later planting.</p>',
+        ),
+      },
+      authors: [{ name: 'Conor Doherty', orcid: OrcidId('0000-0003-2637-0029') }, { name: 'Meagan Mauter' }],
+      id: new EartharxivPreprintId({ value: Doi('10.31223/x5h94p') }),
+      posted: Temporal.PlainDate.from({ year: 2022, month: 10, day: 26 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Fisher Discriminant Analysis for Extracting Interpretable Phenological Information from Multivariate Time Series Data',
+        ),
+      },
+      url: new URL('https://eartharxiv.org/repository/view/4603/'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>
