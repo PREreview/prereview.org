@@ -1,0 +1,269 @@
+{
+  "data": {
+    "id": "10.5068/d1339f",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5068/d1339f",
+      "prefix": "10.5068",
+      "suffix": "d1339f",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Beichman, Annabel",
+          "nameType": "Personal",
+          "givenName": "Annabel",
+          "familyName": "Beichman",
+          "affiliation": ["University of Washington"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-6991-587X",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Robinson, Jacqueline",
+          "nameType": "Personal",
+          "givenName": "Jacqueline",
+          "familyName": "Robinson",
+          "affiliation": ["University of California, San Francisco"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Lin, Meixi",
+          "nameType": "Personal",
+          "givenName": "Meixi",
+          "familyName": "Lin",
+          "affiliation": ["Stanford University"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Moreno-Estrada, Andrés",
+          "nameType": "Personal",
+          "givenName": "Andrés",
+          "familyName": "Moreno-Estrada",
+          "affiliation": ["Center for Research and Advanced Studies of the National Polytechnic Institute"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Nigenda-Morales, Sergio",
+          "nameType": "Personal",
+          "givenName": "Sergio",
+          "familyName": "Nigenda-Morales",
+          "affiliation": ["California State University, San Marcos"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Harris, Kelley",
+          "nameType": "Personal",
+          "givenName": "Kelley",
+          "familyName": "Harris",
+          "affiliation": ["University of Washington"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        { "title": "Data files associated with: Evolution of the mutation spectrum across a mammalian phylogeny" }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [
+        {
+          "subject": "Mutation",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "phylogeny" },
+        { "subject": "phylogenetic signal" },
+        { "subject": "Mus musculus" },
+        { "subject": "Mus spretus" },
+        { "subject": "Ursus arctos" },
+        { "subject": "Phocoena sinus" },
+        { "subject": "Balaenoptera physalus" },
+        { "subject": "Ursus maritimus" },
+        { "subject": "Pongo abelii" },
+        { "subject": "Pongo pygmaeus" },
+        { "subject": "Pan paniscus" },
+        { "subject": "Pan troglodytes" },
+        { "subject": "Canis lupus" },
+        { "subject": "Gorilla gorilla" },
+        { "subject": "mutation spectrum" },
+        { "subject": "polymorphism" },
+        { "subject": "FOS: Biological sciences", "subjectScheme": "fos" },
+        {
+          "subject": "FOS: Biological sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2023-08-16T13:39:03Z", "dateType": "Created" },
+        { "date": "2023-08-16T16:55:47Z", "dateType": "Submitted" },
+        { "date": "2023-09-11T00:00:00Z", "dateType": "Issued" },
+        { "date": "2023-09-11T00:00:00Z", "dateType": "Available" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsDerivedFrom",
+          "relatedIdentifier": "https://github.com/harrispopgen/mammal_mutation_spectra/",
+          "relatedIdentifierType": "URL"
+        },
+        {
+          "relationType": "IsCitedBy",
+          "relatedIdentifier": "10.1101/2023.05.31.543114",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["184998676663 bytes"],
+      "formats": [],
+      "version": "2",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Although evolutionary biologists have long theorized that variation in DNA\n repair efficacy might explain some of the diversity of lifespan and cancer\n incidence across species, we have little data on the variability of normal\n germline mutagenesis outside of humans. Here, we shed light on the\n spectrum and etiology of mutagenesis across mammals by quantifying\n mutational sequence context biases using polymorphism data from thirteen\n species of mice, apes, bears, wolves, and cetaceans. After normalizing the\n mutation spectrum for reference genome accessibility and k-mer content, we\n use the Mantel test to deduce that mutation spectrum divergence is highly\n correlated with genetic divergence between species, whereas life history\n traits like reproductive age are weaker predictors of mutation spectrum\n divergence. Potential bioinformatic confounders are only weakly related to\n a small set of mutation spectrum features. We find that clocklike\n mutational signatures previously inferred from human cancers cannot\n explain the phylogenetic signal exhibited by the mammalian mutation\n spectrum, despite the ability of these clocklike signatures to fit each\n species’ 3-mer spectrum with high cosine similarity. In contrast, parental\n aging signatures inferred from human de novo mutation data appear to\n explain much of the mutation spectrum’s phylogenetic signal when fit to\n non-context-dependent mutation spectrum data in combination with a novel\n mutational signature. We posit that future models purporting to explain\n the etiology of mammalian mutagenesis need to capture the fact that more\n closely related species have more similar mutation spectra; a model that\n fits each marginal spectrum with high cosine similarity is not guaranteed\n to capture this hierarchy of mutation spectrum variation among species.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "Mutation spectra were generated based on publicly-available whole genome\n sequencing polymorphism data (VCF format) from 13 mammal species (house\n mouse, Algerian mouse, humans, Bornean orangutan, Sumatran orangutan,\n chimpanzee, gorilla, bonobo, gray wolf, polar bear, brown bear, vaquita\n porpoise, and fin whale).  Spectra were generated for each\n species at the 1-mer, 3-mer, 5-mer and 7-mer level using the program\n mutyper and a pipeline that is described extensively in the paper's\n SI Methods section and on the project's GitHub repository\n (https://github.com/harrispopgen/mammal_mutation_spectra/). Data files are\n described in depth in the Dryad repository's README file.",
+          "descriptionType": "Methods"
+        },
+        {
+          "description": "All code that was used to process the data, carry out analyses, and\n generate figures is on the projects GitHub repository\n (https://github.com/harrispopgen/mammal_mutation_spectra/).",
+          "descriptionType": "Other"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute of General Medical Sciences",
+          "awardNumber": "R35GM133428",
+          "funderIdentifier": "https://ror.org/04q48ey07",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "National Institute on Aging",
+          "awardNumber": "T32 AG066574",
+          "funderIdentifier": "https://ror.org/049v75w11",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Burroughs Wellcome Fund",
+          "funderIdentifier": "https://ror.org/01d35cw23",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Kinship Conservation Fellows",
+          "funderIdentifier": "https://ror.org/05pt1d114",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Pew Charitable Trusts",
+          "funderIdentifier": "https://ror.org/02xhk2825",
+          "funderIdentifierType": "ROR"
+        },
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "Alfred P. Sloan Foundation",
+          "funderIdentifier": "https://ror.org/052csg198",
+          "funderIdentifierType": "ROR"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTA2OC9EMTMzOUY8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkJlaWNobWFuLCBBbm5hYmVsPC9jcmVhdG9yTmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwOi8vb3JjaWQub3JnLyI+MDAwMC0wMDAyLTY5OTEtNTg3WDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMGN2eGIxNDUiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Sb2JpbnNvbiwgSmFjcXVlbGluZTwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNDNtejVqNTQiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBDYWxpZm9ybmlhLCBTYW4gRnJhbmNpc2NvPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5MaW4sIE1laXhpPC9jcmVhdG9yTmFtZT4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAwZjU0cDA1NCIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5TdGFuZm9yZCBVbml2ZXJzaXR5PC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Nb3Jlbm8tRXN0cmFkYSwgQW5kcsOpczwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMDllcW1yMTgiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+Q2VudGVyIGZvciBSZXNlYXJjaCBhbmQgQWR2YW5jZWQgU3R1ZGllcyBvZiB0aGUgTmF0aW9uYWwgUG9seXRlY2huaWMgSW5zdGl0dXRlPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5OaWdlbmRhLU1vcmFsZXMsIFNlcmdpbzwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMWo4ZTBqMjQiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+Q2FsaWZvcm5pYSBTdGF0ZSBVbml2ZXJzaXR5LCBTYW4gTWFyY29zPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5IYXJyaXMsIEtlbGxleTwvY3JlYXRvck5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMGN2eGIxNDUiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIiBzY2hlbWVVUkk9Imh0dHBzOi8vcm9yLm9yZyI+VW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+CiAgICAgIERhdGEgZmlsZXMgYXNzb2NpYXRlZCB3aXRoOiBFdm9sdXRpb24gb2YgdGhlIG11dGF0aW9uIHNwZWN0cnVtIGFjcm9zcyBhCiAgICAgIG1hbW1hbGlhbiBwaHlsb2dlbnkKICAgIDwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlciBwdWJsaXNoZXJJZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDB4Nmg1bjk1IiBwdWJsaXNoZXJJZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnLyI+RHJ5YWQ8L3B1Ymxpc2hlcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiPmRhdGFzZXQ8L3Jlc291cmNlVHlwZT4KICA8cHVibGljYXRpb25ZZWFyPjIwMjM8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPk11dGF0aW9uPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cGh5bG9nZW55PC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cGh5bG9nZW5ldGljIHNpZ25hbDwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pk11cyBtdXNjdWx1czwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pk11cyBzcHJldHVzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+VXJzdXMgYXJjdG9zPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+UGhvY29lbmEgc2ludXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5CYWxhZW5vcHRlcmEgcGh5c2FsdXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5VcnN1cyBtYXJpdGltdXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5Qb25nbyBhYmVsaWk8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5Qb25nbyBweWdtYWV1czwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlBhbiBwYW5pc2N1czwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlBhbiB0cm9nbG9keXRlczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PkNhbmlzIGx1cHVzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+R29yaWxsYSBnb3JpbGxhPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+bXV0YXRpb24gc3BlY3RydW08L3N1YmplY3Q+CiAgICA8c3ViamVjdD5wb2x5bW9ycGhpc208L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJmb3MiPkZPUzogQmlvbG9naWNhbCBzY2llbmNlczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxmdW5kaW5nUmVmZXJlbmNlcz4KICAgIDxmdW5kaW5nUmVmZXJlbmNlPgogICAgICA8ZnVuZGVyTmFtZT5OYXRpb25hbCBJbnN0aXR1dGUgb2YgR2VuZXJhbCBNZWRpY2FsIFNjaWVuY2VzPC9mdW5kZXJOYW1lPgogICAgICA8ZnVuZGVySWRlbnRpZmllciBmdW5kZXJJZGVudGlmaWVyVHlwZT0iUk9SIj5odHRwczovL3Jvci5vcmcvMDRxNDhleTA3PC9mdW5kZXJJZGVudGlmaWVyPgogICAgICA8YXdhcmROdW1iZXI+UjM1R00xMzM0Mjg8L2F3YXJkTnVtYmVyPgogICAgPC9mdW5kaW5nUmVmZXJlbmNlPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPk5hdGlvbmFsIEluc3RpdHV0ZSBvbiBBZ2luZzwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA0OXY3NXcxMTwvZnVuZGVySWRlbnRpZmllcj4KICAgICAgPGF3YXJkTnVtYmVyPlQzMiBBRzA2NjU3NDwvYXdhcmROdW1iZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgICA8ZnVuZGluZ1JlZmVyZW5jZT4KICAgICAgPGZ1bmRlck5hbWU+QnVycm91Z2hzIFdlbGxjb21lIEZ1bmQ8L2Z1bmRlck5hbWU+CiAgICAgIDxmdW5kZXJJZGVudGlmaWVyIGZ1bmRlcklkZW50aWZpZXJUeXBlPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wMWQzNWN3MjM8L2Z1bmRlcklkZW50aWZpZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgICA8ZnVuZGluZ1JlZmVyZW5jZT4KICAgICAgPGZ1bmRlck5hbWU+S2luc2hpcCBDb25zZXJ2YXRpb24gRmVsbG93czwvZnVuZGVyTmFtZT4KICAgICAgPGZ1bmRlcklkZW50aWZpZXIgZnVuZGVySWRlbnRpZmllclR5cGU9IlJPUiI+aHR0cHM6Ly9yb3Iub3JnLzA1cHQxZDExNDwvZnVuZGVySWRlbnRpZmllcj4KICAgIDwvZnVuZGluZ1JlZmVyZW5jZT4KICAgIDxmdW5kaW5nUmVmZXJlbmNlPgogICAgICA8ZnVuZGVyTmFtZT5QZXcgQ2hhcml0YWJsZSBUcnVzdHM8L2Z1bmRlck5hbWU+CiAgICAgIDxmdW5kZXJJZGVudGlmaWVyIGZ1bmRlcklkZW50aWZpZXJUeXBlPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wMnhoazI4MjU8L2Z1bmRlcklkZW50aWZpZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgICA8ZnVuZGluZ1JlZmVyZW5jZT4KICAgICAgPGZ1bmRlck5hbWU+QWxmcmVkIFAuIFNsb2FuIEZvdW5kYXRpb248L2Z1bmRlck5hbWU+CiAgICAgIDxmdW5kZXJJZGVudGlmaWVyIGZ1bmRlcklkZW50aWZpZXJUeXBlPSJST1IiPmh0dHBzOi8vcm9yLm9yZy8wNTJjc2cxOTg8L2Z1bmRlcklkZW50aWZpZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgPC9mdW5kaW5nUmVmZXJlbmNlcz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQ3JlYXRlZCI+MjAyMy0wOC0xNlQxMzozOTowM1o8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDIzLTA4LTE2VDE2OjU1OjQ3WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjMtMDktMTFUMDA6MDA6MDBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyMy0wOS0xMVQwMDowMDowMFo8L2RhdGU+CiAgPC9kYXRlcz4KICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJJc0Rlcml2ZWRGcm9tIiByZWxhdGVkSWRlbnRpZmllclR5cGU9IlVSTCI+aHR0cHM6Ly9naXRodWIuY29tL2hhcnJpc3BvcGdlbi9tYW1tYWxfbXV0YXRpb25fc3BlY3RyYS88L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSXNDaXRlZEJ5IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+aHR0cHM6Ly9kb2kub3JnLzEwLjExMDEvMjAyMy4wNS4zMS41NDMxMTQ8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcz4KICAgIDxzaXplPjE4NDk5ODY3NjY2MyBieXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDx2ZXJzaW9uPjI8L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9zcGR4Lm9yZy9saWNlbnNlcy9DQzAtMS4wLmh0bWwiPkNyZWF0aXZlIENvbW1vbnMgWmVybyB2MS4wIFVuaXZlcnNhbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPgogICAgICBBbHRob3VnaCBldm9sdXRpb25hcnkgYmlvbG9naXN0cyBoYXZlIGxvbmcgdGhlb3JpemVkIHRoYXQgdmFyaWF0aW9uIGluIEROQQogICAgICByZXBhaXIgZWZmaWNhY3kgbWlnaHQgZXhwbGFpbiBzb21lIG9mIHRoZSBkaXZlcnNpdHkgb2YgbGlmZXNwYW4gYW5kIGNhbmNlcgogICAgICBpbmNpZGVuY2UgYWNyb3NzIHNwZWNpZXMsIHdlIGhhdmUgbGl0dGxlIGRhdGEgb24gdGhlIHZhcmlhYmlsaXR5IG9mIG5vcm1hbAogICAgICBnZXJtbGluZSBtdXRhZ2VuZXNpcyBvdXRzaWRlIG9mIGh1bWFucy4gSGVyZSwgd2Ugc2hlZCBsaWdodCBvbiB0aGUKICAgICAgc3BlY3RydW0gYW5kIGV0aW9sb2d5IG9mIG11dGFnZW5lc2lzIGFjcm9zcyBtYW1tYWxzIGJ5IHF1YW50aWZ5aW5nCiAgICAgIG11dGF0aW9uYWwgc2VxdWVuY2UgY29udGV4dCBiaWFzZXMgdXNpbmcgcG9seW1vcnBoaXNtIGRhdGEgZnJvbSB0aGlydGVlbgogICAgICBzcGVjaWVzIG9mIG1pY2UsIGFwZXMsIGJlYXJzLCB3b2x2ZXMsIGFuZCBjZXRhY2VhbnMuIEFmdGVyIG5vcm1hbGl6aW5nIHRoZQogICAgICBtdXRhdGlvbiBzcGVjdHJ1bSBmb3IgcmVmZXJlbmNlIGdlbm9tZSBhY2Nlc3NpYmlsaXR5IGFuZCBrLW1lciBjb250ZW50LCB3ZQogICAgICB1c2UgdGhlIE1hbnRlbCB0ZXN0IHRvIGRlZHVjZSB0aGF0IG11dGF0aW9uIHNwZWN0cnVtIGRpdmVyZ2VuY2UgaXMgaGlnaGx5CiAgICAgIGNvcnJlbGF0ZWQgd2l0aCBnZW5ldGljIGRpdmVyZ2VuY2UgYmV0d2VlbiBzcGVjaWVzLCB3aGVyZWFzIGxpZmUgaGlzdG9yeQogICAgICB0cmFpdHMgbGlrZSByZXByb2R1Y3RpdmUgYWdlIGFyZSB3ZWFrZXIgcHJlZGljdG9ycyBvZiBtdXRhdGlvbiBzcGVjdHJ1bQogICAgICBkaXZlcmdlbmNlLiBQb3RlbnRpYWwgYmlvaW5mb3JtYXRpYyBjb25mb3VuZGVycyBhcmUgb25seSB3ZWFrbHkgcmVsYXRlZCB0bwogICAgICBhIHNtYWxsIHNldCBvZiBtdXRhdGlvbiBzcGVjdHJ1bSBmZWF0dXJlcy4gV2UgZmluZCB0aGF0IGNsb2NrbGlrZQogICAgICBtdXRhdGlvbmFsIHNpZ25hdHVyZXMgcHJldmlvdXNseSBpbmZlcnJlZCBmcm9tIGh1bWFuIGNhbmNlcnMgY2Fubm90CiAgICAgIGV4cGxhaW4gdGhlIHBoeWxvZ2VuZXRpYyBzaWduYWwgZXhoaWJpdGVkIGJ5IHRoZSBtYW1tYWxpYW4gbXV0YXRpb24KICAgICAgc3BlY3RydW0sIGRlc3BpdGUgdGhlIGFiaWxpdHkgb2YgdGhlc2UgY2xvY2tsaWtlIHNpZ25hdHVyZXMgdG8gZml0IGVhY2gKICAgICAgc3BlY2llc+KAmSAzLW1lciBzcGVjdHJ1bSB3aXRoIGhpZ2ggY29zaW5lIHNpbWlsYXJpdHkuIEluIGNvbnRyYXN0LCBwYXJlbnRhbAogICAgICBhZ2luZyBzaWduYXR1cmVzIGluZmVycmVkIGZyb20gaHVtYW4gZGUgbm92byBtdXRhdGlvbiBkYXRhIGFwcGVhciB0bwogICAgICBleHBsYWluIG11Y2ggb2YgdGhlIG11dGF0aW9uIHNwZWN0cnVt4oCZcyBwaHlsb2dlbmV0aWMgc2lnbmFsIHdoZW4gZml0IHRvCiAgICAgIG5vbi1jb250ZXh0LWRlcGVuZGVudCBtdXRhdGlvbiBzcGVjdHJ1bSBkYXRhIGluIGNvbWJpbmF0aW9uIHdpdGggYSBub3ZlbAogICAgICBtdXRhdGlvbmFsIHNpZ25hdHVyZS4gV2UgcG9zaXQgdGhhdCBmdXR1cmUgbW9kZWxzIHB1cnBvcnRpbmcgdG8gZXhwbGFpbgogICAgICB0aGUgZXRpb2xvZ3kgb2YgbWFtbWFsaWFuIG11dGFnZW5lc2lzIG5lZWQgdG8gY2FwdHVyZSB0aGUgZmFjdCB0aGF0IG1vcmUKICAgICAgY2xvc2VseSByZWxhdGVkIHNwZWNpZXMgaGF2ZSBtb3JlIHNpbWlsYXIgbXV0YXRpb24gc3BlY3RyYTsgYSBtb2RlbCB0aGF0CiAgICAgIGZpdHMgZWFjaCBtYXJnaW5hbCBzcGVjdHJ1bSB3aXRoIGhpZ2ggY29zaW5lIHNpbWlsYXJpdHkgaXMgbm90IGd1YXJhbnRlZWQKICAgICAgdG8gY2FwdHVyZSB0aGlzIGhpZXJhcmNoeSBvZiBtdXRhdGlvbiBzcGVjdHJ1bSB2YXJpYXRpb24gYW1vbmcgc3BlY2llcy4KICAgIDwvZGVzY3JpcHRpb24+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJNZXRob2RzIj4KICAgICAgTXV0YXRpb24gc3BlY3RyYSB3ZXJlIGdlbmVyYXRlZCBiYXNlZCBvbiBwdWJsaWNseS1hdmFpbGFibGUgd2hvbGUgZ2Vub21lCiAgICAgIHNlcXVlbmNpbmcgcG9seW1vcnBoaXNtIGRhdGEgKFZDRiBmb3JtYXQpIGZyb20gMTMgbWFtbWFsIHNwZWNpZXMgKGhvdXNlCiAgICAgIG1vdXNlLCBBbGdlcmlhbiBtb3VzZSwgaHVtYW5zLCBCb3JuZWFuIG9yYW5ndXRhbiwgU3VtYXRyYW4gb3Jhbmd1dGFuLAogICAgICBjaGltcGFuemVlLCBnb3JpbGxhLCBib25vYm8sIGdyYXkgd29sZiwgcG9sYXIgYmVhciwgYnJvd24gYmVhciwgdmFxdWl0YQogICAgICBwb3Jwb2lzZSwgYW5kIGZpbiB3aGFsZSkuJmFtcDtuYnNwOyBTcGVjdHJhIHdlcmUgZ2VuZXJhdGVkIGZvciBlYWNoCiAgICAgIHNwZWNpZXMgYXQgdGhlIDEtbWVyLCAzLW1lciwgNS1tZXIgYW5kIDctbWVyIGxldmVsIHVzaW5nIHRoZSBwcm9ncmFtCiAgICAgIG11dHlwZXIgYW5kIGEgcGlwZWxpbmUgdGhhdCBpcyBkZXNjcmliZWQgZXh0ZW5zaXZlbHkgaW4gdGhlIHBhcGVyJ3MKICAgICAgU0kgTWV0aG9kcyBzZWN0aW9uIGFuZCBvbiB0aGUgcHJvamVjdCdzIEdpdEh1YiByZXBvc2l0b3J5CiAgICAgIChodHRwczovL2dpdGh1Yi5jb20vaGFycmlzcG9wZ2VuL21hbW1hbF9tdXRhdGlvbl9zcGVjdHJhLykuIERhdGEgZmlsZXMgYXJlCiAgICAgIGRlc2NyaWJlZCBpbiBkZXB0aCBpbiB0aGUgRHJ5YWQgcmVwb3NpdG9yeSdzIFJFQURNRSBmaWxlLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik90aGVyIj4KICAgICAgQWxsIGNvZGUgdGhhdCB3YXMgdXNlZCB0byBwcm9jZXNzIHRoZSBkYXRhLCBjYXJyeSBvdXQgYW5hbHlzZXMsIGFuZAogICAgICBnZW5lcmF0ZSBmaWd1cmVzIGlzIG9uIHRoZSBwcm9qZWN0cyBHaXRIdWIgcmVwb3NpdG9yeQogICAgICAoaHR0cHM6Ly9naXRodWIuY29tL2hhcnJpc3BvcGdlbi9tYW1tYWxfbXV0YXRpb25fc3BlY3RyYS8pLgogICAgPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://datadryad.org/dataset/doi:10.5068/D1339F",
+      "contentUrl": null,
+      "metadataVersion": 5,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 66,
+      "viewsOverTime": [
+        { "yearMonth": "2023-09", "total": 4 },
+        { "yearMonth": "2023-10", "total": 6 },
+        { "yearMonth": "2023-11", "total": 15 },
+        { "yearMonth": "2023-12", "total": 10 },
+        { "yearMonth": "2024-03", "total": 1 },
+        { "yearMonth": "2024-06", "total": 1 },
+        { "yearMonth": "2024-07", "total": 1 },
+        { "yearMonth": "2024-08", "total": 4 },
+        { "yearMonth": "2024-10", "total": 2 },
+        { "yearMonth": "2024-11", "total": 2 },
+        { "yearMonth": "2024-12", "total": 4 },
+        { "yearMonth": "2025-03", "total": 7 },
+        { "yearMonth": "2025-04", "total": 1 },
+        { "yearMonth": "2025-05", "total": 3 },
+        { "yearMonth": "2025-06", "total": 2 },
+        { "yearMonth": "2025-07", "total": 2 },
+        { "yearMonth": "2025-09", "total": 1 }
+      ],
+      "downloadCount": 20,
+      "downloadsOverTime": [
+        { "yearMonth": "2023-10", "total": 3 },
+        { "yearMonth": "2023-11", "total": 1 },
+        { "yearMonth": "2024-03", "total": 1 },
+        { "yearMonth": "2024-06", "total": 0 },
+        { "yearMonth": "2024-07", "total": 1 },
+        { "yearMonth": "2024-08", "total": 3 },
+        { "yearMonth": "2024-10", "total": 1 },
+        { "yearMonth": "2024-11", "total": 0 },
+        { "yearMonth": "2024-12", "total": 2 },
+        { "yearMonth": "2025-03", "total": 5 },
+        { "yearMonth": "2025-04", "total": 1 },
+        { "yearMonth": "2025-05", "total": 1 },
+        { "yearMonth": "2025-06", "total": 1 },
+        { "yearMonth": "2025-07", "total": 0 },
+        { "yearMonth": "2025-09", "total": 0 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2024", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-09-11T15:54:03.000Z",
+      "registered": "2023-09-11T15:54:04.000Z",
+      "published": "2023",
+      "updated": "2025-07-23T09:56:00.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.5068/d1339f", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [{ "id": "10.1101/2023.05.31.543114", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

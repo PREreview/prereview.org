@@ -392,6 +392,7 @@ test.each([
   'cdl-ucd',
   'cdl-uci-dryad',
   'cdl-uci',
+  'cdl-ucla-dryad',
   'cdl-ucm-dryad',
   'cdl-ucm',
   'cdl-ucsb-dryad',

@@ -242,6 +242,32 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.15146/zf0j-5m50'),
     }),
   },
+  {
+    response: 'cdl-ucla-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Although evolutionary biologists have long theorized that variation in DNA\n repair efficacy might explain some of the diversity of lifespan and cancer\n incidence across species, we have little data on the variability of normal\n germline mutagenesis outside of humans. Here, we shed light on the\n spectrum and etiology of mutagenesis across mammals by quantifying\n mutational sequence context biases using polymorphism data from thirteen\n species of mice, apes, bears, wolves, and cetaceans. After normalizing the\n mutation spectrum for reference genome accessibility and k-mer content, we\n use the Mantel test to deduce that mutation spectrum divergence is highly\n correlated with genetic divergence between species, whereas life history\n traits like reproductive age are weaker predictors of mutation spectrum\n divergence. Potential bioinformatic confounders are only weakly related to\n a small set of mutation spectrum features. We find that clocklike\n mutational signatures previously inferred from human cancers cannot\n explain the phylogenetic signal exhibited by the mammalian mutation\n spectrum, despite the ability of these clocklike signatures to fit each\n species’ 3-mer spectrum with high cosine similarity. In contrast, parental\n aging signatures inferred from human de novo mutation data appear to\n explain much of the mutation spectrum’s phylogenetic signal when fit to\n non-context-dependent mutation spectrum data in combination with a novel\n mutational signature. We posit that future models purporting to explain\n the etiology of mammalian mutagenesis need to capture the fact that more\n closely related species have more similar mutation spectra; a model that\n fits each marginal spectrum with high cosine similarity is not guaranteed\n to capture this hierarchy of mutation spectrum variation among species.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Annabel Beichman', orcid: OrcidId.OrcidId('0000-0002-6991-587X') },
+        { name: 'Jacqueline Robinson' },
+        { name: 'Meixi Lin' },
+        { name: 'Andrés Moreno-Estrada' },
+        { name: 'Sergio Nigenda-Morales' },
+        { name: 'Kelley Harris' },
+      ],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5068/d1339f') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 9, day: 11 }),
+      title: {
+        text: rawHtml('Data files associated with: Evolution of the mutation spectrum across a mammalian phylogeny'),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.5068/D1339F'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
