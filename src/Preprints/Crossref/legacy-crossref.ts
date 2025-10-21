@@ -11,9 +11,9 @@ import { type Html, sanitizeHtml } from '../../html.ts'
 import { transformJatsToHtml } from '../../jats.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import * as Preprint from '../Preprint.ts'
-import { EngrxivPreprintId, type IndeterminatePreprintId, type PreprintId, TechrxivPreprintId } from '../PreprintId.ts'
+import { type IndeterminatePreprintId, type PreprintId, TechrxivPreprintId } from '../PreprintId.ts'
 
-const crossrefDoiPrefixes = ['31224', '36227'] as const
+const crossrefDoiPrefixes = ['36227'] as const
 
 type CrossrefDoiPrefix = (typeof crossrefDoiPrefixes)[number]
 
@@ -125,18 +125,10 @@ const detectLanguageForServer = ({
   text: Html
 }): Option.Option<LanguageCode> =>
   match({ type, text })
-    .with({ type: 'EngrxivPreprintId' }, () => Option.some('en' as const))
     .with({ type: 'TechrxivPreprintId' }, () => Option.some('en' as const))
     .exhaustive()
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
-  pipe(
-    D.fromStruct({
-      DOI: D.fromRefinement(hasRegistrant('31224'), 'DOI'),
-      publisher: D.literal('Open Engineering Inc'),
-    }),
-    D.map(work => new EngrxivPreprintId({ value: work.DOI })),
-  ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('36227'), 'DOI'),
