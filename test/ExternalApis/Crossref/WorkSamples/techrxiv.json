@@ -1,0 +1,73 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "institution": [{ "name": "Techrxiv" }],
+    "indexed": {
+      "date-parts": [[2025, 5, 14]],
+      "date-time": "2025-05-14T11:19:29Z",
+      "timestamp": 1747221569226,
+      "version": "3.40.5"
+    },
+    "posted": { "date-parts": [[2024, 2, 14]] },
+    "group-title": "Preprints",
+    "reference-count": 0,
+    "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+    "license": [
+      {
+        "start": { "date-parts": [[2024, 2, 14]], "date-time": "2024-02-14T00:00:00Z", "timestamp": 1707868800000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by-nc-sa\/4.0\/"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2024, 2, 14]] },
+    "DOI": "10.36227\/techrxiv.170794036.66542348\/v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2024, 2, 14]], "date-time": "2024-02-14T19:52:51Z", "timestamp": 1707940371000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Maximum Likelihood Estimation of Line Parameters for a Nonlinear Model of Distribution Grids"],
+    "prefix": "10.36227",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0009-0002-1293-2377",
+        "authenticated-orcid": true,
+        "given": "Shubhankar",
+        "family": "Kapoor",
+        "sequence": "first",
+        "affiliation": []
+      },
+      { "given": "Adrian G", "family": "Wills", "sequence": "additional", "affiliation": [] },
+      { "given": "Johannes", "family": "Hendriks", "sequence": "additional", "affiliation": [] },
+      { "given": "Lachlan", "family": "Blackhall", "sequence": "additional", "affiliation": [] }
+    ],
+    "member": "263",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2024, 3, 19]], "date-time": "2024-03-19T23:24:05Z", "timestamp": 1710890645000 },
+    "score": 1,
+    "resource": {
+      "primary": {
+        "URL": "https:\/\/www.techrxiv.org\/users\/742533\/articles\/717019-maximum-likelihood-estimation-of-line-parameters-for-a-nonlinear-model-of-distribution-grids?commit=29e9663eee4360bed385b5b25c2106da4426a3aa"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2024, 2, 14]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.36227\/techrxiv.170794036.66542348\/v1",
+    "relation": {
+      "has-version": [
+        { "id-type": "doi", "id": "10.36227\/techrxiv.170794036.66542348\/v2", "asserted-by": "object" },
+        { "id-type": "doi", "id": "10.36227\/techrxiv.170794036.66542348\/v3", "asserted-by": "object" }
+      ]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2024, 2, 14]] },
+    "subtype": "preprint"
+  }
+}

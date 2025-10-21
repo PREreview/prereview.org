@@ -31,6 +31,7 @@ import {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   SsrnPreprintId,
+  TechrxivPreprintId,
   VerixivPreprintId,
 } from '../../../src/Preprints/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -673,6 +674,27 @@ test.each([
         text: rawHtml('Study of FPGA logic reconfiguration during operation'),
       },
       url: new URL('https://engrxiv.org/preprint/view/2632/version/3806'),
+    }),
+  },
+  {
+    response: 'techrxiv.json',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [
+        { name: 'Shubhankar Kapoor', orcid: OrcidId('0009-0002-1293-2377') },
+        { name: 'Adrian G Wills' },
+        { name: 'Johannes Hendriks' },
+        { name: 'Lachlan Blackhall' },
+      ],
+      id: new TechrxivPreprintId({ value: Doi('10.36227/techrxiv.170794036.66542348/v1') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 2, day: 14 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Maximum Likelihood Estimation of Line Parameters for a Nonlinear Model of Distribution Grids'),
+      },
+      url: new URL(
+        'https://www.techrxiv.org/users/742533/articles/717019-maximum-likelihood-estimation-of-line-parameters-for-a-nonlinear-model-of-distribution-grids?commit=29e9663eee4360bed385b5b25c2106da4426a3aa',
+      ),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

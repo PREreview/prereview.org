@@ -21,6 +21,7 @@ const crossrefDoiPrefixes = [
   '31730',
   '32942',
   '35542',
+  '36227',
   '55458',
   '62329',
 ] as const
