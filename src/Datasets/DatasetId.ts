@@ -63,6 +63,6 @@ const extractFromDoiPath = flow(decodeURIComponent, parseDatasetDoi)
 const extractFromDryadPath = flow(
   decodeURIComponent,
   Option.liftNullable(s => /^dataset\/doi:(.+?)\/?$/i.exec(s)?.[1]),
-  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061', '6071'))),
+  Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('5061', '6071', '7272'))),
   Option.andThen(doi => new DryadDatasetId({ value: doi })),
 )
