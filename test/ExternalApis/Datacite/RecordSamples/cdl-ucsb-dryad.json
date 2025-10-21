@@ -1,0 +1,180 @@
+{
+  "data": {
+    "id": "10.25349/d9vg9j",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.25349/d9vg9j",
+      "prefix": "10.25349",
+      "suffix": "d9vg9j",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Rickard, Alison",
+          "nameType": "Personal",
+          "givenName": "Alison",
+          "familyName": "Rickard",
+          "affiliation": ["University of California, Santa Barbara"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7939-8394",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        { "title": "Nutrient concentrations of the Devereux Slough, 2018–2022 (nitrogen, phosphorus and ammonium)" }
+      ],
+      "publisher": "Dryad",
+      "container": {},
+      "publicationYear": 2023,
+      "subjects": [
+        { "subject": "FOS: Other natural sciences", "subjectScheme": "fos" },
+        {
+          "subject": "FOS: Other natural sciences",
+          "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+          "subjectScheme": "Fields of Science and Technology (FOS)"
+        },
+        { "subject": "slough" },
+        { "subject": "estuary" },
+        {
+          "subject": "Nutrients",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "Nitrogen",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        {
+          "subject": "Phosphorus",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "ammonium" },
+        { "subject": "nutrient flux" },
+        {
+          "subject": "Water quality",
+          "schemeUri": "https://github.com/PLOS/plos-thesaurus",
+          "subjectScheme": "PLOS Subject Area Thesaurus"
+        },
+        { "subject": "nutrient cycling" }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2023-08-01T22:13:13Z", "dateType": "Created" },
+        { "date": "2023-08-01T22:14:34Z", "dateType": "Submitted" },
+        { "date": "2023-08-04T00:00:00Z", "dateType": "Issued" },
+        { "date": "2023-08-04T00:00:00Z", "dateType": "Available" }
+      ],
+      "language": "en",
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceType": "dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [],
+      "relatedItems": [],
+      "sizes": ["55405 bytes"],
+      "formats": [],
+      "version": "2",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "The Devereux Slough is a Temporary Open closed Estuary (TOCE). Nutrient\n concentrations were taken during storm events from 5 locations the are\n inlets to the Devereux Slough to estimate nutrient export to the ocean\n while the slough is open.",
+          "descriptionType": "Abstract"
+        },
+        {
+          "description": "This data was collected with 3 ISCO samplers at different locations and\n grab samples using a weighted bottle holder and 3 rinses. Samples were\n filtered and frozen within 48 hours of the samples being collected. At the\n end of the water year samples were sent to the UCSB Marine Science\n Institute analytical lab for analysis.\n https://msi.ucsb.edu/facilities-services/analytical-lab/about. All results\n are raw from what was reported back from the MSI analytic lab\n (micromolar). ",
+          "descriptionType": "Methods"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "schemeUri": "https://ror.org",
+          "funderName": "California Natural Resources Agency",
+          "awardNumber": "20160567",
+          "funderIdentifier": "https://ror.org/0115n5160",
+          "funderIdentifierType": "ROR"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuMjUzNDkvRDlWRzlKPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5SaWNrYXJkLCBBbGlzb248L2NyZWF0b3JOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHA6Ly9vcmNpZC5vcmcvIj4wMDAwLTAwMDItNzkzOS04Mzk0PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAydDI3NDQ2MyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnIj5Vbml2ZXJzaXR5IG9mIENhbGlmb3JuaWEsIFNhbnRhIEJhcmJhcmE8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT4KICAgICAgTnV0cmllbnQgY29uY2VudHJhdGlvbnMgb2YgdGhlIERldmVyZXV4IFNsb3VnaCwgMjAxOOKAkzIwMjIgKG5pdHJvZ2VuLAogICAgICBwaG9zcGhvcnVzIGFuZCBhbW1vbml1bSkKICAgIDwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlciBwdWJsaXNoZXJJZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDB4Nmg1bjk1IiBwdWJsaXNoZXJJZGVudGlmaWVyU2NoZW1lPSJST1IiIHNjaGVtZVVSST0iaHR0cHM6Ly9yb3Iub3JnLyI+RHJ5YWQ8L3B1Ymxpc2hlcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiPmRhdGFzZXQ8L3Jlc291cmNlVHlwZT4KICA8cHVibGljYXRpb25ZZWFyPjIwMjM8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJmb3MiPkZPUzogT3RoZXIgbmF0dXJhbCBzY2llbmNlczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PnNsb3VnaDwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmVzdHVhcnk8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPk51dHJpZW50czwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9IlBMT1MgU3ViamVjdCBBcmVhIFRoZXNhdXJ1cyIgc2NoZW1lVVJJPSJodHRwczovL2dpdGh1Yi5jb20vUExPUy9wbG9zLXRoZXNhdXJ1cyI+Tml0cm9nZW48L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPlBob3NwaG9ydXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5hbW1vbml1bTwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pm51dHJpZW50IGZsdXg8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJQTE9TIFN1YmplY3QgQXJlYSBUaGVzYXVydXMiIHNjaGVtZVVSST0iaHR0cHM6Ly9naXRodWIuY29tL1BMT1MvcGxvcy10aGVzYXVydXMiPldhdGVyIHF1YWxpdHk8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5udXRyaWVudCBjeWNsaW5nPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPkNhbGlmb3JuaWEgTmF0dXJhbCBSZXNvdXJjZXMgQWdlbmN5PC9mdW5kZXJOYW1lPgogICAgICA8ZnVuZGVySWRlbnRpZmllciBmdW5kZXJJZGVudGlmaWVyVHlwZT0iUk9SIj5odHRwczovL3Jvci5vcmcvMDExNW41MTYwPC9mdW5kZXJJZGVudGlmaWVyPgogICAgICA8YXdhcmROdW1iZXI+MjAxNjA1Njc8L2F3YXJkTnVtYmVyPgogICAgPC9mdW5kaW5nUmVmZXJlbmNlPgogIDwvZnVuZGluZ1JlZmVyZW5jZXM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNyZWF0ZWQiPjIwMjMtMDgtMDFUMjI6MTM6MTNaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCI+MjAyMy0wOC0wMVQyMjoxNDozNFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDIzLTA4LTA0VDAwOjAwOjAwWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiPjIwMjMtMDgtMDRUMDA6MDA6MDBaPC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuPC9sYW5ndWFnZT4KICA8c2l6ZXM+CiAgICA8c2l6ZT41NTQwNSBieXRlczwvc2l6ZT4KICA8L3NpemVzPgogIDx2ZXJzaW9uPjI8L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9zcGR4Lm9yZy9saWNlbnNlcy9DQzAtMS4wLmh0bWwiPkNyZWF0aXZlIENvbW1vbnMgWmVybyB2MS4wIFVuaXZlcnNhbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPgogICAgICBUaGUgRGV2ZXJldXggU2xvdWdoIGlzIGEgVGVtcG9yYXJ5IE9wZW4gY2xvc2VkIEVzdHVhcnkgKFRPQ0UpLiBOdXRyaWVudAogICAgICBjb25jZW50cmF0aW9ucyB3ZXJlIHRha2VuIGR1cmluZyBzdG9ybSBldmVudHMgZnJvbSA1IGxvY2F0aW9ucyB0aGUgYXJlCiAgICAgIGlubGV0cyB0byB0aGUgRGV2ZXJldXggU2xvdWdoIHRvIGVzdGltYXRlIG51dHJpZW50IGV4cG9ydCB0byB0aGUgb2NlYW4KICAgICAgd2hpbGUgdGhlIHNsb3VnaCBpcyBvcGVuLgogICAgPC9kZXNjcmlwdGlvbj4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9Ik1ldGhvZHMiPgogICAgICBUaGlzIGRhdGEgd2FzIGNvbGxlY3RlZCB3aXRoIDMgSVNDTyBzYW1wbGVycyBhdCBkaWZmZXJlbnQgbG9jYXRpb25zIGFuZAogICAgICBncmFiIHNhbXBsZXMgdXNpbmcgYSB3ZWlnaHRlZCBib3R0bGUgaG9sZGVyIGFuZCAzIHJpbnNlcy4gU2FtcGxlcyB3ZXJlCiAgICAgIGZpbHRlcmVkIGFuZCBmcm96ZW4gd2l0aGluIDQ4IGhvdXJzIG9mIHRoZSBzYW1wbGVzIGJlaW5nIGNvbGxlY3RlZC4gQXQgdGhlCiAgICAgIGVuZCBvZiB0aGUgd2F0ZXIgeWVhciBzYW1wbGVzIHdlcmUgc2VudCB0byB0aGUgVUNTQiBNYXJpbmUgU2NpZW5jZQogICAgICBJbnN0aXR1dGUgYW5hbHl0aWNhbCBsYWIgZm9yIGFuYWx5c2lzLgogICAgICBodHRwczovL21zaS51Y3NiLmVkdS9mYWNpbGl0aWVzLXNlcnZpY2VzL2FuYWx5dGljYWwtbGFiL2Fib3V0LiBBbGwgcmVzdWx0cwogICAgICBhcmUgcmF3IGZyb20gd2hhdCB3YXMgcmVwb3J0ZWQgYmFjayBmcm9tIHRoZSBNU0kgYW5hbHl0aWMgbGFiCiAgICAgIChtaWNyb21vbGFyKS4mYW1wO25ic3A7CiAgICA8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://datadryad.org/dataset/doi:10.25349/D9VG9J",
+      "contentUrl": null,
+      "metadataVersion": 5,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 134,
+      "viewsOverTime": [
+        { "yearMonth": "2023-08", "total": 56 },
+        { "yearMonth": "2023-09", "total": 38 },
+        { "yearMonth": "2023-10", "total": 2 },
+        { "yearMonth": "2023-11", "total": 3 },
+        { "yearMonth": "2023-12", "total": 12 },
+        { "yearMonth": "2024-03", "total": 2 },
+        { "yearMonth": "2024-04", "total": 6 },
+        { "yearMonth": "2024-05", "total": 3 },
+        { "yearMonth": "2024-06", "total": 3 },
+        { "yearMonth": "2024-07", "total": 3 },
+        { "yearMonth": "2024-11", "total": 1 },
+        { "yearMonth": "2025-01", "total": 2 },
+        { "yearMonth": "2025-04", "total": 1 },
+        { "yearMonth": "2025-09", "total": 2 }
+      ],
+      "downloadCount": 9,
+      "downloadsOverTime": [
+        { "yearMonth": "2023-10", "total": 1 },
+        { "yearMonth": "2023-12", "total": 1 },
+        { "yearMonth": "2024-03", "total": 2 },
+        { "yearMonth": "2024-04", "total": 1 },
+        { "yearMonth": "2024-05", "total": 1 },
+        { "yearMonth": "2024-06", "total": 0 },
+        { "yearMonth": "2024-07", "total": 0 },
+        { "yearMonth": "2024-11", "total": 1 },
+        { "yearMonth": "2025-01", "total": 1 },
+        { "yearMonth": "2025-04", "total": 1 },
+        { "yearMonth": "2025-09", "total": 0 }
+      ],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-08-04T21:25:54.000Z",
+      "registered": "2023-08-04T21:25:55.000Z",
+      "published": "2023",
+      "updated": "2025-07-23T09:57:02.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "dryad.dryad", "type": "clients" } },
+      "provider": { "data": { "id": "dryad", "type": "providers" } },
+      "media": { "data": { "id": "10.25349/d9vg9j", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

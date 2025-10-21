@@ -192,6 +192,25 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.7280/D1P10V'),
     }),
   },
+  {
+    response: 'cdl-ucsb-dryad',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>The Devereux Slough is a Temporary Open closed Estuary (TOCE). Nutrient\n concentrations were taken during storm events from 5 locations the are\n inlets to the Devereux Slough to estimate nutrient export to the ocean\n while the slough is open.</p>',
+        ),
+      },
+      authors: [{ name: 'Alison Rickard', orcid: OrcidId.OrcidId('0000-0002-7939-8394') }],
+      id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.25349/d9vg9j') }),
+      posted: Temporal.PlainDate.from({ year: 2023, month: 8, day: 4 }),
+      title: {
+        text: rawHtml('Nutrient concentrations of the Devereux Slough, 2018–2022 (nitrogen, phosphorus and ammonium)'),
+        language: 'en',
+      },
+      url: new URL('https://datadryad.org/dataset/doi:10.25349/D9VG9J'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
