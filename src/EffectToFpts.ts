@@ -78,6 +78,14 @@ export const toReaderIO = <A, R>(effect: Effect.Effect<A, never, R>): RIO.Reader
     RIO.chainIOK(({ runtime }) => toIO(effect, runtime)),
   )
 
+export const toIOK =
+  <A extends ReadonlyArray<unknown>, B, R>(
+    f: (...a: A) => Effect.Effect<B, never, R>,
+    runtime: Runtime.Runtime<R>,
+  ): ((...a: A) => IO.IO<B>) =>
+  (...a) =>
+    toIO(f(...a), runtime)
+
 export const toIO =
   <A, R>(effect: Effect.Effect<A, never, R>, runtime: Runtime.Runtime<R>): IO.IO<A> =>
   () =>

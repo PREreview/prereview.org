@@ -28,9 +28,10 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
-import { DeprecatedLoggerEnv, Locale, ScietyListToken, SessionStore } from '../../Context.ts'
-import { AddAnnotationsToLogger } from '../../DeprecatedServices.ts'
+import { Locale, ScietyListToken, SessionStore } from '../../Context.ts'
+import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, type OpenAlex, Slack, Zenodo } from '../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
@@ -79,7 +80,6 @@ export const nonEffectRouter: Effect.Effect<
   | PublicUrl
   | FeatureFlags.FeatureFlags
   | CommentsForReview
-  | DeprecatedLoggerEnv
   | FetchHttpClient.Fetch
   | SlackOauth
   | Keyv.KeyvStores
@@ -115,7 +115,6 @@ export const nonEffectRouter: Effect.Effect<
 
   const keyvStores = yield* Keyv.KeyvStores
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
-  const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
   const nodemailer = yield* Nodemailer
@@ -164,7 +163,7 @@ export const nonEffectRouter: Effect.Effect<
     onFalse: () => Effect.void,
   })
 
-  const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+  const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
   const env = {
     authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
@@ -177,10 +176,7 @@ export const nonEffectRouter: Effect.Effect<
     method: request.method,
     fileSystem,
     runtime,
-    logger: {
-      clock,
-      logger,
-    },
+    logger: loggerEnv,
     fetch,
     publicUrl,
     orcidOauth,
@@ -226,7 +222,7 @@ export interface Env {
     | ReviewRequests.ReviewRequests
     | Zenodo.ZenodoApi
   >
-  logger: typeof DeprecatedLoggerEnv.Service
+  logger: LoggerEnv
   users: {
     userOnboardingStore: Keyv.Keyv
     orcidTokenStore: Keyv.Keyv

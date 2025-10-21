@@ -12,9 +12,9 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
-import { DeprecatedLoggerEnv, Locale, SessionStore } from '../Context.ts'
+import { Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
-import { AddAnnotationsToLogger } from '../DeprecatedServices.ts'
+import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { timeoutRequest } from '../fetch.ts'
 import * as FptsToEffect from '../FptsToEffect.ts'
 import type { SupportedLocale } from '../locales/index.ts'
@@ -116,13 +116,12 @@ export const authenticate = Effect.fn(
   function* (code: string, state: string) {
     const publicUrl = yield* PublicUrl
     const fetch = yield* FetchHttpClient.Fetch
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const orcidOauth = yield* OrcidOauth
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked
     const getPseudonym = yield* GetPseudonym
 
-    const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+    const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
 
@@ -141,10 +140,9 @@ export const authenticate = Effect.fn(
         ),
       ),
       {
-        clock,
         fetch,
         isUserBlocked,
-        logger,
+        ...loggerEnv,
         orcidOauth: {
           authorizeUrl: orcidOauth.authorizeUrl,
           clientId: orcidOauth.clientId,

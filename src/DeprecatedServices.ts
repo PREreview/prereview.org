@@ -10,13 +10,14 @@ import {
   Inspectable,
   List,
   Logger,
+  LogLevel,
   Match,
   pipe,
+  String,
 } from 'effect'
 import * as C from 'fp-ts/lib/Console.js'
 import type * as J from 'fp-ts/lib/Json.js'
 import * as L from 'logger-fp-ts'
-import * as l from 'logging-ts/lib/IO.js'
 import { DeprecatedLoggerEnv } from './Context.ts'
 import * as EffectToFpts from './EffectToFpts.ts'
 
@@ -58,14 +59,22 @@ export const DeprecatedLogger = Effect.gen(function* () {
   })
 })
 
-export const AddAnnotationsToLogger = Effect.fn(function* (logger: L.Logger) {
-  const logAnnotations = yield* Effect.logAnnotations
+const toLogLevel = pipe(
+  Match.type<L.LogLevel>(),
+  Match.withReturnType<LogLevel.LogLevel>(),
+  Match.when('WARN', () => LogLevel.Warning),
+  Match.orElse(level => LogLevel.fromLiteral(String.capitalize(String.toLowerCase(level)))),
+)
 
-  return pipe(
-    logger,
-    l.contramap((entry: L.LogEntry) => ({
-      ...entry,
-      payload: { ...(Object.fromEntries(HashMap.toEntries(logAnnotations)) as J.JsonRecord), ...entry.payload },
-    })),
-  )
+export const MakeDeprecatedLoggerEnv = Effect.gen(function* () {
+  const runtime = yield* Effect.runtime()
+  const clock = yield* EffectToFpts.makeIO(Effect.andThen(DateTime.now, DateTime.toDate))
+
+  return {
+    clock,
+    logger: EffectToFpts.toIOK(
+      entry => pipe(Effect.logWithLevel(toLogLevel(entry.level), entry.message), Effect.annotateLogs(entry.payload)),
+      runtime,
+    ),
+  } satisfies L.LoggerEnv
 })

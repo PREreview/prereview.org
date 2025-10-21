@@ -4,11 +4,11 @@ import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'ef
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
-import { DeprecatedLoggerEnv, Locale, SessionStore } from './Context.ts'
+import { Locale, SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
-import { AddAnnotationsToLogger } from './DeprecatedServices.ts'
+import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, Ghost, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
@@ -75,16 +75,14 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
   Comments.DoesUserHaveAVerifiedEmailAddress,
   Effect.gen(function* () {
     const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(
       function* (orcid) {
-        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
           contactEmailAddressStore,
-          clock,
-          logger,
+          ...loggerEnv,
         })
       },
       Effect.map(contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress'),
@@ -101,16 +99,14 @@ const getContactEmailAddress = Layer.effect(
   ContactEmailAddress.GetContactEmailAddress,
   Effect.gen(function* () {
     const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(
       function* (orcid) {
-        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* FptsToEffect.readerTaskEither(Keyv.getContactEmailAddress(orcid), {
           contactEmailAddressStore,
-          clock,
-          logger,
+          ...loggerEnv,
         })
       },
       Effect.mapError(
@@ -129,16 +125,14 @@ const saveContactEmailAddress = Layer.effect(
   ContactEmailAddress.SaveContactEmailAddress,
   Effect.gen(function* () {
     const { contactEmailAddressStore } = yield* Keyv.KeyvStores
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
 
     return Effect.fn(
       function* (orcid, contactEmailAddress) {
-        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* FptsToEffect.readerTaskEither(Keyv.saveContactEmailAddress(orcid, contactEmailAddress), {
           contactEmailAddressStore,
-          clock,
-          logger,
+          ...loggerEnv,
         })
       },
       Effect.mapError(
@@ -156,7 +150,6 @@ const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const nodemailer = yield* Nodemailer
 
     return (user, contactEmailAddress, comment) =>
@@ -175,9 +168,9 @@ const verifyContactEmailAddressForComment = Layer.effect(
         ),
         Effect.andThen(
           Effect.fn(function* (email) {
-            const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+            const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-            return yield* FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { nodemailer, clock, logger })
+            return yield* FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { nodemailer, ...loggerEnv })
           }),
         ),
         Effect.mapError(
@@ -196,7 +189,6 @@ const createRecordOnZenodoForComment = Layer.effect(
   Effect.gen(function* () {
     const context = yield* Effect.context<Personas.Personas | Prereviews.Prereviews>()
     const fetch = yield* FetchHttpClient.Fetch
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
@@ -205,7 +197,6 @@ const createRecordOnZenodoForComment = Layer.effect(
       publicUrl,
       zenodoApiKey: Redacted.value(zenodoApi.key),
       zenodoUrl: zenodoApi.origin,
-      clock,
     }
 
     return comment =>
@@ -239,7 +230,7 @@ const createRecordOnZenodoForComment = Layer.effect(
             )}
           </p>`
 
-        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* pipe(
           FptsToEffect.readerTaskEither(
@@ -252,7 +243,7 @@ const createRecordOnZenodoForComment = Layer.effect(
               }),
               prereview,
             }),
-            { ...env, logger },
+            { ...env, ...loggerEnv },
           ),
           Effect.mapError(
             flow(
@@ -270,19 +261,17 @@ const publishComment = Layer.effect(
   Comments.PublishCommentOnZenodo,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.Fetch
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
     const zenodoApi = yield* Zenodo.ZenodoApi
 
     return Effect.fn(
       function* (comment) {
-        const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+        const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* FptsToEffect.readerTaskEither(publishDepositionOnZenodo(comment), {
           fetch,
           zenodoApiKey: Redacted.value(zenodoApi.key),
           zenodoUrl: zenodoApi.origin,
-          clock,
-          logger,
+          ...loggerEnv,
         })
       },
       Effect.mapError(
@@ -322,10 +311,9 @@ const setUpFetch = Layer.effect(
   FetchHttpClient.Fetch,
   Effect.gen(function* () {
     const fetch = yield* FetchHttpClient.makeFetch
-    const { clock, logger: unannotatedLogger } = yield* DeprecatedLoggerEnv
-    const logger = yield* AddAnnotationsToLogger(unannotatedLogger)
+    const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-    return pipe({ fetch, clock, logger }, collapseRequests()).fetch
+    return pipe({ fetch, ...loggerEnv }, collapseRequests()).fetch
   }),
 ).pipe(Layer.provide(CachingHttpClient.layer('10 seconds', '30 seconds')))
 
