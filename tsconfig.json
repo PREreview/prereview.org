@@ -1,9 +1,9 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
     "erasableSyntaxOnly": true,
-    "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+    "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "plugins": [{ "name": "@effect/language-service" }],
