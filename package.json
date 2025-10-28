@@ -58,7 +58,7 @@
     "@effect/language-service": "^0.48.0",
     "@fast-check/jest": "^2.1.1",
     "@ibm/plex": "^6.4.1",
-    "@playwright/test": "^1.56.0",
+    "@playwright/test": "^1.56.1",
     "@prettier/plugin-xml": "^3.4.2",
     "@swc/core": "^1.13.19",
     "@swc/jest": "^0.2.39",
