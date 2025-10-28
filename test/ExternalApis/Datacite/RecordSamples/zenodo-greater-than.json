@@ -1,0 +1,110 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.17326513",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.17326513",
+      "prefix": "10.5281",
+      "suffix": "zenodo.17326513",
+      "identifiers": [{ "identifier": "oai:zenodo.org:17326513", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:17326513" }],
+      "creators": [
+        {
+          "name": "Austin, James Clifton",
+          "nameType": "Personal",
+          "givenName": "James Clifton",
+          "familyName": "Austin",
+          "affiliation": ["Keele University"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-6663-3455", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [{ "title": "Nontrivial zeros of the Riemann zeta function" }],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [],
+      "contributors": [],
+      "dates": [
+        { "date": "2024-12-18", "dateType": "Issued" },
+        { "date": "2024-12-18", "dateType": "Available" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "https://www.academia.edu/100093666",
+          "relatedIdentifierType": "URL"
+        },
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.17326512",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "Abstract \n\nThe Riemann hypothesis, stating that all nontrivial zeros of the Riemann zeta function have real parts equal to 1/2, is one of the most important conjectures in mathematics. In this paper we prove the Riemann hypothesis by adding an extra unbounded term to the traditional definition, extending its validity to Rez\u003e0. The Stolz-Cesàro theorem is then used to analyse zeta(z)/zeta(-1z) as a ratio of complex sequences. The results are analysed in both halves of the critical strip (0\u003cRez\u003c1/2, 1/2\u003cRez\u003c1 ), yielding a contradiction when it is assumed that zeta(z)=0 in either of these halves.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTczMjY1MTM8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkF1c3RpbiwgSmFtZXMgQ2xpZnRvbjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+SmFtZXMgQ2xpZnRvbjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5BdXN0aW48L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDItNjY2My0zNDU1PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uIGFmZmlsaWF0aW9uSWRlbnRpZmllcj0iaHR0cHM6Ly9yb3Iub3JnLzAwMzQweW4zMyIgYWZmaWxpYXRpb25JZGVudGlmaWVyU2NoZW1lPSJST1IiPktlZWxlIFVuaXZlcnNpdHk8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5Ob250cml2aWFsIHplcm9zIG9mIHRoZSBSaWVtYW5uIHpldGEgZnVuY3Rpb248L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+WmVub2RvPC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDI0PC9wdWJsaWNhdGlvblllYXI+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJQcmVwcmludCIvPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjQtMTItMTg8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQXZhaWxhYmxlIj4yMDI0LTEyLTE4PC9kYXRlPgogIDwvZGF0ZXM+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTczMjY1MTM8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iVVJMIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj5odHRwczovL3d3dy5hY2FkZW1pYS5lZHUvMTAwMDkzNjY2PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuNTI4MS96ZW5vZG8uMTczMjY1MTI8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcy8+CiAgPGZvcm1hdHMvPgogIDx2ZXJzaW9uLz4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wL2xlZ2FsY29kZSIgcmlnaHRzSWRlbnRpZmllcj0iY2MtYnktNC4wIiByaWdodHNJZGVudGlmaWVyU2NoZW1lPSJzcGR4Ij5DcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+QWJzdHJhY3TCoAoKVGhlIFJpZW1hbm4gaHlwb3RoZXNpcywgc3RhdGluZyB0aGF0IGFsbCBub250cml2aWFsIHplcm9zIG9mIHRoZSBSaWVtYW5uIHpldGEgZnVuY3Rpb24gaGF2ZSByZWFsIHBhcnRzIGVxdWFsIHRvIDEvMiwgaXMgb25lIG9mIHRoZSBtb3N0IGltcG9ydGFudCBjb25qZWN0dXJlcyBpbiBtYXRoZW1hdGljcy4gSW4gdGhpcyBwYXBlciB3ZSBwcm92ZSB0aGUgUmllbWFubiBoeXBvdGhlc2lzIGJ5IGFkZGluZyBhbiBleHRyYSB1bmJvdW5kZWQgdGVybSB0byB0aGUgdHJhZGl0aW9uYWwgZGVmaW5pdGlvbiwgZXh0ZW5kaW5nIGl0cyB2YWxpZGl0eSB0byBSZXomZ3Q7MC4gVGhlIFN0b2x6LUNlc8Ogcm8gdGhlb3JlbSBpcyB0aGVuIHVzZWQgdG8gYW5hbHlzZSB6ZXRhKHopL3pldGEoLTF6KcKgYXMgYSByYXRpbyBvZiBjb21wbGV4IHNlcXVlbmNlcy4gVGhlIHJlc3VsdHMgYXJlIGFuYWx5c2VkIGluIGJvdGggaGFsdmVzIG9mIHRoZSBjcml0aWNhbCBzdHJpcCAoMCZsdDtSZXombHQ7MS8yLCAxLzImbHQ7UmV6Jmx0OzEgKSwgeWllbGRpbmcgYSBjb250cmFkaWN0aW9uIHdoZW4gaXQgaXMgYXNzdW1lZCB0aGF0IHpldGEoeik9MMKgaW4gZWl0aGVyIG9mIHRoZXNlIGhhbHZlcy48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.17326513",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-10-15T10:36:04.000Z",
+      "registered": "2025-10-15T10:36:05.000Z",
+      "published": "2024",
+      "updated": "2025-10-15T10:36:05.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.17326513", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.17326512", "type": "dois" }] }
+    }
+  }
+}

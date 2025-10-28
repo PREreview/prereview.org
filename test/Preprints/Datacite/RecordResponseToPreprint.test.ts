@@ -255,6 +255,25 @@ test.each([
     }),
   },
   {
+    response: 'zenodo-greater-than',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Abstract \n\nThe Riemann hypothesis, stating that all nontrivial zeros of the Riemann zeta function have real parts equal to 1/2, is one of the most important conjectures in mathematics. In this paper we prove the Riemann hypothesis by adding an extra unbounded term to the traditional definition, extending its validity to Rez&gt;0. The Stolz-Cesàro theorem is then used to analyse zeta(z)/zeta(-1z) as a ratio of complex sequences. The results are analysed in both halves of the critical strip (0&lt;Rez&lt;1/2, 1/2&lt;Rez&lt;1 ), yielding a contradiction when it is assumed that zeta(z)=0 in either of these halves.</p>',
+        ),
+      },
+      authors: [{ name: 'James Clifton Austin', orcid: OrcidId('0000-0002-6663-3455') }],
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.17326513') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 18 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Nontrivial zeros of the Riemann zeta function'),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.17326513'),
+    }),
+  },
+  {
     response: 'figshare-africarxiv',
     expected: Preprint({
       abstract: {

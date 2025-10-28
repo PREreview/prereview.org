@@ -1,6 +1,7 @@
 import { Url } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
 import type { Datacite } from '../../ExternalApis/index.ts'
@@ -161,7 +162,11 @@ const getAbstract = (
       return undefined
     }
 
-    const text = sanitizeHtml(`<p>${abstract.description}</p>`)
+    const text = pipe(
+      Match.value(id),
+      Match.tag('ZenodoPreprintId', () => sanitizeHtml(`<p>${encode(abstract.description)}</p>`)),
+      Match.orElse(() => sanitizeHtml(`<p>${abstract.description}</p>`)),
+    )
 
     const language = yield* Either.fromOption(
       detectLanguageForServer({ id, text }),
