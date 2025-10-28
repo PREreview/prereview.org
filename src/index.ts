@@ -1,7 +1,20 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { Array, Config, Effect, flow, Function, Layer, Logger, LogLevel, Match, pipe, Schema } from 'effect'
+import {
+  Array,
+  Config,
+  Effect,
+  flow,
+  Function,
+  Inspectable,
+  Layer,
+  Logger,
+  LogLevel,
+  Match,
+  pipe,
+  Schema,
+} from 'effect'
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
@@ -183,13 +196,20 @@ pipe(
   ),
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.provide(
-    Layer.unwrapEffect(
+    Logger.replaceEffect(
+      Logger.defaultLogger,
       Effect.andThen(
         Config.withDefault(Config.literal('json')('LOG_FORMAT'), 'pretty'),
         flow(
           Match.value,
-          Match.when('json', () => Logger.json),
-          Match.when('pretty', () => Logger.pretty),
+          Match.when('json', () =>
+            Logger.structuredLogger.pipe(
+              Logger.map(({ logLevel, ...logEntry }) => ({ level: logLevel, ...logEntry })),
+              Logger.map(Inspectable.stringifyCircular),
+              Logger.withConsoleLog,
+            ),
+          ),
+          Match.when('pretty', () => Logger.prettyLoggerDefault),
           Match.exhaustive,
         ),
       ),
