@@ -133,7 +133,7 @@ test('content looks on the last page', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const recentPrereview1 = new Prereviews.RecentPrereview({
+const recentPrereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
   published: Temporal.PlainDate.from('2024-04-25'),
@@ -146,7 +146,7 @@ const recentPrereview1 = new Prereviews.RecentPrereview({
   },
 })
 
-const recentPrereview2 = new Prereviews.RecentPrereview({
+const recentPrereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
   club: 'reviewing-dental-articles-club',
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
@@ -160,7 +160,7 @@ const recentPrereview2 = new Prereviews.RecentPrereview({
   },
 })
 
-const recentPrereview3 = new Prereviews.RecentPrereview({
+const recentPrereview3 = new Prereviews.RecentPreprintPrereview({
   id: 10870479,
   reviewers: {
     named: [
@@ -194,7 +194,7 @@ const recentPrereview3 = new Prereviews.RecentPrereview({
   },
 })
 
-const recentPrereview4 = new Prereviews.RecentPrereview({
+const recentPrereview4 = new Prereviews.RecentPreprintPrereview({
   id: 10779310,
   club: 'hhmi-training-pilot',
   reviewers: {
@@ -221,7 +221,7 @@ const recentPrereview4 = new Prereviews.RecentPrereview({
   },
 })
 
-const recentPrereview5 = new Prereviews.RecentPrereview({
+const recentPrereview5 = new Prereviews.RecentPreprintPrereview({
   id: 10411168,
   club: 'language-club',
   reviewers: {

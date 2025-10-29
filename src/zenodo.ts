@@ -854,7 +854,7 @@ function recordToRecentPrereview(
         preprint: getPreprintTitle(preprintId),
       }),
     ),
-    RTE.map(args => new Prereview.RecentPrereview(args)),
+    RTE.map(args => new Prereview.RecentPreprintPrereview(args)),
   )
 }
 

@@ -34,7 +34,7 @@ import {
   PrereviewsPageNotFound,
   type PrereviewWasRemoved,
   type RapidPrereview,
-  type RecentPrereview,
+  type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
 
@@ -43,11 +43,13 @@ export * from './Prereview.ts'
 export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
-    getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPrereview>>
-    getForClub: (id: ClubId) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
+    getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview>>
+    getForClub: (id: ClubId) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview>, PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
-    getForProfile: (profile: ProfileId) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
-    getForUser: (user: User) => Effect.Effect<ReadonlyArray<RecentPrereview>, PrereviewsAreUnavailable>
+    getForProfile: (
+      profile: ProfileId,
+    ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview>, PrereviewsAreUnavailable>
+    getForUser: (user: User) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview>, PrereviewsAreUnavailable>
     getRapidPrereviewsForPreprint: (
       id: PreprintId,
     ) => Effect.Effect<ReadonlyArray<RapidPrereview>, PrereviewsAreUnavailable>

@@ -22,7 +22,7 @@ export function createPage({
 }: {
   club: Club
   id: ClubId
-  prereviews: ReadonlyArray<Prereviews.RecentPrereview>
+  prereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview>
   locale: SupportedLocale
 }) {
   return PageResponse({

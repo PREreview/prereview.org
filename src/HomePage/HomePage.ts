@@ -30,7 +30,7 @@ export const createPage = ({
 }: {
   canReviewDatasets?: boolean
   locale: SupportedLocale
-  recentPrereviews: ReadonlyArray<Prereviews.RecentPrereview>
+  recentPrereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview>
   recentReviewRequests: ReadonlyArray<ReviewRequests.ReviewRequest>
   statistics: { prereviews: number; servers: number; users: number }
 }) =>

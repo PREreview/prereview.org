@@ -24,7 +24,7 @@ describe('ClubProfilePage', () => {
           subfields: fc.array(fc.subfieldId()),
           preprint: fc.preprintTitle(),
         })
-        .map(args => new Prereviews.RecentPrereview(args)),
+        .map(args => new Prereviews.RecentPreprintPrereview(args)),
     ),
     fc.supportedLocale(),
   ])('when the data can be loaded', (clubId, prereviews, locale) =>

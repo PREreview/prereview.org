@@ -41,10 +41,10 @@ export interface RecentPrereviews {
   readonly field?: FieldId
   readonly language?: LanguageCode
   readonly query?: NonEmptyString.NonEmptyString
-  readonly recentPrereviews: Array.NonEmptyReadonlyArray<RecentPrereview>
+  readonly recentPrereviews: Array.NonEmptyReadonlyArray<RecentPreprintPrereview>
 }
 
-export class RecentPrereview extends Data.Class<{
+export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPrereview')<{
   id: number
   club?: ClubId
   reviewers: {

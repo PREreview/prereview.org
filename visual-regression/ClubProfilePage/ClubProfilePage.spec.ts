@@ -64,7 +64,7 @@ const club2 = {
 
 const id = 'asapbio-cancer-biology' satisfies ClubId
 
-const prereview1 = new Prereviews.RecentPrereview({
+const prereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
   published: Temporal.PlainDate.from('2024-04-25'),
@@ -77,7 +77,7 @@ const prereview1 = new Prereviews.RecentPrereview({
   },
 })
 
-const prereview2 = new Prereviews.RecentPrereview({
+const prereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
@@ -90,7 +90,7 @@ const prereview2 = new Prereviews.RecentPrereview({
   },
 })
 
-const prereview3 = new Prereviews.RecentPrereview({
+const prereview3 = new Prereviews.RecentPreprintPrereview({
   id: 10870479,
   reviewers: {
     named: [
@@ -124,7 +124,7 @@ const prereview3 = new Prereviews.RecentPrereview({
   },
 })
 
-const prereview4 = new Prereviews.RecentPrereview({
+const prereview4 = new Prereviews.RecentPreprintPrereview({
   id: 10779310,
   reviewers: {
     named: [
@@ -150,7 +150,7 @@ const prereview4 = new Prereviews.RecentPrereview({
   },
 })
 
-const prereview5 = new Prereviews.RecentPrereview({
+const prereview5 = new Prereviews.RecentPreprintPrereview({
   id: 10411168,
   reviewers: {
     named: [

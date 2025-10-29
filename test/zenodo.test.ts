@@ -226,7 +226,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           language,
           query,
           recentPrereviews: [
-            new Prereviews.RecentPrereview({
+            new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1061864,
               reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
@@ -235,7 +235,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               subfields: ['1310', '1311', '1106'],
               preprint: preprint1,
             }),
-            new Prereviews.RecentPrereview({
+            new Prereviews.RecentPreprintPrereview({
               club: undefined,
               id: 1065236,
               reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
@@ -379,7 +379,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         language: undefined,
         query: undefined,
         recentPrereviews: [
-          new Prereviews.RecentPrereview({
+          new Prereviews.RecentPreprintPrereview({
             club: undefined,
             id: 1061864,
             reviewers: { named: ['PREreviewer'], anonymous: 0 },
@@ -1413,7 +1413,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          new Prereviews.RecentPrereview({
+          new Prereviews.RecentPreprintPrereview({
             club: undefined,
             id: 1061864,
             reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
@@ -1422,7 +1422,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             subfields: [],
             preprint: preprint1,
           }),
-          new Prereviews.RecentPrereview({
+          new Prereviews.RecentPreprintPrereview({
             club: undefined,
             id: 1065236,
             reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
@@ -1617,7 +1617,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          new Prereviews.RecentPrereview({
+          new Prereviews.RecentPreprintPrereview({
             club: undefined,
             id: 1061864,
             reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
@@ -1626,7 +1626,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             subfields: ['1310', '1311', '1106'],
             preprint: preprint1,
           }),
-          new Prereviews.RecentPrereview({
+          new Prereviews.RecentPreprintPrereview({
             club,
             id: 1065236,
             reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
@@ -1761,7 +1761,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club: undefined,
           id: 1061864,
           reviewers: { named: ['PREreviewer'], anonymous: 0 },
@@ -1982,7 +1982,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club: undefined,
           id: 1061864,
           reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
@@ -1991,7 +1991,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           subfields: ['1310', '1311', '1106'],
           preprint: preprint1,
         }),
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club: undefined,
           id: 1065236,
           reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
@@ -2125,7 +2125,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club: undefined,
           id: 1061864,
           reviewers: { named: ['PREreviewer'], anonymous: 0 },
@@ -2358,7 +2358,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club,
           id: 1061864,
           reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
@@ -2367,7 +2367,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           published: new Temporal.PlainDate(2022, 7, 4),
           preprint: preprint1,
         }),
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club,
           id: 1065236,
           reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
@@ -2573,7 +2573,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        new Prereviews.RecentPrereview({
+        new Prereviews.RecentPreprintPrereview({
           club,
           id: 1061864,
           reviewers: { named: ['PREreviewer'], anonymous: 0 },
