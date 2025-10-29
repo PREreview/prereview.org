@@ -1,13 +1,15 @@
-import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
+import { Array, flow, Match, Number, Order, pipe, String, Struct, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
+import * as Personas from '../Personas/index.ts'
 import * as PreprintServers from '../PreprintServers/index.ts'
 import type * as Prereviews from '../Prereviews/index.ts'
 import { PageResponse } from '../Response/index.ts'
+import * as Routes from '../routes.ts'
 import { reviewMatch, reviewsMatch } from '../routes.ts'
 import { renderDate } from '../time.ts'
 import { type FieldId, fieldIds, getFieldName } from '../types/field.ts'
@@ -29,89 +31,110 @@ export const createPage = (
       <ol class="cards" id="results">
         ${Array.map(
           recentPrereviews,
-          prereview => html`
-            <li>
-              <article>
-                <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                  ${rawHtml(
-                    prereview.club
-                      ? translate(
-                          locale,
-                          'reviews-list',
-                          'clubReviewText',
-                        )({
-                          club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
-                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                          reviewers: pipe(
-                            prereview.reviewers.named,
-                            Array.appendAll(
-                              prereview.reviewers.anonymous > 0
-                                ? [
-                                    translate(
-                                      locale,
-                                      'reviews-list',
-                                      'otherAuthors',
-                                    )({ number: prereview.reviewers.anonymous }),
-                                  ]
-                                : [],
-                            ),
-                            formatList(locale),
-                          ).toString(),
-                          preprint: html`<cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >`.toString(),
-                        })
-                      : translate(
-                          locale,
-                          'reviews-list',
-                          'reviewText',
-                        )({
-                          numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
-                          reviewers: pipe(
-                            prereview.reviewers.named,
-                            Array.appendAll(
-                              prereview.reviewers.anonymous > 0
-                                ? [
-                                    translate(
-                                      locale,
-                                      'reviews-list',
-                                      'otherAuthors',
-                                    )({ number: prereview.reviewers.anonymous }),
-                                  ]
-                                : [],
-                            ),
-                            formatList(locale),
-                          ).toString(),
-                          preprint: html`<cite
-                            dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >`.toString(),
-                        }),
-                  )}
-                </a>
+          Match.valueTags({
+            RecentPreprintPrereview: prereview => html`
+              <li>
+                <article>
+                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                    ${rawHtml(
+                      prereview.club
+                        ? translate(
+                            locale,
+                            'reviews-list',
+                            'clubReviewText',
+                          )({
+                            club: html`<b>${getClubName(prereview.club)}</b>`.toString(),
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                            reviewers: pipe(
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
+                              formatList(locale),
+                            ).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          })
+                        : translate(
+                            locale,
+                            'reviews-list',
+                            'reviewText',
+                          )({
+                            numberOfReviewers: prereview.reviewers.named.length + prereview.reviewers.anonymous,
+                            reviewers: pipe(
+                              prereview.reviewers.named,
+                              Array.appendAll(
+                                prereview.reviewers.anonymous > 0
+                                  ? [
+                                      translate(
+                                        locale,
+                                        'reviews-list',
+                                        'otherAuthors',
+                                      )({ number: prereview.reviewers.anonymous }),
+                                    ]
+                                  : [],
+                              ),
+                              formatList(locale),
+                            ).toString(),
+                            preprint: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >`.toString(),
+                          }),
+                    )}
+                  </a>
 
-                ${prereview.subfields.length > 0
-                  ? html`
-                      <ul class="categories">
-                        ${prereview.subfields.map(
-                          subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
-                        )}
-                      </ul>
-                    `
-                  : ''}
+                  ${prereview.subfields.length > 0
+                    ? html`
+                        <ul class="categories">
+                          ${prereview.subfields.map(
+                            subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
+                          )}
+                        </ul>
+                      `
+                    : ''}
 
-                <dl>
-                  <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
-                  <dd>${renderDate(locale)(prereview.published)}</dd>
-                  <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                  <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
-                </dl>
-              </article>
-            </li>
-          `,
+                  <dl>
+                    <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
+                    <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
+                    <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
+                  </dl>
+                </article>
+              </li>
+            `,
+            RecentDatasetPrereview: prereview => html`
+              <li>
+                <article>
+                  <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
+                    ${formatList(locale)([displayPersona(prereview.author)])} reviewed
+                    <cite dir="${rtlDetect.getLangDir(prereview.dataset.language)}" lang="${prereview.dataset.language}"
+                      >${prereview.dataset.title}</cite
+                    >
+                  </a>
+
+                  <dl>
+                    <dt>Review published</dt>
+                    <dd>${renderDate(locale)(prereview.published)}</dd>
+                    <dt>Repository</dt>
+                    <dd>Dryad</dd>
+                  </dl>
+                </article>
+              </li>
+            `,
+          }),
         )}
       </ol>
 
@@ -247,6 +270,11 @@ const form = ({
     <button>${translate(locale, 'reviews-page', 'filterButton')()}</button>
   </form>
 `
+
+const displayPersona = Personas.match({
+  onPublic: Struct.get('name'),
+  onPseudonym: Struct.get('pseudonym'),
+})
 
 function StringOrder(...args: ConstructorParameters<typeof Intl.Collator>): Order.Order<string> {
   const collator = new Intl.Collator(...args)

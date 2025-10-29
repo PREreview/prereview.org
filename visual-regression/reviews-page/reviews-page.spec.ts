@@ -1,10 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
+import * as Datasets from '../../src/Datasets/index.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
+import * as Personas from '../../src/Personas/index.ts'
+import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.js'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.ts'
+import { OrcidId, Uuid } from '../../src/types/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { expect, test } from '../base.ts'
 
@@ -194,31 +197,19 @@ const recentPrereview3 = new Prereviews.RecentPreprintPrereview({
   },
 })
 
-const recentPrereview4 = new Prereviews.RecentPreprintPrereview({
-  id: 10779310,
-  club: 'hhmi-training-pilot',
-  reviewers: {
-    named: [
-      'James Fraser',
-      'Luisa Vasconcelos',
-      'Liyi Cheng',
-      'Samantha  Lish',
-      'S. Chan Baek',
-      'Lang Ding',
-      'Alexandra Probst',
-      'Naiya Phillips',
-      'William Grubbe',
-    ],
-    anonymous: 3,
-  },
-  published: Temporal.PlainDate.from('2024-03-04'),
-  fields: ['27', '23'],
-  subfields: ['2725', '2303'],
-  preprint: {
-    id: new BiorxivPreprintId({ value: Doi('10.1101/2023.12.21.572824') }),
+const recentPrereview4 = new Prereviews.RecentDatasetPrereview({
+  author: new Personas.PublicPersona({
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+    name: NonEmptyString('Josiah Carberry'),
+  }),
+  dataset: new Datasets.DatasetTitle({
+    id: new Datasets.DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
     language: 'en',
-    title: rawHtml('Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants'),
-  },
+    title: rawHtml('Metadata collected from 500 articles in the field of ecology and evolution'),
+  }),
+  doi: Doi('10.5281/zenodo.10779310'),
+  id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
+  published: Temporal.PlainDate.from('2025-08-06'),
 })
 
 const recentPrereview5 = new Prereviews.RecentPreprintPrereview({

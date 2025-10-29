@@ -20,16 +20,27 @@ describe('reviewsPage', () => {
       field: fc.option(fc.fieldId(), { nil: undefined }),
       query: fc.option(fc.nonEmptyString(), { nil: undefined }),
       recentPrereviews: fc.nonEmptyArray(
-        fc
-          .record({
-            id: fc.integer(),
-            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-            published: fc.plainDate(),
-            fields: fc.array(fc.fieldId()),
-            subfields: fc.array(fc.subfieldId()),
-            preprint: fc.preprintTitle(),
-          })
-          .map(args => new Prereviews.RecentPreprintPrereview(args)),
+        fc.oneof(
+          fc
+            .record({
+              id: fc.integer(),
+              reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+              published: fc.plainDate(),
+              fields: fc.array(fc.fieldId()),
+              subfields: fc.array(fc.subfieldId()),
+              preprint: fc.preprintTitle(),
+            })
+            .map(args => new Prereviews.RecentPreprintPrereview(args)),
+          fc
+            .record({
+              id: fc.uuid(),
+              doi: fc.doi(),
+              author: fc.persona(),
+              published: fc.plainDate(),
+              dataset: fc.datasetTitle(),
+            })
+            .map(args => new Prereviews.RecentDatasetPrereview(args)),
+        ),
       ),
     }),
   ])('when the recent reviews can be loaded', async (locale, page, field, query, recentPrereviews) => {
