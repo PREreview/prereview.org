@@ -835,7 +835,7 @@ function recordToRecentPrereview(
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
   'no reviewed preprint' | PreprintIsUnavailable | PreprintIsNotFound,
-  Prereview.RecentPrereviews['recentPrereviews'][number]
+  Prereview.RecentPreprintPrereview
 > {
   return pipe(
     getReviewedPreprintId(record),
