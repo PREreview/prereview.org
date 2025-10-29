@@ -5,7 +5,7 @@ import type { Club, ClubId } from '../../src/Clubs/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
-import type * as Prereviews from '../../src/Prereviews/index.ts'
+import * as Prereviews from '../../src/Prereviews/index.js'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { expect, test } from '../base.ts'
@@ -64,7 +64,7 @@ const club2 = {
 
 const id = 'asapbio-cancer-biology' satisfies ClubId
 
-const prereview1 = {
+const prereview1 = new Prereviews.RecentPrereview({
   id: 11062553,
   reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
   published: Temporal.PlainDate.from('2024-04-25'),
@@ -75,9 +75,9 @@ const prereview1 = {
     language: 'en',
     title: rawHtml('AlphaFold Meets Flow Matching for Generating Protein Ensembles'),
   },
-} satisfies Prereviews.RecentPrereview
+})
 
-const prereview2 = {
+const prereview2 = new Prereviews.RecentPrereview({
   id: 10888905,
   reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
@@ -88,9 +88,9 @@ const prereview2 = {
     language: 'es',
     title: rawHtml('Grado de avance en Metas Sanitarias de salud bucal infantil en la Región del Maule'),
   },
-} satisfies Prereviews.RecentPrereview
+})
 
-const prereview3 = {
+const prereview3 = new Prereviews.RecentPrereview({
   id: 10870479,
   reviewers: {
     named: [
@@ -122,9 +122,9 @@ const prereview3 = {
     language: 'en',
     title: rawHtml('A population perspective on international students in Australian universities'),
   },
-} satisfies Prereviews.RecentPrereview
+})
 
-const prereview4 = {
+const prereview4 = new Prereviews.RecentPrereview({
   id: 10779310,
   reviewers: {
     named: [
@@ -148,9 +148,9 @@ const prereview4 = {
     language: 'en',
     title: rawHtml('Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants'),
   },
-} satisfies Prereviews.RecentPrereview
+})
 
-const prereview5 = {
+const prereview5 = new Prereviews.RecentPrereview({
   id: 10411168,
   reviewers: {
     named: [
@@ -172,4 +172,4 @@ const prereview5 = {
     language: 'pt',
     title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
   },
-} satisfies Prereviews.RecentPrereview
+})

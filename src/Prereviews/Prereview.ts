@@ -44,18 +44,18 @@ export interface RecentPrereviews {
   readonly recentPrereviews: Array.NonEmptyReadonlyArray<RecentPrereview>
 }
 
-export interface RecentPrereview {
-  readonly id: number
-  readonly club?: ClubId
-  readonly reviewers: {
-    readonly named: Array.NonEmptyReadonlyArray<string>
-    readonly anonymous: number
+export class RecentPrereview extends Data.Class<{
+  id: number
+  club?: ClubId
+  reviewers: {
+    named: Array.NonEmptyReadonlyArray<string>
+    anonymous: number
   }
-  readonly published: Temporal.PlainDate
-  readonly fields: ReadonlyArray<FieldId>
-  readonly subfields: ReadonlyArray<SubfieldId>
-  readonly preprint: Preprints.PreprintTitle
-}
+  published: Temporal.PlainDate
+  fields: ReadonlyArray<FieldId>
+  subfields: ReadonlyArray<SubfieldId>
+  preprint: Preprints.PreprintTitle
+}> {}
 
 export interface PreprintPrereview {
   authors: {
