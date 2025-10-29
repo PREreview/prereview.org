@@ -4,6 +4,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid as OrcidId } from 'orcid-id-ts'
 import type { ClubId } from '../Clubs/index.ts'
 import type { Html } from '../html.ts'
+import type * as Preprints from '../Preprints/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
@@ -43,11 +44,7 @@ export interface RecentPrereview {
   readonly published: Temporal.PlainDate
   readonly fields: ReadonlyArray<FieldId>
   readonly subfields: ReadonlyArray<SubfieldId>
-  readonly preprint: {
-    readonly id: PreprintId
-    readonly language: LanguageCode
-    readonly title: Html
-  }
+  readonly preprint: Preprints.PreprintTitle
 }
 
 export interface PreprintPrereview {
