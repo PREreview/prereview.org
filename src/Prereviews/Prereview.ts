@@ -3,12 +3,14 @@ import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid as OrcidId } from 'orcid-id-ts'
 import type { ClubId } from '../Clubs/index.ts'
+import type * as Datasets from '../Datasets/index.ts'
 import type { Html } from '../html.ts'
+import type * as Personas from '../Personas/index.ts'
 import type * as Preprints from '../Preprints/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
-import type { NonEmptyString } from '../types/index.ts'
+import type { NonEmptyString, Uuid } from '../types/index.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 
 export class Prereview extends Data.TaggedClass('Prereview')<{
@@ -55,6 +57,14 @@ export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPre
   fields: ReadonlyArray<FieldId>
   subfields: ReadonlyArray<SubfieldId>
   preprint: Preprints.PreprintTitle
+}> {}
+
+export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrereview')<{
+  author: Personas.Persona
+  dataset: Datasets.DatasetTitle
+  doi: Doi
+  id: Uuid.Uuid
+  published: Temporal.PlainDate
 }> {}
 
 export interface PreprintPrereview {
