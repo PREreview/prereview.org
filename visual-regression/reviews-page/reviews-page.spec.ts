@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
-import type { RecentPrereviews } from '../../src/reviews-page/index.ts'
+import type * as Prereviews from '../../src/Prereviews/index.ts'
 import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { expect, test } from '../base.ts'
@@ -144,7 +144,7 @@ const recentPrereview1 = {
     language: 'en',
     title: rawHtml('AlphaFold Meets Flow Matching for Generating Protein Ensembles'),
   },
-} satisfies RecentPrereviews['recentPrereviews'][number]
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview2 = {
   id: 10888905,
@@ -158,7 +158,7 @@ const recentPrereview2 = {
     language: 'es',
     title: rawHtml('Grado de avance en Metas Sanitarias de salud bucal infantil en la Región del Maule'),
   },
-} satisfies RecentPrereviews['recentPrereviews'][number]
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview3 = {
   id: 10870479,
@@ -192,7 +192,7 @@ const recentPrereview3 = {
     language: 'en',
     title: rawHtml('A population perspective on international students in Australian universities'),
   },
-} satisfies RecentPrereviews['recentPrereviews'][number]
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview4 = {
   id: 10779310,
@@ -219,7 +219,7 @@ const recentPrereview4 = {
     language: 'en',
     title: rawHtml('Virion morphology and on-virus spike protein structures of diverse SARS-CoV-2 variants'),
   },
-} satisfies RecentPrereviews['recentPrereviews'][number]
+} satisfies Prereviews.RecentPrereview
 
 const recentPrereview5 = {
   id: 10411168,
@@ -244,4 +244,4 @@ const recentPrereview5 = {
     language: 'pt',
     title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
   },
-} satisfies RecentPrereviews['recentPrereviews'][number]
+} satisfies Prereviews.RecentPrereview

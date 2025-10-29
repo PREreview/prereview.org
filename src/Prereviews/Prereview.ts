@@ -8,6 +8,7 @@ import type * as Preprints from '../Preprints/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { FieldId } from '../types/field.ts'
+import type { NonEmptyString } from '../types/index.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 
 export class Prereview extends Data.TaggedClass('Prereview')<{
@@ -33,6 +34,15 @@ export class Prereview extends Data.TaggedClass('Prereview')<{
   structured: boolean
   text: Html
 }> {}
+
+export interface RecentPrereviews {
+  readonly currentPage: number
+  readonly totalPages: number
+  readonly field?: FieldId
+  readonly language?: LanguageCode
+  readonly query?: NonEmptyString.NonEmptyString
+  readonly recentPrereviews: Array.NonEmptyReadonlyArray<RecentPrereview>
+}
 
 export interface RecentPrereview {
   readonly id: number

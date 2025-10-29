@@ -6,16 +6,16 @@ import { getClubName } from '../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import * as PreprintServers from '../PreprintServers/index.ts'
+import type * as Prereviews from '../Prereviews/index.ts'
 import { PageResponse } from '../Response/index.ts'
 import { reviewMatch, reviewsMatch } from '../routes.ts'
 import { renderDate } from '../time.ts'
 import { type FieldId, fieldIds, getFieldName } from '../types/field.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import { getSubfieldName } from '../types/subfield.ts'
-import type { RecentPrereviews } from './recent-prereviews.ts'
 
 export const createPage = (
-  { currentPage, field, language, query, totalPages, recentPrereviews }: RecentPrereviews,
+  { currentPage, field, language, query, totalPages, recentPrereviews }: Prereviews.RecentPrereviews,
   locale: SupportedLocale,
 ) =>
   PageResponse({
@@ -164,7 +164,7 @@ const title = ({
   language,
   locale,
   query,
-}: Pick<RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
+}: Pick<Prereviews.RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
   const details = Array.append(
     [
       query,
@@ -188,7 +188,7 @@ const form = ({
   language,
   locale,
   query,
-}: Pick<RecentPrereviews, 'field' | 'language' | 'query'> & {
+}: Pick<Prereviews.RecentPrereviews, 'field' | 'language' | 'query'> & {
   locale: SupportedLocale
 }) => html`
   <form

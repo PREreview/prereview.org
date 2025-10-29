@@ -59,7 +59,6 @@ import {
 import * as Prereview from './Prereviews/Prereview.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'
 import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
-import type { RecentPrereviews } from './reviews-page/index.ts'
 import { reviewMatch } from './routes.ts'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
@@ -836,7 +835,7 @@ function recordToRecentPrereview(
 ): RTE.ReaderTaskEither<
   GetPreprintTitleEnv & L.LoggerEnv,
   'no reviewed preprint' | PreprintIsUnavailable | PreprintIsNotFound,
-  RecentPrereviews['recentPrereviews'][number]
+  Prereview.RecentPrereviews['recentPrereviews'][number]
 > {
   return pipe(
     getReviewedPreprintId(record),

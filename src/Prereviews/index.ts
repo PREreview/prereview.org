@@ -13,7 +13,6 @@ import {
 } from '../legacy-prereview.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
-import type { RecentPrereviews } from '../reviews-page/index.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
@@ -36,6 +35,7 @@ import {
   type PrereviewWasRemoved,
   type RapidPrereview,
   type RecentPrereview,
+  type RecentPrereviews,
 } from './Prereview.ts'
 
 export * from './Prereview.ts'

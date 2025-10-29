@@ -12,7 +12,7 @@ import { failureMessage } from './failure-message.ts'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews.ts'
 import { createPage, emptyPage } from './reviews-page.ts'
 
-export type { GetRecentPrereviewsEnv, RecentPrereviews } from './recent-prereviews.ts'
+export type { GetRecentPrereviewsEnv } from './recent-prereviews.ts'
 
 export const reviewsPage = ({
   field,
