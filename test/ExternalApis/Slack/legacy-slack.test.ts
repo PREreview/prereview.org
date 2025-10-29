@@ -15,17 +15,15 @@ describe('getUserFromSlack', () => {
   test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.nonEmptyString(), fc.url()])(
     'when the user can be decoded',
     async (slackApiToken, user, name, image) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user },
-          headers: { Authorization: `Bearer ${slackApiToken}` },
-        },
-        { body: { ok: true, profile: { real_name: name, image_48: image } } },
-      )
+      const fetch = fetchMock.createInstance().getOnce({
+        url: 'https://slack.com/api/users.profile.get',
+        query: { user },
+        headers: { Authorization: `Bearer ${slackApiToken}` },
+        response: { body: { ok: true, profile: { real_name: name, image_48: image } } },
+      })
 
       const actual = await _.getUserFromSlack(user)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         slackApiToken,
         clock: SystemClock,
         logger: () => IO.of(undefined),
@@ -38,7 +36,7 @@ describe('getUserFromSlack', () => {
           profile: new URL(`https://prereviewcommunity.slack.com/team/${user}`),
         }),
       )
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -47,47 +45,43 @@ describe('getUserFromSlack', () => {
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])("when the user can't be decoded", async (slackApiToken, user, response) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://slack.com/api/users.profile.get?',
-        query: { user },
-        headers: { Authorization: `Bearer ${slackApiToken}` },
-      },
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://slack.com/api/users.profile.get',
+      query: { user },
+      headers: { Authorization: `Bearer ${slackApiToken}` },
       response,
-    )
+    })
 
     const actual = await _.getUserFromSlack(user)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       slackApiToken,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.nonEmptyString()])(
     'when the response has a Slack error',
     async (slackApiToken, user, error) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user },
-          headers: { Authorization: `Bearer ${slackApiToken}` },
-        },
-        { body: { ok: false, error } },
-      )
+      const fetch = fetchMock.createInstance().getOnce({
+        url: 'https://slack.com/api/users.profile.get',
+        query: { user },
+        headers: { Authorization: `Bearer ${slackApiToken}` },
+        response: { body: { ok: false, error } },
+      })
 
       const actual = await _.getUserFromSlack(user)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         slackApiToken,
         clock: SystemClock,
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -96,24 +90,22 @@ describe('getUserFromSlack', () => {
     fc.string({ unit: fc.alphanumeric(), minLength: 1 }),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
   ])('when the response has a non-200 status code', async (slackApiToken, user, status) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://slack.com/api/users.profile.get?',
-        query: { user },
-        headers: { Authorization: `Bearer ${slackApiToken}` },
-      },
-      { status },
-    )
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://slack.com/api/users.profile.get',
+      query: { user },
+      headers: { Authorization: `Bearer ${slackApiToken}` },
+      response: { status },
+    })
 
     const actual = await _.getUserFromSlack(user)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       slackApiToken,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.string(), fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.error()])(
@@ -137,32 +129,28 @@ describe('addOrcidToSlackProfile', () => {
       'when the request is successful',
       async (slackApiToken, userId, orcid) => {
         const fetch = fetchMock
-          .sandbox()
-          .postOnce(
-            {
-              url: 'https://slack.com/api/users.profile.set',
-              body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-              headers: { Authorization: `Bearer ${userId.accessToken}` },
+          .createInstance()
+          .postOnce({
+            url: 'https://slack.com/api/users.profile.set',
+            body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+            headers: { Authorization: `Bearer ${userId.accessToken}` },
+            response: { body: { ok: true } },
+          })
+          .postOnce({
+            url: 'https://slack.com/api/chat.postMessage',
+            body: {
+              channel: userId.userId,
+              text: 'Thanks for connecting your PREreview profile to your Community Slack Account. I’ve added your ORCID iD to your Slack profile.',
             },
-            { body: { ok: true } },
-          )
-          .postOnce(
-            {
-              url: 'https://slack.com/api/chat.postMessage',
-              body: {
-                channel: userId.userId,
-                text: 'Thanks for connecting your PREreview profile to your Community Slack Account. I’ve added your ORCID iD to your Slack profile.',
-              },
-              headers: { Authorization: `Bearer ${slackApiToken}` },
-            },
-            { body: { ok: true } },
-          )
+            headers: { Authorization: `Bearer ${slackApiToken}` },
+            response: { body: { ok: true } },
+          })
 
         const actual = await _.addOrcidToSlackProfile(
           userId,
           orcid,
         )({
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           clock: SystemClock,
           logger: () => IO.of(undefined),
           slackApiToken,
@@ -170,27 +158,25 @@ describe('addOrcidToSlackProfile', () => {
         })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
     test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
       "when the response can't be decoded",
       async (slackApiToken, userId, orcid, response) => {
-        const fetch = fetchMock.sandbox().postOnce(
-          {
-            url: 'https://slack.com/api/users.profile.set',
-            body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
-          },
+        const fetch = fetchMock.createInstance().postOnce({
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
           response,
-        )
+        })
 
         const actual = await _.addOrcidToSlackProfile(
           userId,
           orcid,
         )({
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           clock: SystemClock,
           logger: () => IO.of(undefined),
           slackApiToken,
@@ -198,27 +184,25 @@ describe('addOrcidToSlackProfile', () => {
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
     test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.nonEmptyString()])(
       'when the response has a Slack error',
       async (slackApiToken, userId, orcid, error) => {
-        const fetch = fetchMock.sandbox().postOnce(
-          {
-            url: 'https://slack.com/api/users.profile.set',
-            body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
-          },
-          { body: { ok: false, error } },
-        )
+        const fetch = fetchMock.createInstance().postOnce({
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+          response: { body: { ok: false, error } },
+        })
 
         const actual = await _.addOrcidToSlackProfile(
           userId,
           orcid,
         )({
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           clock: SystemClock,
           logger: () => IO.of(undefined),
           slackApiUpdate: true,
@@ -226,7 +210,7 @@ describe('addOrcidToSlackProfile', () => {
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -236,20 +220,18 @@ describe('addOrcidToSlackProfile', () => {
       fc.orcidId(),
       fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
     ])('when the response has a non-200 status code', async (slackApiToken, userId, orcid, status) => {
-      const fetch = fetchMock.sandbox().postOnce(
-        {
-          url: 'https://slack.com/api/users.profile.set',
-          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
-          headers: { Authorization: `Bearer ${userId.accessToken}` },
-        },
-        { status },
-      )
+      const fetch = fetchMock.createInstance().postOnce({
+        url: 'https://slack.com/api/users.profile.set',
+        body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+        headers: { Authorization: `Bearer ${userId.accessToken}` },
+        response: { status },
+      })
 
       const actual = await _.addOrcidToSlackProfile(
         userId,
         orcid,
       )({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         clock: SystemClock,
         logger: () => IO.of(undefined),
         slackApiToken,
@@ -257,7 +239,7 @@ describe('addOrcidToSlackProfile', () => {
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     })
 
     test.prop([fc.string(), fc.slackUserId(), fc.orcidId(), fc.error()])(
@@ -302,29 +284,25 @@ describe('removeOrcidFromSlackProfile', () => {
   describe('when Slack should be updated', () => {
     test.prop([fc.string(), fc.slackUserId()])('when the request is successful', async (slackApiToken, userId) => {
       const fetch = fetchMock
-        .sandbox()
-        .postOnce(
-          {
-            url: 'https://slack.com/api/users.profile.set',
-            body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
+        .createInstance()
+        .postOnce({
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+          response: { body: { ok: true } },
+        })
+        .postOnce({
+          url: 'https://slack.com/api/chat.postMessage',
+          body: {
+            channel: userId.userId,
+            text: 'As you’ve disconnected your PREreview profile from your Community Slack account, I’ve removed your ORCID iD from your Slack profile.',
           },
-          { body: { ok: true } },
-        )
-        .postOnce(
-          {
-            url: 'https://slack.com/api/chat.postMessage',
-            body: {
-              channel: userId.userId,
-              text: 'As you’ve disconnected your PREreview profile from your Community Slack account, I’ve removed your ORCID iD from your Slack profile.',
-            },
-            headers: { Authorization: `Bearer ${slackApiToken}` },
-          },
-          { body: { ok: true } },
-        )
+          headers: { Authorization: `Bearer ${slackApiToken}` },
+          response: { body: { ok: true } },
+        })
 
       const actual = await _.removeOrcidFromSlackProfile(userId)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         clock: SystemClock,
         logger: () => IO.of(undefined),
         slackApiToken,
@@ -332,23 +310,21 @@ describe('removeOrcidFromSlackProfile', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     })
 
     test.prop([fc.string(), fc.slackUserId(), fc.fetchResponse({ status: fc.constant(StatusCodes.OK) })])(
       "when the response can't be decoded",
       async (slackApiToken, userId, response) => {
-        const fetch = fetchMock.sandbox().postOnce(
-          {
-            url: 'https://slack.com/api/users.profile.set',
-            body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
-          },
+        const fetch = fetchMock.createInstance().postOnce({
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
           response,
-        )
+        })
 
         const actual = await _.removeOrcidFromSlackProfile(userId)({
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           clock: SystemClock,
           logger: () => IO.of(undefined),
           slackApiToken,
@@ -356,24 +332,22 @@ describe('removeOrcidFromSlackProfile', () => {
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
     test.prop([fc.string(), fc.slackUserId(), fc.nonEmptyString()])(
       'when the response has a Slack error',
       async (slackApiToken, userId, error) => {
-        const fetch = fetchMock.sandbox().postOnce(
-          {
-            url: 'https://slack.com/api/users.profile.set',
-            body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-            headers: { Authorization: `Bearer ${userId.accessToken}` },
-          },
-          { body: { ok: false, error } },
-        )
+        const fetch = fetchMock.createInstance().postOnce({
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+          response: { body: { ok: false, error } },
+        })
 
         const actual = await _.removeOrcidFromSlackProfile(userId)({
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           clock: SystemClock,
           logger: () => IO.of(undefined),
           slackApiToken,
@@ -381,7 +355,7 @@ describe('removeOrcidFromSlackProfile', () => {
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -390,17 +364,15 @@ describe('removeOrcidFromSlackProfile', () => {
       fc.slackUserId(),
       fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK),
     ])('when the response has a non-200 status code', async (slackApiToken, userId, status) => {
-      const fetch = fetchMock.sandbox().postOnce(
-        {
-          url: 'https://slack.com/api/users.profile.set',
-          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
-          headers: { Authorization: `Bearer ${userId.accessToken}` },
-        },
-        { status },
-      )
+      const fetch = fetchMock.createInstance().postOnce({
+        url: 'https://slack.com/api/users.profile.set',
+        body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+        headers: { Authorization: `Bearer ${userId.accessToken}` },
+        response: { status },
+      })
 
       const actual = await _.removeOrcidFromSlackProfile(userId)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         clock: SystemClock,
         logger: () => IO.of(undefined),
         slackApiToken,
@@ -408,7 +380,7 @@ describe('removeOrcidFromSlackProfile', () => {
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     })
 
     test.prop([fc.string(), fc.slackUserId(), fc.error()])(

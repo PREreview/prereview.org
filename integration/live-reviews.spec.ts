@@ -1,15 +1,16 @@
 import { Duration } from 'effect'
-import { expect, test } from './base.ts'
+import { expect, test } from './base.js'
 
 test('can read about Live Reviews', async ({ fetch, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
 
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
+  })
 
   await menu.click()
   await page.getByRole('link', { name: 'Live Reviews', exact: true }).click()
@@ -24,11 +25,12 @@ test('can read about Live Reviews', async ({ fetch, javaScriptEnabled, page }) =
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
-    { delay: Duration.toMillis('2.5 seconds') },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
+    delay: Duration.toMillis('2.5 seconds'),
+  })
 
   await page.goto('/live-reviews', { waitUntil: 'commit' })
 

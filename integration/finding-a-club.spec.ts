@@ -55,29 +55,25 @@ test('can find and view a club', async ({ fetch, page }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used ...</p>',
     })
-    .getOnce(
-      {
-        name: 'responses',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5281/zenodo.7820084" AND related.relation:"references"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+    .getOnce({
+      name: 'responses',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.5281/zenodo.7820084" AND related.relation:"references"' },
+      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    })
 
   await page.goto('/reviews/7820084', { waitUntil: 'commit' })
 
-  fetch.get(
-    {
-      name: 'club-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
-        size: '100',
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'club-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    {
+    response: {
       body: RecordsC.encode({
         hits: {
           total: 6,
@@ -176,7 +172,7 @@ test('can find and view a club', async ({ fetch, page }) => {
         },
       }),
     },
-  )
+  })
 
   await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
@@ -184,18 +180,16 @@ test('can find and view a club', async ({ fetch, page }) => {
 })
 
 test('might not load the PREreviews in time', async ({ fetch, page }) => {
-  fetch.get(
-    {
-      name: 'club-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
-        size: '100',
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'club-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    {
+    response: {
       body: RecordsC.encode({
         hits: {
           total: 6,
@@ -294,8 +288,8 @@ test('might not load the PREreviews in time', async ({ fetch, page }) => {
         },
       }),
     },
-    { delay: Duration.toMillis('5.5 seconds') },
-  )
+    delay: Duration.toMillis('5.5 seconds'),
+  })
 
   await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })
 
@@ -303,19 +297,17 @@ test('might not load the PREreviews in time', async ({ fetch, page }) => {
 })
 
 test('the list might be empty', async ({ fetch, page }) => {
-  fetch.get(
-    {
-      name: 'club-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
-        size: '100',
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'club-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"ASAPbio Metabolism Crowd"',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  )
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  })
 
   await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })
 

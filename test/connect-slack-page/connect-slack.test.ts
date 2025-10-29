@@ -140,34 +140,36 @@ describe('connectSlackCode', () => {
       const popFromSession = jest.fn<PopFromSessionEnv['popFromSession']>(_ => TE.right(state))
 
       const actual = await _.connectSlackCode({ code, locale, state, user })({
-        fetch: fetchMock.sandbox().postOnce(
-          {
-            url: oauth.tokenUrl.href,
-            functionMatcher: (_, req: RequestInit) =>
-              req.body ===
-              new URLSearchParams({
-                client_id: oauth.clientId,
-                client_secret: oauth.clientSecret,
-                grant_type: 'authorization_code',
-                redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
-                code,
-              }).toString(),
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-          },
-          {
-            status: StatusCodes.OK,
-            body: {
-              authed_user: {
-                id: userId,
-                access_token: accessToken,
-                token_type: 'user',
-                scope: [...scopes].join(','),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce({
+              url: oauth.tokenUrl.href,
+              matcherFunction: ({ options }) =>
+                options.body ===
+                new URLSearchParams({
+                  client_id: oauth.clientId,
+                  client_secret: oauth.clientSecret,
+                  grant_type: 'authorization_code',
+                  redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
+                  code,
+                }).toString(),
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
               },
-            },
-          },
-        ),
+              response: {
+                status: StatusCodes.OK,
+                body: {
+                  authed_user: {
+                    id: userId,
+                    access_token: accessToken,
+                    token_type: 'user',
+                    scope: [...scopes].join(','),
+                  },
+                },
+              },
+            })
+            .fetchHandler(...args),
         popFromSession,
         publicUrl,
         saveSlackUserId,
@@ -188,13 +190,13 @@ describe('connectSlackCode', () => {
     'when the access token cannot be decoded',
     async (code, user, locale, oauth, publicUrl, accessToken, state) => {
       const slackUserIdStore = new Keyv()
-      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+      const fetch = fetchMock.createInstance().postOnce(oauth.tokenUrl.href, {
         status: StatusCodes.OK,
         body: accessToken,
       })
 
       const actual = await _.connectSlackCode({ code, locale, state, user })({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         popFromSession: () => TE.right(state),
         publicUrl,
         saveSlackUserId: shouldNotBeCalled,
@@ -210,7 +212,7 @@ describe('connectSlackCode', () => {
         js: [],
       })
       expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -248,13 +250,13 @@ describe('connectSlackCode', () => {
     'when the response has a non-200/404 status code',
     async (code, user, locale, oauth, publicUrl, accessToken, state) => {
       const slackUserIdStore = new Keyv()
-      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+      const fetch = fetchMock.createInstance().postOnce(oauth.tokenUrl.href, {
         status: StatusCodes.OK,
         body: accessToken,
       })
 
       const actual = await _.connectSlackCode({ code, locale, state, user })({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         popFromSession: () => TE.right(state),
         publicUrl,
         saveSlackUserId: shouldNotBeCalled,
@@ -270,7 +272,7 @@ describe('connectSlackCode', () => {
         js: [],
       })
       expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 

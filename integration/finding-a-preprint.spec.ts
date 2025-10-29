@@ -9,14 +9,12 @@ test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
 
   fetch
-    .getOnce(
-      {
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-        },
+    .getOnce({
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
       },
-      {
+      response: {
         body: RecordsC.encode({
           hits: {
             total: 1,
@@ -78,7 +76,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
           },
         }),
       },
-    )
+    })
     .getOnce('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>The manuscript &quot;The role of LHCBM1 in non-photochemical quenching in <em>Chlamydomonas reinhardtii</em>&quot; by Liu et al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays a low NPQ phenotype. The authors found that the antenna size and LHCSR3 accumulation are not responsible for the lower NPQ phenotype in <em>npq5</em>. They also artificially acidified the lumenal pH to protonate LHCSR3 for NPQ induction and found that <em>npq5 </em>NPQ is still low. They propose that absence of LHCBM1 could alter the association of LHCSR3 with the PSII supercomplex or that LHCBM1 interacts with LHCSR3 which would enhance its quenching capacity. This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function, LHCSR1 and 3 proteins accumulation and NPQ capacity during a 48-h high light treatment.</p>',
     })
@@ -94,16 +92,12 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 })
 
 test('might not load PREreviews in time', async ({ fetch, page }) => {
-  fetch.getOnce(
-    {
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-      },
-    },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    { delay: Duration.toMillis('5.5 seconds') },
-  )
+  fetch.getOnce({
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    delay: Duration.toMillis('5.5 seconds'),
+  })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
 

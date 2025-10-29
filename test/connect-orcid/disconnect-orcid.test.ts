@@ -18,25 +18,23 @@ describe('disconnectOrcid', () => {
           'when the token can be deleted',
           async (orcidOauth, user, locale, orcidToken) => {
             const deleteOrcidToken = jest.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
-            const fetch = fetchMock.sandbox().postOnce(
-              {
-                url: orcidOauth.revokeUrl.href,
-                functionMatcher: (_, req: RequestInit) =>
-                  req.body ===
-                  new URLSearchParams({
-                    client_id: orcidOauth.clientId,
-                    client_secret: orcidOauth.clientSecret,
-                    token: orcidToken.accessToken,
-                    token_type_hint: 'access_token',
-                  }).toString(),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              },
-              { status: StatusCodes.OK },
-            )
+            const fetch = fetchMock.createInstance().postOnce({
+              url: orcidOauth.revokeUrl.href,
+              matcherFunction: ({ options }) =>
+                options.body ===
+                new URLSearchParams({
+                  client_id: orcidOauth.clientId,
+                  client_secret: orcidOauth.clientSecret,
+                  token: orcidToken.accessToken,
+                  token_type_hint: 'access_token',
+                }).toString(),
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              response: { status: StatusCodes.OK },
+            })
 
             const actual = await _.disconnectOrcid({ locale, method: 'POST', user })({
               deleteOrcidToken,
-              fetch,
+              fetch: (...args) => fetch.fetchHandler(...args),
               getOrcidToken: () => TE.right(orcidToken),
               orcidOauth,
             })()
@@ -47,7 +45,7 @@ describe('disconnectOrcid', () => {
               message: 'orcid-disconnected',
             })
             expect(deleteOrcidToken).toHaveBeenCalledWith(user.orcid)
-            expect(fetch.done()).toBeTruthy()
+            expect(fetch.callHistory.done()).toBeTruthy()
           },
         )
 

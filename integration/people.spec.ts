@@ -1,13 +1,14 @@
 import { Duration } from 'effect'
-import { expect, test } from './base.ts'
+import { expect, test } from './base.js'
 
 test('can read about people', async ({ fetch, page }) => {
   await page.goto('/', { waitUntil: 'commit' })
 
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0a', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about people.</p>' }] } },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0a/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about people.</p>' }] } },
+  })
 
   await page.getByRole('link', { name: 'People' }).click()
 
@@ -16,11 +17,12 @@ test('can read about people', async ({ fetch, page }) => {
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0a', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about people.</p>' }] } },
-    { delay: Duration.toMillis('2.5 seconds') },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb0a/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about people.</p>' }] } },
+    delay: Duration.toMillis('2.5 seconds'),
+  })
 
   await page.goto('/people', { waitUntil: 'commit' })
 

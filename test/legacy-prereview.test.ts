@@ -15,18 +15,16 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintDoi()])(
     'when the DOI can be decoded',
     async (uuid, app, key, url, update, doi) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
-          headers: { 'X-Api-App': app, 'X-Api-Key': key },
-        },
-        {
+      const fetch = fetchMock.createInstance().getOnce({
+        url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
+        headers: { 'X-Api-App': app, 'X-Api-Key': key },
+        response: {
           body: { data: [{ handle: `doi:${doi}` }] },
         },
-      )
+      })
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -37,18 +35,16 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.nonPreprintDoi()])(
     'when the DOI is not a preprint DOI',
     async (uuid, app, key, url, update, doi) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
-          headers: { 'X-Api-App': app, 'X-Api-Key': key },
-        },
-        {
+      const fetch = fetchMock.createInstance().getOnce({
+        url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
+        headers: { 'X-Api-App': app, 'X-Api-Key': key },
+        response: {
           body: { data: [{ handle: `doi:${doi}` }] },
         },
-      )
+      })
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -64,26 +60,26 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, response)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, response)
 
     const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (uuid, app, key, url, update) => {
       const fetch = fetchMock
-        .sandbox()
+        .createInstance()
         .getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -99,15 +95,15 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
 
     const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -147,18 +143,16 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
       ]),
     ),
   ])('when the response can be decoded', async (uuid, app, key, url, update, [data, profile]) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: `${url}api/v2/personas/${encodeURIComponent(uuid)}`,
-        headers: { 'X-Api-App': app, 'X-Api-Key': key },
-      },
-      {
+    const fetch = fetchMock.createInstance().getOnce({
+      url: `${url}api/v2/personas/${encodeURIComponent(uuid)}`,
+      headers: { 'X-Api-App': app, 'X-Api-Key': key },
+      response: {
         body: { data: [data] },
       },
-    )
+    })
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
@@ -173,26 +167,26 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, response)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, response)
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (uuid, app, key, url, update) => {
       const fetch = fetchMock
-        .sandbox()
+        .createInstance()
         .getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -208,15 +202,15 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, status)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, status)
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -236,17 +230,15 @@ describe('createUserOnLegacyPrereview', () => {
   test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.pseudonym()])(
     'when the user can be created',
     async (orcid, name, app, key, url, update, pseudonym) => {
-      const fetch = fetchMock.sandbox().postOnce(
-        {
-          url: `${url}api/v2/users`,
-          headers: { 'X-Api-App': app, 'X-Api-Key': key },
-          body: { orcid, name },
-        },
-        { status: StatusCodes.Created, body: pseudonym },
-      )
+      const fetch = fetchMock.createInstance().postOnce({
+        url: `${url}api/v2/users`,
+        headers: { 'X-Api-App': app, 'X-Api-Key': key },
+        body: { orcid, name },
+        response: { status: StatusCodes.Created, body: pseudonym },
+      })
 
       const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -263,22 +255,20 @@ describe('createUserOnLegacyPrereview', () => {
     fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.Created) }),
   ])('when the user cannot be decoded', async (orcid, name, app, key, url, update, response) => {
-    const fetch = fetchMock.sandbox().postOnce(
-      {
-        url: `${url}api/v2/users`,
-        headers: { 'X-Api-App': app, 'X-Api-Key': key },
-        body: { orcid, name },
-      },
+    const fetch = fetchMock.createInstance().postOnce({
+      url: `${url}api/v2/users`,
+      headers: { 'X-Api-App': app, 'X-Api-Key': key },
+      body: { orcid, name },
       response,
-    )
+    })
 
     const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -290,22 +280,20 @@ describe('createUserOnLegacyPrereview', () => {
     fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.Created),
   ])('when the response has a non-201 status code', async (orcid, name, app, key, url, update, status) => {
-    const fetch = fetchMock.sandbox().postOnce(
-      {
-        url: `${url}api/v2/users`,
-        headers: { 'X-Api-App': app, 'X-Api-Key': key },
-        body: { orcid, name },
-      },
-      { status },
-    )
+    const fetch = fetchMock.createInstance().postOnce({
+      url: `${url}api/v2/users`,
+      headers: { 'X-Api-App': app, 'X-Api-Key': key },
+      body: { orcid, name },
+      response: status,
+    })
 
     const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -344,17 +332,15 @@ describe('getPseudonymFromLegacyPrereview', () => {
       ),
     ),
   ])('when the user can be decoded', async (orcid, app, key, url, update, [pseudonym, personas]) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        functionMatcher: (_, req) => req.cache === 'force-cache',
-        url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
-        headers: { 'X-Api-App': app, 'X-Api-Key': key },
-      },
-      { body: { data: { personas } } },
-    )
+    const fetch = fetchMock.createInstance().getOnce({
+      matcherFunction: ({ options }) => options.cache === 'force-cache',
+      url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
+      headers: { 'X-Api-App': app, 'X-Api-Key': key },
+      response: { body: { data: { personas } } },
+    })
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
@@ -369,24 +355,26 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
   ])('when the user cannot be decoded', async (orcid, app, key, url, update, response) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
     async (orcid, app, key, url, update) => {
-      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, StatusCodes.NotFound)
+      const fetch = fetchMock
+        .createInstance()
+        .getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         legacyPrereviewApi: { app, key, url, update },
       })()
 
@@ -402,15 +390,15 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
   ])('when the response has a non-200/404 status code', async (orcid, app, key, url, update, status) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
+    const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: { app, key, url, update },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -431,49 +419,51 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     'when the Rapid PREreviews can be loaded',
     async (app, key, url, update, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(
-            `${url}api/v2/preprints/doi-${encodeURIComponent(
-              preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/rapid-reviews`,
-            {
-              body: {
-                data: [
-                  {
-                    author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
-                    ynNovel: 'yes',
-                    ynFuture: 'yes',
-                    ynReproducibility: 'unsure',
-                    ynMethods: 'unsure',
-                    ynCoherent: 'yes',
-                    ynLimitations: 'unsure',
-                    ynEthics: 'yes',
-                    ynNewData: 'yes',
-                    ynRecommend: 'yes',
-                    ynPeerReview: 'yes',
-                    ynAvailableCode: 'no',
-                    ynAvailableData: 'no',
-                  },
-                  {
-                    author: { name: 'Author 2' },
-                    ynNovel: 'unsure',
-                    ynFuture: 'yes',
-                    ynReproducibility: 'unsure',
-                    ynMethods: 'yes',
-                    ynCoherent: 'yes',
-                    ynLimitations: 'no',
-                    ynEthics: 'N/A',
-                    ynNewData: 'yes',
-                    ynRecommend: 'yes',
-                    ynPeerReview: 'yes',
-                    ynAvailableCode: 'no',
-                    ynAvailableData: 'yes',
-                  },
-                ],
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce(
+              `${url}api/v2/preprints/doi-${encodeURIComponent(
+                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              )}/rapid-reviews`,
+              {
+                body: {
+                  data: [
+                    {
+                      author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
+                      ynNovel: 'yes',
+                      ynFuture: 'yes',
+                      ynReproducibility: 'unsure',
+                      ynMethods: 'unsure',
+                      ynCoherent: 'yes',
+                      ynLimitations: 'unsure',
+                      ynEthics: 'yes',
+                      ynNewData: 'yes',
+                      ynRecommend: 'yes',
+                      ynPeerReview: 'yes',
+                      ynAvailableCode: 'no',
+                      ynAvailableData: 'no',
+                    },
+                    {
+                      author: { name: 'Author 2' },
+                      ynNovel: 'unsure',
+                      ynFuture: 'yes',
+                      ynReproducibility: 'unsure',
+                      ynMethods: 'yes',
+                      ynCoherent: 'yes',
+                      ynLimitations: 'no',
+                      ynEthics: 'N/A',
+                      ynNewData: 'yes',
+                      ynRecommend: 'yes',
+                      ynPeerReview: 'yes',
+                      ynAvailableCode: 'no',
+                      ynAvailableData: 'yes',
+                    },
+                  ],
+                },
               },
-            },
-          ),
+            )
+            .fetchHandler(...args),
         legacyPrereviewApi: {
           app,
           key,
@@ -527,14 +517,16 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     'when the Rapid PREreviews cannot be found',
     async (app, key, url, update, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(
-            `${url}api/v2/preprints/doi-${encodeURIComponent(
-              preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/rapid-reviews`,
-            { status: StatusCodes.NotFound },
-          ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce(
+              `${url}api/v2/preprints/doi-${encodeURIComponent(
+                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              )}/rapid-reviews`,
+              { status: StatusCodes.NotFound },
+            )
+            .fetchHandler(...args),
         legacyPrereviewApi: {
           app,
           key,
@@ -556,7 +548,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     fc.integer({ min: 400, max: 599 }).filter(status => status !== StatusCodes.NotFound),
   ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
     const fetch = fetchMock
-      .sandbox()
+      .createInstance()
       .getOnce(
         `${url}api/v2/preprints/doi-${encodeURIComponent(
           preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
@@ -565,7 +557,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
       )
 
     const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       legacyPrereviewApi: {
         app,
         key,
@@ -575,7 +567,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 })
 
@@ -597,22 +589,20 @@ describe('createPrereviewOnLegacyPrereview', () => {
       'when the review can be posted',
       async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, license, locale) => {
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
-          .postOnce(
-            {
-              url: `${url}api/v2/full-reviews`,
-              headers: { 'X-Api-App': app, 'X-Api-Key': key },
-              body: {
-                preprint: preprintUuid,
-                doi: reviewDoi,
-                authors: [{ orcid: user.orcid, public: true }],
-                isPublished: true,
-                contents: '<p>hello</p>',
-              },
+          .postOnce({
+            url: `${url}api/v2/full-reviews`,
+            headers: { 'X-Api-App': app, 'X-Api-Key': key },
+            body: {
+              preprint: preprintUuid,
+              doi: reviewDoi,
+              authors: [{ orcid: user.orcid, public: true }],
+              isPublished: true,
+              contents: '<p>hello</p>',
             },
-            { status: StatusCodes.Created },
-          )
+            response: { status: StatusCodes.Created },
+          })
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
@@ -631,7 +621,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           user,
         })(reviewDoi)({
           clock: SystemClock,
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           legacyPrereviewApi: { app, key, url, update: true },
           logger: () => IO.of(undefined),
         })()
@@ -670,22 +660,20 @@ describe('createPrereviewOnLegacyPrereview', () => {
         locale,
       ) => {
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
-          .postOnce(
-            {
-              url: `${url}api/v2/full-reviews`,
-              headers: { 'X-Api-App': app, 'X-Api-Key': key },
-              body: {
-                preprint: preprintUuid,
-                doi: reviewDoi,
-                authors: [{ orcid: user.orcid, public: true }],
-                isPublished: true,
-                contents: '<p>hello</p>',
-              },
+          .postOnce({
+            url: `${url}api/v2/full-reviews`,
+            headers: { 'X-Api-App': app, 'X-Api-Key': key },
+            body: {
+              preprint: preprintUuid,
+              doi: reviewDoi,
+              authors: [{ orcid: user.orcid, public: true }],
+              isPublished: true,
+              contents: '<p>hello</p>',
             },
             response,
-          )
+          })
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
@@ -704,7 +692,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           user,
         })(reviewDoi)({
           clock: SystemClock,
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           legacyPrereviewApi: { app, key, url, update: true },
           logger: () => IO.of(undefined),
         })()
@@ -742,7 +730,9 @@ describe('createPrereviewOnLegacyPrereview', () => {
         license,
         locale,
       ) => {
-        const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
+        const fetch = fetchMock
+          .createInstance()
+          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
@@ -761,13 +751,13 @@ describe('createPrereviewOnLegacyPrereview', () => {
           user,
         })(reviewDoi)({
           clock: SystemClock,
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           legacyPrereviewApi: { app, key, url, update: true },
           logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 

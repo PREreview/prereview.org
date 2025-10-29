@@ -6,10 +6,11 @@ test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.goto('/', { waitUntil: 'domcontentloaded' })
 
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
+  })
 
   await menu.click()
   await page.getByRole('link', { name: 'Clubs', exact: true }).click()
@@ -24,11 +25,12 @@ test('can read about clubs', async ({ fetch, javaScriptEnabled, page }) => {
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
-    { delay: Duration.toMillis('2.5 seconds') },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
+    delay: Duration.toMillis('2.5 seconds'),
+  })
 
   await page.goto('/clubs', { waitUntil: 'commit' })
 

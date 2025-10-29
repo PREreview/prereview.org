@@ -90,25 +90,23 @@ describe('saveAvatarOnCloudinary', () => {
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
-      const fetch = fetchMock.sandbox().postOnce(
-        {
-          url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          matcher: (url, request) =>
-            isMatching(
-              {
-                api_key: cloudinaryApi.key,
-                context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
-                file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
-                folder: 'prereview-profile',
-                signature: P.string,
-                timestamp: Math.round(date.getTime() / 1000).toString(),
-              },
-              Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
-            ),
-        },
-        { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
-      )
+      const fetch = fetchMock.createInstance().postOnce({
+        url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        matcherFunction: ({ options }) =>
+          isMatching(
+            {
+              api_key: cloudinaryApi.key,
+              context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
+              file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
+              folder: 'prereview-profile',
+              signature: P.string,
+              timestamp: Math.round(date.getTime() / 1000).toString(),
+            },
+            Object.fromEntries(new URLSearchParams(options.body?.toString()).entries()),
+          ),
+        response: { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
+      })
       const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
       const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
 
@@ -118,7 +116,7 @@ describe('saveAvatarOnCloudinary', () => {
       )({
         clock: FixedClock(date),
         cloudinaryApi,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
@@ -151,43 +149,39 @@ describe('saveAvatarOnCloudinary', () => {
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, imageId) => {
       const fetch = fetchMock
-        .sandbox()
-        .postOnce(
-          {
-            url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            matcher: (url, request) =>
-              isMatching(
-                {
-                  api_key: cloudinaryApi.key,
-                  context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
-                  file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
-                  folder: 'prereview-profile',
-                  signature: P.string,
-                  timestamp: Math.round(date.getTime() / 1000).toString(),
-                },
-                Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
-              ),
-          },
-          { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
-        )
-        .postOnce(
-          {
-            url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            matcher: (url, request) =>
-              isMatching(
-                {
-                  api_key: cloudinaryApi.key,
-                  public_id: `prereview-profile/${existing}`,
-                  signature: P.string,
-                  timestamp: Math.round(date.getTime() / 1000).toString(),
-                },
-                Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
-              ),
-          },
-          { status: StatusCodes.OK, body: { result: 'ok' } },
-        )
+        .createInstance()
+        .postOnce({
+          url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          matcherFunction: ({ options }) =>
+            isMatching(
+              {
+                api_key: cloudinaryApi.key,
+                context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
+                file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
+                folder: 'prereview-profile',
+                signature: P.string,
+                timestamp: Math.round(date.getTime() / 1000).toString(),
+              },
+              Object.fromEntries(new URLSearchParams(options.body?.toString()).entries()),
+            ),
+          response: { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
+        })
+        .postOnce({
+          url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          matcherFunction: ({ options }) =>
+            isMatching(
+              {
+                api_key: cloudinaryApi.key,
+                public_id: `prereview-profile/${existing}`,
+                signature: P.string,
+                timestamp: Math.round(date.getTime() / 1000).toString(),
+              },
+              Object.fromEntries(new URLSearchParams(options.body?.toString()).entries()),
+            ),
+          response: { status: StatusCodes.OK, body: { result: 'ok' } },
+        })
       const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
       const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
 
@@ -197,7 +191,7 @@ describe('saveAvatarOnCloudinary', () => {
       )({
         clock: FixedClock(date),
         cloudinaryApi,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getCloudinaryAvatar,
         logger: () => IO.of(undefined),
         publicUrl,
@@ -210,7 +204,7 @@ describe('saveAvatarOnCloudinary', () => {
       expect(actual).toStrictEqual(E.right(undefined))
       expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
       expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     })
 
     test.prop([
@@ -234,7 +228,7 @@ describe('saveAvatarOnCloudinary', () => {
       'when the existing avatar cannot be removed from Cloudinary',
       async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, imageId, response) => {
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, {
             status: StatusCodes.OK,
             body: { public_id: `prereview-profile/${imageId}` },
@@ -251,7 +245,7 @@ describe('saveAvatarOnCloudinary', () => {
         )({
           clock: FixedClock(date),
           cloudinaryApi,
-          fetch,
+          fetch: (...args) => fetch.fetchHandler(...args),
           getCloudinaryAvatar,
           logger: () => IO.of(undefined),
           publicUrl,
@@ -264,7 +258,7 @@ describe('saveAvatarOnCloudinary', () => {
         expect(actual).toStrictEqual(E.right(undefined))
         expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
         expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
   })
@@ -289,7 +283,7 @@ describe('saveAvatarOnCloudinary', () => {
     'when the avatar cannot be saved locally',
     async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, imageId) => {
       const fetch = fetchMock
-        .sandbox()
+        .createInstance()
         .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, {
           status: StatusCodes.OK,
           body: { public_id: `prereview-profile/${imageId}` },
@@ -304,7 +298,7 @@ describe('saveAvatarOnCloudinary', () => {
       )({
         clock: FixedClock(date),
         cloudinaryApi,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
@@ -337,7 +331,7 @@ describe('saveAvatarOnCloudinary', () => {
     'when the avatar cannot be saved on Cloudinary',
     async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, response) => {
       const fetch = fetchMock
-        .sandbox()
+        .createInstance()
         .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, response)
 
       const actual = await _.saveAvatarOnCloudinary(
@@ -346,7 +340,7 @@ describe('saveAvatarOnCloudinary', () => {
       )({
         clock: FixedClock(date),
         cloudinaryApi,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getCloudinaryAvatar: () => TE.fromEither(existing),
         logger: () => IO.of(undefined),
         publicUrl,
@@ -355,7 +349,7 @@ describe('saveAvatarOnCloudinary', () => {
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -411,29 +405,27 @@ describe('removeAvatarFromCloudinary', () => {
     const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.right(undefined),
     )
-    const fetch = fetchMock.sandbox().postOnce(
-      {
-        url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        matcher: (url, request) =>
-          isMatching(
-            {
-              api_key: cloudinaryApi.key,
-              public_id: `prereview-profile/${avatar}`,
-              signature: P.string,
-              timestamp: Math.round(date.getTime() / 1000).toString(),
-            },
-            Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
-          ),
-      },
-      { status: StatusCodes.OK, body: { result: 'ok' } },
-    )
+    const fetch = fetchMock.createInstance().postOnce({
+      url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      matcherFunction: ({ options }) =>
+        isMatching(
+          {
+            api_key: cloudinaryApi.key,
+            public_id: `prereview-profile/${avatar}`,
+            signature: P.string,
+            timestamp: Math.round(date.getTime() / 1000).toString(),
+          },
+          Object.fromEntries(new URLSearchParams(options.body?.toString()).entries()),
+        ),
+      response: { status: StatusCodes.OK, body: { result: 'ok' } },
+    })
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
       clock: FixedClock(date),
       cloudinaryApi,
       deleteCloudinaryAvatar,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getCloudinaryAvatar: () => TE.right(avatar),
       logger: () => IO.of(undefined),
     })()
@@ -442,7 +434,7 @@ describe('removeAvatarFromCloudinary', () => {
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -460,14 +452,14 @@ describe('removeAvatarFromCloudinary', () => {
       TE.right(undefined),
     )
     const fetch = fetchMock
-      .sandbox()
+      .createInstance()
       .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`, response)
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
       clock: FixedClock(date),
       cloudinaryApi,
       deleteCloudinaryAvatar,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getCloudinaryAvatar: () => TE.right(avatar),
       logger: () => IO.of(undefined),
     })()
@@ -476,7 +468,7 @@ describe('removeAvatarFromCloudinary', () => {
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([

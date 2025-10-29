@@ -56,32 +56,28 @@ test('can find and view a profile', async ({ fetch, page }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce(
-      {
-        name: 'responses',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+    .getOnce({
+      name: 'responses',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
+      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    })
 
   await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-2695-5951/personal-details', {
     body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' }, 'credit-name': null } },
   })
-  fetch.get(
-    {
-      name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
-        size: 100,
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'profile-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    {
+    response: {
       body: RecordsC.encode({
         hits: {
           total: 6,
@@ -178,7 +174,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
         },
       }),
     },
-  )
+  })
 
   await page.getByRole('link', { name: 'CJ San Felipe' }).click()
 
@@ -225,19 +221,17 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
     body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null } },
   })
-  fetch.get(
-    {
-      name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
-        size: 100,
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'profile-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  )
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  })
 
   await page.getByRole('link', { name: 'View public profile' }).click()
 
@@ -305,29 +299,25 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce(
-      {
-        name: 'responses',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+    .getOnce({
+      name: 'responses',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
+      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    })
 
   await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
-  fetch.get(
-    {
-      name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Blue Sheep"',
-        size: 100,
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'profile-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Blue Sheep"',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    {
+    response: {
       body: RecordsC.encode({
         hits: {
           total: 6,
@@ -424,7 +414,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
         },
       }),
     },
-  )
+  })
 
   await page.getByRole('link', { name: 'Blue Sheep' }).click()
 
@@ -434,19 +424,17 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
 test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page }) => {
   await page.goto('/my-details', { waitUntil: 'commit' })
 
-  fetch.get(
-    {
-      name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Orange Panda"',
-        size: 100,
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'profile-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Orange Panda"',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  )
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  })
 
   await page.getByRole('link', { name: 'View pseudonym profile' }).click()
 
@@ -457,19 +445,17 @@ test('the list might be empty', async ({ fetch, page }) => {
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-6109-0367/personal-details', {
     body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' }, 'credit-name': null } },
   })
-  fetch.get(
-    {
-      name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
-        size: 100,
-        sort: 'publication-desc',
-        resource_type: 'publication::publication-peerreview',
-      },
+  fetch.get({
+    name: 'profile-prereviews',
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
+      size: '100',
+      sort: 'publication-desc',
+      resource_type: 'publication::publication-peerreview',
     },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  )
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  })
 
   await page.goto('/profiles/0000-0002-6109-0367', { waitUntil: 'commit' })
 

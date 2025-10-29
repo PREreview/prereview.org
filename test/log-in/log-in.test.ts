@@ -141,12 +141,14 @@ describe('authenticate', () => {
           )
         }).pipe(
           Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(
-            FetchHttpClient.Fetch,
-            fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-              status: StatusCodes.OK,
-              body: accessToken,
-            }) as typeof FetchHttpClient.Fetch.Service,
+          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+            fetchMock
+              .createInstance()
+              .postOnce(orcidOauth.tokenUrl.href, {
+                status: StatusCodes.OK,
+                body: accessToken,
+              })
+              .fetchHandler(...args),
           ),
           Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
           Effect.provideService(_.IsUserBlocked, () => false),
@@ -201,12 +203,14 @@ describe('authenticate', () => {
           )
         }).pipe(
           Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(
-            FetchHttpClient.Fetch,
-            fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-              status: StatusCodes.OK,
-              body: accessToken,
-            }) as typeof FetchHttpClient.Fetch.Service,
+          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+            fetchMock
+              .createInstance()
+              .postOnce(orcidOauth.tokenUrl.href, {
+                status: StatusCodes.OK,
+                body: accessToken,
+              })
+              .fetchHandler(...args),
           ),
           Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
           Effect.provideService(_.IsUserBlocked, () => false),
@@ -256,12 +260,14 @@ describe('authenticate', () => {
       expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provideService(
-        FetchHttpClient.Fetch,
-        fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-          status: StatusCodes.OK,
-          body: accessToken,
-        }) as typeof FetchHttpClient.Fetch.Service,
+      Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+        fetchMock
+          .createInstance()
+          .postOnce(orcidOauth.tokenUrl.href, {
+            status: StatusCodes.OK,
+            body: accessToken,
+          })
+          .fetchHandler(...args),
       ),
       Effect.provideService(_.GetPseudonym, shouldNotBeCalled),
       Effect.provideService(Locale, locale),
@@ -289,7 +295,7 @@ describe('authenticate', () => {
   ])('when a pseudonym cannot be retrieved', (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie) =>
     Effect.gen(function* () {
       const sessionStore = new Keyv()
-      const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
+      const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
         status: StatusCodes.OK,
         body: accessToken,
       })
@@ -298,7 +304,7 @@ describe('authenticate', () => {
         _.authenticate(code, referer.href),
         Effect.flip,
         Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-        Effect.provideService(FetchHttpClient.Fetch, fetch as typeof FetchHttpClient.Fetch.Service),
+        Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
       )
 
       const sessions = yield* all(sessionStore.iterator!(undefined))
@@ -312,17 +318,9 @@ describe('authenticate', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provideService(
-        FetchHttpClient.Fetch,
-        fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-          status: StatusCodes.OK,
-          body: accessToken,
-        }) as typeof FetchHttpClient.Fetch.Service,
-      ),
-
       Effect.provideService(_.GetPseudonym, () => Effect.fail('unavailable')),
       Effect.provideService(_.IsUserBlocked, () => false),
       Effect.provideService(Locale, locale),
@@ -390,12 +388,11 @@ describe('authenticate', () => {
         )
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-        Effect.provideService(
-          FetchHttpClient.Fetch,
-          fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
-            status: StatusCodes.OK,
-            body: accessToken,
-          }) as typeof FetchHttpClient.Fetch.Service,
+        Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
+            .fetchHandler(...args),
         ),
         Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
         Effect.provideService(_.IsUserBlocked, () => false),

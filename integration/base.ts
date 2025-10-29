@@ -14,7 +14,7 @@ import {
 } from '@playwright/test'
 import { Doi } from 'doi-ts'
 import { Config, Effect, Fiber, Layer, Logger, LogLevel, Option, pipe, Redacted, Schedule } from 'effect'
-import fetchMock from 'fetch-mock'
+import fetchMock, { type FetchMock } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import http from 'http'
 import Keyv from 'keyv'
@@ -76,7 +76,7 @@ export { expect } from '@playwright/test'
 
 interface AppFixtures {
   sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
-  fetch: fetchMock.FetchMockSandbox
+  fetch: FetchMock
   oauthServer: OAuth2Server
   port: number
   server: Fiber.RuntimeFiber<never>
@@ -124,14 +124,13 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   fetch: async ({}, use) => {
-    const fetch = fetchMock.sandbox()
+    const fetch = fetchMock.createInstance()
 
-    fetch.get(
-      {
-        url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      },
-      {
+    fetch.get({
+      name: 'pseudonym',
+      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
+      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      response: {
         body: {
           data: {
             personas: [
@@ -143,19 +142,17 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           },
         },
       },
-    )
+    })
 
     fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.01.13.476201/rapid-reviews', {
       body: { data: [] },
     })
 
-    fetch.get(
-      {
-        name: 'recent-prereviews',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview' },
-      },
-      {
+    fetch.get({
+      name: 'recent-prereviews',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { size: '5', sort: 'publication-desc', resource_type: 'publication::publication-peerreview' },
+      response: {
         body: RecordsC.encode({
           hits: {
             total: 6,
@@ -253,7 +250,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           },
         }),
       },
-    )
+    })
 
     fetch.get('https://api.crossref.org/works/10.1101%2F2023.02.28.529746', {
       body: {
@@ -1111,16 +1108,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
     })
 
-    fetch.get(
-      {
-        name: '10.1101/12345678 reviews',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/12345678"',
-        },
+    fetch.get({
+      name: '10.1101/12345678 reviews',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/12345678"',
       },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    })
 
     fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-12345678/rapid-reviews', {
       body: { data: [] },
@@ -1272,7 +1267,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             }),
             Nodemailer.layer(nodemailer),
             Layer.succeed(IsUserBlocked, isUserBlocked),
-            Layer.succeed(FetchHttpClient.Fetch, fetch as typeof globalThis.fetch),
+            Layer.succeed(FetchHttpClient.Fetch, fetch.fetchHandler),
             Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
             Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make(''), apiUpdate: true }),
             Layer.succeed(Cloudinary.CloudinaryApi, {
@@ -1629,25 +1624,21 @@ export const willPublishAReview: Fixtures<
         }),
         status: StatusCodes.Accepted,
       })
-      .getOnce(
-        {
-          name: 'reload-review',
-          url: 'http://zenodo.test/api/records/1055806',
-          functionMatcher: (_, req) => req.cache === 'reload',
+      .getOnce({
+        name: 'reload-review',
+        url: 'http://zenodo.test/api/records/1055806',
+        matcherFunction: ({ options }) => options.cache === 'reload',
+        response: { status: StatusCodes.ServiceUnavailable },
+      })
+      .getOnce({
+        name: 'reload-preprint-reviews',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: {
+          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
         },
-        { status: StatusCodes.ServiceUnavailable },
-      )
-      .getOnce(
-        {
-          name: 'reload-preprint-reviews',
-          url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: {
-            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-          },
-          functionMatcher: (_, req) => req.cache === 'reload',
-        },
-        { status: StatusCodes.ServiceUnavailable },
-      )
+        matcherFunction: ({ options }) => options.cache === 'reload',
+        response: { status: StatusCodes.ServiceUnavailable },
+      })
       .postOnce('http://coar-notify.prereview.test/prereviews', { status: StatusCodes.Created })
 
     await use(fetch)
@@ -1708,9 +1699,10 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
     } satisfies ZenodoRecord
 
     fetch
-      .getOnce(
-        { name: 'get-published-deposition', url: 'http://zenodo.test/api/deposit/depositions/1055806' },
-        {
+      .getOnce({
+        name: 'get-published-deposition',
+        url: 'http://zenodo.test/api/deposit/depositions/1055806',
+        response: {
           body: SubmittedDepositionC.encode({
             ...record,
             links: {
@@ -1727,10 +1719,11 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
             submitted: true,
           }),
         },
-      )
-      .postOnce(
-        { name: 'unlock-deposition', url: 'http://example.com/edit' },
-        {
+      })
+      .postOnce({
+        name: 'unlock-deposition',
+        url: 'http://example.com/edit',
+        response: {
           body: InProgressDepositionC.encode({
             ...record,
             links: {
@@ -1750,10 +1743,11 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
           }),
           status: StatusCodes.Created,
         },
-      )
-      .putOnce(
-        { name: 'update-deposition', url: 'http://example.com/self' },
-        {
+      })
+      .putOnce({
+        name: 'update-deposition',
+        url: 'http://example.com/self',
+        response: {
           body: InProgressDepositionC.encode({
             ...record,
             links: {
@@ -1773,10 +1767,11 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
           }),
           status: StatusCodes.OK,
         },
-      )
-      .postOnce(
-        { name: 'publish-updated-deposition', url: 'http://example.com/publish' },
-        {
+      })
+      .postOnce({
+        name: 'publish-updated-deposition',
+        url: 'http://example.com/publish',
+        response: {
           body: SubmittedDepositionC.encode({
             ...record,
             links: {
@@ -1794,26 +1789,22 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
           }),
           status: StatusCodes.Accepted,
         },
-      )
-      .getOnce(
-        {
-          name: 'reload-review',
-          url: 'http://zenodo.test/api/records/1055806',
-          functionMatcher: (_, req) => req.cache === 'reload',
+      })
+      .getOnce({
+        name: 'reload-review',
+        url: 'http://zenodo.test/api/records/1055806',
+        matcherFunction: ({ options }) => options.cache === 'reload',
+        response: { status: StatusCodes.ServiceUnavailable },
+      })
+      .getOnce({
+        name: 'reload-preprint-reviews',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: {
+          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
         },
-        { status: StatusCodes.ServiceUnavailable },
-      )
-      .getOnce(
-        {
-          name: 'reload-preprint-reviews',
-          url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-          query: {
-            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-          },
-          functionMatcher: (_, req) => req.cache === 'reload',
-        },
-        { status: StatusCodes.ServiceUnavailable },
-      )
+        matcherFunction: ({ options }) => options.cache === 'reload',
+        response: { status: StatusCodes.ServiceUnavailable },
+      })
 
     await use(fetch)
   },

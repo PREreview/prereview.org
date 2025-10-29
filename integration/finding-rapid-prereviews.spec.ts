@@ -82,15 +82,13 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
         },
       },
     })
-    .get(
-      {
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.02.14.480364"',
-        },
+    .get({
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.02.14.480364"',
       },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    })
     .get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.02.14.480364/rapid-reviews', {
       body: {
         data: [

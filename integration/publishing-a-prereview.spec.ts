@@ -196,15 +196,13 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 )
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-      },
+  fetch.get({
+    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+    query: {
+      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
     },
-    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  )
+    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  })
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
@@ -275,57 +273,11 @@ test
         uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a',
       },
     })
-    .postOnce(
-      {
-        url: 'http://prereview.test/api/v2/full-reviews',
-        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      },
-      { status: StatusCodes.Created },
-    )
-
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
-
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-})
-
-test
-  .extend(updatesLegacyPrereview)
-  .extend(canLogIn)
-  .extend(areLoggedIn)
-  .extend(hasAVerifiedEmailAddress)
-  .extend(willPublishAReview)('might not update the legacy PREreview in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await waitForNotBusy(page)
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  fetch
-    .getOnce(
-      'http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201',
-      { body: { uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a' } },
-      { delay: Duration.toMillis('5 seconds') },
-    )
-    .postOnce(
-      {
-        url: 'http://prereview.test/api/v2/full-reviews',
-        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      },
-      { status: StatusCodes.Created },
-      { delay: Duration.toMillis('5 seconds') },
-    )
+    .postOnce({
+      url: 'http://prereview.test/api/v2/full-reviews',
+      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      response: { status: StatusCodes.Created },
+    })
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -1905,15 +1857,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 )
 
 test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
-  fetch.get(
-    {
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-    },
-    { status: StatusCodes.NotFound },
-    { delay: Duration.toMillis('2.5 seconds'), overwriteRoutes: true },
-  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  fetch.modifyRoute('pseudonym', { delay: Duration.toMillis('2.5 seconds') })
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')

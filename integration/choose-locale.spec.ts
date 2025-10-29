@@ -12,14 +12,16 @@ test('can choose a locale through picker and path', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Avaliações abertas de preprints.')
 
   fetch
-    .get(
-      { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/', query: { key: 'key' } },
-      { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
-    )
-    .get(
-      { url: 'https://content.prereview.org/ghost/api/content/pages/68753c7207fb34a92c7fb259/', query: { key: 'key' } },
-      { body: { pages: [{ html: '<p>Algumas informações sobre nós.</p>' }] } },
-    )
+    .get({
+      url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/',
+      query: { key: 'key' },
+      response: { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
+    })
+    .get({
+      url: 'https://content.prereview.org/ghost/api/content/pages/68753c7207fb34a92c7fb259/',
+      query: { key: 'key' },
+      response: { body: { pages: [{ html: '<p>Algumas informações sobre nós.</p>' }] } },
+    })
 
   await menu.click()
   await page.getByRole('link', { name: 'Sobre nós', exact: true }).click()

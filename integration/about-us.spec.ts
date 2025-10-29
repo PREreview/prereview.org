@@ -7,10 +7,11 @@ test('can read about us', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
   await menu.click()
 
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
+  })
 
   await page.getByRole('link', { name: 'About', exact: true }).click()
 
@@ -22,11 +23,12 @@ test('can read about us', async ({ fetch, javaScriptEnabled, page }) => {
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
-    { delay: Duration.toMillis('2.5 seconds') },
-  )
+  fetch.getOnce({
+    url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14/',
+    query: { key: 'key' },
+    response: { body: { pages: [{ html: '<p>Some information about us.</p>' }] } },
+    delay: Duration.toMillis('2.5 seconds'),
+  })
 
   await page.goto('/about', { waitUntil: 'commit' })
 

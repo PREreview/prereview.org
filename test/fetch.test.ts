@@ -3,8 +3,8 @@ import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
-import * as _ from '../src/fetch.ts'
-import * as fc from './fc.ts'
+import * as _ from '../src/fetch.js'
+import * as fc from './fc.js'
 
 describe('collapseRequests', () => {
   test.prop([
@@ -24,20 +24,28 @@ describe('collapseRequests', () => {
       headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
     }),
   ])('when the requests are sent in parallel', async (request, fetchResponse) => {
-    const fetch = fetchMock.sandbox().once({ url: request[0], method: request[1].method }, fetchResponse)
+    const fetch = fetchMock
+      .createInstance()
+      .once({ url: request[0], method: request[1].method, response: fetchResponse })
     const env = _.collapseRequests()({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       logger: () => IO.of(undefined),
     })
 
     const [response1, response2] = await Promise.all([env.fetch(...request), env.fetch(...request)])
 
     expect(response1.status).toStrictEqual(fetchResponse.status)
-    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual(fetchResponse.headers)
+    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse.headers,
+    })
     expect(response2.status).toStrictEqual(fetchResponse.status)
-    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual(fetchResponse.headers)
-    expect(fetch.done()).toBeTruthy()
+    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse.headers,
+    })
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -57,10 +65,12 @@ describe('collapseRequests', () => {
       headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
     }),
   ])('when the requests are sent in serial', async (request, fetchResponse) => {
-    const fetch = fetchMock.sandbox().mock({ repeat: 2, url: request[0], method: request[1].method }, fetchResponse)
+    const fetch = fetchMock
+      .createInstance()
+      .route({ repeat: 2, url: request[0], method: request[1].method, response: fetchResponse })
     const env = _.collapseRequests()({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       logger: () => IO.of(undefined),
     })
 
@@ -71,10 +81,16 @@ describe('collapseRequests', () => {
     const response2 = await env.fetch(...request)
 
     expect(response1.status).toStrictEqual(fetchResponse.status)
-    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual(fetchResponse.headers)
+    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse.headers,
+    })
     expect(response2.status).toStrictEqual(fetchResponse.status)
-    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual(fetchResponse.headers)
-    expect(fetch.done()).toBeTruthy()
+    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse.headers,
+    })
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -114,21 +130,27 @@ describe('collapseRequests', () => {
     }),
   ])('when the requests are different', async ([request1, request2], fetchResponse1, fetchResponse2) => {
     const fetch = fetchMock
-      .sandbox()
-      .once({ url: request1[0], method: request1[1].method }, fetchResponse1)
-      .once({ url: request2[0], method: request2[1].method }, fetchResponse2)
+      .createInstance()
+      .once({ url: request1[0], method: request1[1].method, response: fetchResponse1 })
+      .once({ url: request2[0], method: request2[1].method, response: fetchResponse2 })
     const env = _.collapseRequests()({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       logger: () => IO.of(undefined),
     })
 
     const [response1, response2] = await Promise.all([env.fetch(...request1), env.fetch(...request2)])
 
     expect(response1.status).toStrictEqual(fetchResponse1.status)
-    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual(fetchResponse1.headers)
+    expect(Object.fromEntries(Array.from(response1.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse1.headers,
+    })
     expect(response2.status).toStrictEqual(fetchResponse2.status)
-    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual(fetchResponse2.headers)
-    expect(fetch.done()).toBeTruthy()
+    expect(Object.fromEntries(Array.from(response2.headers))).toStrictEqual({
+      'content-length': '0',
+      ...fetchResponse2.headers,
+    })
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 })

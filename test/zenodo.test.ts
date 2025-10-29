@@ -192,25 +192,27 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
       const actual = await _.getRecentPrereviewsFromZenodo({ field, language, page, query })({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              page,
-              size: '5',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint"${
-                field ? ` AND custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
-              }${language ? ` AND language:"${iso6391To3(language)}"` : ''}${query ? ` AND (title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
-            },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: StatusCodes.OK,
-          },
-        ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce({
+              url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+              query: {
+                page,
+                size: '5',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+                q: `metadata.related_identifiers.resource_type.id:"publication-preprint"${
+                  field ? ` AND custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
+                }${language ? ` AND language:"${iso6391To3(language)}"` : ''}${query ? ` AND (title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
+              },
+              response: {
+                body: RecordsC.encode(records),
+                status: StatusCodes.OK,
+              },
+            })
+            .fetchHandler(...args),
         getPreprintTitle: id =>
           match(id.value as unknown)
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -348,23 +350,25 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
     const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-            page,
-            size: '5',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
+              page,
+              size: '5',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -489,27 +493,25 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
     }
 
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-          page,
-          size: '5',
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-          access_status: 'open',
-        },
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+      query: {
+        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
+        page: page.toString(),
+        size: '5',
+        sort: 'publication-desc',
+        resource_type: 'publication::publication-peerreview',
+        access_status: 'open',
       },
-      {
+      response: {
         body: RecordsC.encode(records),
         status: StatusCodes.OK,
       },
-    )
+    })
 
     const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.left(error1))
@@ -518,29 +520,30 @@ describe('getRecentPrereviewsFromZenodo', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.integer({ min: 1 })])('when the list is empty', async page => {
     const actual = await _.getRecentPrereviewsFromZenodo({ page })({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-            page,
-            size: '5',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              page: page.toString(),
+              size: '5',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
@@ -551,30 +554,27 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([fc.integer({ min: 1 }), fc.integer({ min: 400, max: 599 })])(
     'when the PREreviews cannot be loaded',
     async (page, status) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-            page,
-            size: '5',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
+      const fetch = fetchMock.createInstance().getOnce({
+        url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+        query: {
+          page: page.toString(),
+          size: '5',
+          sort: 'publication-desc',
+          resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
-        { status },
-      )
+        response: { status },
+      })
 
       const actual = await _.getRecentPrereviewsFromZenodo({ page })({
         clock: SystemClock,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getPreprintTitle: shouldNotBeCalled,
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -679,16 +679,19 @@ describe('getPrereviewFromZenodo', () => {
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(`https://zenodo.org/api/records/${id}`, {
-            body: RecordC.encode(record),
-            status: StatusCodes.OK,
-          })
-          .getOnce(
-            { url: 'http://example.com/review.html/content', functionMatcher: (_, req) => req.cache === 'force-cache' },
-            { body: 'Some text' },
-          ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce(`https://zenodo.org/api/records/${id}`, {
+              body: RecordC.encode(record),
+              status: StatusCodes.OK,
+            })
+            .getOnce({
+              url: 'http://example.com/review.html/content',
+              matcherFunction: ({ options }) => options.cache === 'force-cache',
+              response: { body: 'Some text' },
+            })
+            .fetchHandler(...args),
         getPreprint,
         logger: () => IO.of(undefined),
         wasPrereviewRemoved: () => false,
@@ -741,10 +744,14 @@ describe('getPrereviewFromZenodo', () => {
     async (id, status) => {
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-          body: undefined,
-          status,
-        }),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce(`https://zenodo.org/api/records/${id}`, {
+              body: undefined,
+              status,
+            })
+            .fetchHandler(...args),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
         wasPrereviewRemoved: () => false,
@@ -797,7 +804,7 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
       const fetch = fetchMock
-        .sandbox()
+        .createInstance()
         .getOnce(`https://zenodo.org/api/records/${id}`, {
           body: RecordC.encode(record),
           status: StatusCodes.OK,
@@ -806,33 +813,33 @@ describe('getPrereviewFromZenodo', () => {
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getPreprint: () => TE.right(preprint),
         logger: () => IO.of(undefined),
         wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
   test.prop([fc.integer()])('when the review cannot be loaded', async id => {
-    const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+    const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/records/${id}`, {
       body: undefined,
       status: StatusCodes.ServiceUnavailable,
     })
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -882,7 +889,7 @@ describe('getPrereviewFromZenodo', () => {
     }
 
     const fetch = fetchMock
-      .sandbox()
+      .createInstance()
       .getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
         status: StatusCodes.OK,
@@ -891,7 +898,7 @@ describe('getPrereviewFromZenodo', () => {
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprint: () => TE.left(error),
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
@@ -904,7 +911,7 @@ describe('getPrereviewFromZenodo', () => {
           : new Prereviews.PrereviewIsUnavailable(),
       ),
     )
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([fc.integer(), fc.preprintDoi()])('when the record is restricted', async (id, preprintDoi) => {
@@ -951,10 +958,14 @@ describe('getPrereviewFromZenodo', () => {
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: RecordC.encode(record),
-        status: StatusCodes.OK,
-      }),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: StatusCodes.OK,
+          })
+          .fetchHandler(...args),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
@@ -1006,10 +1017,14 @@ describe('getPrereviewFromZenodo', () => {
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: RecordC.encode(record),
-        status: StatusCodes.OK,
-      }),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: StatusCodes.OK,
+          })
+          .fetchHandler(...args),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
@@ -1085,10 +1100,14 @@ describe('getPrereviewFromZenodo', () => {
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: RecordC.encode(record),
-        status: StatusCodes.OK,
-      }),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: StatusCodes.OK,
+          })
+          .fetchHandler(...args),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
@@ -1141,21 +1160,21 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
-      const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+      const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
         status: StatusCodes.OK,
       })
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
         wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsUnavailable()))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -1205,10 +1224,14 @@ describe('getPrereviewFromZenodo', () => {
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-          body: RecordC.encode(record),
-          status: StatusCodes.OK,
-        }),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce(`https://zenodo.org/api/records/${id}`, {
+              body: RecordC.encode(record),
+              status: StatusCodes.OK,
+            })
+            .fetchHandler(...args),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
         wasPrereviewRemoved: () => false,
@@ -1265,21 +1288,21 @@ describe('getPrereviewFromZenodo', () => {
       },
     }
 
-    const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+    const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/records/${id}`, {
       body: RecordC.encode(record),
       status: StatusCodes.OK,
     })
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
       wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(new Prereviews.PrereviewIsNotFound()))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 })
 
@@ -1386,22 +1409,24 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
-              size: '100',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-            },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: StatusCodes.OK,
-          },
-        ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce({
+              url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+              query: {
+                q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
+                size: '100',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+              },
+              response: {
+                body: RecordsC.encode(records),
+                status: StatusCodes.OK,
+              },
+            })
+            .fetchHandler(...args),
         getPreprintTitle: id =>
           match(id.value as unknown)
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -1590,22 +1615,24 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
-              size: '100',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-            },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: StatusCodes.OK,
-          },
-        ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce({
+              url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+              query: {
+                q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+                size: '100',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+              },
+              response: {
+                body: RecordsC.encode(records),
+                status: StatusCodes.OK,
+              },
+            })
+            .fetchHandler(...args),
         getPreprintTitle: id =>
           match(id.value as unknown)
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -1737,21 +1764,23 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
     const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -1781,28 +1810,26 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       max: 599,
     }),
   ])('when the PREreviews cannot be loaded', async (profile, status) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-        query: {
-          size: '100',
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-          access_status: 'open',
-        },
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+      query: {
+        size: '100',
+        sort: 'publication-desc',
+        resource_type: 'publication::publication-peerreview',
+        access_status: 'open',
       },
-      { status },
-    )
+      response: { status },
+    })
 
     const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 })
 
@@ -1955,22 +1982,24 @@ describe('getPrereviewsForUserFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewsForUserFromZenodo(user)({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -2101,21 +2130,23 @@ describe('getPrereviewsForUserFromZenodo', () => {
 
     const actual = await _.getPrereviewsForUserFromZenodo(user)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -2145,28 +2176,26 @@ describe('getPrereviewsForUserFromZenodo', () => {
       max: 599,
     }),
   ])('when the PREreviews cannot be loaded', async (user, status) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-        query: {
-          size: '100',
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-          access_status: 'open',
-        },
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+      query: {
+        size: '100',
+        sort: 'publication-desc',
+        resource_type: 'publication::publication-peerreview',
+        access_status: 'open',
       },
-      { status },
-    )
+      response: { status },
+    })
 
     const actual = await _.getPrereviewsForUserFromZenodo(user)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 })
 
@@ -2331,22 +2360,24 @@ describe('getPrereviewsForClubFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewsForClubFromZenodo(club)({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -2382,22 +2413,24 @@ describe('getPrereviewsForClubFromZenodo', () => {
 
   test.prop([fc.clubId()])('when there are no Prereviews', async club => {
     const actual = await _.getPrereviewsForClubFromZenodo(club)({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode({ hits: { hits: [], total: 0 } }),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode({ hits: { hits: [], total: 0 } }),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       clock: SystemClock,
       logger: () => IO.of(undefined),
@@ -2413,29 +2446,27 @@ describe('getPrereviewsForClubFromZenodo', () => {
       max: 599,
     }),
   ])('when the PREreviews cannot be loaded', async (club, status) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-        query: {
-          q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
-          size: '100',
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-          access_status: 'open',
-        },
+    const fetch = fetchMock.createInstance().getOnce({
+      url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+      query: {
+        q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+        size: '100',
+        sort: 'publication-desc',
+        resource_type: 'publication::publication-peerreview',
+        access_status: 'open',
       },
-      { status },
-    )
+      response: { status },
+    })
 
     const actual = await _.getPrereviewsForClubFromZenodo(club)({
       clock: SystemClock,
-      fetch,
+      fetch: (...args) => fetch.fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -2546,22 +2577,24 @@ describe('getPrereviewsForClubFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewsForClubFromZenodo(club)({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
-            size: '100',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: StatusCodes.OK,
-        },
-      ),
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+            query: {
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              size: '100',
+              sort: 'publication-desc',
+              resource_type: 'publication::publication-peerreview',
+              access_status: 'open',
+            },
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .fetchHandler(...args),
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
@@ -2639,22 +2672,24 @@ describe('getPrereviewsForClubFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewsForClubFromZenodo(club)({
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
-              size: '100',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-            },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: StatusCodes.OK,
-          },
-        ),
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce({
+              url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+              query: {
+                q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+                size: '100',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+              },
+              response: {
+                body: RecordsC.encode(records),
+                status: StatusCodes.OK,
+              },
+            })
+            .fetchHandler(...args),
         getPreprintTitle: id =>
           match(id.value as unknown)
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
@@ -2730,24 +2765,24 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
 
     const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
       clock: SystemClock,
-      fetch: fetchMock
-        .sandbox()
-        .getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
+      fetch: (...args) =>
+        fetchMock
+          .createInstance()
+          .getOnce({
+            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
             query: {
               q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
               access_status: 'open',
             },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: StatusCodes.OK,
-          },
-        )
-        .getOnce('http://example.com/review.html/content', { body: 'Some text' }),
+            response: {
+              body: RecordsC.encode(records),
+              status: StatusCodes.OK,
+            },
+          })
+          .getOnce('http://example.com/review.html/content', { body: 'Some text' })
+          .fetchHandler(...args),
       logger: () => IO.of(undefined),
     })()
 
@@ -2767,27 +2802,25 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
   test.prop([fc.preprintId(), fc.integer({ min: 400, max: 599 })])(
     'when the PREreviews cannot be loaded',
     async (preprint, status) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-          query: {
-            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-          },
+      const fetch = fetchMock.createInstance().getOnce({
+        url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+        query: {
+          q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+          sort: 'publication-desc',
+          resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         },
-        { status },
-      )
+        response: { status },
+      })
 
       const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
         clock: SystemClock,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -2835,32 +2868,30 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       }
 
       const fetch = fetchMock
-        .sandbox()
-        .getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
-            query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-            },
+        .createInstance()
+        .getOnce({
+          url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+          query: {
+            q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+            sort: 'publication-desc',
+            resource_type: 'publication::publication-peerreview',
+            access_status: 'open',
           },
-          {
+          response: {
             body: RecordsC.encode(records),
             status: StatusCodes.OK,
           },
-        )
+        })
         .getOnce('http://example.com/review.html/content', { status: textStatus })
 
       const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
         clock: SystemClock,
-        fetch,
+        fetch: (...args) => fetch.fetchHandler(...args),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 })
@@ -2906,7 +2937,7 @@ describe('addAuthorToRecordOnZenodo', () => {
         }
 
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: SubmittedDepositionC.encode(submittedDeposition),
           })
@@ -2914,36 +2945,38 @@ describe('addAuthorToRecordOnZenodo', () => {
             body: InProgressDepositionC.encode(inProgressDeposition),
             status: StatusCodes.Created,
           })
-          .putOnce(
-            {
-              url: 'http://example.com/self',
-              body: {
-                metadata: {
-                  creators: [
-                    { name: creator.name, orcid: creator.orcid },
-                    { name: user.name, orcid: user.orcid },
-                  ],
-                  description: 'Description',
-                  title: 'Title',
-                  upload_type: 'publication',
-                  publication_type: 'peerreview',
-                },
+          .putOnce({
+            url: 'http://example.com/self',
+            body: {
+              metadata: {
+                creators: [
+                  { name: creator.name, orcid: creator.orcid },
+                  { name: user.name, orcid: user.orcid },
+                ],
+                description: 'Description',
+                title: 'Title',
+                upload_type: 'publication',
+                publication_type: 'peerreview',
               },
             },
-            {
+            response: {
               body: InProgressDepositionC.encode(inProgressDeposition),
               status: StatusCodes.OK,
             },
-          )
+          })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
             status: StatusCodes.Accepted,
           })
 
-        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+        const actual = await _.addAuthorToRecordOnZenodo(
+          id,
+          user,
+          'public',
+        )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -2986,7 +3019,7 @@ describe('addAuthorToRecordOnZenodo', () => {
         }
 
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: SubmittedDepositionC.encode(submittedDeposition),
           })
@@ -2994,33 +3027,35 @@ describe('addAuthorToRecordOnZenodo', () => {
             body: InProgressDepositionC.encode(inProgressDeposition),
             status: StatusCodes.Created,
           })
-          .putOnce(
-            {
-              url: 'http://example.com/self',
-              body: {
-                metadata: {
-                  creators: [{ name: creator.name, orcid: creator.orcid }, { name: user.pseudonym }],
-                  description: 'Description',
-                  title: 'Title',
-                  upload_type: 'publication',
-                  publication_type: 'peerreview',
-                },
+          .putOnce({
+            url: 'http://example.com/self',
+            body: {
+              metadata: {
+                creators: [{ name: creator.name, orcid: creator.orcid }, { name: user.pseudonym }],
+                description: 'Description',
+                title: 'Title',
+                upload_type: 'publication',
+                publication_type: 'peerreview',
               },
             },
-            {
+            response: {
               body: InProgressDepositionC.encode(inProgressDeposition),
               status: StatusCodes.OK,
             },
-          )
+          })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
             status: StatusCodes.Accepted,
           })
 
-        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'pseudonym')({ fetch, zenodoApiKey })()
+        const actual = await _.addAuthorToRecordOnZenodo(
+          id,
+          user,
+          'pseudonym',
+        )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -3063,7 +3098,7 @@ describe('addAuthorToRecordOnZenodo', () => {
         }
 
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: SubmittedDepositionC.encode(submittedDeposition),
           })
@@ -3071,37 +3106,39 @@ describe('addAuthorToRecordOnZenodo', () => {
             body: InProgressDepositionC.encode(inProgressDeposition),
             status: StatusCodes.Created,
           })
-          .putOnce(
-            {
-              url: 'http://example.com/self',
-              body: {
-                metadata: {
-                  creators: [
-                    { name: creator.name, orcid: creator.orcid },
-                    { name: user.name, orcid: user.orcid },
-                    { name: `${otherAuthors - 1} other authors` },
-                  ],
-                  description: 'Description',
-                  title: 'Title',
-                  upload_type: 'publication',
-                  publication_type: 'peerreview',
-                },
+          .putOnce({
+            url: 'http://example.com/self',
+            body: {
+              metadata: {
+                creators: [
+                  { name: creator.name, orcid: creator.orcid },
+                  { name: user.name, orcid: user.orcid },
+                  { name: `${otherAuthors - 1} other authors` },
+                ],
+                description: 'Description',
+                title: 'Title',
+                upload_type: 'publication',
+                publication_type: 'peerreview',
               },
             },
-            {
+            response: {
               body: InProgressDepositionC.encode(inProgressDeposition),
               status: StatusCodes.OK,
             },
-          )
+          })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
             status: StatusCodes.Accepted,
           })
 
-        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+        const actual = await _.addAuthorToRecordOnZenodo(
+          id,
+          user,
+          'public',
+        )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -3144,7 +3181,7 @@ describe('addAuthorToRecordOnZenodo', () => {
         }
 
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: SubmittedDepositionC.encode(submittedDeposition),
           })
@@ -3152,37 +3189,39 @@ describe('addAuthorToRecordOnZenodo', () => {
             body: InProgressDepositionC.encode(inProgressDeposition),
             status: StatusCodes.Created,
           })
-          .putOnce(
-            {
-              url: 'http://example.com/self',
-              body: {
-                metadata: {
-                  creators: [
-                    { name: creator.name, orcid: creator.orcid },
-                    { name: user.name, orcid: user.orcid },
-                    { name: '1 other author' },
-                  ],
-                  description: 'Description',
-                  title: 'Title',
-                  upload_type: 'publication',
-                  publication_type: 'peerreview',
-                },
+          .putOnce({
+            url: 'http://example.com/self',
+            body: {
+              metadata: {
+                creators: [
+                  { name: creator.name, orcid: creator.orcid },
+                  { name: user.name, orcid: user.orcid },
+                  { name: '1 other author' },
+                ],
+                description: 'Description',
+                title: 'Title',
+                upload_type: 'publication',
+                publication_type: 'peerreview',
               },
             },
-            {
+            response: {
               body: InProgressDepositionC.encode(inProgressDeposition),
               status: StatusCodes.OK,
             },
-          )
+          })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
             status: StatusCodes.Accepted,
           })
 
-        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+        const actual = await _.addAuthorToRecordOnZenodo(
+          id,
+          user,
+          'public',
+        )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
 
@@ -3225,7 +3264,7 @@ describe('addAuthorToRecordOnZenodo', () => {
         }
 
         const fetch = fetchMock
-          .sandbox()
+          .createInstance()
           .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
             body: SubmittedDepositionC.encode(submittedDeposition),
           })
@@ -3233,36 +3272,38 @@ describe('addAuthorToRecordOnZenodo', () => {
             body: InProgressDepositionC.encode(inProgressDeposition),
             status: StatusCodes.Created,
           })
-          .putOnce(
-            {
-              url: 'http://example.com/self',
-              body: {
-                metadata: {
-                  creators: [
-                    { name: creator.name, orcid: creator.orcid },
-                    { name: user.name, orcid: user.orcid },
-                  ],
-                  description: 'Description',
-                  title: 'Title',
-                  upload_type: 'publication',
-                  publication_type: 'peerreview',
-                },
+          .putOnce({
+            url: 'http://example.com/self',
+            body: {
+              metadata: {
+                creators: [
+                  { name: creator.name, orcid: creator.orcid },
+                  { name: user.name, orcid: user.orcid },
+                ],
+                description: 'Description',
+                title: 'Title',
+                upload_type: 'publication',
+                publication_type: 'peerreview',
               },
             },
-            {
+            response: {
               body: InProgressDepositionC.encode(inProgressDeposition),
               status: StatusCodes.OK,
             },
-          )
+          })
           .postOnce('http://example.com/publish', {
             body: SubmittedDepositionC.encode(submittedDeposition),
             status: StatusCodes.Accepted,
           })
 
-        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+        const actual = await _.addAuthorToRecordOnZenodo(
+          id,
+          user,
+          'public',
+        )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
-        expect(fetch.done()).toBeTruthy()
+        expect(fetch.callHistory.done()).toBeTruthy()
       },
     )
   })
@@ -3294,14 +3335,18 @@ describe('addAuthorToRecordOnZenodo', () => {
       submitted: true,
     }
 
-    const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+    const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
       body: InProgressDepositionC.encode(inProgressDeposition),
     })
 
-    const actual = await _.addAuthorToRecordOnZenodo(id, user, persona)({ fetch, zenodoApiKey })()
+    const actual = await _.addAuthorToRecordOnZenodo(
+      id,
+      user,
+      persona,
+    )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -3375,71 +3420,66 @@ describe('createCommentOnZenodo', () => {
       submitted: false,
     }
     const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: comment.prereview.id })}`
-    const fetch = fetchMock.sandbox()
-    const actual = await _.createCommentOnZenodo(comment)({
-      clock: SystemClock,
-      fetch: fetch
-        .postOnce(
-          {
-            url: 'https://zenodo.org/api/deposit/depositions',
-            body: {},
-          },
-          {
-            body: EmptyDepositionC.encode(emptyDeposition),
-            status: StatusCodes.Created,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/self',
-            body: {
-              metadata: {
-                upload_type: 'publication',
-                publication_type: 'other',
-                title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
-                creators: [comment.author],
-                description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+    const fetch = fetchMock
+      .createInstance()
+      .postOnce({
+        url: 'https://zenodo.org/api/deposit/depositions',
+        body: {},
+        response: {
+          body: EmptyDepositionC.encode(emptyDeposition),
+          status: StatusCodes.Created,
+        },
+      })
+      .putOnce({
+        url: 'http://example.com/self',
+        body: {
+          metadata: {
+            upload_type: 'publication',
+            publication_type: 'other',
+            title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
+            creators: [comment.author],
+            description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${comment.comment.toString()}`,
-                communities: [{ identifier: 'prereview-reviews' }],
-                related_identifiers: [
-                  {
-                    ..._.toExternalIdentifier(comment.prereview.preprint.id),
-                    relation: 'references',
-                    resource_type: 'publication-preprint',
-                  },
-                  {
-                    identifier: comment.prereview.doi,
-                    relation: 'references',
-                    resource_type: 'publication-peerreview',
-                    scheme: 'doi',
-                  },
-                ],
+            communities: [{ identifier: 'prereview-reviews' }],
+            related_identifiers: [
+              {
+                ..._.toExternalIdentifier(comment.prereview.preprint.id),
+                relation: 'references',
+                resource_type: 'publication-preprint',
               },
-            },
+              {
+                identifier: comment.prereview.doi,
+                relation: 'references',
+                resource_type: 'publication-peerreview',
+                scheme: 'doi',
+              },
+            ],
           },
-          {
-            body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: StatusCodes.OK,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/bucket/comment.html',
-            headers: { 'Content-Type': 'application/octet-stream' },
-            functionMatcher: (_, req) => req.body === comment.comment.toString(),
-          },
-          {
-            status: StatusCodes.Created,
-          },
-        ),
+        },
+        response: {
+          body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+          status: StatusCodes.OK,
+        },
+      })
+      .putOnce({
+        url: 'http://example.com/bucket/comment.html',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        matcherFunction: ({ options }) => options.body === comment.comment.toString(),
+        response: {
+          status: StatusCodes.Created,
+        },
+      })
+    const actual = await _.createCommentOnZenodo(comment)({
+      clock: SystemClock,
+      fetch: (...args) => fetch.fetchHandler(...args),
       logger: () => IO.of(undefined),
       publicUrl,
       zenodoApiKey,
     })()
 
     expect(actual).toStrictEqual(E.right([commentDoi, 1]))
-    expect(fetch.done()).toBeTruthy()
+    expect(fetch.callHistory.done()).toBeTruthy()
   })
 
   test.prop([
@@ -3509,24 +3549,25 @@ describe('publishDepositionOnZenodo', () => {
         state: 'done',
         submitted: true,
       }
-      const fetch = fetchMock.sandbox()
+      const fetch = fetchMock
+        .createInstance()
+        .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+          body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+          status: StatusCodes.OK,
+        })
+        .postOnce('http://example.com/publish', {
+          body: SubmittedDepositionC.encode(submittedDeposition),
+          status: StatusCodes.Accepted,
+        })
       const actual = await _.publishDepositionOnZenodo(id)({
         clock: SystemClock,
-        fetch: fetch
-          .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
-            body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: StatusCodes.OK,
-          })
-          .postOnce('http://example.com/publish', {
-            body: SubmittedDepositionC.encode(submittedDeposition),
-            status: StatusCodes.Accepted,
-          }),
+        fetch: (...args) => fetch.fetchHandler(...args),
         logger: () => IO.of(undefined),
         zenodoApiKey,
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -3547,19 +3588,22 @@ describe('publishDepositionOnZenodo', () => {
         state: 'unsubmitted',
         submitted: false,
       }
-      const fetch = fetchMock.sandbox()
+      const fetch = fetchMock.createInstance()
       const actual = await _.publishDepositionOnZenodo(id)({
         clock: SystemClock,
-        fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
-          body: EmptyDepositionC.encode(emptyDeposition),
-          status: StatusCodes.OK,
-        }),
+        fetch: (...args) =>
+          fetch
+            .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: StatusCodes.OK,
+            })
+            .fetchHandler(...args),
         logger: () => IO.of(undefined),
         zenodoApiKey,
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
   test.prop([fc.integer(), fc.string(), fc.doi()])(
@@ -3581,19 +3625,22 @@ describe('publishDepositionOnZenodo', () => {
         state: 'done',
         submitted: true,
       }
-      const fetch = fetchMock.sandbox()
+      const fetch = fetchMock.createInstance()
       const actual = await _.publishDepositionOnZenodo(id)({
         clock: SystemClock,
-        fetch: fetch.getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
-          body: SubmittedDepositionC.encode(submittedDeposition),
-          status: StatusCodes.OK,
-        }),
+        fetch: (...args) =>
+          fetch
+            .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+              body: SubmittedDepositionC.encode(submittedDeposition),
+              status: StatusCodes.OK,
+            })
+            .fetchHandler(...args),
         logger: () => IO.of(undefined),
         zenodoApiKey,
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
+      expect(fetch.callHistory.done()).toBeTruthy()
     },
   )
 
@@ -3696,20 +3743,18 @@ describe('createRecordOnZenodo', () => {
 
       const actual = await _.createRecordOnZenodo(newPrereview)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .postOnce(
-            {
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce({
               url: 'https://zenodo.org/api/deposit/depositions',
               body: {},
-            },
-            {
-              body: EmptyDepositionC.encode(emptyDeposition),
-              status: StatusCodes.Created,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: EmptyDepositionC.encode(emptyDeposition),
+                status: StatusCodes.Created,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/self',
               body: {
                 metadata: {
@@ -3754,26 +3799,24 @@ ${newPrereview.review.toString()}`,
                   ],
                 },
               },
-            },
-            {
-              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: StatusCodes.OK,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                status: StatusCodes.OK,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/bucket/review.html',
               headers: { 'Content-Type': 'application/octet-stream' },
-              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-            },
-            {
-              status: StatusCodes.Created,
-            },
-          )
-          .postOnce('http://example.com/publish', {
-            body: SubmittedDepositionC.encode(submittedDeposition),
-            status: StatusCodes.Accepted,
-          }),
+              matcherFunction: ({ options }) => options.body === newPrereview.review.toString(),
+              response: {
+                status: StatusCodes.Created,
+              },
+            })
+            .postOnce('http://example.com/publish', {
+              body: SubmittedDepositionC.encode(submittedDeposition),
+              status: StatusCodes.Accepted,
+            })
+            .fetchHandler(...args),
         getPreprintSubjects,
         isReviewRequested,
         logger: () => IO.of(undefined),
@@ -3862,20 +3905,18 @@ ${newPrereview.review.toString()}`,
 
       const actual = await _.createRecordOnZenodo(newPrereview)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .postOnce(
-            {
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce({
               url: 'https://zenodo.org/api/deposit/depositions',
               body: {},
-            },
-            {
-              body: EmptyDepositionC.encode(emptyDeposition),
-              status: StatusCodes.Created,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: EmptyDepositionC.encode(emptyDeposition),
+                status: StatusCodes.Created,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/self',
               body: {
                 metadata: {
@@ -3922,26 +3963,24 @@ ${newPrereview.review.toString()}`,
                   ],
                 },
               },
-            },
-            {
-              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: StatusCodes.OK,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                status: StatusCodes.OK,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/bucket/review.html',
               headers: { 'Content-Type': 'application/octet-stream' },
-              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-            },
-            {
-              status: StatusCodes.Created,
-            },
-          )
-          .postOnce('http://example.com/publish', {
-            body: SubmittedDepositionC.encode(submittedDeposition),
-            status: StatusCodes.Accepted,
-          }),
+              matcherFunction: ({ options }) => options.body === newPrereview.review.toString(),
+              response: {
+                status: StatusCodes.Created,
+              },
+            })
+            .postOnce('http://example.com/publish', {
+              body: SubmittedDepositionC.encode(submittedDeposition),
+              status: StatusCodes.Accepted,
+            })
+            .fetchHandler(...args),
         getPreprintSubjects,
         isReviewRequested,
         logger: () => IO.of(undefined),
@@ -4029,20 +4068,18 @@ ${newPrereview.review.toString()}`,
 
       const actual = await _.createRecordOnZenodo(newPrereview)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .postOnce(
-            {
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce({
               url: 'https://zenodo.org/api/deposit/depositions',
               body: {},
-            },
-            {
-              body: EmptyDepositionC.encode(emptyDeposition),
-              status: StatusCodes.Created,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: EmptyDepositionC.encode(emptyDeposition),
+                status: StatusCodes.Created,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/self',
               body: {
                 metadata: {
@@ -4084,26 +4121,24 @@ ${newPrereview.review.toString()}`,
                   ],
                 },
               },
-            },
-            {
-              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: StatusCodes.OK,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                status: StatusCodes.OK,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/bucket/review.html',
               headers: { 'Content-Type': 'application/octet-stream' },
-              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-            },
-            {
-              status: StatusCodes.Created,
-            },
-          )
-          .postOnce('http://example.com/publish', {
-            body: SubmittedDepositionC.encode(submittedDeposition),
-            status: StatusCodes.Accepted,
-          }),
+              matcherFunction: ({ options }) => options.body === newPrereview.review.toString(),
+              response: {
+                status: StatusCodes.Created,
+              },
+            })
+            .postOnce('http://example.com/publish', {
+              body: SubmittedDepositionC.encode(submittedDeposition),
+              status: StatusCodes.Accepted,
+            })
+            .fetchHandler(...args),
         getPreprintSubjects: () => T.of(subjects),
         isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
@@ -4187,20 +4222,18 @@ ${newPrereview.review.toString()}`,
 
       const actual = await _.createRecordOnZenodo(newPrereview)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .postOnce(
-            {
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce({
               url: 'https://zenodo.org/api/deposit/depositions',
               body: {},
-            },
-            {
-              body: EmptyDepositionC.encode(emptyDeposition),
-              status: StatusCodes.Created,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: EmptyDepositionC.encode(emptyDeposition),
+                status: StatusCodes.Created,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/self',
               body: {
                 metadata: {
@@ -4244,26 +4277,24 @@ ${newPrereview.review.toString()}`,
                   ],
                 },
               },
-            },
-            {
-              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-              status: StatusCodes.OK,
-            },
-          )
-          .putOnce(
-            {
+              response: {
+                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                status: StatusCodes.OK,
+              },
+            })
+            .putOnce({
               url: 'http://example.com/bucket/review.html',
               headers: { 'Content-Type': 'application/octet-stream' },
-              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-            },
-            {
-              status: StatusCodes.Created,
-            },
-          )
-          .postOnce('http://example.com/publish', {
-            body: SubmittedDepositionC.encode(submittedDeposition),
-            status: StatusCodes.Accepted,
-          }),
+              matcherFunction: ({ options }) => options.body === newPrereview.review.toString(),
+              response: {
+                status: StatusCodes.Created,
+              },
+            })
+            .postOnce('http://example.com/publish', {
+              body: SubmittedDepositionC.encode(submittedDeposition),
+              status: StatusCodes.Accepted,
+            })
+            .fetchHandler(...args),
         getPreprintSubjects: () => T.of(subjects),
         isReviewRequested: () => T.of(requested),
         logger: () => IO.of(undefined),
