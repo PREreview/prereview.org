@@ -1,14 +1,10 @@
-import type { Temporal } from '@js-temporal/polyfill'
 import { type Array, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import type { ClubId } from '../Clubs/index.ts'
-import type { Html } from '../html.ts'
-import type { PreprintId } from '../Preprints/index.ts'
+import type * as Prereviews from '../Prereviews/index.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
-import type { SubfieldId } from '../types/subfield.ts'
 
 export interface RecentPrereviews {
   readonly currentPage: number
@@ -16,22 +12,7 @@ export interface RecentPrereviews {
   readonly field?: FieldId
   readonly language?: LanguageCode
   readonly query?: NonEmptyString
-  readonly recentPrereviews: Array.NonEmptyReadonlyArray<{
-    readonly club?: ClubId
-    readonly id: number
-    readonly reviewers: {
-      named: Array.NonEmptyReadonlyArray<string>
-      anonymous: number
-    }
-    readonly published: Temporal.PlainDate
-    readonly fields: ReadonlyArray<FieldId>
-    readonly subfields: ReadonlyArray<SubfieldId>
-    readonly preprint: {
-      readonly id: PreprintId
-      readonly language: LanguageCode
-      readonly title: Html
-    }
-  }>
+  readonly recentPrereviews: Array.NonEmptyReadonlyArray<Prereviews.RecentPrereview>
 }
 
 export interface GetRecentPrereviewsEnv {
