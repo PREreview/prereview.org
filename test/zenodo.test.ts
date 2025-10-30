@@ -31,6 +31,7 @@ import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/inde
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { reviewMatch } from '../src/routes.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
+import { OrcidId, Uuid } from '../src/types/index.ts'
 import { iso6391To3 } from '../src/types/iso639.ts'
 import type { NewPrereview } from '../src/write-review/index.ts'
 import * as _ from '../src/zenodo.ts'
@@ -39,6 +40,7 @@ import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([
+    fc.origin(),
     fc.integer({ min: 1 }),
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
@@ -52,7 +54,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     ),
   ])(
     'when the PREreviews can be loaded',
-    async (page, field, language, query, preprint1, preprint2, [expectedAnonymous, otherAuthors]) => {
+    async (publicUrl, page, field, language, query, preprint1, preprint2, [expectedAnonymous, otherAuthors]) => {
       const records: Records = {
         hits: {
           total: 2,
@@ -186,6 +188,53 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 title: 'Title',
               },
             },
+            {
+              conceptdoi: Doi('10.5072/zenodo.385226'),
+              conceptrecid: 385226,
+              files: [
+                {
+                  links: {
+                    self: new URL('https://sandbox.zenodo.org/api/records/385227/files/review.html/content'),
+                  },
+                  key: 'review.html',
+                  size: 2327,
+                },
+              ],
+              id: 385227,
+              links: {
+                latest: new URL('https://sandbox.zenodo.org/api/records/385227/versions/latest'),
+                latest_html: new URL('https://sandbox.zenodo.org/records/385227/latest'),
+              },
+              metadata: {
+                access_right: 'open',
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Chris Wilkinson', orcid: OrcidId.OrcidId('0000-0003-4921-6155') }],
+                description: 'Description',
+                doi: Doi('10.5072/zenodo.385227'),
+                license: { id: 'cc-by-4.0' },
+                publication_date: new Date('2025-10-15'),
+                related_identifiers: [
+                  {
+                    identifier: '10.5061/dryad.wstqjq2n3',
+                    relation: 'reviews',
+                    resource_type: 'dataset',
+                    scheme: 'doi',
+                  },
+                  {
+                    identifier: `${publicUrl.origin}/reviews/5c8553f4-acac-463d-ae3c-57d423dddf7d`,
+                    relation: 'isIdenticalTo',
+                    resource_type: 'publication-peerreview',
+                    scheme: 'url',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title:
+                  'Structured PREreview of "Metadata collected from 500 articles in the field of ecology and evolution"',
+              },
+            },
           ],
         },
       }
@@ -203,7 +252,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
                 access_status: 'open',
-                q: `metadata.related_identifiers.resource_type.id:"publication-preprint"${
+                q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)}))${
                   field ? ` AND custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : ''
                 }${language ? ` AND language:"${iso6391To3(language)}"` : ''}${query ? ` AND (title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : ''}`,
               },
@@ -219,6 +268,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
             .otherwise(() => TE.left(new PreprintIsNotFound({}))),
         logger: () => IO.of(undefined),
+        publicUrl,
       })()
 
       expect(actual).toStrictEqual(
@@ -246,6 +296,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
               subfields: [],
               preprint: preprint2,
             }),
+            {
+              _tag: 'DatasetReview',
+              id: Uuid.Uuid('5c8553f4-acac-463d-ae3c-57d423dddf7d'),
+            },
           ],
           totalPages: 1,
         }),
@@ -356,7 +410,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           .getOnce({
             url: 'https://zenodo.org/api/communities/prereview-reviews/records',
             query: {
-              q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
+              q: '(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/example.com\\/reviews\\/.+/))',
               page,
               size: '5',
               sort: 'publication-desc',
@@ -374,6 +428,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
           .otherwise(() => TE.left(error)),
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(
@@ -496,7 +551,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     const fetch = fetchMock.createInstance().getOnce({
       url: 'https://zenodo.org/api/communities/prereview-reviews/records',
       query: {
-        q: 'metadata.related_identifiers.resource_type.id:"publication-preprint"',
+        q: '(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/example.com\\/reviews\\/.+/))',
         page: page.toString(),
         size: '5',
         sort: 'publication-desc',
@@ -517,6 +572,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           .with('10.1101/2022.01.13.476201', () => TE.left(error1))
           .otherwise(() => TE.left(error2)),
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -546,6 +602,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           .fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -571,6 +628,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         fetch: (...args) => fetch.fetchHandler(...args),
         getPreprintTitle: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        publicUrl: new URL('http://example.com'),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -584,6 +642,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       fetch: shouldNotBeCalled,
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))

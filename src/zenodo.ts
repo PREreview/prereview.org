@@ -1,10 +1,11 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Function, Option, Predicate, String, Struct, flow, identity, pipe } from 'effect'
+import { Array, Function, Option, Predicate, Schema, String, Struct, Tuple, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
+import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -64,7 +65,7 @@ import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
 import { isDomainId } from './types/domain.ts'
 import { type FieldId, isFieldId } from './types/field.ts'
-import { ProfileId } from './types/index.ts'
+import { ProfileId, Uuid } from './types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.ts'
 import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
@@ -160,22 +161,25 @@ export const getRecentPrereviewsFromZenodo = ({
       'records',
       flow(
         ({ currentPage, field, language }) =>
-          new URLSearchParams({
-            page: currentPage.toString(),
-            size: '5',
-            sort: 'publication-desc',
-            resource_type: 'publication::publication-peerreview',
-            access_status: 'open',
-            q: [
-              'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-              field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
-              language ? `language:"${iso6391To3(language)}"` : '',
-              query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : '',
-            ]
-              .filter(a => a !== '')
-              .join(' AND '),
-          }),
-        getCommunityRecords('prereview-reviews'),
+          RTE.asks(
+            ({ publicUrl }: PublicUrlEnv) =>
+              new URLSearchParams({
+                page: currentPage.toString(),
+                size: '5',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+                q: [
+                  `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)}))`,
+                  field ? `custom_fields.legacy\\:subjects.identifier:"https://openalex.org/fields/${field}"` : '',
+                  language ? `language:"${iso6391To3(language)}"` : '',
+                  query ? `(title:"${query}"~5 OR metadata.creators.person_or_org.name:"${query}"~5)` : '',
+                ]
+                  .filter(a => a !== '')
+                  .join(' AND '),
+              }),
+          ),
+        RTE.chainW(getCommunityRecords('prereview-reviews')),
       ),
     ),
     RTE.local(useStaleCache()),
@@ -190,7 +194,12 @@ export const getRecentPrereviewsFromZenodo = ({
       'recentPrereviews',
       flow(
         ({ hits }) => hits,
-        RT.traverseArray(recordToRecentPrereview),
+        RT.traverseArray(record =>
+          pipe(
+            recordToRecentDatasetPrereview(record),
+            RTE.altW(() => recordToRecentPrereview(record)),
+          ),
+        ),
         RT.map(
           flow(
             Array.map(FptsToEffect.either),
@@ -858,6 +867,15 @@ function recordToRecentPrereview(
   )
 }
 
+function recordToRecentDatasetPrereview(
+  record: Record,
+): RTE.ReaderTaskEither<PublicUrlEnv, 'no reviewed dataset', { _tag: 'DatasetReview'; id: Uuid.Uuid }> {
+  return pipe(
+    getDatasetReviewId(record),
+    RTE.map(id => ({ _tag: 'DatasetReview', id })),
+  )
+}
+
 const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
   D.struct({
     metadata: D.struct({
@@ -1024,6 +1042,36 @@ const getReviewedPreprintId = (record: Record) =>
         match(error)
           .with('no reviewed preprint', () => pipe({ zenodoRecord: record.id }, L.warnP('No reviewed preprint found')))
           .exhaustive(),
+      ),
+    ),
+  )
+
+const getDatasetReviewId = (record: Record) =>
+  pipe(
+    RTE.fromNullable('no reviewed dataset' as const)(record.metadata.related_identifiers),
+    RTE.chainReaderEitherKW(relatedIdentifiers =>
+      RE.asksReaderEither(({ publicUrl }: PublicUrlEnv) =>
+        RE.fromOption(() => 'no reviewed dataset' as const)(
+          Array.findFirst(relatedIdentifiers, relatedIdentifier =>
+            match(relatedIdentifier)
+              .with(
+                {
+                  identifier: P.select(),
+                  relation: 'isIdenticalTo',
+                  resource_type: 'publication-peerreview',
+                  scheme: 'url',
+                },
+                identifier =>
+                  pipe(
+                    Schema.decodeUnknownOption(
+                      Schema.TemplateLiteralParser(`${publicUrl.origin}/reviews/`, Uuid.UuidSchema),
+                    )(identifier),
+                    Option.andThen(Tuple.getSecond),
+                  ),
+              )
+              .otherwise(Option.none),
+          ),
+        ),
       ),
     ),
   )

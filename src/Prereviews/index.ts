@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
+import { Array, Context, Effect, Either, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubId } from '../Clubs/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
@@ -13,6 +13,7 @@ import {
 } from '../legacy-prereview.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
+import { PublicUrl } from '../public-url.ts'
 import type { FieldId } from '../types/field.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
@@ -34,6 +35,7 @@ import {
   PrereviewsPageNotFound,
   type PrereviewWasRemoved,
   type RapidPrereview,
+  type RecentDatasetPrereview,
   type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
@@ -43,7 +45,7 @@ export * from './Prereview.ts'
 export class Prereviews extends Context.Tag('Prereviews')<
   Prereviews,
   {
-    getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview>>
+    getFiveMostRecent: Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>>
     getForClub: (id: ClubId) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview>, PrereviewsAreUnavailable>
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, PrereviewsAreUnavailable>
     getForProfile: (
@@ -90,6 +92,7 @@ export const layer = Layer.effect(
     const legacyPrereviewApi = yield* LegacyPrereviewApi
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
+    const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
 
     return {
@@ -101,10 +104,12 @@ export const layer = Layer.effect(
             fetch,
             getPreprintTitle,
             ...loggerEnv,
+            publicUrl,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
           }),
           Effect.map(Struct.get('recentPrereviews')),
+          Effect.map(Array.filter(prereview => prereview._tag === 'RecentPreprintPrereview')),
           Effect.orElseSucceed(Array.empty),
         )
       }),
@@ -207,10 +212,20 @@ export const layer = Layer.effect(
             fetch,
             getPreprintTitle,
             ...loggerEnv,
+            publicUrl,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
           })
         },
+        Effect.andThen(results =>
+          pipe(
+            Array.filter(results.recentPrereviews, prereview => prereview._tag === 'RecentPreprintPrereview'),
+            Array.match({
+              onEmpty: () => Either.left('unavailable' as const),
+              onNonEmpty: recentPrereviews => Either.right({ ...results, recentPrereviews }),
+            }),
+          ),
+        ),
         Effect.mapError(
           flow(
             Match.value,
