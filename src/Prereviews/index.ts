@@ -1,7 +1,9 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, Either, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubId } from '../Clubs/index.ts'
+import * as DatasetReviews from '../DatasetReviews/index.ts'
+import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import * as EffectToFpts from '../EffectToFpts.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
@@ -11,10 +13,12 @@ import {
   isLegacyCompatiblePreprint,
   LegacyPrereviewApi,
 } from '../legacy-prereview.ts'
+import * as Personas from '../Personas/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import type { FieldId } from '../types/field.ts'
+import type { Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
 import type { User } from '../user.ts'
@@ -35,7 +39,7 @@ import {
   PrereviewsPageNotFound,
   type PrereviewWasRemoved,
   type RapidPrereview,
-  type RecentDatasetPrereview,
+  RecentDatasetPrereview,
   type RecentPreprintPrereview,
   type RecentPrereviews,
 } from './Prereview.ts'
@@ -87,6 +91,7 @@ export const {
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
+    const context = yield* Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Personas.Personas>()
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereviewApi
@@ -109,8 +114,19 @@ export const layer = Layer.effect(
             zenodoUrl: zenodoApi.origin,
           }),
           Effect.map(Struct.get('recentPrereviews')),
-          Effect.map(Array.filter(prereview => prereview._tag === 'RecentPreprintPrereview')),
+          Effect.andThen(
+            Effect.forEach(
+              flow(
+                Match.value,
+                Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
+                Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
+                Match.exhaustive,
+              ),
+              { concurrency: 'inherit' },
+            ),
+          ),
           Effect.orElseSucceed(Array.empty),
+          Effect.provide(context),
         )
       }),
       getForClub: Effect.fn(
@@ -217,13 +233,23 @@ export const layer = Layer.effect(
             zenodoUrl: zenodoApi.origin,
           })
         },
-        Effect.andThen(results =>
+        Effect.andThen(({ recentPrereviews, ...results }) =>
           pipe(
-            Array.filter(results.recentPrereviews, prereview => prereview._tag === 'RecentPreprintPrereview'),
-            Array.match({
-              onEmpty: () => Either.left('unavailable' as const),
-              onNonEmpty: recentPrereviews => Either.right({ ...results, recentPrereviews }),
-            }),
+            Effect.succeed(results),
+            Effect.bind('recentPrereviews', () =>
+              Effect.forEach(
+                recentPrereviews,
+                flow(
+                  Match.value,
+                  Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
+                  Match.tag('DatasetReview', ({ id }) =>
+                    Effect.mapError(getRecentDatasetPrereview(id), () => 'unavailable' as const),
+                  ),
+                  Match.exhaustive,
+                ),
+                { concurrency: 'inherit' },
+              ),
+            ),
           ),
         ),
         Effect.mapError(
@@ -234,7 +260,28 @@ export const layer = Layer.effect(
             Match.exhaustive,
           ),
         ),
+        Effect.provide(context),
       ),
     }
   }),
 )
+
+const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
+  const datasetReview = yield* DatasetReviews.getPublishedReview(id)
+
+  const { author, dataset } = yield* Effect.all(
+    {
+      author: Personas.getPersona(datasetReview.author),
+      dataset: Datasets.getDatasetTitle(datasetReview.dataset),
+    },
+    { concurrency: 'inherit' },
+  )
+
+  return new RecentDatasetPrereview({
+    author,
+    dataset,
+    doi: datasetReview.doi,
+    id: datasetReview.id,
+    published: datasetReview.published,
+  })
+})
