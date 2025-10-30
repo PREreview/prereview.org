@@ -76,7 +76,7 @@
     "@types/nodemailer": "^7.0.3",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.16.0",
-    "@types/turndown": "^5.0.5",
+    "@types/turndown": "^5.0.6",
     "@typescript/analyze-trace": "^0.10.1",
     "babel-loader": "^10.0.0",
     "cdigit": "^4.0.2",
