@@ -2056,6 +2056,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
 describe('getPrereviewsForUserFromZenodo', () => {
   test.prop([
+    fc.origin(),
     fc.user(),
     fc.preprintTitle(),
     fc.preprintTitle(),
@@ -2064,195 +2065,250 @@ describe('getPrereviewsForUserFromZenodo', () => {
       fc.constant([1, [{ name: '1 other author' }]]),
       fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
     ),
-  ])('when the PREreviews can be loaded', async (user, preprint1, preprint2, [expectedAnonymous, otherAuthors]) => {
-    const records: Records = {
-      hits: {
-        total: 2,
-        hits: [
-          {
-            conceptdoi: Doi('10.5072/zenodo.1061863'),
-            conceptrecid: 1061863,
-            files: [
-              {
-                links: {
-                  self: new URL('http://example.com/review.html/content'),
+  ])(
+    'when the PREreviews can be loaded',
+    async (publicUrl, user, preprint1, preprint2, [expectedAnonymous, otherAuthors]) => {
+      const records: Records = {
+        hits: {
+          total: 2,
+          hits: [
+            {
+              conceptdoi: Doi('10.5072/zenodo.1061863'),
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/review.html/content'),
+                  },
+                  key: 'review.html',
+                  size: 58,
                 },
-                key: 'review.html',
-                size: 58,
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
               },
-            ],
+              metadata: {
+                access_right: 'open',
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }, ...otherAuthors],
+                description: 'Description',
+                doi: Doi('10.5281/zenodo.1061864'),
+                language: 'eng',
+                license: { id: 'cc-by-4.0' },
+                publication_date: new Date('2022-07-04'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: Doi('10.1101/2022.01.13.476201'),
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                subjects: [
+                  {
+                    term: 'Dynamics and Pathogenesis of Cholera Bacteria',
+                    identifier: 'https://openalex.org/T11684',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Endocrinology',
+                    identifier: 'https://openalex.org/subfields/1310',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Biochemistry, Genetics and Molecular Biology',
+                    identifier: 'https://openalex.org/fields/13',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Life Sciences',
+                    identifier: 'https://openalex.org/domains/1',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Genetic and Pathogenic Study of Plague Bacteria',
+                    identifier: 'https://openalex.org/T12232',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Genetics',
+                    identifier: 'https://openalex.org/subfields/1311',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Global Burden of Foodborne Pathogens',
+                    identifier: 'https://openalex.org/T10486',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Food Science',
+                    identifier: 'https://openalex.org/subfields/1106',
+                    scheme: 'url',
+                  },
+                  {
+                    term: 'Agricultural and Biological Sciences',
+                    identifier: 'https://openalex.org/fields/11',
+                    scheme: 'url',
+                  },
+                ],
+                title: 'Title',
+              },
+            },
+            {
+              conceptdoi: Doi('10.5072/zenodo.1065235'),
+              conceptrecid: 1065235,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/review.html/content'),
+                  },
+                  key: 'review.html',
+                  size: 58,
+                },
+              ],
+              id: 1065236,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                access_right: 'open',
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Josiah Carberry' }],
+                description: 'Description',
+                doi: Doi('10.5281/zenodo.1065236'),
+                language: 'eng',
+                license: { id: 'cc-by-4.0' },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: Doi('10.1101/2022.02.14.480364'),
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+            {
+              conceptdoi: Doi('10.5072/zenodo.385226'),
+              conceptrecid: 385226,
+              files: [
+                {
+                  links: {
+                    self: new URL('https://sandbox.zenodo.org/api/records/385227/files/review.html/content'),
+                  },
+                  key: 'review.html',
+                  size: 2327,
+                },
+              ],
+              id: 385227,
+              links: {
+                latest: new URL('https://sandbox.zenodo.org/api/records/385227/versions/latest'),
+                latest_html: new URL('https://sandbox.zenodo.org/records/385227/latest'),
+              },
+              metadata: {
+                access_right: 'open',
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Chris Wilkinson', orcid: OrcidId.OrcidId('0000-0003-4921-6155') }],
+                description: 'Description',
+                doi: Doi('10.5072/zenodo.385227'),
+                license: { id: 'cc-by-4.0' },
+                publication_date: new Date('2025-10-15'),
+                related_identifiers: [
+                  {
+                    identifier: '10.5061/dryad.wstqjq2n3',
+                    relation: 'reviews',
+                    resource_type: 'dataset',
+                    scheme: 'doi',
+                  },
+                  {
+                    identifier: `${publicUrl.origin}/reviews/5c8553f4-acac-463d-ae3c-57d423dddf7d`,
+                    relation: 'isIdenticalTo',
+                    resource_type: 'publication-peerreview',
+                    scheme: 'url',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title:
+                  'Structured PREreview of "Metadata collected from 500 articles in the field of ecology and evolution"',
+              },
+            },
+          ],
+        },
+      }
+
+      const actual = await _.getPrereviewsForUserFromZenodo(user)({
+        fetch: (...args) =>
+          fetchMock
+            .createInstance()
+            .getOnce({
+              url: 'https://zenodo.org/api/communities/prereview-reviews/records',
+              query: {
+                q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+                size: '100',
+                sort: 'publication-desc',
+                resource_type: 'publication::publication-peerreview',
+                access_status: 'open',
+              },
+              response: {
+                body: RecordsC.encode(records),
+                status: StatusCodes.OK,
+              },
+            })
+            .fetchHandler(...args),
+        getPreprintTitle: id =>
+          match(id.value as unknown)
+            .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
+            .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
+            .otherwise(() => TE.left(new PreprintIsNotFound({}))),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+        publicUrl,
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          new Prereviews.RecentPreprintPrereview({
+            club: undefined,
             id: 1061864,
-            links: {
-              latest: new URL('http://example.com/latest'),
-              latest_html: new URL('http://example.com/latest_html'),
-            },
-            metadata: {
-              access_right: 'open',
-              communities: [{ id: 'prereview-reviews' }],
-              creators: [{ name: 'PREreviewer' }, ...otherAuthors],
-              description: 'Description',
-              doi: Doi('10.5281/zenodo.1061864'),
-              language: 'eng',
-              license: { id: 'cc-by-4.0' },
-              publication_date: new Date('2022-07-04'),
-              related_identifiers: [
-                {
-                  scheme: 'doi',
-                  identifier: Doi('10.1101/2022.01.13.476201'),
-                  relation: 'reviews',
-                  resource_type: 'publication-preprint',
-                },
-              ],
-              resource_type: {
-                type: 'publication',
-                subtype: 'peerreview',
-              },
-              subjects: [
-                {
-                  term: 'Dynamics and Pathogenesis of Cholera Bacteria',
-                  identifier: 'https://openalex.org/T11684',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Endocrinology',
-                  identifier: 'https://openalex.org/subfields/1310',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Biochemistry, Genetics and Molecular Biology',
-                  identifier: 'https://openalex.org/fields/13',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Life Sciences',
-                  identifier: 'https://openalex.org/domains/1',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Genetic and Pathogenic Study of Plague Bacteria',
-                  identifier: 'https://openalex.org/T12232',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Genetics',
-                  identifier: 'https://openalex.org/subfields/1311',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Global Burden of Foodborne Pathogens',
-                  identifier: 'https://openalex.org/T10486',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Food Science',
-                  identifier: 'https://openalex.org/subfields/1106',
-                  scheme: 'url',
-                },
-                {
-                  term: 'Agricultural and Biological Sciences',
-                  identifier: 'https://openalex.org/fields/11',
-                  scheme: 'url',
-                },
-              ],
-              title: 'Title',
-            },
-          },
-          {
-            conceptdoi: Doi('10.5072/zenodo.1065235'),
-            conceptrecid: 1065235,
-            files: [
-              {
-                links: {
-                  self: new URL('http://example.com/review.html/content'),
-                },
-                key: 'review.html',
-                size: 58,
-              },
-            ],
+            reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
+            published: new Temporal.PlainDate(2022, 7, 4),
+            fields: ['13', '11'],
+            subfields: ['1310', '1311', '1106'],
+            preprint: preprint1,
+          }),
+          new Prereviews.RecentPreprintPrereview({
+            club: undefined,
             id: 1065236,
-            links: {
-              latest: new URL('http://example.com/latest'),
-              latest_html: new URL('http://example.com/latest_html'),
-            },
-            metadata: {
-              access_right: 'open',
-              communities: [{ id: 'prereview-reviews' }],
-              creators: [{ name: 'Josiah Carberry' }],
-              description: 'Description',
-              doi: Doi('10.5281/zenodo.1065236'),
-              language: 'eng',
-              license: { id: 'cc-by-4.0' },
-              publication_date: new Date('2022-07-05'),
-              related_identifiers: [
-                {
-                  scheme: 'doi',
-                  identifier: Doi('10.1101/2022.02.14.480364'),
-                  relation: 'reviews',
-                  resource_type: 'publication-preprint',
-                },
-              ],
-              resource_type: {
-                type: 'publication',
-                subtype: 'peerreview',
-              },
-              title: 'Title',
-            },
+            reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
+            published: new Temporal.PlainDate(2022, 7, 5),
+            fields: [],
+            subfields: [],
+            preprint: preprint2,
+          }),
+          {
+            _tag: 'DatasetReview',
+            id: Uuid.Uuid('5c8553f4-acac-463d-ae3c-57d423dddf7d'),
           },
-        ],
-      },
-    }
-
-    const actual = await _.getPrereviewsForUserFromZenodo(user)({
-      fetch: (...args) =>
-        fetchMock
-          .createInstance()
-          .getOnce({
-            url: 'https://zenodo.org/api/communities/prereview-reviews/records',
-            query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
-              size: '100',
-              sort: 'publication-desc',
-              resource_type: 'publication::publication-peerreview',
-              access_status: 'open',
-            },
-            response: {
-              body: RecordsC.encode(records),
-              status: StatusCodes.OK,
-            },
-          })
-          .fetchHandler(...args),
-      getPreprintTitle: id =>
-        match(id.value as unknown)
-          .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-          .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-          .otherwise(() => TE.left(new PreprintIsNotFound({}))),
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        new Prereviews.RecentPreprintPrereview({
-          club: undefined,
-          id: 1061864,
-          reviewers: { named: ['PREreviewer'], anonymous: expectedAnonymous },
-          published: new Temporal.PlainDate(2022, 7, 4),
-          fields: ['13', '11'],
-          subfields: ['1310', '1311', '1106'],
-          preprint: preprint1,
-        }),
-        new Prereviews.RecentPreprintPrereview({
-          club: undefined,
-          id: 1065236,
-          reviewers: { named: ['Josiah Carberry'], anonymous: 0 },
-          published: new Temporal.PlainDate(2022, 7, 5),
-          fields: [],
-          subfields: [],
-          preprint: preprint2,
-        }),
-      ]),
-    )
-  })
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.user(),
@@ -2345,6 +2401,53 @@ describe('getPrereviewsForUserFromZenodo', () => {
               title: 'Title',
             },
           },
+          {
+            conceptdoi: Doi('10.5072/zenodo.385226'),
+            conceptrecid: 385226,
+            files: [
+              {
+                links: {
+                  self: new URL('https://sandbox.zenodo.org/api/records/385227/files/review.html/content'),
+                },
+                key: 'review.html',
+                size: 2327,
+              },
+            ],
+            id: 385227,
+            links: {
+              latest: new URL('https://sandbox.zenodo.org/api/records/385227/versions/latest'),
+              latest_html: new URL('https://sandbox.zenodo.org/records/385227/latest'),
+            },
+            metadata: {
+              access_right: 'open',
+              communities: [{ id: 'prereview-reviews' }],
+              creators: [{ name: 'Chris Wilkinson', orcid: OrcidId.OrcidId('0000-0003-4921-6155') }],
+              description: 'Description',
+              doi: Doi('10.5072/zenodo.385227'),
+              license: { id: 'cc-by-4.0' },
+              publication_date: new Date('2025-10-15'),
+              related_identifiers: [
+                {
+                  identifier: '10.5061/dryad.wstqjq2n3',
+                  relation: 'reviews',
+                  resource_type: 'dataset',
+                  scheme: 'doi',
+                },
+                {
+                  identifier: 'http://example.com/reviews/5c8553f4-acac-463d-ae3c-57d423dddf7d',
+                  relation: 'isIdenticalTo',
+                  resource_type: 'publication-peerreview',
+                  scheme: 'url',
+                },
+              ],
+              resource_type: {
+                type: 'publication',
+                subtype: 'peerreview',
+              },
+              title:
+                'Structured PREreview of "Metadata collected from 500 articles in the field of ecology and evolution"',
+            },
+          },
         ],
       },
     }
@@ -2373,6 +2476,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
           .otherwise(() => TE.left(error)),
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(
@@ -2386,6 +2490,10 @@ describe('getPrereviewsForUserFromZenodo', () => {
           subfields: [],
           preprint,
         }),
+        {
+          _tag: 'DatasetReview',
+          id: Uuid.Uuid('5c8553f4-acac-463d-ae3c-57d423dddf7d'),
+        },
       ]),
     )
   })
@@ -2413,6 +2521,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
       fetch: (...args) => fetch.fetchHandler(...args),
       getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      publicUrl: new URL('http://example.com'),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))

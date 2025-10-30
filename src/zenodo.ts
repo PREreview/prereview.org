@@ -351,20 +351,28 @@ export const getPrereviewsForProfileFromZenodo = flow(
 
 export const getPrereviewsForUserFromZenodo = flow(
   (user: User) =>
-    new URLSearchParams({
-      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-peerreview',
-      access_status: 'open',
-    }),
-  getCommunityRecords('prereview-reviews'),
+    RTE.asks(
+      ({ publicUrl }: PublicUrlEnv) =>
+        new URLSearchParams({
+          q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+          size: '100',
+          sort: 'publication-desc',
+          resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
+        }),
+    ),
+  RTE.chainW(getCommunityRecords('prereview-reviews')),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(5000)),
   RTE.chainReaderTaskKW(
     flow(
       records => records.hits.hits,
-      RT.traverseArray(recordToRecentPrereview),
+      RT.traverseArray(record =>
+        pipe(
+          recordToRecentDatasetPrereview(record),
+          RTE.altW(() => recordToRecentPrereview(record)),
+        ),
+      ),
       RT.map(Array.map(FptsToEffect.either)),
       RT.map(Array.getRights),
     ),
