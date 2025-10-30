@@ -4,7 +4,7 @@ import { RecordC, RecordsC } from 'zenodo-ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base.ts'
 
-test('can find and view a profile', async ({ fetch, page }) => {
+test('can find and view a profile', async ({ fetch, page, port }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
       body: RecordC.encode({
@@ -72,7 +72,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
     name: 'profile-prereviews',
     url: 'http://zenodo.test/api/communities/prereview-reviews/records',
     query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
+      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/localhost:${port}\\/reviews\\/.+/)) AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -181,7 +181,7 @@ test('can find and view a profile', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page, port }) => {
   await page.goto('/my-details', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Connect Slack account' }).click()
   await page.getByRole('button', { name: 'Start now' }).click()
@@ -225,7 +225,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
     name: 'profile-prereviews',
     url: 'http://zenodo.test/api/communities/prereview-reviews/records',
     query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
+      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/localhost:${port}\\/reviews\\/.+/)) AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -247,7 +247,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
 })
 
-test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
+test("can find and view a pseduonym's profile", async ({ fetch, page, port }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
       body: RecordC.encode({
@@ -312,7 +312,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
     name: 'profile-prereviews',
     url: 'http://zenodo.test/api/communities/prereview-reviews/records',
     query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Blue Sheep"',
+      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/localhost:${port}\\/reviews\\/.+/)) AND metadata.creators.person_or_org.name:"Blue Sheep"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -421,14 +421,14 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page }) => {
+test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page, port }) => {
   await page.goto('/my-details', { waitUntil: 'commit' })
 
   fetch.get({
     name: 'profile-prereviews',
     url: 'http://zenodo.test/api/communities/prereview-reviews/records',
     query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.name:"Orange Panda"',
+      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/localhost:${port}\\/reviews\\/.+/)) AND metadata.creators.person_or_org.name:"Orange Panda"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',
@@ -441,7 +441,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda')
 })
 
-test('the list might be empty', async ({ fetch, page }) => {
+test('the list might be empty', async ({ fetch, page, port }) => {
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-6109-0367/personal-details', {
     body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' }, 'credit-name': null } },
   })
@@ -449,7 +449,7 @@ test('the list might be empty', async ({ fetch, page }) => {
     name: 'profile-prereviews',
     url: 'http://zenodo.test/api/communities/prereview-reviews/records',
     query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
+      q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:/http:\\/\\/localhost:${port}\\/reviews\\/.+/)) AND metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

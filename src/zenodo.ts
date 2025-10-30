@@ -300,26 +300,34 @@ export const getPrereviewFromZenodo = (id: number) =>
 
 export const getPrereviewsForProfileFromZenodo = flow(
   (profile: ProfileId.ProfileId) =>
-    new URLSearchParams({
-      q: [
-        'metadata.related_identifiers.resource_type.id:"publication-preprint"',
-        ProfileId.match(profile, {
-          onOrcid: profile => `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
-          onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+    RTE.asks(
+      ({ publicUrl }: PublicUrlEnv) =>
+        new URLSearchParams({
+          q: [
+            `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)}))`,
+            ProfileId.match(profile, {
+              onOrcid: profile => `metadata.creators.person_or_org.identifiers.identifier:${profile.orcid}`,
+              onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
+            }),
+          ].join(' AND '),
+          size: '100',
+          sort: 'publication-desc',
+          resource_type: 'publication::publication-peerreview',
+          access_status: 'open',
         }),
-      ].join(' AND '),
-      size: '100',
-      sort: 'publication-desc',
-      resource_type: 'publication::publication-peerreview',
-      access_status: 'open',
-    }),
-  getCommunityRecords('prereview-reviews'),
+    ),
+  RTE.chainW(getCommunityRecords('prereview-reviews')),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(5000)),
   RTE.chainReaderTaskKW(
     flow(
       records => records.hits.hits,
-      RT.traverseArray(recordToRecentPrereview),
+      RT.traverseArray(record =>
+        pipe(
+          recordToRecentDatasetPrereview(record),
+          RTE.altW(() => recordToRecentPrereview(record)),
+        ),
+      ),
       RT.map(Array.map(FptsToEffect.either)),
       RT.map(Array.getRights),
     ),
