@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as Prereviews from '../../src/Prereviews/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { plainText } from '../../src/html.ts'
 import * as _ from '../../src/profile-page/index.ts'
@@ -17,14 +18,16 @@ describe('profile', () => {
       fc.url(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
       fc.either(fc.constant('not-found'), fc.careerStage()),
       fc.either(fc.constant('not-found'), fc.researchInterests()),
@@ -95,14 +98,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.url(),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])("when the name can't be found", async (locale, profile, avatar, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -132,14 +137,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.url(),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the name is unavailable', async (locale, profile, avatar, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -169,14 +176,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])("when the avatar can't be found", async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -207,14 +216,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the avatar is unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -244,14 +255,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the career stage is unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -281,14 +294,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the research interests are unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -318,14 +333,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the location is unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -355,14 +372,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when languages are unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -392,14 +411,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the Slack user is unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -429,14 +450,16 @@ describe('profile', () => {
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when being open for requests is unavailable', async (locale, profile, name, prereviews) => {
       const actual = await _.profile({ locale, profile })({
@@ -467,14 +490,16 @@ describe('profile', () => {
       fc.supportedLocale(),
       fc.pseudonymProfileId(),
       fc.array(
-        fc.record({
-          id: fc.integer(),
-          reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
-          published: fc.plainDate(),
-          fields: fc.array(fc.fieldId()),
-          subfields: fc.array(fc.subfieldId()),
-          preprint: fc.preprintTitle(),
-        }),
+        fc
+          .record({
+            id: fc.integer(),
+            reviewers: fc.record({ named: fc.nonEmptyArray(fc.string()), anonymous: fc.integer({ min: 0 }) }),
+            published: fc.plainDate(),
+            fields: fc.array(fc.fieldId()),
+            subfields: fc.array(fc.subfieldId()),
+            preprint: fc.preprintTitle(),
+          })
+          .map(args => new Prereviews.RecentPreprintPrereview(args)),
       ),
     ])('when the data can be loaded', async (locale, profile, prereviews) => {
       const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
