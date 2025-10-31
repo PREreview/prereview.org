@@ -99,7 +99,7 @@
     "jest": "^30.2.0",
     "mini-css-extract-plugin": "^2.9.4",
     "node-mocks-http": "^1.17.2",
-    "oauth2-mock-server": "^8.1.0",
+    "oauth2-mock-server": "^8.2.0",
     "postcss": "^8.5.6",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^8.2.0",
