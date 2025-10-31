@@ -1,13 +1,17 @@
-const path = require('path')
-const { globSync } = require('glob')
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const { PurgeCSSPlugin } = require('purgecss-webpack-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import { globSync } from 'glob'
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import path from 'path'
+import { PurgeCSSPlugin } from 'purgecss-webpack-plugin'
+import URL from 'url'
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+import RemoveEmptyScriptsPlugin from 'webpack-remove-empty-scripts'
 
-module.exports = (env, argv) => ({
+const __filename = URL.fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+export default (env, argv) => ({
   cache: {
     buildDependencies: { config: [__filename] },
     cacheDirectory: path.resolve(__dirname, '.cache/webpack'),

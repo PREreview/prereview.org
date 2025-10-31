@@ -59,7 +59,7 @@ ENV NODE_ENV=production
 COPY --from=npm-dev /app/node_modules/ node_modules/
 COPY tsconfig.build.json \
   tsconfig.json \
-  webpack.config.cjs \
+  webpack.config.mjs \
   ./
 COPY src/ src/
 COPY assets/ assets/
