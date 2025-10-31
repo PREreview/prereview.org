@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   showSeed: true,
   injectGlobals: false,
   testEnvironment: 'node',
