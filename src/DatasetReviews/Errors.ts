@@ -66,6 +66,10 @@ export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCrea
   cause?: unknown
 }> {}
 
+export class FailedToNotifyCommunitySlack extends Data.TaggedError('FailedToNotifyCommunitySlack')<{
+  cause?: unknown
+}> {}
+
 export class FailedToPublishRecordOnZenodo extends Data.TaggedError('FailedToPublishRecordOnZenodo')<{
   cause?: unknown
 }> {}
