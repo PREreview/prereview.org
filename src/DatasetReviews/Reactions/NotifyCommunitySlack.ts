@@ -22,7 +22,20 @@ export const NotifyCommunitySlack = Effect.fn(
 
     yield* Slack.chatPostMessage({
       channel: yield* CommunitySlack.shareAReviewChannelId,
-      text: `${displayPersona(author)} has published a PREreview: ${url.href}`,
+      blocks: [
+        {
+          type: 'rich_text',
+          elements: [
+            {
+              type: 'rich_text_section',
+              elements: [
+                { type: 'text', text: `${displayPersona(author)} has published a PREreview: ` },
+                { type: 'link', url },
+              ],
+            },
+          ],
+        },
+      ],
       unfurlLinks: true,
       unfurlMedia: false,
     })
