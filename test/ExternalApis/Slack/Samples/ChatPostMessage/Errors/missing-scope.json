@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "error": "missing_scope",
+  "needed": "chat:write:bot",
+  "provided": "identify,app_configurations:read,app_configurations:write"
+}

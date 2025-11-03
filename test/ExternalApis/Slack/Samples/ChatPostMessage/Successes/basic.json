@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "channel": "C05V6TXHETS",
+  "ts": "1761838811.643889",
+  "message": {
+    "user": "U05QEKX5WG3",
+    "type": "message",
+    "ts": "1761838811.643889",
+    "bot_id": "B05QTBYC5MF",
+    "app_id": "A05QSTUS8JD",
+    "text": "Chris Wilkinson has published a PREreview: <https:\/\/chris.local\/reviews\/723098b2-c0b9-4069-bc22-8f916bb34a2e|https:\/\/chris.local\/reviews\/723098b2-c0b9-4069-bc22-8f916bb34a2e>\n",
+    "team": "T057XMB3EGH",
+    "bot_profile": {
+      "id": "B05QTBYC5MF",
+      "app_id": "A05QSTUS8JD",
+      "user_id": "U05QEKX5WG3",
+      "name": "PREreview Bot",
+      "icons": {
+        "image_36": "https:\/\/avatars.slack-edge.com\/2023-08-31\/5844086281265_91043a03fef07bcf3818_36.png",
+        "image_48": "https:\/\/avatars.slack-edge.com\/2023-08-31\/5844086281265_91043a03fef07bcf3818_48.png",
+        "image_72": "https:\/\/avatars.slack-edge.com\/2023-08-31\/5844086281265_91043a03fef07bcf3818_72.png"
+      },
+      "deleted": false,
+      "updated": 1696943441,
+      "team_id": "T057XMB3EGH"
+    },
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "mnoll",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Chris Wilkinson has published a PREreview: <https:\/\/chris.local\/reviews\/723098b2-c0b9-4069-bc22-8f916bb34a2e|https:\/\/chris.local\/reviews\/723098b2-c0b9-4069-bc22-8f916bb34a2e>\n",
+          "verbatim": false
+        }
+      }
+    ]
+  },
+  "warning": "missing_charset",
+  "response_metadata": { "warnings": ["missing_charset"] }
+}

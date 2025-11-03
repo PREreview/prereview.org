@@ -11,7 +11,17 @@ import * as Datasets from './Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
 import * as Events from './Events.ts'
-import { Crossref, Datacite, Ghost, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
+import {
+  Crossref,
+  Datacite,
+  Ghost,
+  JapanLinkCenter,
+  OpenAlex,
+  Orcid,
+  Philsci,
+  Slack,
+  Zenodo,
+} from './ExternalApis/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
@@ -379,6 +389,7 @@ export const Program = pipe(
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
+      Slack.layer,
       Zenodo.layer,
     ),
   ),
