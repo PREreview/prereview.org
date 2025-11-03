@@ -29,7 +29,14 @@ export const NotifyCommunitySlack = Effect.fn(
             {
               type: 'rich_text_section',
               elements: [
-                { type: 'text', text: `${displayPersona(author)} has published a PREreview: ` },
+                {
+                  type: 'text',
+                  text: displayPersona(author),
+                  style: {
+                    bold: true,
+                  },
+                },
+                { type: 'text', text: ' has published a PREreview: ' },
                 { type: 'link', url },
               ],
             },

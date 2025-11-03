@@ -6,6 +6,11 @@ export type ChatPostMessageInput = Schema.Schema.Type<typeof ChatPostMessageInpu
 const Text = Schema.Struct({
   type: Schema.tag('text'),
   text: Schema.NonEmptyString,
+  style: Schema.optional(
+    Schema.Struct({
+      bold: Schema.optional(Schema.Boolean),
+    }),
+  ),
 })
 
 const Link = Schema.Struct({
