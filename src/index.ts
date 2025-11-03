@@ -81,7 +81,9 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
-      CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
+      CommunitySlack.layerChannelIdsConfig({
+        shareAReview: Schema.Config('SLACK_SHARE_REVIEW_CHANNEL_ID', Slack.ChannelId),
+      }),
       FeatureFlags.layerConfig({
         aiReviewsAsCc0: pipe(
           Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
