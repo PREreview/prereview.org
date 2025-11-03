@@ -1,5 +1,5 @@
 import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
-import { Array, Boolean, Effect, HashMap, identity, Option, pipe, Schema } from 'effect'
+import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import { FlashMessage, Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
@@ -36,10 +36,13 @@ export const toHttpServerResponse = (
     if (response._tag === 'LogInResponse') {
       const publicUrl = yield* PublicUrl
 
-      const location = yield* generateAuthorizationRequestUrl({
-        scope: '/authenticate',
-        state: response.location !== Routes.HomePage ? new URL(`${publicUrl.origin}${response.location}`).href : '',
-      })
+      const state = pipe(
+        Match.value(response.location),
+        Match.when(Routes.HomePage, () => String.empty),
+        Match.orElse(location => new URL(`${publicUrl.origin}${location}`).href),
+      )
+
+      const location = yield* generateAuthorizationRequestUrl({ scope: '/authenticate', state })
 
       return yield* HttpServerResponse.redirect(location, { status: StatusCodes.Found })
     }
