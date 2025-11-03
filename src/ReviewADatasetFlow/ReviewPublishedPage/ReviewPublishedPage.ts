@@ -18,10 +18,6 @@ export const ReviewPublishedPage = ({ datasetReview }: { datasetReview: DatasetR
 
       <h2>What happens next</h2>
 
-      <div class="inset">
-        <p>We’re working on showing your dataset review on PREreview. It’ll appear around the site soon.</p>
-      </div>
-
       <p>
         If you reviewed the dataset with others, please get in touch so we can invite them to appear on the review. Our
         email address is
