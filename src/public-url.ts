@@ -1,4 +1,5 @@
-import { Context, Function, pipe } from 'effect'
+import { Url } from '@effect/platform'
+import { Context, Effect, Function, pipe } from 'effect'
 import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
@@ -9,6 +10,11 @@ export interface PublicUrlEnv {
 }
 
 export class PublicUrl extends Context.Tag('PublicUrl')<PublicUrl, URL>() {}
+
+const fromString = (url: string) => Effect.andThen(PublicUrl, publicUrl => Url.fromString(url, publicUrl))
+
+export const forRoute = <A>(route: `/${string}` | Route<A> | Formatter<A>, a: A) =>
+  Effect.orDie(fromString(typeof route === 'string' ? route : 'href' in route ? route.href(a) : format(route, a)))
 
 export function toUrl<A>(formatter: Formatter<A> | Route<A>, a: A) {
   return R.asks(({ publicUrl }: PublicUrlEnv) =>

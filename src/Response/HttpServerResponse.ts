@@ -1,10 +1,9 @@
 import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
-import { format } from 'fp-ts-routing'
 import { FlashMessage, Locale, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import { OrcidOauth } from '../OrcidOauth.ts'
-import { PublicUrl } from '../public-url.ts'
+import * as PublicUrl from '../public-url.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { TemplatePage } from '../TemplatePage.ts'
@@ -18,7 +17,11 @@ import type { ForceLogInResponse, Response } from './Response.ts'
 
 export const toHttpServerResponse = (
   response: Response,
-): Effect.Effect<HttpServerResponse.HttpServerResponse, never, Locale | TemplatePage | OrcidOauth | PublicUrl> => {
+): Effect.Effect<
+  HttpServerResponse.HttpServerResponse,
+  never,
+  Locale | TemplatePage | OrcidOauth | PublicUrl.PublicUrl
+> => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
       return yield* HttpServerResponse.redirect(response.location, { status: response.status })
@@ -34,7 +37,7 @@ export const toHttpServerResponse = (
     }
 
     if (response._tag === 'LogInResponse') {
-      const publicUrl = yield* PublicUrl
+      const publicUrl = yield* PublicUrl.PublicUrl
 
       const state = pipe(
         Match.value(response.location),
@@ -48,7 +51,7 @@ export const toHttpServerResponse = (
     }
 
     const locale = yield* Locale
-    const publicUrl = yield* PublicUrl
+    const publicUrl = yield* PublicUrl.PublicUrl
     const templatePage = yield* TemplatePage
     const user = yield* Effect.serviceOption(LoggedInUser)
     const userOnboarding = yield* Effect.if(response._tag === 'PageResponse' && response.current === 'my-details', {
@@ -131,15 +134,12 @@ function generateAuthorizationRequestUrl({
 }: {
   scope: string
   state?: string
-}): Effect.Effect<URL, never, OrcidOauth | Locale | PublicUrl> {
+}): Effect.Effect<URL, never, OrcidOauth | Locale | PublicUrl.PublicUrl> {
   return Effect.gen(function* () {
     const orcidOauth = yield* OrcidOauth
-    const publicUrl = yield* PublicUrl
     const locale = yield* Locale
 
-    const redirectUri = new URL(
-      `${publicUrl.origin}${format(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })}`,
-    )
+    const redirectUri = yield* PublicUrl.forRoute(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })
     redirectUri.search = ''
 
     const query = UrlParams.fromInput({
