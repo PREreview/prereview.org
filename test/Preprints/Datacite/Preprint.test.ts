@@ -75,10 +75,9 @@ describe('recordToPreprint', () => {
       descriptions: [{ description: '12345', descriptionType: 'Abstract' }],
     })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+    const actual = Either.getOrThrow(_.recordToPreprint(record))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual('unknown abstract language')
+    expect(actual.abstract).toStrictEqual(undefined)
   })
 
   test.prop([

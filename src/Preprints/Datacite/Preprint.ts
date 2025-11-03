@@ -56,7 +56,7 @@ export const recordToPreprint = (
 
     const title = yield* getTitle(record.titles, id)
 
-    const abstract = yield* getAbstract(record.descriptions, id)
+    const abstract = getAbstract(record.descriptions, id)
 
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
@@ -152,32 +152,26 @@ const getTitle = (
 const getAbstract = (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
-): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
-  Either.gen(function* () {
-    const abstract = Option.getOrUndefined(
-      Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
-    )
+): Preprint.Preprint['abstract'] => {
+  const abstract = Option.getOrUndefined(
+    Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
+  )
 
-    if (!abstract) {
-      return undefined
-    }
+  if (!abstract) {
+    return undefined
+  }
 
-    const text = pipe(
-      Match.value(id),
-      Match.tag('ZenodoPreprintId', () => sanitizeHtml(`<p>${encode(abstract.description)}</p>`)),
-      Match.orElse(() => sanitizeHtml(`<p>${abstract.description}</p>`)),
-    )
+  const text = pipe(
+    Match.value(id),
+    Match.tag('ZenodoPreprintId', () => sanitizeHtml(`<p>${encode(abstract.description)}</p>`)),
+    Match.orElse(() => sanitizeHtml(`<p>${abstract.description}</p>`)),
+  )
 
-    const language = yield* Either.fromOption(
-      detectLanguageForServer({ id, text }),
-      () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
-    )
-
-    return {
-      language,
-      text,
-    }
+  return Option.match(detectLanguageForServer({ id, text }), {
+    onSome: language => ({ language, text }),
+    onNone: () => undefined,
   })
+}
 
 const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {

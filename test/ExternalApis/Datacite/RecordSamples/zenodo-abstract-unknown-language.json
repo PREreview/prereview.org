@@ -1,0 +1,113 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.17478561",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.17478561",
+      "prefix": "10.5281",
+      "suffix": "zenodo.17478561",
+      "identifiers": [{ "identifier": "oai:zenodo.org:17478561", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:17478561" }],
+      "creators": [
+        {
+          "name": "da Silva, Raulivan Rodrigo",
+          "nameType": "Personal",
+          "givenName": "Raulivan Rodrigo",
+          "familyName": "da Silva",
+          "affiliation": ["Centro Federal de Educação Tecnológica de Minas Gerais"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-2740-1045", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Rodrigues Dias, Thiago Magela",
+          "nameType": "Personal",
+          "givenName": "Thiago Magela",
+          "familyName": "Rodrigues Dias",
+          "affiliation": ["Centro Federal de Educação Tecnológica de Minas Gerais"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-5057-9936", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Ribeiro de Carvalho Segundo, Washington Luís",
+          "nameType": "Personal",
+          "givenName": "Washington Luís",
+          "familyName": "Ribeiro de Carvalho Segundo",
+          "affiliation": ["Instituto Brasileiro de Informação em Ciência e Tecnologia"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-3635-9384", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [{ "title": "CONJUNTO FERRAMENTAL PYTENTE" }],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [],
+      "contributors": [],
+      "dates": [{ "date": "2025-10-29", "dateType": "Issued" }],
+      "language": "pt",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.17478560",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [{ "description": "258", "descriptionType": "Abstract" }],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTc0Nzg1NjE8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPmRhIFNpbHZhLCBSYXVsaXZhbiBSb2RyaWdvPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5SYXVsaXZhbiBSb2RyaWdvPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPmRhIFNpbHZhPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTI3NDAtMTA0NTwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5DZW50cm8gRmVkZXJhbCBkZSBFZHVjYcOnw6NvIFRlY25vbMOzZ2ljYSBkZSBNaW5hcyBHZXJhaXM8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlJvZHJpZ3VlcyBEaWFzLCBUaGlhZ28gTWFnZWxhPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5UaGlhZ28gTWFnZWxhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPlJvZHJpZ3VlcyBEaWFzPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAxLTUwNTctOTkzNjwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5DZW50cm8gRmVkZXJhbCBkZSBFZHVjYcOnw6NvIFRlY25vbMOzZ2ljYSBkZSBNaW5hcyBHZXJhaXM8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlJpYmVpcm8gZGUgQ2FydmFsaG8gU2VndW5kbywgV2FzaGluZ3RvbiBMdcOtczwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+V2FzaGluZ3RvbiBMdcOtczwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5SaWJlaXJvIGRlIENhcnZhbGhvIFNlZ3VuZG88L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iIj4wMDAwLTAwMDMtMzYzNS05Mzg0PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPkluc3RpdHV0byBCcmFzaWxlaXJvIGRlIEluZm9ybWHDp8OjbyBlbSBDacOqbmNpYSBlIFRlY25vbG9naWE8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5DT05KVU5UTyBGRVJSQU1FTlRBTCBQWVRFTlRFPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPlplbm9kbzwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNTwvcHVibGljYXRpb25ZZWFyPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iUHJlcHJpbnQiLz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI1LTEwLTI5PC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPnBvcjwvbGFuZ3VhZ2U+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTc0Nzg1NjE8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj4xMC41MjgxL3plbm9kby4xNzQ3ODU2MDwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzLz4KICA8Zm9ybWF0cy8+CiAgPHZlcnNpb24vPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvbGVnYWxjb2RlIiByaWdodHNJZGVudGlmaWVyPSJjYy1ieS00LjAiIHJpZ2h0c0lkZW50aWZpZXJTY2hlbWU9InNwZHgiPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wIEludGVybmF0aW9uYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij4yNTg8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.17478561",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-10-29T22:37:23.000Z",
+      "registered": "2025-10-29T22:37:23.000Z",
+      "published": "2025",
+      "updated": "2025-10-31T18:20:32.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.17478561", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.17478560", "type": "dois" }] }
+    }
+  }
+}

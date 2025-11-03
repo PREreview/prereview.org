@@ -274,6 +274,24 @@ test.each([
     }),
   },
   {
+    response: 'zenodo-abstract-unknown-language',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [
+        { name: 'Raulivan Rodrigo da Silva', orcid: OrcidId('0000-0002-2740-1045') },
+        { name: 'Thiago Magela Rodrigues Dias', orcid: OrcidId('0000-0001-5057-9936') },
+        { name: 'Washington Luís Ribeiro de Carvalho Segundo', orcid: OrcidId('0000-0003-3635-9384') },
+      ],
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.17478561') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 10, day: 29 }),
+      title: {
+        language: 'pt',
+        text: rawHtml('CONJUNTO FERRAMENTAL PYTENTE'),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.17478561'),
+    }),
+  },
+  {
     response: 'figshare-africarxiv',
     expected: Preprint({
       abstract: {
