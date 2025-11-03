@@ -90,7 +90,7 @@
     "eslint-plugin-no-comments": "^1.1.10",
     "eslint-plugin-wc": "^3.0.2",
     "fast-check": "^3.23.2",
-    "fetch-mock": "^12.5.6",
+    "fetch-mock": "^12.6.0",
     "glob": "^11.0.3",
     "image-minimizer-webpack-plugin": "^4.1.4",
     "imagemin": "^9.0.1",
