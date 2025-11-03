@@ -18,6 +18,7 @@ import {
 import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
+import * as CommunitySlack from './CommunitySlack.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from './Context.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -80,6 +81,7 @@ pipe(
   Effect.provide(
     Layer.mergeAll(
       Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
+      CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
       FeatureFlags.layerConfig({
         aiReviewsAsCc0: pipe(
           Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),

@@ -34,6 +34,7 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
+import * as CommunitySlack from '../src/CommunitySlack.ts'
 import {
   ContactEmailAddressC,
   UnverifiedContactEmailAddress,
@@ -1257,6 +1258,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(AllowSiteCrawlers, true),
             Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
             CachingHttpClient.layerInMemory(),
+            CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,
               askAiReviewEarly: () => false,
