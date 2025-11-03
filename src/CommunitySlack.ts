@@ -1,4 +1,4 @@
-import { Context, Effect, Struct } from 'effect'
+import { Context, Effect, Layer, Struct } from 'effect'
 import type { Slack } from './ExternalApis/index.ts'
 
 export class CommunitySlackChannelIds extends Context.Tag('CommunitySlackChannelIds')<
@@ -7,3 +7,7 @@ export class CommunitySlackChannelIds extends Context.Tag('CommunitySlackChannel
 >() {}
 
 export const shareAReviewChannelId = Effect.andThen(CommunitySlackChannelIds, Struct.get('shareAReview'))
+
+export const layerChannelIds = (
+  options: typeof CommunitySlackChannelIds.Service,
+): Layer.Layer<CommunitySlackChannelIds> => Layer.succeed(CommunitySlackChannelIds, options)

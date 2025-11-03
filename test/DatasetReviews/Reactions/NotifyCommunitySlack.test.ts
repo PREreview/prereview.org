@@ -28,7 +28,7 @@ describe('NotifyCommunitySlack', () => {
         }).pipe(
           Effect.provide(
             Layer.mergeAll(
-              Layer.succeed(CommunitySlack.CommunitySlackChannelIds, communitySlackChannelIds),
+              CommunitySlack.layerChannelIds(communitySlackChannelIds),
               Layer.mock(DatasetReviews.DatasetReviewQueries, {
                 getPublishedReview: () => Effect.succeed(publishedReview),
               }),
@@ -56,7 +56,7 @@ describe('NotifyCommunitySlack', () => {
         }).pipe(
           Effect.provide(
             Layer.mergeAll(
-              Layer.succeed(CommunitySlack.CommunitySlackChannelIds, communitySlackChannelIds),
+              CommunitySlack.layerChannelIds(communitySlackChannelIds),
               Layer.mock(DatasetReviews.DatasetReviewQueries, {
                 getPublishedReview: () => Effect.succeed(publishedReview),
               }),
@@ -88,7 +88,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide(
           Layer.mergeAll(
-            Layer.succeed(CommunitySlack.CommunitySlackChannelIds, communitySlackChannelIds),
+            CommunitySlack.layerChannelIds(communitySlackChannelIds),
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
@@ -114,7 +114,7 @@ describe('NotifyCommunitySlack', () => {
       }).pipe(
         Effect.provide(
           Layer.mergeAll(
-            Layer.succeed(CommunitySlack.CommunitySlackChannelIds, communitySlackChannelIds),
+            CommunitySlack.layerChannelIds(communitySlackChannelIds),
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
               getPublishedReview: () => Effect.succeed(publishedReview),
             }),
@@ -151,7 +151,7 @@ describe('NotifyCommunitySlack', () => {
     }).pipe(
       Effect.provide(
         Layer.mergeAll(
-          Layer.succeed(CommunitySlack.CommunitySlackChannelIds, communitySlackChannelIds),
+          CommunitySlack.layerChannelIds(communitySlackChannelIds),
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
             getPublishedReview: () => error,
           }),

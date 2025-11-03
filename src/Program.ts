@@ -399,7 +399,5 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
   ),
-  Layer.provide(
-    Layer.succeed(CommunitySlack.CommunitySlackChannelIds, { shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
-  ),
+  Layer.provide(CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') })),
 )
