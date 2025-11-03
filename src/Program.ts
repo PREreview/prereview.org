@@ -3,6 +3,7 @@ import KeyvRedis from '@keyv/redis'
 import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
+import * as CommunitySlack from './CommunitySlack.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
 import { Locale, SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
@@ -397,5 +398,8 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(
     Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
+  ),
+  Layer.provide(
+    Layer.succeed(CommunitySlack.CommunitySlackChannelIds, { shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
   ),
 )

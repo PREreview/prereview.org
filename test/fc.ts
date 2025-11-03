@@ -29,6 +29,7 @@ import type {
 import type { CareerStage } from '../src/career-stage.ts'
 import * as Clubs from '../src/Clubs/index.ts'
 import * as Comments from '../src/Comments/index.ts'
+import type * as CommunitySlack from '../src/CommunitySlack.ts'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/index.ts'
 import {
   type ContactEmailAddress,
@@ -39,6 +40,7 @@ import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
+import { Slack } from '../src/ExternalApis/index.js'
 import type { GhostPage } from '../src/GhostPage/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
@@ -1192,6 +1194,13 @@ export const isOpenForRequests = (): fc.Arbitrary<IsOpenForRequests> =>
 export const isOpenForRequestsVisibility = (): fc.Arbitrary<
   Extract<IsOpenForRequests, { value: true }>['visibility']
 > => constantFrom('public', 'restricted')
+
+export const slackChannelId = (): fc.Arbitrary<Slack.ChannelId> => fc.string().map(id => Slack.ChannelId.make(id))
+
+export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.CommunitySlackChannelIds.Service> =>
+  fc.record<typeof CommunitySlack.CommunitySlackChannelIds.Service>({
+    shareAReview: slackChannelId(),
+  })
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 

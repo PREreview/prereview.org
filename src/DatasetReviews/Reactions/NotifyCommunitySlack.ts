@@ -1,4 +1,5 @@
 import { Effect, Struct } from 'effect'
+import * as CommunitySlack from '../../CommunitySlack.ts'
 import { Slack } from '../../ExternalApis/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as PublicUrl from '../../public-url.ts'
@@ -20,7 +21,7 @@ export const NotifyCommunitySlack = Effect.fn(
     )
 
     yield* Slack.chatPostMessage({
-      channel: Slack.ChannelId.make('C05V6TXHETS'),
+      channel: yield* CommunitySlack.shareAReviewChannelId,
       text: `${displayPersona(author)} has published a PREreview: ${url.href}`,
       unfurlLinks: true,
       unfurlMedia: false,

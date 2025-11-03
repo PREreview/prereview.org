@@ -1,4 +1,5 @@
 import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
+import type * as CommunitySlack from '../../CommunitySlack.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
 import type { Slack } from '../../ExternalApis/index.ts'
@@ -16,6 +17,7 @@ import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.ts'
 const makeDatasetReviewReactions: Effect.Effect<
   never,
   never,
+  | CommunitySlack.CommunitySlackChannelIds
   | DatasetReviewCommands
   | DatasetReviewQueries
   | Datasets.Datasets
