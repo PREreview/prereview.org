@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -129,7 +130,7 @@ describe('connectSlackCode', () => {
     fc.supportedLocale(),
     fc.oauth(),
     fc.origin(),
-    fc.nonEmptyString(),
+    fc.slackUserId().map(Struct.get('userId')),
     fc.hashSet(fc.lorem(), { minLength: 1 }),
     fc.nonEmptyString(),
     fc.lorem(),

@@ -9,6 +9,7 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
+import { Slack } from '../ExternalApis/index.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import type { SupportedLocale } from '../locales/index.ts'
 import { type PublicUrlEnv, toUrl } from '../public-url.ts'
@@ -149,12 +150,17 @@ const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
 
 const HashSetD = <A>(item: D.Decoder<unknown, A>) => pipe(CommaSeparatedListD(item), D.map(HashSet.fromIterable))
 
+const SlackIdD = pipe(
+  NonEmptyStringC,
+  D.map(string => Slack.UserId.make(string)),
+)
+
 const SlackUserTokenD = pipe(
   JsonD,
   D.compose(
     D.struct({
       authed_user: D.struct({
-        id: NonEmptyStringC,
+        id: SlackIdD,
         access_token: NonEmptyStringC,
         token_type: D.literal('user'),
         scope: HashSetD(NonEmptyStringC),

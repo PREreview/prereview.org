@@ -1205,7 +1205,11 @@ export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.C
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
-  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: hashSet(nonEmptyString()) })
+  fc.record({
+    userId: nonEmptyString().map(id => Slack.UserId.make(id)),
+    accessToken: nonEmptyString(),
+    scopes: hashSet(nonEmptyString()),
+  })
 
 export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
   fc.record({
