@@ -85,6 +85,7 @@ export const nonEffectRouter: Effect.Effect<
   | SlackOauth
   | Keyv.KeyvStores
   | Slack.SlackApi
+  | CommunitySlack.ShouldUpdateCommunitySlack
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
@@ -127,6 +128,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const scietyListToken = yield* ScietyListToken
   const slackApiConfig = yield* Slack.SlackApi
+  const shouldUpdateCommunitySlack = yield* CommunitySlack.shouldUpdateCommunitySlack
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
@@ -184,6 +186,7 @@ export const nonEffectRouter: Effect.Effect<
     slackOauth,
     scietyListToken,
     slackApiConfig,
+    shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
@@ -245,6 +248,7 @@ export interface Env {
   slackOauth: typeof SlackOauth.Service
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
   slackApiConfig: typeof Slack.SlackApi.Service
+  shouldUpdateCommunitySlack: typeof CommunitySlack.ShouldUpdateCommunitySlack.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service

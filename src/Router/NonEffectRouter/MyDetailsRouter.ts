@@ -316,7 +316,7 @@ export const MyDetailsRouter = pipe(
           {
             fetch: env.fetch,
             slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-            slackApiUpdate: env.slackApiConfig.apiUpdate,
+            slackApiUpdate: env.shouldUpdateCommunitySlack,
             slackUserIdStore: env.users.slackUserIdStore,
             ...env.logger,
           },
@@ -450,7 +450,7 @@ export const MyDetailsRouter = pipe(
           {
             fetch: env.fetch,
             slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-            slackApiUpdate: env.slackApiConfig.apiUpdate,
+            slackApiUpdate: env.shouldUpdateCommunitySlack,
             slackUserIdStore: env.users.slackUserIdStore,
             ...env.logger,
           },
