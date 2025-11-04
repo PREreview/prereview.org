@@ -1,6 +1,6 @@
 import { Effect, Struct } from 'effect'
-import * as CommunitySlack from '../../CommunitySlack.ts'
 import { Slack } from '../../ExternalApis/index.ts'
+import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'

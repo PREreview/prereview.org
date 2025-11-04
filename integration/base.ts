@@ -34,7 +34,6 @@ import {
 } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite.ts'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
-import * as CommunitySlack from '../src/CommunitySlack.ts'
 import {
   ContactEmailAddressC,
   UnverifiedContactEmailAddress,
@@ -43,6 +42,7 @@ import {
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
+import { CommunitySlack } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { rawHtml } from '../src/html.ts'
 import {

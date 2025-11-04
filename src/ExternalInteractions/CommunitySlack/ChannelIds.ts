@@ -1,5 +1,5 @@
 import { Config, Context, Effect, Layer, Struct } from 'effect'
-import type { Slack } from './ExternalApis/index.ts'
+import type { Slack } from '../../ExternalApis/index.ts'
 
 export class CommunitySlackChannelIds extends Context.Tag('CommunitySlackChannelIds')<
   CommunitySlackChannelIds,

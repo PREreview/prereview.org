@@ -29,7 +29,6 @@ import type {
 import type { CareerStage } from '../src/career-stage.ts'
 import * as Clubs from '../src/Clubs/index.ts'
 import * as Comments from '../src/Comments/index.ts'
-import type * as CommunitySlack from '../src/CommunitySlack.ts'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/index.ts'
 import {
   type ContactEmailAddress,
@@ -41,6 +40,7 @@ import * as Datasets from '../src/Datasets/index.ts'
 import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
 import { Slack } from '../src/ExternalApis/index.js'
+import type * as CommunitySlack from '../src/ExternalInteractions/CommunitySlack/index.ts'
 import type { GhostPage } from '../src/GhostPage/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
