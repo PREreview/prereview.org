@@ -3,6 +3,7 @@ import { Context, Effect, flow, Layer } from 'effect'
 import { ChatPostMessage } from './ChatPostMessage/index.ts'
 import type { SlackApi } from './SlackApi.ts'
 
+export type { ChatPostMessageInput } from './ChatPostMessage/index.ts'
 export * from './legacy-slack.ts'
 export { SlackApi } from './SlackApi.ts'
 export { ChannelId } from './Types.ts'

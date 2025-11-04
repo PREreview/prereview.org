@@ -1,12 +1,12 @@
-import { Effect, Struct } from 'effect'
+import { Effect, pipe } from 'effect'
 import { Slack } from '../../ExternalApis/index.ts'
-import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
+import { DatasetReviewToChatPostMessageInput } from './DatasetReviewToChatPostMessageInput.ts'
 
 export const NotifyCommunitySlack = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {
@@ -20,37 +20,7 @@ export const NotifyCommunitySlack = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    yield* Slack.chatPostMessage({
-      channel: yield* CommunitySlack.shareAReviewChannelId,
-      blocks: [
-        {
-          type: 'rich_text',
-          elements: [
-            {
-              type: 'rich_text_section',
-              elements: [
-                {
-                  type: 'text',
-                  text: displayPersona(author),
-                  style: {
-                    bold: true,
-                  },
-                },
-                { type: 'text', text: ' has published a PREreview: ' },
-                { type: 'link', url },
-              ],
-            },
-          ],
-        },
-      ],
-      unfurlLinks: true,
-      unfurlMedia: false,
-    })
+    yield* pipe(DatasetReviewToChatPostMessageInput({ author, url }), Effect.andThen(Slack.chatPostMessage))
   },
   Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
 )
-
-const displayPersona = Personas.match({
-  onPublic: Struct.get('name'),
-  onPseudonym: Struct.get('pseudonym'),
-})
