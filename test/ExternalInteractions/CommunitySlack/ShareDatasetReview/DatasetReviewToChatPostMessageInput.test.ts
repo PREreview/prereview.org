@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Effect, Layer } from 'effect'
-import * as _ from '../../../src/DatasetReviews/Reactions/DatasetReviewToChatPostMessageInput.ts'
-import { Slack } from '../../../src/ExternalApis/index.ts'
-import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
-import * as Personas from '../../../src/Personas/index.ts'
-import { NonEmptyString, OrcidId, Pseudonym } from '../../../src/types/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
+import { Slack } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/ShareDatasetReview/DatasetReviewToChatPostMessageInput.ts'
+import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
+import * as Personas from '../../../../src/Personas/index.ts'
+import { NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
 
 test.each([
   [

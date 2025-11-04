@@ -1,7 +1,6 @@
 import { Effect, Layer, Match, pipe, PubSub, Queue, type Scope } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events.ts'
-import type { Slack } from '../../ExternalApis/index.ts'
 import type { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import type * as Personas from '../../Personas/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
@@ -17,7 +16,7 @@ import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.ts'
 const makeDatasetReviewReactions: Effect.Effect<
   never,
   never,
-  | CommunitySlack.CommunitySlackChannelIds
+  | CommunitySlack.CommunitySlack
   | DatasetReviewCommands
   | DatasetReviewQueries
   | Datasets.Datasets
@@ -25,7 +24,6 @@ const makeDatasetReviewReactions: Effect.Effect<
   | Personas.Personas
   | PublicUrl
   | Scope.Scope
-  | Slack.Slack
   | Zenodo
 > = Effect.gen(function* () {
   const events = yield* Events.Events

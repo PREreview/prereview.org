@@ -1,7 +1,7 @@
 import { Effect, Struct } from 'effect'
-import type { Slack } from '../../ExternalApis/index.ts'
-import { CommunitySlack } from '../../ExternalInteractions/index.ts'
-import * as Personas from '../../Personas/index.ts'
+import type { Slack } from '../../../ExternalApis/index.ts'
+import * as Personas from '../../../Personas/index.ts'
+import { CommunitySlackChannelIds } from '../ChannelIds.ts'
 
 export interface DatasetReview {
   readonly author: Personas.Persona
@@ -10,8 +10,8 @@ export interface DatasetReview {
 
 export const DatasetReviewToChatPostMessageInput = (
   review: DatasetReview,
-): Effect.Effect<Slack.ChatPostMessageInput, never, CommunitySlack.CommunitySlackChannelIds> =>
-  Effect.andThen(CommunitySlack.CommunitySlackChannelIds, channels => ({
+): Effect.Effect<Slack.ChatPostMessageInput, never, CommunitySlackChannelIds> =>
+  Effect.andThen(CommunitySlackChannelIds, channels => ({
     channel: channels.shareAReview,
     blocks: [
       {

@@ -1,12 +1,11 @@
-import { Effect, pipe } from 'effect'
-import { Slack } from '../../ExternalApis/index.ts'
+import { Effect } from 'effect'
+import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
-import { DatasetReviewToChatPostMessageInput } from './DatasetReviewToChatPostMessageInput.ts'
 
 export const NotifyCommunitySlack = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {
@@ -20,7 +19,7 @@ export const NotifyCommunitySlack = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    yield* pipe(DatasetReviewToChatPostMessageInput({ author, url }), Effect.andThen(Slack.chatPostMessage))
+    yield* CommunitySlack.shareDatasetReview({ author, url })
   },
   Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
 )

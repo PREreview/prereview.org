@@ -22,6 +22,7 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
+import { CommunitySlack } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
@@ -359,6 +360,7 @@ export const Program = pipe(
       Layer.effect(Comments.GetComment, Comments.makeGetComment),
       DatasetReviews.layer,
       GhostPage.layer,
+      CommunitySlack.layer,
       ZenodoInteractions.layer,
       Layer.effect(
         SessionStore,
