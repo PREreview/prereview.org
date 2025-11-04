@@ -34,6 +34,7 @@ import { Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, type OpenAlex, Slack, Zenodo } from '../../ExternalApis/index.ts'
+import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
@@ -342,7 +343,7 @@ const routerWithoutHyperTs = pipe(
               getSlackUser: withEnv(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(({ userId }) => Slack.getUserFromSlack(userId)),
+                  RTE.chainW(({ userId }) => CommunitySlack.getUserFromSlack(userId)),
                 ),
                 {
                   ...env.logger,

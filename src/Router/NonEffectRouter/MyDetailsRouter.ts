@@ -18,7 +18,8 @@ import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } 
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { sendContactEmailAddressVerificationEmail } from '../../email.ts'
-import { Cloudinary, Slack } from '../../ExternalApis/index.ts'
+import { Cloudinary } from '../../ExternalApis/index.ts'
+import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import {
@@ -306,7 +307,7 @@ export const MyDetailsRouter = pipe(
               RTE.chainFirst(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(Slack.removeOrcidFromSlackProfile),
+                  RTE.chainW(CommunitySlack.removeOrcidFromSlackProfile),
                   RTE.orElseW(() => RTE.right(undefined)),
                 ),
               ),
@@ -341,7 +342,7 @@ export const MyDetailsRouter = pipe(
         getSlackUser: withEnv(
           flow(
             Keyv.getSlackUserId,
-            RTE.chainW(({ userId }) => Slack.getUserFromSlack(userId)),
+            RTE.chainW(({ userId }) => CommunitySlack.getUserFromSlack(userId)),
           ),
           {
             ...env.logger,
@@ -444,7 +445,7 @@ export const MyDetailsRouter = pipe(
           (orcid: OrcidId, slackUser: SlackUserId) =>
             pipe(
               Keyv.saveSlackUserId(orcid, slackUser),
-              RTE.chainFirstW(() => Slack.addOrcidToSlackProfile(slackUser, orcid)),
+              RTE.chainFirstW(() => CommunitySlack.addOrcidToSlackProfile(slackUser, orcid)),
             ),
           {
             fetch: env.fetch,
