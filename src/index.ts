@@ -44,7 +44,6 @@ const CockroachClientLayer = Layer.mergeAll(
       Config.url('COCKROACHDB_URL'),
       Config.map(url => url.searchParams.has('sslmode', 'verify-full')),
     ),
-    onnotice: Config.succeed(Function.constVoid),
   }),
   Layer.effectDiscard(Effect.logDebug('Cockroach Database connected')),
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
