@@ -12,9 +12,8 @@ import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '.
 import { renderDate } from '../../time.ts'
 import type { User } from '../../user.ts'
 
-export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) => {
-  console.log(preprint)
-  return PageResponse({
+export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
+  PageResponse({
     title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
@@ -138,7 +137,6 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
     `,
     canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
   })
-}
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>

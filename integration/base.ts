@@ -1259,6 +1259,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
             CachingHttpClient.layerInMemory(),
             CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
+            CommunitySlack.layerShouldUpdateCommunitySlack(true),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,
               askAiReviewEarly: () => false,
@@ -1271,7 +1272,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(IsUserBlocked, isUserBlocked),
             Layer.succeed(FetchHttpClient.Fetch, fetch.fetchHandler),
             Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),
-            Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make(''), apiUpdate: true }),
+            Layer.succeed(Slack.SlackApi, { apiToken: Redacted.make('') }),
             Layer.succeed(Cloudinary.CloudinaryApi, {
               cloudName: 'prereview',
               key: Redacted.make('key'),

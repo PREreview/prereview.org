@@ -1,12 +1,9 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { Effect, Layer } from 'effect'
-import { Slack } from '../../../../src/ExternalApis/index.ts'
+import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/ShareDatasetReview/DatasetReviewToChatPostMessageInput.ts'
-import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../../src/Personas/index.ts'
 import { NonEmptyString, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
 test.each([
   [
@@ -18,7 +15,6 @@ test.each([
       }),
       url: new URL('http://example.com/public-persona-review'),
     } satisfies _.DatasetReview,
-    Slack.ChannelId.make('channel1'),
     [
       {
         type: 'rich_text',
@@ -41,7 +37,6 @@ test.each([
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
       url: new URL('http://example.com/pseudonym-persona-review'),
     } satisfies _.DatasetReview,
-    Slack.ChannelId.make('channel2'),
     [
       {
         type: 'rich_text',
@@ -58,10 +53,8 @@ test.each([
       },
     ] satisfies Slack.ChatPostMessageInput['blocks'],
   ],
-])('DatasetReviewToChatPostMessageInput (%s)', (_name, datasetReview, channelId, expectedBlocks) =>
-  Effect.gen(function* () {
-    const actual = yield* _.DatasetReviewToChatPostMessageInput(datasetReview)
+])('DatasetReviewToChatPostMessageInput (%s)', (_name, datasetReview, expectedBlocks) => {
+  const actual = _.DatasetReviewToChatPostMessageInput(datasetReview)
 
-    expect(actual).toStrictEqual({ channel: channelId, blocks: expectedBlocks, unfurlLinks: true, unfurlMedia: false })
-  }).pipe(Effect.provide(Layer.mergeAll(CommunitySlack.layerChannelIds({ shareAReview: channelId }))), EffectTest.run),
-)
+  expect(actual).toStrictEqual({ blocks: expectedBlocks, unfurlLinks: true, unfurlMedia: false })
+})

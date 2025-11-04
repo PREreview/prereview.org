@@ -34,6 +34,7 @@ import { Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { Cloudinary, type OpenAlex, Slack, Zenodo } from '../../ExternalApis/index.ts'
+import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
@@ -84,6 +85,7 @@ export const nonEffectRouter: Effect.Effect<
   | SlackOauth
   | Keyv.KeyvStores
   | Slack.SlackApi
+  | CommunitySlack.ShouldUpdateCommunitySlack
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
@@ -126,6 +128,7 @@ export const nonEffectRouter: Effect.Effect<
 
   const scietyListToken = yield* ScietyListToken
   const slackApiConfig = yield* Slack.SlackApi
+  const shouldUpdateCommunitySlack = yield* CommunitySlack.shouldUpdateCommunitySlack
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
   const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
@@ -183,6 +186,7 @@ export const nonEffectRouter: Effect.Effect<
     slackOauth,
     scietyListToken,
     slackApiConfig,
+    shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
     prereviewCoarNotifyConfig,
@@ -244,6 +248,7 @@ export interface Env {
   slackOauth: typeof SlackOauth.Service
   cloudinaryApiConfig: typeof Cloudinary.CloudinaryApi.Service
   slackApiConfig: typeof Slack.SlackApi.Service
+  shouldUpdateCommunitySlack: typeof CommunitySlack.ShouldUpdateCommunitySlack.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
@@ -342,7 +347,7 @@ const routerWithoutHyperTs = pipe(
               getSlackUser: withEnv(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(({ userId }) => Slack.getUserFromSlack(userId)),
+                  RTE.chainW(({ userId }) => CommunitySlack.getUserFromSlack(userId)),
                 ),
                 {
                   ...env.logger,

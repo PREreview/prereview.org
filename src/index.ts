@@ -83,6 +83,7 @@ pipe(
       CommunitySlack.layerChannelIdsConfig({
         shareAReview: Schema.Config('SLACK_SHARE_REVIEW_CHANNEL_ID', Slack.ChannelId),
       }),
+      CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),
       FeatureFlags.layerConfig({
         aiReviewsAsCc0: pipe(
           Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
@@ -109,7 +110,6 @@ pipe(
         Slack.SlackApi,
         Config.all({
           apiToken: Config.redacted('SLACK_API_TOKEN'),
-          apiUpdate: Config.withDefault(Config.boolean('SLACK_UPDATE'), false),
         }),
       ),
       Layer.effect(

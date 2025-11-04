@@ -4,7 +4,9 @@ import type { CommunitySlackChannelIds } from './ChannelIds.js'
 import { ShareDatasetReview } from './ShareDatasetReview/index.ts'
 
 export * from './ChannelIds.ts'
+export * from './legacy-slack.ts'
 export { FailedToShareDatasetReview, type DatasetReview } from './ShareDatasetReview/index.ts'
+export * from './ShouldUpdateCommunitySlack.ts'
 
 export class CommunitySlack extends Context.Tag('CommunitySlack')<
   CommunitySlack,

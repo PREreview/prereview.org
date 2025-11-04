@@ -6,9 +6,6 @@ import * as fc from '../../fc.ts'
 export * from '../../fc.ts'
 
 export const slackApi = (): fc.Arbitrary<typeof Slack.SlackApi.Service> =>
-  fc.record({
-    apiToken: fc.redacted(fc.string()),
-    apiUpdate: fc.boolean(),
-  })
+  fc.record({ apiToken: fc.redacted(fc.string()) })
 
 export const chatPostMessageInput = (): fc.Arbitrary<ChatPostMessageInput> => Arbitrary.make(ChatPostMessageInput)
