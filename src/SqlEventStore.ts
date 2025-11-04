@@ -231,16 +231,8 @@ const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient => PgCli
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 
-const PgResultsTypeFromSelf = Schema.declare(
-  (input: unknown): input is Array<unknown> & { count: number } =>
-    Array.isArray(input) && 'count' in input && typeof input.count === 'number',
-)
-
-const PgResults = Schema.transformOrFail(PgResultsTypeFromSelf, Schema.Struct({ rowsAffected: Schema.Number }), {
-  strict: true,
-  decode: results => ParseResult.succeed({ rowsAffected: results.count }),
-  encode: (results, _, ast) =>
-    ParseResult.fail(new ParseResult.Forbidden(ast, results, 'Encoding PgResults is forbidden.')),
+const PgResults = Schema.Struct({
+  rowsAffected: Schema.propertySignature(Schema.Number).pipe(Schema.fromKey('rowCount')),
 })
 
 const SqlQueryResults = Schema.Union(LibsqlResults, PgResults)
