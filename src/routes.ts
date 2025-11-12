@@ -503,7 +503,12 @@ export const reviewsMatch = pipe(
   P.then(P.end),
 )
 
-export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
+export const reviewMatch = pipe(
+  P.lit('reviews'),
+  P.then(type('id', IntegerFromStringC)),
+  P.then(query(C.partial({}))),
+  P.then(P.end),
+)
 
 const writeReviewBaseMatch = pipe(
   P.lit('preprints'),
