@@ -37,7 +37,7 @@
     "logger-fp-ts": "^0.2.2",
     "logging-ts": "^0.3.4",
     "markdown-it": "^14.1.0",
-    "mjml": "^4.16.1",
+    "mjml": "^4.17.0",
     "nanohtml": "^1.10.0",
     "nodemailer": "^7.0.10",
     "normalize-url": "^8.1.0",
