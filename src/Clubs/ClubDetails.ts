@@ -849,4 +849,21 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       { name: 'Andrés Posbeyikian', orcid: OrcidId('0000-0002-9368-6659') },
     ],
   },
+  'zmbp-preprint-club': {
+    name: 'ZMBP Preprint Club',
+    description: html`
+      <p>
+        The Center for Molecular Biology of Plants (ZMBP) aims to understand the molecular mechanisms that ensure the
+        survival of plants as complex, multicellular organisms. Particular emphasis is placed on plant development, the
+        interaction between plants and microbes, and plant responses and adaptations to changing environmental
+        conditions.
+      </p>
+      <p>
+        The ZMBP Preprint Club brings together ZMBP scientists from all levels to discuss the most recent preprints.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2025-11-19'),
+    leads: [{ name: 'Mauricio P. Contreras', orcid: OrcidId('0000-0001-6002-0730') }],
+    contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
+  },
 }

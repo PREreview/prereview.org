@@ -47,4 +47,5 @@ export const ClubIdSchema = Schema.Literal(
   'sun-bioinformatics',
   'surrey-microbiology',
   'tsl-preprint-club',
+  'zmbp-preprint-club',
 )
