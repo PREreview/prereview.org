@@ -55,7 +55,7 @@
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@csstools/postcss-global-data": "^3.1.0",
-    "@effect/language-service": "^0.55.3",
+    "@effect/language-service": "^0.56.0",
     "@fast-check/jest": "^2.1.1",
     "@ibm/plex": "^6.4.1",
     "@playwright/test": "^1.56.1",
