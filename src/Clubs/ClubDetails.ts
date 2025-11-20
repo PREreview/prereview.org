@@ -853,7 +853,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     name: 'ZMBP Preprint Club',
     description: html`
       <p>
-        The Center for Molecular Biology of Plants (ZMBP) aims to understand the molecular mechanisms that ensure the
+        The Center for Plant Molecular Biology (ZMBP) aims to understand the molecular mechanisms that ensure the
         survival of plants as complex, multicellular organisms. Particular emphasis is placed on plant development, the
         interaction between plants and microbes, and plant responses and adaptations to changing environmental
         conditions.
