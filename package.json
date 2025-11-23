@@ -8,7 +8,7 @@
   "dependencies": {
     "@arendjr/text-clipper": "npm:@jsr/arendjr__text-clipper@^3.0.0",
     "@effect/platform": "^0.93.3",
-    "@effect/platform-node": "^0.100.0",
+    "@effect/platform-node": "^0.101.0",
     "@effect/sql": "^0.48.0",
     "@effect/sql-libsql": "^0.38.0",
     "@effect/sql-pg": "^0.49.6",
