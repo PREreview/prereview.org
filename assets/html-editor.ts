@@ -138,9 +138,14 @@ export class HtmlEditor extends HTMLElement {
       container.setAttribute('aria-busy', 'false')
       form.removeEventListener('submit', preventDefault)
       buttons.forEach(enableButton)
+      updateToolbar()
     })
 
     editor.on('transaction', () => {
+      updateToolbar()
+    })
+
+    const updateToolbar = () => {
       bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
       bold.setAttribute('aria-disabled', editor.can().toggleBold() ? 'false' : 'true')
       italic.setAttribute('aria-pressed', editor.isActive('italic') ? 'true' : 'false')
@@ -178,7 +183,7 @@ export class HtmlEditor extends HTMLElement {
         'aria-disabled',
         editor.can().toggleOrderedList() || editor.can().toggleBulletList() ? 'false' : 'true',
       )
-    })
+    }
 
     bold.addEventListener('click', () => {
       if (bold.getAttribute('aria-disabled') === 'true') {
