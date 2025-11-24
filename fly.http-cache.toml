@@ -2,7 +2,7 @@ app = 'http-cache'
 primary_region = 'iad'
 
 [build]
-image = 'redis:8.2.2'
+image = 'redis:8.4.0'
 
 [[vm]]
 memory = '512mb'
