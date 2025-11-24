@@ -1,0 +1,33 @@
+name: Fix Redis versions
+
+on:
+  push:
+    branches:
+      - 'dependabot/docker/redis-*'
+
+permissions:
+  contents: read
+
+jobs:
+  fix-redis-versions:
+    name: 'Fix Redis versions'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v6.0.0
+        with:
+          token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
+
+      - name: 'Fix Redis versions'
+        run: scripts/fix-redis-versions.sh
+
+      - name: 'Commit changes'
+        uses: stefanzweifel/git-auto-commit-action@v7.0.0
+        if: ${{ !env.ACT }}
+        with:
+          commit_message: '[dependabot skip] Fix Redis versions'
+          commit_user_name: 'prereview-bot'
+          commit_user_email: 'engineering@prereview.org'
+          commit_author: 'prereview-bot <engineering@prereview.org>'
