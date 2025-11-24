@@ -514,6 +514,43 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+  deploy-http-cache:
+    name: 'Deploy (${{ matrix.instance }})'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - push
+    strategy:
+      fail-fast: false
+      matrix:
+        instance: ['http-cache', 'http-cache-sandbox']
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v6.0.0
+        with:
+          sparse-checkout: fly.${{ matrix.instance }}.toml
+          sparse-checkout-cone-mode: false
+
+      - name: 'Check if sources have changed'
+        uses: dorny/paths-filter@v3.0.2
+        id: changes
+        with:
+          filters: |
+            sources:
+              - 'fly.${{ matrix.instance }}.toml'
+
+      - name: 'Set up flyctl'
+        if: steps.changes.outputs.sources == 'true'
+        uses: superfly/flyctl-actions/setup-flyctl@1.5
+
+      - name: 'Deploy app'
+        if: steps.changes.outputs.sources == 'true'
+        run: flyctl deploy --config fly.${{ matrix.instance }}.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
   crowdin:
     name: 'Update Crowdin'
     runs-on: ubuntu-22.04
@@ -556,6 +593,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - deploy
+      - deploy-http-cache
     if: failure() && github.ref == 'refs/heads/main'
 
     steps:
