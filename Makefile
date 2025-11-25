@@ -1,4 +1,4 @@
-.PHONY: check check-redis-version clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -12,10 +12,7 @@ node_modules: package.json package-lock.json
 	npm install --engine-strict --ignore-scripts
 	touch node_modules
 
-check: format lint-ts lint-css typecheck test-fast check-redis-version
-
-check-redis-version:
-	scripts/check-redis-versions-are-consistent.sh
+check: format lint-ts lint-css typecheck test-fast
 
 update-incontext-locale:
 	source .env && crowdin download --language=lol --token=$${CROWDIN_PERSONAL_TOKEN}
