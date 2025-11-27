@@ -27,6 +27,7 @@ src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -
 	touch src/manifest.json
 
 start-app: .env node_modules start-services src/manifest.json
+	POSTGRES_URL=postgres://postgres:password@$(shell docker compose port postgres 5432) \
 	REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
@@ -43,7 +44,7 @@ prod: .env
 	source .env && mkcert -install -cert-file .dev/server.crt -key-file .dev/server.key $$(echo $${PUBLIC_URL} | awk -F[/:] '{print $$4}')
 
 start-services: .dev/server.crt .dev/server.key
-	docker compose up --detach mailcatcher nginx redis cockroachdb
+	docker compose up --detach mailcatcher nginx postgres redis
 
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
