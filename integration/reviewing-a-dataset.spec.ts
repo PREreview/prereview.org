@@ -6,11 +6,11 @@ import {
   canLogIn,
   canReviewDatasets,
   expect,
-  useCockroachDB,
+  usePostgresDB,
   willPublishADatasetReview,
 } from './base.ts'
 
-const test = baseTest.extend(useCockroachDB).extend(canReviewDatasets)
+const test = baseTest.extend(usePostgresDB).extend(canReviewDatasets)
 
 test.extend(canLogIn).extend(willPublishADatasetReview)('can review a dataset', async ({ javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'commit' })

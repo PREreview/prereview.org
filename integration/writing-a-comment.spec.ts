@@ -9,12 +9,12 @@ import {
   expect,
   hasAnUnverifiedEmailAddress,
   hasAVerifiedEmailAddress,
-  useCockroachDB,
+  usePostgresDB,
   waitForNotBusy,
   willPublishAComment,
 } from './base.ts'
 
-const test = baseTest.extend(useCockroachDB)
+const test = baseTest.extend(usePostgresDB)
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAComment)(
   'can write a comment on a PREreview',

@@ -1362,7 +1362,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
 }
 
-export const useCockroachDB: Fixtures<
+export const usePostgresDB: Fixtures<
   Pick<AppFixtures, 'sqlClientLayer'>,
   Record<never, never>,
   Pick<AppFixtures, 'sqlClientLayer'>
@@ -1370,7 +1370,7 @@ export const useCockroachDB: Fixtures<
   sqlClientLayer: async ({}, use) => {
     await use(
       pipe(
-        Config.url('COCKROACHDB_URL'),
+        Config.url('POSTGRES_URL'),
         Effect.andThen(url =>
           Effect.gen(function* () {
             const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
