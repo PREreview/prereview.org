@@ -676,7 +676,7 @@ export const authoreaPreprintUrl = (): fc.Arbitrary<[URL, AuthoreaPreprintId]> =
   authoreaPreprintId().map(id => [new URL(`https://www.authorea.com/doi/full/${encodeURIComponent(id.value)}`), id])
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
-  doi(constant('1101')).map(doi => new BiorxivPreprintId({ value: doi }))
+  doi(constantFrom('1101', '64898')).map(doi => new BiorxivPreprintId({ value: doi }))
 
 export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
   fc
@@ -763,7 +763,7 @@ export const lifecycleJournalPreprintUrl = (): fc.Arbitrary<
     ])
 
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
-  doi(constant('1101')).map(doi => new MedrxivPreprintId({ value: doi }))
+  doi(constantFrom('1101', '64898')).map(doi => new MedrxivPreprintId({ value: doi }))
 
 export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
   fc
@@ -946,7 +946,7 @@ export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
     ])
 
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
-  doi(constant('1101')).map(doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
+  doi(constantFrom('1101', '64898')).map(doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
 
 export const osfOrLifecycleJournalPreprintId = (): fc.Arbitrary<OsfOrLifecycleJournalPreprintId> =>
   doi(constant('17605')).map(doi => new OsfOrLifecycleJournalPreprintId({ value: doi }))

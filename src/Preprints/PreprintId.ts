@@ -66,7 +66,7 @@ export class AuthoreaPreprintId extends Schema.TaggedClass<AuthoreaPreprintId>()
 }) {}
 
 export class BiorxivPreprintId extends Schema.TaggedClass<BiorxivPreprintId>()('BiorxivPreprintId', {
-  value: Doi.RegistrantDoiSchema('1101'),
+  value: Doi.RegistrantDoiSchema('1101', '64898'),
 }) {}
 
 export class ChemrxivPreprintId extends Schema.TaggedClass<ChemrxivPreprintId>()('ChemrxivPreprintId', {
@@ -105,7 +105,7 @@ export class LifecycleJournalPreprintId extends Schema.TaggedClass<LifecycleJour
 ) {}
 
 export class MedrxivPreprintId extends Schema.TaggedClass<MedrxivPreprintId>()('MedrxivPreprintId', {
-  value: Doi.RegistrantDoiSchema('1101'),
+  value: Doi.RegistrantDoiSchema('1101', '64898'),
 }) {}
 
 export class MetaarxivPreprintId extends Schema.TaggedClass<MetaarxivPreprintId>()('MetaarxivPreprintId', {
@@ -175,7 +175,7 @@ export class ZenodoPreprintId extends Schema.TaggedClass<ZenodoPreprintId>()('Ze
 
 export class BiorxivOrMedrxivPreprintId extends Schema.TaggedClass<BiorxivOrMedrxivPreprintId>()(
   'BiorxivOrMedrxivPreprintId',
-  { value: Doi.RegistrantDoiSchema('1101') },
+  { value: Doi.RegistrantDoiSchema('1101', '64898') },
 ) {}
 
 export class OsfOrLifecycleJournalPreprintId extends Schema.TaggedClass<OsfOrLifecycleJournalPreprintId>()(
@@ -279,6 +279,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '57844',
   '60763',
   '62329',
+  '64898',
 )
 
 export const IndeterminatePreprintIdFromDoiSchema = Schema.transformOrFail(
@@ -338,6 +339,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
     .when(Doi.hasRegistrant('57844'), doi => new ArcadiaSciencePreprintId({ value: doi }))
     .when(Doi.hasRegistrant('60763'), doi => new AfricarxivUbuntunetPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('62329'), doi => new CurvenotePreprintId({ value: doi }))
+    .when(Doi.hasRegistrant('64898'), doi => new BiorxivOrMedrxivPreprintId({ value: doi }))
     .exhaustive()
 }
 
