@@ -371,7 +371,10 @@ export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
     .otherwise(Array.empty)
 }
 
-const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi, Array.fromOption)
+const extractFromDoiPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
+  parsePreprintDoi,
+  Array.fromOption,
+)
 
 const extractFromArxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
