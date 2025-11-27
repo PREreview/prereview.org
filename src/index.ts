@@ -49,6 +49,14 @@ const CockroachClientLayer = Layer.mergeAll(
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
 )
 
+const PostgresClientLayer = Layer.mergeAll(
+  PgClient.layerConfig({
+    url: Config.redacted(Config.string('POSTGRES_URL')),
+  }),
+  Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
+  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
+)
+
 const LibsqlClientLayer = Layer.mergeAll(
   LibsqlClient.layerConfig({
     url: Schema.Config(
@@ -63,6 +71,7 @@ const LibsqlClientLayer = Layer.mergeAll(
 
 const SqlClient = pipe(
   CockroachClientLayer,
+  Layer.orElse(() => PostgresClientLayer),
   Layer.orElse(() => LibsqlClientLayer),
 )
 

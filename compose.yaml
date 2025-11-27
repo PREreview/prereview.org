@@ -28,6 +28,12 @@ services:
       - './.dev:/etc/nginx:ro'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+  postgres:
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
   redis:
     build:
       context: .

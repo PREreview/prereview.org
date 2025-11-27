@@ -24,11 +24,6 @@ export const make: Effect.Effect<
     )
   `
 
-  yield* sql.onDialectOrElse({
-    pg: () => sql`CREATE INDEX IF NOT EXISTS events_timestamp_idx ON events (timestamp) STORING (type, payload)`,
-    orElse: () => Effect.void,
-  })
-
   const buildFilterCondition = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
     filter.predicates && Struct.keys(filter.predicates).length > 0
       ? sql.and([
