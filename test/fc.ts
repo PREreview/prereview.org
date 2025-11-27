@@ -11,7 +11,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
-import { Doi, isDoi } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
@@ -680,12 +680,13 @@ export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
 
 export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
   fc
-    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 })
-    .filter(suffix => isDoi(`10.1101/${suffix}`))
-    .map(suffix => [
-      new URL(`https://www.biorxiv.org/content/10.1101/${suffix}`),
-      new BiorxivPreprintId({ value: Doi(`10.1101/${suffix}`) }),
-    ])
+    .tuple(
+      constantFrom('1101', '64898'),
+      fc.string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 }),
+    )
+    .map(([registrant, suffix]) => `10.${registrant}/${suffix}`)
+    .filter(Predicate.compose(isDoi, hasRegistrant('1101', '64898')))
+    .map(doi => [new URL(`https://www.biorxiv.org/content/${doi}`), new BiorxivPreprintId({ value: doi })])
 
 export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
   doi(constant('26434')).map(doi => new ChemrxivPreprintId({ value: doi }))
@@ -767,12 +768,13 @@ export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
 
 export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
   fc
-    .string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 })
-    .filter(suffix => isDoi(`10.1101/${suffix}`))
-    .map(suffix => [
-      new URL(`https://www.medrxiv.org/content/10.1101/${suffix}`),
-      new MedrxivPreprintId({ value: Doi(`10.1101/${suffix}`) }),
-    ])
+    .tuple(
+      constantFrom('1101', '64898'),
+      fc.string({ unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), minLength: 1 }),
+    )
+    .map(([registrant, suffix]) => `10.${registrant}/${suffix}`)
+    .filter(Predicate.compose(isDoi, hasRegistrant('1101', '64898')))
+    .map(doi => [new URL(`https://www.medrxiv.org/content/${doi}`), new MedrxivPreprintId({ value: doi })])
 
 export const metaarxivPreprintId = (): fc.Arbitrary<MetaarxivPreprintId> =>
   doi(constant('31222')).map(doi => new MetaarxivPreprintId({ value: doi }))

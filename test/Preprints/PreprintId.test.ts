@@ -221,53 +221,59 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.AuthoreaPreprintId({ value: doi })))
   })
 
-  test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
       [
         [
-          new URL('http://www.biorxiv.org/content/10.1101/2023.02.13.528276'), // http
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('https://www.biorxiv.org/content/10.1101/2023.02.13.528276'), // old prefix
+          [Doi('10.1101/2023.02.13.528276')],
         ],
       ],
       [
         [
-          new URL('https://www.biorxiv.org/content/10.1101/2023.02.13.528276v2'), // with version
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('http://www.biorxiv.org/content/10.64898/2026.01.01.123456'), // http
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('https://www.biorxiv.org/content/10.1101/2023.02.13.528276v2.article-info'), // with section
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('https://www.biorxiv.org/content/10.64898/2026.01.01.123456v2'), // with version
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('https://www.biorxiv.org/content/10.1101/2023.02.13.528276v2.full.pdf'), // pdf
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('https://www.biorxiv.org/content/10.64898/2026.01.01.123456v2.article-info'), // with section
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('https://www.biorxiv.org/content/10.1101/2023.02.13.528276v2.full.pdf+html'), // pdf
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('https://www.biorxiv.org/content/10.64898/2026.01.01.123456v2.full.pdf'), // pdf
+          [Doi('10.64898/2026.01.01.123456')],
+        ],
+      ],
+      [
+        [
+          new URL('https://www.biorxiv.org/content/10.64898/2026.01.01.123456v2.full.pdf+html'), // pdf
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
           new URL('https://www.biorxiv.org/content/biorxiv/early/2023/02/17/2023.02.13.528276.full.pdf'), // pdf
-          Doi('10.1101/2023.02.13.528276'),
+          [Doi('10.1101/2023.02.13.528276'), Doi('10.64898/2023.02.13.528276')],
         ],
       ],
       [
         [
-          new URL('http://biorxiv.org/lookup/doi/10.1101/2023.02.13.528276'), // DOI resolution
-          Doi('10.1101/2023.02.13.528276'),
+          new URL('http://biorxiv.org/lookup/doi/10.64898/2026.01.01.123456'), // DOI resolution
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
     ],
-  })('with a biorxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.BiorxivPreprintId({ value: doi })))
+  })('with a biorxiv.org URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => new _.BiorxivPreprintId({ value: doi })))
   })
 
   test.prop([fc.chemrxivPreprintUrl()], {
@@ -443,66 +449,77 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(ids)
   })
 
-  test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {
     examples: [
       [
         [
-          new URL('http://www.medrxiv.org/content/10.1101/2020.04.08.20058073'), // http
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073'), // old prefix
+          [Doi('10.1101/2020.04.08.20058073')],
         ],
       ],
       [
         [
-          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3'), // with version
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('http://www.medrxiv.org/content/10.64898/2026.01.01.123456'), // http
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.article-info'), // with section
-          Doi('10.1101/2020.04.08.20058073'),
-        ],
-      ],
-      [[new URL('http://medrxiv.org/cgi/content/short/2020.04.08.20058073'), Doi('10.1101/2020.04.08.20058073')]],
-      [
-        [
-          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.full.pdf'), // pdf
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('https://www.medrxiv.org/content/10.64898/2026.01.01.123456v3'), // with version
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.full.pdf+html'), // pdf
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('https://www.medrxiv.org/content/10.64898/2026.01.01.123456v3.article-info'), // with section
+          [Doi('10.64898/2026.01.01.123456')],
+        ],
+      ],
+      [
+        [
+          new URL('http://medrxiv.org/cgi/content/short/2020.04.08.20058073'),
+          [Doi('10.1101/2020.04.08.20058073'), Doi('10.64898/2020.04.08.20058073')],
+        ],
+      ],
+      [
+        [
+          new URL('https://www.medrxiv.org/content/10.64898/2026.01.01.123456v3.full.pdf'), // pdf
+          [Doi('10.64898/2026.01.01.123456')],
+        ],
+      ],
+      [
+        [
+          new URL('https://www.medrxiv.org/content/10.64898/2026.01.01.123456v3.full.pdf+html'), // pdf
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
           new URL('https://www.medrxiv.org/content/medrxiv/early/2020/09/10/2020.04.08.20058073.full.pdf'), // pdf
-          Doi('10.1101/2020.04.08.20058073'),
+          [Doi('10.1101/2020.04.08.20058073'), Doi('10.64898/2020.04.08.20058073')],
         ],
       ],
       [
         [
-          new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.ppt'), // ppt
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('https://www.medrxiv.org/content/10.64898/2026.01.01.123456v3.ppt'), // ppt
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
-          new URL('http://medrxiv.org/lookup/doi/10.1101/2020.04.08.20058073'), // DOI resolution
-          Doi('10.1101/2020.04.08.20058073'),
+          new URL('http://medrxiv.org/lookup/doi/10.64898/2026.01.01.123456'), // DOI resolution
+          [Doi('10.64898/2026.01.01.123456')],
         ],
       ],
       [
         [
           new URL('https://www.medrxiv.org/content/medrxiv/early/2023/02/17/2023.01.17.23284673/embed/graphic-3.gif'), // article thumbnail
-          Doi('10.1101/2023.01.17.23284673'),
+          [Doi('10.1101/2023.01.17.23284673'), Doi('10.64898/2023.01.17.23284673')],
         ],
       ],
     ],
-  })('with a medrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(Array.of(new _.MedrxivPreprintId({ value: doi })))
+  })('with a medrxiv.org URL', ([url, dois]) => {
+    expect(_.fromUrl(url)).toStrictEqual(dois.map(doi => new _.MedrxivPreprintId({ value: doi })))
   })
 
   test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, Array.of(id.value)] as const)], {

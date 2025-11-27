@@ -389,18 +389,37 @@ const extractFromAuthoreaPath: (path: string) => ReadonlyArray<IndeterminatePrep
   Array.fromOption,
 )
 
-const extractFromBiorxivMedrxivPath = (
-  type: 'biorxiv' | 'medrxiv',
-): ((path: string) => ReadonlyArray<IndeterminatePreprintId>) =>
+const extractFromBiorxivMedrxivPath =
+  (type: 'biorxiv' | 'medrxiv') =>
+  (path: string): ReadonlyArray<IndeterminatePreprintId> =>
+    pipe(
+      extractDoiFromBiorxivMedrxivPathWithPrefix(path),
+      Option.orElse(() => extractDoiFromBiorxivMedrxivPathWithoutPrefix(path)),
+      Option.match({ onSome: Array.ensure, onNone: Array.empty }),
+      Array.map(doi =>
+        type === 'biorxiv' ? new BiorxivPreprintId({ value: doi }) : new MedrxivPreprintId({ value: doi }),
+      ),
+    )
+
+const extractDoiFromBiorxivMedrxivPathWithPrefix: (path: string) => Option.Option<BiorxivOrMedrxivPreprintId['value']> =
   flow(
-    Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
-    Option.andThen(suffix => `10.1101/${suffix}`),
-    Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('1101'))),
-    Option.andThen(doi =>
-      type === 'biorxiv' ? new BiorxivPreprintId({ value: doi }) : new MedrxivPreprintId({ value: doi }),
+    Option.liftNullable(
+      s => /(?:^|\/)(?:content|lookup)\/(?:.+?\/)?(10\.[0-9.]+\/[0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$$/i.exec(s)?.[1],
     ),
-    Array.fromOption,
+    Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('1101', '64898'))),
   )
+
+const extractDoiFromBiorxivMedrxivPathWithoutPrefix: (
+  path: string,
+) => Option.Option<ReadonlyArray<BiorxivOrMedrxivPreprintId['value']>> = flow(
+  Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
+  Option.andThen(suffix =>
+    Array.filter(
+      [`10.1101/${suffix}`, `10.64898/${suffix}`],
+      Predicate.compose(Doi.isDoi, Doi.hasRegistrant('1101', '64898')),
+    ),
+  ),
+)
 
 const extractFromEdarxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
