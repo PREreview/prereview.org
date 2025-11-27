@@ -344,7 +344,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
 }
 
 export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
-  return match([url.hostname.replace('www.', ''), url.pathname.slice(1)])
+  return match([url.hostname.replace('www.', ''), decodeURIComponent(url.pathname.slice(1))])
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
     .with(['africarxiv.figshare.com', P.select()], extractFromFigsharePath('africarxiv'))
     .with(['arxiv.org', P.select()], extractFromArxivPath)
@@ -373,24 +373,23 @@ export function fromUrl(url: URL): ReadonlyArray<IndeterminatePreprintId> {
 
 const extractFromDoiPath = flow(decodeURIComponent, parsePreprintDoi, Array.fromOption)
 
-const extractFromArxivPath = flow(
-  decodeURIComponent,
+const extractFromArxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i.exec(s)?.[1]),
   Option.andThen(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromAuthoreaPath = flow(
-  decodeURIComponent,
+const extractFromAuthoreaPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^doi\/full\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('22541'))),
   Option.andThen(doi => new AuthoreaPreprintId({ value: doi })),
   Array.fromOption,
 )
 
-const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
+const extractFromBiorxivMedrxivPath = (
+  type: 'biorxiv' | 'medrxiv',
+): ((path: string) => ReadonlyArray<IndeterminatePreprintId>) =>
   flow(
-    decodeURIComponent,
     Option.liftNullable(s => /(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i.exec(s)?.[1]),
     Option.andThen(suffix => `10.1101/${suffix}`),
     Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('1101'))),
@@ -400,24 +399,21 @@ const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
     Array.fromOption,
   )
 
-const extractFromEdarxivPath = flow(
-  decodeURIComponent,
+const extractFromEdarxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.35542/osf.io/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromEngrxivPath = flow(
-  decodeURIComponent,
+const extractFromEngrxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.31224/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const extractFromFigsharePath = (type: 'africarxiv') =>
+const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => ReadonlyArray<IndeterminatePreprintId>) =>
   flow(
-    decodeURIComponent,
     Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),
     Option.andThen(id => `10.6084/m9.figshare.${id}.v1`),
     Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('6084'))),
@@ -425,22 +421,19 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
     Array.fromOption,
   )
 
-const extractFromJxivPath = flow(
-  decodeURIComponent,
+const extractFromJxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^index\.php\/jxiv\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.51094/jxiv.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromNeurolibrePath = flow(
-  decodeURIComponent,
+const extractFromNeurolibrePath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^(?:papers\/)?10.55458\/neurolibre\.([0-9]+)(?:\/|\.|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.55458/neurolibre.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromOsfPath = flow(
-  decodeURIComponent,
+const extractFromOsfPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s =>
     /^(?:(preprints)\/)?(?:(africarxiv|edarxiv|metaarxiv|psyarxiv|socarxiv)\/)?([a-z0-9]+)(?:_v([1-9][0-9]*))?(?:$|\/)/i.exec(
       s,
@@ -465,37 +458,32 @@ const makeOsfDois = (prefix: string, id: string, version: string | undefined) =>
     ? [`10.${prefix}/osf.io/${id}_v${version}`, `10.${prefix}/osf.io/${id}`]
     : Array.of(`10.${prefix}/osf.io/${id}`)
 
-const extractFromPhilsciPath = flow(
-  decodeURIComponent,
+const extractFromPhilsciPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(Schema.decodeOption(Schema.NumberFromString)),
   Option.andThen(id => new PhilsciPreprintId({ value: id })),
   Array.fromOption,
 )
 
-const extractFromPreprintsorgPath = flow(
-  decodeURIComponent,
+const extractFromPreprintsorgPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^manuscript\/([a-z0-9.]+)\/(v[1-9][0-9]*)(?:$|\/)/i.exec(s)),
   Option.andThen(flow(([, id, version]) => `10.20944/preprints${id}.${version}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromPsyarxivPath = flow(
-  decodeURIComponent,
+const extractFromPsyarxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.31234/osf.io/${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromResearchSquarePath = flow(
-  decodeURIComponent,
+const extractFromResearchSquarePath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.21203/rs.3.${id}`, parsePreprintDoi)),
   Array.fromOption,
 )
 
-const extractFromScieloPath = flow(
-  decodeURIComponent,
+const extractFromScieloPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.1590/SciELOPreprints.${id}`, parsePreprintDoi)),
   Array.fromOption,
@@ -507,8 +495,7 @@ const extractFromScienceOpenQueryString = flow(
   Array.fromOption,
 )
 
-const extractFromSsrnPath = flow(
-  decodeURIComponent,
+const extractFromSsrnPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^abstract=([1-9][0-9]*)(?:\/|$)/i.exec(s)?.[1]),
   Option.andThen(flow(id => `10.2139/ssrn.${id}`, parsePreprintDoi)),
   Array.fromOption,
@@ -523,16 +510,14 @@ const extractFromSsrnQueryString = (urlParams: UrlParams.UrlParams) =>
     Array.fromOption,
   )
 
-const extractFromTechrxivPath = flow(
-  decodeURIComponent,
+const extractFromTechrxivPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^doi\/(?:full|pdf|xml)\/(.+?)$/i.exec(s)?.[1]),
   Option.filter(Predicate.compose(Doi.isDoi, Doi.hasRegistrant('36227'))),
   Option.andThen(doi => new TechrxivPreprintId({ value: doi })),
   Array.fromOption,
 )
 
-const extractFromZenodoPath = flow(
-  decodeURIComponent,
+const extractFromZenodoPath: (path: string) => ReadonlyArray<IndeterminatePreprintId> = flow(
   Option.liftNullable(s => /^records?\/([1-9][0-9]*)(?:$|\/)/.exec(s)?.[1]),
   Option.andThen(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
   Array.fromOption,
