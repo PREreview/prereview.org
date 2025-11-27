@@ -1,4 +1,4 @@
-import { type Array, Data } from 'effect'
+import { type Array, Data, Schema } from 'effect'
 
 export class DatasetReviewHasNotBeenStarted extends Data.TaggedError('DatasetReviewHasNotBeenStarted') {}
 
@@ -62,25 +62,26 @@ export class DatasetReviewDoesNotHaveAZenodoRecord extends Data.TaggedError('Dat
   cause?: unknown
 }> {}
 
-export class FailedToCreateRecordOnZenodo extends Data.TaggedError('FailedToCreateRecordOnZenodo')<{
-  cause?: unknown
-}> {}
+export class FailedToCreateRecordOnZenodo extends Schema.TaggedError<FailedToCreateRecordOnZenodo>(
+  'FailedToCreateRecordOnZenodo',
+)('FailedToCreateRecordOnZenodo', {}) {}
 
-export class FailedToNotifyCommunitySlack extends Data.TaggedError('FailedToNotifyCommunitySlack')<{
-  cause?: unknown
-}> {}
+export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>(
+  'FailedToNotifyCommunitySlack',
+)('FailedToNotifyCommunitySlack', {}) {}
 
-export class FailedToPublishRecordOnZenodo extends Data.TaggedError('FailedToPublishRecordOnZenodo')<{
-  cause?: unknown
-}> {}
+export class FailedToPublishRecordOnZenodo extends Schema.TaggedError<FailedToPublishRecordOnZenodo>(
+  'FailedToPublishRecordOnZenodo',
+)('FailedToPublishRecordOnZenodo', {}) {}
 
-export class FailedToUseZenodoDoi extends Data.TaggedError('FailedToUseZenodoDoi')<{
-  cause?: unknown
-}> {}
+export class FailedToUseZenodoDoi extends Schema.TaggedError<FailedToUseZenodoDoi>('FailedToUseZenodoDoi')(
+  'FailedToUseZenodoDoi',
+  {},
+) {}
 
-export class FailedToMarkDatasetReviewAsPublished extends Data.TaggedError('FailedToMarkDatasetReviewAsPublished')<{
-  cause?: unknown
-}> {}
+export class FailedToMarkDatasetReviewAsPublished extends Schema.TaggedError<FailedToMarkDatasetReviewAsPublished>(
+  'FailedToMarkDatasetReviewAsPublished',
+)('FailedToMarkDatasetReviewAsPublished', {}) {}
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
