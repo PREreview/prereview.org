@@ -37,18 +37,6 @@ import * as TemplatePage from './TemplatePage.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
 
-const CockroachClientLayer = Layer.mergeAll(
-  PgClient.layerConfig({
-    url: Config.redacted(Config.string('COCKROACHDB_URL')),
-    ssl: pipe(
-      Config.url('COCKROACHDB_URL'),
-      Config.map(url => url.searchParams.has('sslmode', 'verify-full')),
-    ),
-  }),
-  Layer.effectDiscard(Effect.logDebug('Cockroach Database connected')),
-  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Cockroach Database disconnected'))),
-)
-
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({
     url: Config.redacted(Config.string('POSTGRES_URL')),
@@ -70,8 +58,7 @@ const LibsqlClientLayer = Layer.mergeAll(
 )
 
 const SqlClient = pipe(
-  CockroachClientLayer,
-  Layer.orElse(() => PostgresClientLayer),
+  PostgresClientLayer,
   Layer.orElse(() => LibsqlClientLayer),
 )
 

@@ -40,14 +40,3 @@ services:
       target: redis
     ports:
       - 6379:6379
-  cockroachdb:
-    image: cockroachdb/cockroach
-    command: ['start-single-node', '--insecure']
-    ports:
-      - 8080:8080
-      - 26257:26257
-    healthcheck:
-      test: ['CMD', 'curl', '--fail', '--no-progress-meter', 'http://localhost:8080/health']
-      start_period: 60s
-    environment:
-      - COCKROACH_USER=prereview
