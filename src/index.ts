@@ -1,7 +1,7 @@
-import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
+import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
+import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
-import { WorkflowEngine } from '@effect/workflow'
 import {
   Array,
   Config,
@@ -13,6 +13,7 @@ import {
   Logger,
   LogLevel,
   Match,
+  Option,
   pipe,
   Schema,
 } from 'effect'
@@ -63,6 +64,23 @@ const SqlClient = pipe(
   Layer.orElse(() => LibsqlClientLayer),
 )
 
+const ClusterLayer = Layer.unwrapEffect(
+  Effect.andThen(
+    Config.withDefault(
+      Config.all({ runnerIp: Config.string('FLY_PRIVATE_IP'), listenHost: Config.succeed('fly-local-6pn') }),
+      { runnerIp: 'localhost', listenHost: 'localhost' },
+    ),
+    ({ runnerIp, listenHost }) =>
+      NodeClusterSocket.layer({
+        shardingConfig: {
+          runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
+          runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
+          shardsPerGroup: 1,
+        },
+      }),
+  ),
+)
+
 pipe(
   Program,
   Layer.launch,
@@ -72,9 +90,10 @@ pipe(
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
       Keyv.keyvStoresLayer,
-      WorkflowEngine.layerMemory,
+      ClusterWorkflowEngine.layer,
     ),
   ),
+  Effect.provide(ClusterLayer),
   Effect.provide(
     Layer.mergeAll(
       Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
