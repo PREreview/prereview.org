@@ -5,6 +5,7 @@ import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from '@effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
+import { WorkflowEngine } from '@effect/workflow'
 import {
   test as baseTest,
   expect,
@@ -1313,6 +1314,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               origin: new URL('http://zenodo.test/'),
             }),
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
+            WorkflowEngine.layerMemory,
           ),
         ),
         Effect.provide(sqlClientLayer),

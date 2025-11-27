@@ -1,5 +1,4 @@
 import type { HttpClient } from '@effect/platform'
-import { WorkflowEngine } from '@effect/workflow'
 import KeyvRedis from '@keyv/redis'
 import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
@@ -401,5 +400,4 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
   ),
-  Layer.provide(WorkflowEngine.layerMemory),
 )

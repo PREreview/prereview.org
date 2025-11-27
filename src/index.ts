@@ -1,6 +1,7 @@
 import { NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
+import { WorkflowEngine } from '@effect/workflow'
 import {
   Array,
   Config,
@@ -71,6 +72,7 @@ pipe(
       NodeHttpClient.layer,
       CachingHttpClient.layerPersistedToRedis,
       Keyv.keyvStoresLayer,
+      WorkflowEngine.layerMemory,
     ),
   ),
   Effect.provide(
