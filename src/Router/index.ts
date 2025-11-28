@@ -15,6 +15,7 @@ import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { HomePage } from '../HomePage/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
+import { Inbox } from '../Inbox/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
 import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
@@ -445,7 +446,7 @@ export const Router = pipe(
   HttpRouter.post(
     Routes.Inbox,
     Effect.if(FeatureFlags.enableCoarNotifyInbox, {
-      onTrue: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+      onTrue: () => Inbox,
       onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
     }),
   ),

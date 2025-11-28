@@ -1,4 +1,5 @@
 export * as Cloudinary from './Cloudinary/index.ts'
+export * as CoarNotify from './CoarNotify/index.ts'
 export * as Crossref from './Crossref/index.ts'
 export * as Datacite from './Datacite/index.ts'
 export * as Ghost from './Ghost/index.ts'
