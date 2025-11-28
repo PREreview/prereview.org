@@ -2115,7 +2115,31 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'PublishDatasetReview',
   )
 
-export const event = (): fc.Arbitrary<Events.Event> => fc.oneof(commentEvent(), datasetReviewEvent())
+export const reviewRequestForAPreprintWasAccepted = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasAccepted['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasAccepted> =>
+  fc
+    .record({
+      receivedAt: instant(),
+      acceptedAt: instant(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: fc.record({
+        name: nonEmptyString(),
+      }),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
+
+export const reviewRequestEvent = (
+  args: {
+    reviewRequestId?: fc.Arbitrary<Events.ReviewRequestEvent['reviewRequestId']>
+  } = {},
+): fc.Arbitrary<Events.ReviewRequestEvent> => reviewRequestForAPreprintWasAccepted(args)
+
+export const event = (): fc.Arbitrary<Events.Event> =>
+  fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent())
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())

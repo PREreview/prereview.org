@@ -18,6 +18,8 @@ import type {
 import type { FieldId } from '../types/field.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 
+export * from './Events.ts'
+
 export interface ReviewRequest {
   readonly published: Temporal.PlainDate
   readonly fields: ReadonlyArray<FieldId>

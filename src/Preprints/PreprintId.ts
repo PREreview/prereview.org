@@ -1,5 +1,17 @@
 import { Url, UrlParams } from '@effect/platform'
-import { Array, Data, type Equivalence, Option, ParseResult, Predicate, Schema, flow, pipe } from 'effect'
+import {
+  Array,
+  Data,
+  type Equivalence,
+  Option,
+  ParseResult,
+  Predicate,
+  Schema,
+  Struct,
+  Tuple,
+  flow,
+  pipe,
+} from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { Doi } from '../types/index.ts'
@@ -292,6 +304,41 @@ export const IndeterminatePreprintIdFromDoiSchema = Schema.transformOrFail(
     encode: id => ParseResult.succeed(id.value),
   },
 )
+
+const PhilsciPreprintIdFromNumberSchema = Schema.transform(
+  Schema.NonNegativeInt,
+  Schema.typeSchema(PhilsciPreprintId),
+  {
+    strict: true,
+    decode: value => new PhilsciPreprintId({ value }),
+    encode: Struct.get('value'),
+  },
+)
+
+const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.transform(
+  Schema.TemplateLiteralParser('doi:', IndeterminatePreprintIdFromDoiSchema),
+  Schema.typeSchema(IndeterminatePreprintIdWithDoi),
+  {
+    strict: true,
+    decode: Tuple.getSecond,
+    encode: id => Tuple.make('doi:' as const, id),
+  },
+)
+
+const PhilsciPreprintIdFromStringSchema = Schema.transform(
+  Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PhilsciPreprintIdFromNumberSchema, '/'),
+  Schema.typeSchema(PhilsciPreprintId),
+  {
+    strict: true,
+    decode: Tuple.at(1),
+    encode: id => Tuple.make('https://philsci-archive.pitt.edu/' as const, id, '/' as const),
+  },
+)
+
+export const IndeterminatePreprintIdFromStringSchema: Schema.Schema<
+  IndeterminatePreprintId,
+  `doi:${string}` | `https://philsci-archive.pitt.edu/${number}/`
+> = Schema.Union(IndeterminatePreprintIdWithDoiFromStringSchema, PhilsciPreprintIdFromStringSchema)
 
 export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = D.fromRefinement(
   Predicate.compose(Doi.isDoi, isPreprintDoi),
