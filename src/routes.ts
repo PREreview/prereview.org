@@ -24,6 +24,7 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
 }
 
 export const HomePage = '/'
+export const Inbox = '/inbox'
 export const AboutUs = '/about'
 export const ChooseLocale = '/choose-language'
 export const Menu = '/menu'

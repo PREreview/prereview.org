@@ -442,6 +442,13 @@ export const Router = pipe(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
     ),
   ),
+  HttpRouter.post(
+    Routes.Inbox,
+    Effect.if(FeatureFlags.enableCoarNotifyInbox, {
+      onTrue: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
+      onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
+    }),
+  ),
   HttpRouter.get(
     '/health',
     Effect.gen(function* () {

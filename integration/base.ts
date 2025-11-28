@@ -1267,6 +1267,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               canAddMultipleAuthors,
               canLogInAsDemoUser,
               canReviewDatasets,
+              enableCoarNotifyInbox: false,
               useCrowdinInContext: false,
             }),
             Nodemailer.layer(nodemailer),

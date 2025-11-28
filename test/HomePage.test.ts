@@ -49,5 +49,6 @@ const featureFlagsLayer = FeatureFlags.layer({
   canAddMultipleAuthors: shouldNotBeCalled,
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
+  enableCoarNotifyInbox: false,
   useCrowdinInContext: false,
 })
