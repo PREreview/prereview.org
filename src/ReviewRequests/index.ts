@@ -24,6 +24,7 @@ export * from './Commands/index.ts'
 export * from './Errors.ts'
 export * from './Events.ts'
 export * from './Queries/index.ts'
+export * from './Reactions/index.ts'
 
 export interface ReviewRequest {
   readonly published: Temporal.PlainDate

@@ -333,6 +333,7 @@ export const Program = pipe(
   Layer.mergeAll(
     WebApp,
     DatasetReviews.reactionsWorker,
+    ReviewRequests.reactionsWorker,
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
   ),
