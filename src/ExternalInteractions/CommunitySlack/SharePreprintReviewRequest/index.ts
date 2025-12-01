@@ -1,4 +1,4 @@
-import { Data, type Effect } from 'effect'
+import { Data, type Effect, type Scope } from 'effect'
 import type { Slack } from '../../../ExternalApis/index.ts'
 import type { CommunitySlackChannelIds } from '../ChannelIds.ts'
 import type { PreprintReviewRequest } from './PreprintReviewRequestToChatPostMessageInput.ts'
@@ -14,5 +14,5 @@ export const SharePreprintReviewRequest: (
 ) => Effect.Effect<
   { channelId: Slack.ChannelId; messageTimestamp: Slack.Timestamp },
   FailedToSharePreprintReviewRequest,
-  CommunitySlackChannelIds | Slack.Slack
+  CommunitySlackChannelIds | Slack.Slack | Scope.Scope
 > = () => new FailedToSharePreprintReviewRequest({ cause: 'not implemented' })

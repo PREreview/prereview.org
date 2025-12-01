@@ -1,4 +1,4 @@
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, type Scope } from 'effect'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type { CommunitySlackChannelIds } from './ChannelIds.js'
 import { ShareDatasetReview } from './ShareDatasetReview/index.ts'
@@ -23,7 +23,8 @@ export class CommunitySlack extends Context.Tag('CommunitySlack')<
       ...args: Parameters<typeof SharePreprintReviewRequest>
     ) => Effect.Effect<
       Effect.Effect.Success<ReturnType<typeof SharePreprintReviewRequest>>,
-      Effect.Effect.Error<ReturnType<typeof SharePreprintReviewRequest>>
+      Effect.Effect.Error<ReturnType<typeof SharePreprintReviewRequest>>,
+      Scope.Scope
     >
   }
 >() {}
