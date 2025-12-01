@@ -20,7 +20,6 @@ import type { SubfieldId } from '../types/subfield.ts'
 import * as Commands from './Commands/index.ts'
 
 export * from './Commands/index.ts'
-export * from './Errors.ts'
 export * from './Events.ts'
 
 export interface ReviewRequest {
