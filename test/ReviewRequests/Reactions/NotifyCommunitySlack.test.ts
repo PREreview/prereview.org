@@ -9,25 +9,28 @@ import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('NotifyCommunitySlack', () => {
-  test.prop([fc.uuid(), fc.publishedReviewRequest(), fc.preprint()])(
-    'when the request can be shared',
-    (reviewRequestId, reviewRequest, preprint) =>
-      Effect.gen(function* () {
-        const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
+  test.prop([
+    fc.uuid(),
+    fc.publishedReviewRequest(),
+    fc.preprint(),
+    fc.record({ channelId: fc.slackChannelId(), messageTimestamp: fc.slackTimestamp() }),
+  ])('when the request can be shared', (reviewRequestId, reviewRequest, preprint, response) =>
+    Effect.gen(function* () {
+      const actual = yield* pipe(_.NotifyCommunitySlack(reviewRequestId), Effect.either)
 
-        expect(actual).toStrictEqual(Either.void)
-      }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.void }),
-            Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
+      expect(actual).toStrictEqual(Either.void)
+    }).pipe(
+      Effect.provide(
+        Layer.mergeAll(
+          Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
+          Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
         ),
-        EffectTest.run,
       ),
+      EffectTest.run,
+    ),
   )
 
   test.prop([

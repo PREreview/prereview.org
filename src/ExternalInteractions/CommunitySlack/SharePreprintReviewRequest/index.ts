@@ -11,5 +11,8 @@ export class FailedToSharePreprintReviewRequest extends Data.TaggedError('Failed
 
 export const SharePreprintReviewRequest: (
   reviewRequest: PreprintReviewRequest,
-) => Effect.Effect<void, FailedToSharePreprintReviewRequest, CommunitySlackChannelIds | Slack.Slack> = () =>
-  new FailedToSharePreprintReviewRequest({ cause: 'not implemented' })
+) => Effect.Effect<
+  { channelId: Slack.ChannelId; messageTimestamp: Slack.Timestamp },
+  FailedToSharePreprintReviewRequest,
+  CommunitySlackChannelIds | Slack.Slack
+> = () => new FailedToSharePreprintReviewRequest({ cause: 'not implemented' })
