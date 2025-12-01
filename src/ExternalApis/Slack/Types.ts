@@ -18,9 +18,9 @@ export type UserId = typeof UserId.Type
 
 export const UserId = Schema.String.pipe(Schema.brand(UserIdBrand))
 
-export const Response = <A, I, R>(message: Schema.Schema<A, I, R>) =>
+export const Response = <Fields extends Schema.Struct.Fields>(schema: Schema.Struct<Fields>) =>
   Schema.Union(
-    Schema.Struct({ ok: Schema.Literal(true), message }),
+    Schema.Struct({ ...schema.fields, ok: Schema.Literal(true) }),
     Schema.Struct({ ok: Schema.Literal(false), error: Schema.String }),
   )
 
