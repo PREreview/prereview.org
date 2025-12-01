@@ -3,11 +3,13 @@ import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.js'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.js'
+import type * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command>
+    recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<RecordReviewRequestSharedOnTheCommunitySlack.Command>
   }
 >() {}
 
@@ -17,7 +19,8 @@ type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = neve
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { acceptReviewRequest } = Effect.serviceFunctions(ReviewRequestCommands)
+export const { acceptReviewRequest, recordReviewRequestSharedOnTheCommunitySlack } =
+  Effect.serviceFunctions(ReviewRequestCommands)
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
@@ -68,6 +71,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         AcceptReviewRequest.foldState,
         AcceptReviewRequest.decide,
       ),
+      recordReviewRequestSharedOnTheCommunitySlack: () => new UnableToHandleCommand({ cause: 'not implemented' }),
     }
   })
 
