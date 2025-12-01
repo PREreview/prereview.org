@@ -18,9 +18,12 @@ import type {
 import type { FieldId } from '../types/field.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 import * as Commands from './Commands/index.ts'
+import * as Queries from './Queries/index.ts'
 
 export * from './Commands/index.ts'
+export * from './Errors.ts'
 export * from './Events.ts'
+export * from './Queries/index.ts'
 
 export interface ReviewRequest {
   readonly published: Temporal.PlainDate
@@ -72,4 +75,5 @@ export const layer = Layer.mergeAll(
     }),
   ),
   Commands.commandsLayer,
+  Queries.queriesLayer,
 )
