@@ -5,7 +5,7 @@ import type { SlackApi } from './SlackApi.ts'
 
 export type { ChatPostMessageInput } from './ChatPostMessage/index.ts'
 export { SlackApi } from './SlackApi.ts'
-export { ChannelId, UserId } from './Types.ts'
+export { ChannelId, Timestamp, UserId } from './Types.ts'
 
 export class Slack extends Context.Tag('Slack')<
   Slack,

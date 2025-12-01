@@ -18,7 +18,7 @@ describe('HandleResponse', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.either(_.HandleResponse(response))
 
-          expect(actual).toStrictEqual(Either.void)
+          expect(actual).toStrictEqual(Either.right(expect.anything()))
         }).pipe(EffectTest.run),
       )
     })
