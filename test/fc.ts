@@ -125,6 +125,7 @@ import type {
   ReviewRequest,
   ReviewRequestPreprintId,
 } from '../src/review-request.ts'
+import type * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
@@ -1740,6 +1741,14 @@ export const datasetReviewDataForZenodoRecord = ({
       answeredIfTheDatasetIsReadyToBeShared().map(Struct.pick('answer', 'detail')),
     ),
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
+  })
+
+export const publishedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedReviewRequest> =>
+  fc.record({
+    author: fc.record({ name: nonEmptyString() }),
+    preprintId: indeterminatePreprintId(),
+    id: uuid(),
+    published: instant(),
   })
 
 export const commentWasStarted = ({
