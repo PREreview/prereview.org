@@ -27,7 +27,7 @@ export class Slack extends Context.Tag('Slack')<
   }
 >() {}
 
-export const { chatPostMessage } = Effect.serviceFunctions(Slack)
+export const { chatDelete, chatPostMessage } = Effect.serviceFunctions(Slack)
 
 const make: Effect.Effect<typeof Slack.Service, never, HttpClient.HttpClient | SlackApi> = Effect.gen(function* () {
   const context = yield* Effect.context<HttpClient.HttpClient | SlackApi>()
