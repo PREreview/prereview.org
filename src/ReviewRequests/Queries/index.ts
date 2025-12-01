@@ -1,6 +1,7 @@
-import { Context, Data, Effect, type Either, Layer } from 'effect'
-import type * as EventStore from '../../EventStore.ts'
-import type * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
+import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
+import type * as Events from '../../Events.ts'
+import * as EventStore from '../../EventStore.ts'
+import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
@@ -22,9 +23,33 @@ export const { getPublishedReviewRequest } = Effect.serviceFunctions(ReviewReque
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
-  Effect.sync(() => {
+  Effect.gen(function* () {
+    const context = yield* Effect.context<EventStore.EventStore>()
+
+    const handleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Input, Result, Error>(
+      createFilter: (input: Input) => Events.EventFilter<Event>,
+      query: (
+        events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
+        input: Input,
+      ) => Either.Either<Result, Error>,
+    ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
+      Effect.fn(
+        function* (input) {
+          const filter = createFilter(input)
+
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return yield* query(events, input)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      )
+
     return {
-      getPublishedReviewRequest: () => new UnableToQuery({ cause: 'not implemented' }),
+      getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
     }
   })
 

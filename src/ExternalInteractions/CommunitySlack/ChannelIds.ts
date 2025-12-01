@@ -3,8 +3,10 @@ import type { Slack } from '../../ExternalApis/index.ts'
 
 export class CommunitySlackChannelIds extends Context.Tag('CommunitySlackChannelIds')<
   CommunitySlackChannelIds,
-  { shareAReview: Slack.ChannelId }
+  { requestAReview: Slack.ChannelId; shareAReview: Slack.ChannelId }
 >() {}
+
+export const requestAReviewChannelId = Effect.andThen(CommunitySlackChannelIds, Struct.get('requestAReview'))
 
 export const shareAReviewChannelId = Effect.andThen(CommunitySlackChannelIds, Struct.get('shareAReview'))
 

@@ -3,6 +3,7 @@ import { Effect, Layer, Match, pipe, PubSub, Queue, Struct, type Scope } from 'e
 import * as Events from '../../Events.ts'
 import { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
+import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 
 const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   name: 'NotifyCommunitySlackOfReviewRequest',
@@ -37,12 +38,11 @@ const makeReviewRequestReactions: Effect.Effect<
 })
 
 const workflowsLayer = Layer.mergeAll(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   NotifyCommunitySlackOfReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
       name: NotifyCommunitySlackOfReviewRequest.name,
       error: NotifyCommunitySlackOfReviewRequest.errorSchema,
-      execute: new Errors.FailedToNotifyCommunitySlack({ cause: 'not implemented' }),
+      execute: executeNotifyCommunitySlackOfReviewRequest(reviewRequestId),
     }),
   ),
 )

@@ -1,4 +1,5 @@
-import { Schema } from 'effect'
+import { Array, Schema, Struct } from 'effect'
+import { Slack } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { NonEmptyString, Temporal, Uuid } from '../types/index.ts'
 
@@ -17,6 +18,18 @@ export class ReviewRequestForAPreprintWasAccepted extends Schema.TaggedClass<Rev
   },
 ) {}
 
-export const ReviewRequestEvent = ReviewRequestForAPreprintWasAccepted
+export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schema.TaggedClass<ReviewRequestForAPreprintWasSharedOnTheCommunitySlack>()(
+  'ReviewRequestForAPreprintWasSharedOnTheCommunitySlack',
+  {
+    channelId: Slack.ChannelId,
+    messageTimestamp: Slack.Timestamp,
+    reviewRequestId: Uuid.UuidSchema,
+  },
+) {}
 
-export const ReviewRequestEventTypes = ReviewRequestForAPreprintWasAccepted._tag
+export const ReviewRequestEvent = Schema.Union(
+  ReviewRequestForAPreprintWasAccepted,
+  ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+)
+
+export const ReviewRequestEventTypes = Array.map(ReviewRequestEvent.members, Struct.get('_tag'))
