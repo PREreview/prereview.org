@@ -30,16 +30,16 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const received = yield* Either.fromOption(
+    const accepted = yield* Either.fromOption(
       Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted')),
       () => new Errors.UnknownReviewRequest({}),
     )
 
     return {
-      author: received.requester,
-      preprintId: received.preprintId,
-      id: received.reviewRequestId,
-      published: received.acceptedAt,
+      author: accepted.requester,
+      preprintId: accepted.preprintId,
+      id: accepted.reviewRequestId,
+      published: accepted.acceptedAt,
     }
   })
 
