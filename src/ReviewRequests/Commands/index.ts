@@ -1,8 +1,8 @@
 import { Context, Data, Effect, Layer, Option, pipe } from 'effect'
 import type * as Events from '../../Events.ts'
-import * as EventStore from '../../EventStore.js'
+import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
-import * as AcceptReviewRequest from './AcceptReviewRequest.js'
+import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import type * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
