@@ -2,7 +2,7 @@ import { Effect, Either, pipe } from 'effect'
 import type { CoarNotify } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import * as ReviewRequests from '../ReviewRequests/index.ts'
-import { Temporal, type Uuid } from '../types/index.js'
+import { Temporal, type Uuid } from '../types/index.ts'
 import * as Errors from './Errors.ts'
 
 export const ProcessCoarNotifyMessage = Effect.fn(
