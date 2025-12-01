@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, Option, Tuple } from 'effect'
+import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/AcceptReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -25,6 +26,12 @@ const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewReque
   requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
+  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+    channelId: Slack.ChannelId.make('C123ABC456'),
+    messageTimestamp: Slack.Timestamp.make('1401383885.000061'),
+    reviewRequestId,
+  })
 
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
@@ -52,6 +59,7 @@ describe('foldState', () => {
     {
       examples: [
         [[[], reviewRequestId]], // no events
+        [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
         [[[otherReviewRequestForAPreprintWasAccepted], reviewRequestId]], // for other review request
       ],
     },
@@ -62,10 +70,20 @@ describe('foldState', () => {
   })
 
   test.prop(
-    [fc.reviewRequestForAPreprintWasAccepted().map(event => Tuple.make(Array.make(event), event.reviewRequestId))],
+    [
+      fc
+        .reviewRequestForAPreprintWasAccepted()
+        .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
+    ],
     {
       examples: [
         [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // was accepted
+        [
+          [
+            [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+            reviewRequestId,
+          ],
+        ], // other events
         [[[reviewRequestForAPreprintWasAccepted, otherReviewRequestForAPreprintWasAccepted], reviewRequestId]], // other review request too
       ],
     },

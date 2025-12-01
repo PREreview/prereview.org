@@ -12,7 +12,7 @@ export type Event = typeof Event.Type
 export const Event = Schema.Union(
   ...CommentEvents.CommentEvent.members,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
-  ReviewRequestsEvents.ReviewRequestEvent,
+  ...ReviewRequestsEvents.ReviewRequestEvent.members,
 )
 
 export interface EventFilter<T extends Event['_tag']> {

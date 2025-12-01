@@ -1235,6 +1235,8 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 
 export const slackChannelId = (): fc.Arbitrary<Slack.ChannelId> => fc.string().map(id => Slack.ChannelId.make(id))
 
+export const slackTimestamp = (): fc.Arbitrary<Slack.Timestamp> => fc.string().map(id => Slack.Timestamp.make(id))
+
 export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.CommunitySlackChannelIds.Service> =>
   fc.record<typeof CommunitySlack.CommunitySlackChannelIds.Service>({
     shareAReview: slackChannelId(),
@@ -2168,11 +2170,25 @@ export const reviewRequestForAPreprintWasAccepted = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
 
+export const reviewRequestForAPreprintWasSharedOnTheCommunitySlack = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack> =>
+  fc
+    .record({
+      channelId: slackChannelId(),
+      messageTimestamp: slackTimestamp(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack(data))
+
 export const reviewRequestEvent = (
   args: {
     reviewRequestId?: fc.Arbitrary<Events.ReviewRequestEvent['reviewRequestId']>
   } = {},
-): fc.Arbitrary<Events.ReviewRequestEvent> => reviewRequestForAPreprintWasAccepted(args)
+): fc.Arbitrary<Events.ReviewRequestEvent> =>
+  fc.oneof(reviewRequestForAPreprintWasAccepted(args), reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args))
 
 export const event = (): fc.Arbitrary<Events.Event> =>
   fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent())
