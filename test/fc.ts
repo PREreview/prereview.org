@@ -39,7 +39,7 @@ import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
-import { Slack } from '../src/ExternalApis/index.js'
+import { type CoarNotify, Slack } from '../src/ExternalApis/index.js'
 import type { CommunitySlack } from '../src/ExternalInteractions/index.ts'
 import type { GhostPage } from '../src/GhostPage/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
@@ -539,6 +539,42 @@ export const oauth = (): fc.Arbitrary<Omit<OrcidOAuthEnv['orcidOauth'] & OAuthEn
     clientSecret: fc.string(),
     revokeUrl: url(),
     tokenUrl: url(),
+  })
+
+export const coarNotifyRequestReview = ({
+  objectCiteAs,
+}: {
+  objectCiteAs?: fc.Arbitrary<CoarNotify.RequestReview['object']['ietf:cite-as']>
+} = {}): fc.Arbitrary<CoarNotify.RequestReview> =>
+  fc.record({
+    '@context': fc.tuple(
+      constant('https://www.w3.org/ns/activitystreams'),
+      constantFrom('https://coar-notify.net', 'https://purl.org/coar/notify'),
+    ),
+    id: fc.string(),
+    type: fc.constant(['Offer', 'coar-notify:ReviewAction']),
+    origin: fc.record(
+      {
+        id: url(),
+        inbox: url(),
+        type: constantFrom('Organization', 'Service'),
+      },
+      { requiredKeys: ['id', 'type'] },
+    ),
+    target: fc.record({
+      id: url(),
+      inbox: url(),
+      type: constantFrom('Organization', 'Service'),
+    }),
+    object: fc.record({
+      id: fc.string(),
+      'ietf:cite-as': objectCiteAs ?? preprintDoi(),
+    }),
+    actor: fc.record({
+      id: url(),
+      type: fc.constantFrom('Application', 'Group', 'Organization', 'Person', 'Service'),
+      name: nonEmptyString(),
+    }),
   })
 
 export const doiRegistrant = (): fc.Arbitrary<string> =>
