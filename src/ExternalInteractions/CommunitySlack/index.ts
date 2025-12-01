@@ -7,6 +7,7 @@ import { SharePreprintReviewRequest } from './SharePreprintReviewRequest/index.t
 export * from './ChannelIds.ts'
 export * from './legacy-slack.ts'
 export { FailedToShareDatasetReview, type DatasetReview } from './ShareDatasetReview/index.ts'
+export { FailedToSharePreprintReviewRequest, type PreprintReviewRequest } from './SharePreprintReviewRequest/index.ts'
 export * from './ShouldUpdateCommunitySlack.ts'
 
 export class CommunitySlack extends Context.Tag('CommunitySlack')<
