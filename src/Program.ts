@@ -28,6 +28,7 @@ import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import * as GhostPage from './GhostPage/index.ts'
 import { html } from './html.ts'
+import * as Inbox from './Inbox/index.ts'
 import * as Keyv from './keyv.ts'
 import * as LegacyPrereview from './legacy-prereview.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
@@ -335,7 +336,7 @@ export const Program = pipe(
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
   ),
-  Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment)),
+  Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment, Inbox.layer)),
   Layer.provide(
     Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
   ),
