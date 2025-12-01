@@ -1259,7 +1259,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             Layer.succeed(AllowSiteCrawlers, true),
             Layer.succeed(Prereviews.WasPrereviewRemoved, wasPrereviewRemoved),
             CachingHttpClient.layerInMemory(),
-            CommunitySlack.layerChannelIds({ shareAReview: Slack.ChannelId.make('C05V6TXHETS') }),
+            CommunitySlack.layerChannelIds({
+              requestAReview: Slack.ChannelId.make('C05N0JHBC1Y'),
+              shareAReview: Slack.ChannelId.make('C05V6TXHETS'),
+            }),
             CommunitySlack.layerShouldUpdateCommunitySlack(true),
             FeatureFlags.layer({
               aiReviewsAsCc0: () => false,

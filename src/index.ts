@@ -98,6 +98,7 @@ pipe(
     Layer.mergeAll(
       Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
       CommunitySlack.layerChannelIdsConfig({
+        requestAReview: Schema.Config('SLACK_REQUEST_REVIEW_CHANNEL_ID', Slack.ChannelId),
         shareAReview: Schema.Config('SLACK_SHARE_REVIEW_CHANNEL_ID', Slack.ChannelId),
       }),
       CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),

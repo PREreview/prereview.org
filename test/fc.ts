@@ -1240,6 +1240,7 @@ export const slackTimestamp = (): fc.Arbitrary<Slack.Timestamp> => fc.string().m
 
 export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.CommunitySlackChannelIds.Service> =>
   fc.record<typeof CommunitySlack.CommunitySlackChannelIds.Service>({
+    requestAReview: slackChannelId(),
     shareAReview: slackChannelId(),
   })
 
