@@ -1398,7 +1398,7 @@ export const fetchResponse = ({
       return Object.defineProperties(
         new Response(
           ![StatusCodes.NoContent, StatusCodes.ResetContent].includes(args.status as never) &&
-          (args.status < 300 || args.status >= 400)
+            (args.status < 300 || args.status >= 400)
             ? args.body
             : undefined,
           {
