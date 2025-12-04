@@ -1,9 +1,9 @@
-import { Context, Data, Effect, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, Either, Layer, Option, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
-import type * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
+import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
@@ -33,11 +33,16 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       Event extends Events.ReviewRequestEvent['_tag'],
       State,
       Command extends { reviewRequestId: Uuid.Uuid },
+      Error,
     >(
       createFilter: (reviewRequestId: Uuid.Uuid) => Events.EventFilter<Event>,
       foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, reviewRequestId: Uuid.Uuid) => State,
-      decide: (command: Command) => (state: State) => Option.Option<Events.ReviewRequestEvent>,
-    ): CommandHandler<Command> =>
+      decide: (
+        command: Command,
+      ) => (
+        state: State,
+      ) => Option.Option<Events.ReviewRequestEvent> | Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>,
+    ): CommandHandler<Command, Error> =>
       Effect.fn(
         function* (command) {
           const filter = createFilter(command.reviewRequestId)
@@ -50,6 +55,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
           yield* pipe(
             Effect.succeed(foldState(events, command.reviewRequestId)),
             Effect.map(decide(command)),
+            Effect.andThen(decision => (Either.isEither(decision) ? decision : Either.right(decision))),
             Effect.tap(
               Option.match({
                 onNone: () => Effect.void,
@@ -74,7 +80,11 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         AcceptReviewRequest.foldState,
         AcceptReviewRequest.decide,
       ),
-      recordReviewRequestSharedOnTheCommunitySlack: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      recordReviewRequestSharedOnTheCommunitySlack: handleCommand(
+        RecordReviewRequestSharedOnTheCommunitySlack.createFilter,
+        RecordReviewRequestSharedOnTheCommunitySlack.foldState,
+        RecordReviewRequestSharedOnTheCommunitySlack.decide,
+      ),
     }
   })
 

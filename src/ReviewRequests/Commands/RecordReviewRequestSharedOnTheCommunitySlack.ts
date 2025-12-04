@@ -1,6 +1,8 @@
+import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import * as Events from '../../Events.ts'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type { Uuid } from '../../types/index.ts'
-import type * as Errors from '../Errors.ts'
+import * as Errors from '../Errors.ts'
 
 export interface Command {
   readonly channelId: Slack.ChannelId
@@ -9,3 +11,61 @@ export interface Command {
 }
 
 export type Error = Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack
+
+export type State = NotShared | HasBeenShared
+
+export class NotShared extends Data.TaggedClass('NotShared') {}
+
+export class HasBeenShared extends Data.TaggedClass('HasBeenShared')<{
+  readonly channelId: Slack.ChannelId
+  readonly messageTimestamp: Slack.Timestamp
+}> {}
+
+export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
+  types: ['ReviewRequestForAPreprintWasSharedOnTheCommunitySlack'],
+  predicates: { reviewRequestId },
+})
+
+export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))
+
+  return Option.match(Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasSharedOnTheCommunitySlack')), {
+    onNone: () => new NotShared(),
+    onSome: shared => new HasBeenShared({ channelId: shared.channelId, messageTimestamp: shared.messageTimestamp }),
+  })
+}
+
+export const decide: {
+  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
+  (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
+} = Function.dual(
+  2,
+  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+    Match.valueTags(state, {
+      NotShared: () =>
+        Either.right(
+          Option.some(
+            new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+              channelId: command.channelId,
+              messageTimestamp: command.messageTimestamp,
+              reviewRequestId: command.reviewRequestId,
+            }),
+          ),
+        ),
+      HasBeenShared: ({ channelId, messageTimestamp }) =>
+        Boolean.match(
+          Boolean.and(
+            Equal.equals(command.channelId, channelId),
+            Equal.equals(command.messageTimestamp, messageTimestamp),
+          ),
+          {
+            onTrue: () => Either.right(Option.none()),
+            onFalse: () => Either.left(new Errors.ReviewRequestWasAlreadySharedOnTheCommunitySlack()),
+          },
+        ),
+    }),
+)
+
+function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+}
