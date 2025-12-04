@@ -9,7 +9,10 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command>
-    recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<RecordReviewRequestSharedOnTheCommunitySlack.Command>
+    recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
+      RecordReviewRequestSharedOnTheCommunitySlack.Command,
+      RecordReviewRequestSharedOnTheCommunitySlack.Error
+    >
   }
 >() {}
 
