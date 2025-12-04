@@ -1236,10 +1236,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     ) => {
       const server = pipe(
         Program,
-        Layer.launch,
-        Effect.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
-        Effect.provide(FetchHttpClient.layer),
-        Effect.provide(
+        Layer.provide(NodeHttpServer.layer(() => http.createServer(), { port })),
+        Layer.provide(FetchHttpClient.layer),
+        Layer.provide(
           Layer.mergeAll(
             Layer.succeed(KeyvStores, {
               authorInviteStore,
@@ -1321,7 +1320,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             WorkflowEngine.layerMemory,
           ),
         ),
-        Effect.provide(sqlClientLayer),
+        Layer.provide(sqlClientLayer),
+        Layer.launch,
         Effect.tapErrorCause(Effect.logError),
         Effect.provide(
           Logger.replaceScoped(

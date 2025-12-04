@@ -83,8 +83,7 @@ const ClusterLayer = Layer.unwrapEffect(
 
 pipe(
   Program,
-  Layer.launch,
-  Effect.provide(
+  Layer.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
       NodeHttpClient.layer,
@@ -93,8 +92,8 @@ pipe(
       ClusterWorkflowEngine.layer,
     ),
   ),
-  Effect.provide(ClusterLayer),
-  Effect.provide(
+  Layer.provide(ClusterLayer),
+  Layer.provide(
     Layer.mergeAll(
       Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
       CommunitySlack.layerChannelIdsConfig({
@@ -216,8 +215,7 @@ pipe(
       ),
     ),
   ),
-  Logger.withMinimumLogLevel(LogLevel.Debug),
-  Effect.provide(
+  Layer.provide(
     Logger.replaceEffect(
       Logger.defaultLogger,
       Effect.andThen(
@@ -237,6 +235,8 @@ pipe(
       ),
     ),
   ),
+  Layer.launch,
   Effect.scoped,
+  Logger.withMinimumLogLevel(LogLevel.Debug),
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )
