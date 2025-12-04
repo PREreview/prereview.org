@@ -1,7 +1,7 @@
-import { Data, type Effect, type Scope } from 'effect'
-import type { Slack } from '../../../ExternalApis/index.ts'
-import type { CommunitySlackChannelIds } from '../ChannelIds.ts'
-import type { PreprintReviewRequest } from './PreprintReviewRequestToChatPostMessageInput.ts'
+import { Data, Effect, Exit, flow } from 'effect'
+import { Slack } from '../../../ExternalApis/index.ts'
+import { requestAReviewChannelId } from '../ChannelIds.ts'
+import { PreprintReviewRequestToChatPostMessageInput } from './PreprintReviewRequestToChatPostMessageInput.ts'
 
 export type { PreprintReviewRequest } from './PreprintReviewRequestToChatPostMessageInput.ts'
 
@@ -9,10 +9,19 @@ export class FailedToSharePreprintReviewRequest extends Data.TaggedError('Failed
   cause?: unknown
 }> {}
 
-export const SharePreprintReviewRequest: (
-  reviewRequest: PreprintReviewRequest,
-) => Effect.Effect<
-  { channelId: Slack.ChannelId; messageTimestamp: Slack.Timestamp },
-  FailedToSharePreprintReviewRequest,
-  CommunitySlackChannelIds | Slack.Slack | Scope.Scope
-> = () => new FailedToSharePreprintReviewRequest({ cause: 'not implemented' })
+export const SharePreprintReviewRequest = flow(
+  PreprintReviewRequestToChatPostMessageInput,
+  Effect.bind('channel', () => requestAReviewChannelId),
+  Effect.andThen(Slack.chatPostMessage),
+  Effect.acquireRelease((id, exit) =>
+    Exit.matchEffect(exit, {
+      onFailure: () =>
+        Effect.catchAll(Slack.chatDelete(id), error =>
+          Effect.logError('Unable to delete Slack message').pipe(Effect.annotateLogs({ id, error })),
+        ),
+      onSuccess: () => Effect.void,
+    }),
+  ),
+  Effect.catchAll(error => new FailedToSharePreprintReviewRequest({ cause: error })),
+  Effect.andThen(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
+)
