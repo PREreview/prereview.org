@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted, Scope, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { ClubId } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
@@ -93,7 +93,10 @@ export const {
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const context = yield* Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Personas.Personas>()
+    const context = yield* Effect.andThen(
+      Effect.context<DatasetReviews.DatasetReviewQueries | Datasets.Datasets | Personas.Personas>(),
+      Context.omit(Scope.Scope),
+    )
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereviewApi

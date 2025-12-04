@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { ChatDelete } from './ChatDelete/index.ts'
 import { ChatPostMessage } from './ChatPostMessage/index.ts'
 import type { SlackApi } from './SlackApi.ts'
@@ -30,7 +30,7 @@ export class Slack extends Context.Tag('Slack')<
 export const { chatDelete, chatPostMessage } = Effect.serviceFunctions(Slack)
 
 const make: Effect.Effect<typeof Slack.Service, never, HttpClient.HttpClient | SlackApi> = Effect.gen(function* () {
-  const context = yield* Effect.context<HttpClient.HttpClient | SlackApi>()
+  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient | SlackApi>(), Context.omit(Scope.Scope))
 
   return {
     chatDelete: flow(ChatDelete, Effect.provide(context)),

@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
@@ -24,7 +24,7 @@ export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const context = yield* Effect.context<EventStore.EventStore>()
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Input, Result, Error>(
       createFilter: (input: Input) => Events.EventFilter<Event>,

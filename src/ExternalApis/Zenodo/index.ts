@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
@@ -43,7 +43,7 @@ export class Zenodo extends Context.Tag('Zenodo')<
 export const { createDeposition, getDeposition, publishDeposition, uploadFile } = Effect.serviceFunctions(Zenodo)
 
 const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | ZenodoApi> = Effect.gen(function* () {
-  const context = yield* Effect.context<HttpClient.HttpClient | ZenodoApi>()
+  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient | ZenodoApi>(), Context.omit(Scope.Scope))
 
   return {
     createDeposition: flow(CreateDeposition, Effect.provide(context)),

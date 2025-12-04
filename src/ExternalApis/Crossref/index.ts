@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetWork } from './GetWork/index.ts'
 
 export { Work, WorkResponseSchema } from './Work.ts'
@@ -19,7 +19,7 @@ export class Crossref extends Context.Tag('Crossref')<
 export const { getWork } = Effect.serviceFunctions(Crossref)
 
 const make: Effect.Effect<typeof Crossref.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.context<HttpClient.HttpClient>()
+  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getWork: flow(GetWork, Effect.provide(context)),

@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Duration, Effect, flow, Layer, Match, Option, pipe, Redacted } from 'effect'
+import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
@@ -199,7 +199,10 @@ const verifyContactEmailAddressForComment = Layer.effect(
 const createRecordOnZenodoForComment = Layer.effect(
   Comments.CreateRecordOnZenodoForComment,
   Effect.gen(function* () {
-    const context = yield* Effect.context<Personas.Personas | Prereviews.Prereviews>()
+    const context = yield* Effect.andThen(
+      Effect.context<Personas.Personas | Prereviews.Prereviews>(),
+      Context.omit(Scope.Scope),
+    )
     const fetch = yield* FetchHttpClient.Fetch
     const publicUrl = yield* PublicUrl
     const zenodoApi = yield* Zenodo.ZenodoApi
@@ -300,7 +303,7 @@ const publishComment = Layer.effect(
 const getCategories = Layer.effect(
   OpenAlex.GetCategories,
   Effect.gen(function* () {
-    const context = yield* Effect.context<HttpClient.HttpClient>()
+    const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
     return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provide(context))
   }),
@@ -309,7 +312,10 @@ const getCategories = Layer.effect(
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
-    const context = yield* Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>()
+    const context = yield* Effect.andThen(
+      Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | Zenodo.ZenodoApi>(),
+      Context.omit(Scope.Scope),
+    )
 
     return {
       get: reviewDoi => pipe(ZenodoInteractions.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),

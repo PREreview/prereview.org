@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, flow, Layer, pipe } from 'effect'
+import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type * as Preprints from '../Preprints/index.ts'
@@ -58,7 +58,10 @@ export const layer = Layer.mergeAll(
   Layer.effect(
     ReviewRequests,
     Effect.gen(function* () {
-      const context = yield* Effect.context<HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig>()
+      const context = yield* Effect.andThen(
+        Effect.context<HttpClient.HttpClient | Preprints.Preprints | PrereviewCoarNotifyConfig>(),
+        Context.omit(Scope.Scope),
+      )
 
       return {
         getFiveMostRecent: pipe(

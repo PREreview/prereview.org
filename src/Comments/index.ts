@@ -1,4 +1,4 @@
-import { Array, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Struct } from 'effect'
+import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Scope, Struct } from 'effect'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
 import * as ReviewPage from '../review-page/index.ts'
@@ -34,7 +34,7 @@ export const makeHandleCommentCommand: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.context<EventStore.EventStore>()
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return command =>
     Effect.gen(function* () {
@@ -79,7 +79,7 @@ export const makeHandleCommentCommand: Effect.Effect<
 
 export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, EventStore.EventStore> = Effect.gen(
   function* () {
-    const context = yield* Effect.context<EventStore.EventStore>()
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     return commentId =>
       Effect.gen(function* () {
@@ -104,7 +104,7 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.context<EventStore.EventStore>()
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return ({ authorId, prereviewId }) =>
     Effect.gen(function* () {
@@ -126,7 +126,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   never,
   EventStore.EventStore
 > = Effect.gen(function* () {
-  const context = yield* Effect.context<EventStore.EventStore>()
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   return commentId =>
     Effect.gen(function* () {

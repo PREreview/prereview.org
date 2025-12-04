@@ -1,4 +1,4 @@
-import { Context, Effect, flow, Layer, type Scope } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type * as PublicUrl from '../../public-url.ts'
 import type { CommunitySlackChannelIds } from './ChannelIds.js'
@@ -37,7 +37,10 @@ export const make: Effect.Effect<
   never,
   CommunitySlackChannelIds | PublicUrl.PublicUrl | Slack.Slack
 > = Effect.gen(function* () {
-  const context = yield* Effect.context<CommunitySlackChannelIds | PublicUrl.PublicUrl | Slack.Slack>()
+  const context = yield* Effect.andThen(
+    Effect.context<CommunitySlackChannelIds | PublicUrl.PublicUrl | Slack.Slack>(),
+    Context.omit(Scope.Scope),
+  )
 
   return {
     shareDatasetReview: flow(ShareDatasetReview, Effect.provide(context)),

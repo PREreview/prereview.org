@@ -1,4 +1,4 @@
-import { Context, Data, Effect, type Either, Layer, Option, pipe } from 'effect'
+import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope } from 'effect'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -131,7 +131,7 @@ export const {
 
 const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const context = yield* Effect.context<EventStore.EventStore>()
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
       Event extends Events.DatasetReviewEvent['_tag'],

@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetPage } from './GetPage/index.ts'
 import type { GhostApi } from './GhostApi.ts'
 
@@ -22,7 +22,7 @@ export class Ghost extends Context.Tag('Ghost')<
 export const { getPage } = Effect.serviceFunctions(Ghost)
 
 const make: Effect.Effect<typeof Ghost.Service, never, GhostApi | HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.context<GhostApi | HttpClient.HttpClient>()
+  const context = yield* Effect.andThen(Effect.context<GhostApi | HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getPage: flow(GetPage, Effect.provide(context)),

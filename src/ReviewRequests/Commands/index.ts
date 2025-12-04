@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -24,7 +24,7 @@ export const { acceptReviewRequest, recordReviewRequestSharedOnTheCommunitySlack
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const context = yield* Effect.context<EventStore.EventStore>()
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
       Event extends Events.ReviewRequestEvent['_tag'],

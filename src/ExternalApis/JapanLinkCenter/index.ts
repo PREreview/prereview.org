@@ -1,5 +1,5 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetRecord } from './Record.ts'
 
 export { Record } from './Record.ts'
@@ -19,7 +19,7 @@ export class JapanLinkCenter extends Context.Tag('JapanLinkCenter')<
 export const { getRecord } = Effect.serviceFunctions(JapanLinkCenter)
 
 const make: Effect.Effect<typeof JapanLinkCenter.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
-  const context = yield* Effect.context<HttpClient.HttpClient>()
+  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
   return {
     getRecord: flow(GetRecord, Effect.provide(context)),

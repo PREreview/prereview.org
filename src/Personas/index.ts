@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Context, Data, Effect, Layer, Match, pipe, Redacted } from 'effect'
+import { Context, Data, Effect, Layer, Match, pipe, Redacted, Scope } from 'effect'
 import { Orcid } from '../ExternalApis/index.ts'
 import * as FptsToEffect from '../FptsToEffect.ts'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.ts'
@@ -31,7 +31,7 @@ export const getPersona = pipe(
 
 const make: Effect.Effect<typeof Personas.Service, never, FetchHttpClient.Fetch | LegacyPrereviewApi | Orcid.Orcid> =
   Effect.gen(function* () {
-    const context = yield* Effect.context<Orcid.Orcid>()
+    const context = yield* Effect.andThen(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereviewApi
 

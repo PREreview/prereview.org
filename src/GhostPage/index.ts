@@ -1,4 +1,4 @@
-import { Context, Data, Effect, flow, identity, Layer } from 'effect'
+import { Context, Data, Effect, flow, identity, Layer, Scope } from 'effect'
 import type { Locale } from '../Context.ts'
 import type { Ghost } from '../ExternalApis/index.ts'
 import type { Html } from '../html.ts'
@@ -23,7 +23,7 @@ export const getPageFromGhost = Effect.serviceFunctionEffect(GetPageFromGhost, i
 export const layer = Layer.effect(
   GetPageFromGhost,
   Effect.gen(function* () {
-    const context = yield* Effect.context<Ghost.Ghost>()
+    const context = yield* Effect.andThen(Effect.context<Ghost.Ghost>(), Context.omit(Scope.Scope))
 
     return flow(
       getGhostIdAndLocaleForPage,

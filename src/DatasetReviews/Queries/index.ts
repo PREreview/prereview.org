@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -178,7 +178,7 @@ export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADat
 
 const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
-    const context = yield* Effect.context<EventStore.EventStore>()
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleQuery = <Event extends Events.DatasetReviewEvent['_tag'], Input, Result, Error>(
       createFilter: (input: Input) => Events.EventFilter<Event>,

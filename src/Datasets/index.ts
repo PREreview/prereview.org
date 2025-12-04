@@ -1,4 +1,4 @@
-import { Context, Effect, flow, Layer } from 'effect'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Datacite } from '../ExternalApis/index.ts'
 import { GetDataset } from './GetDataset.ts'
 import { GetDatasetTitle } from './GetDatasetTitle.ts'
@@ -36,7 +36,7 @@ export const { getDataset, getDatasetTitle, resolveDatasetId } = Effect.serviceF
 export const layer = Layer.effect(
   Datasets,
   Effect.gen(function* () {
-    const context = yield* Effect.context<Datacite.Datacite>()
+    const context = yield* Effect.andThen(Effect.context<Datacite.Datacite>(), Context.omit(Scope.Scope))
 
     return {
       getDataset: flow(GetDataset, Effect.provide(context)),
