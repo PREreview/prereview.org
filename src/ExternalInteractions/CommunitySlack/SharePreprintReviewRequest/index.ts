@@ -12,8 +12,13 @@ export class FailedToSharePreprintReviewRequest extends Data.TaggedError('Failed
 export const SharePreprintReviewRequest = flow(
   PreprintReviewRequestToChatPostMessageInput,
   Effect.bind('channel', () => requestAReviewChannelId),
-  Effect.andThen(Slack.chatPostMessage),
-  Effect.acquireRelease((id, exit) =>
+  Effect.andThen(postMessageOnSlack),
+  Effect.catchAll(error => new FailedToSharePreprintReviewRequest({ cause: error })),
+  Effect.andThen(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
+)
+
+function postMessageOnSlack(message: Slack.ChatPostMessageInput) {
+  return Effect.acquireRelease(Slack.chatPostMessage(message), (id, exit) =>
     Exit.matchEffect(exit, {
       onFailure: () =>
         Effect.catchAll(Slack.chatDelete(id), error =>
@@ -21,7 +26,5 @@ export const SharePreprintReviewRequest = flow(
         ),
       onSuccess: () => Effect.void,
     }),
-  ),
-  Effect.catchAll(error => new FailedToSharePreprintReviewRequest({ cause: error })),
-  Effect.andThen(message => ({ channelId: message.channel, messageTimestamp: message.ts })),
-)
+  )
+}
