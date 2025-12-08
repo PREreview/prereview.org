@@ -49,20 +49,43 @@ test.each([
       }),
     } satisfies _.PreprintReviewRequest,
     [
+      [{ type: 'markdown', text: 'Josiah Carberry is looking for reviews of a preprint.' }],
       [
+        {
+          type: 'markdown',
+          text: 'The preprint is:\n\n**[The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii](https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201)**\nby Xin Liu, Wojciech Nawrocki, and Roberta Croce\n\n**Posted**\nJanuary 14, 2022\n\n**Server**\nbioRxiv',
+        },
+      ],
+      [
+        { type: 'markdown', text: 'Have a look at the abstract:' },
         {
           type: 'rich_text',
           elements: [
             {
-              type: 'rich_text_section',
+              type: 'rich_text_quote',
               elements: [
-                { type: 'text', text: 'Josiah Carberry', style: { bold: true } },
-                { type: 'text', text: ' has requested a PREreview: ' },
                 {
-                  type: 'link',
-                  url: new URL('http://example.com/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview'),
+                  type: 'text',
+                  text: 'Non-photochemical quenching (NPQ) is the process that protects photosynthetic organisms from photodamage by dissipating the energy absorbed in excess as heat. In the model green alga Chlamydomonas reinhardtii, NPQ was abolished in the knock-out mutants of the pigment-protein complexes LHCSR3 and LHCBM1. However, while LHCSR3 was shown to be a pH sensor and switching to a quenched conformation at low pH, the role of LHCBM1 in NPQ has not been elucidated yet. In this work, we combine biochemical and physiological measurements to study short-term high light acclimation of npq5, the mutant lacking LHCBM1. We show that while in low light in the absence of this complex, the antenna size of PSII is smaller than in its presence, this effect is marginal in high light, implying that a reduction of the antenna is not responsible for the low NPQ. We also show that the mutant expresses LHCSR3 at the WT level in high light, indicating that the absence of this complex is also not the reason. Finally, NPQ remains low in the mutant even when the pH is artificially lowered to values that can switch LHCSR3 to the quenched conformation. It is concluded that both LHCSR3 and LHCBM1 need to be present for the induction of NPQ and that LHCBM1 is the interacting partner of LHCSR3. This interaction can either enhance the quenching capacity of LHCSR3 or connect this complex with the PSII supercomplex.',
                 },
               ],
+            },
+          ],
+        },
+      ],
+      [
+        {
+          type: 'markdown',
+          text: 'Please do help Josiah Carberry with a PREreview, or pass this on to someone who could.',
+        },
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: { type: 'plain_text', text: 'Write a PREreview' },
+              style: 'primary',
+              url: new URL('http://example.com/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview'),
             },
           ],
         },
@@ -85,17 +108,26 @@ test.each([
       }),
     },
     [
+      [{ type: 'markdown', text: 'Jean-Baptiste Botul is looking for reviews of a preprint.' }],
       [
         {
-          type: 'rich_text',
+          type: 'markdown',
+          text: 'The preprint is:\n\n**[Embracing Reuse in Scientific Communication](https://doi.curvenote.com/10.62329/FMDW8234)**\nby Rowan Cockett\n\n**Posted**\nMay 11, 2024\n\n**Server**\nCurvenote',
+        },
+      ],
+      [
+        {
+          type: 'markdown',
+          text: 'Please do help Jean-Baptiste Botul with a PREreview, or pass this on to someone who could.',
+        },
+        {
+          type: 'actions',
           elements: [
             {
-              type: 'rich_text_section',
-              elements: [
-                { type: 'text', text: 'Jean-Baptiste Botul', style: { bold: true } },
-                { type: 'text', text: ' has requested a PREreview: ' },
-                { type: 'link', url: new URL('http://example.com/preprints/doi-10.62329-fmdw8234/write-a-prereview') },
-              ],
+              type: 'button',
+              text: { type: 'plain_text', text: 'Write a PREreview' },
+              style: 'primary',
+              url: new URL('http://example.com/preprints/doi-10.62329-fmdw8234/write-a-prereview'),
             },
           ],
         },
