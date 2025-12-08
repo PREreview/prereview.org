@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { Effect } from 'effect'
+import { Array, Effect } from 'effect'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
-import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInput.ts'
+import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
@@ -49,23 +49,25 @@ test.each([
       }),
     } satisfies _.PreprintReviewRequest,
     [
-      {
-        type: 'rich_text',
-        elements: [
-          {
-            type: 'rich_text_section',
-            elements: [
-              { type: 'text', text: 'Josiah Carberry', style: { bold: true } },
-              { type: 'text', text: ' has requested a PREreview: ' },
-              {
-                type: 'link',
-                url: new URL('http://example.com/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview'),
-              },
-            ],
-          },
-        ],
-      },
-    ] satisfies Slack.ChatPostMessageInput['blocks'],
+      [
+        {
+          type: 'rich_text',
+          elements: [
+            {
+              type: 'rich_text_section',
+              elements: [
+                { type: 'text', text: 'Josiah Carberry', style: { bold: true } },
+                { type: 'text', text: ' has requested a PREreview: ' },
+                {
+                  type: 'link',
+                  url: new URL('http://example.com/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    ] satisfies Array.NonEmptyReadonlyArray<Slack.ChatPostMessageInput['blocks']>,
   ],
   [
     'without abstract',
@@ -83,25 +85,29 @@ test.each([
       }),
     },
     [
-      {
-        type: 'rich_text',
-        elements: [
-          {
-            type: 'rich_text_section',
-            elements: [
-              { type: 'text', text: 'Jean-Baptiste Botul', style: { bold: true } },
-              { type: 'text', text: ' has requested a PREreview: ' },
-              { type: 'link', url: new URL('http://example.com/preprints/doi-10.62329-fmdw8234/write-a-prereview') },
-            ],
-          },
-        ],
-      },
+      [
+        {
+          type: 'rich_text',
+          elements: [
+            {
+              type: 'rich_text_section',
+              elements: [
+                { type: 'text', text: 'Jean-Baptiste Botul', style: { bold: true } },
+                { type: 'text', text: ' has requested a PREreview: ' },
+                { type: 'link', url: new URL('http://example.com/preprints/doi-10.62329-fmdw8234/write-a-prereview') },
+              ],
+            },
+          ],
+        },
+      ],
     ],
   ],
-])('PreprintReviewRequestToChatPostMessageInput (%s)', (_name, datasetReview, expectedBlocks) =>
+])('PreprintReviewRequestToChatPostMessageInputs (%s)', (_name, datasetReview, expectedBlocks) =>
   Effect.gen(function* () {
-    const actual = yield* _.PreprintReviewRequestToChatPostMessageInput(datasetReview)
+    const actual = yield* _.PreprintReviewRequestToChatPostMessageInputs(datasetReview)
 
-    expect(actual).toStrictEqual({ blocks: expectedBlocks, unfurlLinks: true, unfurlMedia: false })
+    expect(actual).toStrictEqual(
+      Array.map(expectedBlocks, blocks => ({ blocks, unfurlLinks: true, unfurlMedia: false })),
+    )
   }).pipe(Effect.provideService(PublicUrl, new URL('http://example.com')), EffectTest.run),
 )

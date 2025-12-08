@@ -1,12 +1,12 @@
-import { Array, Data, Effect, Exit, pipe } from 'effect'
+import { Data, Effect, Exit, pipe } from 'effect'
 import { Slack } from '../../../ExternalApis/index.ts'
 import { requestAReviewChannelId } from '../ChannelIds.ts'
 import {
-  PreprintReviewRequestToChatPostMessageInput,
+  PreprintReviewRequestToChatPostMessageInputs,
   type PreprintReviewRequest,
-} from './PreprintReviewRequestToChatPostMessageInput.ts'
+} from './PreprintReviewRequestToChatPostMessageInputs.ts'
 
-export type { PreprintReviewRequest } from './PreprintReviewRequestToChatPostMessageInput.ts'
+export type { PreprintReviewRequest } from './PreprintReviewRequestToChatPostMessageInputs.ts'
 
 export class FailedToSharePreprintReviewRequest extends Data.TaggedError('FailedToSharePreprintReviewRequest')<{
   cause?: unknown
@@ -16,8 +16,7 @@ export const SharePreprintReviewRequest = Effect.fn(
   function* (reviewRequest: PreprintReviewRequest) {
     const [post, ...replies] = yield* pipe(
       Effect.succeed(reviewRequest),
-      Effect.andThen(PreprintReviewRequestToChatPostMessageInput),
-      Effect.andThen(Array.of),
+      Effect.andThen(PreprintReviewRequestToChatPostMessageInputs),
     )
 
     const message = yield* postMessageOnSlack({ ...post, channel: yield* requestAReviewChannelId })
