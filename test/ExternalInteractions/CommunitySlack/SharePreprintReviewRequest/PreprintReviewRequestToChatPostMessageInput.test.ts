@@ -96,7 +96,7 @@ test.each([
           },
         ],
       },
-    ] satisfies Slack.ChatPostMessageInput['blocks'],
+    ],
   ],
 ])('PreprintReviewRequestToChatPostMessageInput (%s)', (_name, datasetReview, expectedBlocks) =>
   Effect.gen(function* () {
