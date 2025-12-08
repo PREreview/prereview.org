@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
-import { Array, Effect } from 'effect'
+import { Array, Effect, Option } from 'effect'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
@@ -47,17 +47,18 @@ test.each([
         },
         url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
       }),
-    } satisfies _.PreprintReviewRequest,
+      thread: {
+        main: "Here's the main",
+        detail: "Here's the detail",
+        abstract: Option.some("Here's the abstract"),
+        callToAction: "Here's the call to action",
+      },
+    } satisfies _.PreprintReviewRequestWithThread,
     [
-      [{ type: 'markdown', text: 'Josiah Carberry is looking for reviews of a preprint.' }],
+      [{ type: 'markdown', text: "Here's the main" }],
+      [{ type: 'markdown', text: "Here's the detail" }],
       [
-        {
-          type: 'markdown',
-          text: 'The preprint is:\n\n**[The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii](https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201)**\nby Xin Liu, Wojciech Nawrocki, and Roberta Croce\n\n**Posted**\nJanuary 14, 2022\n\n**Server**\nbioRxiv',
-        },
-      ],
-      [
-        { type: 'markdown', text: 'Have a look at the abstract:' },
+        { type: 'markdown', text: "Here's the abstract" },
         {
           type: 'rich_text',
           elements: [
@@ -74,10 +75,7 @@ test.each([
         },
       ],
       [
-        {
-          type: 'markdown',
-          text: 'Please do help Josiah Carberry with a PREreview, or pass this on to someone who could.',
-        },
+        { type: 'markdown', text: "Here's the call to action" },
         {
           type: 'actions',
           elements: [
@@ -106,20 +104,18 @@ test.each([
         },
         url: new URL('https://doi.curvenote.com/10.62329/FMDW8234'),
       }),
+      thread: {
+        main: 'This is the main',
+        detail: 'This is the detail',
+        abstract: Option.none(),
+        callToAction: 'This is the call to action',
+      },
     },
     [
-      [{ type: 'markdown', text: 'Jean-Baptiste Botul is looking for reviews of a preprint.' }],
+      [{ type: 'markdown', text: 'This is the main' }],
+      [{ type: 'markdown', text: 'This is the detail' }],
       [
-        {
-          type: 'markdown',
-          text: 'The preprint is:\n\n**[Embracing Reuse in Scientific Communication](https://doi.curvenote.com/10.62329/FMDW8234)**\nby Rowan Cockett\n\n**Posted**\nMay 11, 2024\n\n**Server**\nCurvenote',
-        },
-      ],
-      [
-        {
-          type: 'markdown',
-          text: 'Please do help Jean-Baptiste Botul with a PREreview, or pass this on to someone who could.',
-        },
+        { type: 'markdown', text: 'This is the call to action' },
         {
           type: 'actions',
           elements: [

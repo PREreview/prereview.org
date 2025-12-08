@@ -1,49 +1,38 @@
-import { Array, Effect, Option, pipe, Struct } from 'effect'
+import { Array, Effect, Option } from 'effect'
 import type { Slack } from '../../../ExternalApis/index.ts'
 import { plainText } from '../../../html.ts'
-import type * as Preprints from '../../../Preprints/index.ts'
-import * as PreprintServers from '../../../PreprintServers/index.ts'
 import * as PublicUrl from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
-import { renderDateString } from '../../../time.ts'
-import type { NonEmptyString } from '../../../types/index.ts'
+import type { PreprintReviewRequest, Thread } from './GenerateThread.ts'
 
-export interface PreprintReviewRequest {
-  readonly author: NonEmptyString.NonEmptyString
-  readonly preprint: Preprints.Preprint
-}
+export type PreprintReviewRequestWithThread = PreprintReviewRequest & { thread: Thread }
 
 export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* ({
-  author,
   preprint,
-}: PreprintReviewRequest): Effect.fn.Return<
+  thread,
+}: PreprintReviewRequestWithThread): Effect.fn.Return<
   Array.NonEmptyReadonlyArray<Omit<Slack.ChatPostMessageInput, 'channel'>>,
   never,
   PublicUrl.PublicUrl
 > {
   return [
     {
-      blocks: [{ type: 'markdown', text: `${author} is looking for reviews of a preprint.` }],
+      blocks: [{ type: 'markdown', text: thread.main }],
       unfurlLinks: true,
       unfurlMedia: false,
     },
     {
-      blocks: [
-        {
-          type: 'markdown',
-          text: `The preprint is:\n\n**[${plainText(preprint.title.text).toString()}](${preprint.url.href})**\nby ${pipe(preprint.authors, Array.map(Struct.get('name')), formatList)}\n\n**Posted**\n${renderDateString('en')(preprint.posted)}\n\n**Server**\n${PreprintServers.getName(preprint.id)}`,
-        },
-      ],
+      blocks: [{ type: 'markdown', text: thread.detail }],
       unfurlLinks: true,
       unfurlMedia: false,
     },
-    ...Option.match(Option.fromNullable(preprint.abstract), {
+    ...Option.match(thread.abstract, {
       onNone: Array.empty,
       onSome: abstract =>
         [
           {
             blocks: [
-              { type: 'markdown', text: 'Have a look at the abstract:' },
+              { type: 'markdown', text: abstract },
               {
                 type: 'rich_text',
                 elements: [
@@ -52,7 +41,10 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
                     elements: [
                       {
                         type: 'text',
-                        text: plainText(abstract.text).value.replaceAll(/\s+/gm, ' ').trim(),
+                        text: Option.match(Option.fromNullable(preprint.abstract), {
+                          onSome: abstract => plainText(abstract.text).value.replaceAll(/\s+/gm, ' ').trim(),
+                          onNone: () => 'The abstract is unavailable.',
+                        }),
                       },
                     ],
                   },
@@ -66,7 +58,7 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
     }),
     {
       blocks: [
-        { type: 'markdown', text: `Please do help ${author} with a PREreview, or pass this on to someone who could.` },
+        { type: 'markdown', text: thread.callToAction },
         {
           type: 'actions',
           elements: [
@@ -84,9 +76,3 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
     },
   ]
 })
-
-function formatList(list: ReadonlyArray<string>) {
-  const formatter = new Intl.ListFormat('en')
-
-  return formatter.format(list)
-}
