@@ -4,27 +4,17 @@ import { html } from './html.ts'
 
 export type PartialDate = Temporal.PlainDate | Temporal.PlainYearMonth | number
 
-export const renderDate = (locale: string) =>
+export const renderDate = (locale: string) => (date: PartialDate) =>
+  html`<time datetime="${date.toString()}">${renderDateString(locale)(date)}</time>`
+
+export const renderDateString = (locale: string) =>
   pipe(
     Match.type<PartialDate>(),
-    Match.when(
-      Match.number,
-      year =>
-        html`<time datetime="${year}"
-          >${new Temporal.PlainDate(year, 1, 1).toLocaleString(locale, { year: 'numeric' })}</time
-        >`,
+    Match.when(Match.number, year => new Temporal.PlainDate(year, 1, 1).toLocaleString(locale, { year: 'numeric' })),
+    Match.when(isPlainYearMonth, date =>
+      date.toLocaleString(locale, { calendar: date.calendarId, month: 'long', year: 'numeric' }),
     ),
-    Match.when(
-      isPlainYearMonth,
-      date =>
-        html`<time datetime="${date.toString()}"
-          >${date.toLocaleString(locale, { calendar: date.calendarId, month: 'long', year: 'numeric' })}</time
-        >`,
-    ),
-    Match.when(
-      isPlainDate,
-      date => html`<time datetime="${date.toString()}">${date.toLocaleString(locale, { dateStyle: 'long' })}</time>`,
-    ),
+    Match.when(isPlainDate, date => date.toLocaleString(locale, { dateStyle: 'long' })),
     Match.exhaustive,
   )
 
