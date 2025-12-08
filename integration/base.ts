@@ -1,3 +1,4 @@
+import { LanguageModel } from '@effect/ai'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, PlatformLogger, Url } from '@effect/platform'
@@ -1318,6 +1319,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             }),
             TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
             WorkflowEngine.layerMemory,
+            Layer.mock(LanguageModel.LanguageModel, {}),
           ),
         ),
         Layer.provide(sqlClientLayer),

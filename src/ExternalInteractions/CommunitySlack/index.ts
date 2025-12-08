@@ -1,3 +1,4 @@
+import type { LanguageModel } from '@effect/ai'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type * as PublicUrl from '../../public-url.ts'
@@ -35,10 +36,10 @@ export const { shareDatasetReview, sharePreprintReviewRequest } = Effect.service
 export const make: Effect.Effect<
   typeof CommunitySlack.Service,
   never,
-  CommunitySlackChannelIds | PublicUrl.PublicUrl | Slack.Slack
+  CommunitySlackChannelIds | LanguageModel.LanguageModel | PublicUrl.PublicUrl | Slack.Slack
 > = Effect.gen(function* () {
   const context = yield* Effect.andThen(
-    Effect.context<CommunitySlackChannelIds | PublicUrl.PublicUrl | Slack.Slack>(),
+    Effect.context<CommunitySlackChannelIds | LanguageModel.LanguageModel | PublicUrl.PublicUrl | Slack.Slack>(),
     Context.omit(Scope.Scope),
   )
 

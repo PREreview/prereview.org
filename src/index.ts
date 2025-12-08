@@ -1,3 +1,4 @@
+import { OpenAiClient, OpenAiLanguageModel } from '@effect/ai-openai'
 import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
@@ -83,6 +84,13 @@ const ClusterLayer = Layer.unwrapEffect(
 
 pipe(
   Program,
+  Layer.provide(OpenAiLanguageModel.modelWithTokenizer('gpt-4o')),
+  Layer.provide(
+    OpenAiClient.layerConfig({
+      apiKey: Config.redacted('OPENAI_API_KEY'),
+      organizationId: Config.redacted('OPENAI_ORGANIZATION').pipe(Config.withDefault(undefined)),
+    }),
+  ),
   Layer.provide(
     Layer.mergeAll(
       NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
