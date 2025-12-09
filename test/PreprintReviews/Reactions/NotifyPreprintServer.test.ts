@@ -39,7 +39,7 @@ describe('NotifyPreprintServer', () => {
       }).pipe(
         Effect.provide(
           Layer.mergeAll(
-            featureFlagsLayer(true),
+            featureFlagsLayer('sandbox'),
             Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
           ),
         ),
@@ -49,20 +49,24 @@ describe('NotifyPreprintServer', () => {
   })
 
   test.prop([
+    fc.constantFrom(true, 'sandbox'),
     fc.integer(),
     fc.constantFrom(
       new Prereviews.PrereviewIsNotFound(),
       new Prereviews.PrereviewIsUnavailable(),
       new Prereviews.PrereviewWasRemoved(),
     ),
-  ])("when the review can't be loaded", (reviewId, error) =>
+  ])("when the review can't be loaded", (sendCoarNotifyMessages, reviewId, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
 
       expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
     }).pipe(
       Effect.provide(
-        Layer.mergeAll(featureFlagsLayer('sandbox'), Layer.mock(Prereviews.Prereviews, { getPrereview: () => error })),
+        Layer.mergeAll(
+          featureFlagsLayer(sendCoarNotifyMessages),
+          Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
+        ),
       ),
       EffectTest.run,
     ),
