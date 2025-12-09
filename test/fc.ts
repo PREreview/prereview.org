@@ -574,7 +574,7 @@ export const coarNotifyRequestReview = ({
     actor: fc.record({
       id: url(),
       type: fc.constantFrom('Application', 'Group', 'Organization', 'Person', 'Service'),
-      name: nonEmptyString(),
+      name: nonEmptyTrimmedString(),
     }),
   })
 
@@ -1453,6 +1453,12 @@ export const nonEmptyArray = <T>(
 ): fc.Arbitrary<Array.NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(Array.isNonEmptyArray)
 
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
+
+export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
+  fc
+    .string({ minLength: 1 })
+    .map(string => string.trim())
+    .filter(isNonEmptyString)
 
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)
