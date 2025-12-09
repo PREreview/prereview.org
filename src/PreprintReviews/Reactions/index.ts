@@ -1,6 +1,7 @@
 import { Activity, Workflow } from '@effect/workflow'
 import { flow, Layer, Schema, Struct } from 'effect'
 import * as Errors from '../Errors.ts'
+import { NotifyPreprintServer as executeNotifyPreprintServerOfReview } from './NotifyPreprintServer.ts'
 
 export const NotifyPreprintServerOfReview = Workflow.make({
   name: 'NotifyPreprintServerOfReview',
@@ -12,12 +13,11 @@ export const NotifyPreprintServerOfReview = Workflow.make({
 })
 
 export const workflowsLayer = Layer.mergeAll(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   NotifyPreprintServerOfReview.toLayer(({ reviewId }) =>
     Activity.make({
       name: NotifyPreprintServerOfReview.name,
       error: NotifyPreprintServerOfReview.errorSchema,
-      execute: new Errors.FailedToNotifyPreprintServer({ cause: 'not implemented' }),
+      execute: executeNotifyPreprintServerOfReview(reviewId),
     }),
   ),
 )
