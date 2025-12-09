@@ -554,7 +554,13 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
     RTE.chainFirstReaderTaskKW(([, reviewId]) =>
       EffectToFpts.toReaderTaskEither(
-        PreprintReviews.NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
+        Effect.all(
+          [
+            PreprintReviews.NotifyCommunitySlackOfPreprintReview.execute({ reviewId }, { discard: true }),
+            PreprintReviews.NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
+          ],
+          { concurrency: 'inherit' },
+        ),
       ),
     ),
     RTE.chainFirstW(([, review]) =>
