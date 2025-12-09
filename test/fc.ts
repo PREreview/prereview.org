@@ -578,6 +578,41 @@ export const coarNotifyRequestReview = ({
     }),
   })
 
+export const coarNotifyAnnounceReview = (): fc.Arbitrary<CoarNotify.AnnounceReview> =>
+  fc.record({
+    '@context': fc.tuple(
+      constant('https://www.w3.org/ns/activitystreams'),
+      constantFrom('https://coar-notify.net', 'https://purl.org/coar/notify'),
+    ),
+    id: url(),
+    type: fc.constant(['Announce', 'coar-notify:ReviewAction']),
+    origin: fc.record(
+      {
+        id: url(),
+        inbox: url(),
+        type: constantFrom('Organization', 'Service'),
+      },
+      { requiredKeys: ['id', 'type'] },
+    ),
+    target: fc.record({
+      id: url(),
+      inbox: url(),
+      type: constantFrom('Organization', 'Service'),
+    }),
+    context: fc.record({
+      id: url(),
+      'ietf:cite-as': doi(),
+    }),
+    object: fc.record({
+      id: url(),
+      'ietf:cite-as': doi(),
+      type: constant(['Page', 'sorg:Review']),
+    }),
+  })
+
+export const coarNotifyMessage = (): fc.Arbitrary<CoarNotify.Message> =>
+  fc.oneof(coarNotifyAnnounceReview(), coarNotifyRequestReview())
+
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc
     .tuple(

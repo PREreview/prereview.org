@@ -34,6 +34,36 @@ export const RequestReviewSchema = Schema.Struct({
   }),
 })
 
+export type AnnounceReview = Schema.Schema.Type<typeof AnnounceReviewSchema>
+
+export const AnnounceReviewSchema = Schema.Struct({
+  '@context': Schema.Tuple(
+    Schema.Literal('https://www.w3.org/ns/activitystreams'),
+    Schema.Literal('https://coar-notify.net', 'https://purl.org/coar/notify'),
+  ),
+  id: Schema.URL,
+  type: Schema.Tuple(Schema.Literal('Announce'), Schema.Literal('coar-notify:ReviewAction')),
+  origin: Schema.Struct({
+    id: Schema.URL,
+    inbox: Schema.optionalWith(Schema.URL, { exact: true }),
+    type: Schema.Literal('Organization', 'Service'),
+  }),
+  target: Schema.Struct({
+    id: Schema.URL,
+    inbox: Schema.URL,
+    type: Schema.Literal('Organization', 'Service'),
+  }),
+  context: Schema.Struct({
+    id: Schema.URL,
+    'ietf:cite-as': Doi.DoiFromUrlSchema,
+  }),
+  object: Schema.Struct({
+    id: Schema.URL,
+    'ietf:cite-as': Doi.DoiFromUrlSchema,
+    type: Schema.Tuple(Schema.Literal('Page'), Schema.Literal('sorg:Review')),
+  }),
+})
+
 export type Message = typeof MessageSchema.Type
 
-export const MessageSchema = Schema.Union(RequestReviewSchema)
+export const MessageSchema = Schema.Union(RequestReviewSchema, AnnounceReviewSchema)
