@@ -1,4 +1,5 @@
-import { Match } from 'effect'
+import { Match, Record } from 'effect'
+import type { CoarNotify } from '../ExternalApis/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 
 export const getName = Match.typeTags<PreprintId, string>()({
@@ -37,3 +38,15 @@ export const getName = Match.typeTags<PreprintId, string>()({
   VerixivPreprintId: () => 'VeriXiv',
   ZenodoPreprintId: () => 'Zenodo',
 })
+
+export const getCoarNotifyTarget = (preprintId: PreprintId) => Record.get(coarNotifyTargets, preprintId._tag as never)
+
+const coarNotifyTargets = {
+  PreprintsorgPreprintId: {
+    id: new URL('https://www.preprints.org/'),
+    inbox: new URL('https://www.preprints.org/inbox'),
+    type: 'Service',
+  },
+} satisfies Partial<Record<PreprintId['_tag'], CoarNotify.Message['target']>>
+
+export type CoarNotifyTargetPreprintId = Extract<PreprintId, { _tag: keyof typeof coarNotifyTargets }>

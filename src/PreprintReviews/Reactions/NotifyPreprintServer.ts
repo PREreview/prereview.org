@@ -1,6 +1,7 @@
-import { Effect, Match, pipe } from 'effect'
+import { Effect, Match, Option, pipe } from 'effect'
 import { CoarNotify } from '../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
+import * as PreprintServers from '../../PreprintServers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -17,14 +18,22 @@ export const NotifyPreprintServer = Effect.fn(
 
     const prereview = yield* Prereviews.getPrereview(reviewId)
 
-    if (sendCoarNotifyMessages === true) {
-      return yield* Effect.fail('not implemented')
-    }
+    const target = pipe(
+      Match.value(sendCoarNotifyMessages),
+      Match.withReturnType<Option.Option<CoarNotify.AnnounceReview['target']>>(),
+      Match.when('sandbox', () =>
+        Option.some({
+          id: new URL('https://coar-notify-inbox.fly.dev'),
+          inbox: new URL('https://coar-notify-inbox.fly.dev/inbox'),
+          type: 'Service',
+        }),
+      ),
+      Match.when(true, () => PreprintServers.getCoarNotifyTarget(prereview.preprint.id)),
+      Match.exhaustive,
+    )
 
-    const target: CoarNotify.AnnounceReview['target'] = {
-      id: new URL('https://coar-notify-inbox.fly.dev'),
-      inbox: new URL('https://coar-notify-inbox.fly.dev/inbox'),
-      type: 'Service',
+    if (Option.isNone(target)) {
+      return
     }
 
     const context: CoarNotify.AnnounceReview['context'] = pipe(
@@ -48,7 +57,7 @@ export const NotifyPreprintServer = Effect.fn(
         inbox: yield* PublicUrl.forRoute(Routes.Inbox, {}),
         type: 'Service',
       },
-      target,
+      target: target.value,
       context,
       object: {
         id: yield* PublicUrl.forRoute(Routes.reviewMatch.formatter, { id: prereview.id }),

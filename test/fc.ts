@@ -108,6 +108,7 @@ import {
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
 import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.ts'
+import type { CoarNotifyTargetPreprintId } from '../src/PreprintServers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
 import {
@@ -1169,6 +1170,45 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     verixivPreprintId(),
   )
 
+export const coarNotifyTargetPreprintId = (): fc.Arbitrary<CoarNotifyTargetPreprintId> => preprintsorgPreprintId()
+
+export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintId, CoarNotifyTargetPreprintId>> =>
+  fc.oneof(
+    africarxivFigsharePreprintId(),
+    africarxivOsfPreprintId(),
+    africarxivZenodoPreprintId(),
+    arcadiaSciencePreprintId(),
+    authoreaPreprintId(),
+    curvenotePreprintId(),
+    jxivPreprintId(),
+    philsciPreprintId(),
+    psychArchivesPreprintId(),
+    scienceOpenPreprintId(),
+    ssrnPreprintId(),
+    verixivPreprintId(),
+    advancePreprintId(),
+    africarxivUbuntunetPreprintId(),
+    arxivPreprintId(),
+    biorxivPreprintId(),
+    chemrxivPreprintId(),
+    eartharxivPreprintId(),
+    ecoevorxivPreprintId(),
+    edarxivPreprintId(),
+    engrxivPreprintId(),
+    lifecycleJournalPreprintId(),
+    medrxivPreprintId(),
+    metaarxivPreprintId(),
+    neurolibrePreprintId(),
+    osfPreprintId(),
+    osfPreprintsPreprintId(),
+    psyarxivPreprintId(),
+    researchSquarePreprintId(),
+    scieloPreprintId(),
+    socarxivPreprintId(),
+    techrxivPreprintId(),
+    zenodoPreprintId(),
+  )
+
 export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId())
 
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
@@ -1589,7 +1629,11 @@ export const datasetTitle = (): fc.Arbitrary<Datasets.DatasetTitle> =>
     })
     .map(args => new Datasets.DatasetTitle(args))
 
-export const prereview = (): fc.Arbitrary<Prereview> =>
+export const prereview = ({
+  preprintId: _preprintId,
+}: {
+  preprintId?: fc.Arbitrary<Prereview['preprint']['id']>
+} = {}): fc.Arbitrary<Prereview> =>
   fc
     .record({
       authors: fc.record({
@@ -1603,7 +1647,7 @@ export const prereview = (): fc.Arbitrary<Prereview> =>
       live: fc.boolean(),
       published: plainDate(),
       preprint: fc.record({
-        id: preprintId(),
+        id: _preprintId ?? preprintId(),
         language: languageCode(),
         title: html(),
         url: url(),
