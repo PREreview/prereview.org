@@ -1,51 +1,28 @@
 import type { HttpClient } from '@effect/platform'
-import type { Doi } from 'doi-ts'
-import {
-  Array,
-  Boolean,
-  Chunk,
-  Context,
-  Effect,
-  identity,
-  Option,
-  pipe,
-  type Redacted,
-  Stream,
-  Struct,
-  Tuple,
-} from 'effect'
-import type * as F from 'fetch-fp-ts'
-import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { Array, Boolean, Chunk, Context, Effect, identity, Option, pipe, Stream, Struct, Tuple } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { LoggerEnv } from 'logger-fp-ts'
-import { match } from 'ts-pattern'
 import * as Preprints from '../Preprints/index.ts'
 import { type PreprintId, PreprintIdEquivalence } from '../Preprints/index.ts'
-import { type PublicUrlEnv, toUrl } from '../public-url.ts'
 import type { ReviewRequestPreprintId } from '../review-request.ts'
 import {
   type ReviewRequests,
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
 } from '../review-requests-page/index.ts'
-import { reviewMatch } from '../routes.ts'
 import type { FieldId } from '../types/field.ts'
 import { Uuid } from '../types/index.ts'
 import type { User } from '../user.ts'
-import type { NewPrereview } from '../write-review/index.ts'
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.ts'
 import { getPageOfReviewRequests } from './GetPageOfReviewRequests.ts'
-import { postNewPrereview } from './new-prereview.ts'
 import { sendReviewActionOffer } from './SendReviewActionOffer.ts'
 
 export interface PrereviewCoarNotifyEnv {
-  readonly coarNotifyToken: string
   readonly coarNotifyUrl: URL
 }
 
 export class PrereviewCoarNotifyConfig extends Context.Tag('PrereviewCoarNotifyConfig')<
   PrereviewCoarNotifyConfig,
-  { coarNotifyToken: Redacted.Redacted; coarNotifyUrl: URL }
+  { coarNotifyUrl: URL }
 >() {}
 
 export const publishReviewRequest = Effect.fn(function* (
@@ -174,34 +151,4 @@ export const getReviewRequestsFromPrereviewCoarNotify = ({
         ),
       ),
     ),
-  )
-
-export const sendPrereviewToPrereviewCoarNotifyInbox = (
-  newPrereview: NewPrereview,
-  doi: Doi,
-  id: number,
-): RTE.ReaderTaskEither<F.FetchEnv & LoggerEnv & PrereviewCoarNotifyEnv & PublicUrlEnv, 'unavailable', void> =>
-  pipe(
-    RTE.Do,
-    RTE.apS(
-      'baseUrl',
-      RTE.asks(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => coarNotifyUrl),
-    ),
-    RTE.apS(
-      'apiToken',
-      RTE.asks(({ coarNotifyToken }: PrereviewCoarNotifyEnv) => coarNotifyToken),
-    ),
-    RTE.apSW('prereviewUrl', RTE.rightReader(toUrl(reviewMatch.formatter, { id }))),
-    RTE.let('newPrereview', ({ prereviewUrl }) => ({
-      preprint: match(newPrereview.preprint.id)
-        .with({ _tag: 'PhilsciPreprintId' }, () => ({}))
-        .otherwise(id => ({ doi: id.value })),
-      doi,
-      url: prereviewUrl,
-      author: match(newPrereview.persona)
-        .with('public', () => ({ name: newPrereview.user.name }))
-        .with('pseudonym', () => ({ name: newPrereview.user.pseudonym }))
-        .exhaustive(),
-    })),
-    RTE.chainW(postNewPrereview),
   )

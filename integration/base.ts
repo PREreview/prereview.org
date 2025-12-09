@@ -1302,7 +1302,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               tokenUrl: new URL('http://orcid.test/token'),
             }),
             Layer.succeed(PrereviewCoarNotify.PrereviewCoarNotifyConfig, {
-              coarNotifyToken: Redacted.make('token'),
               coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
             }),
             Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),

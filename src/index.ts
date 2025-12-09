@@ -153,7 +153,6 @@ pipe(
       Layer.effect(
         PrereviewCoarNotify.PrereviewCoarNotifyConfig,
         Config.all({
-          coarNotifyToken: Config.redacted('COAR_NOTIFY_TOKEN'),
           coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
         }),
       ),
