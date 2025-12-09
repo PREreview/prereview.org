@@ -50,5 +50,6 @@ const featureFlagsLayer = (canLogInAsDemoUser: boolean) =>
     canLogInAsDemoUser,
     canReviewDatasets: false,
     enableCoarNotifyInbox: false,
+    sendCoarNotifyMessages: false,
     useCrowdinInContext: false,
   })
