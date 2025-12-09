@@ -1,11 +1,15 @@
-import type { HttpClient } from '@effect/platform'
-import { Data, type Effect } from 'effect'
-import type { Message } from '../Types.ts'
+import { HttpClient } from '@effect/platform'
+import { Data, Effect, flow } from 'effect'
+import { CreateRequest } from './CreateRequest.ts'
+import { HandleResponse } from './HandleResponse.ts'
 
 export class UnableToSendCoarNotifyMessage extends Data.TaggedError('UnableToSendCoarNotifyMessage')<{
   cause?: unknown
 }> {}
 
-export declare const SendMessage: (
-  message: Message,
-) => Effect.Effect<void, UnableToSendCoarNotifyMessage, HttpClient.HttpClient>
+export const SendMessage = flow(
+  CreateRequest,
+  Effect.andThen(HttpClient.execute),
+  Effect.andThen(HandleResponse),
+  Effect.catchAll(error => new UnableToSendCoarNotifyMessage({ cause: error })),
+)

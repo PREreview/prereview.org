@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
-import { Context, Effect, Layer } from 'effect'
-import { type SendMessage, UnableToSendCoarNotifyMessage } from './SendMessage/index.ts'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
+import { SendMessage } from './SendMessage/index.ts'
 
 export { UnableToSendCoarNotifyMessage } from './SendMessage/index.ts'
 export * from './Types.ts'
@@ -19,8 +19,12 @@ export class CoarNotify extends Context.Tag('CoarNotify')<
 
 export const { sendMessage } = Effect.serviceFunctions(CoarNotify)
 
-const make: Effect.Effect<typeof CoarNotify.Service, never, HttpClient.HttpClient> = Effect.succeed({
-  sendMessage: () => new UnableToSendCoarNotifyMessage({ cause: 'not implemented' }),
+const make: Effect.Effect<typeof CoarNotify.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
+  const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+
+  return {
+    sendMessage: flow(SendMessage, Effect.provide(context)),
+  }
 })
 
 export const layer = Layer.effect(CoarNotify, make)
