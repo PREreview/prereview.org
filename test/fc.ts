@@ -601,7 +601,7 @@ export const coarNotifyAnnounceReview = (): fc.Arbitrary<CoarNotify.AnnounceRevi
     }),
     context: fc.record({
       id: url(),
-      'ietf:cite-as': doi(),
+      'ietf:cite-as': fc.oneof(doi(), url()),
     }),
     object: fc.record({
       id: url(),
