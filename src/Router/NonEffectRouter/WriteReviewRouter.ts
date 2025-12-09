@@ -13,6 +13,7 @@ import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../legacy-prereview.ts'
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import * as PreprintReviews from '../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.ts'
@@ -551,6 +552,11 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       ),
     ),
     RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
+    RTE.chainFirstReaderTaskKW(([, reviewId]) =>
+      EffectToFpts.toReaderTaskEither(
+        PreprintReviews.NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
+      ),
+    ),
     RTE.chainFirstW(([, review]) =>
       EffectToFpts.toReaderTaskEither(
         Zenodo.invalidatePrereviewInCache({

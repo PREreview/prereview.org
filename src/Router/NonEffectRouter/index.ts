@@ -9,6 +9,7 @@ import {
   type HttpServerResponse,
   type Path,
 } from '@effect/platform'
+import type { WorkflowEngine } from '@effect/workflow'
 import {
   Effect,
   Either,
@@ -224,6 +225,7 @@ export interface Env {
     | PrereviewCoarNotifyConfig
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
+    | WorkflowEngine.WorkflowEngine
     | Zenodo.ZenodoApi
   >
   logger: LoggerEnv
