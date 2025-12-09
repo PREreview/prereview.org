@@ -16,7 +16,6 @@ import { sendEmailWithNodemailer } from '../../nodemailer.ts'
 import * as PreprintReviews from '../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
-import { sendPrereviewToPrereviewCoarNotifyInbox } from '../../prereview-coar-notify/index.ts'
 import type * as Response from '../../Response/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
@@ -455,8 +454,6 @@ export const WriteReviewRouter = pipe(
         ),
         publicUrl: env.publicUrl,
         publishPrereview: withEnv(publishPrereview, {
-          coarNotifyToken: Redacted.value(env.prereviewCoarNotifyConfig.coarNotifyToken),
-          coarNotifyUrl: env.prereviewCoarNotifyConfig.coarNotifyUrl,
           createAuthorInvite: withEnv(
             (authorInvite: OpenAuthorInvite) =>
               pipe(
@@ -551,7 +548,6 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
-    RTE.chainFirstReaderIOKW(([doi, review]) => sendPrereviewToPrereviewCoarNotifyInbox(newPrereview, doi, review)),
     RTE.chainFirstReaderTaskKW(([, reviewId]) =>
       EffectToFpts.toReaderTaskEither(
         Effect.all(
