@@ -12,6 +12,7 @@ import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
 import * as Events from './Events.ts'
 import {
+  CoarNotify,
   Crossref,
   Datacite,
   Ghost,
@@ -396,6 +397,7 @@ export const Program = pipe(
   ),
   Layer.provide(
     Layer.mergeAll(
+      CoarNotify.layer,
       Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
