@@ -36,6 +36,7 @@ import { GetPseudonym } from './log-in/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as Personas from './Personas/index.ts'
+import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Preprints from './Preprints/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
@@ -343,7 +344,9 @@ export const Program = pipe(
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
   ),
-  Layer.provide(Layer.mergeAll(publishComment, createRecordOnZenodoForComment, Inbox.layer)),
+  Layer.provide(
+    Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment, Inbox.layer),
+  ),
   Layer.provide(
     Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
   ),
