@@ -33,3 +33,7 @@ export const RequestReviewSchema = Schema.Struct({
     name: Schema.compose(Schema.Trim, NonEmptyString.NonEmptyStringSchema),
   }),
 })
+
+export type Message = typeof MessageSchema.Type
+
+export const MessageSchema = Schema.Union(RequestReviewSchema)

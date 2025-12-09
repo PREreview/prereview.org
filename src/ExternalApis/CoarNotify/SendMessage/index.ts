@@ -1,11 +1,11 @@
 import type { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Data, type Effect } from 'effect'
-import type { RequestReview } from '../Types.ts'
+import type { Message } from '../Types.ts'
 
 export class UnableToSendCoarNotifyMessage extends Data.TaggedError('UnableToSendCoarNotifyMessage')<{
   cause?: unknown
 }> {}
 
 export declare const SendMessage: (
-  message: RequestReview,
+  message: Message,
 ) => Effect.Effect<HttpClientResponse.HttpClientResponse, UnableToSendCoarNotifyMessage, HttpClient.HttpClient>
