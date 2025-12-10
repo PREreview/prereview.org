@@ -305,7 +305,7 @@ const publishComment = Layer.effect(
 const getCategories = Layer.effect(
   OpenAlex.GetCategories,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.andThen(Effect.context<OpenAlex.OpenAlex>(), Context.omit(Scope.Scope))
 
     return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provide(context))
   }),
@@ -356,7 +356,7 @@ export const Program = pipe(
       Personas.layer,
       Datasets.layer,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
-      Layer.provide(getCategories, CachingHttpClient.layer('10 minutes')),
+      getCategories,
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       getPseudonym,
       doesUserHaveAVerifiedEmailAddress,
@@ -402,6 +402,7 @@ export const Program = pipe(
       Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
       Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
+      Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
       Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
       Slack.layer,
