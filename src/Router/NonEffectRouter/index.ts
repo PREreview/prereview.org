@@ -34,8 +34,8 @@ import type * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import { Locale, ScietyListToken, SessionStore } from '../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
-import { Cloudinary, type OpenAlex, Slack, Zenodo } from '../../ExternalApis/index.ts'
-import { CommunitySlack } from '../../ExternalInteractions/index.ts'
+import { Cloudinary, Slack, Zenodo } from '../../ExternalApis/index.ts'
+import { CommunitySlack, type OpenAlexWorks } from '../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as FptsToEffect from '../../FptsToEffect.ts'
@@ -219,7 +219,7 @@ export interface Env {
     | GenerateUuid
     | HttpClient.HttpClient
     | LegacyPrereviewApi
-    | OpenAlex.GetCategories
+    | OpenAlexWorks.GetCategories
     | Personas.Personas
     | Preprints.Preprints
     | PrereviewCoarNotifyConfig

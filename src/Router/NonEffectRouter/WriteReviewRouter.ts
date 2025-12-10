@@ -8,7 +8,7 @@ import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../author-invite.ts'
 import * as EffectToFpts from '../../EffectToFpts.ts'
 import { createAuthorInviteEmail, sendContactEmailAddressVerificationEmailForReview, sendEmail } from '../../email.ts'
-import { OpenAlex } from '../../ExternalApis/index.ts'
+import { OpenAlexWorks } from '../../ExternalInteractions/index.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../legacy-prereview.ts'
@@ -474,7 +474,7 @@ export const WriteReviewRouter = pipe(
                   .with({ _tag: 'PhilsciPreprintId' }, () => RTE.of([]))
                   .otherwise(
                     EffectToFpts.toReaderTaskEitherK(id =>
-                      pipe(OpenAlex.GetCategories, Effect.andThen(Function.apply(id.value))),
+                      pipe(OpenAlexWorks.GetCategories, Effect.andThen(Function.apply(id.value))),
                     ),
                   ),
                 RTE.match(

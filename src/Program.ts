@@ -23,7 +23,7 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack } from './ExternalInteractions/index.ts'
+import { CommunitySlack, OpenAlexWorks } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
@@ -303,11 +303,11 @@ const publishComment = Layer.effect(
 )
 
 const getCategories = Layer.effect(
-  OpenAlex.GetCategories,
+  OpenAlexWorks.GetCategories,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<OpenAlex.OpenAlex>(), Context.omit(Scope.Scope))
 
-    return id => pipe(OpenAlex.getCategoriesFromOpenAlex(id), Effect.provide(context))
+    return id => pipe(OpenAlexWorks.getCategories(id), Effect.provide(context))
   }),
 )
 

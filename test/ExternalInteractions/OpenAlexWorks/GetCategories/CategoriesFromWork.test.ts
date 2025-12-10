@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import * as _ from '../../../src/ExternalApis/OpenAlex/Work.ts'
-import * as fc from '../../fc.ts'
+import * as _ from '../../../../src/ExternalInteractions/OpenAlexWorks/GetCategories/CategoriesFromWork.ts'
+import * as fc from '../../../fc.ts'
 
-describe('getCategories', () => {
+describe('CategoriesFromWork', () => {
   test.prop([
     fc
       .uniqueArray(fc.record({ id: fc.url(), display_name: fc.string() }), {
@@ -24,7 +24,7 @@ describe('getCategories', () => {
         ),
       ),
   ])('removes duplicates', ([work, expected]) => {
-    const actual = _.getCategories(work)
+    const actual = _.CategoriesFromWork(work)
 
     expect(actual).toStrictEqual(expected)
   })
