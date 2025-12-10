@@ -9,6 +9,17 @@ const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
     results: Schema.Chunk(resultSchema),
   })
 
+const DomainIdSchema = pipe(Schema.NumberFromString, Schema.brand('DomainId'))
+
+const DomainIdFromUrlSchema = Schema.transformOrFail(Schema.URL, DomainIdSchema, {
+  strict: true,
+  decode: (url, _, ast) =>
+    url.origin === 'https://openalex.org' && url.pathname.startsWith('/domains/')
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(9)))
+      : ParseResult.fail(new ParseResult.Type(ast, url)),
+  encode: domainId => ParseResult.succeed(new URL(`https://openalex.org/domains/${encodeURIComponent(domainId)}`)),
+})
+
 const FieldIdSchema = pipe(Schema.NumberFromString, Schema.brand('FieldId'))
 
 const FieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, FieldIdSchema, {
@@ -32,6 +43,11 @@ const SubfieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, SubfieldIdSch
     ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
 })
 
+const DomainSchema = Schema.Struct({
+  id: DomainIdFromUrlSchema,
+  display_name: Schema.NonEmptyTrimmedString,
+})
+
 const FieldSchema = Schema.Struct({
   id: FieldIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
@@ -48,6 +64,31 @@ const LocaleFileSchema = Schema.Record({
     message: Schema.NonEmptyTrimmedString,
   }),
 })
+
+const TypesFileSchema = Schema.Record({
+  key: Schema.String,
+  value: Schema.Struct({
+    name: Schema.NonEmptyTrimmedString,
+  }),
+})
+
+const GetDomains: Effect.Effect<
+  Chunk.Chunk<typeof DomainSchema.Type>,
+  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClient.HttpClient
+> = pipe(
+  Stream.paginateChunkEffect(
+    '*',
+    flow(
+      cursor => HttpClient.get('https://api.openalex.org/domains', { urlParams: { 'per-page': 100, cursor } }),
+      Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(DomainSchema))),
+      Effect.scoped,
+      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+    ),
+  ),
+  Stream.runCollect,
+  Effect.andThen(Chunk.sortWith(domain => domain.id, Order.number)),
+)
 
 const GetFields: Effect.Effect<
   Chunk.Chunk<typeof FieldSchema.Type>,
@@ -117,12 +158,44 @@ const SubfieldsToLocaleFile = flow(
   Effect.andThen(WriteToFile('locales/en-US/subfields.json')),
 )
 
-const UpdateFields = pipe(GetFields, Effect.tap(FieldsToLocaleFile))
+const DomainsToTypesFile = flow(
+  Chunk.reduce<typeof TypesFileSchema.Type, typeof DomainSchema.Type>({}, (accumulator, domain) => ({
+    ...accumulator,
+    [domain.id]: { name: domain.display_name },
+  })),
+  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Effect.andThen(String.concat('\n')),
+  Effect.andThen(WriteToFile('src/types/data/domains.json')),
+)
 
-const UpdateSubfields = pipe(GetSubfields, Effect.tap(SubfieldsToLocaleFile))
+const FieldsToTypesFile = flow(
+  Chunk.reduce<typeof TypesFileSchema.Type, typeof FieldSchema.Type>({}, (accumulator, field) => ({
+    ...accumulator,
+    [field.id]: { name: field.display_name },
+  })),
+  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Effect.andThen(String.concat('\n')),
+  Effect.andThen(WriteToFile('src/types/data/fields.json')),
+)
+
+const SubfieldsToTypesFile = flow(
+  Chunk.reduce<typeof TypesFileSchema.Type, typeof SubfieldSchema.Type>({}, (accumulator, subfield) => ({
+    ...accumulator,
+    [subfield.id]: { name: subfield.display_name },
+  })),
+  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Effect.andThen(String.concat('\n')),
+  Effect.andThen(WriteToFile('src/types/data/subfields.json')),
+)
+
+const UpdateDomains = pipe(GetDomains, Effect.tap(DomainsToTypesFile))
+
+const UpdateFields = pipe(GetFields, Effect.tap(FieldsToLocaleFile), Effect.tap(FieldsToTypesFile))
+
+const UpdateSubfields = pipe(GetSubfields, Effect.tap(SubfieldsToLocaleFile), Effect.tap(SubfieldsToTypesFile))
 
 void pipe(
-  Effect.all([UpdateFields, UpdateSubfields]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields]),
   Effect.provide(
     pipe(
       Layer.effect(
