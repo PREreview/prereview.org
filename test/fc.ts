@@ -39,7 +39,7 @@ import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
-import { type CoarNotify, Slack } from '../src/ExternalApis/index.js'
+import { type CoarNotify, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
 import type { CommunitySlack } from '../src/ExternalInteractions/index.ts'
 import type { GhostPage } from '../src/GhostPage/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
@@ -613,6 +613,33 @@ export const coarNotifyAnnounceReview = (): fc.Arbitrary<CoarNotify.AnnounceRevi
 
 export const coarNotifyMessage = (): fc.Arbitrary<CoarNotify.Message> =>
   fc.oneof(coarNotifyAnnounceReview(), coarNotifyRequestReview())
+
+export const openAlexWork = ({
+  topics,
+}: { topics?: fc.Arbitrary<OpenAlex.Work['topics']> } = {}): fc.Arbitrary<OpenAlex.Work> =>
+  fc.record(
+    {
+      language: languageCode(),
+      keywords: fc.array(
+        fc.record({
+          display_name: fc.string(),
+          id: url(),
+        }),
+      ),
+      topics:
+        topics ??
+        fc.array(
+          fc.record({
+            display_name: fc.string(),
+            id: url(),
+            subfield: fc.record({ display_name: fc.string(), id: url() }),
+            field: fc.record({ display_name: fc.string(), id: url() }),
+            domain: fc.record({ display_name: fc.string(), id: url() }),
+          }),
+        ),
+    },
+    { requiredKeys: ['keywords', 'topics'] },
+  )
 
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc

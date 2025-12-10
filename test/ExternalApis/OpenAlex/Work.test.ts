@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as _ from '../../../src/ExternalApis/OpenAlex/Work.ts'
-import * as fc from './fc.ts'
+import * as fc from '../../fc.ts'
 
 describe('getCategories', () => {
   test.prop([
@@ -13,7 +13,7 @@ describe('getCategories', () => {
       })
       .chain(categories =>
         fc.tuple(
-          fc.work({
+          fc.openAlexWork({
             topics: fc.constant([
               { ...categories[0]!, subfield: categories[1]!, field: categories[2]!, domain: categories[3]! },
               { ...categories[0]!, subfield: categories[4]!, field: categories[2]!, domain: categories[3]! },
