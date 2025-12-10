@@ -1,6 +1,13 @@
-import { FileSystem, HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
+import {
+  FileSystem,
+  HttpClient,
+  type HttpClientError,
+  HttpClientRequest,
+  HttpClientResponse,
+  UrlParams,
+} from '@effect/platform'
 import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
-import { Chunk, Effect, flow, Layer, Order, ParseResult, pipe, Schema, Stream, String } from 'effect'
+import { Chunk, Effect, flow, Layer, Logger, LogLevel, Order, ParseResult, pipe, Schema, Stream, String } from 'effect'
 import path from 'path'
 
 const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
@@ -248,15 +255,27 @@ void pipe(
         HttpClient.HttpClient,
         Effect.andThen(
           HttpClient.HttpClient,
-          HttpClient.mapRequest(
-            HttpClientRequest.setHeaders({
-              'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
-            }),
+          flow(
+            HttpClient.mapRequest(
+              HttpClientRequest.setHeaders({
+                'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+              }),
+            ),
+            HttpClient.tapRequest(request =>
+              Effect.logDebug('Sending HTTP request').pipe(
+                Effect.annotateLogs({
+                  url: `${request.url}?${UrlParams.toString(request.urlParams)}`,
+                  method: request.method,
+                }),
+              ),
+            ),
           ),
         ),
       ),
       Layer.provideMerge(Layer.mergeAll(NodeHttpClient.layer, NodeFileSystem.layer)),
+      Layer.provideMerge(Logger.pretty),
     ),
   ),
+  Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.runPromise,
 )
