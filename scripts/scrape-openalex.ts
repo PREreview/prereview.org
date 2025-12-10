@@ -7,7 +7,22 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
-import { Chunk, Effect, flow, Layer, Logger, LogLevel, Order, ParseResult, pipe, Schema, Stream, String } from 'effect'
+import crypto from 'crypto'
+import {
+  Chunk,
+  Effect,
+  flow,
+  Layer,
+  Logger,
+  LogLevel,
+  Order,
+  ParseResult,
+  pipe,
+  Record,
+  Schema,
+  Stream,
+  String,
+} from 'effect'
 import path from 'path'
 
 const ListResponse = <A, I, R>(resultSchema: Schema.Schema<A, I, R>) =>
@@ -61,6 +76,17 @@ const TopicIdFromUrlSchema = Schema.transformOrFail(Schema.URL, TopicIdSchema, {
   encode: topicId => ParseResult.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
 })
 
+const KeywordIdSchema = pipe(Schema.String, Schema.brand('KeywordId'))
+
+const KeywordIdFromUrlSchema = Schema.transformOrFail(Schema.URL, KeywordIdSchema, {
+  strict: true,
+  decode: (url, _, ast) =>
+    url.origin === 'https://openalex.org' && url.pathname.startsWith('/keywords/')
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(10)))
+      : ParseResult.fail(new ParseResult.Type(ast, url)),
+  encode: keywordId => ParseResult.succeed(new URL(`https://openalex.org/keywords/${encodeURIComponent(keywordId)}`)),
+})
+
 const DomainSchema = Schema.Struct({
   id: DomainIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
@@ -78,6 +104,11 @@ const SubfieldSchema = Schema.Struct({
 
 const TopicSchema = Schema.Struct({
   id: TopicIdFromUrlSchema,
+  display_name: Schema.NonEmptyTrimmedString,
+})
+
+const KeywordSchema = Schema.Struct({
+  id: KeywordIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
 })
 
@@ -186,6 +217,27 @@ const GetTopics: Effect.Effect<
   Effect.andThen(Chunk.sortWith(topic => topic.id, Order.number)),
 )
 
+const GetKeywords: Effect.Effect<
+  Chunk.Chunk<typeof KeywordSchema.Type>,
+  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClient.HttpClient
+> = pipe(
+  Stream.paginateChunkEffect(
+    '*',
+    flow(
+      cursor =>
+        HttpClient.get('https://api.openalex.org/keywords', {
+          urlParams: { select: Object.keys(KeywordSchema.fields).join(','), 'per-page': 200, cursor },
+        }),
+      Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(KeywordSchema))),
+      Effect.scoped,
+      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+    ),
+  ),
+  Stream.runCollect,
+  Effect.andThen(Chunk.sortWith(keyword => keyword.id, Order.string)),
+)
+
 const WriteToFile = (filePath: string) => (content: string) =>
   Effect.andThen(FileSystem.FileSystem, fileSystem =>
     fileSystem.writeFileString(path.resolve(import.meta.dirname, '..', filePath), content),
@@ -251,6 +303,17 @@ const TopicsToTypesFile = flow(
   Effect.andThen(WriteToFile('src/types/data/topics.json')),
 )
 
+const KeywordsToTypesFile = flow(
+  Chunk.map<Chunk.Chunk<typeof KeywordSchema.Type>, [string, typeof TypesFileSchema.value.Type]>(keyword => [
+    crypto.createHash('shake256', { outputLength: 10 }).update(keyword.id).digest('hex'),
+    { name: keyword.display_name },
+  ]),
+  Record.fromEntries,
+  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Effect.andThen(String.concat('\n')),
+  Effect.andThen(WriteToFile('src/types/data/keywords.json')),
+)
+
 const UpdateDomains = pipe(GetDomains, Effect.tap(DomainsToTypesFile))
 
 const UpdateFields = pipe(GetFields, Effect.tap(FieldsToLocaleFile), Effect.tap(FieldsToTypesFile))
@@ -259,8 +322,10 @@ const UpdateSubfields = pipe(GetSubfields, Effect.tap(SubfieldsToLocaleFile), Ef
 
 const UpdateTopics = pipe(GetTopics, Effect.tap(TopicsToTypesFile))
 
+const UpdateKeywords = pipe(GetKeywords, Effect.tap(KeywordsToTypesFile))
+
 void pipe(
-  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics, UpdateKeywords]),
   Effect.provide(
     pipe(
       Layer.effect(
