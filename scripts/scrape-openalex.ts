@@ -103,7 +103,7 @@ const GetDomains: Effect.Effect<
   Stream.paginateChunkEffect(
     '*',
     flow(
-      cursor => HttpClient.get('https://api.openalex.org/domains', { urlParams: { 'per-page': 100, cursor } }),
+      cursor => HttpClient.get('https://api.openalex.org/domains', { urlParams: { 'per-page': 200, cursor } }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(DomainSchema))),
       Effect.scoped,
       Effect.andThen(response => [response.results, response.meta.next_cursor]),
@@ -121,7 +121,7 @@ const GetFields: Effect.Effect<
   Stream.paginateChunkEffect(
     '*',
     flow(
-      cursor => HttpClient.get('https://api.openalex.org/fields', { urlParams: { 'per-page': 100, cursor } }),
+      cursor => HttpClient.get('https://api.openalex.org/fields', { urlParams: { 'per-page': 200, cursor } }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(FieldSchema))),
       Effect.scoped,
       Effect.andThen(response => [response.results, response.meta.next_cursor]),
@@ -139,7 +139,7 @@ const GetSubfields: Effect.Effect<
   Stream.paginateChunkEffect(
     '*',
     flow(
-      cursor => HttpClient.get('https://api.openalex.org/subfields', { urlParams: { 'per-page': 100, cursor } }),
+      cursor => HttpClient.get('https://api.openalex.org/subfields', { urlParams: { 'per-page': 200, cursor } }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(SubfieldSchema))),
       Effect.scoped,
       Effect.andThen(response => [response.results, response.meta.next_cursor]),
@@ -164,7 +164,7 @@ const GetTopics: Effect.Effect<
   Stream.paginateChunkEffect(
     '*',
     flow(
-      cursor => HttpClient.get('https://api.openalex.org/topics', { urlParams: { 'per-page': 100, cursor } }),
+      cursor => HttpClient.get('https://api.openalex.org/topics', { urlParams: { 'per-page': 200, cursor } }),
       Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(TopicSchema))),
       Effect.scoped,
       Effect.andThen(response => [response.results, response.meta.next_cursor]),
