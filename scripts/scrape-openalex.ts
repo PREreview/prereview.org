@@ -43,6 +43,17 @@ const SubfieldIdFromUrlSchema = Schema.transformOrFail(Schema.URL, SubfieldIdSch
     ParseResult.succeed(new URL(`https://openalex.org/subfields/${encodeURIComponent(subfieldId)}`)),
 })
 
+const TopicIdSchema = pipe(Schema.NumberFromString, Schema.brand('TopicId'))
+
+const TopicIdFromUrlSchema = Schema.transformOrFail(Schema.URL, TopicIdSchema, {
+  strict: true,
+  decode: (url, _, ast) =>
+    url.origin === 'https://openalex.org' && url.pathname.startsWith('/T')
+      ? ParseResult.succeed(decodeURIComponent(url.pathname.substring(2)))
+      : ParseResult.fail(new ParseResult.Type(ast, url)),
+  encode: topicId => ParseResult.succeed(new URL(`https://openalex.org/T${encodeURIComponent(topicId)}`)),
+})
+
 const DomainSchema = Schema.Struct({
   id: DomainIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
@@ -55,6 +66,11 @@ const FieldSchema = Schema.Struct({
 
 const SubfieldSchema = Schema.Struct({
   id: SubfieldIdFromUrlSchema,
+  display_name: Schema.NonEmptyTrimmedString,
+})
+
+const TopicSchema = Schema.Struct({
+  id: TopicIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
 })
 
@@ -133,6 +149,24 @@ const GetSubfields: Effect.Effect<
   ),
 )
 
+const GetTopics: Effect.Effect<
+  Chunk.Chunk<typeof TopicSchema.Type>,
+  HttpClientError.HttpClientError | ParseResult.ParseError,
+  HttpClient.HttpClient
+> = pipe(
+  Stream.paginateChunkEffect(
+    '*',
+    flow(
+      cursor => HttpClient.get('https://api.openalex.org/topics', { urlParams: { 'per-page': 100, cursor } }),
+      Effect.andThen(HttpClientResponse.schemaBodyJson(ListResponse(TopicSchema))),
+      Effect.scoped,
+      Effect.andThen(response => [response.results, response.meta.next_cursor]),
+    ),
+  ),
+  Stream.runCollect,
+  Effect.andThen(Chunk.sortWith(topic => topic.id, Order.number)),
+)
+
 const WriteToFile = (filePath: string) => (content: string) =>
   Effect.andThen(FileSystem.FileSystem, fileSystem =>
     fileSystem.writeFileString(path.resolve(import.meta.dirname, '..', filePath), content),
@@ -188,14 +222,26 @@ const SubfieldsToTypesFile = flow(
   Effect.andThen(WriteToFile('src/types/data/subfields.json')),
 )
 
+const TopicsToTypesFile = flow(
+  Chunk.reduce<typeof TypesFileSchema.Type, typeof TopicSchema.Type>({}, (accumulator, topic) => ({
+    ...accumulator,
+    [topic.id]: { name: topic.display_name },
+  })),
+  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Effect.andThen(String.concat('\n')),
+  Effect.andThen(WriteToFile('src/types/data/topics.json')),
+)
+
 const UpdateDomains = pipe(GetDomains, Effect.tap(DomainsToTypesFile))
 
 const UpdateFields = pipe(GetFields, Effect.tap(FieldsToLocaleFile), Effect.tap(FieldsToTypesFile))
 
 const UpdateSubfields = pipe(GetSubfields, Effect.tap(SubfieldsToLocaleFile), Effect.tap(SubfieldsToTypesFile))
 
+const UpdateTopics = pipe(GetTopics, Effect.tap(TopicsToTypesFile))
+
 void pipe(
-  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields]),
+  Effect.all([UpdateDomains, UpdateFields, UpdateSubfields, UpdateTopics]),
   Effect.provide(
     pipe(
       Layer.effect(
