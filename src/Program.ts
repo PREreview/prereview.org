@@ -302,15 +302,6 @@ const publishComment = Layer.effect(
   }),
 )
 
-const getCategories = Layer.effect(
-  OpenAlexWorks.GetCategories,
-  Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<OpenAlex.OpenAlex>(), Context.omit(Scope.Scope))
-
-    return id => pipe(OpenAlexWorks.getCategories(id), Effect.provide(context))
-  }),
-)
-
 const commentsForReview = Layer.effect(
   ReviewPage.CommentsForReview,
   Effect.gen(function* () {
@@ -356,7 +347,7 @@ export const Program = pipe(
       Personas.layer,
       Datasets.layer,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
-      getCategories,
+      OpenAlexWorks.layer,
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       getPseudonym,
       doesUserHaveAVerifiedEmailAddress,

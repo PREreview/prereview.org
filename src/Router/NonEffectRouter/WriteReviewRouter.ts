@@ -1,4 +1,4 @@
-import { Array, Effect, flow, Function, pipe, Redacted } from 'effect'
+import { Array, Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -472,11 +472,7 @@ export const WriteReviewRouter = pipe(
               pipe(
                 match(id)
                   .with({ _tag: 'PhilsciPreprintId' }, () => RTE.of([]))
-                  .otherwise(
-                    EffectToFpts.toReaderTaskEitherK(id =>
-                      pipe(OpenAlexWorks.GetCategories, Effect.andThen(Function.apply(id.value))),
-                    ),
-                  ),
+                  .otherwise(EffectToFpts.toReaderTaskEitherK(id => OpenAlexWorks.getCategories(id.value))),
                 RTE.match(
                   () => [],
                   Array.map(category => ({ id: category.id, name: category.display_name })),

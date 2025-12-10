@@ -219,7 +219,7 @@ export interface Env {
     | GenerateUuid
     | HttpClient.HttpClient
     | LegacyPrereviewApi
-    | OpenAlexWorks.GetCategories
+    | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas
     | Preprints.Preprints
     | PrereviewCoarNotifyConfig
