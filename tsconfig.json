@@ -11,5 +11,5 @@
     "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["assets", "integration", "src", "test", "visual-regression", "*.ts"]
+  "include": ["assets", "integration", "scripts", "src", "test", "visual-regression", "*.ts"]
 }
