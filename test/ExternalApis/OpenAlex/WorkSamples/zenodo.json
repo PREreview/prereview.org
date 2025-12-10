@@ -1,0 +1,234 @@
+{
+  "id": "https://openalex.org/W4377217430",
+  "doi": "https://doi.org/10.5281/zenodo.7955181",
+  "title": "The Counting Functions of Prime Pairs",
+  "display_name": "The Counting Functions of Prime Pairs",
+  "publication_year": 2023,
+  "publication_date": "2023-05-21",
+  "ids": { "openalex": "https://openalex.org/W4377217430", "doi": "https://doi.org/10.5281/zenodo.7955181" },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.5281/zenodo.7955181",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.5281/zenodo.7955181",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306400562",
+      "display_name": "Zenodo (CERN European Organization for Nuclear Research)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": true,
+      "is_in_doaj": false,
+      "is_core": false,
+      "host_organization": "https://openalex.org/I67311998",
+      "host_organization_name": "European Organization for Nuclear Research",
+      "host_organization_lineage": ["https://openalex.org/I67311998"],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": null,
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "article"
+  },
+  "type": "article",
+  "indexed_in": ["datacite"],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.5281/zenodo.7955181",
+    "any_repository_has_fulltext": false
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": { "id": "https://openalex.org/A5102514912", "display_name": "Keyang Ding", "orcid": null },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": true,
+      "raw_author_name": "Ding, Keyang",
+      "raw_affiliation_strings": [],
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": ["https://openalex.org/A5102514912"],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": { "volume": null, "issue": null, "first_page": null, "last_page": null },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T14500",
+    "display_name": "Advanced Mathematical Theories",
+    "score": 0.8105999827384949,
+    "subfield": { "id": "https://openalex.org/subfields/2610", "display_name": "Mathematical Physics" },
+    "field": { "id": "https://openalex.org/fields/26", "display_name": "Mathematics" },
+    "domain": { "id": "https://openalex.org/domains/3", "display_name": "Physical Sciences" }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T14500",
+      "display_name": "Advanced Mathematical Theories",
+      "score": 0.8105999827384949,
+      "subfield": { "id": "https://openalex.org/subfields/2610", "display_name": "Mathematical Physics" },
+      "field": { "id": "https://openalex.org/fields/26", "display_name": "Mathematics" },
+      "domain": { "id": "https://openalex.org/domains/3", "display_name": "Physical Sciences" }
+    },
+    {
+      "id": "https://openalex.org/T12504",
+      "display_name": "Mathematics and Applications",
+      "score": 0.8104000091552734,
+      "subfield": { "id": "https://openalex.org/subfields/2608", "display_name": "Geometry and Topology" },
+      "field": { "id": "https://openalex.org/fields/26", "display_name": "Mathematics" },
+      "domain": { "id": "https://openalex.org/domains/3", "display_name": "Physical Sciences" }
+    },
+    {
+      "id": "https://openalex.org/T11166",
+      "display_name": "Analytic Number Theory Research",
+      "score": 0.7853000164031982,
+      "subfield": { "id": "https://openalex.org/subfields/2602", "display_name": "Algebra and Number Theory" },
+      "field": { "id": "https://openalex.org/fields/26", "display_name": "Mathematics" },
+      "domain": { "id": "https://openalex.org/domains/3", "display_name": "Physical Sciences" }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/prime",
+      "display_name": "Prime (order theory)",
+      "score": 0.6197957992553711
+    },
+    { "id": "https://openalex.org/keywords/mathematics", "display_name": "Mathematics", "score": 0.5234025120735168 },
+    { "id": "https://openalex.org/keywords/combinatorics", "display_name": "Combinatorics", "score": 0.419343501329422 }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C184992742",
+      "wikidata": "https://www.wikidata.org/wiki/Q7243229",
+      "display_name": "Prime (order theory)",
+      "level": 2,
+      "score": 0.6197957992553711
+    },
+    {
+      "id": "https://openalex.org/C33923547",
+      "wikidata": "https://www.wikidata.org/wiki/Q395",
+      "display_name": "Mathematics",
+      "level": 0,
+      "score": 0.5234025120735168
+    },
+    {
+      "id": "https://openalex.org/C114614502",
+      "wikidata": "https://www.wikidata.org/wiki/Q76592",
+      "display_name": "Combinatorics",
+      "level": 1,
+      "score": 0.419343501329422
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.5281/zenodo.7955181",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.5281/zenodo.7955181",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306400562",
+        "display_name": "Zenodo (CERN European Organization for Nuclear Research)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "host_organization": "https://openalex.org/I67311998",
+        "host_organization_name": "European Organization for Nuclear Research",
+        "host_organization_lineage": ["https://openalex.org/I67311998"],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": null,
+      "is_accepted": false,
+      "is_published": null,
+      "raw_source_name": null,
+      "raw_type": "article"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.5281/zenodo.7955181",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.5281/zenodo.7955181",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306400562",
+      "display_name": "Zenodo (CERN European Organization for Nuclear Research)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": true,
+      "is_in_doaj": false,
+      "is_core": false,
+      "host_organization": "https://openalex.org/I67311998",
+      "host_organization_name": "European Organization for Nuclear Research",
+      "host_organization_lineage": ["https://openalex.org/I67311998"],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": null,
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "article"
+  },
+  "sustainable_development_goals": [],
+  "awards": [],
+  "funders": [],
+  "has_content": { "grobid_xml": false, "pdf": false },
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W1978042415",
+    "https://openalex.org/W3086542228",
+    "https://openalex.org/W2184427155",
+    "https://openalex.org/W2017331178",
+    "https://openalex.org/W2976797620",
+    "https://openalex.org/W2185671459",
+    "https://openalex.org/W2404664685",
+    "https://openalex.org/W4303684388",
+    "https://openalex.org/W2010720345",
+    "https://openalex.org/W2008228064"
+  ],
+  "abstract_inverted_index": {
+    "The": [0, 8],
+    "counting": [1, 15],
+    "functions": [2, 16],
+    "of": [3, 11],
+    "prime": [4, 13],
+    "pairs": [5],
+    "are": [6, 17],
+    "derived.": [7],
+    "asymptotic": [9],
+    "behavior": [10],
+    "the": [12],
+    "pair": [14],
+    "also": [18],
+    "analyzed.": [19]
+  },
+  "counts_by_year": [],
+  "updated_date": "2025-11-06T06:51:31.235846",
+  "created_date": "2025-10-10T00:00:00"
+}
