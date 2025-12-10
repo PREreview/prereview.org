@@ -8,6 +8,12 @@ export const WorkSchema = Schema.Struct({
     decode: Option.fromNullable,
     encode: Option.getOrNull,
   }),
+  keywords: Schema.Array(
+    Schema.Struct({
+      id: Schema.URL,
+      display_name: Schema.String,
+    }),
+  ),
   topics: Schema.Array(
     Schema.Struct({
       id: Schema.URL,

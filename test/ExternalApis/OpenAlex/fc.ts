@@ -7,6 +7,12 @@ export const work = ({ topics }: { topics?: fc.Arbitrary<Work['topics']> } = {})
   fc.record(
     {
       language: fc.languageCode(),
+      keywords: fc.array(
+        fc.record({
+          display_name: fc.string(),
+          id: fc.url(),
+        }),
+      ),
       topics:
         topics ??
         fc.array(
@@ -19,5 +25,5 @@ export const work = ({ topics }: { topics?: fc.Arbitrary<Work['topics']> } = {})
           }),
         ),
     },
-    { requiredKeys: ['topics'] },
+    { requiredKeys: ['keywords', 'topics'] },
   )
