@@ -5,6 +5,15 @@ import { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 
+const CategorizeReviewRequest = Workflow.make({
+  name: 'CategorizeReviewRequest',
+  error: Errors.FailedToCategorizeReviewRequest,
+  payload: {
+    reviewRequestId: Uuid.UuidSchema,
+  },
+  idempotencyKey: Struct.get('reviewRequestId'),
+})
+
 const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   name: 'NotifyCommunitySlackOfReviewRequest',
   error: Errors.FailedToNotifyCommunitySlack,
@@ -28,7 +37,13 @@ const makeReviewRequestReactions: Effect.Effect<
       pipe(
         Match.type<Events.Event>(),
         Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
-          NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
+          Effect.all(
+            [
+              CategorizeReviewRequest.execute(event, { discard: true }),
+              NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
+            ],
+            { concurrency: 'inherit' },
+          ),
         ),
         Match.orElse(() => Effect.void),
       ),
@@ -38,6 +53,14 @@ const makeReviewRequestReactions: Effect.Effect<
 })
 
 const workflowsLayer = Layer.mergeAll(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  CategorizeReviewRequest.toLayer(({ reviewRequestId }) =>
+    Activity.make({
+      name: CategorizeReviewRequest.name,
+      error: CategorizeReviewRequest.errorSchema,
+      execute: new Errors.FailedToCategorizeReviewRequest({ cause: 'not implemented' }),
+    }),
+  ),
   NotifyCommunitySlackOfReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
       name: NotifyCommunitySlackOfReviewRequest.name,

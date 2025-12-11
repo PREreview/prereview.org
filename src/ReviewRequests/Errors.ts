@@ -1,5 +1,9 @@
 import { Data, Schema } from 'effect'
 
+export class FailedToCategorizeReviewRequest extends Schema.TaggedError<FailedToCategorizeReviewRequest>(
+  'FailedToCategorizeReviewRequest',
+)('FailedToCategorizeReviewRequest', { cause: Schema.optional(Schema.Unknown) }) {}
+
 export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>(
   'FailedToNotifyCommunitySlack',
 )('FailedToNotifyCommunitySlack', { cause: Schema.optional(Schema.Unknown) }) {}
