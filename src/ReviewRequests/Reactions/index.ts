@@ -3,6 +3,7 @@ import { Effect, Layer, Match, pipe, PubSub, Queue, Struct, type Scope } from 'e
 import * as Events from '../../Events.ts'
 import { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
+import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 
 const CategorizeReviewRequest = Workflow.make({
@@ -53,12 +54,11 @@ const makeReviewRequestReactions: Effect.Effect<
 })
 
 const workflowsLayer = Layer.mergeAll(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   CategorizeReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
       name: CategorizeReviewRequest.name,
       error: CategorizeReviewRequest.errorSchema,
-      execute: new Errors.FailedToCategorizeReviewRequest({ cause: 'not implemented' }),
+      execute: executeCategorizeReviewRequest(reviewRequestId),
     }),
   ),
   NotifyCommunitySlackOfReviewRequest.toLayer(({ reviewRequestId }) =>
