@@ -2,6 +2,7 @@ import { ParseResult, pipe, Schema } from 'effect'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import fields from './data/fields.json' with { type: 'json' }
+import type { DomainId } from './domain.ts'
 
 export type FieldId = keyof typeof fields
 
@@ -21,6 +22,8 @@ export const FieldIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URL, F
 export function getFieldName(id: FieldId, locale: SupportedLocale): string {
   return translate(locale, 'fields', `field${id}`)()
 }
+
+export const getFieldDomain = (id: FieldId) => fields[id].domain as DomainId
 
 export function isFieldId(value: string): value is FieldId {
   return (fieldIds as ReadonlyArray<string>).includes(value)

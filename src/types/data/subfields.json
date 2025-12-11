@@ -1,758 +1,1262 @@
 {
   "1100": {
-    "name": "General Agricultural and Biological Sciences"
+    "name": "General Agricultural and Biological Sciences",
+    "domain": "1",
+    "field": "11"
   },
   "1102": {
-    "name": "Agronomy and Crop Science"
+    "name": "Agronomy and Crop Science",
+    "domain": "1",
+    "field": "11"
   },
   "1103": {
-    "name": "Animal Science and Zoology"
+    "name": "Animal Science and Zoology",
+    "domain": "1",
+    "field": "11"
   },
   "1104": {
-    "name": "Aquatic Science"
+    "name": "Aquatic Science",
+    "domain": "1",
+    "field": "11"
   },
   "1105": {
-    "name": "Ecology, Evolution, Behavior and Systematics"
+    "name": "Ecology, Evolution, Behavior and Systematics",
+    "domain": "1",
+    "field": "11"
   },
   "1106": {
-    "name": "Food Science"
+    "name": "Food Science",
+    "domain": "1",
+    "field": "11"
   },
   "1107": {
-    "name": "Forestry"
+    "name": "Forestry",
+    "domain": "1",
+    "field": "11"
   },
   "1108": {
-    "name": "Horticulture"
+    "name": "Horticulture",
+    "domain": "1",
+    "field": "11"
   },
   "1109": {
-    "name": "Insect Science"
+    "name": "Insect Science",
+    "domain": "1",
+    "field": "11"
   },
   "1110": {
-    "name": "Plant Science"
+    "name": "Plant Science",
+    "domain": "1",
+    "field": "11"
   },
   "1111": {
-    "name": "Soil Science"
+    "name": "Soil Science",
+    "domain": "1",
+    "field": "11"
   },
   "1200": {
-    "name": "General Arts and Humanities"
+    "name": "General Arts and Humanities",
+    "domain": "2",
+    "field": "12"
   },
   "1202": {
-    "name": "History"
+    "name": "History",
+    "domain": "2",
+    "field": "12"
   },
   "1203": {
-    "name": "Language and Linguistics"
+    "name": "Language and Linguistics",
+    "domain": "2",
+    "field": "12"
   },
   "1204": {
-    "name": "Archeology"
+    "name": "Archeology",
+    "domain": "2",
+    "field": "12"
   },
   "1205": {
-    "name": "Classics"
+    "name": "Classics",
+    "domain": "2",
+    "field": "12"
   },
   "1206": {
-    "name": "Conservation"
+    "name": "Conservation",
+    "domain": "2",
+    "field": "12"
   },
   "1207": {
-    "name": "History and Philosophy of Science"
+    "name": "History and Philosophy of Science",
+    "domain": "2",
+    "field": "12"
   },
   "1208": {
-    "name": "Literature and Literary Theory"
+    "name": "Literature and Literary Theory",
+    "domain": "2",
+    "field": "12"
   },
   "1209": {
-    "name": "Museology"
+    "name": "Museology",
+    "domain": "2",
+    "field": "12"
   },
   "1210": {
-    "name": "Music"
+    "name": "Music",
+    "domain": "2",
+    "field": "12"
   },
   "1211": {
-    "name": "Philosophy"
+    "name": "Philosophy",
+    "domain": "2",
+    "field": "12"
   },
   "1212": {
-    "name": "Religious studies"
+    "name": "Religious studies",
+    "domain": "2",
+    "field": "12"
   },
   "1213": {
-    "name": "Visual Arts and Performing Arts"
+    "name": "Visual Arts and Performing Arts",
+    "domain": "2",
+    "field": "12"
   },
   "1302": {
-    "name": "Aging"
+    "name": "Aging",
+    "domain": "1",
+    "field": "13"
   },
   "1303": {
-    "name": "Biochemistry"
+    "name": "Biochemistry",
+    "domain": "1",
+    "field": "13"
   },
   "1304": {
-    "name": "Biophysics"
+    "name": "Biophysics",
+    "domain": "1",
+    "field": "13"
   },
   "1305": {
-    "name": "Biotechnology"
+    "name": "Biotechnology",
+    "domain": "1",
+    "field": "13"
   },
   "1306": {
-    "name": "Cancer Research"
+    "name": "Cancer Research",
+    "domain": "1",
+    "field": "13"
   },
   "1307": {
-    "name": "Cell Biology"
+    "name": "Cell Biology",
+    "domain": "1",
+    "field": "13"
   },
   "1308": {
-    "name": "Clinical Biochemistry"
+    "name": "Clinical Biochemistry",
+    "domain": "1",
+    "field": "13"
   },
   "1309": {
-    "name": "Developmental Biology"
+    "name": "Developmental Biology",
+    "domain": "1",
+    "field": "13"
   },
   "1310": {
-    "name": "Endocrinology"
+    "name": "Endocrinology",
+    "domain": "1",
+    "field": "13"
   },
   "1311": {
-    "name": "Genetics"
+    "name": "Genetics",
+    "domain": "1",
+    "field": "13"
   },
   "1312": {
-    "name": "Molecular Biology"
+    "name": "Molecular Biology",
+    "domain": "1",
+    "field": "13"
   },
   "1313": {
-    "name": "Molecular Medicine"
+    "name": "Molecular Medicine",
+    "domain": "1",
+    "field": "13"
   },
   "1314": {
-    "name": "Physiology"
+    "name": "Physiology",
+    "domain": "1",
+    "field": "13"
   },
   "1315": {
-    "name": "Structural Biology"
+    "name": "Structural Biology",
+    "domain": "1",
+    "field": "13"
   },
   "1402": {
-    "name": "Accounting"
+    "name": "Accounting",
+    "domain": "2",
+    "field": "14"
   },
   "1403": {
-    "name": "Business and International Management"
+    "name": "Business and International Management",
+    "domain": "2",
+    "field": "14"
   },
   "1404": {
-    "name": "Management Information Systems"
+    "name": "Management Information Systems",
+    "domain": "2",
+    "field": "14"
   },
   "1405": {
-    "name": "Management of Technology and Innovation"
+    "name": "Management of Technology and Innovation",
+    "domain": "2",
+    "field": "14"
   },
   "1406": {
-    "name": "Marketing"
+    "name": "Marketing",
+    "domain": "2",
+    "field": "14"
   },
   "1407": {
-    "name": "Organizational Behavior and Human Resource Management"
+    "name": "Organizational Behavior and Human Resource Management",
+    "domain": "2",
+    "field": "14"
   },
   "1408": {
-    "name": "Strategy and Management"
+    "name": "Strategy and Management",
+    "domain": "2",
+    "field": "14"
   },
   "1409": {
-    "name": "Tourism, Leisure and Hospitality Management"
+    "name": "Tourism, Leisure and Hospitality Management",
+    "domain": "2",
+    "field": "14"
   },
   "1410": {
-    "name": "Industrial relations"
+    "name": "Industrial relations",
+    "domain": "2",
+    "field": "14"
   },
   "1502": {
-    "name": "Bioengineering"
+    "name": "Bioengineering",
+    "domain": "3",
+    "field": "15"
   },
   "1503": {
-    "name": "Catalysis"
+    "name": "Catalysis",
+    "domain": "3",
+    "field": "15"
   },
   "1504": {
-    "name": "Chemical Health and Safety"
+    "name": "Chemical Health and Safety",
+    "domain": "3",
+    "field": "15"
   },
   "1506": {
-    "name": "Filtration and Separation"
+    "name": "Filtration and Separation",
+    "domain": "3",
+    "field": "15"
   },
   "1507": {
-    "name": "Fluid Flow and Transfer Processes"
+    "name": "Fluid Flow and Transfer Processes",
+    "domain": "3",
+    "field": "15"
   },
   "1508": {
-    "name": "Process Chemistry and Technology"
+    "name": "Process Chemistry and Technology",
+    "domain": "3",
+    "field": "15"
   },
   "1602": {
-    "name": "Analytical Chemistry"
+    "name": "Analytical Chemistry",
+    "domain": "3",
+    "field": "16"
   },
   "1603": {
-    "name": "Electrochemistry"
+    "name": "Electrochemistry",
+    "domain": "3",
+    "field": "16"
   },
   "1604": {
-    "name": "Inorganic Chemistry"
+    "name": "Inorganic Chemistry",
+    "domain": "3",
+    "field": "16"
   },
   "1605": {
-    "name": "Organic Chemistry"
+    "name": "Organic Chemistry",
+    "domain": "3",
+    "field": "16"
   },
   "1606": {
-    "name": "Physical and Theoretical Chemistry"
+    "name": "Physical and Theoretical Chemistry",
+    "domain": "3",
+    "field": "16"
   },
   "1607": {
-    "name": "Spectroscopy"
+    "name": "Spectroscopy",
+    "domain": "3",
+    "field": "16"
   },
   "1702": {
-    "name": "Artificial Intelligence"
+    "name": "Artificial Intelligence",
+    "domain": "3",
+    "field": "17"
   },
   "1703": {
-    "name": "Computational Theory and Mathematics"
+    "name": "Computational Theory and Mathematics",
+    "domain": "3",
+    "field": "17"
   },
   "1704": {
-    "name": "Computer Graphics and Computer-Aided Design"
+    "name": "Computer Graphics and Computer-Aided Design",
+    "domain": "3",
+    "field": "17"
   },
   "1705": {
-    "name": "Computer Networks and Communications"
+    "name": "Computer Networks and Communications",
+    "domain": "3",
+    "field": "17"
   },
   "1706": {
-    "name": "Computer Science Applications"
+    "name": "Computer Science Applications",
+    "domain": "3",
+    "field": "17"
   },
   "1707": {
-    "name": "Computer Vision and Pattern Recognition"
+    "name": "Computer Vision and Pattern Recognition",
+    "domain": "3",
+    "field": "17"
   },
   "1708": {
-    "name": "Hardware and Architecture"
+    "name": "Hardware and Architecture",
+    "domain": "3",
+    "field": "17"
   },
   "1709": {
-    "name": "Human-Computer Interaction"
+    "name": "Human-Computer Interaction",
+    "domain": "3",
+    "field": "17"
   },
   "1710": {
-    "name": "Information Systems"
+    "name": "Information Systems",
+    "domain": "3",
+    "field": "17"
   },
   "1711": {
-    "name": "Signal Processing"
+    "name": "Signal Processing",
+    "domain": "3",
+    "field": "17"
   },
   "1712": {
-    "name": "Software"
+    "name": "Software",
+    "domain": "3",
+    "field": "17"
   },
   "1800": {
-    "name": "General Decision Sciences"
+    "name": "General Decision Sciences",
+    "domain": "2",
+    "field": "18"
   },
   "1802": {
-    "name": "Information Systems and Management"
+    "name": "Information Systems and Management",
+    "domain": "2",
+    "field": "18"
   },
   "1803": {
-    "name": "Management Science and Operations Research"
+    "name": "Management Science and Operations Research",
+    "domain": "2",
+    "field": "18"
   },
   "1804": {
-    "name": "Statistics, Probability and Uncertainty"
+    "name": "Statistics, Probability and Uncertainty",
+    "domain": "2",
+    "field": "18"
   },
   "1902": {
-    "name": "Atmospheric Science"
+    "name": "Atmospheric Science",
+    "domain": "3",
+    "field": "19"
   },
   "1904": {
-    "name": "Earth-Surface Processes"
+    "name": "Earth-Surface Processes",
+    "domain": "3",
+    "field": "19"
   },
   "1906": {
-    "name": "Geochemistry and Petrology"
+    "name": "Geochemistry and Petrology",
+    "domain": "3",
+    "field": "19"
   },
   "1907": {
-    "name": "Geology"
+    "name": "Geology",
+    "domain": "3",
+    "field": "19"
   },
   "1908": {
-    "name": "Geophysics"
+    "name": "Geophysics",
+    "domain": "3",
+    "field": "19"
   },
   "1910": {
-    "name": "Oceanography"
+    "name": "Oceanography",
+    "domain": "3",
+    "field": "19"
   },
   "1911": {
-    "name": "Paleontology"
+    "name": "Paleontology",
+    "domain": "3",
+    "field": "19"
   },
   "1912": {
-    "name": "Space and Planetary Science"
+    "name": "Space and Planetary Science",
+    "domain": "3",
+    "field": "19"
   },
   "2000": {
-    "name": "General Economics, Econometrics and Finance"
+    "name": "General Economics, Econometrics and Finance",
+    "domain": "2",
+    "field": "20"
   },
   "2002": {
-    "name": "Economics and Econometrics"
+    "name": "Economics and Econometrics",
+    "domain": "2",
+    "field": "20"
   },
   "2003": {
-    "name": "Finance"
+    "name": "Finance",
+    "domain": "2",
+    "field": "20"
   },
   "2100": {
-    "name": "General Energy"
+    "name": "General Energy",
+    "domain": "3",
+    "field": "21"
   },
   "2102": {
-    "name": "Energy Engineering and Power Technology"
+    "name": "Energy Engineering and Power Technology",
+    "domain": "3",
+    "field": "21"
   },
   "2103": {
-    "name": "Fuel Technology"
+    "name": "Fuel Technology",
+    "domain": "3",
+    "field": "21"
   },
   "2104": {
-    "name": "Nuclear Energy and Engineering"
+    "name": "Nuclear Energy and Engineering",
+    "domain": "3",
+    "field": "21"
   },
   "2105": {
-    "name": "Renewable Energy, Sustainability and the Environment"
+    "name": "Renewable Energy, Sustainability and the Environment",
+    "domain": "3",
+    "field": "21"
   },
   "2200": {
-    "name": "General Engineering"
+    "name": "General Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2202": {
-    "name": "Aerospace Engineering"
+    "name": "Aerospace Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2203": {
-    "name": "Automotive Engineering"
+    "name": "Automotive Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2204": {
-    "name": "Biomedical Engineering"
+    "name": "Biomedical Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2205": {
-    "name": "Civil and Structural Engineering"
+    "name": "Civil and Structural Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2206": {
-    "name": "Computational Mechanics"
+    "name": "Computational Mechanics",
+    "domain": "3",
+    "field": "22"
   },
   "2207": {
-    "name": "Control and Systems Engineering"
+    "name": "Control and Systems Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2208": {
-    "name": "Electrical and Electronic Engineering"
+    "name": "Electrical and Electronic Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2209": {
-    "name": "Industrial and Manufacturing Engineering"
+    "name": "Industrial and Manufacturing Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2210": {
-    "name": "Mechanical Engineering"
+    "name": "Mechanical Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2211": {
-    "name": "Mechanics of Materials"
+    "name": "Mechanics of Materials",
+    "domain": "3",
+    "field": "22"
   },
   "2212": {
-    "name": "Ocean Engineering"
+    "name": "Ocean Engineering",
+    "domain": "3",
+    "field": "22"
   },
   "2213": {
-    "name": "Safety, Risk, Reliability and Quality"
+    "name": "Safety, Risk, Reliability and Quality",
+    "domain": "3",
+    "field": "22"
   },
   "2214": {
-    "name": "Media Technology"
+    "name": "Media Technology",
+    "domain": "3",
+    "field": "22"
   },
   "2215": {
-    "name": "Building and Construction"
+    "name": "Building and Construction",
+    "domain": "3",
+    "field": "22"
   },
   "2216": {
-    "name": "Architecture"
+    "name": "Architecture",
+    "domain": "3",
+    "field": "22"
   },
   "2302": {
-    "name": "Ecological Modeling"
+    "name": "Ecological Modeling",
+    "domain": "3",
+    "field": "23"
   },
   "2303": {
-    "name": "Ecology"
+    "name": "Ecology",
+    "domain": "3",
+    "field": "23"
   },
   "2304": {
-    "name": "Environmental Chemistry"
+    "name": "Environmental Chemistry",
+    "domain": "3",
+    "field": "23"
   },
   "2305": {
-    "name": "Environmental Engineering"
+    "name": "Environmental Engineering",
+    "domain": "3",
+    "field": "23"
   },
   "2306": {
-    "name": "Global and Planetary Change"
+    "name": "Global and Planetary Change",
+    "domain": "3",
+    "field": "23"
   },
   "2307": {
-    "name": "Health, Toxicology and Mutagenesis"
+    "name": "Health, Toxicology and Mutagenesis",
+    "domain": "3",
+    "field": "23"
   },
   "2308": {
-    "name": "Management, Monitoring, Policy and Law"
+    "name": "Management, Monitoring, Policy and Law",
+    "domain": "3",
+    "field": "23"
   },
   "2309": {
-    "name": "Nature and Landscape Conservation"
+    "name": "Nature and Landscape Conservation",
+    "domain": "3",
+    "field": "23"
   },
   "2310": {
-    "name": "Pollution"
+    "name": "Pollution",
+    "domain": "3",
+    "field": "23"
   },
   "2311": {
-    "name": "Waste Management and Disposal"
+    "name": "Waste Management and Disposal",
+    "domain": "3",
+    "field": "23"
   },
   "2312": {
-    "name": "Water Science and Technology"
+    "name": "Water Science and Technology",
+    "domain": "3",
+    "field": "23"
   },
   "2402": {
-    "name": "Applied Microbiology and Biotechnology"
+    "name": "Applied Microbiology and Biotechnology",
+    "domain": "1",
+    "field": "24"
   },
   "2403": {
-    "name": "Immunology"
+    "name": "Immunology",
+    "domain": "1",
+    "field": "24"
   },
   "2404": {
-    "name": "Microbiology"
+    "name": "Microbiology",
+    "domain": "1",
+    "field": "24"
   },
   "2405": {
-    "name": "Parasitology"
+    "name": "Parasitology",
+    "domain": "1",
+    "field": "24"
   },
   "2406": {
-    "name": "Virology"
+    "name": "Virology",
+    "domain": "1",
+    "field": "24"
   },
   "2500": {
-    "name": "General Materials Science"
+    "name": "General Materials Science",
+    "domain": "3",
+    "field": "25"
   },
   "2502": {
-    "name": "Biomaterials"
+    "name": "Biomaterials",
+    "domain": "3",
+    "field": "25"
   },
   "2503": {
-    "name": "Ceramics and Composites"
+    "name": "Ceramics and Composites",
+    "domain": "3",
+    "field": "25"
   },
   "2504": {
-    "name": "Electronic, Optical and Magnetic Materials"
+    "name": "Electronic, Optical and Magnetic Materials",
+    "domain": "3",
+    "field": "25"
   },
   "2505": {
-    "name": "Materials Chemistry"
+    "name": "Materials Chemistry",
+    "domain": "3",
+    "field": "25"
   },
   "2506": {
-    "name": "Metals and Alloys"
+    "name": "Metals and Alloys",
+    "domain": "3",
+    "field": "25"
   },
   "2507": {
-    "name": "Polymers and Plastics"
+    "name": "Polymers and Plastics",
+    "domain": "3",
+    "field": "25"
   },
   "2508": {
-    "name": "Surfaces, Coatings and Films"
+    "name": "Surfaces, Coatings and Films",
+    "domain": "3",
+    "field": "25"
   },
   "2602": {
-    "name": "Algebra and Number Theory"
+    "name": "Algebra and Number Theory",
+    "domain": "3",
+    "field": "26"
   },
   "2604": {
-    "name": "Applied Mathematics"
+    "name": "Applied Mathematics",
+    "domain": "3",
+    "field": "26"
   },
   "2605": {
-    "name": "Computational Mathematics"
+    "name": "Computational Mathematics",
+    "domain": "3",
+    "field": "26"
   },
   "2607": {
-    "name": "Discrete Mathematics and Combinatorics"
+    "name": "Discrete Mathematics and Combinatorics",
+    "domain": "3",
+    "field": "26"
   },
   "2608": {
-    "name": "Geometry and Topology"
+    "name": "Geometry and Topology",
+    "domain": "3",
+    "field": "26"
   },
   "2610": {
-    "name": "Mathematical Physics"
+    "name": "Mathematical Physics",
+    "domain": "3",
+    "field": "26"
   },
   "2611": {
-    "name": "Modeling and Simulation"
+    "name": "Modeling and Simulation",
+    "domain": "3",
+    "field": "26"
   },
   "2612": {
-    "name": "Numerical Analysis"
+    "name": "Numerical Analysis",
+    "domain": "3",
+    "field": "26"
   },
   "2613": {
-    "name": "Statistics and Probability"
+    "name": "Statistics and Probability",
+    "domain": "3",
+    "field": "26"
   },
   "2614": {
-    "name": "Theoretical Computer Science"
+    "name": "Theoretical Computer Science",
+    "domain": "3",
+    "field": "26"
   },
   "2702": {
-    "name": "Anatomy"
+    "name": "Anatomy",
+    "domain": "4",
+    "field": "27"
   },
   "2703": {
-    "name": "Anesthesiology and Pain Medicine"
+    "name": "Anesthesiology and Pain Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2704": {
-    "name": "Biochemistry"
+    "name": "Biochemistry",
+    "domain": "4",
+    "field": "27"
   },
   "2705": {
-    "name": "Cardiology and Cardiovascular Medicine"
+    "name": "Cardiology and Cardiovascular Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2706": {
-    "name": "Critical Care and Intensive Care Medicine"
+    "name": "Critical Care and Intensive Care Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2707": {
-    "name": "Complementary and alternative medicine"
+    "name": "Complementary and alternative medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2708": {
-    "name": "Dermatology"
+    "name": "Dermatology",
+    "domain": "4",
+    "field": "27"
   },
   "2711": {
-    "name": "Emergency Medicine"
+    "name": "Emergency Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2712": {
-    "name": "Endocrinology, Diabetes and Metabolism"
+    "name": "Endocrinology, Diabetes and Metabolism",
+    "domain": "4",
+    "field": "27"
   },
   "2713": {
-    "name": "Epidemiology"
+    "name": "Epidemiology",
+    "domain": "4",
+    "field": "27"
   },
   "2714": {
-    "name": "Family Practice"
+    "name": "Family Practice",
+    "domain": "4",
+    "field": "27"
   },
   "2715": {
-    "name": "Gastroenterology"
+    "name": "Gastroenterology",
+    "domain": "4",
+    "field": "27"
   },
   "2716": {
-    "name": "Genetics"
+    "name": "Genetics",
+    "domain": "4",
+    "field": "27"
   },
   "2717": {
-    "name": "Geriatrics and Gerontology"
+    "name": "Geriatrics and Gerontology",
+    "domain": "4",
+    "field": "27"
   },
   "2718": {
-    "name": "Health Informatics"
+    "name": "Health Informatics",
+    "domain": "4",
+    "field": "27"
   },
   "2720": {
-    "name": "Hematology"
+    "name": "Hematology",
+    "domain": "4",
+    "field": "27"
   },
   "2721": {
-    "name": "Hepatology"
+    "name": "Hepatology",
+    "domain": "4",
+    "field": "27"
   },
   "2723": {
-    "name": "Immunology and Allergy"
+    "name": "Immunology and Allergy",
+    "domain": "4",
+    "field": "27"
   },
   "2724": {
-    "name": "Internal Medicine"
+    "name": "Internal Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2725": {
-    "name": "Infectious Diseases"
+    "name": "Infectious Diseases",
+    "domain": "4",
+    "field": "27"
   },
   "2726": {
-    "name": "Microbiology"
+    "name": "Microbiology",
+    "domain": "4",
+    "field": "27"
   },
   "2727": {
-    "name": "Nephrology"
+    "name": "Nephrology",
+    "domain": "4",
+    "field": "27"
   },
   "2728": {
-    "name": "Neurology"
+    "name": "Neurology",
+    "domain": "4",
+    "field": "27"
   },
   "2729": {
-    "name": "Obstetrics and Gynecology"
+    "name": "Obstetrics and Gynecology",
+    "domain": "4",
+    "field": "27"
   },
   "2730": {
-    "name": "Oncology"
+    "name": "Oncology",
+    "domain": "4",
+    "field": "27"
   },
   "2731": {
-    "name": "Ophthalmology"
+    "name": "Ophthalmology",
+    "domain": "4",
+    "field": "27"
   },
   "2732": {
-    "name": "Orthopedics and Sports Medicine"
+    "name": "Orthopedics and Sports Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2733": {
-    "name": "Otorhinolaryngology"
+    "name": "Otorhinolaryngology",
+    "domain": "4",
+    "field": "27"
   },
   "2734": {
-    "name": "Pathology and Forensic Medicine"
+    "name": "Pathology and Forensic Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2735": {
-    "name": "Pediatrics, Perinatology and Child Health"
+    "name": "Pediatrics, Perinatology and Child Health",
+    "domain": "4",
+    "field": "27"
   },
   "2736": {
-    "name": "Pharmacology"
+    "name": "Pharmacology",
+    "domain": "4",
+    "field": "27"
   },
   "2737": {
-    "name": "Physiology"
+    "name": "Physiology",
+    "domain": "4",
+    "field": "27"
   },
   "2738": {
-    "name": "Psychiatry and Mental health"
+    "name": "Psychiatry and Mental health",
+    "domain": "4",
+    "field": "27"
   },
   "2739": {
-    "name": "Public Health, Environmental and Occupational Health"
+    "name": "Public Health, Environmental and Occupational Health",
+    "domain": "4",
+    "field": "27"
   },
   "2740": {
-    "name": "Pulmonary and Respiratory Medicine"
+    "name": "Pulmonary and Respiratory Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2741": {
-    "name": "Radiology, Nuclear Medicine and Imaging"
+    "name": "Radiology, Nuclear Medicine and Imaging",
+    "domain": "4",
+    "field": "27"
   },
   "2742": {
-    "name": "Rehabilitation"
+    "name": "Rehabilitation",
+    "domain": "4",
+    "field": "27"
   },
   "2743": {
-    "name": "Reproductive Medicine"
+    "name": "Reproductive Medicine",
+    "domain": "4",
+    "field": "27"
   },
   "2745": {
-    "name": "Rheumatology"
+    "name": "Rheumatology",
+    "domain": "4",
+    "field": "27"
   },
   "2746": {
-    "name": "Surgery"
+    "name": "Surgery",
+    "domain": "4",
+    "field": "27"
   },
   "2747": {
-    "name": "Transplantation"
+    "name": "Transplantation",
+    "domain": "4",
+    "field": "27"
   },
   "2748": {
-    "name": "Urology"
+    "name": "Urology",
+    "domain": "4",
+    "field": "27"
   },
   "2802": {
-    "name": "Behavioral Neuroscience"
+    "name": "Behavioral Neuroscience",
+    "domain": "1",
+    "field": "28"
   },
   "2803": {
-    "name": "Biological Psychiatry"
+    "name": "Biological Psychiatry",
+    "domain": "1",
+    "field": "28"
   },
   "2804": {
-    "name": "Cellular and Molecular Neuroscience"
+    "name": "Cellular and Molecular Neuroscience",
+    "domain": "1",
+    "field": "28"
   },
   "2805": {
-    "name": "Cognitive Neuroscience"
+    "name": "Cognitive Neuroscience",
+    "domain": "1",
+    "field": "28"
   },
   "2806": {
-    "name": "Developmental Neuroscience"
+    "name": "Developmental Neuroscience",
+    "domain": "1",
+    "field": "28"
   },
   "2807": {
-    "name": "Endocrine and Autonomic Systems"
+    "name": "Endocrine and Autonomic Systems",
+    "domain": "1",
+    "field": "28"
   },
   "2808": {
-    "name": "Neurology"
+    "name": "Neurology",
+    "domain": "1",
+    "field": "28"
   },
   "2809": {
-    "name": "Sensory Systems"
+    "name": "Sensory Systems",
+    "domain": "1",
+    "field": "28"
   },
   "2910": {
-    "name": "Issues, ethics and legal aspects"
+    "name": "Issues, ethics and legal aspects",
+    "domain": "4",
+    "field": "29"
   },
   "2911": {
-    "name": "Leadership and Management"
+    "name": "Leadership and Management",
+    "domain": "4",
+    "field": "29"
   },
   "2916": {
-    "name": "Nutrition and Dietetics"
+    "name": "Nutrition and Dietetics",
+    "domain": "4",
+    "field": "29"
   },
   "2922": {
-    "name": "Research and Theory"
+    "name": "Research and Theory",
+    "domain": "4",
+    "field": "29"
   },
   "3002": {
-    "name": "Drug Discovery"
+    "name": "Drug Discovery",
+    "domain": "1",
+    "field": "30"
   },
   "3003": {
-    "name": "Pharmaceutical Science"
+    "name": "Pharmaceutical Science",
+    "domain": "1",
+    "field": "30"
   },
   "3004": {
-    "name": "Pharmacology"
+    "name": "Pharmacology",
+    "domain": "1",
+    "field": "30"
   },
   "3005": {
-    "name": "Toxicology"
+    "name": "Toxicology",
+    "domain": "1",
+    "field": "30"
   },
   "3102": {
-    "name": "Acoustics and Ultrasonics"
+    "name": "Acoustics and Ultrasonics",
+    "domain": "3",
+    "field": "31"
   },
   "3103": {
-    "name": "Astronomy and Astrophysics"
+    "name": "Astronomy and Astrophysics",
+    "domain": "3",
+    "field": "31"
   },
   "3104": {
-    "name": "Condensed Matter Physics"
+    "name": "Condensed Matter Physics",
+    "domain": "3",
+    "field": "31"
   },
   "3105": {
-    "name": "Instrumentation"
+    "name": "Instrumentation",
+    "domain": "3",
+    "field": "31"
   },
   "3106": {
-    "name": "Nuclear and High Energy Physics"
+    "name": "Nuclear and High Energy Physics",
+    "domain": "3",
+    "field": "31"
   },
   "3107": {
-    "name": "Atomic and Molecular Physics, and Optics"
+    "name": "Atomic and Molecular Physics, and Optics",
+    "domain": "3",
+    "field": "31"
   },
   "3108": {
-    "name": "Radiation"
+    "name": "Radiation",
+    "domain": "3",
+    "field": "31"
   },
   "3109": {
-    "name": "Statistical and Nonlinear Physics"
+    "name": "Statistical and Nonlinear Physics",
+    "domain": "3",
+    "field": "31"
   },
   "3200": {
-    "name": "General Psychology"
+    "name": "General Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3202": {
-    "name": "Applied Psychology"
+    "name": "Applied Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3203": {
-    "name": "Clinical Psychology"
+    "name": "Clinical Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3204": {
-    "name": "Developmental and Educational Psychology"
+    "name": "Developmental and Educational Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3205": {
-    "name": "Experimental and Cognitive Psychology"
+    "name": "Experimental and Cognitive Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3206": {
-    "name": "Neuropsychology and Physiological Psychology"
+    "name": "Neuropsychology and Physiological Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3207": {
-    "name": "Social Psychology"
+    "name": "Social Psychology",
+    "domain": "2",
+    "field": "32"
   },
   "3300": {
-    "name": "General Social Sciences"
+    "name": "General Social Sciences",
+    "domain": "2",
+    "field": "33"
   },
   "3302": {
-    "name": "Archeology"
+    "name": "Archeology",
+    "domain": "2",
+    "field": "33"
   },
   "3303": {
-    "name": "Development"
+    "name": "Development",
+    "domain": "2",
+    "field": "33"
   },
   "3304": {
-    "name": "Education"
+    "name": "Education",
+    "domain": "2",
+    "field": "33"
   },
   "3305": {
-    "name": "Geography, Planning and Development"
+    "name": "Geography, Planning and Development",
+    "domain": "2",
+    "field": "33"
   },
   "3306": {
-    "name": "Health"
+    "name": "Health",
+    "domain": "2",
+    "field": "33"
   },
   "3307": {
-    "name": "Human Factors and Ergonomics"
+    "name": "Human Factors and Ergonomics",
+    "domain": "2",
+    "field": "33"
   },
   "3308": {
-    "name": "Law"
+    "name": "Law",
+    "domain": "2",
+    "field": "33"
   },
   "3309": {
-    "name": "Library and Information Sciences"
+    "name": "Library and Information Sciences",
+    "domain": "2",
+    "field": "33"
   },
   "3310": {
-    "name": "Linguistics and Language"
+    "name": "Linguistics and Language",
+    "domain": "2",
+    "field": "33"
   },
   "3311": {
-    "name": "Safety Research"
+    "name": "Safety Research",
+    "domain": "2",
+    "field": "33"
   },
   "3312": {
-    "name": "Sociology and Political Science"
+    "name": "Sociology and Political Science",
+    "domain": "2",
+    "field": "33"
   },
   "3313": {
-    "name": "Transportation"
+    "name": "Transportation",
+    "domain": "2",
+    "field": "33"
   },
   "3314": {
-    "name": "Anthropology"
+    "name": "Anthropology",
+    "domain": "2",
+    "field": "33"
   },
   "3315": {
-    "name": "Communication"
+    "name": "Communication",
+    "domain": "2",
+    "field": "33"
   },
   "3316": {
-    "name": "Cultural Studies"
+    "name": "Cultural Studies",
+    "domain": "2",
+    "field": "33"
   },
   "3317": {
-    "name": "Demography"
+    "name": "Demography",
+    "domain": "2",
+    "field": "33"
   },
   "3318": {
-    "name": "Gender Studies"
+    "name": "Gender Studies",
+    "domain": "2",
+    "field": "33"
   },
   "3319": {
-    "name": "Life-span and Life-course Studies"
+    "name": "Life-span and Life-course Studies",
+    "domain": "2",
+    "field": "33"
   },
   "3320": {
-    "name": "Political Science and International Relations"
+    "name": "Political Science and International Relations",
+    "domain": "2",
+    "field": "33"
   },
   "3321": {
-    "name": "Public Administration"
+    "name": "Public Administration",
+    "domain": "2",
+    "field": "33"
   },
   "3322": {
-    "name": "Urban Studies"
+    "name": "Urban Studies",
+    "domain": "2",
+    "field": "33"
   },
   "3402": {
-    "name": "Equine"
+    "name": "Equine",
+    "domain": "4",
+    "field": "34"
   },
   "3404": {
-    "name": "Small Animals"
+    "name": "Small Animals",
+    "domain": "4",
+    "field": "34"
   },
   "3500": {
-    "name": "General Dentistry"
+    "name": "General Dentistry",
+    "domain": "4",
+    "field": "35"
   },
   "3504": {
-    "name": "Oral Surgery"
+    "name": "Oral Surgery",
+    "domain": "4",
+    "field": "35"
   },
   "3505": {
-    "name": "Orthodontics"
+    "name": "Orthodontics",
+    "domain": "4",
+    "field": "35"
   },
   "3506": {
-    "name": "Periodontics"
+    "name": "Periodontics",
+    "domain": "4",
+    "field": "35"
   },
   "3600": {
-    "name": "General Health Professions"
+    "name": "General Health Professions",
+    "domain": "4",
+    "field": "36"
   },
   "3603": {
-    "name": "Complementary and Manual Therapy"
+    "name": "Complementary and Manual Therapy",
+    "domain": "4",
+    "field": "36"
   },
   "3604": {
-    "name": "Emergency Medical Services"
+    "name": "Emergency Medical Services",
+    "domain": "4",
+    "field": "36"
   },
   "3605": {
-    "name": "Health Information Management"
+    "name": "Health Information Management",
+    "domain": "4",
+    "field": "36"
   },
   "3607": {
-    "name": "Medical Laboratory Technology"
+    "name": "Medical Laboratory Technology",
+    "domain": "4",
+    "field": "36"
   },
   "3608": {
-    "name": "Medical Terminology"
+    "name": "Medical Terminology",
+    "domain": "4",
+    "field": "36"
   },
   "3609": {
-    "name": "Occupational Therapy"
+    "name": "Occupational Therapy",
+    "domain": "4",
+    "field": "36"
   },
   "3611": {
-    "name": "Pharmacy"
+    "name": "Pharmacy",
+    "domain": "4",
+    "field": "36"
   },
   "3612": {
-    "name": "Physical Therapy, Sports Therapy and Rehabilitation"
+    "name": "Physical Therapy, Sports Therapy and Rehabilitation",
+    "domain": "4",
+    "field": "36"
   },
   "3614": {
-    "name": "Radiological and Ultrasound Technology"
+    "name": "Radiological and Ultrasound Technology",
+    "domain": "4",
+    "field": "36"
   },
   "3616": {
-    "name": "Speech and Hearing"
+    "name": "Speech and Hearing",
+    "domain": "4",
+    "field": "36"
   }
 }

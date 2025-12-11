@@ -95,16 +95,22 @@ const DomainSchema = Schema.Struct({
 const FieldSchema = Schema.Struct({
   id: FieldIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
 })
 
 const SubfieldSchema = Schema.Struct({
   id: SubfieldIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
+  field: Schema.Struct({ id: FieldIdFromUrlSchema }),
 })
 
 const TopicSchema = Schema.Struct({
   id: TopicIdFromUrlSchema,
   display_name: Schema.NonEmptyTrimmedString,
+  domain: Schema.Struct({ id: DomainIdFromUrlSchema }),
+  field: Schema.Struct({ id: FieldIdFromUrlSchema }),
+  subfield: Schema.Struct({ id: SubfieldIdFromUrlSchema }),
 })
 
 const KeywordSchema = Schema.Struct({
@@ -119,7 +125,41 @@ const LocaleFileSchema = Schema.Record({
   }),
 })
 
-const TypesFileSchema = Schema.Record({
+const DomainTypesFileSchema = Schema.Record({
+  key: Schema.String,
+  value: Schema.Struct({
+    name: Schema.NonEmptyTrimmedString,
+  }),
+})
+
+const FieldTypesFileSchema = Schema.Record({
+  key: Schema.String,
+  value: Schema.Struct({
+    name: Schema.NonEmptyTrimmedString,
+    domain: DomainIdSchema,
+  }),
+})
+
+const SubfieldTypesFileSchema = Schema.Record({
+  key: Schema.String,
+  value: Schema.Struct({
+    name: Schema.NonEmptyTrimmedString,
+    domain: DomainIdSchema,
+    field: FieldIdSchema,
+  }),
+})
+
+const TopicTypesFileSchema = Schema.Record({
+  key: Schema.String,
+  value: Schema.Struct({
+    name: Schema.NonEmptyTrimmedString,
+    domain: DomainIdSchema,
+    field: FieldIdSchema,
+    subfield: SubfieldIdSchema,
+  }),
+})
+
+const KeywordTypesFileSchema = Schema.Record({
   key: Schema.String,
   value: Schema.Struct({
     name: Schema.NonEmptyTrimmedString,
@@ -190,7 +230,7 @@ const GetSubfields: Effect.Effect<
   Effect.andThen(
     Chunk.map(subfield =>
       subfield.id === 2311
-        ? ({ id: subfield.id, display_name: 'Waste Management and Disposal' } satisfies typeof SubfieldSchema.Type)
+        ? ({ ...subfield, display_name: 'Waste Management and Disposal' } satisfies typeof SubfieldSchema.Type)
         : subfield,
     ),
   ),
@@ -264,52 +304,57 @@ const SubfieldsToLocaleFile = flow(
 )
 
 const DomainsToTypesFile = flow(
-  Chunk.reduce<typeof TypesFileSchema.Type, typeof DomainSchema.Type>({}, (accumulator, domain) => ({
+  Chunk.reduce<typeof DomainTypesFileSchema.Type, typeof DomainSchema.Type>({}, (accumulator, domain) => ({
     ...accumulator,
     [domain.id]: { name: domain.display_name },
   })),
-  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Schema.encode(Schema.parseJson(DomainTypesFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/domains.json')),
 )
 
 const FieldsToTypesFile = flow(
-  Chunk.reduce<typeof TypesFileSchema.Type, typeof FieldSchema.Type>({}, (accumulator, field) => ({
+  Chunk.reduce<typeof FieldTypesFileSchema.Type, typeof FieldSchema.Type>({}, (accumulator, field) => ({
     ...accumulator,
-    [field.id]: { name: field.display_name },
+    [field.id]: { name: field.display_name, domain: field.domain.id },
   })),
-  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Schema.encode(Schema.parseJson(FieldTypesFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/fields.json')),
 )
 
 const SubfieldsToTypesFile = flow(
-  Chunk.reduce<typeof TypesFileSchema.Type, typeof SubfieldSchema.Type>({}, (accumulator, subfield) => ({
+  Chunk.reduce<typeof SubfieldTypesFileSchema.Type, typeof SubfieldSchema.Type>({}, (accumulator, subfield) => ({
     ...accumulator,
-    [subfield.id]: { name: subfield.display_name },
+    [subfield.id]: { name: subfield.display_name, domain: subfield.domain.id, field: subfield.field.id },
   })),
-  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Schema.encode(Schema.parseJson(SubfieldTypesFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/subfields.json')),
 )
 
 const TopicsToTypesFile = flow(
-  Chunk.reduce<typeof TypesFileSchema.Type, typeof TopicSchema.Type>({}, (accumulator, topic) => ({
+  Chunk.reduce<typeof TopicTypesFileSchema.Type, typeof TopicSchema.Type>({}, (accumulator, topic) => ({
     ...accumulator,
-    [topic.id]: { name: topic.display_name },
+    [topic.id]: {
+      name: topic.display_name,
+      domain: topic.domain.id,
+      field: topic.field.id,
+      subfield: topic.subfield.id,
+    },
   })),
-  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Schema.encode(Schema.parseJson(TopicTypesFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/topics.json')),
 )
 
 const KeywordsToTypesFile = flow(
-  Chunk.map<Chunk.Chunk<typeof KeywordSchema.Type>, [string, typeof TypesFileSchema.value.Type]>(keyword => [
+  Chunk.map<Chunk.Chunk<typeof KeywordSchema.Type>, [string, typeof KeywordTypesFileSchema.value.Type]>(keyword => [
     crypto.createHash('shake256', { outputLength: 10 }).update(keyword.id).digest('hex'),
     { name: keyword.display_name },
   ]),
   Record.fromEntries,
-  Schema.encode(Schema.parseJson(TypesFileSchema, { space: 2 })),
+  Schema.encode(Schema.parseJson(KeywordTypesFileSchema, { space: 2 })),
   Effect.andThen(String.concat('\n')),
   Effect.andThen(WriteToFile('src/types/data/keywords.json')),
 )
