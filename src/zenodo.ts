@@ -63,13 +63,13 @@ import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
 import { reviewMatch } from './routes.ts'
 import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
-import { isDomainId } from './types/domain.ts'
-import { type FieldId, isFieldId } from './types/field.ts'
+import { DomainIdFromOpenAlexUrlSchema } from './types/domain.ts'
+import { type FieldId, FieldIdFromOpenAlexUrlSchema } from './types/field.ts'
 import { ProfileId, Uuid } from './types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.ts'
 import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
-import { isSubfieldId } from './types/subfield.ts'
+import { SubfieldIdFromOpenAlexUrlSchema } from './types/subfield.ts'
 import type { User } from './user.ts'
 import type { NewPrereview } from './write-review/index.ts'
 
@@ -950,35 +950,17 @@ function isOpen(record: Record) {
 
 const getReviewDomains = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(
-    flow(
-      Struct.get('identifier'),
-      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/domains\/(.+)$/.exec(identifier) ?? [])[1]),
-      Option.filter(isDomainId),
-    ),
-  ),
+  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(DomainIdFromOpenAlexUrlSchema))),
 )
 
 const getReviewFields = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(
-    flow(
-      Struct.get('identifier'),
-      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/fields\/(.+)$/.exec(identifier) ?? [])[1]),
-      Option.filter(isFieldId),
-    ),
-  ),
+  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(FieldIdFromOpenAlexUrlSchema))),
 )
 
 const getReviewSubfields = flow(
   (record: Record) => record.metadata.subjects ?? Array.empty<Required<typeof record.metadata>['subjects'][number]>(),
-  Array.filterMap(
-    flow(
-      Struct.get('identifier'),
-      Option.liftNullable(identifier => (/^https:\/\/openalex\.org\/subfields\/(.+)$/.exec(identifier) ?? [])[1]),
-      Option.filter(isSubfieldId),
-    ),
-  ),
+  Array.filterMap(flow(Struct.get('identifier'), Schema.decodeOption(SubfieldIdFromOpenAlexUrlSchema))),
 )
 
 const getReviewClub = flow(
