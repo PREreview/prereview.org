@@ -27,7 +27,7 @@
     "cookie-signature": "^1.2.2",
     "deep-object-diff": "^1.1.9",
     "doi-ts": "^0.1.10",
-    "effect": "^3.19.9",
+    "effect": "^3.19.11",
     "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.16.11",
     "fp-ts-routing": "^0.7.0",
