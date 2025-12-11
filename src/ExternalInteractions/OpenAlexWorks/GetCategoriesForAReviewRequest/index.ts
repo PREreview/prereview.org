@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Option, pipe, Schema } from 'effect'
+import { Array, Data, Effect, Match, Option, pipe, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
@@ -15,9 +15,11 @@ export class CategoriesAreNotAvailable extends Data.TaggedError('CategoriesAreNo
   cause?: unknown
 }> {}
 
-export const GetCategoriesForAReviewRequest = (preprintId: Preprints.IndeterminatePreprintIdWithDoi) =>
+export const GetCategoriesForAReviewRequest = (preprintId: Preprints.IndeterminatePreprintId) =>
   pipe(
-    OpenAlex.getWork(preprintId.value),
+    Match.value(preprintId),
+    Match.tag('PhilsciPreprintId', () => Effect.fail('no DOI available')),
+    Match.orElse(preprintId => OpenAlex.getWork(preprintId.value)),
     Effect.andThen(
       work =>
         ({
