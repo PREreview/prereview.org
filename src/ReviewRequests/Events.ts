@@ -1,7 +1,9 @@
 import { Array, Schema, Struct } from 'effect'
 import { Slack } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
-import { NonEmptyString, Temporal, Uuid } from '../types/index.ts'
+import { Iso639, NonEmptyString, Temporal, Uuid } from '../types/index.ts'
+import { KeywordIdSchema } from '../types/Keyword.ts'
+import { TopicIdSchema } from '../types/Topic.ts'
 
 export type ReviewRequestEvent = typeof ReviewRequestEvent.Type
 
@@ -18,6 +20,16 @@ export class ReviewRequestForAPreprintWasAccepted extends Schema.TaggedClass<Rev
   },
 ) {}
 
+export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasCategorized>()(
+  'ReviewRequestForAPreprintWasCategorized',
+  {
+    reviewRequestId: Uuid.UuidSchema,
+    language: Iso639.Iso6391Schema,
+    keywords: Schema.Array(KeywordIdSchema),
+    topics: Schema.Array(TopicIdSchema),
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schema.TaggedClass<ReviewRequestForAPreprintWasSharedOnTheCommunitySlack>()(
   'ReviewRequestForAPreprintWasSharedOnTheCommunitySlack',
   {
@@ -29,6 +41,7 @@ export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schem
 
 export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasAccepted,
+  ReviewRequestForAPreprintWasCategorized,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
 

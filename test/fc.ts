@@ -133,10 +133,12 @@ import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId } from '../src/types/index.ts'
+import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
+import { type TopicId, topicIds } from '../src/types/Topic.ts'
 import type { UserOnboarding } from '../src/user-onboarding.ts'
 import type { User } from '../src/user.ts'
 
@@ -1257,6 +1259,10 @@ export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
 export const subfieldId = (): fc.Arbitrary<SubfieldId> => fc.constantFrom(...subfieldIds)
 
+export const topicId = (): fc.Arbitrary<TopicId> => fc.constantFrom(...topicIds)
+
+export const keywordId = (): fc.Arbitrary<KeywordId> => fc.constantFrom(...keywordIds)
+
 export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())
 
@@ -2292,6 +2298,20 @@ export const reviewRequestForAPreprintWasAccepted = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
 
+export const reviewRequestForAPreprintWasCategorized = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasCategorized['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasCategorized> =>
+  fc
+    .record({
+      reviewRequestId: reviewRequestId ?? uuid(),
+      language: languageCode(),
+      topics: fc.array(topicId()),
+      keywords: fc.array(keywordId()),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
+
 export const reviewRequestForAPreprintWasSharedOnTheCommunitySlack = ({
   reviewRequestId,
 }: {
@@ -2310,7 +2330,11 @@ export const reviewRequestEvent = (
     reviewRequestId?: fc.Arbitrary<Events.ReviewRequestEvent['reviewRequestId']>
   } = {},
 ): fc.Arbitrary<Events.ReviewRequestEvent> =>
-  fc.oneof(reviewRequestForAPreprintWasAccepted(args), reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args))
+  fc.oneof(
+    reviewRequestForAPreprintWasAccepted(args),
+    reviewRequestForAPreprintWasCategorized(args),
+    reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
+  )
 
 export const event = (): fc.Arbitrary<Events.Event> =>
   fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent())
