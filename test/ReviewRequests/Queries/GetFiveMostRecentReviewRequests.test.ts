@@ -3,7 +3,7 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import * as _ from '../../../src/ReviewRequests/Queries/GetFiveMostRecent.ts'
+import * as _ from '../../../src/ReviewRequests/Queries/GetFiveMostRecentReviewRequests.ts'
 import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
