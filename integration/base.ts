@@ -22,7 +22,7 @@ import http from 'http'
 import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
-import type { BrowserContextOptions, Page } from 'playwright-core'
+import type { Page } from 'playwright-core'
 import { URL } from 'url'
 import { Uuid, v4 } from 'uuid-ts'
 import {
@@ -78,6 +78,7 @@ import { OrcidId } from '../src/types/OrcidId.ts'
 export { expect } from '@playwright/test'
 
 interface AppFixtures {
+  baseURL: string
   sqlClientLayer: Layer.Layer<SqlClient.SqlClient, unknown>
   fetch: FetchMock
   oauthServer: OAuth2Server
@@ -2166,9 +2167,7 @@ export const hasAVerifiedEmailAddress: Fixtures<
 export const invitedToBeAnAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'authorInviteStore' | 'fetch'> &
-    Pick<PlaywrightTestArgs, 'page'> &
-    Pick<BrowserContextOptions, 'baseURL'>
+  Pick<AppFixtures, 'authorInviteStore' | 'baseURL' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   page: async ({ authorInviteStore, baseURL, fetch, page }, use) => {
     const record = {
@@ -2254,7 +2253,7 @@ export const invitedToBeAnAuthor: Fixtures<
         },
       },
       DefaultLocale,
-    )({ publicUrl: new URL(String(baseURL)) })
+    )({ publicUrl: new URL(baseURL) })
 
     await page.setContent(email.html.toString())
 
