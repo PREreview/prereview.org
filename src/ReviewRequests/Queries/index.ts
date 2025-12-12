@@ -1,14 +1,14 @@
 import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
-import * as GetFiveMostRecent from './GetFiveMostRecent.ts'
+import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
-    getFiveMostRecent: SimpleQuery<GetFiveMostRecent.Result>
+    getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
@@ -26,10 +26,10 @@ type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { getFiveMostRecent, getPublishedReviewRequest, searchForPublishedReviewRequests } =
+export const { getFiveMostRecentReviewRequests, getPublishedReviewRequest, searchForPublishedReviewRequests } =
   Effect.serviceFunctions(ReviewRequestQueries)
 
-export type { RecentReviewRequest } from './GetFiveMostRecent.ts'
+export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
@@ -76,7 +76,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
       )
 
     return {
-      getFiveMostRecent: handleSimpleQuery(GetFiveMostRecent.filter, GetFiveMostRecent.query),
+      getFiveMostRecentReviewRequests: handleSimpleQuery(
+        GetFiveMostRecentReviewRequests.filter,
+        GetFiveMostRecentReviewRequests.query,
+      ),
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
       searchForPublishedReviewRequests: handleQuery(
         SearchForPublishedReviewRequests.createFilter,
