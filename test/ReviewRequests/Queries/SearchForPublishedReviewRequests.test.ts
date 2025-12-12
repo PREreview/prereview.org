@@ -168,6 +168,25 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     Either.left(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
+    'only accepted events',
+    { page: 1 },
+    [request1Accepted1, request1Accepted2],
+    Either.right({
+      currentPage: 1,
+      totalPages: 1,
+      language: undefined,
+      field: undefined,
+      reviewRequests: [
+        {
+          id: request1Id,
+          published: request1Accepted2.acceptedAt,
+          topics: [],
+          preprintId: request1Accepted2.preprintId,
+        },
+      ],
+    }),
+  ],
+  [
     'impossible page',
     { page: 0 },
     [request1Accepted1, request1Categorized1, request2Accepted],

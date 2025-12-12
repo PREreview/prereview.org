@@ -98,8 +98,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
       Boolean.every([
         reviewRequest.published !== undefined,
         reviewRequest.preprintId !== undefined,
-        reviewRequest.language !== undefined &&
-          Equal.equals(reviewRequest.language, input.language ?? reviewRequest.language),
+        input.language === undefined || Equal.equals(reviewRequest.language, input.language),
         input.field === undefined || Array.contains(reviewRequest.fields, input.field),
       ]),
     ) as Record<
