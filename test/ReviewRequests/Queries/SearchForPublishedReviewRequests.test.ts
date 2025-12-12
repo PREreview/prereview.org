@@ -161,7 +161,12 @@ const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   ['no events', { page: 1 }, [], Either.left(new ReviewRequests.NoReviewRequestsFound({}))],
-  ['no accepted events', { page: 1 }, [request1Accepted1], Either.left(new ReviewRequests.NoReviewRequestsFound({}))],
+  [
+    'no accepted events',
+    { page: 1 },
+    [request1Categorized1],
+    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+  ],
   [
     'impossible page',
     { page: 0 },
