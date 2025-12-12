@@ -2,11 +2,15 @@ import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'e
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
+import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
+    searchForPublishedReviewRequests: Query<
+      (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
+    >
   }
 >() {}
 
@@ -18,7 +22,8 @@ type Query<F extends (...args: never) => unknown, E = never> = (
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { getPublishedReviewRequest } = Effect.serviceFunctions(ReviewRequestQueries)
+export const { getPublishedReviewRequest, searchForPublishedReviewRequests } =
+  Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 
@@ -50,6 +55,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
 
     return {
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
+      searchForPublishedReviewRequests: handleQuery(
+        SearchForPublishedReviewRequests.createFilter,
+        SearchForPublishedReviewRequests.query,
+      ),
     }
   })
 

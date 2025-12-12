@@ -92,3 +92,5 @@ export const InstantSchema = Schema.transformOrFail(Schema.String, InstantFromSe
 })
 
 export const OrderPlainDate: Order.Order<Temporal.PlainDate> = (self, that) => Temporal.PlainDate.compare(self, that)
+
+export const OrderInstant: Order.Order<Temporal.Instant> = (self, that) => Temporal.Instant.compare(self, that)

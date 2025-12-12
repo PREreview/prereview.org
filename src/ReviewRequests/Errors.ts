@@ -16,4 +16,6 @@ export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.Tag
   'ReviewRequestWasAlreadySharedOnTheCommunitySlack',
 )('ReviewRequestWasAlreadySharedOnTheCommunitySlack', { cause: Schema.optional(Schema.Unknown) }) {}
 
+export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}
+
 export class UnknownReviewRequest extends Data.TaggedError('UnknownReviewRequest')<{ cause?: unknown }> {}
