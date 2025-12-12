@@ -1,12 +1,14 @@
 import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
+import * as GetFiveMostRecent from './GetFiveMostRecent.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
+    getFiveMostRecent: SimpleQuery<GetFiveMostRecent.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
@@ -20,11 +22,14 @@ type Query<F extends (...args: never) => unknown, E = never> = (
   ? Effect.Effect<R, UnableToQuery | E | L>
   : Effect.Effect<ReturnType<F>, UnableToQuery | E>
 
+type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
+
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { getPublishedReviewRequest, searchForPublishedReviewRequests } =
+export const { getFiveMostRecent, getPublishedReviewRequest, searchForPublishedReviewRequests } =
   Effect.serviceFunctions(ReviewRequestQueries)
 
+export type { RecentReviewRequest } from './GetFiveMostRecent.ts'
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
@@ -53,7 +58,25 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         Effect.provide(context),
       )
 
+    const handleSimpleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Result>(
+      filter: Events.EventFilter<Event>,
+      query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,
+    ): (() => Effect.Effect<Result, UnableToQuery>) =>
+      Effect.fn(
+        function* () {
+          const { events } = yield* pipe(
+            EventStore.query(filter),
+            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          )
+
+          return query(events)
+        },
+        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.provide(context),
+      )
+
     return {
+      getFiveMostRecent: handleSimpleQuery(GetFiveMostRecent.filter, GetFiveMostRecent.query),
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
       searchForPublishedReviewRequests: handleQuery(
         SearchForPublishedReviewRequests.createFilter,
