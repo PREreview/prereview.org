@@ -101,6 +101,7 @@ interface AppFixtures {
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
+  enableCoarNotifyInbox: (typeof FeatureFlags.FeatureFlags.Service)['enableCoarNotifyInbox']
   nodemailer: typeof Nodemailer.Nodemailer.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -126,6 +127,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   contactEmailAddressStore: async ({}, use) => {
     await use(new Keyv())
+  },
+  enableCoarNotifyInbox: async ({}, use) => {
+    await use(false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.createInstance()
@@ -311,6 +315,127 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           published: { 'date-parts': [[2023, 3, 1]] },
           subtype: 'preprint',
         },
+      },
+    })
+
+    fetch.get('https://api.openalex.org/works/https://doi.org/10.1101/2023.02.28.529746', {
+      body: {
+        language: 'en',
+        topics: [
+          {
+            id: 'https://openalex.org/T12104',
+            display_name: 'Protein Tyrosine Phosphatases',
+            score: 1,
+            subfield: {
+              id: 'https://openalex.org/subfields/1312',
+              display_name: 'Molecular Biology',
+            },
+            field: {
+              id: 'https://openalex.org/fields/13',
+              display_name: 'Biochemistry, Genetics and Molecular Biology',
+            },
+            domain: {
+              id: 'https://openalex.org/domains/1',
+              display_name: 'Life Sciences',
+            },
+          },
+          {
+            id: 'https://openalex.org/T12763',
+            display_name: 'ATP Synthase and ATPases Research',
+            score: 0.996999979019165,
+            subfield: {
+              id: 'https://openalex.org/subfields/1312',
+              display_name: 'Molecular Biology',
+            },
+            field: {
+              id: 'https://openalex.org/fields/13',
+              display_name: 'Biochemistry, Genetics and Molecular Biology',
+            },
+            domain: {
+              id: 'https://openalex.org/domains/1',
+              display_name: 'Life Sciences',
+            },
+          },
+          {
+            id: 'https://openalex.org/T12387',
+            display_name: 'Galectins and Cancer Biology',
+            score: 0.995199978351593,
+            subfield: {
+              id: 'https://openalex.org/subfields/2403',
+              display_name: 'Immunology',
+            },
+            field: {
+              id: 'https://openalex.org/fields/24',
+              display_name: 'Immunology and Microbiology',
+            },
+            domain: {
+              id: 'https://openalex.org/domains/1',
+              display_name: 'Life Sciences',
+            },
+          },
+        ],
+        keywords: [
+          {
+            id: 'https://openalex.org/keywords/motif',
+            display_name: 'Motif (music)',
+            score: 0.691342711448669,
+          },
+          {
+            id: 'https://openalex.org/keywords/chemistry',
+            display_name: 'Chemistry',
+            score: 0.566631734371185,
+          },
+          {
+            id: 'https://openalex.org/keywords/structural-motif',
+            display_name: 'Structural motif',
+            score: 0.471305459737778,
+          },
+          {
+            id: 'https://openalex.org/keywords/sequence-motif',
+            display_name: 'Sequence motif',
+            score: 0.432172685861588,
+          },
+          {
+            id: 'https://openalex.org/keywords/protein-structure',
+            display_name: 'Protein structure',
+            score: 0.431059509515762,
+          },
+          {
+            id: 'https://openalex.org/keywords/kinetics',
+            display_name: 'Kinetics',
+            score: 0.427053451538086,
+          },
+          {
+            id: 'https://openalex.org/keywords/stereochemistry',
+            display_name: 'Stereochemistry',
+            score: 0.399227321147919,
+          },
+          {
+            id: 'https://openalex.org/keywords/biophysics',
+            display_name: 'Biophysics',
+            score: 0.34223461151123,
+          },
+          {
+            id: 'https://openalex.org/keywords/biochemistry',
+            display_name: 'Biochemistry',
+            score: 0.282941877841949,
+          },
+          {
+            id: 'https://openalex.org/keywords/biology',
+            display_name: 'Biology',
+            score: 0.206115216016769,
+          },
+          {
+            id: 'https://openalex.org/keywords/dna',
+            display_name: 'DNA',
+            score: 0.16941836476326,
+          },
+          {
+            id: 'https://openalex.org/keywords/physics',
+            display_name: 'Physics',
+            score: 0.123483538627625,
+          },
+        ],
       },
     })
 
@@ -1231,6 +1356,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canAddMultipleAuthors,
         canLogInAsDemoUser,
         canReviewDatasets,
+        enableCoarNotifyInbox,
         sqlClientLayer,
       },
       use,
@@ -1271,7 +1397,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               canAddMultipleAuthors,
               canLogInAsDemoUser,
               canReviewDatasets,
-              enableCoarNotifyInbox: false,
+              enableCoarNotifyInbox,
               sendCoarNotifyMessages: false,
               useCrowdinInContext: false,
             }),
@@ -2492,6 +2618,17 @@ export const canReviewDatasets: Fixtures<
     })
 
     await use(fetch)
+  },
+}
+
+export const enableCoarNotifyInbox: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'enableCoarNotifyInbox'>,
+  Record<never, never>
+> = {
+  enableCoarNotifyInbox: async ({}, use) => {
+    await use(true)
   },
 }
 
