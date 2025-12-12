@@ -1,6 +1,7 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
+import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
@@ -8,6 +9,9 @@ import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewReq
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
+    doesAPreprintHaveAReviewRequest: Query<
+      (input: DoesAPreprintHaveAReviewRequest.Input) => DoesAPreprintHaveAReviewRequest.Result
+    >
     getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     searchForPublishedReviewRequests: Query<
@@ -26,8 +30,12 @@ type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
-export const { getFiveMostRecentReviewRequests, getPublishedReviewRequest, searchForPublishedReviewRequests } =
-  Effect.serviceFunctions(ReviewRequestQueries)
+export const {
+  doesAPreprintHaveAReviewRequest,
+  getFiveMostRecentReviewRequests,
+  getPublishedReviewRequest,
+  searchForPublishedReviewRequests,
+} = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
@@ -76,6 +84,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
       )
 
     return {
+      doesAPreprintHaveAReviewRequest: handleQuery(
+        DoesAPreprintHaveAReviewRequest.createFilter,
+        flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
+      ),
       getFiveMostRecentReviewRequests: handleSimpleQuery(
         GetFiveMostRecentReviewRequests.filter,
         GetFiveMostRecentReviewRequests.query,
