@@ -53,15 +53,11 @@ export const make: Effect.Effect<
         Effect.andThen(
           Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event.pipe(Schema.filter(hasTag(...filter.types)))))),
         ),
+        Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
       )
 
       return rows
     },
-    Effect.tapError(error =>
-      Effect.annotateLogs(Effect.logError('Unable to get all events'), {
-        error,
-      }),
-    ),
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
   )
 
