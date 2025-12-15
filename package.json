@@ -31,6 +31,7 @@
     "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.16.11",
     "fp-ts-routing": "^0.7.0",
+    "fuse.js": "^7.1.0",
     "html-entities": "^2.6.0",
     "intl-parse-accept-language": "^1.0.0",
     "io-ts": "^2.2.22",
