@@ -381,7 +381,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
   'hhmi-training-pilot': {
-    name: 'HHMI Transparent and Accountable Peer Review Training Pilot',
+    name: 'HHMI Transparent and Accountable Peer Review Training Program',
     description: html`
       <p>
         HHMI is a biomedical research organization and philanthropy that supports a vibrant community of researchers,
