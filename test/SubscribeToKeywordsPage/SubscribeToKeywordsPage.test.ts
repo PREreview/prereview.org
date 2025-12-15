@@ -21,3 +21,18 @@ test.prop([fc.supportedLocale()])('SubscribeToKeywordsPage', locale =>
     })
   }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
 )
+
+test.prop([fc.urlParams(), fc.supportedLocale()])('SubscribeToKeywordsSubmission', (body, locale) =>
+  Effect.gen(function* () {
+    const actual = yield* _.SubscribeToKeywordsSubmission({ body })
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: StatusCodes.ServiceUnavailable,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      js: [],
+    })
+  }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+)

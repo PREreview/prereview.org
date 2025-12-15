@@ -30,7 +30,7 @@ import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
-import { SubscribeToKeywordsPage } from '../SubscribeToKeywordsPage/index.ts'
+import { SubscribeToKeywordsPage, SubscribeToKeywordsSubmission } from '../SubscribeToKeywordsPage/index.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -259,6 +259,15 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
 
 const SubscribeToKeywords = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.SubscribeToKeywords, SubscribeToKeywordsPage),
+  MakeStaticRoute(
+    'POST',
+    Routes.SubscribeToKeywords,
+    pipe(
+      Effect.Do,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(SubscribeToKeywordsSubmission),
+    ),
+  ),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
   HttpRouter.use(
