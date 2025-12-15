@@ -76,7 +76,6 @@ const ClusterLayer = Layer.unwrapEffect(
         shardingConfig: {
           runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
           runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
-          shardsPerGroup: 1,
         },
       }),
   ),
