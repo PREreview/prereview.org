@@ -359,7 +359,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     name: 'Future of Research Communication and e-Scholarship (FORCE11)',
     description: html`
       <p>
-        The PREreview Club at Future of Research Communication and e-Scholarship (FORCE11) publishes reviews of
+        The PREreview Club at Future of Research Communication and e-Scholarship (<a href="https://force11.org ">FORCE11</a>) publishes reviews of
         preprints in metascience, metaresearch, scholarly communication, and related fields.
       </p>
       <p>
