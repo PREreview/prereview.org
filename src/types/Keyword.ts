@@ -27,6 +27,10 @@ export const KeywordIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URLF
     ),
 })
 
+export function getKeywordName(id: KeywordId): string {
+  return keywords[id].name
+}
+
 export function isKeywordId(value: string): value is KeywordId {
   return (keywordIds as ReadonlyArray<string>).includes(value)
 }

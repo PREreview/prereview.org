@@ -1,6 +1,7 @@
+import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
-import { expect } from '@jest/globals'
-import { Effect } from 'effect'
+import { describe, expect } from '@jest/globals'
+import { Effect, Option } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -24,17 +25,40 @@ test.prop([fc.supportedLocale()])('SubscribeToKeywordsPage', locale =>
   }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
 )
 
-test.prop([fc.urlParams(), fc.supportedLocale()])('SubscribeToKeywordsSubmission', (body, locale) =>
-  Effect.gen(function* () {
-    const actual = yield* _.SubscribeToKeywordsSubmission({ body })
+describe('SubscribeToKeywordsSubmission', () => {
+  test.prop([fc.urlParams(fc.record({ search: fc.nonEmptyString() })), fc.supportedLocale()])(
+    'with a search',
+    (body, locale) =>
+      Effect.gen(function* () {
+        const actual = yield* _.SubscribeToKeywordsSubmission({ body })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
-)
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: Routes.SubscribeToKeywords,
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+  )
+
+  test.prop([
+    fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'search'))),
+    fc.supportedLocale(),
+  ])('without a search', (body, locale) =>
+    Effect.gen(function* () {
+      const actual = yield* _.SubscribeToKeywordsSubmission({ body })
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+  )
+})
