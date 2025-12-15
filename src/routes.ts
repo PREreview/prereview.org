@@ -43,6 +43,7 @@ export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
+export const SubscribeToKeywords = '/subscribe-to-keywords'
 
 const DatasetIdSchema = Schema.transform(
   Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),

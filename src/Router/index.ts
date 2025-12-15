@@ -30,6 +30,7 @@ import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
+import { SubscribeToKeywordsPage } from '../SubscribeToKeywordsPage/index.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -256,6 +257,22 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   ),
 )
 
+const SubscribeToKeywords = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.SubscribeToKeywords, SubscribeToKeywordsPage),
+]).pipe(
+  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      pipe(
+        Effect.andThen(FeatureFlags.EnsureCanSubscribeToReviewRequests, app),
+        Effect.catchTag('CannotSubscribeToReviewRequests', () =>
+          Effect.andThen(PageNotFound, Response.toHttpServerResponse),
+        ),
+      ),
+    ),
+  ),
+)
+
 const DatasetReviewPages = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
@@ -435,6 +452,7 @@ export const Router = pipe(
     MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
   ]),
   HttpRouter.concat(AuthRouter),
+  HttpRouter.concat(SubscribeToKeywords),
   HttpRouter.concat(DatasetReviewPages),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
