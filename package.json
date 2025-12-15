@@ -10,7 +10,7 @@
     "@effect/ai": "^0.32.1",
     "@effect/ai-openai": "^0.36.0",
     "@effect/cluster": "^0.55.0",
-    "@effect/platform": "^0.93.4",
+    "@effect/platform": "^0.93.8",
     "@effect/platform-node": "^0.103.0",
     "@effect/sql": "^0.48.2",
     "@effect/sql-libsql": "^0.38.0",
