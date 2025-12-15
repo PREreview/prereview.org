@@ -10,7 +10,6 @@ import * as Routes from '../src/routes.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 test.prop([fc.supportedLocale()])('HomePage', locale =>
   Effect.gen(function* () {
@@ -37,19 +36,8 @@ test.prop([fc.supportedLocale()])('HomePage', locale =>
         getFiveMostRecent: Effect.succeed([]),
       }),
     ),
-    Effect.provide(featureFlagsLayer),
+    Effect.provide(FeatureFlags.layerDefaults),
     Effect.provideService(Locale, locale),
     EffectTest.run,
   ),
 )
-
-const featureFlagsLayer = FeatureFlags.layer({
-  aiReviewsAsCc0: shouldNotBeCalled,
-  askAiReviewEarly: shouldNotBeCalled,
-  canAddMultipleAuthors: shouldNotBeCalled,
-  canLogInAsDemoUser: false,
-  canReviewDatasets: false,
-  enableCoarNotifyInbox: false,
-  sendCoarNotifyMessages: false,
-  useCrowdinInContext: false,
-})

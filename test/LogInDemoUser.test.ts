@@ -8,7 +8,6 @@ import * as StatusCodes from '../src/StatusCodes.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('LogInDemoUser', () => {
   test.prop([fc.supportedLocale()])('when can log in as the demo user', locale =>
@@ -23,7 +22,11 @@ describe('LogInDemoUser', () => {
           pseudonym: 'Orange Panda',
         },
       })
-    }).pipe(Effect.provideService(Locale, locale), Effect.provide(featureFlagsLayer(true)), EffectTest.run),
+    }).pipe(
+      Effect.provideService(Locale, locale),
+      Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: true })),
+      EffectTest.run,
+    ),
   )
 
   test.prop([fc.supportedLocale()])("when can't log in as the demo user", locale =>
@@ -38,18 +41,10 @@ describe('LogInDemoUser', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provideService(Locale, locale), Effect.provide(featureFlagsLayer(false)), EffectTest.run),
+    }).pipe(
+      Effect.provideService(Locale, locale),
+      Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: false })),
+      EffectTest.run,
+    ),
   )
 })
-
-const featureFlagsLayer = (canLogInAsDemoUser: boolean) =>
-  FeatureFlags.layer({
-    aiReviewsAsCc0: shouldNotBeCalled,
-    askAiReviewEarly: shouldNotBeCalled,
-    canAddMultipleAuthors: shouldNotBeCalled,
-    canLogInAsDemoUser,
-    canReviewDatasets: false,
-    enableCoarNotifyInbox: false,
-    sendCoarNotifyMessages: false,
-    useCrowdinInContext: false,
-  })

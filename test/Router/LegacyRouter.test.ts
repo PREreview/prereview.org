@@ -69,7 +69,7 @@ describe('LegacyRouter', () => {
         OrcidOauth.layer({ url: new URL('http://orcid.test'), clientId: 'id', clientSecret: Redacted.make('secret') }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(featureFlagsLayer),
+      Effect.provide(FeatureFlags.layerDefaults),
       EffectTest.run,
     ),
   )
@@ -115,7 +115,7 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(featureFlagsLayer),
+      Effect.provide(FeatureFlags.layerDefaults),
       EffectTest.run,
     ),
   )
@@ -146,19 +146,8 @@ describe('LegacyRouter', () => {
         }),
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
-      Effect.provide(featureFlagsLayer),
+      Effect.provide(FeatureFlags.layerDefaults),
       EffectTest.run,
     ),
   )
-})
-
-const featureFlagsLayer = FeatureFlags.layer({
-  aiReviewsAsCc0: shouldNotBeCalled,
-  askAiReviewEarly: shouldNotBeCalled,
-  canAddMultipleAuthors: shouldNotBeCalled,
-  canLogInAsDemoUser: false,
-  canReviewDatasets: false,
-  enableCoarNotifyInbox: false,
-  sendCoarNotifyMessages: false,
-  useCrowdinInContext: false,
 })

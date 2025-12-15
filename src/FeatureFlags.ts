@@ -15,6 +15,17 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   }
 >() {}
 
+const defaults = {
+  aiReviewsAsCc0: () => false,
+  askAiReviewEarly: () => false,
+  canAddMultipleAuthors: () => false,
+  canLogInAsDemoUser: false,
+  canReviewDatasets: false,
+  enableCoarNotifyInbox: false,
+  sendCoarNotifyMessages: false,
+  useCrowdinInContext: false,
+} satisfies typeof FeatureFlags.Service
+
 export const aiReviewsAsCc0 = Effect.serviceFunction(FeatureFlags, Struct.get('aiReviewsAsCc0'))
 
 export const askAiReviewEarly = Effect.serviceFunction(FeatureFlags, Struct.get('aiReviewsAsCc0'))
@@ -43,8 +54,10 @@ export const EnsureCanReviewDatasets = Effect.if(canReviewDatasets, {
   onFalse: () => new CannotReviewDatasets(),
 })
 
-export const layer = (options: typeof FeatureFlags.Service): Layer.Layer<FeatureFlags> =>
-  Layer.succeed(FeatureFlags, options)
+export const layer = (options: Partial<typeof FeatureFlags.Service> = {}): Layer.Layer<FeatureFlags> =>
+  Layer.succeed(FeatureFlags, { ...defaults, ...options })
+
+export const layerDefaults: Layer.Layer<FeatureFlags> = layer()
 
 export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
   Layer.unwrapEffect(Effect.map(Config.unwrap(options), layer))

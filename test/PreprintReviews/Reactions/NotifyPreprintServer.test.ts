@@ -49,7 +49,7 @@ describe('NotifyPreprintServer', () => {
           }).pipe(
             Effect.provide(
               Layer.mergeAll(
-                featureFlagsLayer(true),
+                FeatureFlags.layer({ sendCoarNotifyMessages: true }),
                 Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
                 Layer.succeed(PublicUrl.PublicUrl, publicUrl),
                 Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
@@ -96,7 +96,7 @@ describe('NotifyPreprintServer', () => {
           }).pipe(
             Effect.provide(
               Layer.mergeAll(
-                featureFlagsLayer('sandbox'),
+                FeatureFlags.layer({ sendCoarNotifyMessages: 'sandbox' }),
                 Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
                 Layer.succeed(PublicUrl.PublicUrl, publicUrl),
                 Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
@@ -118,7 +118,7 @@ describe('NotifyPreprintServer', () => {
           Effect.provide(
             Layer.mergeAll(
               Layer.mock(CoarNotify.CoarNotify, {}),
-              featureFlagsLayer(true),
+              FeatureFlags.layer({ sendCoarNotifyMessages: true }),
               Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
               Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
@@ -146,7 +146,7 @@ describe('NotifyPreprintServer', () => {
         Effect.provide(
           Layer.mergeAll(
             Layer.mock(CoarNotify.CoarNotify, { sendMessage: () => error }),
-            featureFlagsLayer(sendCoarNotifyMessages),
+            FeatureFlags.layer({ sendCoarNotifyMessages }),
             Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
             Layer.succeed(PublicUrl.PublicUrl, publicUrl),
             Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
@@ -175,7 +175,7 @@ describe('NotifyPreprintServer', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(CoarNotify.CoarNotify, {}),
-          featureFlagsLayer(sendCoarNotifyMessages),
+          FeatureFlags.layer({ sendCoarNotifyMessages }),
           Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
           Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
@@ -194,7 +194,7 @@ describe('NotifyPreprintServer', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(CoarNotify.CoarNotify, {}),
-          featureFlagsLayer(false),
+          FeatureFlags.layer({ sendCoarNotifyMessages: false }),
           Layer.mock(Prereviews.Prereviews, {}),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
           Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
@@ -204,17 +204,3 @@ describe('NotifyPreprintServer', () => {
     ),
   )
 })
-
-const featureFlagsLayer = (
-  sendCoarNotifyMessages: (typeof FeatureFlags.FeatureFlags.Service)['sendCoarNotifyMessages'],
-) =>
-  FeatureFlags.layer({
-    aiReviewsAsCc0: shouldNotBeCalled,
-    askAiReviewEarly: shouldNotBeCalled,
-    canAddMultipleAuthors: shouldNotBeCalled,
-    canLogInAsDemoUser: false,
-    canReviewDatasets: false,
-    enableCoarNotifyInbox: false,
-    sendCoarNotifyMessages,
-    useCrowdinInContext: false,
-  })
