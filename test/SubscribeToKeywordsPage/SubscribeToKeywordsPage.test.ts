@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Effect } from 'effect'
 import { Locale } from '../../src/Context.ts'
+import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/SubscribeToKeywordsPage/index.ts'
 import * as EffectTest from '../EffectTest.ts'
@@ -13,10 +14,11 @@ test.prop([fc.supportedLocale()])('SubscribeToKeywordsPage', locale =>
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
+      canonical: Routes.SubscribeToKeywords,
+      status: StatusCodes.OK,
       title: expect.anything(),
       main: expect.anything(),
-      skipToLabel: 'main',
+      skipToLabel: 'form',
       js: [],
     })
   }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
