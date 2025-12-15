@@ -9,6 +9,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canAddMultipleAuthors: (user?: User) => boolean
     canLogInAsDemoUser: boolean
     canReviewDatasets: boolean
+    canSubscribeToReviewRequests: boolean
     enableCoarNotifyInbox: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
@@ -21,6 +22,7 @@ const defaults = {
   canAddMultipleAuthors: () => false,
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
+  canSubscribeToReviewRequests: false,
   enableCoarNotifyInbox: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
@@ -35,6 +37,7 @@ export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct
 export const {
   canLogInAsDemoUser,
   canReviewDatasets,
+  canSubscribeToReviewRequests,
   enableCoarNotifyInbox,
   sendCoarNotifyMessages,
   useCrowdinInContext,
@@ -44,6 +47,8 @@ export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUs
 
 export class CannotReviewDatasets extends Data.TaggedError('CannotReviewDatasets') {}
 
+export class CannotSubscribeToReviewRequests extends Data.TaggedError('CannotSubscribeToReviewRequests') {}
+
 export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
   onTrue: () => Effect.void,
   onFalse: () => new CannotLogInAsDemoUser(),
@@ -52,6 +57,11 @@ export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
 export const EnsureCanReviewDatasets = Effect.if(canReviewDatasets, {
   onTrue: () => Effect.void,
   onFalse: () => new CannotReviewDatasets(),
+})
+
+export const EnsureCanSubscribeToReviewRequests = Effect.if(canSubscribeToReviewRequests, {
+  onTrue: () => Effect.void,
+  onFalse: () => new CannotSubscribeToReviewRequests(),
 })
 
 export const layer = (options: Partial<typeof FeatureFlags.Service> = {}): Layer.Layer<FeatureFlags> =>
