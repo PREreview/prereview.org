@@ -2281,6 +2281,24 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'PublishDatasetReview',
   )
 
+export const prereviewerSubscribedToAKeyword = ({
+  prereviewerId,
+}: {
+  prereviewerId?: fc.Arbitrary<Events.PrereviewerSubscribedToAKeyword['prereviewerId']>
+} = {}): fc.Arbitrary<Events.PrereviewerSubscribedToAKeyword> =>
+  fc
+    .record({
+      prereviewerId: prereviewerId ?? orcidId(),
+      keywordId: keywordId(),
+    })
+    .map(data => new Events.PrereviewerSubscribedToAKeyword(data))
+
+export const prereviewerEvent = (
+  args: {
+    prereviewerId?: fc.Arbitrary<Events.PrereviewerEvent['prereviewerId']>
+  } = {},
+): fc.Arbitrary<Events.PrereviewerEvent> => prereviewerSubscribedToAKeyword(args)
+
 export const reviewRequestForAPreprintWasAccepted = ({
   reviewRequestId,
 }: {
@@ -2337,7 +2355,7 @@ export const reviewRequestEvent = (
   )
 
 export const event = (): fc.Arbitrary<Events.Event> =>
-  fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent())
+  fc.oneof(commentEvent(), datasetReviewEvent(), prereviewerEvent(), reviewRequestEvent())
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
