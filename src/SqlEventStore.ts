@@ -34,32 +34,27 @@ export const make: Effect.Effect<
         ])
       : sql.in('type', filter.types)
 
-  const selectEventRows = Effect.fn(
-    function* <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) {
-      const rows = yield* pipe(
-        sql`
-          SELECT
-            id,
-            type,
-            timestamp,
-            payload
-          FROM
-            events
-          WHERE
-            ${buildFilterCondition(filter)}
-          ORDER BY
-            timestamp ASC
-        `,
-        Effect.andThen(
-          Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event.pipe(Schema.filter(hasTag(...filter.types)))))),
-        ),
-        Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
-      )
-
-      return rows
-    },
-    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-  )
+  const selectEventRows = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
+    pipe(
+      sql`
+        SELECT
+          id,
+          type,
+          timestamp,
+          payload
+        FROM
+          events
+        WHERE
+          ${buildFilterCondition(filter)}
+        ORDER BY
+          timestamp ASC
+      `,
+      Effect.andThen(
+        Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event.pipe(Schema.filter(hasTag(...filter.types)))))),
+      ),
+      Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
+      Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    )
 
   const all: EventStore.EventStore['all'] = pipe(
     sql`
