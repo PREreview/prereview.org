@@ -1,6 +1,6 @@
 import { Array, Struct } from 'effect'
 import * as Events from '../../Events.ts'
-import { OrcidId } from '../../types/index.ts'
+import type { OrcidId } from '../../types/index.ts'
 import type { KeywordId } from '../../types/Keyword.ts'
 
 export type Result = ReadonlyArray<KeywordId>
