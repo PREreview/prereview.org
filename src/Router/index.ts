@@ -20,6 +20,7 @@ import { LiveReviewsPage } from '../LiveReviewsPage.ts'
 import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
+import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
@@ -268,6 +269,7 @@ const SubscribeToKeywords = HttpRouter.fromIterable([
       Effect.andThen(SubscribeToKeywordsSubmission),
     ),
   ),
+  MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
   HttpRouter.use(
