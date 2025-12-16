@@ -40,6 +40,27 @@ describe('matches', () => {
             },
           ], // multiple types and predicates
         ],
+        [
+          [
+            datasetReviewWasStarted,
+            [
+              {
+                types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+                predicates: {
+                  datasetId: datasetReviewWasStarted.datasetId,
+                  authorId: datasetReviewWasStarted.authorId,
+                },
+              },
+              {
+                types: ['DatasetReviewWasStarted'],
+                predicates: {
+                  datasetId: datasetReviewWasStarted.datasetId,
+                  authorId: datasetReviewWasStarted.authorId,
+                },
+              },
+            ],
+          ], // multiple filters
+        ],
       ],
     },
   )('when the event matches the filter', ([event, filter]) => {
@@ -73,6 +94,21 @@ describe('matches', () => {
             datasetReviewWasStarted,
             { types: ['DatasetReviewWasStarted'], predicates: { datasetId: otherDatasetId, authorId: otherAuthorId } },
           ], // multiple predicates don't match
+        ],
+        [
+          [
+            datasetReviewWasStarted,
+            [
+              {
+                types: ['DatasetReviewWasStarted'],
+                predicates: { datasetId, authorId: otherAuthorId },
+              },
+              {
+                types: ['DatasetReviewWasStarted'],
+                predicates: { datasetId: otherDatasetId, authorId },
+              },
+            ],
+          ], // multiple filters
         ],
       ],
     },
