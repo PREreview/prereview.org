@@ -18,10 +18,15 @@ export const Event = Schema.Union(
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
 )
 
-export interface EventFilter<T extends Event['_tag']> {
-  types: Array.NonEmptyReadonlyArray<T>
-  predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
-}
+export type EventFilter<T extends Event['_tag']> =
+  | {
+      types: Array.NonEmptyReadonlyArray<T>
+      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+    }
+  | Array.NonEmptyReadonlyArray<{
+      types: Array.NonEmptyReadonlyArray<T>
+      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+    }>
 
 export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
 

@@ -13,12 +13,23 @@ import * as fc from './fc.ts'
 import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 it.prop([
-  fc.record(
-    {
-      types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
-      predicate: fc.dictionary(fc.string(), fc.string()),
-    },
-    { requiredKeys: ['types'] },
+  fc.oneof(
+    fc.record(
+      {
+        types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+        predicate: fc.dictionary(fc.string(), fc.string()),
+      },
+      { requiredKeys: ['types'] },
+    ),
+    fc.nonEmptyArray(
+      fc.record(
+        {
+          types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+          predicate: fc.dictionary(fc.string(), fc.string()),
+        },
+        { requiredKeys: ['types'] },
+      ),
+    ),
   ),
 ])('starts empty', filter =>
   Effect.gen(function* () {
@@ -40,12 +51,23 @@ it.prop([
 describe('when the last known event is none', () => {
   it.prop([
     fc.commentEvent(),
-    fc.record(
-      {
-        types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
-        predicate: fc.dictionary(fc.string(), fc.string()),
-      },
-      { requiredKeys: ['types'] },
+    fc.oneof(
+      fc.record(
+        {
+          types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+          predicate: fc.dictionary(fc.string(), fc.string()),
+        },
+        { requiredKeys: ['types'] },
+      ),
+      fc.nonEmptyArray(
+        fc.record(
+          {
+            types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+            predicate: fc.dictionary(fc.string(), fc.string()),
+          },
+          { requiredKeys: ['types'] },
+        ),
+      ),
     ),
     fc.array(fc.datasetReviewEvent()),
   ])('appends the event', (event, filter, otherEvents) =>
@@ -246,6 +268,67 @@ test.each<
         answer: 'yes',
         detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
       }),
+    ],
+  ],
+  [
+    'multiple filters',
+    [
+      {
+        types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+        predicates: { datasetReviewId, answer: 'yes' },
+      },
+      {
+        types: ['AnsweredIfTheDatasetHasEnoughMetadata'],
+        predicates: { datasetReviewId, answer: 'partly' },
+      },
+    ],
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'no',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+    ],
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
     ],
   ],
 ])('find events (%s)', (_name, filter, events, expected) =>
