@@ -1,6 +1,9 @@
+import { Layer } from 'effect'
 import * as Commands from './Commands/index.ts'
+import * as Queries from './Queries/index.ts'
 
 export * from './Commands/index.ts'
 export * from './Events.ts'
+export * from './Queries/index.ts'
 
-export const layer = Commands.commandsLayer
+export const layer = Layer.mergeAll(Commands.commandsLayer, Queries.queriesLayer)
