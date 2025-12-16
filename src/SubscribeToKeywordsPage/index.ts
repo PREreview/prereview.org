@@ -1,7 +1,10 @@
 import { UrlParams } from '@effect/platform'
 import { Array, Effect, Schema } from 'effect'
+import { format } from 'fp-ts-routing'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
+import { RedirectResponse } from '../Response/index.ts'
+import * as Routes from '../routes.ts'
 import { Keyword, NonEmptyString } from '../types/index.ts'
 import { KeywordIdSchema } from '../types/Keyword.ts'
 import { LoggedInUser } from '../user.ts'
@@ -24,10 +27,9 @@ export const SubscribeToKeywordsSubmission = ({ body }: { body: UrlParams.UrlPar
           Prereviewers.subscribeToAKeyword({ prereviewerId: user.orcid, keywordId }),
         )
 
-        return yield* HavingProblemsPage
+        return RedirectResponse({ location: format(Routes.myDetailsMatch.formatter, {}) })
       }),
     ),
-
     Effect.orElse(() => HavingProblemsPage),
   )
 

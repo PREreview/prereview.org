@@ -2,6 +2,7 @@ import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
+import { format } from 'fp-ts-routing'
 import { Locale } from '../../src/Context.ts'
 import * as Prereviewers from '../../src/Prereviewers/index.ts'
 import * as Routes from '../../src/routes.ts'
@@ -69,12 +70,9 @@ describe('SubscribeToKeywordsSubmission', () => {
         )
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(Routes.myDetailsMatch.formatter, {}),
         })
         expect(subscribeToAKeyword).toHaveBeenCalledTimes(keywords.length)
         keywords.forEach(keywordId => {
