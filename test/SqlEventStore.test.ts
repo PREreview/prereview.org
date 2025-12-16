@@ -126,7 +126,14 @@ describe('when the last known event is different', () => {
 
 const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
 
-test.each([
+test.each<
+  [
+    string,
+    Array.NonEmptyReadonlyArray<Events.CommentEvent['_tag']>,
+    Array.NonEmptyReadonlyArray<Events.CommentEvent>,
+    number,
+  ]
+>([
   [
     'one type',
     ['CodeOfConductForCommentWasAgreed'],
@@ -157,14 +164,7 @@ test.each([
     ],
     2,
   ],
-] as Array.NonEmptyReadonlyArray<
-  [
-    string,
-    Array.NonEmptyReadonlyArray<Events.CommentEvent['_tag']>,
-    Array.NonEmptyReadonlyArray<Events.CommentEvent>,
-    number,
-  ]
->)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
+])('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
