@@ -408,7 +408,7 @@ export function createPage({
           onNone: () => '',
           onSome: subscribedKeywords => html`
             <div>
-              <dt><span>Subscribed Keywords</span></dt>
+              <dt><span>Subscribed keywords</span></dt>
               ${Array.match(subscribedKeywords, {
                 onEmpty: () => html`
                   <dd>
