@@ -3,6 +3,7 @@ import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
+import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
@@ -14,6 +15,11 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     >
     getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Query<
+      (
+        input: GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Input,
+      ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
+    >
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
     >
@@ -34,6 +40,7 @@ export const {
   doesAPreprintHaveAReviewRequest,
   getFiveMostRecentReviewRequests,
   getPublishedReviewRequest,
+  getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
@@ -44,7 +51,7 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Input, Result, Error>(
+    const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
       createFilter: (input: Input) => Events.EventFilter<Event>,
       query: (
         events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
@@ -93,6 +100,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         GetFiveMostRecentReviewRequests.query,
       ),
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
+      getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
+        GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
+        flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
+      ),
       searchForPublishedReviewRequests: handleQuery(
         SearchForPublishedReviewRequests.createFilter,
         SearchForPublishedReviewRequests.query,
