@@ -1,5 +1,4 @@
 import { Array, Boolean, Match, Option, Record, Schema, Struct } from 'effect'
-import { EventFilter } from '../../Events.js'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type OrcidId, type Uuid } from '../../types/index.ts'
@@ -16,7 +15,7 @@ export type Result = ReadonlyArray<{
 }>
 
 export const createFilter = ({ prereviewerId }: Input) =>
-  EventFilter([
+  Events.EventFilter([
     {
       types: ['PrereviewerSubscribedToAKeyword'],
       predicates: { prereviewerId },
