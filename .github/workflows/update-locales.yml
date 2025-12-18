@@ -53,7 +53,7 @@ jobs:
         run: bash scripts/remove-description-fields-from-translations.sh
 
       - name: 'Commit changes'
-        uses: stefanzweifel/git-auto-commit-action@v7.0.0
+        uses: stefanzweifel/git-auto-commit-action@v7.1.0
         if: ${{ !env.ACT }}
         with:
           commit_message: 'Update locales'
