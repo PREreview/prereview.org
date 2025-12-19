@@ -18,6 +18,9 @@ export const getClubDetails = (id: ClubId) => clubs[id]
 
 export const getClubName = (id: ClubId) => clubs[id].name
 
+export const getClubNameAndFormerNames = (id: ClubId): Array.NonEmptyReadonlyArray<string> =>
+  pipe(Array.of(clubs[id].name), Array.appendAll(Option.getOrElse(Record.get(formerNames, id as never), Array.empty)))
+
 export const getClubAddedDate = (id: ClubId) => clubs[id].added
 
 export const getClubByName = (name: string): Option.Option<ClubId> =>

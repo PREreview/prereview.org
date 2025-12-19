@@ -34,7 +34,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { type ClubId, getClubByName, getClubName } from './Clubs/index.ts'
+import { type ClubId, getClubByName, getClubNameAndFormerNames } from './Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
 import { type Html, plainText, sanitizeHtml } from './html.ts'
@@ -397,7 +397,13 @@ export const getPrereviewsForUserFromZenodo = flow(
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
     new URLSearchParams({
-      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+      q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+        Array.map(
+          getClubNameAndFormerNames(club),
+          name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+        ),
+        ' OR ',
+      )})`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

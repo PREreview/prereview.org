@@ -25,7 +25,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName } from '../src/Clubs/index.ts'
+import { getClubName, getClubNameAndFormerNames } from '../src/Clubs/index.ts'
 import { plainText, rawHtml } from '../src/html.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
@@ -2696,7 +2696,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
           .getOnce({
             url: 'https://zenodo.org/api/communities/prereview-reviews/records',
             query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                Array.map(
+                  getClubNameAndFormerNames(club),
+                  name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+                ),
+                ' OR ',
+              )})`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -2749,7 +2755,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
           .getOnce({
             url: 'https://zenodo.org/api/communities/prereview-reviews/records',
             query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                Array.map(
+                  getClubNameAndFormerNames(club),
+                  name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+                ),
+                ' OR ',
+              )})`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -2779,7 +2791,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
     const fetch = fetchMock.createInstance().getOnce({
       url: 'https://zenodo.org/api/communities/prereview-reviews/records',
       query: {
-        q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+        q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+          Array.map(
+            getClubNameAndFormerNames(club),
+            name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+          ),
+          ' OR ',
+        )})`,
         size: '100',
         sort: 'publication-desc',
         resource_type: 'publication::publication-peerreview',
@@ -2913,7 +2931,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
           .getOnce({
             url: 'https://zenodo.org/api/communities/prereview-reviews/records',
             query: {
-              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+              q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                Array.map(
+                  getClubNameAndFormerNames(club),
+                  name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+                ),
+                ' OR ',
+              )})`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -3008,7 +3032,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
             .getOnce({
               url: 'https://zenodo.org/api/communities/prereview-reviews/records',
               query: {
-                q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND metadata.contributors.person_or_org.name:"${getClubName(club).replaceAll('\\', '\\\\')}"`,
+                q: `metadata.related_identifiers.resource_type.id:"publication-preprint" AND (${Array.join(
+                  Array.map(
+                    getClubNameAndFormerNames(club),
+                    name => `metadata.contributors.person_or_org.name:"${name.replaceAll('\\', '\\\\')}"`,
+                  ),
+                  ' OR ',
+                )})`,
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
