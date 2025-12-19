@@ -9,11 +9,13 @@ import type { User } from '../user.ts'
 
 export const createMenuPage = ({
   canLogInAsDemoUser = false,
+  canSubscribeToReviewRequests = false,
   locale,
   user,
   userOnboarding,
 }: {
   canLogInAsDemoUser?: boolean
+  canSubscribeToReviewRequests?: boolean
   locale: SupportedLocale
   user: Option.Option<User>
   userOnboarding: Option.Option<UserOnboarding>
@@ -97,6 +99,14 @@ export const createMenuPage = ({
                 <li>
                   <a href="${format(Routes.myPrereviewsMatch.formatter, {})}">${t('menuMyPrereviews')()}</a>
                 </li>
+                ${Boolean.match(canSubscribeToReviewRequests, {
+                  onFalse: () => '',
+                  onTrue: () => html`
+                    <li>
+                      <a href="${Routes.MyReviewRequests}">My review requests</a>
+                    </li>
+                  `,
+                })}
                 <li>
                   <a href="${Routes.LogOut}">${t('menuLogOut')()}</a>
                 </li>

@@ -10,6 +10,7 @@ export const MenuPage = Effect.gen(function* () {
   const user = yield* Effect.serviceOption(LoggedInUser)
   const userOnboarding = yield* Effect.serviceOption(UserOnboardingService)
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
+  const canSubscribeToReviewRequests = yield* FeatureFlags.canSubscribeToReviewRequests
 
-  return createMenuPage({ canLogInAsDemoUser, locale, user, userOnboarding })
+  return createMenuPage({ canLogInAsDemoUser, canSubscribeToReviewRequests, locale, user, userOnboarding })
 })
