@@ -217,6 +217,7 @@ export interface Env {
   fileSystem: FileSystem.FileSystem
   runtime: Runtime.Runtime<
     | CachingHttpClient.HttpCache
+    | CommunitySlack.CommunitySlack
     | GenerateUuid
     | HttpClient.HttpClient
     | LegacyPrereviewApi
@@ -351,13 +352,17 @@ const routerWithoutHyperTs = pipe(
               getSlackUser: withEnv(
                 flow(
                   Keyv.getSlackUserId,
-                  RTE.chainW(({ userId }) => CommunitySlack.getUserFromSlack(userId)),
+                  RTE.chainTaskEitherKW(
+                    EffectToFpts.toTaskEitherK(
+                      ({ userId }) =>
+                        Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
+                      env.runtime,
+                    ),
+                  ),
                 ),
                 {
                   ...env.logger,
                   slackUserIdStore: env.users.slackUserIdStore,
-                  slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-                  fetch: env.fetch,
                 },
               ),
               isOpenForRequests: withEnv(Keyv.isOpenForRequests, {

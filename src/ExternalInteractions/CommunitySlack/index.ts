@@ -3,6 +3,7 @@ import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type * as PublicUrl from '../../public-url.ts'
 import type { CommunitySlackChannelIds } from './ChannelIds.js'
+import { GetSlackUser } from './GetSlackUser/index.ts'
 import { ShareDatasetReview } from './ShareDatasetReview/index.ts'
 import { SharePreprintReview } from './SharePreprintReview/index.ts'
 import { SharePreprintReviewRequest } from './SharePreprintReviewRequest/index.ts'
@@ -17,6 +18,12 @@ export * from './ShouldUpdateCommunitySlack.ts'
 export class CommunitySlack extends Context.Tag('CommunitySlack')<
   CommunitySlack,
   {
+    getSlackUser: (
+      ...args: Parameters<typeof GetSlackUser>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof GetSlackUser>>,
+      Effect.Effect.Error<ReturnType<typeof GetSlackUser>>
+    >
     shareDatasetReview: (
       ...args: Parameters<typeof ShareDatasetReview>
     ) => Effect.Effect<
@@ -39,7 +46,7 @@ export class CommunitySlack extends Context.Tag('CommunitySlack')<
   }
 >() {}
 
-export const { shareDatasetReview, sharePreprintReview, sharePreprintReviewRequest } =
+export const { getSlackUser, shareDatasetReview, sharePreprintReview, sharePreprintReviewRequest } =
   Effect.serviceFunctions(CommunitySlack)
 
 export const make: Effect.Effect<
@@ -53,6 +60,7 @@ export const make: Effect.Effect<
   )
 
   return {
+    getSlackUser: flow(GetSlackUser, Effect.provide(context)),
     shareDatasetReview: flow(ShareDatasetReview, Effect.provide(context)),
     sharePreprintReview: flow(SharePreprintReview, Effect.provide(context)),
     sharePreprintReviewRequest: flow(SharePreprintReviewRequest, Effect.provide(context)),

@@ -362,13 +362,16 @@ export const MyDetailsRouter = pipe(
         getSlackUser: withEnv(
           flow(
             Keyv.getSlackUserId,
-            RTE.chainW(({ userId }) => CommunitySlack.getUserFromSlack(userId)),
+            RTE.chainTaskEitherKW(
+              EffectToFpts.toTaskEitherK(
+                ({ userId }) => Effect.mapError(CommunitySlack.getSlackUser(userId), () => 'unavailable' as const),
+                env.runtime,
+              ),
+            ),
           ),
           {
             ...env.logger,
             slackUserIdStore: env.users.slackUserIdStore,
-            slackApiToken: Redacted.value(env.slackApiConfig.apiToken),
-            fetch: env.fetch,
           },
         ),
         getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
