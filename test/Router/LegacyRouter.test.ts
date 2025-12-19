@@ -20,6 +20,7 @@ describe('LegacyRouter', () => {
     ['/10.5281/zenodo.3733767', '/preprints/doi-10.5281-zenodo.3733767'],
     ['/blog', 'https://content.prereview.org/'],
     ['/blog?articles_format=grid', 'https://content.prereview.org/'],
+    ['/clubs/hhmi-training-pilot', '/clubs/hhmi-training-program'],
     ['/coc', '/code-of-conduct'],
     ['/communities', '/clubs'],
     ['/communities?page=1', '/clubs'],

@@ -662,7 +662,7 @@ const prereview4 = {
     ],
     anonymous: 3,
   },
-  club: 'hhmi-training-pilot',
+  club: 'hhmi-training-program',
   language: 'en',
   text: html`<p>
       The SARS-CoV-2 virus has experienced tremendous selective pressure over the course of the global pandemic with

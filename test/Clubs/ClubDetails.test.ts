@@ -9,8 +9,8 @@ describe('getClubByName', () => {
   test.each([
     ['ASAPbio Cancer Biology Crowd', 'asapbio-cancer-biology'],
     ['ASAPbio Neurobiology Crowd', 'asapbio-neurobiology'],
-    ['HHMI Transparent and Accountable Peer Review Training Pilot', 'hhmi-training-pilot'],
-    ['HHMI Transparent and Accountable Peer Review Training Program', 'hhmi-training-pilot'],
+    ['HHMI Transparent and Accountable Peer Review Training Pilot', 'hhmi-training-program'],
+    ['HHMI Transparent and Accountable Peer Review Training Program', 'hhmi-training-program'],
   ])('with a club name (%s)', (name, expected) => {
     const actual = _.getClubByName(name)
 

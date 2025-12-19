@@ -387,7 +387,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Sidharth Narayanan', orcid: OrcidId('0009-0004-6361-5050') }],
     joinLink: new URL('https://forms.gle/nc75moVyEVvJBRqNA'),
   },
-  'hhmi-training-pilot': {
+  'hhmi-training-program': {
     name: 'HHMI Transparent and Accountable Peer Review Training Program',
     description: html`
       <p>
@@ -876,5 +876,5 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
 }
 
 const formerNames = {
-  'hhmi-training-pilot': ['HHMI Transparent and Accountable Peer Review Training Pilot'],
+  'hhmi-training-program': ['HHMI Transparent and Accountable Peer Review Training Pilot'],
 } satisfies Partial<Record.ReadonlyRecord<ClubId, Array.NonEmptyReadonlyArray<string>>>

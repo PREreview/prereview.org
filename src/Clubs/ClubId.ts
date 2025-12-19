@@ -23,7 +23,7 @@ export const ClubIdSchema = Schema.Literal(
   'emerge',
   'etymos-analytica',
   'force11',
-  'hhmi-training-pilot',
+  'hhmi-training-program',
   'iib-mar-del-plata',
   'intersectional-feminist',
   'jmir-publications',

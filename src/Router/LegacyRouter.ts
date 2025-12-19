@@ -80,6 +80,11 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('*', '/api', showRemovedForNowMessage),
   MakeRoute('*', '/api/*', showRemovedForNowMessage),
   MakeStaticRoute('*', '/blog', movedPermanently('https://content.prereview.org/')),
+  MakeStaticRoute(
+    '*',
+    '/clubs/hhmi-training-pilot',
+    movedPermanently(Routes.ClubProfile.href({ id: 'hhmi-training-program' })),
+  ),
   MakeStaticRoute('*', '/coc', movedPermanently(Routes.CodeOfConduct)),
   MakeStaticRoute('*', '/communities', movedPermanently(Routes.Clubs)),
   MakeRoute(
