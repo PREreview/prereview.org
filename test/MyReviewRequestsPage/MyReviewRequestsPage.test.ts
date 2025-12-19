@@ -20,6 +20,7 @@ describe('MyReviewRequestsPage', () => {
         firstRequested: fc.instant(),
         lastRequested: fc.instant(),
         preprintId: fc.indeterminatePreprintId(),
+        matchingKeywords: fc.nonEmptyArray(fc.keywordId()),
       }),
     ),
     fc.preprintTitle(),
@@ -59,6 +60,7 @@ describe('MyReviewRequestsPage', () => {
         firstRequested: fc.instant(),
         lastRequested: fc.instant(),
         preprintId: fc.indeterminatePreprintId(),
+        matchingKeywords: fc.nonEmptyArray(fc.keywordId()),
       }),
     ),
     fc

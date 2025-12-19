@@ -1,4 +1,4 @@
-import { Array, Boolean, Match, Option, Record, Schema, Struct } from 'effect'
+import { Array, Boolean, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type OrcidId, type Uuid } from '../../types/index.ts'
@@ -8,6 +8,7 @@ export interface RecentReviewRequestMatchingAPrereviewer {
   readonly firstRequested: Temporal.Instant
   readonly lastRequested: Temporal.Instant
   readonly preprintId: Preprints.IndeterminatePreprintId
+  readonly matchingKeywords: Array.NonEmptyReadonlyArray<KeywordId>
 }
 
 export interface Input {
@@ -106,13 +107,15 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
     Schema.encodeSync(Preprints.IndeterminatePreprintIdFromStringSchema)(reviewRequest.preprintId),
   )
 
-  const reviewRequestTimesByPreprintId = Record.map(
-    Record.map(reviewRequestsByPreprintId, Array.map(Struct.get('published'))),
-    reviewRequests => ({
-      firstRequested: Array.lastNonEmpty(reviewRequests),
-      lastRequested: Array.headNonEmpty(reviewRequests),
-    }),
-  )
+  const reviewRequestTimesByPreprintId = Record.map(reviewRequestsByPreprintId, reviewRequests => ({
+    firstRequested: Array.lastNonEmpty(reviewRequests).published,
+    lastRequested: Array.headNonEmpty(reviewRequests).published,
+    matchingKeywords: pipe(
+      Array.flatten(Array.map(reviewRequests, Struct.get('keywords'))),
+      Array.dedupe,
+      Array.filter(keyword => Array.contains(subscribedKeywords, keyword)),
+    ) as unknown as Array.NonEmptyReadonlyArray<KeywordId>,
+  }))
 
   const sortedPreprintIds = Array.reverse(
     Array.sortWith(
