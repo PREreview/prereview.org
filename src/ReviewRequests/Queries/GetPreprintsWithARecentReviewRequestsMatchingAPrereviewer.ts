@@ -4,15 +4,17 @@ import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type OrcidId, type Uuid } from '../../types/index.ts'
 import type { KeywordId } from '../../types/Keyword.ts'
 
+export interface RecentReviewRequestMatchingAPrereviewer {
+  readonly firstRequested: Temporal.Instant
+  readonly lastRequested: Temporal.Instant
+  readonly preprintId: Preprints.IndeterminatePreprintId
+}
+
 export interface Input {
   prereviewerId: OrcidId.OrcidId
 }
 
-export type Result = ReadonlyArray<{
-  firstRequested: Temporal.Instant
-  lastRequested: Temporal.Instant
-  preprintId: Preprints.IndeterminatePreprintId
-}>
+export type Result = ReadonlyArray<RecentReviewRequestMatchingAPrereviewer>
 
 export const createFilter = ({ prereviewerId }: Input) =>
   Events.EventFilter([
