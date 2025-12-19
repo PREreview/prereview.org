@@ -25,14 +25,18 @@ export const make: Effect.Effect<
   `
 
   const buildFilterCondition = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
-    filter.predicates && Struct.keys(filter.predicates).length > 0
-      ? sql.and([
-          sql.in('type', filter.types),
-          ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-            typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-          ),
-        ])
-      : sql.in('type', filter.types)
+    sql.or(
+      Array.map(Array.ensure(filter), filter =>
+        filter.predicates && Struct.keys(filter.predicates).length > 0
+          ? sql.and([
+              sql.in('type', filter.types),
+              ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
+              ),
+            ])
+          : sql.in('type', filter.types),
+      ),
+    )
 
   const selectEventRows = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
     pipe(
@@ -50,7 +54,13 @@ export const make: Effect.Effect<
           timestamp ASC
       `,
       Effect.andThen(
-        Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event.pipe(Schema.filter(hasTag(...filter.types)))))),
+        Schema.decodeUnknown(
+          Schema.Array(
+            EventsTable(
+              Events.Event.pipe(Schema.filter(hasTag(...Array.flatMap(Array.ensure(filter), Struct.get('types'))))),
+            ),
+          ),
+        ),
       ),
       Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),

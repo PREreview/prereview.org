@@ -1,5 +1,6 @@
 import crypto from 'crypto'
-import { ParseResult, pipe, Schema } from 'effect'
+import { Array, ParseResult, pipe, Record, Schema } from 'effect'
+import Fuse from 'fuse.js'
 // eslint-disable-next-line import/no-internal-modules
 import keywords from './data/keywords.json' with { type: 'json' }
 
@@ -26,6 +27,19 @@ export const KeywordIdFromOpenAlexUrlSchema = Schema.transformOrFail(Schema.URLF
     ),
 })
 
+export function getKeywordName(id: KeywordId): string {
+  return keywords[id].name
+}
+
 export function isKeywordId(value: string): value is KeywordId {
   return (keywordIds as ReadonlyArray<string>).includes(value)
+}
+
+const fuse = new Fuse(
+  Array.map(Record.toEntries(keywords), ([key, value]) => ({ id: key, ...value })),
+  { keys: ['name'], threshold: 0.2 },
+)
+
+export const search = (value: string) => {
+  return Array.map(fuse.search(value, { limit: 10 }), result => result.item.id)
 }

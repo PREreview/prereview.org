@@ -1,5 +1,5 @@
 import { NodeStream } from '@effect/platform-node'
-import { flow, pipe, Redacted } from 'effect'
+import { Effect, flow, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -21,6 +21,7 @@ import { sendContactEmailAddressVerificationEmail } from '../../email.ts'
 import { Cloudinary } from '../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import { withEnv } from '../../Fpts.ts'
+import { havingProblemsPage } from '../../http-error.ts'
 import * as Keyv from '../../keyv.ts'
 import {
   changeAvatar,
@@ -40,6 +41,7 @@ import {
   verifyContactEmailAddress,
 } from '../../my-details-page/index.ts'
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import type * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { SlackUserId } from '../../slack-user-id.ts'
@@ -51,7 +53,25 @@ export const MyDetailsRouter = pipe(
   [
     pipe(
       Routes.myDetailsMatch.parser,
-      P.map(() => (env: Env) => myDetails({ locale: env.locale, user: env.loggedInUser })),
+      P.map(
+        () => (env: Env) =>
+          pipe(
+            EffectToFpts.toReaderTaskEither(
+              env.featureFlags.canSubscribeToReviewRequests && env.loggedInUser
+                ? Prereviewers.getSubscribedKeywords({ prereviewerId: env.loggedInUser.orcid })
+                : Effect.succeed(undefined),
+            ),
+            RTE.matchEW(
+              () => RT.of(havingProblemsPage(env.locale)),
+              subscribedKeywords =>
+                myDetails({
+                  subscribedKeywords,
+                  locale: env.locale,
+                  user: env.loggedInUser,
+                }),
+            ),
+          ),
+      ),
     ),
     pipe(
       Routes.changeCareerStageMatch.parser,
@@ -403,6 +423,7 @@ export const MyDetailsRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         publicUrl: env.publicUrl,
+        runtime: env.runtime,
         saveAvatar: withEnv(Cloudinary.saveAvatarOnCloudinary, {
           cloudinaryApi: {
             cloudName: env.cloudinaryApiConfig.cloudName,

@@ -7,18 +7,29 @@ import { type Array, Effect, Layer, Option, type PubSub, TestClock } from 'effec
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
-import { Uuid } from '../src/types/index.ts'
+import { NonEmptyString, Uuid } from '../src/types/index.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 it.prop([
-  fc.record(
-    {
-      types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
-      predicate: fc.dictionary(fc.string(), fc.string()),
-    },
-    { requiredKeys: ['types'] },
+  fc.oneof(
+    fc.record(
+      {
+        types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+        predicate: fc.dictionary(fc.string(), fc.string()),
+      },
+      { requiredKeys: ['types'] },
+    ),
+    fc.nonEmptyArray(
+      fc.record(
+        {
+          types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+          predicate: fc.dictionary(fc.string(), fc.string()),
+        },
+        { requiredKeys: ['types'] },
+      ),
+    ),
   ),
 ])('starts empty', filter =>
   Effect.gen(function* () {
@@ -40,12 +51,23 @@ it.prop([
 describe('when the last known event is none', () => {
   it.prop([
     fc.commentEvent(),
-    fc.record(
-      {
-        types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
-        predicate: fc.dictionary(fc.string(), fc.string()),
-      },
-      { requiredKeys: ['types'] },
+    fc.oneof(
+      fc.record(
+        {
+          types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+          predicate: fc.dictionary(fc.string(), fc.string()),
+        },
+        { requiredKeys: ['types'] },
+      ),
+      fc.nonEmptyArray(
+        fc.record(
+          {
+            types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+            predicate: fc.dictionary(fc.string(), fc.string()),
+          },
+          { requiredKeys: ['types'] },
+        ),
+      ),
     ),
     fc.array(fc.datasetReviewEvent()),
   ])('appends the event', (event, filter, otherEvents) =>
@@ -125,54 +147,199 @@ describe('when the last known event is different', () => {
 })
 
 const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
+const otherCommentId = Uuid.Uuid('2b06c8ae-b1af-478e-8037-7506737e438c')
+const datasetReviewId = Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753')
+const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
 
-test.each([
+test.each<
+  [
+    string,
+    Events.EventFilter<Events.Event['_tag']>,
+    Array.NonEmptyReadonlyArray<Events.Event>,
+    ReadonlyArray<Events.Event>,
+  ]
+>([
   [
     'one type',
-    ['CodeOfConductForCommentWasAgreed'],
+    { types: ['CodeOfConductForCommentWasAgreed'] },
     [
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
     ],
-    3,
+    [
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+    ],
   ],
   [
     'multiple types',
-    ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
+    { types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'] },
     [
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
       new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
     ],
-    3,
+    [
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+    ],
   ],
   [
     'other types',
-    ['CodeOfConductForCommentWasAgreed'],
+    { types: ['CodeOfConductForCommentWasAgreed'] },
     [
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
       new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
       new Events.CodeOfConductForCommentWasAgreed({ commentId }),
     ],
-    2,
+    [
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+    ],
   ],
-] as Array.NonEmptyReadonlyArray<
   [
-    string,
-    Array.NonEmptyReadonlyArray<Events.CommentEvent['_tag']>,
-    Array.NonEmptyReadonlyArray<Events.CommentEvent>,
-    number,
-  ]
->)('find events of a certain type (%s)', (_name, types, events, expectedLength) =>
+    'one type and predicate',
+    {
+      types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
+      predicates: { commentId },
+    },
+    [
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId: otherCommentId }),
+    ],
+    [
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+    ],
+  ],
+  [
+    'two types and two predicates',
+    {
+      types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+      predicates: { datasetReviewId, answer: 'yes' },
+    },
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'no',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+    ],
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+    ],
+  ],
+  [
+    'multiple filters',
+    [
+      {
+        types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+        predicates: { datasetReviewId, answer: 'yes' },
+      },
+      {
+        types: ['AnsweredIfTheDatasetHasEnoughMetadata'],
+        predicates: { datasetReviewId, answer: 'partly' },
+      },
+    ],
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'no',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasTrackedChanges({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId: otherDatasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+    ],
+    [
+      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.none(),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+        datasetReviewId,
+        answer: 'yes',
+        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+      }),
+      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+    ],
+  ],
+])('find events (%s)', (_name, filter, events, expected) =>
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
     yield* Effect.forEach(events, event => eventStore.append(event))
 
-    const { events: actual } = yield* eventStore.query({ types })
+    const { events: actual } = yield* eventStore.query(filter)
 
-    expect(actual).toHaveLength(expectedLength)
+    expect(actual).toStrictEqual(expected)
   }).pipe(
     Effect.provide(Uuid.layer),
     Effect.provide(Layer.mock(Events.Events, {} as never)),

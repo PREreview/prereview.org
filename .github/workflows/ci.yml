@@ -38,7 +38,7 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Set up assets cache'
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v5.0.1
         if: ${{ !env.ACT }}
         with:
           path: .cache/webpack
@@ -46,7 +46,7 @@ jobs:
           restore-keys: webpack-
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales-assets
           path: assets/locales
@@ -55,13 +55,13 @@ jobs:
         run: npm run build:assets
 
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: assets
           path: dist/assets
 
       - name: 'Upload manifest'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: manifest
           path: src/manifest.json
@@ -91,13 +91,13 @@ jobs:
         run: scripts/intlc.sh
 
       - name: 'Upload locales'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: locales
           path: src/locales
 
       - name: 'Upload assets locales'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: locales-assets
           path: assets/locales
@@ -126,7 +126,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: image
           path: /tmp/image.tar
@@ -195,19 +195,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales-assets
           path: assets/locales
@@ -241,13 +241,13 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales
           path: src/locales
@@ -281,19 +281,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales
           path: src/locales
@@ -304,7 +304,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -332,7 +332,7 @@ jobs:
         uses: actions/checkout@v6.0.1
 
       - name: 'Download image'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: image
           path: /tmp
@@ -369,19 +369,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales
           path: src/locales
@@ -394,7 +394,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: visual-regression-tests-results-${{ matrix.shard }}
           path: integration-results
@@ -421,19 +421,19 @@ jobs:
         run: npm ci --engine-strict --ignore-scripts
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: locales-assets
           path: assets/locales
@@ -469,7 +469,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 'Download image'
-        uses: actions/download-artifact@v6.0.0
+        uses: actions/download-artifact@v7.0.0
         with:
           name: image
           path: /tmp

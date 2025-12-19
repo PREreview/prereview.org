@@ -18,10 +18,15 @@ export const Event = Schema.Union(
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
 )
 
-export interface EventFilter<T extends Event['_tag']> {
-  types: Array.NonEmptyReadonlyArray<T>
-  predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
-}
+export type EventFilter<T extends Event['_tag']> =
+  | {
+      types: Array.NonEmptyReadonlyArray<T>
+      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+    }
+  | Array.NonEmptyReadonlyArray<{
+      types: Array.NonEmptyReadonlyArray<T>
+      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+    }>
 
 export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
 
@@ -30,13 +35,14 @@ export const matches: {
   <T extends Event['_tag']>(filter: EventFilter<T>): (event: Event) => event is Extract<Event, { _tag: T }>
 } = Function.dual(
   2,
-  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }> => {
-    if (!Array.contains(filter.types, event._tag)) {
-      return false
-    }
+  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }> =>
+    Array.some(Array.ensure(filter), filter => {
+      if (!Array.contains(filter.types, event._tag)) {
+        return false
+      }
 
-    return Record.isSubrecord(filter.predicates ?? Record.empty(), event as never)
-  },
+      return Record.isSubrecord(filter.predicates ?? Record.empty(), event as never)
+    }),
 )
 
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))

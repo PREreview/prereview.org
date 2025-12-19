@@ -39,6 +39,7 @@ import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Preprints from './Preprints/index.ts'
+import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import { DataStoreRedis } from './Redis.ts'
@@ -344,6 +345,7 @@ export const Program = pipe(
   ),
   Layer.provide(
     Layer.mergeAll(
+      Prereviewers.layer,
       Personas.layer,
       Datasets.layer,
       Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
