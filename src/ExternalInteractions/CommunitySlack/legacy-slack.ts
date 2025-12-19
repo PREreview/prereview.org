@@ -8,11 +8,8 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as L from 'logger-fp-ts'
 import { match, P } from 'ts-pattern'
-import { URL } from 'url'
 import * as StatusCodes from '../../StatusCodes.ts'
-import { timeoutRequest } from '../../fetch.ts'
 import type { SlackUserId } from '../../slack-user-id.ts'
-import type { SlackUser } from '../../slack-user.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
 import { type OrcidId, toUrl } from '../../types/OrcidId.ts'
 
@@ -32,16 +29,6 @@ const JsonD = {
     ),
 }
 
-const UrlD = pipe(
-  D.string,
-  D.parse(s =>
-    E.tryCatch(
-      () => new URL(s),
-      () => D.error(s, 'URL'),
-    ),
-  ),
-)
-
 const SlackErrorD = pipe(
   JsonD,
   D.compose(
@@ -60,44 +47,6 @@ const SlackSuccessD = pipe(
     }),
   ),
 )
-
-const SlackProfileD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      ok: D.literal(true),
-      profile: D.struct({
-        real_name: NonEmptyStringC,
-        image_48: UrlD,
-      }),
-    }),
-  ),
-)
-
-export const getUserFromSlack = (slackId: string) =>
-  pipe(
-    `https://slack.com/api/users.profile.get?user=${slackId}`,
-    F.Request('GET'),
-    RTE.fromReaderK(addSlackApiHeaders),
-    RTE.chainW(F.send),
-    RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), () => 'non-200-response' as const),
-    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackProfileD, SlackErrorD))), TE.mapLeft(D.draw))),
-    RTE.local(timeoutRequest(2000)),
-    RTE.chainEitherKW(response =>
-      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
-    ),
-    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get profile from Slack')))),
-    RTE.bimap(
-      () => 'unavailable' as const,
-      ({ profile }) =>
-        ({
-          name: profile.real_name,
-          image: profile.image_48,
-          profile: new URL(`https://prereviewcommunity.slack.com/team/${slackId}`),
-        }) satisfies SlackUser,
-    ),
-  )
 
 export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: OrcidId) =>
   pipe(
