@@ -12,11 +12,8 @@ import * as StatusCodes from '../StatusCodes.ts'
 import { removedForNowPage } from './RemovedForNowPage.ts'
 import { removedPermanentlyPage } from './RemovedPermanentlyPage.ts'
 
-const MakeRoute = <E, R>(path: `/${string}`, handler: Effect.Effect<Response.Response, E, R>) =>
-  HttpRouter.makeRoute('*', path, Effect.andThen(handler, Response.toHttpServerResponse))
-
-const MakeStaticRoute = (path: `/${string}`, response: Response.Response) =>
-  HttpRouter.makeRoute('*', path, Response.toHttpServerResponse(response))
+const MakeRoute = <E, R>(path: `/${string}`, response: Effect.Effect<Response.Response, E, R>) =>
+  HttpRouter.makeRoute('*', path, Effect.andThen(response, Response.toHttpServerResponse))
 
 const showRemovedPermanentlyMessage = Effect.andThen(Locale, removedPermanentlyPage)
 
@@ -74,13 +71,10 @@ export const LegacyRouter = HttpRouter.fromIterable([
   MakeRoute('/admin', showRemovedForNowMessage),
   MakeRoute('/api', showRemovedForNowMessage),
   MakeRoute('/api/*', showRemovedForNowMessage),
-  MakeStaticRoute('/blog', movedPermanently('https://content.prereview.org/')),
-  MakeStaticRoute(
-    '/clubs/hhmi-training-pilot',
-    movedPermanently(Routes.ClubProfile.href({ id: 'hhmi-training-program' })),
-  ),
-  MakeStaticRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
-  MakeStaticRoute('/communities', movedPermanently(Routes.Clubs)),
+  MakeRoute('/blog', movedPermanently('https://content.prereview.org/')),
+  MakeRoute('/clubs/hhmi-training-pilot', movedPermanently(Routes.ClubProfile.href({ id: 'hhmi-training-program' }))),
+  MakeRoute('/coc', movedPermanently(Routes.CodeOfConduct)),
+  MakeRoute('/communities', movedPermanently(Routes.Clubs)),
   MakeRoute(
     '/communities/:communityName',
     Effect.andThen(
@@ -101,21 +95,21 @@ export const LegacyRouter = HttpRouter.fromIterable([
   ),
   MakeRoute('/dashboard', showRemovedPermanentlyMessage),
   MakeRoute('/dashboard/new', showRemovedPermanentlyMessage),
-  MakeStaticRoute('/docs/about', movedPermanently(Routes.AboutUs)),
-  MakeStaticRoute('/docs/codeofconduct', movedPermanently(Routes.CodeOfConduct)),
-  MakeStaticRoute('/docs/code_of_conduct', movedPermanently(Routes.CodeOfConduct)),
-  MakeStaticRoute('/docs/resources', movedPermanently(Routes.Resources)),
-  MakeStaticRoute('/edi-statement', movedPermanently(Routes.EdiaStatement)),
-  MakeStaticRoute('/edia', movedPermanently(Routes.EdiaStatement)),
+  MakeRoute('/docs/about', movedPermanently(Routes.AboutUs)),
+  MakeRoute('/docs/codeofconduct', movedPermanently(Routes.CodeOfConduct)),
+  MakeRoute('/docs/code_of_conduct', movedPermanently(Routes.CodeOfConduct)),
+  MakeRoute('/docs/resources', movedPermanently(Routes.Resources)),
+  MakeRoute('/edi-statement', movedPermanently(Routes.EdiaStatement)),
+  MakeRoute('/edia', movedPermanently(Routes.EdiaStatement)),
   MakeRoute(
     '/events/:eventUuid',
     Effect.andThen(HttpRouter.schemaParams(Schema.Struct({ eventUuid: Schema.UUID })), showRemovedForNowMessage),
   ),
   MakeRoute('/extension', showRemovedPermanentlyMessage),
-  MakeStaticRoute('/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
-  MakeStaticRoute('/login', movedPermanently(Routes.LogIn)),
-  MakeStaticRoute('/logout', movedPermanently(Routes.LogOut)),
-  MakeStaticRoute('/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
+  MakeRoute('/find-a-preprint', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
+  MakeRoute('/login', movedPermanently(Routes.LogIn)),
+  MakeRoute('/logout', movedPermanently(Routes.LogOut)),
+  MakeRoute('/preprint-journal-clubs', movedPermanently(Routes.LiveReviews)),
   MakeRoute(
     '/preprints/arxiv-:id',
     pipe(
@@ -136,16 +130,16 @@ export const LegacyRouter = HttpRouter.fromIterable([
       Effect.andThen(({ id }) => movedPermanently(format(Routes.writeReviewReviewTypeMatch.formatter, { id }))),
     ),
   ),
-  MakeStaticRoute('/prereview.org', movedPermanently(Routes.HomePage)),
+  MakeRoute('/prereview.org', movedPermanently(Routes.HomePage)),
   MakeRoute('/prereviewers', showRemovedForNowMessage),
-  MakeStaticRoute('/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
+  MakeRoute('/reviews/new', movedPermanently(format(Routes.reviewAPreprintMatch.formatter, {}))),
   MakeRoute('/settings/api', showRemovedForNowMessage),
   MakeRoute('/settings/drafts', showRemovedForNowMessage),
-  MakeStaticRoute('/signup', movedPermanently(Routes.LogIn)),
-  MakeStaticRoute('/)', movedPermanently(Routes.HomePage)),
-  MakeStaticRoute('/),', movedPermanently(Routes.HomePage)),
+  MakeRoute('/signup', movedPermanently(Routes.LogIn)),
+  MakeRoute('/)', movedPermanently(Routes.HomePage)),
+  MakeRoute('/),', movedPermanently(Routes.HomePage)),
 ])
 
 function movedPermanently(location: string) {
-  return RedirectResponse({ location, status: StatusCodes.MovedPermanently })
+  return Effect.succeed(RedirectResponse({ location, status: StatusCodes.MovedPermanently }))
 }
