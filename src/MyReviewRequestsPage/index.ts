@@ -27,6 +27,7 @@ const ResultToReviewRequest: (
 > = (result: ReviewRequests.RecentReviewRequestMatchingAPrereviewer) =>
   pipe(
     Effect.Do,
+    Effect.let('matchingKeywords', () => result.matchingKeywords),
     Effect.let('published', () => result.lastRequested.toZonedDateTimeISO('UTC').toPlainDate()),
     Effect.bind('preprint', () => Preprints.getPreprintTitle(result.preprintId)),
   )

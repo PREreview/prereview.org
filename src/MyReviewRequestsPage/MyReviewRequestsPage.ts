@@ -11,8 +11,10 @@ import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { renderDate } from '../time.ts'
 import type { Temporal } from '../types/index.ts'
+import { getKeywordName, type KeywordId } from '../types/Keyword.ts'
 
 export interface ReviewRequest {
+  readonly matchingKeywords: Array.NonEmptyReadonlyArray<KeywordId>
   readonly published: Temporal.PlainDate
   readonly preprint: {
     readonly id: Preprints.PreprintId
@@ -55,6 +57,13 @@ export const MyReviewRequestsPage = (reviewRequests: ReadonlyArray<ReviewRequest
                           >${request.preprint.title}</cite
                         >
                       </a>
+
+                      <ul class="categories">
+                        ${Array.map(
+                          request.matchingKeywords,
+                          keyword => html`<li><span>${getKeywordName(keyword)}</span></li>`,
+                        )}
+                      </ul>
 
                       <dl>
                         <dt>Request published</dt>
