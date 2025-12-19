@@ -50,6 +50,7 @@ import * as Personas from '../../Personas/index.ts'
 import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { PrereviewCoarNotifyConfig } from '../../prereview-coar-notify/index.ts'
+import type * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import { profile } from '../../profile-page/index.ts'
 import { PublicUrl } from '../../public-url.ts'
@@ -223,6 +224,7 @@ export interface Env {
     | Personas.Personas
     | Preprints.Preprints
     | PrereviewCoarNotifyConfig
+    | Prereviewers.PrereviewerQueries
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
     | WorkflowEngine.WorkflowEngine
