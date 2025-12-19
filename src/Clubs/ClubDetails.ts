@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Equal, flow, type Option, pipe, type Record, Struct } from 'effect'
+import { Array, Equal, flow, Option, pipe, Record, Struct, Tuple } from 'effect'
 import { type Html, html } from '../html.ts'
 import { EmailAddress } from '../types/EmailAddress.ts'
 import { OrcidId, OrcidIdEquivalence } from '../types/OrcidId.ts'
@@ -21,10 +21,16 @@ export const getClubName = (id: ClubId) => clubs[id].name
 export const getClubAddedDate = (id: ClubId) => clubs[id].added
 
 export const getClubByName = (name: string): Option.Option<ClubId> =>
+  Option.orElse(getClubByCurrentName(name), () => getClubByFormerName(name))
+
+const getClubByCurrentName = (name: string): Option.Option<ClubId> =>
   pipe(
     Struct.keys(clubs),
     Array.findFirst(id => Equal.equals(clubs[id].name, name)),
   )
+
+const getClubByFormerName = (name: string): Option.Option<ClubId> =>
+  pipe(Record.findFirst(formerNames, Array.contains(name)), Option.andThen(Tuple.getFirst))
 
 export const isLeadFor = (orcid: OrcidId): ReadonlyArray<ClubId> =>
   pipe(
@@ -867,3 +873,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     contact: EmailAddress('mauricio.contreras@zmbp.uni-tuebingen.de'),
   },
 }
+
+const formerNames = {
+  'hhmi-training-pilot': ['HHMI Transparent and Accountable Peer Review Training Pilot'],
+} satisfies Partial<Record.ReadonlyRecord<ClubId, Array.NonEmptyReadonlyArray<string>>>
