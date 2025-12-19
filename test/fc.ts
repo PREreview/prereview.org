@@ -621,6 +621,7 @@ export const openAlexWork = ({
 }: { topics?: fc.Arbitrary<OpenAlex.Work['topics']> } = {}): fc.Arbitrary<OpenAlex.Work> =>
   fc.record(
     {
+      title: fc.string(),
       language: languageCode(),
       keywords: fc.array(
         fc.record({

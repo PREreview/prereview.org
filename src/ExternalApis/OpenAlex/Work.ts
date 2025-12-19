@@ -4,6 +4,7 @@ import { Iso639 } from '../../types/index.ts'
 export type Work = typeof WorkSchema.Type
 
 export const WorkSchema = Schema.Struct({
+  title: Schema.String,
   language: Schema.requiredToOptional(Schema.NullOr(Schema.String), Iso639.Iso6391Schema, {
     decode: Option.fromNullable,
     encode: Option.getOrNull,
