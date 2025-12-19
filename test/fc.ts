@@ -12,7 +12,7 @@ import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
-import { Array, DateTime, Duration, Either, HashSet, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
+import { Array, DateTime, Duration, Either, HashSet, Number, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import fs from 'fs'
@@ -1417,7 +1417,10 @@ export const plainDateTime = (): fc.Arbitrary<Temporal.PlainDateTime> =>
   fc.tuple(plainDate(), plainTime()).map(([plainDate, plainTime]) => plainDate.toPlainDateTime(plainTime))
 
 export const instant = (): fc.Arbitrary<Temporal.Instant> =>
-  fc.date().map(date => Temporal.Instant.from(date.toISOString()))
+  fc
+    .date()
+    .filter(date => Number.between(date.getUTCFullYear(), { minimum: -271820, maximum: 275759 }))
+    .map(date => Temporal.Instant.from(date.toISOString()))
 
 export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.origin))
 
