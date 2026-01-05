@@ -1,5 +1,5 @@
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import { globSync } from 'glob'
+import { globSync } from 'fs'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import path from 'path'
@@ -33,10 +33,10 @@ export default (env, argv) => ({
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     'skip-link': path.resolve('assets', 'skip-link.ts'),
     style: path.resolve('assets', 'style.css'),
-    ...globSync(`assets/{illustrations,logos}/**/*.{png,svg}`, { absolute: true, nodir: true }).reduce(
+    ...globSync(`assets/{illustrations,logos}/**/*.{png,svg}`).reduce(
       (files, file) => ({
         ...files,
-        [path.basename(file)]: file,
+        [path.basename(file)]: path.resolve(__dirname, file),
       }),
       {},
     ),
@@ -141,7 +141,7 @@ export default (env, argv) => ({
       filename: '[name].[contenthash].css',
     }),
     new PurgeCSSPlugin({
-      paths: [...globSync(`assets/**/*.ts`, { nodir: true }), ...globSync(`src/**/*`, { nodir: true })],
+      paths: [...globSync(`assets/**/*.ts`), ...globSync(`src/**/*.ts`)],
       safelist: ['contenteditable', /^crowdin_/, /^:/],
       variables: true,
     }),
