@@ -65,7 +65,7 @@
     "@ibm/plex": "^6.4.1",
     "@playwright/test": "^1.56.1",
     "@prettier/plugin-xml": "^3.4.2",
-    "@swc/core": "^1.15.5",
+    "@swc/core": "^1.15.8",
     "@swc/jest": "^0.2.39",
     "@tiptap/core": "^3.10.1",
     "@tiptap/extension-subscript": "^3.10.1",
