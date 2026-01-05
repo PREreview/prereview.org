@@ -62,26 +62,29 @@ export class DatasetReviewDoesNotHaveAZenodoRecord extends Data.TaggedError('Dat
   cause?: unknown
 }> {}
 
-export class FailedToCreateRecordOnZenodo extends Schema.TaggedError<FailedToCreateRecordOnZenodo>(
+export class FailedToCreateRecordOnZenodo extends Schema.TaggedError<FailedToCreateRecordOnZenodo>()(
   'FailedToCreateRecordOnZenodo',
-)('FailedToCreateRecordOnZenodo', { cause: Schema.optional(Schema.Unknown) }) {}
-
-export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>(
-  'FailedToNotifyCommunitySlack',
-)('FailedToNotifyCommunitySlack', { cause: Schema.optional(Schema.Unknown) }) {}
-
-export class FailedToPublishRecordOnZenodo extends Schema.TaggedError<FailedToPublishRecordOnZenodo>(
-  'FailedToPublishRecordOnZenodo',
-)('FailedToPublishRecordOnZenodo', { cause: Schema.optional(Schema.Unknown) }) {}
-
-export class FailedToUseZenodoDoi extends Schema.TaggedError<FailedToUseZenodoDoi>('FailedToUseZenodoDoi')(
-  'FailedToUseZenodoDoi',
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
-export class FailedToMarkDatasetReviewAsPublished extends Schema.TaggedError<FailedToMarkDatasetReviewAsPublished>(
+export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>()(
+  'FailedToNotifyCommunitySlack',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
+export class FailedToPublishRecordOnZenodo extends Schema.TaggedError<FailedToPublishRecordOnZenodo>()(
+  'FailedToPublishRecordOnZenodo',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
+export class FailedToUseZenodoDoi extends Schema.TaggedError<FailedToUseZenodoDoi>()('FailedToUseZenodoDoi', {
+  cause: Schema.optional(Schema.Unknown),
+}) {}
+
+export class FailedToMarkDatasetReviewAsPublished extends Schema.TaggedError<FailedToMarkDatasetReviewAsPublished>()(
   'FailedToMarkDatasetReviewAsPublished',
-)('FailedToMarkDatasetReviewAsPublished', { cause: Schema.optional(Schema.Unknown) }) {}
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
