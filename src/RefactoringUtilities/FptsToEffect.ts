@@ -1,12 +1,12 @@
 import { type Array, Effect, Either, type Equivalence, flow, identity, Option } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import type { Eq } from 'fp-ts/lib/Eq.js' // eslint-disable-line import/no-internal-modules
+import type { Eq } from 'fp-ts/lib/Eq.js'
 import type * as IO from 'fp-ts/lib/IO.js'
-import * as O from 'fp-ts/lib/Option.js' // eslint-disable-line import/no-internal-modules
+import * as O from 'fp-ts/lib/Option.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js' // eslint-disable-line import/no-internal-modules
+import type * as RNEA from 'fp-ts/lib/ReadonlyNonEmptyArray.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 

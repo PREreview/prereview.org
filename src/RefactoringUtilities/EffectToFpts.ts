@@ -1,8 +1,8 @@
 import { Effect, Either, type Equivalence, type Order, pipe, Runtime } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
-import * as Eq from 'fp-ts/lib/Eq.js' // eslint-disable-line import/no-internal-modules
+import * as Eq from 'fp-ts/lib/Eq.js'
 import type * as IO from 'fp-ts/lib/IO.js'
-import * as Ord from 'fp-ts/lib/Ord.js' // eslint-disable-line import/no-internal-modules
+import * as Ord from 'fp-ts/lib/Ord.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'

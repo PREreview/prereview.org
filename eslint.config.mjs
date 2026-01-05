@@ -104,6 +104,12 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/RefactoringUtilities/**/*.ts'],
+    rules: {
+      'import/no-internal-modules': ['error', { allow: ['fp-ts/lib/*', 'io-ts/lib/*'] }],
+    },
+  },
+  {
     files: ['**/*.test.ts'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
