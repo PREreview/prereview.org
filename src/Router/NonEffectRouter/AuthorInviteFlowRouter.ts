@@ -14,12 +14,12 @@ import {
   authorInviteStart,
   authorInviteVerifyEmailAddress,
 } from '../../author-invite-flow/index.ts'
-import * as EffectToFpts from '../../EffectToFpts.ts'
 import { createContactEmailAddressVerificationEmailForInvitedAuthor, sendEmail } from '../../email.ts'
 import { withEnv } from '../../Fpts.ts'
 import * as Keyv from '../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../nodemailer.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import type * as Response from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { Uuid } from '../../types/index.ts'

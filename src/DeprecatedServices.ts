@@ -1,6 +1,6 @@
 import { DateTime, Effect, LogLevel, Match, pipe, String } from 'effect'
 import type * as L from 'logger-fp-ts'
-import * as EffectToFpts from './EffectToFpts.ts'
+import { EffectToFpts } from './RefactoringUtilities/index.ts'
 
 const toLogLevel = pipe(
   Match.type<L.LogLevel>(),

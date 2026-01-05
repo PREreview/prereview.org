@@ -36,7 +36,6 @@ import {
 } from 'zenodo-ts'
 import { type ClubId, getClubByName, getClubNameAndFormerNames } from './Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
-import * as FptsToEffect from './FptsToEffect.ts'
 import { type Html, plainText, sanitizeHtml } from './html.ts'
 import {
   type GetPreprintEnv,
@@ -56,6 +55,7 @@ import {
   fromPreprintDoi,
   fromUrl,
 } from './Preprints/index.ts'
+import { FptsToEffect } from './RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as Prereview from './Prereviews/Prereview.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'

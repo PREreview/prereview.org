@@ -1,6 +1,6 @@
 import { type Equivalence, ParseResult, pipe, Schema } from 'effect'
 import * as OrcidId from 'orcid-id-ts'
-import * as FptsToEffect from '../FptsToEffect.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { isOrcid as isOrcidId, Orcid as OrcidId, toUrl } from 'orcid-id-ts'
 

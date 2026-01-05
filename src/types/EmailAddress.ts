@@ -2,7 +2,7 @@ import { isEmailValid } from '@hapi/address'
 import { Either, Schema, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as EffectToFpts from '../EffectToFpts.ts'
+import { EffectToFpts } from '../RefactoringUtilities/index.ts'
 
 const EmailAddressBrand: unique symbol = Symbol.for('EmailAddress')
 

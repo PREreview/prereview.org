@@ -5,9 +5,7 @@ import type { ClubId } from '../Clubs/index.ts'
 import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
-import * as EffectToFpts from '../EffectToFpts.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
-import * as FptsToEffect from '../FptsToEffect.ts'
 import {
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
@@ -17,6 +15,7 @@ import * as Personas from '../Personas/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { PublicUrl } from '../public-url.ts'
+import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { FieldId } from '../types/field.ts'
 import type { Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'

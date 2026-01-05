@@ -1,6 +1,6 @@
 import * as Doi from 'doi-ts'
 import { Either, type Equivalence, ParseResult, pipe, Schema } from 'effect'
-import * as FptsToEffect from '../FptsToEffect.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { Doi, hasRegistrant, isDoi, toUrl } from 'doi-ts'
 

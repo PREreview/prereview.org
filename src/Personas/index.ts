@@ -1,7 +1,7 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Context, Data, Effect, Layer, Match, pipe, Redacted, Scope } from 'effect'
 import { Orcid } from '../ExternalApis/index.ts'
-import * as FptsToEffect from '../FptsToEffect.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.ts'
 import type { OrcidId } from '../types/index.ts'
 import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.ts'
