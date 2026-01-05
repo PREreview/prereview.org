@@ -23,11 +23,10 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack, OpenAlexWorks } from './ExternalInteractions/index.ts'
+import { CommunitySlack, GhostPage, OpenAlexWorks } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as FptsToEffect from './FptsToEffect.ts'
-import * as GhostPage from './GhostPage/index.ts'
 import { html } from './html.ts'
 import * as Inbox from './Inbox/index.ts'
 import * as Keyv from './keyv.ts'

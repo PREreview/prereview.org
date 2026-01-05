@@ -3,7 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
 import * as _ from '../../src/AboutUsPage/index.ts'
 import { Locale } from '../../src/Context.ts'
-import { GetPageFromGhost, PageIsUnavailable } from '../../src/GhostPage/index.ts'
+import { GhostPage } from '../../src/ExternalInteractions/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as EffectTest from '../EffectTest.ts'
@@ -26,7 +26,7 @@ describe('AboutUsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GetPageFromGhost, () => Effect.succeed(page)),
+      Effect.provideService(GhostPage.GetPageFromGhost, () => Effect.succeed(page)),
       EffectTest.run,
     ),
   )
@@ -45,7 +45,7 @@ describe('AboutUsPage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GetPageFromGhost, () => new PageIsUnavailable()),
+      Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
       EffectTest.run,
     ),
   )

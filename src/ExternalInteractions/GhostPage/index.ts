@@ -1,8 +1,8 @@
 import { Context, Data, Effect, flow, identity, Layer, Scope } from 'effect'
-import type { Locale } from '../Context.ts'
-import type { Ghost } from '../ExternalApis/index.ts'
-import type { Html } from '../html.ts'
-import type { SupportedLocale } from '../locales/index.ts'
+import type { Locale } from '../../Context.ts'
+import type { Ghost } from '../../ExternalApis/index.ts'
+import type { Html } from '../../html.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import { getPage } from './GetPage.ts'
 import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.ts'
 

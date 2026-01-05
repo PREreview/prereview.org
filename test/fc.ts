@@ -40,8 +40,7 @@ import * as Datasets from '../src/Datasets/index.ts'
 import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
 import { type CoarNotify, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
-import type { CommunitySlack } from '../src/ExternalInteractions/index.ts'
-import type { GhostPage } from '../src/GhostPage/index.ts'
+import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
 import type { Languages } from '../src/languages.ts'
@@ -1544,7 +1543,7 @@ export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...IS
 
 export const orcidLocale = (): fc.Arbitrary<OrcidLocale.OrcidLocale> => constantFrom(...OrcidLocale.OrcidLocales)
 
-export const ghostPage = (): fc.Arbitrary<GhostPage> =>
+export const ghostPage = (): fc.Arbitrary<GhostPage.GhostPage> =>
   fc.record({
     html: html(),
     locale: supportedLocale(),

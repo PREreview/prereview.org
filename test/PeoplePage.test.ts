@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
 import { Locale } from '../src/Context.ts'
-import { GetPageFromGhost, PageIsUnavailable } from '../src/GhostPage/index.ts'
+import { GhostPage } from '../src/ExternalInteractions/index.ts'
 import * as _ from '../src/PeoplePage.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import * as EffectTest from './EffectTest.ts'
@@ -23,7 +23,7 @@ describe('PeoplePage', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(GetPageFromGhost, () => new PageIsUnavailable()),
+      Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
       EffectTest.run,
     ),
   )

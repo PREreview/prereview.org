@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import rtlDetect from 'rtl-detect'
 import { Locale } from './Context.ts'
-import * as GhostPage from './GhostPage/index.ts'
+import { GhostPage } from './ExternalInteractions/index.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 import { fixHeadingLevels, html, plainText } from './html.ts'
 import { translate, type SupportedLocale } from './locales/index.ts'
