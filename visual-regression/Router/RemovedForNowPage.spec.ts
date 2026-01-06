@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { removedForNowPage } from '../../src/Router/RemovedForNowPage.ts'
+import { removedForNowPage } from '../../src/WebApp/Router/RemovedForNowPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

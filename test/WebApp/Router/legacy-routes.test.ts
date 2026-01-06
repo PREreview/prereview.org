@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { Option, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as _ from '../../src/Router/NonEffectRouter/legacy-routes.ts'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import { preprintReviewsMatch, profileMatch } from '../../src/routes.ts'
-import * as fc from '../fc.ts'
-import { shouldNotBeCalled } from '../should-not-be-called.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as _ from '../../../src/WebApp/Router/NonEffectRouter/legacy-routes.ts'
+import { preprintReviewsMatch, profileMatch } from '../../../src/routes.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('legacyRoutes', () => {
   describe("with an '/about/{uuid}' path", () => {

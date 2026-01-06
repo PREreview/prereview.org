@@ -13,15 +13,20 @@ import {
   connectOrcidError,
   connectOrcidStart,
   disconnectOrcid,
-} from '../../connect-orcid/index.ts'
-import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
-import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
-import { sendContactEmailAddressVerificationEmail } from '../../email.ts'
-import { Cloudinary } from '../../ExternalApis/index.ts'
-import { CommunitySlack } from '../../ExternalInteractions/index.ts'
-import { withEnv } from '../../Fpts.ts'
-import { havingProblemsPage } from '../../http-error.ts'
-import * as Keyv from '../../keyv.ts'
+} from '../../../connect-orcid/index.ts'
+import {
+  connectSlack,
+  connectSlackCode,
+  connectSlackError,
+  connectSlackStart,
+} from '../../../connect-slack-page/index.ts'
+import { disconnectSlack } from '../../../disconnect-slack-page/index.ts'
+import { sendContactEmailAddressVerificationEmail } from '../../../email.ts'
+import { Cloudinary } from '../../../ExternalApis/index.ts'
+import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
+import { withEnv } from '../../../Fpts.ts'
+import { havingProblemsPage } from '../../../http-error.ts'
+import * as Keyv from '../../../keyv.ts'
 import {
   changeAvatar,
   changeCareerStage,
@@ -38,15 +43,15 @@ import {
   myDetails,
   removeAvatar,
   verifyContactEmailAddress,
-} from '../../my-details-page/index.ts'
-import { sendEmailWithNodemailer } from '../../nodemailer.ts'
-import * as Prereviewers from '../../Prereviewers/index.ts'
-import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
-import type * as Response from '../../Response/index.ts'
-import * as Routes from '../../routes.ts'
-import type { SlackUserId } from '../../slack-user-id.ts'
-import { Uuid } from '../../types/index.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
+} from '../../../my-details-page/index.ts'
+import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
+import type * as Response from '../../../Response/index.ts'
+import * as Routes from '../../../routes.ts'
+import type { SlackUserId } from '../../../slack-user-id.ts'
+import { Uuid } from '../../../types/index.ts'
+import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(
