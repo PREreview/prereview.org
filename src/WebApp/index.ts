@@ -1,10 +1,10 @@
 import { FileSystem, HttpServer, Multipart } from '@effect/platform'
 import { flow, Layer, Option, pipe } from 'effect'
-import * as HttpMiddleware from './HttpMiddleware/index.ts'
-import { Router } from './Router/index.ts'
-import * as TemplatePage from './TemplatePage.ts'
+import * as HttpMiddleware from '../HttpMiddleware/index.ts'
+import { Router } from '../Router/index.ts'
+import * as TemplatePage from '../TemplatePage.ts'
 
-export const WebApp = pipe(
+export const layer = pipe(
   Router,
   Multipart.withMaxFileSize(Option.some(FileSystem.MiB(5))),
   HttpMiddleware.removeLocaleFromPathForRouting,

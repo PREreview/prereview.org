@@ -47,7 +47,7 @@ import * as ReviewPage from './review-page/index.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import { Uuid } from './types/index.ts'
-import { WebApp } from './WebApp.ts'
+import * as WebApp from './WebApp/index.ts'
 import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
 import * as ZenodoInteractions from './Zenodo/index.ts'
 
@@ -330,7 +330,7 @@ const setUpFetch = Layer.effect(
 
 export const Program = pipe(
   Layer.mergeAll(
-    WebApp,
+    WebApp.layer,
     DatasetReviews.reactionsWorker,
     ReviewRequests.reactionsWorker,
     Comments.ReactToCommentEvents,
