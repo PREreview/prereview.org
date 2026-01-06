@@ -1,6 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
-import { ChooseLocalePage } from '../../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../../ClubProfilePage/index.ts'
 import { ClubsPage } from '../../ClubsPage.ts'
 import { CodeOfConductPage } from '../../CodeOfConductPage.ts'
@@ -34,6 +33,7 @@ import { SubscribeToKeywordsPage, SubscribeToKeywordsSubmission } from '../../Su
 import { TrainingsPage } from '../../TrainingsPage.ts'
 import * as WriteCommentFlow from '../../WriteCommentFlow/index.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
+import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
 import { nonEffectRouter } from './NonEffectRouter/index.ts'
 

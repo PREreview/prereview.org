@@ -1,4 +1,4 @@
-import { createChooseLocalePage } from '../../src/ChooseLocalePage/ChooseLocalePage.ts'
+import { createChooseLocalePage } from '../../src/WebApp/ChooseLocalePage/ChooseLocalePage.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 
