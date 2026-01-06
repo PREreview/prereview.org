@@ -1,4 +1,4 @@
-import { connectOrcidPage } from '../../src/connect-orcid/connect-orcid-page.ts'
+import { connectOrcidPage } from '../../src/WebApp/connect-orcid/connect-orcid-page.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 

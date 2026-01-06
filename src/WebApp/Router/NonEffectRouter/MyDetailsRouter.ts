@@ -8,13 +8,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import {
-  connectOrcid,
-  connectOrcidCode,
-  connectOrcidError,
-  connectOrcidStart,
-  disconnectOrcid,
-} from '../../../connect-orcid/index.ts'
-import {
   connectSlack,
   connectSlackCode,
   connectSlackError,
@@ -52,6 +45,13 @@ import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
 import { Uuid } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
+import {
+  connectOrcid,
+  connectOrcidCode,
+  connectOrcidError,
+  connectOrcidStart,
+  disconnectOrcid,
+} from '../../connect-orcid/index.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(

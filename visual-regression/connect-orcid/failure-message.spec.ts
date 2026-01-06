@@ -1,4 +1,4 @@
-import { connectFailureMessage, disconnectFailureMessage } from '../../src/connect-orcid/failure-message.ts'
+import { connectFailureMessage, disconnectFailureMessage } from '../../src/WebApp/connect-orcid/failure-message.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 

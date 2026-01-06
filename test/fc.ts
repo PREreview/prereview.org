@@ -29,7 +29,6 @@ import type {
 import type { CareerStage } from '../src/career-stage.ts'
 import * as Clubs from '../src/Clubs/index.ts'
 import * as Comments from '../src/Comments/index.ts'
-import type { OrcidOAuthEnv } from '../src/connect-orcid/index.ts'
 import {
   type ContactEmailAddress,
   UnverifiedContactEmailAddress,
@@ -140,6 +139,7 @@ import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
 import type { UserOnboarding } from '../src/user-onboarding.ts'
 import type { User } from '../src/user.ts'
+import type { OrcidOAuthEnv } from '../src/WebApp/connect-orcid/index.ts'
 
 export type Arbitrary<T> = fc.Arbitrary<T>
 
