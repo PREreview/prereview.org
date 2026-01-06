@@ -1,18 +1,18 @@
 import { Array, flow, Match, pipe, String } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import type { Club, ClubId } from '../Clubs/index.ts'
-import { html, plainText, rawHtml, type Html } from '../html.ts'
-import { translate, type SupportedLocale } from '../locales/index.ts'
-import assets from '../manifest.json' with { type: 'json' }
-import * as PreprintServers from '../PreprintServers/index.ts'
-import type * as Prereviews from '../Prereviews/index.ts'
-import { PageResponse } from '../Response/index.ts'
-import * as Routes from '../routes.ts'
-import { profileMatch, reviewMatch } from '../routes.ts'
-import { renderDate } from '../time.ts'
-import { ProfileId } from '../types/index.ts'
-import { getSubfieldName } from '../types/subfield.ts'
+import type { Club, ClubId } from '../../Clubs/index.ts'
+import { html, plainText, rawHtml, type Html } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import assets from '../../manifest.json' with { type: 'json' }
+import * as PreprintServers from '../../PreprintServers/index.ts'
+import type * as Prereviews from '../../Prereviews/index.ts'
+import { PageResponse } from '../../Response/index.ts'
+import * as Routes from '../../routes.ts'
+import { profileMatch, reviewMatch } from '../../routes.ts'
+import { renderDate } from '../../time.ts'
+import { ProfileId } from '../../types/index.ts'
+import { getSubfieldName } from '../../types/subfield.ts'
 
 export function createPage({
   club,

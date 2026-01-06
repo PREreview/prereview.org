@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { createPage } from '../../src/ClubProfilePage/ClubProfilePage.ts'
 import type { Club, ClubId } from '../../src/Clubs/index.ts'
 import { html, rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -8,6 +7,7 @@ import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId
 import * as Prereviews from '../../src/Prereviews/index.js'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { createPage } from '../../src/WebApp/ClubProfilePage/ClubProfilePage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
