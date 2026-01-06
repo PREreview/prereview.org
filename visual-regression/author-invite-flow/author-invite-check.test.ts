@@ -1,6 +1,6 @@
 import { Uuid } from 'uuid-ts'
-import { checkPage } from '../../src/author-invite-flow/check-page/check-page.ts'
-import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.ts'
+import { checkPage } from '../../src/WebApp/author-invite-flow/check-page/check-page.ts'
+import { failureMessage } from '../../src/WebApp/author-invite-flow/check-page/failure-message.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'

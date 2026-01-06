@@ -1,13 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Uuid } from 'uuid-ts'
-import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.ts'
-import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { Prereview } from '../../src/Prereviews/index.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { declinePage } from '../../src/WebApp/author-invite-flow/decline-page/decline-page.ts'
+import { inviteDeclinedPage } from '../../src/WebApp/author-invite-flow/decline-page/invite-declined-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right before declining', async ({ showPage }) => {

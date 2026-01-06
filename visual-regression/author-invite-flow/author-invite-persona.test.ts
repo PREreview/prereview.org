@@ -1,6 +1,6 @@
 import * as E from 'fp-ts/lib/Either.js'
 import { Uuid } from 'uuid-ts'
-import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.ts'
+import { personaForm } from '../../src/WebApp/author-invite-flow/persona-page/persona-form.ts'
 import { missingE } from '../../src/form.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'

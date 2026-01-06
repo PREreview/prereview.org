@@ -1,5 +1,5 @@
 import { Uuid } from 'uuid-ts'
-import { needToVerifyEmailAddressPage } from '../../src/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.ts'
+import { needToVerifyEmailAddressPage } from '../../src/WebApp/author-invite-flow/need-to-verify-email-address-page/need-to-verify-email-address-page.ts'
 import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'

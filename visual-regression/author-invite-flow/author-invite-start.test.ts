@@ -1,6 +1,6 @@
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Uuid } from 'uuid-ts'
-import { authorInviteStart } from '../../src/author-invite-flow/index.ts'
+import { authorInviteStart } from '../../src/WebApp/author-invite-flow/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
