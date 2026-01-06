@@ -1,7 +1,7 @@
-import { html, plainText } from '../html.ts'
-import { translate, type SupportedLocale } from '../locales/index.ts'
-import { PageResponse } from '../Response/index.ts'
-import * as StatusCodes from '../StatusCodes.ts'
+import { html, plainText } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import { PageResponse } from '../../Response/index.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
 
 export const accessDeniedMessage = (locale: SupportedLocale) =>
   PageResponse({

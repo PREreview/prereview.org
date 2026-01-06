@@ -1,4 +1,4 @@
-import { connectSlackPage } from '../../src/connect-slack-page/connect-slack-page.ts'
+import { connectSlackPage } from '../../src/WebApp/connect-slack-page/connect-slack-page.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 

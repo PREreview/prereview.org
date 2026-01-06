@@ -1,4 +1,4 @@
-import { disconnectSlackPage } from '../../src/disconnect-slack-page/disconnect-slack-page.ts'
+import { disconnectSlackPage } from '../../src/WebApp/disconnect-slack-page/disconnect-slack-page.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 

@@ -1,4 +1,4 @@
-import { failureMessage } from '../../src/connect-slack-page/failure-message.ts'
+import { failureMessage } from '../../src/WebApp/connect-slack-page/failure-message.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 

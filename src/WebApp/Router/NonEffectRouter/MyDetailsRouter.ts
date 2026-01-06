@@ -7,13 +7,6 @@ import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
-import {
-  connectSlack,
-  connectSlackCode,
-  connectSlackError,
-  connectSlackStart,
-} from '../../../connect-slack-page/index.ts'
-import { disconnectSlack } from '../../../disconnect-slack-page/index.ts'
 import { sendContactEmailAddressVerificationEmail } from '../../../email.ts'
 import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
@@ -52,6 +45,8 @@ import {
   connectOrcidStart,
   disconnectOrcid,
 } from '../../connect-orcid/index.ts'
+import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
+import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(
