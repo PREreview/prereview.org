@@ -1,9 +1,9 @@
 import { Effect } from 'effect'
-import * as DatasetReviews from '../DatasetReviews/index.ts'
-import * as Datasets from '../Datasets/index.ts'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
-import { PageNotFound } from '../PageNotFound/index.ts'
-import * as Personas from '../Personas/index.ts'
+import * as DatasetReviews from '../../DatasetReviews/index.ts'
+import * as Datasets from '../../Datasets/index.ts'
+import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Personas from '../../Personas/index.ts'
 import { createDatasetReviewsPage } from './DatasetReviewsPage.ts'
 
 export const DatasetReviewsPage = Effect.fn(

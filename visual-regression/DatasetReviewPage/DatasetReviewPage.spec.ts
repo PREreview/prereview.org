@@ -1,10 +1,10 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
-import * as _ from '../../src/DatasetReviewPage/DatasetReviewPage.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.ts'
+import * as _ from '../../src/WebApp/DatasetReviewPage/DatasetReviewPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
