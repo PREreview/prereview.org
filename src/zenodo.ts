@@ -59,9 +59,7 @@ import { FptsToEffect } from './RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as Prereview from './Prereviews/Prereview.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'
-import type { Prereview as ReviewsDataPrereview } from './reviews-data/index.ts'
 import { reviewMatch } from './routes.ts'
-import type { Prereview as ScietyPrereview } from './sciety-list/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
 import { DomainIdFromOpenAlexUrlSchema } from './types/domain.ts'
 import { type FieldId, FieldIdFromOpenAlexUrlSchema } from './types/field.ts'
@@ -71,6 +69,8 @@ import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from './types/subfield.ts'
 import type { User } from './user.ts'
+import type { Prereview as ReviewsDataPrereview } from './WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
+import type { Prereview as ScietyPrereview } from './WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
 import type { NewPrereview } from './write-review/index.ts'
 
 export interface WasPrereviewRemovedEnv {

@@ -1,9 +1,9 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Function, pipe, Schema } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { type ClubId, ClubIdSchema, getClubAddedDate, getClubName } from '../Clubs/index.ts'
+import { type ClubId, ClubIdSchema, getClubAddedDate, getClubName } from '../../Clubs/index.ts'
+import { PlainDateSchema } from '../../types/Temporal.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
-import { PlainDateSchema } from '../types/Temporal.ts'
 
 interface Club {
   id: ClubId
