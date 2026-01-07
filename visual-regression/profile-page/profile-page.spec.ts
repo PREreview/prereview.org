@@ -6,11 +6,11 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
-import { createPage } from '../../src/profile-page/create-page.ts'
 import { Uuid } from '../../src/types/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { createPage } from '../../src/WebApp/profile-page/create-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
