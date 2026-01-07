@@ -3,10 +3,10 @@ import { type Array, Data, pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import type { Html } from '../html.ts'
-import type { PreprintId } from '../Preprints/index.ts'
-import type { FieldId } from '../types/field.ts'
-import type { SubfieldId } from '../types/subfield.ts'
+import type { Html } from '../../html.ts'
+import type { PreprintId } from '../../Preprints/index.ts'
+import type { FieldId } from '../../types/field.ts'
+import type { SubfieldId } from '../../types/subfield.ts'
 
 export interface ReviewRequests {
   readonly currentPage: number

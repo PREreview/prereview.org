@@ -1,9 +1,9 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
 import { Effect, Equal, pipe, Schema } from 'effect'
 import * as Preprints from '../Preprints/index.ts'
-import { ReviewRequestsAreUnavailable } from '../review-requests-page/index.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { Field, Iso639, Subfield, Temporal } from '../types/index.ts'
+import { ReviewRequestsAreUnavailable } from '../WebApp/review-requests-page/index.ts' // eslint-disable-line import/no-internal-modules
 
 export const ReviewRequestsSchema = Schema.Array(
   Schema.Struct({

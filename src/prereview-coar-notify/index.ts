@@ -4,14 +4,14 @@ import type { LanguageCode } from 'iso-639-1'
 import * as Preprints from '../Preprints/index.ts'
 import { type PreprintId, PreprintIdEquivalence } from '../Preprints/index.ts'
 import type { ReviewRequestPreprintId } from '../review-request.ts'
+import type { FieldId } from '../types/field.ts'
+import { Uuid } from '../types/index.ts'
+import type { User } from '../user.ts'
 import {
   type ReviewRequests,
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
-} from '../review-requests-page/index.ts'
-import type { FieldId } from '../types/field.ts'
-import { Uuid } from '../types/index.ts'
-import type { User } from '../user.ts'
+} from '../WebApp/review-requests-page/index.ts' // eslint-disable-line import/no-internal-modules
 import { constructCoarReviewActionOfferPayload } from './ConstructCoarReviewActionOfferPayload.ts'
 import { getPageOfReviewRequests } from './GetPageOfReviewRequests.ts'
 import { sendReviewActionOffer } from './SendReviewActionOffer.ts'

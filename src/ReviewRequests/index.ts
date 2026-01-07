@@ -11,14 +11,14 @@ import {
   getReviewRequestsFromPrereviewCoarNotify,
   type PrereviewCoarNotifyConfig,
 } from '../prereview-coar-notify/index.ts'
+import type { FieldId } from '../types/field.ts'
+import type { SubfieldId } from '../types/subfield.ts'
+import { getTopicField, getTopicSubfield } from '../types/Topic.ts'
 import {
   ReviewRequestsAreUnavailable,
   ReviewRequestsNotFound,
   type ReviewRequests as PageOfReviewRequests,
-} from '../review-requests-page/index.ts'
-import type { FieldId } from '../types/field.ts'
-import type { SubfieldId } from '../types/subfield.ts'
-import { getTopicField, getTopicSubfield } from '../types/Topic.ts'
+} from '../WebApp/review-requests-page/index.ts' // eslint-disable-line import/no-internal-modules
 import * as Commands from './Commands/index.ts'
 import * as Queries from './Queries/index.ts'
 

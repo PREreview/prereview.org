@@ -3,8 +3,8 @@ import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
-import type { ReviewRequests } from '../../src/review-requests-page/index.ts'
-import { createEmptyPage, createPage } from '../../src/review-requests-page/review-requests-page.ts'
+import type { ReviewRequests } from '../../src/WebApp/review-requests-page/index.ts'
+import { createEmptyPage, createPage } from '../../src/WebApp/review-requests-page/review-requests-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
