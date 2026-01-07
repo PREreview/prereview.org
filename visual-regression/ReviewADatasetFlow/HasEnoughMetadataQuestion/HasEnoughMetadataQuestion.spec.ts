@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as HasEnoughMetadataForm from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.ts'
+import * as HasEnoughMetadataForm from '../../../src/WebApp/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

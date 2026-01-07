@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as FollowsFairAndCarePrinciplesForm from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.ts'
+import * as FollowsFairAndCarePrinciplesForm from '../../../src/WebApp/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

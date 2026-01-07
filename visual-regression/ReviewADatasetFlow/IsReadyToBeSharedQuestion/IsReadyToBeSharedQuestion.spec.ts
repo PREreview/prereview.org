@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as IsReadyToBeSharedForm from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
+import * as IsReadyToBeSharedForm from '../../../src/WebApp/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

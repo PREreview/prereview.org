@@ -1,7 +1,7 @@
 import { Either } from 'effect'
 import * as Personas from '../../../src/Personas/index.ts'
-import * as ChooseYourPersonaForm from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
+import * as ChooseYourPersonaForm from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
 import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 

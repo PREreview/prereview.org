@@ -1,5 +1,5 @@
-import * as IsMissingAnythingForm from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.ts'
+import * as IsMissingAnythingForm from '../../../src/WebApp/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

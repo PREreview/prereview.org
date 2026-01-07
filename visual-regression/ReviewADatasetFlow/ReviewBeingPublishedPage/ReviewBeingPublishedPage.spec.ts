@@ -1,4 +1,4 @@
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewBeingPublishedPage/ReviewBeingPublishedPage.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewBeingPublishedPage/ReviewBeingPublishedPage.ts'
 import { Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

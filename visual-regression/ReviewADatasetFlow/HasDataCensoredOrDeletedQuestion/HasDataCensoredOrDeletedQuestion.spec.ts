@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as HasDataCensoredOrDeletedForm from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
+import * as HasDataCensoredOrDeletedForm from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

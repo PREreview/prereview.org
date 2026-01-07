@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as DeclareFollowingCodeOfConductForm from '../../../src/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductPage.ts'
+import * as DeclareFollowingCodeOfConductForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductPage.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 

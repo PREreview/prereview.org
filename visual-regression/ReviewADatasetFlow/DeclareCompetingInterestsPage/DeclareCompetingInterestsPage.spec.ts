@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as DeclareCompetingInterestsForm from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
+import * as DeclareCompetingInterestsForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 

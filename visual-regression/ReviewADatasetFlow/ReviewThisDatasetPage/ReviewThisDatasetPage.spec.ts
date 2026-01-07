@@ -2,12 +2,12 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewThisDatasetPage/ReviewThisDatasetPage.ts'
 import { Doi } from '../../../src/types/index.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import type { User } from '../../../src/user.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewThisDatasetPage/ReviewThisDatasetPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

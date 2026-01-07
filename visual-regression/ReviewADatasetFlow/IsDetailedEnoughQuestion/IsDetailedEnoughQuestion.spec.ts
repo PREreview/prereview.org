@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as IsDetailedEnoughForm from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.ts'
+import * as IsDetailedEnoughForm from '../../../src/WebApp/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsDetailedEnoughQuestion/IsDetailedEnoughQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

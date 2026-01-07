@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as ReviewADatasetForm from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetPage.ts'
+import * as ReviewADatasetForm from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/ReviewADatasetPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

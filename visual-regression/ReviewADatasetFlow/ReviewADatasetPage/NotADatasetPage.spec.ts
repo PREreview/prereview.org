@@ -1,4 +1,4 @@
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/NotADatasetPage.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/NotADatasetPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

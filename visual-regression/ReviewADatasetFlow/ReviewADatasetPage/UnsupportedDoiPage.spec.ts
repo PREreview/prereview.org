@@ -1,4 +1,4 @@
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewADatasetPage/UnsupportedDoiPage.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/UnsupportedDoiPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

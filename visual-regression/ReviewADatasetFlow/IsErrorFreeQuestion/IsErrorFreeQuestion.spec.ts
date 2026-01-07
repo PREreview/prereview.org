@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as IsErrorFreeForm from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
+import * as IsErrorFreeForm from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as RateTheQualityForm from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
+import * as RateTheQualityForm from '../../../src/WebApp/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

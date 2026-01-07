@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as IsAppropriateForThisKindOfResearchForm from '../../../src/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchQuestion.ts'
+import * as IsAppropriateForThisKindOfResearchForm from '../../../src/WebApp/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

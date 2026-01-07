@@ -1,6 +1,6 @@
 import { Either } from 'effect'
-import * as HasTrackedChangesForm from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.ts'
+import * as HasTrackedChangesForm from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'

@@ -1,5 +1,5 @@
 import type * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
-import * as _ from '../../../src/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.ts'
+import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.ts'
 import { Doi, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
