@@ -71,7 +71,7 @@ import { SubfieldIdFromOpenAlexUrlSchema } from './types/subfield.ts'
 import type { User } from './user.ts'
 import type { Prereview as ReviewsDataPrereview } from './WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
 import type { Prereview as ScietyPrereview } from './WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
-import type { NewPrereview } from './write-review/index.ts'
+import type { NewPrereview } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

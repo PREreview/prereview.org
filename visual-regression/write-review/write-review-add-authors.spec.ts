@@ -4,7 +4,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form.ts'
+import { addAuthorsForm } from '../../src/WebApp/write-review/add-authors-page/add-authors-form.ts'
 import { expect, test } from '../base.ts'
 
 const preprint = {

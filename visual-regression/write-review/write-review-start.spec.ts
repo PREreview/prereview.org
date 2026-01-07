@@ -2,8 +2,8 @@ import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import type { Form } from '../../src/write-review/form.ts'
-import { carryOnPage } from '../../src/write-review/start-page/carry-on-page.ts'
+import type { Form } from '../../src/WebApp/write-review/form.ts'
+import { carryOnPage } from '../../src/WebApp/write-review/start-page/carry-on-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -27,7 +27,7 @@ import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
 import { UuidC } from './types/uuid.ts'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
-import type { FormStoreEnv } from './write-review/index.ts'
+import type { FormStoreEnv } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export { Keyv } from 'keyv'
 

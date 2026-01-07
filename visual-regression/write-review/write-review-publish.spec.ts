@@ -7,7 +7,7 @@ import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { User } from '../../src/user.ts'
-import { publishForm } from '../../src/write-review/publish-page/publish-form.ts'
+import { publishForm } from '../../src/WebApp/write-review/publish-page/publish-form.ts'
 import { expect, test } from '../base.ts'
 
 const preprint = {

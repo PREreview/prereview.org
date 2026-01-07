@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { changeAuthorForm } from '../../src/write-review/change-author-page/change-author-form.ts'
+import { changeAuthorForm } from '../../src/WebApp/write-review/change-author-page/change-author-form.ts'
 import { expect, test } from '../base.ts'
 
 const preprint = {

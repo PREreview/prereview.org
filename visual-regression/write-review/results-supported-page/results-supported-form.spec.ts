@@ -4,7 +4,7 @@ import { missingE } from '../../../src/form.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.ts'
-import { resultsSupportedForm } from '../../../src/write-review/results-supported-page/results-supported-form.ts'
+import { resultsSupportedForm } from '../../../src/WebApp/write-review/results-supported-page/results-supported-form.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

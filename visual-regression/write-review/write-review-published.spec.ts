@@ -4,8 +4,8 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import type { CompletedForm } from '../../src/write-review/completed-form.ts'
-import { publishedPage } from '../../src/write-review/published-page/published-page.ts'
+import type { CompletedForm } from '../../src/WebApp/write-review/completed-form.ts'
+import { publishedPage } from '../../src/WebApp/write-review/published-page/published-page.ts'
 import { expect, test } from '../base.ts'
 
 const locale = DefaultLocale

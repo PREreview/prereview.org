@@ -6,7 +6,7 @@ import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/in
 import { Doi, OrcidId, Pseudonym } from '../../../src/types/index.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import type { User } from '../../../src/user.ts'
-import { personaForm } from '../../../src/write-review/persona/persona-form.ts'
+import { personaForm } from '../../../src/WebApp/write-review/persona/persona-form.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

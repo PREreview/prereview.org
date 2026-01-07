@@ -4,7 +4,7 @@ import { missingE } from '../../src/form.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { authorsForm } from '../../src/write-review/authors/authors-form.ts'
+import { authorsForm } from '../../src/WebApp/write-review/authors/authors-form.ts'
 import { expect, test } from '../base.ts'
 
 const locale = DefaultLocale

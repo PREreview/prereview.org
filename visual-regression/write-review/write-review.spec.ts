@@ -7,7 +7,7 @@ import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { User } from '../../src/user.ts'
-import { startPage } from '../../src/write-review/write-a-prereview-page/write-a-prereview-page.ts'
+import { startPage } from '../../src/WebApp/write-review/write-a-prereview-page/write-a-prereview-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

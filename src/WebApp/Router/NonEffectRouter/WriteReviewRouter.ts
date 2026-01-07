@@ -25,6 +25,8 @@ import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { generateUuidIO } from '../../../types/uuid.ts'
+import { createRecordOnZenodo } from '../../../zenodo.ts'
+import * as Zenodo from '../../../Zenodo/index.ts'
 import {
   type NewPrereview,
   writeReview,
@@ -55,9 +57,7 @@ import {
   writeReviewUseOfAi,
   writeReviewUseOfAiSubmission,
   writeReviewVerifyEmailAddress,
-} from '../../../write-review/index.ts'
-import { createRecordOnZenodo } from '../../../zenodo.ts'
-import * as Zenodo from '../../../Zenodo/index.ts'
+} from '../../write-review/index.ts'
 import type { Env } from './index.ts'
 
 export const WriteReviewRouter = pipe(

@@ -23,7 +23,7 @@ import { ProfileId } from './types/index.ts'
 import { type OrcidId, isOrcidId } from './types/OrcidId.ts'
 import { PseudonymC, isPseudonym } from './types/Pseudonym.ts'
 import { UuidC } from './types/uuid.ts'
-import type { NewPrereview } from './write-review/index.ts'
+import type { NewPrereview } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export class LegacyPrereviewApi extends Context.Tag('LegacyPrereviewApi')<
   LegacyPrereviewApi,

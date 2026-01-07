@@ -4,7 +4,7 @@ import { invalidE, missingE } from '../../../src/form.ts'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, type PreprintTitle } from '../../../src/Preprints/index.ts'
-import { enterEmailAddressPage } from '../../../src/write-review/enter-email-address-page/enter-email-address-page.ts'
+import { enterEmailAddressPage } from '../../../src/WebApp/write-review/enter-email-address-page/enter-email-address-page.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

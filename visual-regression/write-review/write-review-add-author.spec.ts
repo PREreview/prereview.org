@@ -5,8 +5,8 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { addAuthorForm } from '../../src/write-review/add-author-page/add-author-form.ts'
-import { addMultipleAuthorsForm } from '../../src/write-review/add-author-page/add-multiple-authors.ts'
+import { addAuthorForm } from '../../src/WebApp/write-review/add-author-page/add-author-form.ts'
+import { addMultipleAuthorsForm } from '../../src/WebApp/write-review/add-author-page/add-multiple-authors.ts'
 import { expect, test } from '../base.ts'
 
 const preprint = {

@@ -3,7 +3,7 @@ import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi, EmailAddress, Uuid } from '../../../src/types/index.ts'
-import { needToVerifyEmailAddressMessage } from '../../../src/write-review/need-to-verify-email-address/need-to-verify-email-address-message.ts'
+import { needToVerifyEmailAddressMessage } from '../../../src/WebApp/write-review/need-to-verify-email-address/need-to-verify-email-address-message.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
