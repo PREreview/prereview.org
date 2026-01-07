@@ -8,7 +8,7 @@ import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import type { User } from '../../../src/user.ts'
-import * as _ from '../../../src/WriteCommentFlow/WriteCommentPage/WriteCommentPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/WriteCommentPage/WriteCommentPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

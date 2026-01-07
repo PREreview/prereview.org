@@ -5,7 +5,7 @@ import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import type { User } from '../../../src/user.ts'
-import * as _ from '../../../src/WriteCommentFlow/CheckPage/CheckPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/CheckPage/CheckPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -5,8 +5,8 @@ import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import type { User } from '../../../src/user.ts'
-import * as ChoosePersonaForm from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.ts'
-import * as _ from '../../../src/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.ts'
+import * as ChoosePersonaForm from '../../../src/WebApp/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaForm.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/ChoosePersonaPage/ChoosePersonaPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

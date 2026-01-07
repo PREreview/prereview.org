@@ -1,6 +1,6 @@
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import * as _ from '../../../src/WriteCommentFlow/PublishingPage/PublishingPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/PublishingPage/PublishingPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

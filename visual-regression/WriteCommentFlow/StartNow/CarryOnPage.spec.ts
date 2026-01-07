@@ -7,7 +7,7 @@ import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
-import * as _ from '../../../src/WriteCommentFlow/StartNow/CarryOnPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/StartNow/CarryOnPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

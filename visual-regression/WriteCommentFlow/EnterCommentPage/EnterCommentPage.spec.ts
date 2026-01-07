@@ -2,8 +2,8 @@ import { Either } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import * as EnterCommentForm from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentForm.ts'
-import * as _ from '../../../src/WriteCommentFlow/EnterCommentPage/EnterCommentPage.ts'
+import * as EnterCommentForm from '../../../src/WebApp/WriteCommentFlow/EnterCommentPage/EnterCommentForm.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/EnterCommentPage/EnterCommentPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

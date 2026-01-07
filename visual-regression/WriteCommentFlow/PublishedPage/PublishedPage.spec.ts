@@ -1,7 +1,7 @@
 import * as Doi from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import * as _ from '../../../src/WriteCommentFlow/PublishedPage/PublishedPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/PublishedPage/PublishedPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -1,8 +1,8 @@
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import * as CodeOfConductForm from '../../../src/WriteCommentFlow/CodeOfConductPage/CodeOfConductForm.ts'
-import * as _ from '../../../src/WriteCommentFlow/CodeOfConductPage/CodeOfConductPage.ts'
+import * as CodeOfConductForm from '../../../src/WebApp/WriteCommentFlow/CodeOfConductPage/CodeOfConductForm.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/CodeOfConductPage/CodeOfConductPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

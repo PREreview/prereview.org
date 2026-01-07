@@ -1,8 +1,8 @@
 import { Either } from 'effect'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { EmailAddress, Uuid } from '../../../src/types/index.ts'
-import * as EnterEmailAddressForm from '../../../src/WriteCommentFlow/EnterEmailAddressPage/EnterEmailAddressForm.ts'
-import * as _ from '../../../src/WriteCommentFlow/EnterEmailAddressPage/EnterEmailAddressPage.ts'
+import * as EnterEmailAddressForm from '../../../src/WebApp/WriteCommentFlow/EnterEmailAddressPage/EnterEmailAddressForm.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/EnterEmailAddressPage/EnterEmailAddressPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -1,6 +1,6 @@
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { EmailAddress, Uuid } from '../../../src/types/index.ts'
-import * as _ from '../../../src/WriteCommentFlow/NeedToVerifyEmailAddressPage/NeedToVerifyEmailAddressPage.ts'
+import * as _ from '../../../src/WebApp/WriteCommentFlow/NeedToVerifyEmailAddressPage/NeedToVerifyEmailAddressPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
