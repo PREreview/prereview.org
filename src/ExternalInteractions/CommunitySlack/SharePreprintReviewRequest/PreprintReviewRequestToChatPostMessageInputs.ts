@@ -18,12 +18,12 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
   return [
     {
       blocks: [{ type: 'markdown', text: thread.main }],
-      unfurlLinks: true,
+      unfurlLinks: false,
       unfurlMedia: false,
     },
     {
       blocks: [{ type: 'markdown', text: thread.detail }],
-      unfurlLinks: true,
+      unfurlLinks: false,
       unfurlMedia: false,
     },
     ...Option.match(thread.abstract, {
@@ -51,7 +51,7 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
                 ],
               },
             ],
-            unfurlLinks: true,
+            unfurlLinks: false,
             unfurlMedia: false,
           },
         ] satisfies Array.NonEmptyReadonlyArray<Omit<Slack.ChatPostMessageInput, 'channel'>>,
@@ -71,7 +71,7 @@ export const PreprintReviewRequestToChatPostMessageInputs = Effect.fn(function* 
           ],
         },
       ],
-      unfurlLinks: true,
+      unfurlLinks: false,
       unfurlMedia: false,
     },
   ]

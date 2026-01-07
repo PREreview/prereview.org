@@ -135,7 +135,7 @@ test.each([
     const actual = yield* _.PreprintReviewRequestToChatPostMessageInputs(datasetReview)
 
     expect(actual).toStrictEqual(
-      Array.map(expectedBlocks, blocks => ({ blocks, unfurlLinks: true, unfurlMedia: false })),
+      Array.map(expectedBlocks, blocks => ({ blocks, unfurlLinks: false, unfurlMedia: false })),
     )
   }).pipe(Effect.provideService(PublicUrl, new URL('http://example.com')), EffectTest.run),
 )
