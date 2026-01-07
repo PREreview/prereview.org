@@ -25,18 +25,18 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName, getClubNameAndFormerNames } from '../src/Clubs/index.ts'
-import { plainText, rawHtml } from '../src/html.ts'
-import { PreprintIsNotFound, PreprintIsUnavailable } from '../src/Preprints/index.ts'
-import * as Prereviews from '../src/Prereviews/index.ts'
-import { reviewMatch } from '../src/routes.ts'
-import * as StatusCodes from '../src/StatusCodes.ts'
-import { OrcidId, Uuid } from '../src/types/index.ts'
-import { iso6391To3 } from '../src/types/iso639.ts'
-import type { NewPrereview } from '../src/WebApp/write-review/index.ts'
-import * as _ from '../src/zenodo.ts'
-import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
+import { getClubName, getClubNameAndFormerNames } from '../../../src/Clubs/index.ts'
+import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
+import { plainText, rawHtml } from '../../../src/html.ts'
+import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
+import * as Prereviews from '../../../src/Prereviews/index.ts'
+import { reviewMatch } from '../../../src/routes.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import { OrcidId, Uuid } from '../../../src/types/index.ts'
+import { iso6391To3 } from '../../../src/types/iso639.ts'
+import type { NewPrereview } from '../../../src/WebApp/write-review/index.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([

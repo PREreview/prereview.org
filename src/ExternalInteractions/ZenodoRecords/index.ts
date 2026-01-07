@@ -17,6 +17,8 @@ import { getDoiForPrereview } from './GetDoiForPrereview.ts'
 import { PublishRecord } from './PublishRecord/index.ts'
 import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.ts'
 
+export * from './legacy-zenodo.ts'
+
 export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 
 export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecord/index.ts'

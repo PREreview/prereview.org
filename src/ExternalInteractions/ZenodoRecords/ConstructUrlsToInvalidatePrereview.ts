@@ -3,7 +3,7 @@ import { Effect } from 'effect'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import type { User } from '../../user.ts'
-import { toExternalIdentifier } from '../../zenodo.ts'
+import { toExternalIdentifier } from './legacy-zenodo.ts'
 
 export const constructUrlsToInvalidatePrereview = ({
   prereviewId,

@@ -34,9 +34,9 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { type ClubId, getClubByName, getClubNameAndFormerNames } from './Clubs/index.ts'
-import { timeoutRequest, useStaleCache } from './fetch.ts'
-import { type Html, plainText, sanitizeHtml } from './html.ts'
+import { type ClubId, getClubByName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
+import { timeoutRequest, useStaleCache } from '../../fetch.ts'
+import { type Html, plainText, sanitizeHtml } from '../../html.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -44,7 +44,7 @@ import {
   getPreprint,
   getPreprintId,
   getPreprintTitle,
-} from './preprint.ts'
+} from '../../preprint.ts'
 import {
   type IndeterminatePreprintId,
   type NotAPreprint,
@@ -54,24 +54,24 @@ import {
   type PreprintIsUnavailable,
   fromPreprintDoi,
   fromUrl,
-} from './Preprints/index.ts'
-import { FptsToEffect } from './RefactoringUtilities/index.ts'
+} from '../../Preprints/index.ts'
+import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 // eslint-disable-next-line import/no-internal-modules
-import * as Prereview from './Prereviews/Prereview.ts'
-import { type PublicUrlEnv, toUrl } from './public-url.ts'
-import { reviewMatch } from './routes.ts'
-import * as StatusCodes from './StatusCodes.ts'
-import { DomainIdFromOpenAlexUrlSchema } from './types/domain.ts'
-import { type FieldId, FieldIdFromOpenAlexUrlSchema } from './types/field.ts'
-import { ProfileId, Uuid } from './types/index.ts'
-import { iso6391To3, iso6393To1, iso6393Validate } from './types/iso639.ts'
-import type { NonEmptyString } from './types/NonEmptyString.ts'
-import type { OrcidId } from './types/OrcidId.ts'
-import { SubfieldIdFromOpenAlexUrlSchema } from './types/subfield.ts'
-import type { User } from './user.ts'
-import type { Prereview as ReviewsDataPrereview } from './WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
-import type { Prereview as ScietyPrereview } from './WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
-import type { NewPrereview } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
+import * as Prereview from '../../Prereviews/Prereview.ts'
+import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
+import { reviewMatch } from '../../routes.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import { DomainIdFromOpenAlexUrlSchema } from '../../types/domain.ts'
+import { type FieldId, FieldIdFromOpenAlexUrlSchema } from '../../types/field.ts'
+import { ProfileId, Uuid } from '../../types/index.ts'
+import { iso6391To3, iso6393To1, iso6393Validate } from '../../types/iso639.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import type { OrcidId } from '../../types/OrcidId.ts'
+import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
+import type { User } from '../../user.ts'
+import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
+import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
+import type { NewPrereview } from '../../WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

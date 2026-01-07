@@ -12,7 +12,6 @@ import * as Prereviews from '../../../Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
-import { addAuthorToRecordOnZenodo } from '../../../zenodo.ts'
 import {
   authorInvite,
   authorInviteCheck,
@@ -121,7 +120,7 @@ export const AuthorInviteFlowRouter = pipe(
         addAuthorToPrereview: withEnv(
           (id, user, persona) =>
             pipe(
-              addAuthorToRecordOnZenodo(id, user, persona),
+              ZenodoRecords.addAuthorToRecordOnZenodo(id, user, persona),
               RTE.chainFirstTaskEitherKW(() =>
                 EffectToFpts.toTaskEither(
                   ZenodoRecords.invalidatePrereviewInCache({ prereviewId: id, user }),

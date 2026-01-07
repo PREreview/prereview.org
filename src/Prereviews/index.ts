@@ -6,6 +6,7 @@ import * as DatasetReviews from '../DatasetReviews/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
+import { ZenodoRecords } from '../ExternalInteractions/index.ts'
 import {
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
@@ -21,14 +22,6 @@ import type { Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
 import type { User } from '../user.ts'
-import {
-  getPrereviewFromZenodo,
-  getPrereviewsForClubFromZenodo,
-  getPrereviewsForPreprintFromZenodo,
-  getPrereviewsForProfileFromZenodo,
-  getPrereviewsForUserFromZenodo,
-  getRecentPrereviewsFromZenodo,
-} from '../zenodo.ts'
 import {
   type PreprintPrereview,
   type Prereview,
@@ -109,7 +102,7 @@ export const layer = Layer.effect(
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* pipe(
-          FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo({ page: 1 }), {
+          FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
             fetch,
             getPreprintTitle,
             ...loggerEnv,
@@ -137,7 +130,7 @@ export const layer = Layer.effect(
         function* (id) {
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(getPrereviewsForClubFromZenodo(id), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(id), {
             fetch,
             getPreprintTitle,
             zenodoApiKey: Redacted.value(zenodoApi.key),
@@ -151,7 +144,7 @@ export const layer = Layer.effect(
         function* (id) {
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(getPrereviewsForPreprintFromZenodo(id), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
             fetch,
             zenodoApiKey: Redacted.value(zenodoApi.key),
             zenodoUrl: zenodoApi.origin,
@@ -164,7 +157,7 @@ export const layer = Layer.effect(
         function* (profile) {
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(getPrereviewsForProfileFromZenodo(profile), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
             fetch,
             getPreprintTitle,
             publicUrl,
@@ -191,7 +184,7 @@ export const layer = Layer.effect(
         function* (user) {
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(getPrereviewsForUserFromZenodo(user), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForUserFromZenodo(user), {
             fetch,
             getPreprintTitle,
             publicUrl,
@@ -241,7 +234,7 @@ export const layer = Layer.effect(
       getPrereview: Effect.fn(function* (id) {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        return yield* FptsToEffect.readerTaskEither(getPrereviewFromZenodo(id), {
+        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
           fetch,
           getPreprint,
           wasPrereviewRemoved,
@@ -254,7 +247,7 @@ export const layer = Layer.effect(
         function* (args) {
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(getRecentPrereviewsFromZenodo(args), {
+          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
             fetch,
             getPreprintTitle,
             ...loggerEnv,

@@ -3,6 +3,7 @@ import { Array, Effect, pipe, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as LegacyPrereview from '../../../legacy-prereview.ts'
@@ -10,7 +11,6 @@ import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import * as Zenodo from '../../../zenodo.ts'
 import { clubsData } from '../../clubs-data/index.ts'
 import { reviewsData, type GetPrereviewsEnv } from '../../reviews-data/index.ts'
 import { scietyList, type ScietyListEnv } from '../../sciety-list/index.ts'
@@ -48,7 +48,7 @@ export const DataRouter = pipe(
       function* (env: Env) {
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),
-          getPrereviews: withEnv(() => Zenodo.getPrereviewsForSciety, {
+          getPrereviews: withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
             fetch: env.fetch,
             getPreprintId: EffectToFpts.toTaskEitherK(Preprints.getPreprintId, env.runtime),
             zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),

@@ -48,7 +48,6 @@ import * as Inbox from './WebApp/Inbox/index.ts' // eslint-disable-line import/n
 import * as WebApp from './WebApp/index.ts'
 import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
-import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
 
 const getPseudonym = Layer.effect(
   GetPseudonym,
@@ -250,7 +249,7 @@ const createRecordOnZenodoForComment = Layer.effect(
 
         return yield* pipe(
           FptsToEffect.readerTaskEither(
-            createCommentOnZenodo({
+            ZenodoRecords.createCommentOnZenodo({
               ...comment,
               comment: text,
               author: Personas.match(author, {
@@ -283,7 +282,7 @@ const publishComment = Layer.effect(
       function* (comment) {
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-        return yield* FptsToEffect.readerTaskEither(publishDepositionOnZenodo(comment), {
+        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.publishDepositionOnZenodo(comment), {
           fetch,
           zenodoApiKey: Redacted.value(zenodoApi.key),
           zenodoUrl: zenodoApi.origin,

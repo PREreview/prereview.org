@@ -24,7 +24,6 @@ import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { generateUuidIO } from '../../../types/uuid.ts'
-import { createRecordOnZenodo } from '../../../zenodo.ts'
 import type * as Response from '../../Response/index.ts'
 import {
   type NewPrereview,
@@ -512,7 +511,7 @@ export const WriteReviewRouter = pipe(
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
-    createRecordOnZenodo(newPrereview),
+    ZenodoRecords.createRecordOnZenodo(newPrereview),
     RTE.chainFirstW(
       isLegacyCompatiblePrereview(newPrereview)
         ? flow(
