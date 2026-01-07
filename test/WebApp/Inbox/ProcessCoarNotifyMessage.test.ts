@@ -1,12 +1,12 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
-import * as Inbox from '../../src/Inbox/index.ts'
-import * as _ from '../../src/Inbox/ProcessCoarNotifyMessage.ts'
-import * as Preprints from '../../src/Preprints/index.ts'
-import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
-import * as EffectTest from '../EffectTest.ts'
-import * as fc from '../fc.ts'
+import * as Preprints from '../../../src/Preprints/index.ts'
+import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
+import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
+import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'
+import * as EffectTest from '../../EffectTest.ts'
+import * as fc from '../../fc.ts'
 
 describe('ProcessCoarNotifyMessage', () => {
   test.prop([fc.coarNotifyRequestReview(), fc.uuid(), fc.instant(), fc.preprintId()])(
