@@ -37,8 +37,8 @@ import * as Redis from './Redis.ts'
 import * as SlackOauth from './SlackOauth.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
+import * as WebApp from './WebApp/index.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
-import * as TemplatePage from './WebApp/TemplatePage.ts' // eslint-disable-line import/no-internal-modules
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({
@@ -194,7 +194,7 @@ pipe(
           ),
         }),
       ),
-      TemplatePage.optionsLayerConfig({
+      WebApp.optionsLayerConfig({
         fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
         environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
       }),

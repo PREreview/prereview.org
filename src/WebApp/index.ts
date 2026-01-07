@@ -4,6 +4,8 @@ import * as HttpMiddleware from '../HttpMiddleware/index.ts'
 import { Router } from './Router/index.ts'
 import * as TemplatePage from './TemplatePage.ts'
 
+export { optionsLayer, optionsLayerConfig, TemplatePageOptions } from './TemplatePage.ts'
+
 export const layer = pipe(
   Router,
   Multipart.withMaxFileSize(Option.some(FileSystem.MiB(5))),

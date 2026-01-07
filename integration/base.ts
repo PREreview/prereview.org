@@ -72,8 +72,8 @@ import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
+import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
-import * as TemplatePage from '../src/WebApp/TemplatePage.ts'
 
 export { expect } from '@playwright/test'
 
@@ -2342,7 +2342,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               key: Redacted.make('key'),
               origin: new URL('http://zenodo.test/'),
             }),
-            TemplatePage.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
+            WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
             WorkflowEngine.layerMemory,
             Layer.mock(LanguageModel.LanguageModel, {}),
           ),
