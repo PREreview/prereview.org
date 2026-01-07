@@ -1,7 +1,7 @@
 import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Queue, Schedule, Scope, Struct } from 'effect'
 import * as Events from '../Events.ts'
 import * as EventStore from '../EventStore.ts'
-import * as ReviewPage from '../review-page/index.ts'
+import * as ReviewPage from '../WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
 import {
   UnableToHandleCommand,
   UnableToQuery,

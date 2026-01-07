@@ -42,12 +42,12 @@ import { PublicUrl } from './public-url.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
-import * as ReviewPage from './review-page/index.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import { Uuid } from './types/index.ts'
 import * as Inbox from './WebApp/Inbox/index.ts' // eslint-disable-line import/no-internal-modules
 import * as WebApp from './WebApp/index.ts'
+import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
 import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
 import * as ZenodoInteractions from './Zenodo/index.ts'
 

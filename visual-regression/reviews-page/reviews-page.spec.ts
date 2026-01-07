@@ -6,9 +6,9 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { ArxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.js'
-import { createPage, emptyPage } from '../../src/reviews-page/reviews-page.ts'
 import { OrcidId, Uuid } from '../../src/types/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { createPage, emptyPage } from '../../src/WebApp/reviews-page/reviews-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -5,7 +5,7 @@ import * as CachingHttpClient from '../CachingHttpClient/index.ts'
 import type { Zenodo as ZenodoApi } from '../ExternalApis/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 // eslint-disable-next-line import/no-internal-modules
-import * as ReviewPage from '../review-page/comments.ts'
+import * as ReviewPage from '../WebApp/review-page/comments.ts'
 import type { User } from '../user.ts'
 import { addCommentText } from './AddCommentText.ts'
 import { getCommunityRecords } from './CommunityRecords.ts'

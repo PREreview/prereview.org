@@ -1,5 +1,5 @@
 import { Array, Data, Either, Option, pipe, Schema, String } from 'effect'
-import type * as ReviewPage from '../review-page/index.ts'
+import type * as ReviewPage from '../WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
 import { Doi, OrcidId, Temporal } from '../types/index.ts'
 import * as Iso639 from '../types/iso639.ts'
 

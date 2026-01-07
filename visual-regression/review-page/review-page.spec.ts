@@ -4,9 +4,9 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/Preprints/index.ts'
 import { Prereview } from '../../src/Prereviews/index.ts'
-import type { Comment } from '../../src/review-page/index.ts'
-import { createPage } from '../../src/review-page/review-page.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import type { Comment } from '../../src/WebApp/review-page/index.ts'
+import { createPage } from '../../src/WebApp/review-page/review-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
