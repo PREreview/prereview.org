@@ -1,8 +1,8 @@
 import * as E from 'fp-ts/lib/Either.js'
 import { invalidE, missingE } from '../../src/form.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { createFormPage } from '../../src/my-details-page/change-contact-email-address-form-page.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { createFormPage } from '../../src/WebApp/my-details-page/change-contact-email-address-form-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

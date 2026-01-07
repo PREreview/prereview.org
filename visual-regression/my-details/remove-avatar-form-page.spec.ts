@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { page } from '../../src/my-details-page/remove-avatar-form-page.ts'
+import { page } from '../../src/WebApp/my-details-page/remove-avatar-form-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

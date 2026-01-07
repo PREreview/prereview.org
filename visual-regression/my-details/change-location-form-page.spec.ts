@@ -1,7 +1,7 @@
 import { Option } from 'effect'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { createFormPage } from '../../src/my-details-page/change-location-form-page.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { createFormPage } from '../../src/WebApp/my-details-page/change-location-form-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -13,23 +13,6 @@ import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import { havingProblemsPage } from '../../../http-error.ts'
 import * as Keyv from '../../../keyv.ts'
-import {
-  changeAvatar,
-  changeCareerStage,
-  changeCareerStageVisibility,
-  changeContactEmailAddress,
-  changeLanguages,
-  changeLanguagesVisibility,
-  changeLocation,
-  changeLocationVisibility,
-  changeOpenForRequests,
-  changeOpenForRequestsVisibility,
-  changeResearchInterests,
-  changeResearchInterestsVisibility,
-  myDetails,
-  removeAvatar,
-  verifyContactEmailAddress,
-} from '../../../my-details-page/index.ts'
 import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
@@ -47,6 +30,23 @@ import {
 } from '../../connect-orcid/index.ts'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
+import {
+  changeAvatar,
+  changeCareerStage,
+  changeCareerStageVisibility,
+  changeContactEmailAddress,
+  changeLanguages,
+  changeLanguagesVisibility,
+  changeLocation,
+  changeLocationVisibility,
+  changeOpenForRequests,
+  changeOpenForRequestsVisibility,
+  changeResearchInterests,
+  changeResearchInterestsVisibility,
+  myDetails,
+  removeAvatar,
+  verifyContactEmailAddress,
+} from '../../my-details-page/index.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(
