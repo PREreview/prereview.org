@@ -1,7 +1,7 @@
 import { html, plainText } from '../../../html.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const ReviewBeingPublishedPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) => {
   return StreamlinePageResponse({

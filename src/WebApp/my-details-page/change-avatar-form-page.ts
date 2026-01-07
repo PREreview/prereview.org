@@ -4,10 +4,10 @@ import * as E from 'fp-ts/lib/Either.js'
 import { hasAnError, type MissingE, type TooBigE, type WrongTypeE } from '../../form.ts'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeAvatarMatch, myDetailsMatch } from '../../routes.ts'
 import { errorPrefix } from '../../shared-translation-elements.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export interface UploadAvatarForm {
   readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>

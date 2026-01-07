@@ -1,8 +1,8 @@
 import { Array } from 'effect'
-import type { Html } from '../html.ts'
-import type { Page } from '../page.ts'
-import * as StatusCodes from '../StatusCodes.ts'
-import type { User } from '../user.ts'
+import type { Html } from '../../html.ts'
+import type { Page } from '../../page.ts'
+import * as StatusCodes from '../../StatusCodes.ts'
+import type { User } from '../../user.ts'
 import type { FlashMessageSchema } from './FlashMessage.ts'
 
 export type Response =

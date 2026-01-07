@@ -4,8 +4,8 @@ import { P, match } from 'ts-pattern'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Location } from '../../location.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeLocationMatch, myDetailsMatch } from '../../routes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createFormPage = (location: Option.Option<Location>, locale: SupportedLocale) =>
   PageResponse({

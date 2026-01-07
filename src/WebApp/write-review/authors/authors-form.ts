@@ -6,10 +6,10 @@ import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { writeReviewAuthorsMatch, writeReviewPersonaMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
 export interface AuthorsForm {

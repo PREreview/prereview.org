@@ -4,10 +4,10 @@ import rtlDetect from 'rtl-detect'
 import { type Html, type PlainText, html, rawHtml } from './html.ts'
 import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.ts'
 import assets from './manifest.json' with { type: 'json' }
-import type * as Response from './Response/index.ts'
 import * as Routes from './routes.ts'
 import type { UserOnboarding } from './user-onboarding.ts'
 import type { User } from './user.ts'
+import type * as Response from './WebApp/Response/index.ts' // eslint-disable-line import/no-internal-modules
 
 export interface Page {
   readonly locale: SupportedLocale

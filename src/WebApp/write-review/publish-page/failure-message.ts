@@ -1,7 +1,7 @@
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const failureMessage = (locale: SupportedLocale) => {
   const t = translate(locale, 'write-review')

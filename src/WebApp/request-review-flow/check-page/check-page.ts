@@ -3,13 +3,13 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../../review-request.ts'
 import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
 import type { User } from '../../../user.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
 

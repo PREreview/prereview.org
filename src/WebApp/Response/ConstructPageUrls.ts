@@ -7,7 +7,7 @@ import {
   type SupportedLocale,
   type UserSelectableLanguage,
   type UserSelectableLocale,
-} from '../locales/index.ts'
+} from '../../locales/index.ts'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from './Response.ts'
 
 export interface PageUrls {

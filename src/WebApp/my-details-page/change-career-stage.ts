@@ -7,10 +7,10 @@ import { match, P } from 'ts-pattern'
 import { deleteCareerStage, getCareerStage, saveCareerStage } from '../../career-stage.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { LogInResponse, RedirectResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
+import { LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-career-stage-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStage>>

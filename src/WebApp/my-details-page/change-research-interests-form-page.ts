@@ -4,8 +4,8 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../../routes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createFormPage = (researchInterests: Option.Option<ResearchInterests>, locale: SupportedLocale) =>
   PageResponse({

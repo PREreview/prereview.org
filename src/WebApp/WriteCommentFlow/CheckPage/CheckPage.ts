@@ -2,10 +2,10 @@ import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import { type NonEmptyString, ProfileId, type Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const CheckPage = ({
   competingInterests,

@@ -10,7 +10,6 @@ import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Location } from '../../location.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
-import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,
@@ -38,6 +37,7 @@ import { ProfileId } from '../../types/index.ts'
 import { getKeywordName, type KeywordId } from '../../types/Keyword.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import type { User } from '../../user.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export function createPage({
   user,

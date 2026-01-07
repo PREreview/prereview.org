@@ -6,11 +6,11 @@ import type { Uuid } from 'uuid-ts'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { authorInvitePersonaMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { User } from '../../../user.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>

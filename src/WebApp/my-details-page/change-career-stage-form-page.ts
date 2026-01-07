@@ -4,10 +4,10 @@ import { match } from 'ts-pattern'
 import type { CareerStage } from '../../career-stage.ts'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeCareerStageMatch, myDetailsMatch } from '../../routes.ts'
 import { errorPrefix } from '../../shared-translation-elements.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createFormPage = ({
   careerStage,

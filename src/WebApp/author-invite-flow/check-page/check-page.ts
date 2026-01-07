@@ -2,12 +2,12 @@ import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
 import type { User } from '../../../user.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export function checkPage({
   inviteId,

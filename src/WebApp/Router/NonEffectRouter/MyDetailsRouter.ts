@@ -15,7 +15,6 @@ import * as Keyv from '../../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import type * as Response from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
 import { Uuid } from '../../../types/index.ts'
@@ -47,6 +46,7 @@ import {
   removeAvatar,
   verifyContactEmailAddress,
 } from '../../my-details-page/index.ts'
+import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 
 export const MyDetailsRouter = pipe(

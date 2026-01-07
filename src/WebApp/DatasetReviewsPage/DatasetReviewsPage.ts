@@ -6,10 +6,10 @@ import type * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
 import { DefaultLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
-import { TwoUpPageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
+import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
   readonly author: Personas.Persona

@@ -6,11 +6,11 @@ import type { Uuid } from 'uuid-ts'
 import { hasAnError, type InvalidE, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { authorInviteEnterEmailAddressMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export interface EnterEmailAddressForm {
   readonly useInvitedAddress: E.Either<MissingE, 'yes' | 'no' | undefined>

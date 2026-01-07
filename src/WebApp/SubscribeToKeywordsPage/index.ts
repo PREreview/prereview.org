@@ -2,12 +2,12 @@ import { UrlParams } from '@effect/platform'
 import { Array, Effect, Schema } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as Prereviewers from '../../Prereviewers/index.ts'
-import { RedirectResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { Keyword, NonEmptyString } from '../../types/index.ts'
 import { KeywordIdSchema } from '../../types/Keyword.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { RedirectResponse } from '../Response/index.ts'
 import { SubscribeToKeywordsPage as MakeResponse } from './SubscribeToKeywordsPage.ts'
 
 export const SubscribeToKeywordsPage = Effect.succeed(MakeResponse())

@@ -7,10 +7,10 @@ import {
   getLocaleForLanguage,
   UserSelectableLanguages,
   UserSelectableLocales,
-} from '../../src/locales/index.ts'
-import { constructPageUrls } from '../../src/Response/ConstructPageUrls.ts'
-import type { PageResponse } from '../../src/Response/index.ts'
-import * as fc from '../fc.ts'
+} from '../../../src/locales/index.ts'
+import { constructPageUrls } from '../../../src/WebApp/Response/ConstructPageUrls.ts'
+import type { PageResponse } from '../../../src/WebApp/Response/index.ts'
+import * as fc from '../../fc.ts'
 
 describe('constructPageUrls', () => {
   describe('when there is a canonical url', () => {

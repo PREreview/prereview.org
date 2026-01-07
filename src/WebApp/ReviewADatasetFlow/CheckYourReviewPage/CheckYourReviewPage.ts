@@ -5,10 +5,10 @@ import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText } from '../../../html.ts'
 import * as Personas from '../../../Personas/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { Uuid } from '../../../types/uuid.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'author' | 'dataset'> & {
   readonly author: Option.Option<Personas.Persona>

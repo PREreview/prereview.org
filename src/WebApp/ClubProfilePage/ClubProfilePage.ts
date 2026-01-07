@@ -7,12 +7,12 @@ import { translate, type SupportedLocale } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
 import * as PreprintServers from '../../PreprintServers/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import { profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export function createPage({
   club,

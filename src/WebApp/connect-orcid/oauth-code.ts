@@ -9,12 +9,12 @@ import * as D from 'io-ts/lib/Decoder.js'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { maybeGetOrcidToken, saveOrcidToken } from '../../orcid-token.ts'
 import { toUrl } from '../../public-url.ts'
-import { FlashMessageResponse } from '../../Response/index.ts'
 import { connectOrcidMatch, myDetailsMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { User } from '../../user.ts'
+import { FlashMessageResponse } from '../Response/index.ts'
 import { connectFailureMessage } from './failure-message.ts'
 
 export interface OrcidOAuthEnv {

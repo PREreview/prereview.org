@@ -6,7 +6,6 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as PreprintServers from '../../../PreprintServers/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -30,6 +29,7 @@ import { ProfileId } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
 import type { User } from '../../../user.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { CompletedForm } from '../completed-form.ts'
 import { backNav } from '../shared-elements.ts'
 

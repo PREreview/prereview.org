@@ -5,11 +5,11 @@ import { P, match } from 'ts-pattern'
 import { hasAnError, type InvalidE, type MissingE } from '../../form.ts'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../../routes.ts'
 import { errorPrefix } from '../../shared-translation-elements.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'
+import { PageResponse } from '../Response/index.ts'
 
 interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>

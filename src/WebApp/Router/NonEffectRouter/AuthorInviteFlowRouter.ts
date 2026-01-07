@@ -9,7 +9,6 @@ import * as Keyv from '../../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import type * as Response from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { addAuthorToRecordOnZenodo } from '../../../zenodo.ts'
@@ -25,6 +24,7 @@ import {
   authorInviteStart,
   authorInviteVerifyEmailAddress,
 } from '../../author-invite-flow/index.ts'
+import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 
 export const AuthorInviteFlowRouter = pipe(

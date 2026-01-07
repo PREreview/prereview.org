@@ -1,8 +1,8 @@
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type * as Response from '../../Response/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import type * as Response from '../Response/index.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export interface UnableToLoadPrereviews {
   readonly _tag: 'UnableToLoadPrereviews'

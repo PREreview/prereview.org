@@ -7,7 +7,6 @@ import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as PrereviewCoarNotify from '../../../prereview-coar-notify/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import type * as Response from '../../../Response/index.ts'
 import type { ReviewRequestPreprintId } from '../../../review-request.ts'
 import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
@@ -18,6 +17,7 @@ import {
   requestReviewPublished,
   requestReviewStart,
 } from '../../request-review-flow/index.ts'
+import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 
 export const RequestReviewFlowRouter = pipe(

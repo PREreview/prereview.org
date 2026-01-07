@@ -1,5 +1,5 @@
 import { html, plainText } from '../src/html.ts'
-import { PageResponse } from '../src/Response/index.ts'
+import { PageResponse } from '../src/WebApp/Response/index.ts'
 import { expect, test } from './base.ts'
 
 test('visibly hidden when not focussed', async ({ showPage }) => {

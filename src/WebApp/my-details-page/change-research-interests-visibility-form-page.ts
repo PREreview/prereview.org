@@ -3,8 +3,8 @@ import { match } from 'ts-pattern'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../../routes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createFormPage = ({
   locale,

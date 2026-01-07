@@ -2,10 +2,10 @@ import { Boolean, Option, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import type { User } from '../../user.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createMenuPage = ({
   canLogInAsDemoUser = false,

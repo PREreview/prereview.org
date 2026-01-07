@@ -1,10 +1,10 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import type * as Personas from '../../../Personas/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 
 export const ChooseYourPersonaPage = ({

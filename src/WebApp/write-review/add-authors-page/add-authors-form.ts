@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
@@ -14,6 +13,7 @@ import {
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import { backNav, prereviewOfSuffix } from '../shared-elements.ts'
 
 export function addAuthorsForm({

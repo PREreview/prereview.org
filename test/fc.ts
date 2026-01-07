@@ -108,15 +108,6 @@ import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter
 import type { CoarNotifyTargetPreprintId } from '../src/PreprintServers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
-import {
-  type FlashMessageResponse,
-  FlashMessageSchema,
-  type LogInResponse,
-  type PageResponse,
-  type RedirectResponse,
-  type StreamlinePageResponse,
-  type TwoUpPageResponse,
-} from '../src/Response/index.ts'
 import type {
   CompletedReviewRequest,
   IncompleteReviewRequest,
@@ -140,6 +131,15 @@ import type { UserOnboarding } from '../src/user-onboarding.ts'
 import type { User } from '../src/user.ts'
 import type { OrcidOAuthEnv } from '../src/WebApp/connect-orcid/index.ts'
 import type { OAuthEnv } from '../src/WebApp/log-in/index.ts'
+import {
+  type FlashMessageResponse,
+  FlashMessageSchema,
+  type LogInResponse,
+  type PageResponse,
+  type RedirectResponse,
+  type StreamlinePageResponse,
+  type TwoUpPageResponse,
+} from '../src/WebApp/Response/index.ts'
 
 export type Arbitrary<T> = fc.Arbitrary<T>
 

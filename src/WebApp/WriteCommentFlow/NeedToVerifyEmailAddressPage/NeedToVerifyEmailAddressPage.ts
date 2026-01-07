@@ -1,8 +1,8 @@
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { EmailAddress, Uuid } from '../../../types/index.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const NeedToVerifyEmailAddressPage = ({
   commentId,

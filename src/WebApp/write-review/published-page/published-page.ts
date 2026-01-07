@@ -2,9 +2,9 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { preprintReviewsMatch } from '../../../routes.ts'
 import { isScietyPreprint, scietyUrl } from '../../../sciety.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { PublishedReview } from '../published-review.ts'
 
 export const publishedPage = ({

@@ -15,7 +15,6 @@ import {
 } from '../../author-invite.ts'
 import { type Html, html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import { LogInResponse, PageResponse, RedirectResponse } from '../../Response/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -25,6 +24,7 @@ import {
 } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import { LogInResponse, PageResponse, RedirectResponse } from '../Response/index.ts'
 
 export interface Prereview {
   preprint: {

@@ -4,8 +4,8 @@ import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from '../../../contact-email-address.ts'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { authorInviteNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export function needToVerifyEmailAddressPage({
   contactEmailAddress,

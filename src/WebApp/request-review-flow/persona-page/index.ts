@@ -10,12 +10,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import {
-  LogInResponse,
-  type PageResponse,
-  RedirectResponse,
-  type StreamlinePageResponse,
-} from '../../../Response/index.ts'
-import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
   type ReviewRequestPreprintId,
@@ -27,6 +21,12 @@ import {
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
+import {
+  LogInResponse,
+  type PageResponse,
+  RedirectResponse,
+  type StreamlinePageResponse,
+} from '../../Response/index.ts'
 import { personaForm } from './persona-form.ts'
 
 export const requestReviewPersona = ({

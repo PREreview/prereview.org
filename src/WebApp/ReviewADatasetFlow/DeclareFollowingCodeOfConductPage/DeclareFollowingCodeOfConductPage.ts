@@ -1,9 +1,9 @@
 import { Either, Match } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as DeclareFollowingCodeOfConductForm from './DeclareFollowingCodeOfConductForm.ts'
 
 export const DeclareFollowingCodeOfConductPage = ({

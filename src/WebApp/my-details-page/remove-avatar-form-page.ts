@@ -1,9 +1,9 @@
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import { myDetailsMatch, removeAvatarMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const page = (locale: SupportedLocale) =>
   PageResponse({

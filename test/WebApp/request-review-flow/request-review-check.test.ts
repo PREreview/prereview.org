@@ -3,7 +3,6 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
-import { RedirectResponse } from '../../../src/Response/index.ts'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../../src/review-request.ts'
 import {
   requestReviewCheckMatch,
@@ -13,6 +12,7 @@ import {
 } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/check-page/index.ts'
+import { RedirectResponse } from '../../../src/WebApp/Response/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 

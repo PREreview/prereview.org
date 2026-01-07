@@ -3,8 +3,8 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { PageResponse } from '../../../Response/index.ts'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../../../routes.ts'
+import { PageResponse } from '../../Response/index.ts'
 import { nextFormMatch, type Form } from '../form.ts'
 
 const cite = (lang: PreprintTitle['language']) => (text: string) =>

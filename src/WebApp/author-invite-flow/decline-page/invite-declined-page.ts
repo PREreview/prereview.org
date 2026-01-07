@@ -3,9 +3,9 @@ import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { authorInviteDeclineMatch } from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const inviteDeclinedPage = (locale: SupportedLocale, inviteId: Uuid) => {
   const t = translate(locale, 'author-invite-flow')

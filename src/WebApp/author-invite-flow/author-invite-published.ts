@@ -10,7 +10,6 @@ import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../../Response/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -20,6 +19,7 @@ import {
 } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../Response/index.ts'
 
 export interface Prereview {
   doi: Doi

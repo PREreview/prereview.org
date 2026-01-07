@@ -7,11 +7,11 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { deleteLocation, getLocation, saveLocation } from '../../location.ts'
-import { LogInResponse, RedirectResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
+import { LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-location-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeLocation>>

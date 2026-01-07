@@ -6,10 +6,10 @@ import { match } from 'ts-pattern'
 import { deleteAvatar, getAvatar } from '../../avatar.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
+import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { page } from './remove-avatar-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof removeAvatar>>

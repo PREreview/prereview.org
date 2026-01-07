@@ -7,11 +7,11 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { toUrl } from '../../public-url.ts'
-import { LogInResponse, RedirectResponse } from '../../Response/index.ts'
 import { connectOrcidMatch } from '../../routes.ts'
 import { OrcidLocale } from '../../types/index.ts'
 import type { User } from '../../user.ts'
 import type { OrcidOAuthEnv } from '../log-in/index.ts'
+import { LogInResponse, RedirectResponse } from '../Response/index.ts'
 
 export const connectOrcidStart = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
   pipe(

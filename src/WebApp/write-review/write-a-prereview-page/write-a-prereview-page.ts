@@ -7,10 +7,10 @@ import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Preprint } from '../../../Preprints/index.ts'
 import * as PreprintServers from '../../../PreprintServers/index.ts'
-import { PageResponse } from '../../../Response/index.ts'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
 import type { User } from '../../../user.ts'
+import { PageResponse } from '../../Response/index.ts'
 
 export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
   PageResponse({

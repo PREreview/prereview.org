@@ -1,9 +1,9 @@
 import { html, plainText } from '../src/html.ts'
-import { PageResponse } from '../src/Response/index.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
 import type { User } from '../src/user.ts'
+import { PageResponse } from '../src/WebApp/Response/index.ts'
 import { expect, test } from './base.ts'
 
 test('page layout looks right', async ({ showPage }) => {

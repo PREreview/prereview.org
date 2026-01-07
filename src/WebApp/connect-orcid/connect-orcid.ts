@@ -4,10 +4,10 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { maybeGetOrcidToken } from '../../orcid-token.ts'
-import { LogInResponse, RedirectResponse } from '../../Response/index.ts'
 import { connectOrcidMatch, connectOrcidStartMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
+import { LogInResponse, RedirectResponse } from '../Response/index.ts'
 import { connectOrcidPage } from './connect-orcid-page.ts'
 
 export const connectOrcid = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>

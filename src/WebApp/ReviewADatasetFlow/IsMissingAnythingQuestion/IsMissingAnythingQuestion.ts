@@ -1,8 +1,8 @@
 import { Match, Option, String } from 'effect'
 import { html, plainText } from '../../../html.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { IsMissingAnythingForm } from './IsMissingAnythingForm.ts'
 
 export const IsMissingAnythingQuestion = ({

@@ -1,7 +1,7 @@
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import { html, plainText } from '../../../html.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import * as Routes from '../../../routes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const ReviewPublishedPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReviewDetails }) => {
   return StreamlinePageResponse({

@@ -1,9 +1,9 @@
 import { Array } from 'effect'
 import { html, plainText } from '../../html.ts'
-import { PageResponse } from '../../Response/index.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { getKeywordName, type KeywordId } from '../../types/Keyword.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const SubscribeToKeywordsPage = (keywords?: ReadonlyArray<KeywordId>) => {
   return PageResponse({

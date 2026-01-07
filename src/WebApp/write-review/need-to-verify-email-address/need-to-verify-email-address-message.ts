@@ -4,8 +4,8 @@ import type { UnverifiedContactEmailAddress } from '../../../contact-email-addre
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { StreamlinePageResponse } from '../../../Response/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
+import { StreamlinePageResponse } from '../../Response/index.ts'
 import { prereviewOfSuffix } from '../shared-elements.ts'
 
 export const needToVerifyEmailAddressMessage = ({

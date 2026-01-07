@@ -8,7 +8,6 @@ import assets from '../../manifest.json' with { type: 'json' }
 import * as Personas from '../../Personas/index.ts'
 import * as PreprintServers from '../../PreprintServers/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
-import { PageResponse } from '../../Response/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import {
@@ -21,6 +20,7 @@ import {
 } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
+import { PageResponse } from '../Response/index.ts'
 
 export const createPage = ({
   canReviewDatasets = false,

@@ -7,10 +7,10 @@ import { match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../../research-interests.ts'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-research-interests-visibility-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeResearchInterestsVisibility>>

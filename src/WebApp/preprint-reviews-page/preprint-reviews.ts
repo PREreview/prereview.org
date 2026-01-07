@@ -10,13 +10,13 @@ import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Preprint } from '../../Preprints/index.ts'
 import * as PreprintServers from '../../PreprintServers/index.ts'
 import type { PreprintPrereview, RapidPrereview } from '../../Prereviews/index.ts'
-import { TwoUpPageResponse } from '../../Response/index.ts'
 import { isReviewRequestPreprintId } from '../../review-request.ts'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
+import { TwoUpPageResponse } from '../Response/index.ts'
 
 export const createPage = ({
   locale,
