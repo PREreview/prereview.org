@@ -23,7 +23,7 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack, GhostPage, OpenAlexWorks, Zenodo as ZenodoInteractions } from './ExternalInteractions/index.ts'
+import { CommunitySlack, GhostPage, OpenAlexWorks, ZenodoRecords } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
@@ -310,9 +310,9 @@ const commentsForReview = Layer.effect(
     )
 
     return {
-      get: reviewDoi => pipe(ZenodoInteractions.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
+      get: reviewDoi => pipe(ZenodoRecords.getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
       invalidate: prereviewId =>
-        pipe(ZenodoInteractions.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
+        pipe(ZenodoRecords.invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
     }
   }),
 )
@@ -364,7 +364,7 @@ export const Program = pipe(
       DatasetReviews.layer,
       GhostPage.layer,
       CommunitySlack.layer,
-      ZenodoInteractions.layer,
+      ZenodoRecords.layer,
       Layer.effect(
         SessionStore,
         Effect.gen(function* () {

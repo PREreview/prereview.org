@@ -1,7 +1,7 @@
 import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Option, pipe } from 'effect'
-import * as _ from '../../../src/ExternalInteractions/Zenodo/TransformRecordToCommentWithoutText.ts'
+import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/TransformRecordToCommentWithoutText.ts'
 import * as fc from '../../fc.ts'
 
 describe('pickOutTextUrl', () => {

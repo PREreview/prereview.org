@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
 import * as Datasets from '../../Datasets/index.ts'
-import { Zenodo } from '../../ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -22,7 +22,7 @@ export const CreateRecordOnZenodo = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    const recordId = yield* Zenodo.createRecordForDatasetReview({ ...datasetReview, author, dataset, url })
+    const recordId = yield* ZenodoRecords.createRecordForDatasetReview({ ...datasetReview, author, dataset, url })
 
     yield* Commands.markRecordCreatedOnZenodo({ recordId, datasetReviewId })
   },

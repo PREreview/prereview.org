@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { Zenodo } from '../../ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
@@ -9,7 +9,7 @@ export const PublishRecordOnZenodo = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {
     const recordId = yield* Queries.getZenodoRecordId(datasetReviewId)
 
-    yield* Zenodo.publishRecord(recordId)
+    yield* ZenodoRecords.publishRecord(recordId)
 
     yield* Commands.markRecordAsPublishedOnZenodo({ datasetReviewId })
     yield* Commands.markDoiAsActivated({ datasetReviewId })

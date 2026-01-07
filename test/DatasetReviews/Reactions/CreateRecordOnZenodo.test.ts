@@ -4,7 +4,7 @@ import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/CreateRecordOnZenodo.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Zenodo } from '../../../src/ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -37,7 +37,7 @@ describe('CreateRecordOnZenodo', () => {
             Layer.mock(Personas.Personas, {
               getPublicPersona: () => Effect.succeed(publicPersona),
             }),
-            Layer.mock(Zenodo.Zenodo, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
             Layer.succeed(PublicUrl, publicUrl),
           ),
         ),
@@ -70,7 +70,7 @@ describe('CreateRecordOnZenodo', () => {
             Layer.mock(Personas.Personas, {
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
-            Layer.mock(Zenodo.Zenodo, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
             Layer.succeed(PublicUrl, publicUrl),
           ),
         ),
@@ -112,7 +112,7 @@ describe('CreateRecordOnZenodo', () => {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
-            Layer.mock(Zenodo.Zenodo, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
             Layer.succeed(PublicUrl, publicUrl),
           ),
         ),
@@ -146,8 +146,8 @@ describe('CreateRecordOnZenodo', () => {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
-            Layer.mock(Zenodo.Zenodo, {
-              createRecordForDatasetReview: () => new Zenodo.FailedToCreateRecordForDatasetReview({}),
+            Layer.mock(ZenodoRecords.ZenodoRecords, {
+              createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
             }),
             Layer.succeed(PublicUrl, publicUrl),
           ),
@@ -184,7 +184,7 @@ describe('CreateRecordOnZenodo', () => {
               getPublicPersona: () => Effect.succeed(publicPersona),
               getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
             }),
-            Layer.mock(Zenodo.Zenodo, {}),
+            Layer.mock(ZenodoRecords.ZenodoRecords, {}),
             Layer.succeed(PublicUrl, publicUrl),
           ),
         ),
@@ -211,8 +211,8 @@ describe('CreateRecordOnZenodo', () => {
               getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
               getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
             }),
-            Layer.mock(Zenodo.Zenodo, {
-              createRecordForDatasetReview: () => new Zenodo.FailedToCreateRecordForDatasetReview({}),
+            Layer.mock(ZenodoRecords.ZenodoRecords, {
+              createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
             }),
             Layer.succeed(PublicUrl, publicUrl),
           ),
@@ -242,7 +242,7 @@ describe('CreateRecordOnZenodo', () => {
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
           Layer.mock(Datasets.Datasets, {}),
           Layer.mock(Personas.Personas, {}),
-          Layer.mock(Zenodo.Zenodo, {}),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {}),
           Layer.succeed(PublicUrl, publicUrl),
         ),
       ),

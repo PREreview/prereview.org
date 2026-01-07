@@ -11,7 +11,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from '../../../email.ts'
-import { OpenAlexWorks, Zenodo } from '../../../ExternalInteractions/index.ts'
+import { OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../../legacy-prereview.ts'
@@ -560,7 +560,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     ),
     RTE.chainFirstW(([, review]) =>
       EffectToFpts.toReaderTaskEither(
-        Zenodo.invalidatePrereviewInCache({
+        ZenodoRecords.invalidatePrereviewInCache({
           prereviewId: review,
           preprintId: newPrereview.preprint.id,
           user: newPrereview.user,

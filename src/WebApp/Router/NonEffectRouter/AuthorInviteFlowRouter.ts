@@ -4,7 +4,7 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { createContactEmailAddressVerificationEmailForInvitedAuthor, sendEmail } from '../../../email.ts'
-import { Zenodo } from '../../../ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
@@ -123,7 +123,10 @@ export const AuthorInviteFlowRouter = pipe(
             pipe(
               addAuthorToRecordOnZenodo(id, user, persona),
               RTE.chainFirstTaskEitherKW(() =>
-                EffectToFpts.toTaskEither(Zenodo.invalidatePrereviewInCache({ prereviewId: id, user }), env.runtime),
+                EffectToFpts.toTaskEither(
+                  ZenodoRecords.invalidatePrereviewInCache({ prereviewId: id, user }),
+                  env.runtime,
+                ),
               ),
             ),
           {

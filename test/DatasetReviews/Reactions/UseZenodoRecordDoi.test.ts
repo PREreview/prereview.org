@@ -3,7 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/UseZenodoRecordDoi.ts'
-import { Zenodo } from '../../../src/ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
@@ -19,7 +19,7 @@ describe('UseZenodoRecordDoi', () => {
         Effect.provide(
           Layer.mergeAll(
             Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => Effect.void }),
-            Layer.mock(Zenodo.Zenodo, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
           ),
         ),
         EffectTest.run,
@@ -45,7 +45,7 @@ describe('UseZenodoRecordDoi', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
-          Layer.mock(Zenodo.Zenodo, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
         ),
       ),
       EffectTest.run,
@@ -61,8 +61,8 @@ describe('UseZenodoRecordDoi', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-          Layer.mock(Zenodo.Zenodo, {
-            getDoiForDatasetReviewRecord: () => new Zenodo.FailedToGetRecordForDatasetReview({}),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {
+            getDoiForDatasetReviewRecord: () => new ZenodoRecords.FailedToGetRecordForDatasetReview({}),
           }),
         ),
       ),

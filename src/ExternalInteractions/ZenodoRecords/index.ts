@@ -23,8 +23,8 @@ export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecor
 
 export { FailedToPublishRecord } from './PublishRecord/index.ts'
 
-export class Zenodo extends Context.Tag('Zenodo')<
-  Zenodo,
+export class ZenodoRecords extends Context.Tag('ZenodoRecords')<
+  ZenodoRecords,
   {
     createRecordForDatasetReview: (
       ...args: Parameters<typeof CreateRecordForDatasetReview>
@@ -48,9 +48,9 @@ export class Zenodo extends Context.Tag('Zenodo')<
 >() {}
 
 export const { createRecordForDatasetReview, getDoiForDatasetReviewRecord, publishRecord } =
-  Effect.serviceFunctions(Zenodo)
+  Effect.serviceFunctions(ZenodoRecords)
 
-export const make: Effect.Effect<typeof Zenodo.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
+export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
   const context = yield* Effect.andThen(Effect.context<ZenodoApi.Zenodo>(), Context.omit(Scope.Scope))
 
   return {
@@ -60,7 +60,7 @@ export const make: Effect.Effect<typeof Zenodo.Service, never, ZenodoApi.Zenodo>
   }
 })
 
-export const layer = Layer.effect(Zenodo, make)
+export const layer = Layer.effect(ZenodoRecords, make)
 
 export const getCommentsForPrereviewFromZenodo = (
   id: Doi.Doi,

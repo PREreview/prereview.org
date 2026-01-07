@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { Array, Effect, Redacted } from 'effect'
 import { Zenodo } from '../../../src/ExternalApis/index.ts'
-import * as _ from '../../../src/ExternalInteractions/Zenodo/ConstructUrlsToInvalidatePrereview.ts'
+import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/ConstructUrlsToInvalidatePrereview.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/index.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'

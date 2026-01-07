@@ -3,7 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/PublishRecordOnZenodo.ts'
-import { Zenodo } from '../../../src/ExternalInteractions/index.ts'
+import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
@@ -21,7 +21,7 @@ describe('PublishRecordOnZenodo', () => {
             markDoiAsActivated: () => Effect.void,
           }),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getZenodoRecordId: () => Effect.succeed(recordId) }),
-          Layer.mock(Zenodo.Zenodo, { publishRecord: () => Effect.void }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { publishRecord: () => Effect.void }),
         ),
       ),
       EffectTest.run,
@@ -51,7 +51,7 @@ describe('PublishRecordOnZenodo', () => {
             markDoiAsActivated: () => error,
           }),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getZenodoRecordId: () => Effect.succeed(recordId) }),
-          Layer.mock(Zenodo.Zenodo, { publishRecord: () => Effect.void }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { publishRecord: () => Effect.void }),
         ),
       ),
       EffectTest.run,
@@ -81,7 +81,7 @@ describe('PublishRecordOnZenodo', () => {
             markDoiAsActivated: () => Effect.void,
           }),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getZenodoRecordId: () => Effect.succeed(recordId) }),
-          Layer.mock(Zenodo.Zenodo, { publishRecord: () => Effect.void }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { publishRecord: () => Effect.void }),
         ),
       ),
       EffectTest.run,
@@ -98,7 +98,7 @@ describe('PublishRecordOnZenodo', () => {
         Layer.mergeAll(
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getZenodoRecordId: () => Effect.succeed(recordId) }),
-          Layer.mock(Zenodo.Zenodo, { publishRecord: () => new Zenodo.FailedToPublishRecord({}) }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { publishRecord: () => new ZenodoRecords.FailedToPublishRecord({}) }),
         ),
       ),
       EffectTest.run,
@@ -122,7 +122,7 @@ describe('PublishRecordOnZenodo', () => {
         Layer.mergeAll(
           Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
           Layer.mock(DatasetReviews.DatasetReviewQueries, { getZenodoRecordId: () => error }),
-          Layer.mock(Zenodo.Zenodo, {}),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {}),
         ),
       ),
       EffectTest.run,
