@@ -60,7 +60,6 @@ import {
 } from '../src/keyv.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
-import { IsUserBlocked } from '../src/log-in/index.ts'
 import * as Nodemailer from '../src/nodemailer.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
@@ -74,6 +73,7 @@ import * as TemplatePage from '../src/TemplatePage.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
+import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 
 export { expect } from '@playwright/test'
 

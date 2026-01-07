@@ -27,7 +27,6 @@ import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
-import { IsUserBlocked } from './log-in/index.ts'
 import * as Nodemailer from './nodemailer.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as PrereviewCoarNotify from './prereview-coar-notify/index.ts'
@@ -39,6 +38,7 @@ import * as SlackOauth from './SlackOauth.ts'
 import * as TemplatePage from './TemplatePage.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
+import { IsUserBlocked } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({

@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { accessDeniedMessage } from '../../src/log-in/access-denied-message.ts'
+import { accessDeniedMessage } from '../../src/WebApp/log-in/access-denied-message.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -30,7 +30,6 @@ import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
 import * as LegacyPrereview from './legacy-prereview.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
-import { GetPseudonym } from './log-in/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as Personas from './Personas/index.ts'
@@ -47,6 +46,7 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import { Uuid } from './types/index.ts'
 import * as Inbox from './WebApp/Inbox/index.ts' // eslint-disable-line import/no-internal-modules
 import * as WebApp from './WebApp/index.ts'
+import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
 import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
 import * as ZenodoInteractions from './Zenodo/index.ts'

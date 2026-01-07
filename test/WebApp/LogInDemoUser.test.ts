@@ -1,13 +1,13 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
-import { Locale } from '../src/Context.ts'
-import * as FeatureFlags from '../src/FeatureFlags.ts'
-import * as _ from '../src/LogInDemoUser.ts'
-import * as StatusCodes from '../src/StatusCodes.ts'
-import { NonEmptyString } from '../src/types/NonEmptyString.ts'
-import * as EffectTest from './EffectTest.ts'
-import * as fc from './fc.ts'
+import { Locale } from '../../src/Context.ts'
+import * as FeatureFlags from '../../src/FeatureFlags.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import * as _ from '../../src/WebApp/LogInDemoUser.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
 describe('LogInDemoUser', () => {
   test.prop([fc.supportedLocale()])('when can log in as the demo user', locale =>

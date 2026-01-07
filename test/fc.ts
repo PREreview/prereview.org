@@ -52,7 +52,6 @@ import {
   UserSelectableLocales,
 } from '../src/locales/index.ts'
 import type { Location } from '../src/location.ts'
-import type { OAuthEnv } from '../src/log-in/index.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
 import * as Personas from '../src/Personas/index.ts'
@@ -140,6 +139,7 @@ import { type TopicId, topicIds } from '../src/types/Topic.ts'
 import type { UserOnboarding } from '../src/user-onboarding.ts'
 import type { User } from '../src/user.ts'
 import type { OrcidOAuthEnv } from '../src/WebApp/connect-orcid/index.ts'
+import type { OAuthEnv } from '../src/WebApp/log-in/index.ts'
 
 export type Arbitrary<T> = fc.Arbitrary<T>
 
