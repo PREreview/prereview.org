@@ -2,11 +2,11 @@ import { Effect } from 'effect'
 import rtlDetect from 'rtl-detect'
 import { Locale } from '../Context.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
-import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { fixHeadingLevels, html, plainText } from '../html.ts'
 import { translate, type SupportedLocale } from '../locales/index.ts'
 import { PageResponse } from '../Response/index.ts'
 import * as Routes from '../routes.ts'
+import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
 
 export const EdiaStatementPage = Effect.gen(function* () {
   const locale = yield* Locale

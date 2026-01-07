@@ -8,11 +8,11 @@ import { P, match } from 'ts-pattern'
 import { saveAvatar } from '../../avatar.ts'
 import { missingE, tooBigE, wrongTypeE } from '../../form.ts'
 import type { EnvFor } from '../../Fpts.ts'
-import { havingProblemsPage } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { FlashMessageResponse, LogInResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
+import { havingProblemsPage } from '../http-error.ts'
 import { createPage } from './change-avatar-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeAvatar>>

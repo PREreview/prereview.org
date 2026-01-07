@@ -6,11 +6,11 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { type CareerStage, getCareerStage, saveCareerStage } from '../../career-stage.ts'
 import type { EnvFor } from '../../Fpts.ts'
-import { havingProblemsPage } from '../../http-error.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../../Response/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import type { User } from '../../user.ts'
+import { havingProblemsPage } from '../http-error.ts'
 import { createFormPage } from './change-career-stage-visibility-form-page.ts'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStageVisibility>>

@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
-import { Locale } from './Context.ts'
+import { Locale } from '../Context.ts'
+import type { SupportedLocale } from '../locales/index.ts'
 import { HavingProblemsPage } from './HavingProblemsPage/index.ts'
-import type { SupportedLocale } from './locales/index.ts'
 import { NoPermissionPage } from './NoPermissionPage/index.ts'
 import { PageNotFound } from './PageNotFound/index.ts'
 

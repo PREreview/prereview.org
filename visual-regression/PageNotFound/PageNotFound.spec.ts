@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { createPageNotFound } from '../../src/PageNotFound/PageNotFound.ts'
+import { createPageNotFound } from '../../src/WebApp/PageNotFound/PageNotFound.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -15,7 +15,6 @@ import {
 } from '../../../author-invite.ts'
 import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
 import type { Html } from '../../../html.ts'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../../http-error.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   LogInResponse,
@@ -31,6 +30,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import { checkPage } from './check-page.ts'
 import { failureMessage } from './failure-message.ts'
 

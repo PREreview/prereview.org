@@ -1,4 +1,4 @@
-import { createHavingProblemsPage } from '../../src/HavingProblemsPage/HavingProblemsPage.ts'
+import { createHavingProblemsPage } from '../../src/WebApp/HavingProblemsPage/HavingProblemsPage.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { expect, test } from '../base.ts'
 
