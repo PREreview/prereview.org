@@ -1,16 +1,16 @@
 import { Array, flow, identity, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { getClubName } from '../Clubs/index.ts'
-import { type Html, html, plainText, rawHtml } from '../html.ts'
-import { type SupportedLocale, translate } from '../locales/index.ts'
-import assets from '../manifest.json' with { type: 'json' }
-import * as Personas from '../Personas/index.ts'
-import * as PreprintServers from '../PreprintServers/index.ts'
-import type * as Prereviews from '../Prereviews/index.ts'
-import { PageResponse } from '../Response/index.ts'
-import type * as ReviewRequests from '../ReviewRequests/index.ts'
-import * as Routes from '../routes.ts'
+import { getClubName } from '../../Clubs/index.ts'
+import { type Html, html, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import assets from '../../manifest.json' with { type: 'json' }
+import * as Personas from '../../Personas/index.ts'
+import * as PreprintServers from '../../PreprintServers/index.ts'
+import type * as Prereviews from '../../Prereviews/index.ts'
+import { PageResponse } from '../../Response/index.ts'
+import type * as ReviewRequests from '../../ReviewRequests/index.ts'
+import * as Routes from '../../routes.ts'
 import {
   requestAPrereviewMatch,
   reviewAPreprintMatch,
@@ -18,9 +18,9 @@ import {
   reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
-} from '../routes.ts'
-import { renderDate } from '../time.ts'
-import { getSubfieldName } from '../types/subfield.ts'
+} from '../../routes.ts'
+import { renderDate } from '../../time.ts'
+import { getSubfieldName } from '../../types/subfield.ts'
 
 export const createPage = ({
   canReviewDatasets = false,

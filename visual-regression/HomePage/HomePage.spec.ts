@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import * as Datasets from '../../src/Datasets/index.ts'
-import { createPage } from '../../src/HomePage/HomePage.ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
@@ -9,6 +8,7 @@ import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId
 import * as Prereviews from '../../src/Prereviews/index.js'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import { NonEmptyString, OrcidId, Uuid } from '../../src/types/index.ts'
+import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
