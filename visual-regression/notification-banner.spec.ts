@@ -1,5 +1,5 @@
 import { html, plainText } from '../src/html.ts'
-import { showNotificationBanner } from '../src/notification-banner.ts'
+import { showNotificationBanner } from '../src/WebApp/notification-banner.ts'
 import { PageResponse } from '../src/WebApp/Response/index.ts'
 import { expect, test } from './base.ts'
 
