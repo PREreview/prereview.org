@@ -2,10 +2,10 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { createPage } from '../../src/preprint-reviews-page/preprint-reviews.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
 import type { PreprintPrereview, RapidPrereview } from '../../src/Prereviews/index.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { createPage } from '../../src/WebApp/preprint-reviews-page/preprint-reviews.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showTwoUpPage }) => {

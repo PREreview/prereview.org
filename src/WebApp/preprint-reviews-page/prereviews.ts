@@ -1,7 +1,7 @@
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { PreprintId } from '../Preprints/index.ts'
-import type { PreprintPrereview } from '../Prereviews/index.ts'
+import type { PreprintId } from '../../Preprints/index.ts'
+import type { PreprintPrereview } from '../../Prereviews/index.ts'
 
 export interface GetPrereviewsEnv {
   getPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<PreprintPrereview>>

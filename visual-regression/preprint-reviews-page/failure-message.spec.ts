@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { failureMessage } from '../../src/preprint-reviews-page/failure-message.ts'
+import { failureMessage } from '../../src/WebApp/preprint-reviews-page/failure-message.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
