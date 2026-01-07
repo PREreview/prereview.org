@@ -1,8 +1,8 @@
 import { Config, Context, Effect, Layer, Option } from 'effect'
-import * as FeatureFlags from './FeatureFlags.ts'
-import type { Html } from './html.ts'
+import * as FeatureFlags from '../FeatureFlags.ts'
+import type { Html } from '../html.ts'
+import { PublicUrl } from '../public-url.ts'
 import { type Page, page as templatePage } from './page.ts'
-import { PublicUrl } from './public-url.ts'
 
 export type { Page } from './page.ts'
 

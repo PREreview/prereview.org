@@ -35,10 +35,10 @@ import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import * as SlackOauth from './SlackOauth.ts'
-import * as TemplatePage from './TemplatePage.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam } from './user.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
+import * as TemplatePage from './WebApp/TemplatePage.ts' // eslint-disable-line import/no-internal-modules
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({

@@ -1,13 +1,13 @@
 import { Array, Boolean, HashMap, String, Tuple, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { type Html, type PlainText, html, rawHtml } from './html.ts'
-import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from './locales/index.ts'
-import assets from './manifest.json' with { type: 'json' }
-import * as Routes from './routes.ts'
-import type { UserOnboarding } from './user-onboarding.ts'
-import type { User } from './user.ts'
-import type * as Response from './WebApp/Response/index.ts' // eslint-disable-line import/no-internal-modules
+import { type Html, type PlainText, html, rawHtml } from '../html.ts'
+import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate } from '../locales/index.ts'
+import assets from '../manifest.json' with { type: 'json' }
+import * as Routes from '../routes.ts'
+import type { UserOnboarding } from '../user-onboarding.ts'
+import type { User } from '../user.ts'
+import type * as Response from './Response/index.ts'
 
 export interface Page {
   readonly locale: SupportedLocale

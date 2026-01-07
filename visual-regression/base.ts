@@ -3,7 +3,7 @@ import { Match, String, pipe } from 'effect'
 import path from 'path'
 import type { Html } from '../src/html.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
-import { type Page, page as templatePage } from '../src/page.ts'
+import { type Page, page as templatePage } from '../src/WebApp/page.ts'
 import {
   PageResponse,
   type StreamlinePageResponse,

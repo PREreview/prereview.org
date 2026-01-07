@@ -69,11 +69,11 @@ import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import { SlackOauth } from '../src/SlackOauth.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import * as TemplatePage from '../src/TemplatePage.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
+import * as TemplatePage from '../src/WebApp/TemplatePage.ts'
 
 export { expect } from '@playwright/test'
 

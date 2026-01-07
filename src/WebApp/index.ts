@@ -1,8 +1,8 @@
 import { FileSystem, HttpServer, Multipart } from '@effect/platform'
 import { flow, Layer, Option, pipe } from 'effect'
 import * as HttpMiddleware from '../HttpMiddleware/index.ts'
-import * as TemplatePage from '../TemplatePage.ts'
 import { Router } from './Router/index.ts'
+import * as TemplatePage from './TemplatePage.ts'
 
 export const layer = pipe(
   Router,
