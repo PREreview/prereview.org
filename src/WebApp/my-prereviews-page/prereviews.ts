@@ -1,8 +1,8 @@
 import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
-import type { RecentDatasetPrereview, RecentPreprintPrereview } from '../Prereviews/index.ts'
-import type { User } from '../user.ts'
+import type { RecentDatasetPrereview, RecentPreprintPrereview } from '../../Prereviews/index.ts'
+import type { User } from '../../user.ts'
 import { UnableToLoadPrereviews } from './unable-to-load-prereviews.ts'
 
 export type Prereview = RecentPreprintPrereview | RecentDatasetPrereview

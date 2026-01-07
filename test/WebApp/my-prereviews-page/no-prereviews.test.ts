@@ -2,9 +2,9 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as _ from '../../src/my-prereviews-page/no-prereviews.ts'
-import { myPrereviewsMatch } from '../../src/routes.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as _ from '../../../src/WebApp/my-prereviews-page/no-prereviews.ts'
+import { myPrereviewsMatch } from '../../../src/routes.ts'
 import * as fc from './fc.ts'
 
 describe('ensureThereArePrereviews', () => {

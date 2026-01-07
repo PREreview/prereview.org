@@ -1,8 +1,8 @@
-import type { Prereview } from '../../src/my-prereviews-page/prereviews.ts'
-import { RecentDatasetPrereview, RecentPreprintPrereview } from '../../src/Prereviews/Prereview.ts'
-import * as fc from '../fc.ts'
+import { RecentDatasetPrereview, RecentPreprintPrereview } from '../../../src/Prereviews/Prereview.ts'
+import type { Prereview } from '../../../src/WebApp/my-prereviews-page/prereviews.ts'
+import * as fc from '../../fc.ts'
 
-export * from '../fc.ts'
+export * from '../../fc.ts'
 
 export const localPrereview = (): fc.Arbitrary<Prereview> =>
   fc.oneof(
