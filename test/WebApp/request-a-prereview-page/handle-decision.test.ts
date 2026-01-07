@@ -1,9 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as _ from '../../src/request-a-prereview-page/handle-decision.ts'
-import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as _ from '../../../src/WebApp/request-a-prereview-page/handle-decision.ts'
+import { requestAPrereviewMatch, requestReviewMatch } from '../../../src/routes.ts'
 import * as fc from './fc.ts'
 
 describe('handleDecision', () => {

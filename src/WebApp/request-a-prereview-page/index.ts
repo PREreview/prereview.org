@@ -1,6 +1,6 @@
 import { pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
-import type { SupportedLocale } from '../locales/index.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import { handleDecision } from './handle-decision.ts'
 import { makeDecision } from './make-decision.ts'
 

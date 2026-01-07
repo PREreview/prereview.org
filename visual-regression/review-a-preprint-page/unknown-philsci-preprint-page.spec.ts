@@ -1,6 +1,6 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { PhilsciPreprintId } from '../../src/Preprints/index.ts'
-import { createUnknownPhilsciPreprintPage } from '../../src/review-a-preprint-page/unknown-philsci-preprint-page.ts'
+import { createUnknownPhilsciPreprintPage } from '../../src/WebApp/review-a-preprint-page/unknown-philsci-preprint-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

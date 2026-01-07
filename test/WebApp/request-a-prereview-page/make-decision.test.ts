@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import { Array, Tuple } from 'effect'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import type { ResolvePreprintIdEnv } from '../../src/preprint.ts'
+import type { ResolvePreprintIdEnv } from '../../../src/preprint.ts'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
@@ -16,10 +16,10 @@ import {
   OsfPreprintsPreprintId,
   PreprintIsNotFound,
   PreprintIsUnavailable,
-} from '../../src/Preprints/index.ts'
-import * as _ from '../../src/request-a-prereview-page/make-decision.ts'
-import * as fc from '../fc.ts'
-import { shouldNotBeCalled } from '../should-not-be-called.ts'
+} from '../../../src/Preprints/index.ts'
+import * as _ from '../../../src/WebApp/request-a-prereview-page/make-decision.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('makeDecision', () => {
   describe('when the form has been submitted', () => {

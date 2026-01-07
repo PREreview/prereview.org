@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { unsupportedUrlPage } from '../../src/request-a-prereview-page/unsupported-url-page.ts'
+import { unsupportedUrlPage } from '../../src/WebApp/request-a-prereview-page/unsupported-url-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

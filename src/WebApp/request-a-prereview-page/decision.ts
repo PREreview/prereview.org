@@ -1,5 +1,5 @@
-import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
-import type { ReviewRequestPreprintId } from '../review-request.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
+import type { ReviewRequestPreprintId } from '../../review-request.ts'
 import type * as Form from './form.ts'
 
 export type Decision =
