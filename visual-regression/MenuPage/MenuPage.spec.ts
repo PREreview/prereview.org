@@ -1,10 +1,10 @@
 import { Option } from 'effect'
 import { DefaultLocale } from '../../src/locales/index.ts'
-import { createMenuPage } from '../../src/MenuPage/MenuPage.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { User } from '../../src/user.ts'
+import { createMenuPage } from '../../src/WebApp/MenuPage/MenuPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

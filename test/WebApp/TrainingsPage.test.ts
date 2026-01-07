@@ -1,17 +1,17 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
-import { Locale } from '../src/Context.ts'
-import { GhostPage } from '../src/ExternalInteractions/index.ts'
-import * as _ from '../src/PrivacyPolicyPage.ts'
-import * as StatusCodes from '../src/StatusCodes.ts'
-import * as EffectTest from './EffectTest.ts'
-import * as fc from './fc.ts'
+import { Locale } from '../../src/Context.ts'
+import { GhostPage } from '../../src/ExternalInteractions/index.ts'
+import * as StatusCodes from '../../src/StatusCodes.ts'
+import * as _ from '../../src/WebApp/TrainingsPage.ts'
+import * as EffectTest from '../EffectTest.ts'
+import * as fc from '../fc.ts'
 
-describe('PrivacyPolicyPage', () => {
+describe('TrainingsPage', () => {
   test.prop([fc.supportedLocale()])('when the page cannot be loaded', async locale =>
     Effect.gen(function* () {
-      const actual = yield* _.PrivacyPolicyPage
+      const actual = yield* _.TrainingsPage
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
