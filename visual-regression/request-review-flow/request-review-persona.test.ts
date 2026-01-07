@@ -3,12 +3,12 @@ import * as E from 'fp-ts/lib/Either.js'
 import { missingE } from '../../src/form.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { personaForm } from '../../src/request-review-flow/persona-page/persona-form.ts'
 import type { ReviewRequestPreprintId } from '../../src/review-request.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { User } from '../../src/user.ts'
+import { personaForm } from '../../src/WebApp/request-review-flow/persona-page/persona-form.ts'
 import { expect, test } from '../base.ts'
 
 const user = {

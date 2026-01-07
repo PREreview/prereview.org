@@ -2,12 +2,12 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as _ from '../../src/request-review-flow/index.ts'
-import type { GetReviewRequestEnv } from '../../src/review-request.ts'
-import { requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes.ts'
-import * as fc from '../fc.ts'
-import { shouldNotBeCalled } from '../should-not-be-called.ts'
+import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as _ from '../../../src/WebApp/request-review-flow/index.ts'
+import type { GetReviewRequestEnv } from '../../../src/review-request.ts'
+import { requestReviewMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
+import * as fc from '../../fc.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('requestReviewPublished', () => {
   describe('when the user is logged in', () => {

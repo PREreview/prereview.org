@@ -2,11 +2,11 @@ import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { User } from '../../src/user.ts'
+import { requestReviewPage } from '../../src/WebApp/request-review-flow/request-review-page/request-review-page.ts'
 import { expect, test } from '../base.ts'
 
 const preprint = {
