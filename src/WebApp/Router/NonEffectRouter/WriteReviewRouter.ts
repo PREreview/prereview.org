@@ -11,7 +11,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from '../../../email.ts'
-import { OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
+import { OpenAlexWorks, Zenodo } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../../legacy-prereview.ts'
@@ -25,7 +25,6 @@ import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { generateUuidIO } from '../../../types/uuid.ts'
 import { createRecordOnZenodo } from '../../../zenodo.ts'
-import * as Zenodo from '../../../Zenodo/index.ts'
 import type * as Response from '../../Response/index.ts'
 import {
   type NewPrereview,

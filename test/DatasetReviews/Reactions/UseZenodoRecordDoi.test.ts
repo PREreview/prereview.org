@@ -3,7 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/UseZenodoRecordDoi.ts'
-import * as Zenodo from '../../../src/Zenodo/index.ts'
+import { Zenodo } from '../../../src/ExternalInteractions/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 

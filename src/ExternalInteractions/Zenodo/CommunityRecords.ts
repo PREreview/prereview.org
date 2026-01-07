@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { Effect, pipe, Schema } from 'effect'
 import type { URL } from 'url'
-import { Zenodo } from '../ExternalApis/index.ts'
+import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecordForACommentSchema } from './TransformRecordToCommentWithoutText.ts'
 
 const RecordsSchema = Schema.Struct({

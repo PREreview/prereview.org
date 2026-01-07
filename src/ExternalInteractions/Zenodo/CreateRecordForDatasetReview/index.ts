@@ -1,6 +1,6 @@
 import { Data, Effect } from 'effect'
-import { Zenodo } from '../../ExternalApis/index.ts'
-import { html } from '../../html.ts'
+import { Zenodo } from '../../../ExternalApis/index.ts'
+import { html } from '../../../html.ts'
 import { DatasetReviewToDepositMetadata, type DatasetReview } from './DatasetReviewToDepositMetadata.ts'
 
 export class FailedToCreateRecordForDatasetReview extends Data.TaggedError('FailedToCreateRecordForDatasetReview')<{

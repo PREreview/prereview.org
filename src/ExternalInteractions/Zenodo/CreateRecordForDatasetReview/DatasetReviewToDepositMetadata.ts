@@ -1,9 +1,9 @@
 import { Match, Option, pipe } from 'effect'
-import type * as DatasetReviews from '../../DatasetReviews/index.ts'
-import type * as Datasets from '../../Datasets/index.ts'
-import type { Zenodo } from '../../ExternalApis/index.ts'
-import { html, plainText } from '../../html.ts'
-import * as Personas from '../../Personas/index.ts'
+import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import type * as Datasets from '../../../Datasets/index.ts'
+import type { Zenodo } from '../../../ExternalApis/index.ts'
+import { html, plainText } from '../../../html.ts'
+import * as Personas from '../../../Personas/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'dataset'> & {
   readonly author: Personas.Persona

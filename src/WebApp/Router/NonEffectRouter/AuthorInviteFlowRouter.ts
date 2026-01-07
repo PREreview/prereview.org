@@ -4,6 +4,7 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { createContactEmailAddressVerificationEmailForInvitedAuthor, sendEmail } from '../../../email.ts'
+import { Zenodo } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
@@ -12,7 +13,6 @@ import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
 import { addAuthorToRecordOnZenodo } from '../../../zenodo.ts'
-import * as Zenodo from '../../../Zenodo/index.ts'
 import {
   authorInvite,
   authorInviteCheck,

@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
+import { Zenodo } from '../../ExternalInteractions/index.ts'
 import type { Uuid } from '../../types/index.ts'
-import * as Zenodo from '../../Zenodo/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 

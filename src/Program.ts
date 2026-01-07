@@ -23,7 +23,7 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack, GhostPage, OpenAlexWorks } from './ExternalInteractions/index.ts'
+import { CommunitySlack, GhostPage, OpenAlexWorks, Zenodo as ZenodoInteractions } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
@@ -49,7 +49,6 @@ import * as WebApp from './WebApp/index.ts'
 import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
 import { createCommentOnZenodo, publishDepositionOnZenodo } from './zenodo.ts'
-import * as ZenodoInteractions from './Zenodo/index.ts'
 
 const getPseudonym = Layer.effect(
   GetPseudonym,
