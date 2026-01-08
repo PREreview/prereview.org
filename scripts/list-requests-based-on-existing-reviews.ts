@@ -24,9 +24,18 @@ const setUpFetch = Layer.effect(FetchHttpClient.Fetch, FetchHttpClient.makeFetch
 const program = Effect.gen(function* () {
   const prereviews = yield* Prereviews.getForProfile(ProfileId.forOrcid(orcidId))
 
+  const preprintIds = pipe(
+    prereviews,
+    Array.filter(prereview => prereview._tag === 'RecentPreprintPrereview'),
+    Array.map(prereview => prereview.preprint.id),
+    Array.filter(preprintId => preprintId._tag !== 'PhilsciPreprintId'),
+    Array.map(preprintId => preprintId.value),
+    Array.dedupe,
+  )
+
   const terminal = yield* Terminal.Terminal
 
-  yield* terminal.display(prereviews.length.toString())
+  yield* Effect.forEach(preprintIds, preprintId => terminal.display(`${preprintId}\n`))
 })
 
 pipe(
