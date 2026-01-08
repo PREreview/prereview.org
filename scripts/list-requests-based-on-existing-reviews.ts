@@ -6,7 +6,8 @@ import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as EventStore from '../src/EventStore.ts'
-import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci, Zenodo } from '../src/ExternalApis/index.ts'
+import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from '../src/ExternalApis/index.ts'
+import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
 import * as FetchHttpClient from '../src/FetchHttpClient.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import * as LoggingHttpClient from '../src/LoggingHttpClient.ts'
@@ -28,14 +29,22 @@ const program = Effect.gen(function* () {
     prereviews,
     Array.filter(prereview => prereview._tag === 'RecentPreprintPrereview'),
     Array.map(prereview => prereview.preprint.id),
-    Array.filter(preprintId => preprintId._tag !== 'PhilsciPreprintId'),
-    Array.map(preprintId => preprintId.value),
     Array.dedupe,
+  )
+
+  const preprintKeywords = yield* pipe(
+    preprintIds,
+    Effect.forEach(
+      Effect.fn(function* (preprintId) {
+        const work = yield* OpenAlexWorks.getCategoriesForAReviewRequest(preprintId)
+        return [preprintId, work.keywords] as const
+      }),
+    ),
   )
 
   const terminal = yield* Terminal.Terminal
 
-  yield* Effect.forEach(preprintIds, preprintId => terminal.display(`${preprintId}\n`))
+  yield* Effect.forEach(preprintKeywords, item => terminal.display(`${item[0].value}: ${item[1].join(',')}\n`))
 })
 
 pipe(
@@ -43,7 +52,15 @@ pipe(
   Effect.provide(
     pipe(
       Layer.mergeAll(NodeTerminal.layer, Prereviews.layer),
-      Layer.provide(Layer.mergeAll(DatasetReviews.queriesLayer, Datasets.layer, Preprints.layer, Personas.layer)),
+      Layer.provideMerge(
+        Layer.mergeAll(
+          DatasetReviews.queriesLayer,
+          Datasets.layer,
+          Preprints.layer,
+          Personas.layer,
+          OpenAlexWorks.layer,
+        ),
+      ),
       Layer.provide(
         Layer.mergeAll(
           Layer.effect(
@@ -59,6 +76,7 @@ pipe(
             append: () => new EventStore.FailedToCommitEvent({}),
           }),
           Orcid.layer,
+          OpenAlex.layer,
           Crossref.layer,
           Datacite.layer,
           JapanLinkCenter.layer,
