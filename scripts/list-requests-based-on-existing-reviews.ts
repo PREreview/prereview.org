@@ -2,6 +2,7 @@
 import { Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
 import { Array, Config, Effect, Layer, Logger, LogLevel, pipe } from 'effect'
+import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -13,6 +14,7 @@ import * as Personas from '../src/Personas/index.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { PublicUrl } from '../src/public-url.ts'
+import * as Redis from '../src/Redis.ts'
 import { OrcidId, ProfileId } from '../src/types/index.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
@@ -82,11 +84,28 @@ pipe(
         ),
       ),
       Layer.provide(setUpFetch),
+      Layer.provide(CachingHttpClient.layer('1 day')),
+      Layer.provide(CachingHttpClient.layerRevalidationQueue),
+      Layer.provide(CachingHttpClient.layerPersistedToRedis),
+      Layer.provide(
+        Redis.layerHttpCacheConfig(
+          Config.all({
+            primaryUri: Config.redacted(Redis.httpCacheRedisUri),
+            readonlyFallbackUri: Config.redacted(
+              pipe(
+                Config.url('HTTP_CACHE_READONLY_FALLBACK_REDIS_URI'),
+                Config.orElse(() => Redis.httpCacheRedisUri),
+              ),
+            ),
+          }),
+        ),
+      ),
       Layer.provide(LoggingHttpClient.layer),
       Layer.provide(NodeHttpClient.layer),
       Layer.provide(Layer.succeed(PublicUrl, new URL('https://prereview.org/'))),
     ),
   ),
+  Effect.scoped,
   Logger.withMinimumLogLevel(LogLevel.Debug),
   NodeRuntime.runMain(),
 )
