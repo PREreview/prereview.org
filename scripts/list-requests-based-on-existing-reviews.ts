@@ -23,7 +23,7 @@ const program = Effect.gen(function* () {
 
   const terminal = yield* Terminal.Terminal
 
-  yield* terminal.display(JSON.stringify(prereviews))
+  yield* terminal.display(prereviews.length.toString())
 })
 
 pipe(
@@ -36,7 +36,10 @@ pipe(
         Layer.mergeAll(
           Layer.effect(
             Zenodo.ZenodoApi,
-            Config.all({ key: Config.redacted('ZENODO_API_KEY'), origin: Config.url('ZENODO_URL') }),
+            Config.all({
+              key: Config.redacted('ZENODO_API_KEY'),
+              origin: Config.succeed(new URL('https://zenodo.org/')),
+            }),
           ),
           Layer.succeed(EventStore.EventStore, {
             all: new EventStore.FailedToGetEvents({}),
