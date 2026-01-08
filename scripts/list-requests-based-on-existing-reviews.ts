@@ -1,13 +1,14 @@
 /* eslint-disable import/no-internal-modules */
 import { Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
-import { Array, Config, Effect, Layer, pipe } from 'effect'
+import { Array, Config, Effect, Layer, Logger, LogLevel, pipe } from 'effect'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as EventStore from '../src/EventStore.ts'
 import { Crossref, Datacite, JapanLinkCenter, Orcid, Philsci, Zenodo } from '../src/ExternalApis/index.ts'
 import * as FetchHttpClient from '../src/FetchHttpClient.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
+import * as LoggingHttpClient from '../src/LoggingHttpClient.ts'
 import * as Personas from '../src/Personas/index.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
@@ -81,9 +82,11 @@ pipe(
         ),
       ),
       Layer.provide(setUpFetch),
+      Layer.provide(LoggingHttpClient.layer),
       Layer.provide(NodeHttpClient.layer),
       Layer.provide(Layer.succeed(PublicUrl, new URL('https://prereview.org/'))),
     ),
   ),
+  Logger.withMinimumLogLevel(LogLevel.Debug),
   NodeRuntime.runMain(),
 )
