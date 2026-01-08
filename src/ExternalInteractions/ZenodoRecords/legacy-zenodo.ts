@@ -310,7 +310,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
               onPseudonym: profile => `metadata.creators.person_or_org.name:"${profile.pseudonym}"`,
             }),
           ].join(' AND '),
-          size: '100',
+          size: '20',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
           access_status: 'open',
@@ -318,7 +318,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
     ),
   RTE.chainW(getCommunityRecords('prereview-reviews')),
   RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(5000)),
+  RTE.local(timeoutRequest(15000)),
   RTE.chainReaderTaskKW(
     flow(
       records => records.hits.hits,
