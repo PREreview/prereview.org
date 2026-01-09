@@ -67,7 +67,7 @@ const program = Effect.gen(function* () {
     Effect.forEach(
       Effect.fn(function* (preprintId) {
         const work = yield* OpenAlexWorks.getCategoriesForAReviewRequest(preprintId)
-        return [preprintId, work.keywords] as const
+        return [preprintId, Array.filter(work.keywords, ({ confidence }) => confidence > 0.5)] as const
       }),
     ),
   )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
