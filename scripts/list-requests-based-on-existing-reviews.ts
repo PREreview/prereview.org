@@ -1,7 +1,7 @@
 /* eslint-disable import/no-internal-modules */
 import { Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
-import { Array, Config, Effect, Layer, Logger, LogLevel, Order, pipe, Record, Tuple } from 'effect'
+import { Array, Config, Effect, Layer, Logger, LogLevel, Number, Order, pipe, Record, Tuple } from 'effect'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
@@ -47,9 +47,10 @@ const program = Effect.gen(function* () {
     preprintKeywords,
     Array.flatMap(Tuple.getSecond),
     Array.groupBy(keyword => keyword.id),
-    Record.map(Array.length),
+    Record.map(Array.map(keyword => keyword.confidence * 10)),
+    Record.map(Array.sort(Order.reverse(Order.number))),
     Record.toEntries,
-    Array.sortWith(([keyword, count]) => count, Order.reverse(Order.number)),
+    Array.sortWith(([keyword, confidences]) => confidences.length, Order.reverse(Order.number)),
   )
 
   const terminal = yield* Terminal.Terminal
@@ -59,7 +60,7 @@ const program = Effect.gen(function* () {
   )
   yield* terminal.display('\n')
   yield* Effect.forEach(countedKeywords, item =>
-    terminal.display(`${getKeywordName(item[0])}: ${item[1].toString()}\n`),
+    terminal.display(`${getKeywordName(item[0])}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')})\n`),
   )
 })
 
