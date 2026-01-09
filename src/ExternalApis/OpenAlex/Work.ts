@@ -13,6 +13,7 @@ export const WorkSchema = Schema.Struct({
     Schema.Struct({
       id: Schema.URL,
       display_name: Schema.String,
+      score: Schema.Number,
     }),
   ),
   topics: Schema.Array(

@@ -9,7 +9,10 @@ import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic
 export interface CategoriesForAReviewRequest {
   readonly language: Option.Option<LanguageCode>
   readonly topics: ReadonlyArray<TopicId>
-  readonly keywords: ReadonlyArray<KeywordId>
+  readonly keywords: ReadonlyArray<{
+    id: KeywordId
+    confidence: number
+  }>
 }
 
 export class CategoriesAreNotAvailable extends Data.TaggedError('CategoriesAreNotAvailable')<{
@@ -26,7 +29,12 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
         ({
           language: Option.orElse(Option.fromNullable(work.language), () => detectLanguage(work.title)),
           topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
-          keywords: Array.filterMap(work.keywords, ({ id }) => Schema.decodeOption(KeywordIdFromOpenAlexUrlSchema)(id)),
+          keywords: Array.filterMap(work.keywords, ({ id, score }) =>
+            pipe(
+              Schema.decodeOption(KeywordIdFromOpenAlexUrlSchema)(id),
+              Option.map(keywordId => ({ id: keywordId, confidence: score })),
+            ),
+          ),
         }) satisfies CategoriesForAReviewRequest,
     ),
     Effect.catchAll(error => new CategoriesAreNotAvailable({ cause: error })),

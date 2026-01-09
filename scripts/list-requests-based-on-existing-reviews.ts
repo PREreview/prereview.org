@@ -46,7 +46,7 @@ const program = Effect.gen(function* () {
   const countedKeywords = pipe(
     preprintKeywords,
     Array.flatMap(Tuple.getSecond),
-    Array.groupBy(keyword => keyword),
+    Array.groupBy(keyword => keyword.id),
     Record.map(Array.length),
     Record.toEntries,
     Array.sortWith(([keyword, count]) => count, Order.reverse(Order.number)),
@@ -55,7 +55,7 @@ const program = Effect.gen(function* () {
   const terminal = yield* Terminal.Terminal
 
   yield* Effect.forEach(preprintKeywords, item =>
-    terminal.display(`${item[0].value}: ${item[1].map(getKeywordName).join(', ')}\n`),
+    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id)).join(', ')}\n`),
   )
   yield* terminal.display('\n')
   yield* Effect.forEach(countedKeywords, item =>
