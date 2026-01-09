@@ -16,7 +16,7 @@ import * as Preprints from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as Redis from '../src/Redis.ts'
-import { OrcidId, ProfileId } from '../src/types/index.ts'
+import { Keyword, OrcidId, ProfileId } from '../src/types/index.ts'
 import { getKeywordName, type KeywordId } from '../src/types/Keyword.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
@@ -53,6 +53,7 @@ const program = Effect.gen(function* () {
           OpenAlexWorks.getCategoriesForAReviewRequest(preprintId),
           Effect.catchIf(
             error => error.cause?._tag === 'WorkIsNotFound',
+
             () => Effect.succeed({ keywords: [] }),
           ),
         )
@@ -95,6 +96,15 @@ const program = Effect.gen(function* () {
     Array.filter(([, , matchingRequests]) => matchingRequests.length > 0 && matchingRequests.length < 10),
   )
 
+  const keywordsOfInterestToUser = Array.map(countedKeywords, ([keyword]) => keyword)
+
+  const matchingKeywords = (keywordsOfMatchedPreprint: ReadonlyArray<{ id: URL }>) =>
+    pipe(
+      keywordsOfMatchedPreprint,
+      Array.map(({ id }) => Schema.decodeSync(Keyword.KeywordIdFromOpenAlexUrlSchema)(id)),
+      Array.intersection(keywordsOfInterestToUser),
+    )
+
   const suggestedPreprints = yield* pipe(
     countedKeywords,
     Array.flatMap(([, , matches]) => matches),
@@ -106,7 +116,7 @@ const program = Effect.gen(function* () {
       doi =>
         pipe(
           OpenAlex.getWork(doi),
-          Effect.andThen(work => Tuple.make(doi, work)),
+          Effect.andThen(work => Tuple.make(doi, work, matchingKeywords(work.keywords))),
         ),
       { concurrency: 10 },
     ),
@@ -126,7 +136,9 @@ const program = Effect.gen(function* () {
   )
   yield* terminal.display('\n')
 
-  yield* Effect.forEach(suggestedPreprints, ([doi, work]) => terminal.display(`${doi} ${work.title}\n`))
+  yield* Effect.forEach(suggestedPreprints, ([doi, work, matches]) =>
+    terminal.display(`${doi} ${work.title} (${matches.map(getKeywordName).join(', ')})\n`),
+  )
 })
 
 pipe(
