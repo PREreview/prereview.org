@@ -1,7 +1,7 @@
 /* eslint-disable import/no-internal-modules */
 import { Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
-import { Array, Config, Effect, Layer, Logger, LogLevel, pipe } from 'effect'
+import { Array, Config, Effect, Layer, Logger, LogLevel, Order, pipe, Record, Tuple } from 'effect'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
@@ -42,9 +42,19 @@ const program = Effect.gen(function* () {
     ),
   )
 
+  const countedKeywords = pipe(
+    preprintKeywords,
+    Array.flatMap(Tuple.getSecond),
+    Array.groupBy(keyword => keyword),
+    Record.map(Array.length),
+    Record.toEntries,
+    Array.sortWith(([keyword, count]) => count, Order.reverse(Order.number)),
+  )
+
   const terminal = yield* Terminal.Terminal
 
   yield* Effect.forEach(preprintKeywords, item => terminal.display(`${item[0].value}: ${item[1].join(',')}\n`))
+  yield* Effect.forEach(countedKeywords, item => terminal.display(`${item[0]}: ${item[1].toString()}\n`))
 })
 
 pipe(
