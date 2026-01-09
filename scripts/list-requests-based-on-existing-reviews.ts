@@ -17,7 +17,7 @@ import * as Prereviews from '../src/Prereviews/index.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as Redis from '../src/Redis.ts'
 import { OrcidId, ProfileId } from '../src/types/index.ts'
-import { getKeywordName } from '../src/types/Keyword.ts'
+import { getKeywordName, type KeywordId } from '../src/types/Keyword.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
 
@@ -33,7 +33,7 @@ const program = Effect.gen(function* () {
     Array.dedupe,
   )
 
-  const preprintKeywords = yield* pipe(
+  const preprintKeywords = (yield* pipe(
     preprintIds,
     Effect.forEach(
       Effect.fn(function* (preprintId) {
@@ -41,7 +41,7 @@ const program = Effect.gen(function* () {
         return [preprintId, work.keywords] as const
       }),
     ),
-  )
+  )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
 
   const countedKeywords = pipe(
     preprintKeywords,
@@ -50,17 +50,19 @@ const program = Effect.gen(function* () {
     Record.map(Array.map(keyword => keyword.confidence * 10)),
     Record.map(Array.sort(Order.reverse(Order.number))),
     Record.toEntries,
-    Array.sortWith(([keyword, confidences]) => confidences.length, Order.reverse(Order.number)),
+    Array.sortWith(([, confidences]) => confidences.length, Order.reverse(Order.number)),
   )
 
   const terminal = yield* Terminal.Terminal
 
   yield* Effect.forEach(preprintKeywords, item =>
-    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id)).join(', ')}\n`),
+    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}\n`),
   )
   yield* terminal.display('\n')
   yield* Effect.forEach(countedKeywords, item =>
-    terminal.display(`${getKeywordName(item[0])}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')})\n`),
+    terminal.display(
+      `${getKeywordName(item[0] as KeywordId)}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')})\n`,
+    ),
   )
 })
 
