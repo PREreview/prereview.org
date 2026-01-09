@@ -1,7 +1,7 @@
 /* eslint-disable import/no-internal-modules */
-import { Terminal } from '@effect/platform'
+import { HttpClient, HttpClientResponse, Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
-import { Array, Config, Effect, Layer, Logger, LogLevel, Number, Order, pipe, Record, Tuple } from 'effect'
+import { Array, Config, Effect, Layer, Logger, LogLevel, Number, Order, pipe, Record, Schema, Tuple } from 'effect'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
@@ -33,6 +33,35 @@ const program = Effect.gen(function* () {
     Array.dedupe,
   )
 
+  const statsRequestsSchema = Schema.Array(
+    Schema.Struct({
+      preprint: Preprints.IndeterminatePreprintIdFromDoiSchema,
+    }),
+  )
+
+  const preprintIdsWithRequest = yield* pipe(
+    HttpClient.get('https://stats.prereview.org/_file/data/requests.5cefb706.json'),
+    Effect.andThen(HttpClientResponse.schemaBodyJson(statsRequestsSchema)),
+    Effect.andThen(Array.map(({ preprint }) => preprint)),
+  )
+
+  const preprintIdsWithRequestKeywords = (yield* pipe(
+    preprintIdsWithRequest,
+    Effect.forEach(
+      Effect.fn(function* (preprintId) {
+        const work = yield* pipe(
+          OpenAlexWorks.getCategoriesForAReviewRequest(preprintId),
+          Effect.catchIf(
+            error => error.cause?._tag === 'WorkIsNotFound',
+            () => Effect.succeed({ keywords: [] }),
+          ),
+        )
+        return [preprintId, work.keywords] as const
+      }),
+      { concurrency: 10 },
+    ),
+  )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
+
   const preprintKeywords = (yield* pipe(
     preprintIds,
     Effect.forEach(
@@ -63,6 +92,10 @@ const program = Effect.gen(function* () {
     terminal.display(
       `${getKeywordName(item[0] as KeywordId)}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')})\n`,
     ),
+  )
+  yield* terminal.display('\n')
+  yield* Effect.forEach(preprintIdsWithRequestKeywords, item =>
+    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}\n`),
   )
 })
 
@@ -130,7 +163,7 @@ pipe(
         ),
       ),
       Layer.provide(setUpFetch),
-      Layer.provide(CachingHttpClient.layer('1 day')),
+      Layer.provideMerge(CachingHttpClient.layer('1 day', '20 seconds')),
       Layer.provide(CachingHttpClient.layerRevalidationQueue),
       Layer.provide(CachingHttpClient.layerPersistedToRedis),
       Layer.provide(
