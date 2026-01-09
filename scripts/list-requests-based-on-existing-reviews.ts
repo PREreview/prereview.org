@@ -75,7 +75,9 @@ const program = Effect.gen(function* () {
   const findRequestedPreprintIdsForAKeyword = (keywordId: string) =>
     pipe(
       preprintIdsWithRequestKeywords,
-      Array.filter(([, keywords]) => Array.some(keywords, ({ id }) => id === keywordId)),
+      Array.filter(([, keywords]) =>
+        Array.some(keywords, ({ id, confidence }) => id === keywordId && confidence > 0.5),
+      ),
       Array.map(Tuple.getFirst),
     )
 
@@ -90,6 +92,7 @@ const program = Effect.gen(function* () {
     Array.map(([keywordId, confidences]) =>
       Tuple.make(keywordId, confidences, findRequestedPreprintIdsForAKeyword(keywordId)),
     ),
+    Array.filter(([, , matchingRequests]) => matchingRequests.length > 0),
   )
 
   const terminal = yield* Terminal.Terminal
@@ -191,6 +194,6 @@ pipe(
     ),
   ),
   Effect.scoped,
-  Logger.withMinimumLogLevel(LogLevel.Debug),
+  Logger.withMinimumLogLevel(LogLevel.Warning),
   NodeRuntime.runMain(),
 )
