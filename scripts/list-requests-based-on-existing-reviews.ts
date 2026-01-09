@@ -17,6 +17,7 @@ import * as Prereviews from '../src/Prereviews/index.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as Redis from '../src/Redis.ts'
 import { OrcidId, ProfileId } from '../src/types/index.ts'
+import { getKeywordName } from '../src/types/Keyword.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
 
@@ -53,8 +54,13 @@ const program = Effect.gen(function* () {
 
   const terminal = yield* Terminal.Terminal
 
-  yield* Effect.forEach(preprintKeywords, item => terminal.display(`${item[0].value}: ${item[1].join(',')}\n`))
-  yield* Effect.forEach(countedKeywords, item => terminal.display(`${item[0]}: ${item[1].toString()}\n`))
+  yield* Effect.forEach(preprintKeywords, item =>
+    terminal.display(`${item[0].value}: ${item[1].map(getKeywordName).join(', ')}\n`),
+  )
+  yield* terminal.display('\n')
+  yield* Effect.forEach(countedKeywords, item =>
+    terminal.display(`${getKeywordName(item[0])}: ${item[1].toString()}\n`),
+  )
 })
 
 pipe(
