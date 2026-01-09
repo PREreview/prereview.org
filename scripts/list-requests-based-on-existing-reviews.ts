@@ -92,7 +92,7 @@ const program = Effect.gen(function* () {
     Array.map(([keywordId, confidences]) =>
       Tuple.make(keywordId, confidences, findRequestedPreprintIdsForAKeyword(keywordId)),
     ),
-    Array.filter(([, , matchingRequests]) => matchingRequests.length > 0),
+    Array.filter(([, , matchingRequests]) => matchingRequests.length > 0 && matchingRequests.length < 10),
   )
 
   const terminal = yield* Terminal.Terminal
