@@ -95,11 +95,21 @@ const program = Effect.gen(function* () {
     Array.filter(([, , matchingRequests]) => matchingRequests.length > 0 && matchingRequests.length < 10),
   )
 
-  const suggestedPreprints = pipe(
+  const suggestedPreprints = yield* pipe(
     countedKeywords,
     Array.flatMap(([, , matches]) => matches),
+    Array.filter(id => id._tag !== 'PhilsciPreprintId'),
     Array.map(id => id.value),
     Array.dedupe,
+    Array.sort(Order.string),
+    Effect.forEach(
+      doi =>
+        pipe(
+          OpenAlex.getWork(doi),
+          Effect.andThen(work => Tuple.make(doi, work)),
+        ),
+      { concurrency: 10 },
+    ),
   )
 
   const terminal = yield* Terminal.Terminal
@@ -116,7 +126,7 @@ const program = Effect.gen(function* () {
   )
   yield* terminal.display('\n')
 
-  yield* terminal.display(suggestedPreprints.join('\n'))
+  yield* Effect.forEach(suggestedPreprints, ([doi, work]) => terminal.display(`${doi} ${work.title}\n`))
 })
 
 pipe(
@@ -133,7 +143,7 @@ pipe(
           OpenAlexWorks.layer,
         ),
       ),
-      Layer.provide(
+      Layer.provideMerge(
         Layer.mergeAll(
           Layer.effect(
             Zenodo.ZenodoApi,
