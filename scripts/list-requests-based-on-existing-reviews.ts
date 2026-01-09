@@ -95,17 +95,28 @@ const program = Effect.gen(function* () {
     Array.filter(([, , matchingRequests]) => matchingRequests.length > 0 && matchingRequests.length < 10),
   )
 
+  const suggestedPreprints = pipe(
+    countedKeywords,
+    Array.flatMap(([, , matches]) => matches),
+    Array.map(id => id.value),
+    Array.dedupe,
+  )
+
   const terminal = yield* Terminal.Terminal
 
   yield* Effect.forEach(preprintKeywords, item =>
     terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}\n`),
   )
   yield* terminal.display('\n')
+
   yield* Effect.forEach(countedKeywords, item =>
     terminal.display(
       `${getKeywordName(item[0] as KeywordId)}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')}) => ${item[2].length}\n`,
     ),
   )
+  yield* terminal.display('\n')
+
+  yield* terminal.display(suggestedPreprints.join('\n'))
 })
 
 pipe(
