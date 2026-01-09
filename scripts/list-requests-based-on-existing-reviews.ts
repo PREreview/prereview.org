@@ -72,6 +72,13 @@ const program = Effect.gen(function* () {
     ),
   )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
 
+  const findRequestedPreprintIdsForAKeyword = (keywordId: string) =>
+    pipe(
+      preprintIdsWithRequestKeywords,
+      Array.filter(([, keywords]) => Array.some(keywords, ({ id }) => id === keywordId)),
+      Array.map(Tuple.getFirst),
+    )
+
   const countedKeywords = pipe(
     preprintKeywords,
     Array.flatMap(Tuple.getSecond),
@@ -80,6 +87,9 @@ const program = Effect.gen(function* () {
     Record.map(Array.sort(Order.reverse(Order.number))),
     Record.toEntries,
     Array.sortWith(([, confidences]) => confidences.length, Order.reverse(Order.number)),
+    Array.map(([keywordId, confidences]) =>
+      Tuple.make(keywordId, confidences, findRequestedPreprintIdsForAKeyword(keywordId)),
+    ),
   )
 
   const terminal = yield* Terminal.Terminal
@@ -90,12 +100,8 @@ const program = Effect.gen(function* () {
   yield* terminal.display('\n')
   yield* Effect.forEach(countedKeywords, item =>
     terminal.display(
-      `${getKeywordName(item[0] as KeywordId)}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')})\n`,
+      `${getKeywordName(item[0] as KeywordId)}: ${item[1].length} (${item[1].map(Number.round(0)).join(', ')}) => ${item[2].length}\n`,
     ),
-  )
-  yield* terminal.display('\n')
-  yield* Effect.forEach(preprintIdsWithRequestKeywords, item =>
-    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}\n`),
   )
 })
 
