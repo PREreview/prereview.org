@@ -4,11 +4,13 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
+import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
+    receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
@@ -24,8 +26,12 @@ type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = neve
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { acceptReviewRequest, categorizeReviewRequest, recordReviewRequestSharedOnTheCommunitySlack } =
-  Effect.serviceFunctions(ReviewRequestCommands)
+export const {
+  receiveReviewRequest,
+  acceptReviewRequest,
+  categorizeReviewRequest,
+  recordReviewRequestSharedOnTheCommunitySlack,
+} = Effect.serviceFunctions(ReviewRequestCommands)
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
@@ -77,6 +83,11 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       )
 
     return {
+      receiveReviewRequest: handleCommand(
+        ReceiveReviewRequest.createFilter,
+        ReceiveReviewRequest.foldState,
+        ReceiveReviewRequest.decide,
+      ),
       acceptReviewRequest: handleCommand(
         AcceptReviewRequest.createFilter,
         AcceptReviewRequest.foldState,
