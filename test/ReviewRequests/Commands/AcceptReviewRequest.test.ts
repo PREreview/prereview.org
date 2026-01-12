@@ -41,13 +41,8 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
 
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
-    receivedAt: fc.instant(),
     acceptedAt: fc.instant(),
-    preprintId: fc.preprintId(),
     reviewRequestId: fc.uuid(),
-    requester: fc.record({
-      name: fc.nonEmptyString(),
-    }),
   })
 
 describe('foldState', () => {

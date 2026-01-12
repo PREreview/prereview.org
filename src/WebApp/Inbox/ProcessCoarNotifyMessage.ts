@@ -34,13 +34,8 @@ export const ProcessCoarNotifyMessage = Effect.fn(
       },
     })
     yield* ReviewRequests.acceptReviewRequest({
-      receivedAt,
       acceptedAt,
-      preprintId,
       reviewRequestId: messageId,
-      requester: {
-        name: message.actor.name,
-      },
     })
   },
   Effect.catchTags({

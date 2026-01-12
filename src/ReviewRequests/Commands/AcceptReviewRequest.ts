@@ -1,18 +1,12 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
-import type * as Preprints from '../../Preprints/index.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Command {
-  readonly receivedAt: Temporal.Instant
   readonly acceptedAt: Temporal.Instant
-  readonly preprintId: Preprints.PreprintId
   readonly reviewRequestId: Uuid.Uuid
-  readonly requester: {
-    readonly name: NonEmptyString.NonEmptyString
-  }
 }
 
 export type Error = Errors.UnknownReviewRequest
