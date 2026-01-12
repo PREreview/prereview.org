@@ -24,7 +24,11 @@ export const createFilter = ({ prereviewerId }: Input) =>
       predicates: { prereviewerId },
     },
     {
-      types: ['ReviewRequestForAPreprintWasAccepted', 'ReviewRequestForAPreprintWasCategorized'],
+      types: [
+        'ReviewRequestForAPreprintWasReceived',
+        'ReviewRequestForAPreprintWasAccepted',
+        'ReviewRequestForAPreprintWasCategorized',
+      ],
     },
   ])
 
@@ -45,11 +49,26 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
         published: Temporal.Instant | undefined
         keywords: ReadonlyArray<KeywordId>
         preprintId: Preprints.IndeterminatePreprintId | undefined
+        received: boolean
       }
     >(),
     (map, event) =>
       Match.valueTags(event, {
         PrereviewerSubscribedToAKeyword: () => map,
+        ReviewRequestForAPreprintWasReceived: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({
+              ...review,
+              received: true,
+            })),
+            () =>
+              Record.set(map, event.reviewRequestId, {
+                published: undefined,
+                keywords: [],
+                preprintId: undefined,
+                received: true,
+              }),
+          ),
         ReviewRequestForAPreprintWasAccepted: event =>
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({
@@ -62,6 +81,7 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
                 published: event.acceptedAt,
                 keywords: [],
                 preprintId: event.preprintId,
+                received: false,
               }),
           ),
         ReviewRequestForAPreprintWasCategorized: event =>
@@ -75,6 +95,7 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
                 published: undefined,
                 keywords: event.keywords,
                 preprintId: undefined,
+                received: false,
               }),
           ),
       }),
@@ -85,6 +106,7 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
       reviewRequest.published !== undefined,
       reviewRequest.preprintId !== undefined,
       Array.some(reviewRequest.keywords, keyword => Array.contains(subscribedKeywords, keyword)),
+      reviewRequest.received,
     ]),
   ) as Record.ReadonlyRecord<
     Uuid.Uuid,
@@ -92,6 +114,7 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
       published: Temporal.Instant
       keywords: ReadonlyArray<KeywordId>
       preprintId: Preprints.IndeterminatePreprintId
+      received: true
     }
   >
 
