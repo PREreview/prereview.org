@@ -14,7 +14,11 @@ export interface RecentReviewRequest {
 export type Result = ReadonlyArray<RecentReviewRequest>
 
 export const filter = Events.EventFilter({
-  types: ['ReviewRequestForAPreprintWasAccepted', 'ReviewRequestForAPreprintWasCategorized'],
+  types: [
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestForAPreprintWasCategorized',
+  ],
 })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
@@ -28,10 +32,25 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
         published: Temporal.Instant | undefined
         topics: ReadonlyArray<TopicId>
         preprintId: Preprints.IndeterminatePreprintId | undefined
+        received: boolean
       }
     >(),
     (map, event) =>
       Match.valueTags(event, {
+        ReviewRequestForAPreprintWasReceived: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({
+              ...review,
+              received: true,
+            })),
+            () =>
+              Record.set(map, event.reviewRequestId, {
+                published: undefined,
+                topics: [],
+                preprintId: undefined,
+                received: true,
+              }),
+          ),
         ReviewRequestForAPreprintWasAccepted: event =>
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({
@@ -44,6 +63,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
                 published: event.acceptedAt,
                 topics: [],
                 preprintId: event.preprintId,
+                received: false,
               }),
           ),
         ReviewRequestForAPreprintWasCategorized: event =>
@@ -57,19 +77,25 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
                 published: undefined,
                 topics: event.topics,
                 preprintId: undefined,
+                received: false,
               }),
           ),
       }),
   )
 
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
-    Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
+    Boolean.every([
+      reviewRequest.published !== undefined,
+      reviewRequest.preprintId !== undefined,
+      reviewRequest.received,
+    ]),
   ) as Record<
     Uuid.Uuid,
     {
       published: Temporal.Instant
       topics: ReadonlyArray<TopicId>
       preprintId: Preprints.IndeterminatePreprintId
+      received: true
     }
   >
 
@@ -81,5 +107,5 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
     ),
   )
 
-  return Array.take(sortedReviewRequests, 5)
+  return Array.take(Array.map(sortedReviewRequests, Struct.omit('received')), 5)
 }
