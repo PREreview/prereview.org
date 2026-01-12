@@ -26,16 +26,10 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
 })
 const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
@@ -173,11 +167,8 @@ describe('decide', () => {
       Either.right(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-            receivedAt: command.receivedAt,
             acceptedAt: command.acceptedAt,
-            preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,
-            requester: command.requester,
           }),
         ),
       ),

@@ -56,11 +56,8 @@ export const decide: {
         Either.right(
           Option.some(
             new Events.ReviewRequestForAPreprintWasAccepted({
-              receivedAt: command.receivedAt,
               acceptedAt: command.acceptedAt,
-              preprintId: command.preprintId,
               reviewRequestId: command.reviewRequestId,
-              requester: command.requester,
             }),
           ),
         ),

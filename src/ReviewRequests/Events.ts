@@ -22,13 +22,8 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
 export class ReviewRequestForAPreprintWasAccepted extends Schema.TaggedClass<ReviewRequestForAPreprintWasAccepted>()(
   'ReviewRequestForAPreprintWasAccepted',
   {
-    receivedAt: Temporal.InstantSchema,
     acceptedAt: Temporal.InstantSchema,
-    preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
-    requester: Schema.Struct({
-      name: NonEmptyString.NonEmptyStringSchema,
-    }),
   },
 ) {}
 

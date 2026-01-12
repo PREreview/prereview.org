@@ -2325,13 +2325,8 @@ export const reviewRequestForAPreprintWasAccepted = ({
 } = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasAccepted> =>
   fc
     .record({
-      receivedAt: instant(),
       acceptedAt: instant(),
-      preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
-      requester: fc.record({
-        name: nonEmptyString(),
-      }),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
 

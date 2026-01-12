@@ -42,16 +42,10 @@ const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceive
 })
 const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 1 }),
-  receivedAt: now.subtract({ hours: 2 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request1Id,
 })
 const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 10 }),
-  receivedAt: now.subtract({ minutes: 20 }),
-  preprintId: preprintId2,
-  requester: requester2,
   reviewRequestId: request1Id,
 })
 const request1Categorized1 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -74,9 +68,6 @@ const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 1 }),
-  receivedAt: now.subtract({ hours: 72 }),
-  preprintId: preprintId1,
-  requester: requester3,
   reviewRequestId: request2Id,
 })
 const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -93,9 +84,6 @@ const request3Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 3 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId3,
-  requester: requester4,
   reviewRequestId: request3Id,
 })
 const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -112,9 +100,6 @@ const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 4 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request4Id,
 })
 const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -131,9 +116,6 @@ const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 5 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request5Id,
 })
 const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -150,9 +132,6 @@ const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 6 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId2,
-  requester: requester2,
   reviewRequestId: request6Id,
 })
 const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -169,9 +148,6 @@ const request7Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 7 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId3,
-  requester: requester3,
   reviewRequestId: request7Id,
 })
 const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -188,9 +164,6 @@ const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 8 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester4,
   reviewRequestId: request8Id,
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -207,9 +180,6 @@ const request9Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived
 })
 const request9Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 9 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId2,
-  requester: requester1,
   reviewRequestId: request9Id,
 })
 const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({

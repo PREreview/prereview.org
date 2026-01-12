@@ -32,23 +32,14 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
 })
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
-  receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') },
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
