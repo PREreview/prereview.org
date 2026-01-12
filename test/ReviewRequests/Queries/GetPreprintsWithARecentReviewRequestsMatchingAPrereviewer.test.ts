@@ -287,7 +287,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     ],
     [
       {
-        preprintId: request1Accepted2.preprintId,
+        preprintId: request1Received2.preprintId,
         firstRequested: request1Accepted2.acceptedAt,
         lastRequested: request1Accepted2.acceptedAt,
         matchingKeywords: [prereviewerSubscribedToKeyword3.keywordId],
@@ -312,7 +312,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     ],
     [
       {
-        preprintId: request1Accepted2.preprintId,
+        preprintId: request1Received2.preprintId,
         firstRequested: request9Accepted.acceptedAt,
         lastRequested: request1Accepted2.acceptedAt,
         matchingKeywords: [prereviewerSubscribedToKeyword3.keywordId],
