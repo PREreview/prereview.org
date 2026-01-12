@@ -25,6 +25,14 @@ export const ProcessCoarNotifyMessage = Effect.fn(
 
     const acceptedAt = yield* Temporal.currentInstant
 
+    yield* ReviewRequests.receiveReviewRequest({
+      receivedAt,
+      preprintId,
+      reviewRequestId: messageId,
+      requester: {
+        name: message.actor.name,
+      },
+    })
     yield* ReviewRequests.acceptReviewRequest({
       receivedAt,
       acceptedAt,

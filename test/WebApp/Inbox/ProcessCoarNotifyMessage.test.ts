@@ -19,7 +19,10 @@ describe('ProcessCoarNotifyMessage', () => {
       }).pipe(
         Effect.provide(
           Layer.mergeAll(
-            Layer.mock(ReviewRequests.ReviewRequestCommands, { acceptReviewRequest: () => Effect.void }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {
+              receiveReviewRequest: () => Effect.void,
+              acceptReviewRequest: () => Effect.void,
+            }),
             Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprintId) }),
           ),
         ),
@@ -41,7 +44,10 @@ describe('ProcessCoarNotifyMessage', () => {
     }).pipe(
       Effect.provide(
         Layer.mergeAll(
-          Layer.mock(ReviewRequests.ReviewRequestCommands, { acceptReviewRequest: () => error }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            receiveReviewRequest: () => error,
+            acceptReviewRequest: () => error,
+          }),
           Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprintId) }),
         ),
       ),
