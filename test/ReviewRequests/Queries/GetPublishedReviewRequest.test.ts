@@ -111,7 +111,9 @@ describe('query', () => {
           fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
           fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
         )
-        .map(([received, accepted]) => Tuple.make(Array.make(received, accepted), reviewRequestId, accepted)),
+        .map(([received, accepted]) =>
+          Tuple.make(Array.make(received, accepted), reviewRequestId, Tuple.make(received, accepted)),
+        ),
     ],
     {
       examples: [
@@ -119,7 +121,7 @@ describe('query', () => {
           [
             [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
             reviewRequestId,
-            reviewRequestForAPreprintWasAccepted1,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
           ],
         ], // accepted
         [
@@ -131,7 +133,7 @@ describe('query', () => {
               reviewRequestForAPreprintWasReceived2,
             ],
             reviewRequestId,
-            reviewRequestForAPreprintWasAccepted2,
+            [reviewRequestForAPreprintWasReceived2, reviewRequestForAPreprintWasAccepted2],
           ],
         ], // multiple times
         [
@@ -142,7 +144,7 @@ describe('query', () => {
               otherReviewRequestForAPreprintWasAccepted,
             ],
             reviewRequestId,
-            reviewRequestForAPreprintWasAccepted1,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
           ],
         ], // other requests
       ],
@@ -152,10 +154,10 @@ describe('query', () => {
 
     expect(actual).toStrictEqual(
       Either.right({
-        author: expected.requester,
-        preprintId: expected.preprintId,
-        id: expected.reviewRequestId,
-        published: expected.acceptedAt,
+        author: expected[0].requester,
+        preprintId: expected[0].preprintId,
+        id: expected[0].reviewRequestId,
+        published: expected[1].acceptedAt,
       }),
     )
   })

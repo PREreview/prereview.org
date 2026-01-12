@@ -55,7 +55,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
           subfields: ReadonlyArray<SubfieldId>
           language: LanguageCode | undefined
           preprintId: Preprints.IndeterminatePreprintId | undefined
-          received: boolean
         }
       >(),
       (map, event) =>
@@ -64,7 +63,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
             Option.getOrElse(
               Record.modifyOption(map, event.reviewRequestId, review => ({
                 ...review,
-                received: true,
+                preprintId: event.preprintId,
               })),
               () =>
                 Record.set(map, event.reviewRequestId, {
@@ -73,8 +72,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
                   fields: [],
                   subfields: [],
                   language: undefined,
-                  preprintId: undefined,
-                  received: true,
+                  preprintId: event.preprintId,
                 }),
             ),
           ReviewRequestForAPreprintWasAccepted: event =>
@@ -82,7 +80,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
               Record.modifyOption(map, event.reviewRequestId, review => ({
                 ...review,
                 published: event.acceptedAt,
-                preprintId: event.preprintId,
               })),
               () =>
                 Record.set(map, event.reviewRequestId, {
@@ -91,8 +88,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
                   fields: [],
                   subfields: [],
                   language: undefined,
-                  preprintId: event.preprintId,
-                  received: false,
+                  preprintId: undefined,
                 }),
             ),
           ReviewRequestForAPreprintWasCategorized: event =>
@@ -112,7 +108,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
                   subfields: Array.map(event.topics, getTopicSubfield),
                   language: event.language,
                   preprintId: undefined,
-                  received: false,
                 }),
             ),
         }),
@@ -124,7 +119,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
         reviewRequest.preprintId !== undefined,
         input.language === undefined || Equal.equals(reviewRequest.language, input.language),
         input.field === undefined || Array.contains(reviewRequest.fields, input.field),
-        reviewRequest.received,
       ]),
     ) as Record<
       Uuid.Uuid,
@@ -135,7 +129,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
         subfields: ReadonlyArray<SubfieldId>
         language: LanguageCode
         preprintId: Preprints.IndeterminatePreprintId
-        received: true
       }
     >
 

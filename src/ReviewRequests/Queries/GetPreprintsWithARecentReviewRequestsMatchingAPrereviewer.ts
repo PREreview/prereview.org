@@ -49,7 +49,6 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
         published: Temporal.Instant | undefined
         keywords: ReadonlyArray<KeywordId>
         preprintId: Preprints.IndeterminatePreprintId | undefined
-        received: boolean
       }
     >(),
     (map, event) =>
@@ -59,14 +58,13 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({
               ...review,
-              received: true,
+              preprintId: event.preprintId,
             })),
             () =>
               Record.set(map, event.reviewRequestId, {
                 published: undefined,
                 keywords: [],
-                preprintId: undefined,
-                received: true,
+                preprintId: event.preprintId,
               }),
           ),
         ReviewRequestForAPreprintWasAccepted: event =>
@@ -74,14 +72,12 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
             Record.modifyOption(map, event.reviewRequestId, review => ({
               ...review,
               published: event.acceptedAt,
-              preprintId: event.preprintId,
             })),
             () =>
               Record.set(map, event.reviewRequestId, {
                 published: event.acceptedAt,
                 keywords: [],
-                preprintId: event.preprintId,
-                received: false,
+                preprintId: undefined,
               }),
           ),
         ReviewRequestForAPreprintWasCategorized: event =>
@@ -95,7 +91,6 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
                 published: undefined,
                 keywords: event.keywords,
                 preprintId: undefined,
-                received: false,
               }),
           ),
       }),
@@ -106,7 +101,6 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
       reviewRequest.published !== undefined,
       reviewRequest.preprintId !== undefined,
       Array.some(reviewRequest.keywords, keyword => Array.contains(subscribedKeywords, keyword)),
-      reviewRequest.received,
     ]),
   ) as Record.ReadonlyRecord<
     Uuid.Uuid,
@@ -114,7 +108,6 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
       published: Temporal.Instant
       keywords: ReadonlyArray<KeywordId>
       preprintId: Preprints.IndeterminatePreprintId
-      received: true
     }
   >
 

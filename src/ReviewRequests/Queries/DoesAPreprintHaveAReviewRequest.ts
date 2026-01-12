@@ -22,24 +22,24 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
 
   const reviewRequests = Array.reduce(
     filteredEvents,
-    Record.empty<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; received: boolean }>(),
+    Record.empty<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>(),
     (map, event) =>
       Match.valueTags(event, {
         ReviewRequestForAPreprintWasReceived: event =>
           Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, received: true })),
-            () => Record.set(map, event.reviewRequestId, { preprintId: undefined, received: true }),
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
           ),
         ReviewRequestForAPreprintWasAccepted: event =>
           Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, received: false }),
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, accepted: true })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: undefined, accepted: true }),
           ),
       }),
   )
 
   return Record.some(
     reviewRequests,
-    reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.received,
+    reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
   )
 }
