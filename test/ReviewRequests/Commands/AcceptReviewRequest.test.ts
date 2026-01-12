@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Equal, Option, Tuple } from 'effect'
+import { Array, Either, Equal, Option, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/AcceptReviewRequest.ts'
@@ -12,6 +12,18 @@ import * as fc from '../../fc.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
@@ -59,8 +71,35 @@ describe('foldState', () => {
     {
       examples: [
         [[[], reviewRequestId]], // no events
-        [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
-        [[[otherReviewRequestForAPreprintWasAccepted], reviewRequestId]], // for other review request
+        [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
+        [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
+      ],
+    },
+  )('not received', ([events, reviewRequestId]) => {
+    const state = _.foldState(events, reviewRequestId)
+
+    expect(state).toStrictEqual(new _.NotReceived())
+  })
+
+  test.prop(
+    [
+      fc
+        .reviewRequestForAPreprintWasReceived()
+        .map(received => Tuple.make(Array.of<ReviewRequests.ReviewRequestEvent>(received), received.reviewRequestId)),
+    ],
+    {
+      examples: [
+        [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // not accepted
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived,
+              otherReviewRequestForAPreprintWasReceived,
+              otherReviewRequestForAPreprintWasAccepted,
+            ],
+            reviewRequestId,
+          ],
+        ], // for other review request
       ],
     },
   )('not yet accepted', ([events, reviewRequestId]) => {
@@ -72,19 +111,45 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasAccepted()
-        .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
+        .uuid()
+        .chain(reviewRequestId =>
+          fc
+            .tuple(
+              fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
+              fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
+            )
+            .map(events =>
+              Tuple.make(
+                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                events[0].reviewRequestId,
+              ),
+            ),
+        ),
     ],
     {
       examples: [
-        [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // was accepted
+        [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasAccepted], reviewRequestId]], // was accepted
         [
           [
-            [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+            [
+              reviewRequestForAPreprintWasReceived,
+              reviewRequestForAPreprintWasAccepted,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
             reviewRequestId,
           ],
         ], // other events
-        [[[reviewRequestForAPreprintWasAccepted, otherReviewRequestForAPreprintWasAccepted], reviewRequestId]], // other review request too
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived,
+              reviewRequestForAPreprintWasAccepted,
+              otherReviewRequestForAPreprintWasReceived,
+              otherReviewRequestForAPreprintWasAccepted,
+            ],
+            reviewRequestId,
+          ],
+        ], // other review request too
       ],
     },
   )('already accepted', ([events, reviewRequestId]) => {
@@ -95,18 +160,26 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
+  test.prop([command()])('has not been received', command => {
+    const result = _.decide(new _.NotReceived(), command)
+
+    expect(result).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+  })
+
   test.prop([command()])('has not been accepted', command => {
     const result = _.decide(new _.NotAccepted(), command)
 
     expect(result).toStrictEqual(
-      Option.some(
-        new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-          receivedAt: command.receivedAt,
-          acceptedAt: command.acceptedAt,
-          preprintId: command.preprintId,
-          reviewRequestId: command.reviewRequestId,
-          requester: command.requester,
-        }),
+      Either.right(
+        Option.some(
+          new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+            receivedAt: command.receivedAt,
+            acceptedAt: command.acceptedAt,
+            preprintId: command.preprintId,
+            reviewRequestId: command.reviewRequestId,
+            requester: command.requester,
+          }),
+        ),
       ),
     )
   })
@@ -114,6 +187,6 @@ describe('decide', () => {
   test.prop([command()])('has already been accepted', command => {
     const result = _.decide(new _.HasBeenAccepted(), command)
 
-    expect(result).toStrictEqual(Option.none())
+    expect(result).toStrictEqual(Either.right(Option.none()))
   })
 })

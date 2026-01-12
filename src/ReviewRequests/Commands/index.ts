@@ -11,7 +11,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
-    acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command>
+    acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,

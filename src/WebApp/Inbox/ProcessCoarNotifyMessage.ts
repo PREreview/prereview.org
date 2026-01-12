@@ -44,6 +44,7 @@ export const ProcessCoarNotifyMessage = Effect.fn(
     })
   },
   Effect.catchTags({
+    UnknownReviewRequest: Effect.die,
     NotAPreprint: error => new Errors.RejectedRequestReview({ cause: error }),
     PreprintIsNotFound: error => new Errors.FailedToProcessRequestReview({ cause: error }),
     PreprintIsUnavailable: error => new Errors.FailedToProcessRequestReview({ cause: error }),
