@@ -20,7 +20,7 @@ export interface Input {
 export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
 export const createFilter = ({ reviewRequestId }: Input): EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasAccepted'],
+  types: ['ReviewRequestForAPreprintWasReceived', 'ReviewRequestForAPreprintWasAccepted'],
   predicates: { reviewRequestId },
 })
 
@@ -29,6 +29,10 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
+
+    if (!Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))) {
+      return yield* Either.left(new Errors.UnknownReviewRequest({}))
+    }
 
     const accepted = yield* Either.fromOption(
       Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted')),

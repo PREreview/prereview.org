@@ -12,6 +12,24 @@ import * as fc from '../../fc.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  preprintId,
+  requester: { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') },
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
@@ -44,15 +62,40 @@ describe('query', () => {
   test.prop(
     [
       fc.array(
-        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'))),
+        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasReceived'))),
       ),
       fc.uuid(),
     ],
     {
       examples: [
         [[], reviewRequestId], // no events
-        [[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId], // with events
-        [[otherReviewRequestForAPreprintWasAccepted], reviewRequestId], // with events for other dataset review
+        [
+          [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+          reviewRequestId,
+        ], // with events
+        [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
+      ],
+    },
+  )('not received', (events, reviewRequestId) => {
+    const actual = _.query(events, { reviewRequestId })
+
+    expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+  })
+
+  test.prop(
+    [
+      fc.array(
+        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'))),
+      ),
+      fc.uuid(),
+    ],
+    {
+      examples: [
+        [
+          [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+          reviewRequestId,
+        ], // with events
+        [[otherReviewRequestForAPreprintWasReceived, otherReviewRequestForAPreprintWasAccepted], reviewRequestId], // with events for other dataset review
       ],
     },
   )('not accepted', (events, reviewRequestId) => {
@@ -64,22 +107,40 @@ describe('query', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) })
-        .map(accepted => Tuple.make(Array.make(accepted), accepted.reviewRequestId, accepted)),
+        .tuple(
+          fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
+          fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
+        )
+        .map(([received, accepted]) => Tuple.make(Array.make(received, accepted), reviewRequestId, accepted)),
     ],
     {
       examples: [
-        [[[reviewRequestForAPreprintWasAccepted1], reviewRequestId, reviewRequestForAPreprintWasAccepted1]], // accepted
         [
           [
-            [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasAccepted2],
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
+            reviewRequestId,
+            reviewRequestForAPreprintWasAccepted1,
+          ],
+        ], // accepted
+        [
+          [
+            [
+              reviewRequestForAPreprintWasAccepted1,
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted2,
+              reviewRequestForAPreprintWasReceived2,
+            ],
             reviewRequestId,
             reviewRequestForAPreprintWasAccepted2,
           ],
         ], // multiple times
         [
           [
-            [reviewRequestForAPreprintWasAccepted1, otherReviewRequestForAPreprintWasAccepted],
+            [
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted1,
+              otherReviewRequestForAPreprintWasAccepted,
+            ],
             reviewRequestId,
             reviewRequestForAPreprintWasAccepted1,
           ],
