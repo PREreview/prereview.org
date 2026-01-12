@@ -2302,6 +2302,22 @@ export const prereviewerEvent = (
   } = {},
 ): fc.Arbitrary<Events.PrereviewerEvent> => prereviewerSubscribedToAKeyword(args)
 
+export const reviewRequestForAPreprintWasReceived = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived> =>
+  fc
+    .record({
+      receivedAt: instant(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: fc.record({
+        name: nonEmptyString(),
+      }),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasReceived(data))
+
 export const reviewRequestForAPreprintWasAccepted = ({
   reviewRequestId,
 }: {
@@ -2352,6 +2368,7 @@ export const reviewRequestEvent = (
   } = {},
 ): fc.Arbitrary<Events.ReviewRequestEvent> =>
   fc.oneof(
+    reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasCategorized(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
