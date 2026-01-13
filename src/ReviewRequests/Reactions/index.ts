@@ -5,6 +5,7 @@ import { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
+import { ProcessReceivedReviewRequest as executeProcessReceivedReviewRequest } from './ProcessReceivedReviewRequest.ts'
 
 const CategorizeReviewRequest = Workflow.make({
   name: 'CategorizeReviewRequest',
@@ -18,6 +19,15 @@ const CategorizeReviewRequest = Workflow.make({
 const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   name: 'NotifyCommunitySlackOfReviewRequest',
   error: Errors.FailedToNotifyCommunitySlack,
+  payload: {
+    reviewRequestId: Uuid.UuidSchema,
+  },
+  idempotencyKey: Struct.get('reviewRequestId'),
+})
+
+const ProcessReceivedReviewRequest = Workflow.make({
+  name: 'ProcessReceivedReviewRequest',
+  error: Errors.FailedToProcessReceivedReviewRequest,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
   },
@@ -46,6 +56,9 @@ const makeReviewRequestReactions: Effect.Effect<
             { concurrency: 'inherit' },
           ),
         ),
+        Match.tag('ReviewRequestForAPreprintWasReceived', event =>
+          ProcessReceivedReviewRequest.execute(event, { discard: true }),
+        ),
         Match.orElse(() => Effect.void),
       ),
     ),
@@ -66,6 +79,13 @@ const workflowsLayer = Layer.mergeAll(
       name: NotifyCommunitySlackOfReviewRequest.name,
       error: NotifyCommunitySlackOfReviewRequest.errorSchema,
       execute: executeNotifyCommunitySlackOfReviewRequest(reviewRequestId),
+    }),
+  ),
+  ProcessReceivedReviewRequest.toLayer(({ reviewRequestId }) =>
+    Activity.make({
+      name: ProcessReceivedReviewRequest.name,
+      error: ProcessReceivedReviewRequest.errorSchema,
+      execute: executeProcessReceivedReviewRequest(reviewRequestId),
     }),
   ),
 )

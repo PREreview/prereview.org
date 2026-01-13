@@ -1873,6 +1873,12 @@ export const publishedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedR
     published: instant(),
   })
 
+export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedReviewRequest> =>
+  fc.record({
+    preprintId: indeterminatePreprintId(),
+    id: uuid(),
+  })
+
 export const commentWasStarted = ({
   commentId,
 }: {

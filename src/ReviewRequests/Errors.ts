@@ -1,5 +1,10 @@
 import { Data, Schema } from 'effect'
 
+export class FailedToProcessReceivedReviewRequest extends Schema.TaggedError<FailedToProcessReceivedReviewRequest>()(
+  'FailedToProcessReceivedReviewRequest',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
 export class FailedToCategorizeReviewRequest extends Schema.TaggedError<FailedToCategorizeReviewRequest>()(
   'FailedToCategorizeReviewRequest',
   { cause: Schema.optional(Schema.Unknown) },

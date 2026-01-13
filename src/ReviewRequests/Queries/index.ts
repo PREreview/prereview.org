@@ -51,6 +51,7 @@ export const {
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
 export type { RecentReviewRequestMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
+export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
