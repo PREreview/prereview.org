@@ -9,9 +9,9 @@ export interface Command {
   readonly reviewRequestId: Uuid.Uuid
 }
 
-export type Error = Errors.UnknownReviewRequest
+export type Error = Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest
 
-export type State = NotReceived | NotAccepted | HasBeenAccepted
+export type State = NotReceived | NotAccepted | HasBeenAccepted | HasBeenRejected
 
 export class NotReceived extends Data.TaggedClass('NotReceived') {}
 
@@ -19,8 +19,14 @@ export class NotAccepted extends Data.TaggedClass('NotAccepted') {}
 
 export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
+export class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
+
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasReceived', 'ReviewRequestForAPreprintWasAccepted'],
+  types: [
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestForAPreprintWasRejected',
+  ],
   predicates: { reviewRequestId },
 })
 
@@ -31,10 +37,15 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
     return new NotReceived()
   }
 
-  return Option.match(Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted')), {
-    onNone: () => new NotAccepted(),
-    onSome: () => new HasBeenAccepted(),
-  })
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))) {
+    return new HasBeenAccepted()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasRejected'))) {
+    return new HasBeenRejected()
+  }
+
+  return new NotAccepted()
 }
 
 export const decide: {
@@ -45,6 +56,7 @@ export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
     Match.valueTags(state, {
       NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
+      HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
       HasBeenAccepted: () => Either.right(Option.none()),
       NotAccepted: () =>
         Either.right(

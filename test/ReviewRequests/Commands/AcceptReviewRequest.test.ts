@@ -24,6 +24,16 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+  rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId,
+  reason: 'not-a-preprint',
+})
+const otherReviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+  rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId: otherReviewRequestId,
+  reason: 'unknown-preprint',
+})
 const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
@@ -105,6 +115,56 @@ describe('foldState', () => {
           fc
             .tuple(
               fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
+              fc.reviewRequestForAPreprintWasRejected({ reviewRequestId: fc.constant(reviewRequestId) }),
+            )
+            .map(events =>
+              Tuple.make(
+                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                events[0].reviewRequestId,
+              ),
+            ),
+        ),
+    ],
+    {
+      examples: [
+        [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasRejected], reviewRequestId]], // was rejected
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived,
+              reviewRequestForAPreprintWasRejected,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+            reviewRequestId,
+          ],
+        ], // other events
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived,
+              reviewRequestForAPreprintWasRejected,
+              otherReviewRequestForAPreprintWasReceived,
+              otherReviewRequestForAPreprintWasRejected,
+            ],
+            reviewRequestId,
+          ],
+        ], // other review request too
+      ],
+    },
+  )('already rejected', ([events, reviewRequestId]) => {
+    const state = _.foldState(events, reviewRequestId)
+
+    expect(state).toStrictEqual(new _.HasBeenRejected())
+  })
+
+  test.prop(
+    [
+      fc
+        .uuid()
+        .chain(reviewRequestId =>
+          fc
+            .tuple(
+              fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
               fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
             )
             .map(events =>
@@ -168,6 +228,12 @@ describe('decide', () => {
         ),
       ),
     )
+  })
+
+  test.prop([command()])('has already been rejected', command => {
+    const result = _.decide(new _.HasBeenRejected(), command)
+
+    expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
   })
 
   test.prop([command()])('has already been accepted', command => {
