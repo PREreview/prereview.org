@@ -11,7 +11,7 @@ import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
-const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const preprintId = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
@@ -34,7 +34,7 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     receivedAt: fc.instant(),
-    preprintId: fc.preprintId(),
+    preprintId: fc.indeterminatePreprintId(),
     reviewRequestId: fc.uuid(),
     requester: fc.record({
       name: fc.nonEmptyString(),

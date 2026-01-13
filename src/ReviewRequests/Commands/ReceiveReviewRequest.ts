@@ -6,7 +6,7 @@ import type { NonEmptyString, Uuid } from '../../types/index.ts'
 
 export interface Command {
   readonly receivedAt: Temporal.Instant
-  readonly preprintId: Preprints.PreprintId
+  readonly preprintId: Preprints.IndeterminatePreprintId
   readonly reviewRequestId: Uuid.Uuid
   readonly requester: {
     readonly name: NonEmptyString.NonEmptyString
