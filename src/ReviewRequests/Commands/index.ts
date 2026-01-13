@@ -6,12 +6,14 @@ import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
+import * as RejectReviewRequest from './RejectReviewRequest.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
+    rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,
@@ -29,6 +31,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 export const {
   receiveReviewRequest,
   acceptReviewRequest,
+  rejectReviewRequest,
   categorizeReviewRequest,
   recordReviewRequestSharedOnTheCommunitySlack,
 } = Effect.serviceFunctions(ReviewRequestCommands)
@@ -92,6 +95,11 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         AcceptReviewRequest.createFilter,
         AcceptReviewRequest.foldState,
         AcceptReviewRequest.decide,
+      ),
+      rejectReviewRequest: handleCommand(
+        RejectReviewRequest.createFilter,
+        RejectReviewRequest.foldState,
+        RejectReviewRequest.decide,
       ),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
