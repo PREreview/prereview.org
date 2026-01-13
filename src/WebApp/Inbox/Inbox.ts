@@ -12,7 +12,7 @@ export const Inbox = Effect.gen(function* () {
 
   yield* ProcessCoarNotifyMessage.execute({ message, receivedAt, messageId }, { discard: true })
 
-  return yield* HttpServerResponse.empty({ status: StatusCodes.Created })
+  return yield* HttpServerResponse.empty({ status: StatusCodes.Accepted })
 }).pipe(
   Effect.catchTags({
     ParseError: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
