@@ -5,6 +5,8 @@ import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequ
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
+import * as GetReceivedReviewRequest from './GetReceivedReviewRequest.ts'
+
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -14,6 +16,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       (input: DoesAPreprintHaveAReviewRequest.Input) => DoesAPreprintHaveAReviewRequest.Result
     >
     getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
+    getReceivedReviewRequest: Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Query<
       (
@@ -39,6 +42,7 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 export const {
   doesAPreprintHaveAReviewRequest,
   getFiveMostRecentReviewRequests,
+  getReceivedReviewRequest,
   getPublishedReviewRequest,
   getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
@@ -100,6 +104,7 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         GetFiveMostRecentReviewRequests.filter,
         GetFiveMostRecentReviewRequests.query,
       ),
+      getReceivedReviewRequest: handleQuery(GetReceivedReviewRequest.createFilter, GetReceivedReviewRequest.query),
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
       getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
         GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
