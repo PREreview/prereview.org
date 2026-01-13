@@ -43,6 +43,7 @@ import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
+import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
 import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
@@ -398,6 +399,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(SqlSensitiveDataStore.layer),
   Layer.provide(
     Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
   ),
