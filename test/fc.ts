@@ -2330,6 +2330,19 @@ export const reviewRequestForAPreprintWasAccepted = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
 
+export const reviewRequestForAPreprintWasRejected = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasRejected['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasRejected> =>
+  fc
+    .record({
+      rejectedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      reason: constantFrom('not-a-preprint', 'unknown-preprint'),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasRejected(data))
+
 export const reviewRequestForAPreprintWasCategorized = ({
   reviewRequestId,
 }: {
@@ -2365,6 +2378,7 @@ export const reviewRequestEvent = (
   fc.oneof(
     reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
+    reviewRequestForAPreprintWasRejected(args),
     reviewRequestForAPreprintWasCategorized(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )

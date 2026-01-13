@@ -27,6 +27,15 @@ export class ReviewRequestForAPreprintWasAccepted extends Schema.TaggedClass<Rev
   },
 ) {}
 
+export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<ReviewRequestForAPreprintWasRejected>()(
+  'ReviewRequestForAPreprintWasRejected',
+  {
+    rejectedAt: Temporal.InstantSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    reason: Schema.Literal('not-a-preprint', 'unknown-preprint'),
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasCategorized>()(
   'ReviewRequestForAPreprintWasCategorized',
   {
@@ -49,6 +58,7 @@ export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schem
 export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
+  ReviewRequestForAPreprintWasRejected,
   ReviewRequestForAPreprintWasCategorized,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
