@@ -56,6 +56,9 @@ const makeReviewRequestReactions: Effect.Effect<
             { concurrency: 'inherit' },
           ),
         ),
+        Match.tag('ReviewRequestForAPreprintWasImported', event =>
+          CategorizeReviewRequest.execute(event, { discard: true }),
+        ),
         Match.tag('ReviewRequestForAPreprintWasReceived', event =>
           ProcessReceivedReviewRequest.execute(event, { discard: true }),
         ),
