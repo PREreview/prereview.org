@@ -2321,6 +2321,7 @@ export const reviewRequestForAPreprintWasReceived = ({
       requester: maybe(
         fc.record({
           name: nonEmptyString(),
+          orcidId: fc.option(orcidId(), { nil: undefined }),
           emailAddress: fc.option(emailAddress(), { nil: undefined }),
         }),
       ),
