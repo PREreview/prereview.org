@@ -30,9 +30,9 @@ export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Eve
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))
 
-  return Option.match(Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived')), {
-    onNone: () => new NotReceived(),
-    onSome: () => new HasBeenReceived(),
+  return Array.match(filteredEvents, {
+    onEmpty: () => new NotReceived(),
+    onNonEmpty: () => new HasBeenReceived(),
   })
 }
 
@@ -55,7 +55,3 @@ export const decide: {
         ),
     }),
 )
-
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
-}
