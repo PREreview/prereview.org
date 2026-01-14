@@ -2,7 +2,7 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import type { EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import type { EmailAddress, NonEmptyString, OrcidId, SciProfilesId, Uuid } from '../../types/index.ts'
 
 export interface Command {
   readonly receivedAt: Temporal.Instant
@@ -11,6 +11,7 @@ export interface Command {
   readonly requester: {
     readonly name: NonEmptyString.NonEmptyString
     readonly orcidId?: OrcidId.OrcidId
+    readonly sciProfilesId?: SciProfilesId.SciProfilesId
     readonly emailAddress?: EmailAddress.EmailAddress
   }
 }

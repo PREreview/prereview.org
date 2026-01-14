@@ -2,7 +2,7 @@ import { Array, Schema, Struct } from 'effect'
 import { Slack } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import { SensitiveData } from '../SensitiveData.ts'
-import { EmailAddress, Iso639, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
+import { EmailAddress, Iso639, NonEmptyString, OrcidId, SciProfilesId, Temporal, Uuid } from '../types/index.ts'
 import { KeywordIdSchema } from '../types/Keyword.ts'
 import { TopicIdSchema } from '../types/Topic.ts'
 
@@ -18,6 +18,7 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
       Schema.Struct({
         name: NonEmptyString.NonEmptyStringSchema,
         orcidId: Schema.optional(OrcidId.OrcidIdSchema),
+        sciProfilesId: Schema.optional(SciProfilesId.SciProfilesIdSchema),
         emailAddress: Schema.optional(EmailAddress.EmailAddressSchema),
       }),
     ),

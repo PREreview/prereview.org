@@ -2325,6 +2325,7 @@ export const reviewRequestForAPreprintWasReceived = ({
         fc.record({
           name: nonEmptyString(),
           orcidId: fc.option(orcidId(), { nil: undefined }),
+          sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
           emailAddress: fc.option(emailAddress(), { nil: undefined }),
         }),
       ),

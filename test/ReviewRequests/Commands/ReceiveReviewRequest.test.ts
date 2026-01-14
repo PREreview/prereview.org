@@ -39,6 +39,7 @@ const command = (): fc.Arbitrary<_.Command> =>
     requester: fc.record({
       name: fc.nonEmptyString(),
       orcidId: fc.option(fc.orcidId(), { nil: undefined }),
+      sciProfilesId: fc.option(fc.sciProfilesId(), { nil: undefined }),
       emailAddress: fc.option(fc.emailAddress(), { nil: undefined }),
     }),
   })
