@@ -74,7 +74,7 @@
     "@tiptap/starter-kit": "^3.10.1",
     "@tsconfig/node24": "^24.0.3",
     "@types/cookie-signature": "^1.1.2",
-    "@types/katex": "^0.16.7",
+    "@types/katex": "^0.16.8",
     "@types/markdown-it": "^14.1.2",
     "@types/mjml": "^4.7.4",
     "@types/node": "^24.10.4",
