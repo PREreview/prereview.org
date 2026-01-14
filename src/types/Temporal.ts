@@ -91,6 +91,15 @@ export const InstantSchema = Schema.transformOrFail(Schema.String, InstantFromSe
   encode: date => ParseResult.succeed(date.toString()),
 })
 
+export const InstantFromMillisecondsSchema = Schema.transformOrFail(Schema.Number, InstantFromSelfSchema, {
+  decode: (milliseconds, _, ast) =>
+    ParseResult.try({
+      try: () => Temporal.Instant.fromEpochMilliseconds(milliseconds),
+      catch: () => new ParseResult.Type(ast, milliseconds),
+    }),
+  encode: date => ParseResult.succeed(date.epochMilliseconds),
+})
+
 export const OrderPlainDate: Order.Order<Temporal.PlainDate> = (self, that) => Temporal.PlainDate.compare(self, that)
 
 export const OrderInstant: Order.Order<Temporal.Instant> = (self, that) => Temporal.Instant.compare(self, that)
