@@ -38,6 +38,7 @@ const command = (): fc.Arbitrary<_.Command> =>
     reviewRequestId: fc.uuid(),
     requester: fc.record({
       name: fc.nonEmptyString(),
+      emailAddress: fc.option(fc.emailAddress(), { nil: undefined }),
     }),
   })
 
