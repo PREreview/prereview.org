@@ -15,13 +15,13 @@ const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/123
 const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({

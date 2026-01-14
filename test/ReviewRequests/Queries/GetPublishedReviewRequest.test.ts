@@ -15,19 +15,19 @@ const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/123
 const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -145,7 +145,7 @@ describe('query', () => {
 
     expect(actual).toStrictEqual(
       Either.right({
-        author: Option.some(expected[0].requester),
+        author: expected[0].requester,
         preprintId: expected[0].preprintId,
         id: expected[0].reviewRequestId,
         published: expected[1].acceptedAt,

@@ -15,13 +15,13 @@ const preprintId = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10
 const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
@@ -101,7 +101,7 @@ describe('decide', () => {
           receivedAt: command.receivedAt,
           preprintId: command.preprintId,
           reviewRequestId: command.reviewRequestId,
-          requester: command.requester,
+          requester: Option.some(command.requester),
         }),
       ),
     )

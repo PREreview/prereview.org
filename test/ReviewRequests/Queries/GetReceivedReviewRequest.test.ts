@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -15,19 +15,19 @@ const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/123
 const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({

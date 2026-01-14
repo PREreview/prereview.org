@@ -1,6 +1,7 @@
 import { Array, Schema, Struct } from 'effect'
 import { Slack } from '../ExternalApis/index.ts'
 import * as Preprints from '../Preprints/index.ts'
+import { SensitiveData } from '../SensitiveData.ts'
 import { Iso639, NonEmptyString, Temporal, Uuid } from '../types/index.ts'
 import { KeywordIdSchema } from '../types/Keyword.ts'
 import { TopicIdSchema } from '../types/Topic.ts'
@@ -13,9 +14,11 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
     receivedAt: Temporal.InstantSchema,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
-    requester: Schema.Struct({
-      name: NonEmptyString.NonEmptyStringSchema,
-    }),
+    requester: SensitiveData(
+      Schema.Struct({
+        name: NonEmptyString.NonEmptyStringSchema,
+      }),
+    ),
   },
 ) {}
 

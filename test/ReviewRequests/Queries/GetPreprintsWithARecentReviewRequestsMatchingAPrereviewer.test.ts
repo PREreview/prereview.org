@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
+import { Option } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -40,13 +41,13 @@ const now = Temporal.Now.instant()
 const request1Received1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
-  requester: requester1,
+  requester: Option.some(requester1),
   reviewRequestId: request1Id,
 })
 const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ minutes: 20 }),
   preprintId: preprintId2,
-  requester: requester2,
+  requester: Option.some(requester2),
   reviewRequestId: request1Id,
 })
 const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -72,7 +73,7 @@ const request1Categorized2 = new ReviewRequests.ReviewRequestForAPreprintWasCate
 const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 72 }),
   preprintId: preprintId1,
-  requester: requester3,
+  requester: Option.some(requester3),
   reviewRequestId: request2Id,
 })
 const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -88,7 +89,7 @@ const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request3Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId3,
-  requester: requester4,
+  requester: Option.some(requester4),
   reviewRequestId: request3Id,
 })
 const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -104,7 +105,7 @@ const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId4,
-  requester: requester1,
+  requester: Option.some(requester1),
   reviewRequestId: request4Id,
 })
 const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -120,7 +121,7 @@ const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId1,
-  requester: requester1,
+  requester: Option.some(requester1),
   reviewRequestId: request5Id,
 })
 const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -136,7 +137,7 @@ const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId5,
-  requester: requester2,
+  requester: Option.some(requester2),
   reviewRequestId: request6Id,
 })
 const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -152,7 +153,7 @@ const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request7Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId6,
-  requester: requester3,
+  requester: Option.some(requester3),
   reviewRequestId: request7Id,
 })
 const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -168,7 +169,7 @@ const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId1,
-  requester: requester4,
+  requester: Option.some(requester4),
   reviewRequestId: request8Id,
 })
 const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
@@ -184,7 +185,7 @@ const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request9Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId2,
-  requester: requester1,
+  requester: Option.some(requester1),
   reviewRequestId: request9Id,
 })
 const request9Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({

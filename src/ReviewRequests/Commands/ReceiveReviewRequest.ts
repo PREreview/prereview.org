@@ -47,7 +47,7 @@ export const decide: {
             receivedAt: command.receivedAt,
             preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,
-            requester: command.requester,
+            requester: Option.some(command.requester),
           }),
         ),
     }),

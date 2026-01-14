@@ -2318,9 +2318,11 @@ export const reviewRequestForAPreprintWasReceived = ({
       receivedAt: instant(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
-      requester: fc.record({
-        name: nonEmptyString(),
-      }),
+      requester: maybe(
+        fc.record({
+          name: nonEmptyString(),
+        }),
+      ),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasReceived(data))
 
