@@ -6,6 +6,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { type Array, Effect, Layer, Option, type PubSub, TestClock } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
+import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
 import { NonEmptyString, Uuid } from '../src/types/index.ts'
 import * as EffectTest from './EffectTest.ts'
@@ -42,6 +43,7 @@ it.prop([
     expect(all).toStrictEqual([])
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+    Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
     Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),
     EffectTest.run,
@@ -86,7 +88,12 @@ describe('when the last known event is none', () => {
       expect(actual).toStrictEqual({ events: [event], lastKnownEvent: expect.anything() })
       expect(all).toStrictEqual([...otherEvents, event])
       expect(publish).toHaveBeenCalledWith(event)
-    }).pipe(Effect.provide(Uuid.layer), Effect.provide(TestLibsqlClient), EffectTest.run),
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
   )
 })
 
@@ -112,7 +119,12 @@ describe('when the last known event matches', () => {
 
       expect(all).toStrictEqual([...existingEvents, event])
       expect(publish).toHaveBeenCalledWith(event)
-    }).pipe(Effect.provide(Uuid.layer), Effect.provide(TestLibsqlClient), EffectTest.run),
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
   )
 })
 
@@ -139,6 +151,7 @@ describe('when the last known event is different', () => {
         expect(all).toHaveLength(existingEvents.length)
       }).pipe(
         Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
         Effect.provide(TestLibsqlClient),
         EffectTest.run,
@@ -342,6 +355,7 @@ test.each<
     expect(actual).toStrictEqual(expected)
   }).pipe(
     Effect.provide(Uuid.layer),
+    Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
     Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),
     EffectTest.run,

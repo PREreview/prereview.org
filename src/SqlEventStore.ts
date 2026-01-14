@@ -1,15 +1,35 @@
 import { SqlClient, type SqlError, type Statement } from '@effect/sql'
 import { PgClient } from '@effect/sql-pg'
-import { Array, DateTime, Effect, Layer, Option, ParseResult, pipe, PubSub, Record, Schema, Struct } from 'effect'
+import {
+  Array,
+  Context,
+  DateTime,
+  Effect,
+  Layer,
+  Option,
+  ParseResult,
+  pipe,
+  PubSub,
+  Record,
+  Schema,
+  Scope,
+  Struct,
+} from 'effect'
 import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
+import type * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
 export const make: Effect.Effect<
   EventStore.EventStore,
   SqlError.SqlError,
-  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid
+  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore
 > = Effect.gen(function* () {
+  const context = yield* Effect.andThen(
+    Effect.context<SensitiveDataStore.SensitiveDataStore>(),
+    Context.omit(Scope.Scope),
+  )
+
   const sql = yield* SqlClient.SqlClient
   const generateUuid = yield* Uuid.GenerateUuid
   const eventsTable = EventsTable(Events.Event)
@@ -86,6 +106,7 @@ export const make: Effect.Effect<
       }),
     ),
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    Effect.provide(context),
   )
 
   const query: EventStore.EventStore['query'] = Effect.fn(function* (filter) {
@@ -99,7 +120,7 @@ export const make: Effect.Effect<
           lastKnownEvent: Array.lastNonEmpty(rows).id,
         }),
     })
-  })
+  }, Effect.provide(context))
 
   const append: EventStore.EventStore['append'] = Effect.fn(
     function* (event, appendCondition) {
@@ -176,6 +197,7 @@ export const make: Effect.Effect<
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
+    Effect.provide(context),
   )
 
   return { all, query, append }
@@ -188,7 +210,7 @@ const hasTag =
   <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
     Array.contains(tags, tagged._tag)
 
-const EventsTable = <A, I extends { readonly _tag: string }>(eventSchema: Schema.Schema<A, I>) =>
+const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
   Schema.transformOrFail(
     Schema.Struct({
       id: Uuid.UuidSchema,
