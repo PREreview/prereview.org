@@ -120,7 +120,7 @@ import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
-import { OrcidLocale, ProfileId } from '../src/types/index.ts'
+import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
@@ -1156,6 +1156,9 @@ export const orcidId = (): fc.Arbitrary<OrcidId> =>
     })
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcidId)
+
+export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
+  fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
 
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
   fc.oneof(
