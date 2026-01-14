@@ -4,6 +4,7 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
+import * as ImportReviewRequest from './ImportReviewRequest.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
@@ -14,6 +15,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
+    importReviewRequest: CommandHandler<ImportReviewRequest.Command>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,
@@ -32,6 +34,7 @@ export const {
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
+  importReviewRequest,
   categorizeReviewRequest,
   recordReviewRequestSharedOnTheCommunitySlack,
 } = Effect.serviceFunctions(ReviewRequestCommands)
@@ -100,6 +103,11 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         RejectReviewRequest.createFilter,
         RejectReviewRequest.foldState,
         RejectReviewRequest.decide,
+      ),
+      importReviewRequest: handleCommand(
+        ImportReviewRequest.createFilter,
+        ImportReviewRequest.foldState,
+        ImportReviewRequest.decide,
       ),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
