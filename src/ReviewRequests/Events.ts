@@ -42,6 +42,23 @@ export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<Rev
   },
 ) {}
 
+export class ReviewRequestForAPreprintWasImported extends Schema.TaggedClass<ReviewRequestForAPreprintWasImported>()(
+  'ReviewRequestForAPreprintWasImported',
+  {
+    publishedAt: Temporal.InstantSchema,
+    preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    requester: SensitiveData(
+      Schema.Struct({
+        name: NonEmptyString.NonEmptyStringSchema,
+        orcidId: Schema.optional(OrcidId.OrcidIdSchema),
+        sciProfilesId: Schema.optional(SciProfilesId.SciProfilesIdSchema),
+        emailAddress: Schema.optional(EmailAddress.EmailAddressSchema),
+      }),
+    ),
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasCategorized>()(
   'ReviewRequestForAPreprintWasCategorized',
   {
@@ -65,6 +82,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
+  ReviewRequestForAPreprintWasImported,
   ReviewRequestForAPreprintWasCategorized,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
