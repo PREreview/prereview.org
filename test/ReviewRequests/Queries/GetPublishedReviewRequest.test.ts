@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -145,7 +145,7 @@ describe('query', () => {
 
     expect(actual).toStrictEqual(
       Either.right({
-        author: expected[0].requester,
+        author: Option.some(expected[0].requester),
         preprintId: expected[0].preprintId,
         id: expected[0].reviewRequestId,
         published: expected[1].acceptedAt,

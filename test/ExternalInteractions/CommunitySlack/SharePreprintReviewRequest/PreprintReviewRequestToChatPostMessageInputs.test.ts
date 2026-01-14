@@ -13,7 +13,7 @@ test.each([
   [
     'with abstract',
     {
-      author: NonEmptyString.NonEmptyString('Josiah Carberry'),
+      author: Option.some(NonEmptyString.NonEmptyString('Josiah Carberry')),
       preprint: Preprints.Preprint({
         authors: [
           { name: 'Xin Liu' },
@@ -93,7 +93,7 @@ test.each([
   [
     'without abstract',
     {
-      author: NonEmptyString.NonEmptyString('Jean-Baptiste Botul'),
+      author: Option.some(NonEmptyString.NonEmptyString('Jean-Baptiste Botul')),
       preprint: Preprints.Preprint({
         authors: [{ name: 'Rowan Cockett', orcid: OrcidId.OrcidId('0000-0002-7859-8394') }],
         id: new Preprints.CurvenotePreprintId({ value: Doi.Doi('10.62329/fmdw8234') }),

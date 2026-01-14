@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either } from 'effect'
+import { Array, Either, Option } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -7,7 +7,7 @@ import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface PublishedReviewRequest {
-  author: { name: NonEmptyString.NonEmptyString }
+  author: Option.Option<{ name: NonEmptyString.NonEmptyString }>
   preprintId: Preprints.IndeterminatePreprintId
   id: Uuid.Uuid
   published: Temporal.Instant
@@ -41,7 +41,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
     )
 
     return {
-      author: received.requester,
+      author: Option.some(received.requester),
       preprintId: received.preprintId,
       id: received.reviewRequestId,
       published: accepted.acceptedAt,

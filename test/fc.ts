@@ -1867,7 +1867,7 @@ export const datasetReviewDataForZenodoRecord = ({
 
 export const publishedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedReviewRequest> =>
   fc.record({
-    author: fc.record({ name: nonEmptyString() }),
+    author: maybe(fc.record({ name: nonEmptyString() })),
     preprintId: indeterminatePreprintId(),
     id: uuid(),
     published: instant(),
