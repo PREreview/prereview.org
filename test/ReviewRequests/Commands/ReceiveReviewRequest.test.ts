@@ -24,6 +24,18 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
@@ -61,6 +73,7 @@ describe('foldState', () => {
         [[[], reviewRequestId]], // no events
         [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
         [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
+        [[[otherReviewRequestForAPreprintWasImported], reviewRequestId]], // for other imported review request
       ],
     },
   )('not yet received', ([events, reviewRequestId]) => {
@@ -72,15 +85,20 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasReceived()
+        .oneof(fc.reviewRequestForAPreprintWasReceived(), fc.reviewRequestForAPreprintWasImported())
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
     ],
     {
       examples: [
         [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was received
+        [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
         [
           [
-            [reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+            [
+              reviewRequestForAPreprintWasReceived,
+              reviewRequestForAPreprintWasImported,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
             reviewRequestId,
           ],
         ], // other events
