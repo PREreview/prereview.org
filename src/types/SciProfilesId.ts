@@ -1,4 +1,4 @@
-import { pipe, Schema, Tuple } from 'effect'
+import { flow, pipe, Schema, Tuple } from 'effect'
 
 const SciProfilesIdBrand: unique symbol = Symbol.for('SciProfilesId')
 
@@ -21,3 +21,8 @@ export const SciProfilesIdFromUrlSchema = Schema.transform(
 )
 
 export const SciProfilesId = (sciProfilesId: string) => SciProfilesIdSchema.make(sciProfilesId)
+
+export const toUrl: (sciProfilesId: SciProfilesId) => URL = flow(
+  Schema.encodeSync(SciProfilesIdFromUrlSchema),
+  url => new URL(url),
+)
