@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, type Option } from 'effect'
+import { Array, Either, Option, pipe } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -20,7 +20,11 @@ export interface Input {
 export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
 export const createFilter = ({ reviewRequestId }: Input): EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasReceived', 'ReviewRequestForAPreprintWasAccepted'],
+  types: [
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestForAPreprintWasImported',
+  ],
   predicates: { reviewRequestId },
 })
 
@@ -30,22 +34,32 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const received = yield* Either.fromOption(
-      Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived')),
-      () => new Errors.UnknownReviewRequest({}),
-    )
+    const received = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))
 
-    const accepted = yield* Either.fromOption(
-      Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted')),
-      () => new Errors.UnknownReviewRequest({}),
-    )
+    const accepted = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))
 
-    return {
-      author: received.requester,
-      preprintId: received.preprintId,
-      id: received.reviewRequestId,
-      published: accepted.acceptedAt,
-    }
+    return yield* Option.match(Option.all([received, accepted]), {
+      onNone: () =>
+        Either.fromOption(
+          pipe(
+            Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasImported')),
+            Option.andThen(imported => ({
+              author: imported.requester,
+              preprintId: imported.preprintId,
+              id: imported.reviewRequestId,
+              published: imported.publishedAt,
+            })),
+          ),
+          () => new Errors.UnknownReviewRequest({}),
+        ),
+      onSome: ([received, accepted]) =>
+        Either.right({
+          author: received.requester,
+          preprintId: received.preprintId,
+          id: received.reviewRequestId,
+          published: accepted.acceptedAt,
+        }),
+    })
   })
 
 function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {

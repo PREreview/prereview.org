@@ -172,14 +172,10 @@ const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request8Id,
 })
-const request9Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
+const request9Imported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: now.subtract({ hours: 9 }),
   preprintId: preprintId2,
   requester: Option.some(requester1),
-  reviewRequestId: request9Id,
-})
-const request9Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 9 }),
   reviewRequestId: request9Id,
 })
 const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -259,8 +255,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request8Received,
       request8Accepted,
       request8Categorized,
-      request9Received,
-      request9Accepted,
+      request9Imported,
       request9Categorized,
     ],
     Either.right({
@@ -330,8 +325,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request8Received,
       request8Accepted,
       request8Categorized,
-      request9Received,
-      request9Accepted,
+      request9Imported,
       request9Categorized,
     ],
     Either.right({
@@ -360,9 +354,9 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
         },
         {
           id: request9Id,
-          published: request9Accepted.acceptedAt,
+          published: request9Imported.publishedAt,
           topics: request9Categorized.topics,
-          preprintId: request9Received.preprintId,
+          preprintId: request9Imported.preprintId,
         },
       ],
     }),

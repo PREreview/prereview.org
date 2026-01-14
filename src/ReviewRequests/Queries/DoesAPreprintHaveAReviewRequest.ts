@@ -12,7 +12,11 @@ export type Result = boolean
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createFilter = ({ preprintId }: Input) =>
   Events.EventFilter({
-    types: ['ReviewRequestForAPreprintWasReceived', 'ReviewRequestForAPreprintWasAccepted'],
+    types: [
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestForAPreprintWasImported',
+    ],
   })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
@@ -34,6 +38,11 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, accepted: true })),
             () => Record.set(map, event.reviewRequestId, { preprintId: undefined, accepted: true }),
+          ),
+        ReviewRequestForAPreprintWasImported: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
           ),
       }),
   )

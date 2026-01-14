@@ -124,14 +124,10 @@ const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
   acceptedAt: now.subtract({ hours: 8 }),
   reviewRequestId: request8Id,
 })
-const request9Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
+const request9Imported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId2,
   requester: Option.some(requester1),
-  reviewRequestId: request9Id,
-})
-const request9Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 9 }),
   reviewRequestId: request9Id,
 })
 
@@ -151,10 +147,11 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
     true,
   ],
+  ['has been imported', { preprintId: preprintId2 }, [request9Imported], true],
   [
     'others have been accepted',
     { preprintId: preprintId3 },
-    [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
+    [request1Received1, request1Accepted1, request1Received2, request1Accepted2, request9Imported],
     false,
   ],
   [
@@ -179,8 +176,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request7Accepted,
       request8Received,
       request8Accepted,
-      request9Received,
-      request9Accepted,
+      request9Imported,
     ],
     true,
   ],

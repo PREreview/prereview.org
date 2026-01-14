@@ -42,6 +42,24 @@ const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewReque
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
@@ -86,7 +104,14 @@ describe('query', () => {
           [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
           reviewRequestId,
         ], // with events
-        [[otherReviewRequestForAPreprintWasReceived, otherReviewRequestForAPreprintWasAccepted], reviewRequestId], // with events for other dataset review
+        [
+          [
+            otherReviewRequestForAPreprintWasReceived,
+            otherReviewRequestForAPreprintWasAccepted,
+            otherReviewRequestForAPreprintWasImported,
+          ],
+          reviewRequestId,
+        ], // with events for other dataset review
       ],
     },
   )('not accepted', (events, reviewRequestId) => {
@@ -103,7 +128,11 @@ describe('query', () => {
           fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
         )
         .map(([received, accepted]) =>
-          Tuple.make(Array.make(received, accepted), reviewRequestId, Tuple.make(received, accepted)),
+          Tuple.make(
+            Array.make(received, accepted as ReviewRequests.ReviewRequestEvent),
+            reviewRequestId,
+            Tuple.make(received, accepted),
+          ),
         ),
     ],
     {
@@ -115,6 +144,18 @@ describe('query', () => {
             [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
           ],
         ], // accepted
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted1,
+              reviewRequestForAPreprintWasImported1,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+            reviewRequestId,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
+          ],
+        ], // withOtherEvents
         [
           [
             [
@@ -149,6 +190,44 @@ describe('query', () => {
         preprintId: expected[0].preprintId,
         id: expected[0].reviewRequestId,
         published: expected[1].acceptedAt,
+      }),
+    )
+  })
+
+  test.prop(
+    [
+      fc
+        .reviewRequestForAPreprintWasImported()
+        .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
+    ],
+    {
+      examples: [
+        [[[reviewRequestForAPreprintWasImported1], reviewRequestId, reviewRequestForAPreprintWasImported1]], // imported
+        [
+          [
+            [reviewRequestForAPreprintWasImported1, reviewRequestForAPreprintWasImported2],
+            reviewRequestId,
+            reviewRequestForAPreprintWasImported2,
+          ],
+        ], // multiple times
+        [
+          [
+            [reviewRequestForAPreprintWasImported1, otherReviewRequestForAPreprintWasImported],
+            reviewRequestId,
+            reviewRequestForAPreprintWasImported1,
+          ],
+        ], // other requests
+      ],
+    },
+  )('has been imported', ([events, reviewRequestId, expected]) => {
+    const actual = _.query(events, { reviewRequestId })
+
+    expect(actual).toStrictEqual(
+      Either.right({
+        author: expected.requester,
+        preprintId: expected.preprintId,
+        id: expected.reviewRequestId,
+        published: expected.publishedAt,
       }),
     )
   })
