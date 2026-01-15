@@ -70,7 +70,9 @@ const program = pipe(
       }),
     ),
   ),
-  Effect.andThen(Effect.logDebug('Done!')),
+  Effect.andThen(Effect.logDebug('Import done!')),
+  Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
+  Effect.andThen(Effect.logDebug('Categorisation done!')),
 )
 
 pipe(
@@ -79,6 +81,7 @@ pipe(
     pipe(
       Layer.mergeAll(
         ReviewRequests.commandsLayer,
+        ReviewRequests.queriesLayer,
         Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI'))),
       ),
       Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer)),

@@ -1,12 +1,12 @@
 import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
+import type { Uuid } from '../../types/index.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as GetReceivedReviewRequest from './GetReceivedReviewRequest.ts'
-
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -26,6 +26,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
     >
+    findReviewRequestsNeedingCategorization: SimpleQuery<ReadonlyArray<Uuid.Uuid>>
   }
 >() {}
 
@@ -46,6 +47,7 @@ export const {
   getPublishedReviewRequest,
   getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
+  findReviewRequestsNeedingCategorization,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
@@ -115,6 +117,7 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         SearchForPublishedReviewRequests.createFilter,
         SearchForPublishedReviewRequests.query,
       ),
+      findReviewRequestsNeedingCategorization: () => new UnableToQuery({ cause: 'not implemented' }),
     }
   })
 
