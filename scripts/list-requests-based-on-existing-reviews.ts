@@ -144,7 +144,7 @@ const program = Effect.gen(function* () {
   yield* terminal.display('\n')
 
   yield* Effect.forEach(suggestedPreprints, ([doi, work, matches]) =>
-    terminal.display(`${doi} ${work.title} (${matches.map(getKeywordName).join(', ')})\n`),
+    terminal.display(`"${Doi.toUrl(doi).href}","${work.title}","${matches.map(getKeywordName).join(', ')}"\n`),
   )
 })
 
