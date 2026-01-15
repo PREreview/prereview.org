@@ -67,7 +67,14 @@ const program = Effect.gen(function* () {
     preprintIds,
     Effect.forEach(
       Effect.fn(function* (preprintId) {
-        const work = yield* OpenAlexWorks.getCategoriesForAReviewRequest(preprintId)
+        const work = yield* pipe(
+          OpenAlexWorks.getCategoriesForAReviewRequest(preprintId),
+          Effect.catchIf(
+            error => error.cause?._tag === 'WorkIsNotFound',
+
+            () => Effect.succeed({ title: 'not-found', keywords: [] }),
+          ),
+        )
         return [
           preprintId,
           { title: work.title, keywords: Array.filter(work.keywords, ({ confidence }) => confidence > 0.5) },
