@@ -1,14 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-internal-modules */
-import { NodeRuntime } from '@effect/platform-node'
+import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Array, Config, Effect, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
+import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
 import * as Events from '../src/Events.ts'
-import { CoarNotify } from '../src/ExternalApis/index.ts'
+import { CoarNotify, OpenAlex } from '../src/ExternalApis/index.ts'
+import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import * as Redis from '../src/Redis.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
+import { CategorizeReviewRequest } from '../src/ReviewRequests/Reactions/CategorizeReviewRequest.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
 import { EmailAddress, OrcidId, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
@@ -56,7 +58,7 @@ const PostgresClientLayer = Layer.mergeAll(
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
 )
 
-const categorizeReviewRequest = (id: Uuid.Uuid) => Effect.log(id)
+const categorizeReviewRequest = flow(CategorizeReviewRequest, Effect.ignoreLogged)
 
 const program = pipe(
   getReviewRequests,
@@ -86,9 +88,10 @@ pipe(
         ReviewRequests.commandsLayer,
         ReviewRequests.queriesLayer,
         Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI'))),
+        OpenAlexWorks.layer,
       ),
-      Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer)),
-      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer)),
+      Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, OpenAlex.layer)),
+      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer, NodeHttpClient.layer)),
       Layer.provide(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
     ),
   ),
