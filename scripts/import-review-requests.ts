@@ -56,6 +56,8 @@ const PostgresClientLayer = Layer.mergeAll(
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
 )
 
+const categorizeReviewRequest = (id: Uuid.Uuid) => Effect.log(id)
+
 const program = pipe(
   getReviewRequests,
   Effect.andThen(
@@ -72,6 +74,7 @@ const program = pipe(
   ),
   Effect.andThen(Effect.logDebug('Import done!')),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
+  Effect.andThen(Effect.forEach(categorizeReviewRequest)),
   Effect.andThen(Effect.logDebug('Categorisation done!')),
 )
 
