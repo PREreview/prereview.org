@@ -1,9 +1,17 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-internal-modules */
 import { NodeRuntime } from '@effect/platform-node'
-import { Config, Effect, Logger, LogLevel, pipe, Schema } from 'effect'
+import { PgClient } from '@effect/sql-pg'
+import { Array, Config, Effect, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
+import { v5 as uuid5 } from 'uuid'
+import * as Events from '../src/Events.ts'
 import { CoarNotify } from '../src/ExternalApis/index.ts'
+import * as Preprints from '../src/Preprints/index.ts'
 import * as Redis from '../src/Redis.ts'
-import { Temporal } from '../src/types/index.ts'
+import * as ReviewRequests from '../src/ReviewRequests/index.ts'
+import * as SqlEventStore from '../src/SqlEventStore.ts'
+import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
+import { EmailAddress, OrcidId, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
 
 const ReviewRequestSchema = Schema.Struct({
   timestamp: Temporal.InstantFromMillisecondsSchema,
@@ -14,17 +22,70 @@ const getReviewRequests = pipe(
   Redis.DataStoreRedis,
   Effect.andThen(redis => Effect.tryPromise(() => redis.lrange('notifications', 0, 4))),
   Effect.andThen(Schema.decode(Schema.Array(Schema.parseJson(ReviewRequestSchema)))),
+  Effect.andThen(
+    Array.filter(({ notification }) => notification.origin.id !== new URL('https://coar-notify.prereview.org/')),
+  ),
+)
+const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
+  if (actor.type !== 'Person') {
+    return { name: actor.name }
+  }
+
+  const emailAddress = Schema.decodeUnknownOption(EmailAddress.EmailAddressFromUrlSchema)(actor.id.href)
+
+  const orcidId = Schema.decodeUnknownOption(OrcidId.OrcidIdFromUrlSchema)(actor.id.href)
+
+  const sciProfilesId = Schema.decodeUnknownOption(SciProfilesId.SciProfilesIdFromUrlSchema)(actor.id.href)
+
+  return {
+    name: actor.name,
+    emailAddress: Option.getOrUndefined(emailAddress),
+    orcidId: Option.getOrUndefined(orcidId),
+    sciProfilesId: Option.getOrUndefined(sciProfilesId),
+  }
+}
+
+const TimestampToUuid = (timestamp: Temporal.Instant): Uuid.Uuid =>
+  Uuid.Uuid(uuid5(timestamp.epochMilliseconds.toString(), 'a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
+
+const PostgresClientLayer = Layer.mergeAll(
+  PgClient.layerConfig({
+    url: Config.redacted(Config.string('POSTGRES_URL')),
+  }),
+  Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
+  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
 )
 
-const program = Effect.gen(function* () {
-  const reviewRequests = yield* getReviewRequests
-
-  yield* Effect.logDebug('Found review requests').pipe(Effect.annotateLogs({ reviewRequests }))
-})
+const program = pipe(
+  getReviewRequests,
+  Effect.andThen(
+    Effect.forEach(
+      Effect.fn(function* ({ timestamp, notification }) {
+        yield* ReviewRequests.importReviewRequest({
+          publishedAt: timestamp,
+          preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
+          reviewRequestId: TimestampToUuid(timestamp),
+          requester: ActorToRequester(notification.actor),
+        })
+      }),
+    ),
+  ),
+  Effect.andThen(Effect.logDebug('Done!')),
+)
 
 pipe(
   program,
-  Effect.provide(Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI')))),
+  Effect.provide(
+    pipe(
+      Layer.mergeAll(
+        ReviewRequests.commandsLayer,
+        Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI'))),
+      ),
+      Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer)),
+      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer)),
+      Layer.provide(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
+    ),
+  ),
   Effect.scoped,
   Logger.withMinimumLogLevel(LogLevel.Debug),
   NodeRuntime.runMain(),
