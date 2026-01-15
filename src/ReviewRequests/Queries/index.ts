@@ -1,8 +1,8 @@
 import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
-import type { Uuid } from '../../types/index.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
+import type * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
@@ -26,7 +26,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
     >
-    findReviewRequestsNeedingCategorization: SimpleQuery<ReadonlyArray<Uuid.Uuid>>
+    findReviewRequestsNeedingCategorization: SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
 >() {}
 
