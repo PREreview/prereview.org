@@ -33,3 +33,9 @@ test('query', () => {
 
   expect(actual).toStrictEqual([])
 })
+
+test.failing('query', () => {
+  const actual = _.query([request1Imported])
+
+  expect(actual).toStrictEqual([request1Id])
+})
