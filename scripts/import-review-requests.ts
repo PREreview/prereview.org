@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-internal-modules */
+import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
@@ -22,7 +23,7 @@ const ReviewRequestSchema = Schema.Struct({
 
 const getReviewRequests = pipe(
   Redis.DataStoreRedis,
-  Effect.andThen(redis => Effect.tryPromise(() => redis.lrange('notifications', 0, 4))),
+  Effect.andThen(redis => Effect.tryPromise(() => redis.lrange('notifications', 0, -1))),
   Effect.andThen(Schema.decode(Schema.Array(Schema.parseJson(ReviewRequestSchema)))),
   Effect.andThen(
     Array.filter(({ notification }) => notification.origin.id !== new URL('https://coar-notify.prereview.org/')),
@@ -76,8 +77,22 @@ const program = pipe(
   ),
   Effect.andThen(Effect.logDebug('Import done!')),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
-  Effect.andThen(Effect.forEach(categorizeReviewRequest)),
+  Effect.andThen(Array.take(100)),
+  Effect.andThen(Effect.forEach(categorizeReviewRequest, { concurrency: 5 })),
   Effect.andThen(Effect.logDebug('Categorisation done!')),
+)
+
+const httpClient = pipe(
+  HttpClient.HttpClient,
+  Effect.andThen(
+    HttpClient.mapRequest(
+      HttpClientRequest.setHeaders({
+        'User-Agent': 'PREreview (https://prereview.org/; mailto:engineering@prereview.org)',
+      }),
+    ),
+  ),
+  Layer.effect(HttpClient.HttpClient),
+  Layer.provide(NodeHttpClient.layer),
 )
 
 pipe(
@@ -91,7 +106,7 @@ pipe(
         OpenAlexWorks.layer,
       ),
       Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, OpenAlex.layer)),
-      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer, NodeHttpClient.layer)),
+      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer, httpClient)),
       Layer.provide(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
     ),
   ),
