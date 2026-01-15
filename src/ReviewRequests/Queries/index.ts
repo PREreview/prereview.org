@@ -2,7 +2,7 @@ import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from '
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
-import type * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
+import * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
@@ -117,7 +117,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         SearchForPublishedReviewRequests.createFilter,
         SearchForPublishedReviewRequests.query,
       ),
-      findReviewRequestsNeedingCategorization: () => new UnableToQuery({ cause: 'not implemented' }),
+      findReviewRequestsNeedingCategorization: handleSimpleQuery(
+        FindReviewRequestsNeedingCategorization.filter,
+        FindReviewRequestsNeedingCategorization.query,
+      ),
     }
   })
 
