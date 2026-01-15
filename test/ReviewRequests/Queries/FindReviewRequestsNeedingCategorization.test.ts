@@ -43,7 +43,7 @@ test('query', () => {
   expect(actual).toStrictEqual([])
 })
 
-test.failing.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, ReadonlyArray<Uuid.Uuid>]>([
+test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, ReadonlyArray<Uuid.Uuid>]>([
   ['single not categorized', [request1Imported], [request1Id]],
   ['two not categorized', [request1Imported, request2Imported], [request1Id, request2Id]],
   ['partially categorized', [request1Imported, request2Imported, request1Categorized], [request2Id]],

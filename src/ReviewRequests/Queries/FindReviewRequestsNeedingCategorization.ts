@@ -1,7 +1,20 @@
+import { Array } from 'effect'
 import type * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
 
 export type Result = ReadonlyArray<Uuid.Uuid>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => []
+export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
+  const state = Array.reduce(events, new Set<Uuid.Uuid>(), (state, event) => {
+    if (event._tag === 'ReviewRequestForAPreprintWasImported') {
+      state.add(event.reviewRequestId)
+      return state
+    }
+    if (event._tag === 'ReviewRequestForAPreprintWasCategorized') {
+      state.delete(event.reviewRequestId)
+      return state
+    }
+    return state
+  })
+  return [...state]
+}
