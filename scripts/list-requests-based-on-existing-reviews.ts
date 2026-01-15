@@ -125,6 +125,7 @@ const program = Effect.gen(function* () {
         ),
       { concurrency: 10 },
     ),
+    Effect.andThen(Array.filter(([, , matchingKeywords]) => matchingKeywords.length > 1)),
   )
 
   const terminal = yield* Terminal.Terminal
