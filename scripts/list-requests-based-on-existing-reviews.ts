@@ -16,7 +16,7 @@ import * as Preprints from '../src/Preprints/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import * as Redis from '../src/Redis.ts'
-import { Keyword, OrcidId, ProfileId } from '../src/types/index.ts'
+import { Doi, Keyword, OrcidId, ProfileId } from '../src/types/index.ts'
 import { getKeywordName, type KeywordId } from '../src/types/Keyword.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
@@ -68,10 +68,15 @@ const program = Effect.gen(function* () {
     Effect.forEach(
       Effect.fn(function* (preprintId) {
         const work = yield* OpenAlexWorks.getCategoriesForAReviewRequest(preprintId)
-        return [preprintId, Array.filter(work.keywords, ({ confidence }) => confidence > 0.5)] as const
+        return [
+          preprintId,
+          { title: work.title, keywords: Array.filter(work.keywords, ({ confidence }) => confidence > 0.5) },
+        ] as const
       }),
     ),
-  )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
+  )) as unknown as ReadonlyArray<
+    [Preprints.PreprintId, { title: string; keywords: ReadonlyArray<{ id: string; confidence: number }> }]
+  >
 
   const findRequestedPreprintIdsForAKeyword = (keywordId: string) =>
     pipe(
@@ -84,7 +89,7 @@ const program = Effect.gen(function* () {
 
   const countedKeywords = pipe(
     preprintKeywords,
-    Array.flatMap(Tuple.getSecond),
+    Array.flatMap(foo => foo[1].keywords),
     Array.groupBy(keyword => keyword.id),
     Record.map(Array.map(keyword => keyword.confidence * 10)),
     Record.map(Array.sort(Order.reverse(Order.number))),
@@ -125,7 +130,9 @@ const program = Effect.gen(function* () {
   const terminal = yield* Terminal.Terminal
 
   yield* Effect.forEach(preprintKeywords, item =>
-    terminal.display(`${item[0].value}: ${item[1].map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}\n`),
+    terminal.display(
+      `"${Doi.toUrl(item[0].value).href}","${item[1].title}","${item[1].keywords.map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}"\n`,
+    ),
   )
   yield* terminal.display('\n')
 

@@ -7,6 +7,7 @@ import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/K
 import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic.ts'
 
 export interface CategoriesForAReviewRequest {
+  readonly title: string
   readonly language: Option.Option<LanguageCode>
   readonly topics: ReadonlyArray<TopicId>
   readonly keywords: ReadonlyArray<{
@@ -27,6 +28,7 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
     Effect.andThen(
       work =>
         ({
+          title: work.title,
           language: Option.orElse(Option.fromNullable(work.language), () => detectLanguage(work.title)),
           topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
           keywords: Array.filterMap(work.keywords, ({ id, score }) =>
