@@ -106,7 +106,14 @@ pipe(
         OpenAlexWorks.layer,
       ),
       Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, OpenAlex.layer)),
-      Layer.provideMerge(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer, httpClient)),
+      Layer.provideMerge(
+        Layer.mergeAll(
+          Events.layer,
+          SqlSensitiveDataStore.layer,
+          httpClient,
+          OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
+        ),
+      ),
       Layer.provide(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
     ),
   ),

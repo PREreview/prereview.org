@@ -22,7 +22,7 @@ import { createServer } from 'http'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { isAClubLead } from './Clubs/index.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from './Context.ts'
-import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
+import { Cloudinary, Ghost, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
 import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
@@ -224,6 +224,7 @@ pipe(
         Zenodo.ZenodoApi,
         Config.all({ key: Config.redacted('ZENODO_API_KEY'), origin: Config.url('ZENODO_URL') }),
       ),
+      OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
     ),
   ),
   Layer.provide(
