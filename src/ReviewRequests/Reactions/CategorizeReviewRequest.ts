@@ -1,5 +1,6 @@
-import { Effect, Option } from 'effect'
+import { Effect } from 'effect'
 import { OpenAlexWorks } from '../../ExternalInteractions/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
@@ -9,14 +10,16 @@ export const CategorizeReviewRequest = Effect.fn(
   function* (reviewRequestId: Uuid.Uuid) {
     const reviewRequest = yield* Queries.getPublishedReviewRequest({ reviewRequestId })
 
-    const categories = yield* OpenAlexWorks.getCategoriesForAReviewRequest(reviewRequest.preprintId)
-
-    if (Option.isNone(categories.language)) {
-      return yield* Effect.fail('no language')
-    }
+    const { preprint, categories } = yield* Effect.all(
+      {
+        preprint: Preprints.getPreprintTitle(reviewRequest.preprintId),
+        categories: OpenAlexWorks.getCategoriesForAReviewRequest(reviewRequest.preprintId),
+      },
+      { concurrency: 'inherit' },
+    )
 
     yield* Commands.categorizeReviewRequest({
-      language: categories.language.value,
+      language: preprint.language,
       keywords: categories.keywords,
       topics: categories.topics,
       reviewRequestId: reviewRequest.id,

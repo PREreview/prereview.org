@@ -6,7 +6,7 @@ import { PgClient } from '@effect/sql-pg'
 import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
 import * as Events from '../src/Events.ts'
-import { CoarNotify, OpenAlex } from '../src/ExternalApis/index.ts'
+import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
 import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import * as Redis from '../src/Redis.ts'
@@ -104,8 +104,18 @@ pipe(
         ReviewRequests.queriesLayer,
         Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI'))),
         OpenAlexWorks.layer,
+        Preprints.layer,
       ),
-      Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, OpenAlex.layer)),
+      Layer.provideMerge(
+        Layer.mergeAll(
+          SqlEventStore.layer,
+          OpenAlex.layer,
+          Crossref.layer,
+          Datacite.layer,
+          JapanLinkCenter.layer,
+          Philsci.layer,
+        ),
+      ),
       Layer.provideMerge(
         Layer.mergeAll(
           Events.layer,
