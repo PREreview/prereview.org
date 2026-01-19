@@ -34,7 +34,6 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
       Effect.context<
-        | FetchHttpClient.Fetch
         | Crossref.Crossref
         | Datacite.Datacite
         | JapanLinkCenter.JapanLinkCenter
