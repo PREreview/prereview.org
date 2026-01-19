@@ -14,7 +14,7 @@ COPY .npmrc \
 #
 # Stage: intlc environment
 #
-FROM --platform=linux/amd64 debian:13.2-slim AS intlc
+FROM --platform=linux/amd64 debian:13.3-slim AS intlc
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 WORKDIR /app
