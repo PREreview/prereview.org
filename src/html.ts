@@ -64,7 +64,7 @@ export function mjmlToHtml(mjml: Html): Html {
   return new Html({ value })
 }
 
-export function sanitizeHtml(html: string, trusted = false): Html {
+export function sanitizeHtml(html: string, { trusted = false } = {}): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
       'dd',
