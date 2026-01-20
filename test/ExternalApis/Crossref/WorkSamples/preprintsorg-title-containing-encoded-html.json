@@ -1,0 +1,63 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 1, 19]],
+      "date-time": "2026-01-19T19:55:06Z",
+      "timestamp": 1768852506870,
+      "version": "3.49.0"
+    },
+    "posted": { "date-parts": [[2026, 1, 16]] },
+    "group-title": "Biology and Life Sciences",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 1, 16]], "date-time": "2026-01-16T00:00:00Z", "timestamp": 1768521600000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2026, 1, 15]] },
+    "abstract": "<jats:p>Lavender has been cultivated in Bulgaria for over a century. The high essential oil content and quality of Bulgarian lavender varieties have established the country as a leading global producer. Studies into the crop's genetic diversity is essential for selecting varieties best suited to specific environmental conditions, maximising resilience and yield. Therefore, identifying appropriate genetic markers to monitor lavender diversity is a key prerequisite for developing effective crop selection strategies, particularly in response to the challenges posed by global climate change. In this study, we evaluate the versatility of markers for assessing genetic diversity of lavender genotypes. A total of 96, 97 and 96 bands were recorded using the 13 SCoT, 13 ISSR and 14 CEAP primers, respectively. All amplification programs used were successful in the studied genotypes. Additionally, were applied four informative primers of each marker systems for assessment of the within-field genetic variability in two lavender plantations from Bulgaria. This is the first report on the combined use and comparison of CEAP, SCoT and ISSR primers in lavender genotypes in Bulgaria.<\/jats:p>",
+    "DOI": "10.20944\/preprints202601.1248.v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 1, 19]], "date-time": "2026-01-19T06:14:47Z", "timestamp": 1768803287000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Capability of ISSR, SCoT and CEAP Markers for Genetic Diversity Assessment of Lavender (&lt;em&gt;Lavandula angustifolia Mill.&lt;\/em&gt;) Genotypes"
+    ],
+    "prefix": "10.20944",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-7479-4139",
+        "authenticated-orcid": false,
+        "given": "Mariya",
+        "family": "Zhelyazkova",
+        "sequence": "first",
+        "affiliation": []
+      }
+    ],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 1, 19]], "date-time": "2026-01-19T06:15:45Z", "timestamp": 1768803345000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202601.1248\/v1" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 1, 16]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202601.1248.v1",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026, 1, 16]] },
+    "subtype": "preprint"
+  }
+}

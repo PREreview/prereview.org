@@ -238,6 +238,72 @@ test.each([
     }),
   },
   {
+    response: 'preprintsorg-title-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Tihomir Car', orcid: undefined }],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1190.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 15 }),
+      title: {
+        text: rawHtml(
+          'Hyperbolic EM Symmetry and Metrological Closure of Vacuum Impedance with Links to Topological Response in Metals and Alloys',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>We develop a symmetry-based reconstruction of the vacuum impedance and the fine-structure\nconstant. Hyperbolic geometry and discrete sectorization of the electromagnetic field plane are the only input assumptions. The construction identifies a unique integer-square hyperbolic selector that fixes the electric–magnetic partition without adjustable parameters. This yield the geometric part of the vacuum impedance when combined with the quantum scale <math><semantics><mrow><mi>h</mi><mi mathvariant="normal">/</mi><msup><mi>e</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">h/e^{2}</annotation></semantics></math>. The same discrete structure provides a normalization for the fine-structure constant through a universal sector angle <math><semantics><mrow><mi>π</mi><mi mathvariant="normal">/</mi><mn>24</mn></mrow><annotation encoding="application/x-tex">\\pi/24</annotation></semantics></math>, connecting topological quantization phenomena in metals and alloys, including Berry phases, Zak phases, and quantized Hall responses. The resulting framework places electromagnetic constants within a unified geometric–topological setting and suggests experimentally accessible consequences in systems with discrete rotational or modular symmetry.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.1190/v1'),
+    }),
+  },
+  {
+    response: 'preprintsorg-title-containing-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Mariya Zhelyazkova', orcid: OrcidId('0000-0001-7479-4139') }],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1248.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 16 }),
+      title: {
+        text: rawHtml(
+          'Capability of ISSR, SCoT and CEAP Markers for Genetic Diversity Assessment of Lavender (<i>Lavandula angustifolia Mill.</i>) Genotypes',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          "<p>Lavender has been cultivated in Bulgaria for over a century. The high essential oil content and quality of Bulgarian lavender varieties have established the country as a leading global producer. Studies into the crop's genetic diversity is essential for selecting varieties best suited to specific environmental conditions, maximising resilience and yield. Therefore, identifying appropriate genetic markers to monitor lavender diversity is a key prerequisite for developing effective crop selection strategies, particularly in response to the challenges posed by global climate change. In this study, we evaluate the versatility of markers for assessing genetic diversity of lavender genotypes. A total of 96, 97 and 96 bands were recorded using the 13 SCoT, 13 ISSR and 14 CEAP primers, respectively. All amplification programs used were successful in the studied genotypes. Additionally, were applied four informative primers of each marker systems for assessment of the within-field genetic variability in two lavender plantations from Bulgaria. This is the first report on the combined use and comparison of CEAP, SCoT and ISSR primers in lavender genotypes in Bulgaria.</p>",
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.1248/v1'),
+    }),
+  },
+  {
+    response: 'preprintsorg-abstract-encoded-html.json',
+    expected: Preprint({
+      authors: [
+        { name: 'István Biró', orcid: OrcidId('0009-0002-6013-1371') },
+        { name: 'Gábor Fazekas', orcid: OrcidId('0000-0003-3612-8826') },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202505.1032.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 5, day: 14 }),
+      title: {
+        text: rawHtml(
+          'Integrated Specialized Health Model (ISHM): A Conceptual Policy Framework for Sustainable and Digitally Supported Healthcare Systems',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Háttér: Ez a koncepcionális szakpolitikai dokumentum a kortárs egészségügyi rendszerek kulcsfontosságú strukturális kihívásaival foglalkozik – nevezetesen a széttöredezettséggel, a kapacitás egyensúlyhiánnyal és a technológiai alulkihasználtsággal. Több reform ellenére az egészségügyi rendszerek továbbra is hatékonytalanok és egyenlőtlenek, különösen a specializált szolgáltatásnyújtás terén. Célkitűzés: Bemutatjuk az Integrált Specializált Egészségügyi Modellt (ISHM), amely egy koncepcionális keretrendszer a specializált szolgáltatások stratégiai szervezésére egy integrált, digitálisan támogatott egészségügyi hálózaton belül. Módszerek: Az ISHM olyan nemzetközi modellekkel szemben helyezkedik el, mint a Betegközpontú Orvosi Otthon, az Elszámoltatható Ellátó Szervezetek és a skandináv regionális ellátórendszerek. Integrálja a digitális interoperabilitást, a mesterséges intelligenciát és a robotikát egy hálózatalapú, moduláris struktúrában. Eredmények: A modell előnyöket biztosít a klinikai minőség, az erőforrás-hatékonyság és a betegélmény terén. Javaslatot teszünk egy kísérleti megvalósítási útvonalra, amely magában foglalja a megosztott infrastruktúrát, a harmonizált protokollokat és az eredményalapú monitorozást. Az ISHM különösen alkalmas a strukturálisan széttöredezett vagy alulfinanszírozott rendszerekhez, mint például a közép- és kelet-európai rendszerekhez. Következtetések: Az ISHM egy skálázható és szakpolitikával összehangolt keretrendszert kínál a specializáció és az integráció, valamint a digitális innováció és a rendszerszintű ellenálló képesség összekapcsolására. Koncepcionális felépítése támogatja a további empirikus validációt és a szakpolitikai adaptációt.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202505.1032/v1'),
+    }),
+  },
+  {
     response: 'verixiv.json',
     expected: Preprint({
       authors: [

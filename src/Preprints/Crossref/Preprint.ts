@@ -1,6 +1,7 @@
 import { Url } from '@effect/platform'
 import * as Doi from 'doi-ts'
 import { Array, Either, flow, Match, Option, pipe } from 'effect'
+import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
 import type { Crossref } from '../../ExternalApis/index.ts'
@@ -94,7 +95,7 @@ export const workToPreprint = (
     const title = yield* Array.match(work.title, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title: work.title } })),
       onNonEmpty: flow(
-        title => Either.right({ text: sanitizeHtml(title[0]) }),
+        title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id)) }),
         Either.bind('language', ({ text }) =>
           Either.fromOption(
             detectLanguageForServer({ id, text }),
@@ -106,7 +107,9 @@ export const workToPreprint = (
 
     const abstract = yield* work.abstract !== undefined
       ? pipe(
-          Either.right({ text: transformJatsToHtml(work.abstract) }),
+          Either.right({
+            text: transformJatsToHtml(maybeDecode(work.abstract, id)),
+          }),
           Either.bind('language', ({ text }) =>
             Either.fromOption(
               detectLanguageForServer({ id, text }),
@@ -125,6 +128,13 @@ export const workToPreprint = (
       url: Url.setProtocol(work.resource.primary.URL, 'https'),
     })
   })
+
+const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
+  preprintId._tag === 'PreprintsorgPreprintId'
+    ? text.startsWith('&lt;') || text.includes('&lt;em&gt;') || text.includes('&amp;aacute;')
+      ? decode(text)
+      : text
+    : text
 
 const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
   Match.valueTags(id, {
