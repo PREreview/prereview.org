@@ -693,3 +693,22 @@ describe('RawHtmlC', () => {
     expect(actual).toStrictEqual(html.toString())
   })
 })
+
+test.prop([fc.lorem()])('mjmlToHtml', text => {
+  const actual = _.mjmlToHtml(_.html`
+    <mjml>
+      <mj-body>
+        <mj-section>
+          <mj-column>
+            <mj-text>
+              ${text}
+            </mj-text>
+          </mj-column>
+        </mj-section>
+      </mj-body>
+    </mjml>
+  `)
+
+  expect(actual.value).toStrictEqual(expect.stringMatching(/<!doctype html>/))
+  expect(actual.value).toStrictEqual(expect.stringContaining(text))
+})
