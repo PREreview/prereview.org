@@ -154,7 +154,9 @@ export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = f
       strong: 'b',
     },
     exclusiveFilter: frame =>
-      ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
+      ['a', 'b', 'em', 'i', 'strong', 'sub', 'sup'].includes(frame.tag) && frame.text.trim() === ''
+        ? 'excludeTag'
+        : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
     nonTextTags: ['style', 'script', 'textarea', 'option', 'annotation-xml'],
   })
 

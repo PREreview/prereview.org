@@ -313,7 +313,7 @@ test.each([
       id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202202.0061.v4') }),
       posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 2 }),
       title: {
-        text: rawHtml('Key Points in HIV Infection Pathology<b></b>'),
+        text: rawHtml('Key Points in HIV Infection Pathology'),
         language: 'en',
       },
       abstract: {
