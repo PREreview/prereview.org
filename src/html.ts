@@ -160,7 +160,14 @@ export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = f
     nonTextTags: ['style', 'script', 'textarea', 'option', 'annotation-xml'],
   })
 
-  return rawHtml(sanitized)
+  return rawHtml(
+    sanitized
+      .replaceAll(/\s*\u00a0\s*/g, '\u00a0')
+      .replaceAll(/[^\S\u00a0]+/g, ' ')
+      .replaceAll(/(?<=<(h[1-6]|ol|p|ul)>)\s+|\s+(?=<\/(h[1-6]|ol|p|ul)>)/g, '')
+      .replaceAll(/(?<=<\/(h[1-6]|ol|p|ul)>)\s+|\s+(?=<(h[1-6]|ol|p|ul)[\s>])/g, '')
+      .replaceAll(/<\/(h[1-6]|ol|p|ul)><(h[1-6]|ol|p|ul)([\s>])/g, '</$1>\n\n<$2$3'),
+  )
 }
 
 export function fixHeadingLevels(currentLevel: 1 | 2 | 3, input: Html): Html {
