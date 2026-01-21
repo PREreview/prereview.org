@@ -4,11 +4,16 @@
   "message-version": "1.0.0",
   "message": {
     "institution": [{ "name": "Research Square" }],
-    "indexed": { "date-parts": [[2024, 3, 3]], "date-time": "2024-03-03T11:52:17Z", "timestamp": 1709466737604 },
+    "indexed": {
+      "date-parts": [[2025, 5, 14]],
+      "date-time": "2025-05-14T06:17:04Z",
+      "timestamp": 1747203424601,
+      "version": "3.40.5"
+    },
     "posted": { "date-parts": [[2019, 10, 9]] },
     "group-title": "In Review",
     "reference-count": 0,
-    "publisher": "Research Square Platform LLC",
+    "publisher": "Springer Science and Business Media LLC",
     "license": [
       {
         "start": { "date-parts": [[2019, 10, 9]], "date-time": "2019-10-09T00:00:00Z", "timestamp": 1570579200000 },
@@ -20,7 +25,7 @@
     "content-domain": { "domain": [], "crossmark-restriction": false },
     "short-container-title": [],
     "accepted": { "date-parts": [[2018, 10, 18]] },
-    "abstract": "<jats:title>Abstract<\/jats:title>\n        <jats:p>The evidence base available to trialists to support trial process decisions\u2013 e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants \u2013 is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process. SWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste. This paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.<\/jats:p>",
+    "abstract": "<title>Abstract<\/title>\n        <p>The evidence base available to trialists to support trial process decisions\u2013 e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants \u2013 is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process. SWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste. This paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.<\/p>",
     "DOI": "10.21203\/rs.1.1\/v2",
     "type": "posted-content",
     "created": { "date-parts": [[2019, 10, 9]], "date-time": "2019-10-09T16:50:12Z", "timestamp": 1570639812000 },
@@ -30,7 +35,7 @@
     "prefix": "10.21203",
     "author": [
       {
-        "ORCID": "http:\/\/orcid.org\/0000-0002-7239-7241",
+        "ORCID": "https:\/\/orcid.org\/0000-0002-7239-7241",
         "authenticated-orcid": false,
         "given": "Shaun",
         "family": "Treweek",
@@ -200,7 +205,7 @@
         "affiliation": [{ "name": "Queen's University Belfast" }]
       }
     ],
-    "member": "8761",
+    "member": "297",
     "container-title": [],
     "original-title": [],
     "link": [
