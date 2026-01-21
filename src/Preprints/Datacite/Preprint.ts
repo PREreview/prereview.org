@@ -163,8 +163,10 @@ const getAbstract = (
 
   const text = pipe(
     Match.value(id),
-    Match.tag('ZenodoPreprintId', () => sanitizeHtml(`<p>${encode(abstract.description)}</p>`)),
-    Match.orElse(() => sanitizeHtml(`<p>${abstract.description}</p>`)),
+    Match.tag('ZenodoPreprintId', () =>
+      sanitizeHtml(`<p>${encode(abstract.description).replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`),
+    ),
+    Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
   )
 
   return Option.match(detectLanguageForServer({ id, text }), {
