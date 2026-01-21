@@ -95,7 +95,7 @@ export const workToPreprint = (
     const title = yield* Array.match(work.title, {
       onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title: work.title } })),
       onNonEmpty: flow(
-        title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id)) }),
+        title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
         Either.bind('language', ({ text }) =>
           Either.fromOption(
             detectLanguageForServer({ id, text }),

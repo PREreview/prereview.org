@@ -259,6 +259,30 @@ test.each([
     }),
   },
   {
+    response: 'preprintsorg-title-encoded-html-paragraph.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Pascal Stiefenhofer', orcid: undefined },
+        { name: 'Jing Qian', orcid: undefined },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.0801.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 13 }),
+      title: {
+        text: rawHtml(
+          'A Hybrid Systems Framework for Electric Vehicle Adoption: Microfoundations, Networks, and Filippov Dynamics',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Electric-vehicle (EV) diffusion exhibits nonlinear, path-dependent dynamics shaped by interacting economic, technological, and social constraints. This paper develops a unified hybrid-systems framework that captures these complexities by integrating microfounded household choice, capacity constrained firm behavior, local network spillovers, and multi-level policy intervention within a Filippov differential-inclusion structure. Households face heterogeneous preferences, liquidity limits, and network-mediated moral and informational influences; firms invest irreversibly under learning-by-doing and profitability thresholds; and national and local governments implement distinct financial and infrastructure policies subject to budget constraints.  The resulting aggregate adoption dynamics feature endogenous switching, sliding modes at economic bottlenecks, network-amplified tipping, and hysteresis arising from irreversible investment. We establish conditions for the existence of Filippov solutions, derive network-dependent tipping thresholds, characterize sliding regimes at capacity and liquidity constraints, and show how network structure magnifies hysteresis and shapes the effectiveness of local versus national policy. Optimal-control analysis further demonstrates that national subsidies follow bang--bang patterns and that network-targeted local interventions minimize the fiscal cost of achieving regional tipping. The framework provides a complex-systems perspective on sustainable mobility transitions and clarifies why identical national policies can generate asynchronous regional outcomes. These results offer theoretical foundations for designing coordinated, cost-effective, and network-aware EV transition strategies.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.0801/v1'),
+    }),
+  },
+  {
     response: 'preprintsorg-title-containing-encoded-html.json',
     expected: Preprint({
       authors: [{ name: 'Mariya Zhelyazkova', orcid: OrcidId('0000-0001-7479-4139') }],

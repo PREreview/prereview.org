@@ -1,0 +1,57 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 1, 15]],
+      "date-time": "2026-01-15T20:50:21Z",
+      "timestamp": 1768510221028,
+      "version": "3.49.0"
+    },
+    "posted": { "date-parts": [[2026, 1, 13]] },
+    "group-title": "Business, Economics and Management",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 1, 13]], "date-time": "2026-01-13T00:00:00Z", "timestamp": 1768262400000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2026, 1, 11]] },
+    "abstract": "<jats:p>Electric-vehicle (EV) diffusion exhibits nonlinear, path-dependent dynamics shaped by interacting economic, technological, and social constraints. This paper develops a unified hybrid-systems framework that captures these complexities by integrating microfounded household choice, capacity constrained firm behavior, local network spillovers, and multi-level policy intervention within a Filippov differential-inclusion structure. Households face heterogeneous preferences, liquidity limits, and network-mediated moral and informational influences; firms invest irreversibly under learning-by-doing and profitability thresholds; and national and local governments implement distinct financial and infrastructure policies subject to budget constraints.  The resulting aggregate adoption dynamics feature endogenous switching, sliding modes at economic bottlenecks, network-amplified tipping, and hysteresis arising from irreversible investment. We establish conditions for the existence of Filippov solutions, derive network-dependent tipping thresholds, characterize sliding regimes at capacity and liquidity constraints, and show how network structure magnifies hysteresis and shapes the effectiveness of local versus national policy. Optimal-control analysis further demonstrates that national subsidies follow bang--bang patterns and that network-targeted local interventions minimize the fiscal cost of achieving regional tipping. The framework provides a complex-systems perspective on sustainable mobility transitions and clarifies why identical national policies can generate asynchronous regional outcomes. These results offer theoretical foundations for designing coordinated, cost-effective, and network-aware EV transition strategies.<\/jats:p>",
+    "DOI": "10.20944\/preprints202601.0801.v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 1, 15]], "date-time": "2026-01-15T05:50:49Z", "timestamp": 1768456249000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "&lt;p style=\"-qt-block-indent: 0; text-indent: 0px; margin: 0px;\"&gt;A Hybrid Systems Framework for Electric Vehicle Adoption: Microfoundations, Networks, and Filippov Dynamics"
+    ],
+    "prefix": "10.20944",
+    "author": [
+      { "given": "Pascal", "family": "Stiefenhofer", "sequence": "first", "affiliation": [] },
+      { "given": "Jing", "family": "Qian", "sequence": "additional", "affiliation": [] }
+    ],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 1, 15]], "date-time": "2026-01-15T05:51:19Z", "timestamp": 1768456279000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202601.0801\/v1" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 1, 13]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202601.0801.v1",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026, 1, 13]] },
+    "subtype": "preprint"
+  }
+}

@@ -64,22 +64,10 @@ export function mjmlToHtml(mjml: Html): Html {
   return new Html({ value })
 }
 
-export function sanitizeHtml(html: string, { trusted = false } = {}): Html {
+export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
-      'dd',
-      'dl',
-      'dt',
-      'h1',
-      'h2',
-      'h3',
-      'h4',
-      'h5',
-      'h6',
-      'li',
-      'ol',
-      'p',
-      'ul',
+      ...(allowBlockLevel ? ['dd', 'dl', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'] : []),
       'a',
       'b',
       'i',
@@ -120,7 +108,7 @@ export function sanitizeHtml(html: string, { trusted = false } = {}): Html {
       annotation: ['encoding'],
       col: ['span'],
       img: ['alt', 'height', 'src', 'width'],
-      math: ['display'],
+      math: allowBlockLevel ? ['display'] : [],
       mo: [
         'fence',
         'largeop',
