@@ -20,7 +20,7 @@ export const EprintToPreprint = (eprint: Philsci.Eprint): Either.Either<Preprint
       })),
       title: {
         language: 'en' as const,
-        text: sanitizeHtml(eprint.title),
+        text: sanitizeHtml(eprint.title, { allowBlockLevel: false }),
       },
       abstract:
         eprint.abstract !== undefined

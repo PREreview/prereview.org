@@ -136,7 +136,7 @@ const getTitle = (
   id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
-    const text = sanitizeHtml(titles[0].title)
+    const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
     const language = yield* Either.fromOption(
       detectLanguageForServer({ id, text }),
