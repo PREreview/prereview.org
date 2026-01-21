@@ -131,7 +131,7 @@ export const workToPreprint = (
 
 const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
   preprintId._tag === 'PreprintsorgPreprintId'
-    ? text.startsWith('&lt;') || text.includes('&lt;em&gt;') || text.includes('&amp;aacute;')
+    ? text.startsWith('&lt;') || /&lt;[a-z]+&gt;|&amp;[a-z]+;/i.test(text)
       ? decode(text)
       : text
     : text

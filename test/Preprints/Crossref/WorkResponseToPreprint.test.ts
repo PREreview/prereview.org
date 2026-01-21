@@ -304,6 +304,28 @@ test.each([
     }),
   },
   {
+    response: 'preprintsorg-title-containing-encoded-html-empty.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Antonella Chesca', orcid: undefined },
+        { name: 'Tim Sandle', orcid: OrcidId('0000-0002-8304-8274') },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202202.0061.v4') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 2 }),
+      title: {
+        text: rawHtml('Key Points in HIV Infection Pathology<b></b>'),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>HIV infection is a nowadays pathology that affect persons from all of the world. Pathogenesis of the HIV-infection and cancer is a great  problem, with a complexity directions in research. More important  in HIV infection to patients, is also to take into consideration others things, such as  prevention, diagnosis, monitoring, treatment, including control measures. This previously mentioned, should be supported by statistical studies that report on restricted or extended geographical areas, to the level of social class and age. In our written text we try to describe  from our opinion, strategies in HIV, infection, status knowing as a social and as a healthcare problem.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202202.0061/v4'),
+    }),
+  },
+  {
     response: 'preprintsorg-abstract-encoded-html.json',
     expected: Preprint({
       authors: [
