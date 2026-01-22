@@ -66,7 +66,7 @@ const program = pipe(
   Effect.andThen(
     Effect.forEach(
       Effect.fn(function* ({ timestamp, notification }) {
-        yield* ReviewRequests.importReviewRequest({
+        yield* ReviewRequests.importReviewRequestFromPreprintServer({
           publishedAt: timestamp,
           receivedFrom: notification.origin.id,
           preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
