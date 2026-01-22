@@ -45,13 +45,23 @@ const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ActorToPrereviewer = (actor: CoarNotify.RequestReview['actor']) => {
+const PrereviewProfileUrl = Schema.transform(
+  Schema.TemplateLiteralParser('https://prereview.org/profiles/', OrcidId.OrcidIdSchema),
+  Schema.typeSchema(OrcidId.OrcidIdSchema),
+  {
+    strict: true,
+    decode: ([, orcid]) => orcid,
+    encode: orcid => ['https://prereview.org/profiles/', orcid] as const,
+  },
+)
+
+const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview['actor']) {
+  const orcidId = yield* Schema.decodeUnknown(PrereviewProfileUrl)(actor.id.href)
   return {
     persona: 'public' as const,
-    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+    orcidId,
   }
-}
+})
 
 const TimestampToUuid = (timestamp: Temporal.Instant): Uuid.Uuid =>
   Uuid.Uuid(uuid5(timestamp.epochMilliseconds.toString(), 'a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
@@ -76,7 +86,7 @@ const program = pipe(
             publishedAt: timestamp,
             preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
             reviewRequestId: TimestampToUuid(timestamp),
-            requester: ActorToPrereviewer(notification.actor),
+            requester: yield* ActorToPrereviewer(notification.actor),
           })
         }
 
