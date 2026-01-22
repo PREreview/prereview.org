@@ -5,7 +5,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
 import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
-import type * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
+import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
@@ -112,7 +112,11 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         ImportReviewRequestFromPreprintServer.foldState,
         ImportReviewRequestFromPreprintServer.decide,
       ),
-      importReviewRequestFromPrereviewer: () => new UnableToHandleCommand({ cause: 'not implemented' }),
+      importReviewRequestFromPrereviewer: handleCommand(
+        ImportReviewRequestFromPrereviewer.createFilter,
+        ImportReviewRequestFromPrereviewer.foldState,
+        ImportReviewRequestFromPrereviewer.decide,
+      ),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
         CategorizeReviewRequest.foldState,
