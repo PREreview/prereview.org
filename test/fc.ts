@@ -2380,6 +2380,23 @@ export const reviewRequestFromAPreprintServerWasImported = ({
     })
     .map(data => new Events.ReviewRequestFromAPreprintServerWasImported(data))
 
+export const reviewRequestByAPrereviewerWasImported = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported> =>
+  fc
+    .record({
+      publishedAt: instant(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: fc.record({
+        orcidId: orcidId(),
+        persona: constantFrom('public', 'pseudonym'),
+      }),
+    })
+    .map(data => new Events.ReviewRequestByAPrereviewerWasImported(data))
+
 export const reviewRequestForAPreprintWasCategorized = ({
   reviewRequestId,
 }: {
@@ -2417,6 +2434,7 @@ export const reviewRequestEvent = (
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasRejected(args),
     reviewRequestFromAPreprintServerWasImported(args),
+    reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )

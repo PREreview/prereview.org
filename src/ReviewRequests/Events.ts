@@ -61,6 +61,19 @@ export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedCl
   },
 ) {}
 
+export class ReviewRequestByAPrereviewerWasImported extends Schema.TaggedClass<ReviewRequestByAPrereviewerWasImported>()(
+  'ReviewRequestByAPrereviewerWasImported',
+  {
+    publishedAt: Temporal.InstantSchema,
+    preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    requester: Schema.Struct({
+      orcidId: OrcidId.OrcidIdSchema,
+      persona: Schema.Literal('public', 'pseudonym'),
+    }),
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasCategorized>()(
   'ReviewRequestForAPreprintWasCategorized',
   {
@@ -85,6 +98,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
   ReviewRequestFromAPreprintServerWasImported,
+  ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
