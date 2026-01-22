@@ -112,7 +112,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         ImportReviewRequestFromPreprintServer.foldState,
         ImportReviewRequestFromPreprintServer.decide,
       ),
-      importReviewRequestFromPrereviewer: () => new UnableToHandleCommand({cause: 'not implemented'}),
+      importReviewRequestFromPrereviewer: () => new UnableToHandleCommand({ cause: 'not implemented' }),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
         CategorizeReviewRequest.foldState,

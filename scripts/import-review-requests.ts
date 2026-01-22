@@ -47,9 +47,8 @@ const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ActorToPrereviewer = (actor: CoarNotify.RequestReview['actor']) => {
-
   return {
-    persona : 'public' as const,
+    persona: 'public' as const,
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }
 }
@@ -77,7 +76,7 @@ const program = pipe(
             publishedAt: timestamp,
             preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
             reviewRequestId: TimestampToUuid(timestamp),
-            requester: ActorToPrereviewer(notification.actor)
+            requester: ActorToPrereviewer(notification.actor),
           })
         }
 

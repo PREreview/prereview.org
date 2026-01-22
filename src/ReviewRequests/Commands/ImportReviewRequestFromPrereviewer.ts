@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import type { Uuid, OrcidId } from '../../types/index.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
 
 export interface Command {
   readonly publishedAt: Temporal.Instant
