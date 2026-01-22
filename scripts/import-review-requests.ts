@@ -3,6 +3,7 @@
 import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
+import { capitalCase } from 'case-anything'
 import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
 import * as Events from '../src/Events.ts'
@@ -14,7 +15,7 @@ import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import { CategorizeReviewRequest } from '../src/ReviewRequests/Reactions/CategorizeReviewRequest.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
-import { EmailAddress, OrcidId, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
+import { EmailAddress, OrcidId, Pseudonym, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
 
 const ReviewRequestSchema = Schema.Struct({
   timestamp: Temporal.InstantFromMillisecondsSchema,
@@ -45,21 +46,46 @@ const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   }
 }
 
+const KebabCaseSchema = Schema.transform(Schema.Lowercase, Schema.String, {
+  strict: true,
+  decode: string => string.replaceAll('-', ' '),
+  encode: string => string.replaceAll(' ', '-'),
+})
+
+const PseudonymSlugSchema = Schema.transform(KebabCaseSchema, Pseudonym.PseudonymSchema, {
+  strict: true,
+  decode: string => capitalCase(string),
+  encode: string => string,
+})
+
 const PrereviewProfileUrl = Schema.transform(
-  Schema.TemplateLiteralParser('https://prereview.org/profiles/', OrcidId.OrcidIdSchema),
-  Schema.typeSchema(OrcidId.OrcidIdSchema),
+  Schema.TemplateLiteralParser(
+    'https://prereview.org/profiles/',
+    Schema.Union(OrcidId.OrcidIdSchema, PseudonymSlugSchema),
+  ),
+  Schema.typeSchema(Schema.Union(OrcidId.OrcidIdSchema, PseudonymSlugSchema)),
   {
     strict: true,
-    decode: ([, orcid]) => orcid,
-    encode: orcid => ['https://prereview.org/profiles/', orcid] as const,
+    decode: ([, orcidOrPseudonym]) => orcidOrPseudonym,
+    encode: orcidOrPseudonym => ['https://prereview.org/profiles/', orcidOrPseudonym] as const,
   },
 )
 
 const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview['actor']) {
-  const orcidId = yield* Schema.decodeUnknown(PrereviewProfileUrl)(actor.id.href)
+  const orcidIdOrPseudonym = yield* Schema.decodeUnknown(PrereviewProfileUrl)(actor.id.href)
+
+  if (OrcidId.isOrcidId(orcidIdOrPseudonym)) {
+    return {
+      persona: 'public' as const,
+      orcidId: orcidIdOrPseudonym,
+    }
+  }
+
+  yield* Effect.logWarning(`Need to lookup pseudonym: ${orcidIdOrPseudonym}`)
+
   return {
     persona: 'public' as const,
-    orcidId,
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }
 })
 
