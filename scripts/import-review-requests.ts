@@ -4,8 +4,9 @@ import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { capitalCase } from 'case-anything'
-import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
+import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
+import pseudonyms from '../data/pseudonyms.json' with { type: 'json' }
 import * as Events from '../src/Events.ts'
 import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
 import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
@@ -81,11 +82,11 @@ const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview[
     }
   }
 
-  yield* Effect.logWarning(`Need to lookup pseudonym: ${orcidIdOrPseudonym}`)
+  const orcidId = yield* Record.get(pseudonyms, orcidIdOrPseudonym as never)
 
   return {
-    persona: 'public' as const,
-    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+    persona: 'pseudonym' as const,
+    orcidId: OrcidId.OrcidId(orcidId),
   }
 })
 
