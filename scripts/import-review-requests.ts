@@ -25,9 +25,6 @@ const getReviewRequests = pipe(
   Redis.DataStoreRedis,
   Effect.andThen(redis => Effect.tryPromise(() => redis.lrange('notifications', 0, -1))),
   Effect.andThen(Schema.decode(Schema.Array(Schema.parseJson(ReviewRequestSchema)))),
-  Effect.andThen(
-    Array.filter(({ notification }) => notification.origin.id !== new URL('https://coar-notify.prereview.org/')),
-  ),
 )
 const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   if (actor.type !== 'Person') {
@@ -66,6 +63,10 @@ const program = pipe(
   Effect.andThen(
     Effect.forEach(
       Effect.fn(function* ({ timestamp, notification }) {
+        if (notification.origin.id.href === 'https://coar-notify.prereview.org/') {
+          return yield* Effect.logDebug('Found a request by a PREreviewer')
+        }
+
         yield* ReviewRequests.importReviewRequestFromPreprintServer({
           publishedAt: timestamp,
           receivedFrom: notification.origin.id,
