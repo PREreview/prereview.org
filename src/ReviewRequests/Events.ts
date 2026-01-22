@@ -47,6 +47,7 @@ export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedCl
   'ReviewRequestFromAPreprintServerWasImported',
   {
     publishedAt: Temporal.InstantSchema,
+    receivedFrom: Schema.URL,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(

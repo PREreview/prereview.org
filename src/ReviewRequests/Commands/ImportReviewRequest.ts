@@ -6,6 +6,7 @@ import type { EmailAddress, NonEmptyString, OrcidId, SciProfilesId, Uuid } from 
 
 export interface Command {
   readonly publishedAt: Temporal.Instant
+  readonly receivedFrom: URL
   readonly preprintId: Preprints.IndeterminatePreprintId
   readonly reviewRequestId: Uuid.Uuid
   readonly requester: {
@@ -48,6 +49,7 @@ export const decide: {
         Option.some(
           new Events.ReviewRequestFromAPreprintServerWasImported({
             publishedAt: command.publishedAt,
+            receivedFrom: command.receivedFrom,
             preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,
             requester: Option.some(command.requester),

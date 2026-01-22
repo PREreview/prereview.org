@@ -14,12 +14,14 @@ const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
@@ -48,6 +50,7 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
 const command = (): fc.Arbitrary<_.Command> =>
   fc.record({
     publishedAt: fc.instant(),
+    receivedFrom: fc.url(),
     preprintId: fc.indeterminatePreprintId(),
     reviewRequestId: fc.uuid(),
     requester: fc.record({
@@ -122,6 +125,7 @@ describe('decide', () => {
       Option.some(
         new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
           publishedAt: command.publishedAt,
+          receivedFrom: command.receivedFrom,
           preprintId: command.preprintId,
           reviewRequestId: command.reviewRequestId,
           requester: Option.some(command.requester),

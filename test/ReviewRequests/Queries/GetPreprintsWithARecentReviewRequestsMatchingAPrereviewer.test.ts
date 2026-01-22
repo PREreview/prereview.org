@@ -193,6 +193,7 @@ const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 })
 const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 9 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester1),
   reviewRequestId: request9Id,

@@ -135,6 +135,7 @@ const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester1),
   reviewRequestId: request9Id,

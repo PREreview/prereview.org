@@ -2366,6 +2366,7 @@ export const reviewRequestFromAPreprintServerWasImported = ({
   fc
     .record({
       publishedAt: instant(),
+      receivedFrom: url(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: maybe(
