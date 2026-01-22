@@ -23,7 +23,7 @@ export class NotImported extends Data.TaggedClass('NotImported') {}
 export class HasBeenImported extends Data.TaggedClass('HasBeenImported') {}
 
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasImported', 'ReviewRequestForAPreprintWasReceived'],
+  types: ['ReviewRequestFromAPreprintServerWasImported', 'ReviewRequestForAPreprintWasReceived'],
   predicates: { reviewRequestId },
 })
 
@@ -46,7 +46,7 @@ export const decide: {
       HasBeenImported: () => Option.none(),
       NotImported: () =>
         Option.some(
-          new Events.ReviewRequestForAPreprintWasImported({
+          new Events.ReviewRequestFromAPreprintServerWasImported({
             publishedAt: command.publishedAt,
             preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,

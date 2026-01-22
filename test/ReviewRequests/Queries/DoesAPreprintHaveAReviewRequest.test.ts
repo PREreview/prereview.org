@@ -133,7 +133,7 @@ const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
   acceptedAt: now.subtract({ hours: 8 }),
   reviewRequestId: request8Id,
 })
-const request9Imported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId2,
   requester: Option.some(requester1),

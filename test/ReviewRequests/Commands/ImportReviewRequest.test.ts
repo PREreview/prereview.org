@@ -12,13 +12,13 @@ import * as fc from '../../fc.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
-const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
@@ -87,7 +87,7 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .oneof(fc.reviewRequestForAPreprintWasImported(), fc.reviewRequestForAPreprintWasImported())
+        .reviewRequestFromAPreprintServerWasImported()
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
     ],
     {
@@ -120,7 +120,7 @@ describe('decide', () => {
 
     expect(result).toStrictEqual(
       Option.some(
-        new ReviewRequests.ReviewRequestForAPreprintWasImported({
+        new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
           publishedAt: command.publishedAt,
           preprintId: command.preprintId,
           reviewRequestId: command.reviewRequestId,

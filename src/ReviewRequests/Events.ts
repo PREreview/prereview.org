@@ -43,8 +43,8 @@ export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<Rev
   },
 ) {}
 
-export class ReviewRequestForAPreprintWasImported extends Schema.TaggedClass<ReviewRequestForAPreprintWasImported>()(
-  'ReviewRequestForAPreprintWasImported',
+export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedClass<ReviewRequestFromAPreprintServerWasImported>()(
+  'ReviewRequestFromAPreprintServerWasImported',
   {
     publishedAt: Temporal.InstantSchema,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
@@ -83,7 +83,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
-  ReviewRequestForAPreprintWasImported,
+  ReviewRequestFromAPreprintServerWasImported,
   ReviewRequestForAPreprintWasCategorized,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )

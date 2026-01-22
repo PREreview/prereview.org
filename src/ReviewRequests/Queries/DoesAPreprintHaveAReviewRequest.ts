@@ -15,7 +15,7 @@ export const createFilter = ({ preprintId }: Input) =>
     types: [
       'ReviewRequestForAPreprintWasReceived',
       'ReviewRequestForAPreprintWasAccepted',
-      'ReviewRequestForAPreprintWasImported',
+      'ReviewRequestFromAPreprintServerWasImported',
     ],
   })
 
@@ -39,7 +39,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
             Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, accepted: true })),
             () => Record.set(map, event.reviewRequestId, { preprintId: undefined, accepted: true }),
           ),
-        ReviewRequestForAPreprintWasImported: event =>
+        ReviewRequestFromAPreprintServerWasImported: event =>
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
             () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),

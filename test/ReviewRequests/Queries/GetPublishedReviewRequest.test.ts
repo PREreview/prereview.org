@@ -45,19 +45,19 @@ const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewReque
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
@@ -200,7 +200,7 @@ describe('query', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasImported()
+        .reviewRequestFromAPreprintServerWasImported()
         .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
     ],
     {

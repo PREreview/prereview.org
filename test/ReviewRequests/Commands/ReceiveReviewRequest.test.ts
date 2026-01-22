@@ -26,13 +26,13 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
@@ -88,7 +88,7 @@ describe('foldState', () => {
   test.prop(
     [
       fc
-        .oneof(fc.reviewRequestForAPreprintWasReceived(), fc.reviewRequestForAPreprintWasImported())
+        .oneof(fc.reviewRequestForAPreprintWasReceived(), fc.reviewRequestFromAPreprintServerWasImported())
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
     ],
     {
