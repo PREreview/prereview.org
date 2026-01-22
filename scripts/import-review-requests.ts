@@ -45,6 +45,15 @@ const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const ActorToPrereviewer = (actor: CoarNotify.RequestReview['actor']) => {
+
+  return {
+    persona : 'public' as const,
+    orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  }
+}
+
 const TimestampToUuid = (timestamp: Temporal.Instant): Uuid.Uuid =>
   Uuid.Uuid(uuid5(timestamp.epochMilliseconds.toString(), 'a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
 
@@ -64,7 +73,12 @@ const program = pipe(
     Effect.forEach(
       Effect.fn(function* ({ timestamp, notification }) {
         if (notification.origin.id.href === 'https://coar-notify.prereview.org/') {
-          return yield* Effect.logDebug('Found a request by a PREreviewer')
+          return yield* ReviewRequests.importReviewRequestFromPrereviewer({
+            publishedAt: timestamp,
+            preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
+            reviewRequestId: TimestampToUuid(timestamp),
+            requester: ActorToPrereviewer(notification.actor)
+          })
         }
 
         yield* ReviewRequests.importReviewRequestFromPreprintServer({
