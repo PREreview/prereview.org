@@ -6,7 +6,7 @@ import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/ReceiveReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
@@ -25,6 +25,18 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
+})
+const otherReviewRequestByAPrereviewerWasImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
+  reviewRequestId: otherReviewRequestId,
+})
+const reviewRequestByAPrereviewerWasImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
+  reviewRequestId,
 })
 const reviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
@@ -78,6 +90,7 @@ describe('foldState', () => {
         [[[], reviewRequestId]], // no events
         [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
         [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
+        [[[otherReviewRequestByAPrereviewerWasImported], reviewRequestId]], // for other review request
         [[[otherReviewRequestForAPreprintWasImported], reviewRequestId]], // for other imported review request
       ],
     },
@@ -96,6 +109,7 @@ describe('foldState', () => {
     {
       examples: [
         [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was received
+        [[[reviewRequestByAPrereviewerWasImported], reviewRequestId]], // was imported from request by PREreviewer
         [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
         [
           [

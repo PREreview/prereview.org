@@ -24,7 +24,11 @@ export class NotImported extends Data.TaggedClass('NotImported') {}
 export class HasBeenImported extends Data.TaggedClass('HasBeenImported') {}
 
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestFromAPreprintServerWasImported', 'ReviewRequestForAPreprintWasReceived'],
+  types: [
+    'ReviewRequestFromAPreprintServerWasImported',
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestByAPrereviewerWasImported',
+  ],
   predicates: { reviewRequestId },
 })
 
