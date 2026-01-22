@@ -12,6 +12,7 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
   'ReviewRequestForAPreprintWasReceived',
   {
     receivedAt: Temporal.InstantSchema,
+    receivedFrom: Schema.URL,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(

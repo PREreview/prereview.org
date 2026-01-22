@@ -30,12 +30,14 @@ const now = Temporal.Now.instant()
 
 const request1Received1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester1),
   reviewRequestId: request1Id,
 })
 const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester2),
   reviewRequestId: request1Id,
@@ -56,6 +58,7 @@ const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 })
 const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 72 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester3),
   reviewRequestId: request2Id,
@@ -66,6 +69,7 @@ const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request3Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId3,
   requester: Option.some(requester4),
   reviewRequestId: request3Id,
@@ -76,6 +80,7 @@ const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester1),
   reviewRequestId: request4Id,
@@ -86,6 +91,7 @@ const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester1),
   reviewRequestId: request5Id,
@@ -96,6 +102,7 @@ const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester2),
   reviewRequestId: request6Id,
@@ -106,6 +113,7 @@ const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request7Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId3,
   requester: Option.some(requester3),
   reviewRequestId: request7Id,
@@ -116,6 +124,7 @@ const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 })
 const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester4),
   reviewRequestId: request8Id,

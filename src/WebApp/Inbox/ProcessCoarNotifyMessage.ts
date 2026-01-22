@@ -23,6 +23,7 @@ export const ProcessCoarNotifyMessage = Effect.fn(
 
     yield* ReviewRequests.receiveReviewRequest({
       receivedAt,
+      receivedFrom: message.origin.id,
       preprintId,
       reviewRequestId: messageId,
       requester: ActorToRequester(message.actor),

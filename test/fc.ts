@@ -2319,6 +2319,7 @@ export const reviewRequestForAPreprintWasReceived = ({
   fc
     .record({
       receivedAt: instant(),
+      receivedFrom: url(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: maybe(

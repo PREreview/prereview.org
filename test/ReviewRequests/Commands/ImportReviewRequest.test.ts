@@ -26,12 +26,14 @@ const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewReque
 })
 const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
