@@ -5,7 +5,7 @@ import { Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/DoesAPreprintHaveAReviewRequest.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
 const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }
@@ -122,15 +122,10 @@ const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
   acceptedAt: now.subtract({ hours: 7 }),
   reviewRequestId: request7Id,
 })
-const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
-  receivedFrom: new URL('http://example.com'),
+const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
-  requester: Option.some(requester4),
-  reviewRequestId: request8Id,
-})
-const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 8 }),
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request8Id,
 })
 const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
@@ -157,11 +152,12 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
     true,
   ],
-  ['has been imported', { preprintId: preprintId2 }, [request9Imported], true],
+  ['has been imported from a PREreviewer', { preprintId: preprintId1 }, [request8Imported], true],
+  ['has been imported from a preprint server', { preprintId: preprintId2 }, [request9Imported], true],
   [
     'others have been accepted',
     { preprintId: preprintId3 },
-    [request1Received1, request1Accepted1, request1Received2, request1Accepted2, request9Imported],
+    [request1Received1, request1Accepted1, request1Received2, request1Accepted2, request8Imported, request9Imported],
     false,
   ],
   [
@@ -184,8 +180,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request6Accepted,
       request7Received,
       request7Accepted,
-      request8Received,
-      request8Accepted,
+      request8Imported,
       request9Imported,
     ],
     true,
