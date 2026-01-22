@@ -6,7 +6,9 @@ import { PgClient } from '@effect/sql-pg'
 import { capitalCase } from 'case-anything'
 import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
-import pseudonyms from '../data/pseudonyms.json' with { type: 'json' }
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment, no-comments/disallowComments
+// @ts-ignore
+import pseudonyms from '../data/pseudonyms.json' with { type: 'json' } // eslint-disable-line import/no-unresolved
 import * as Events from '../src/Events.ts'
 import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
 import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
@@ -82,7 +84,7 @@ const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview[
     }
   }
 
-  const orcidId = yield* Record.get(pseudonyms, orcidIdOrPseudonym as never)
+  const orcidId = yield* Record.get(pseudonyms as Record<string, string>, orcidIdOrPseudonym as never)
 
   return {
     persona: 'pseudonym' as const,
