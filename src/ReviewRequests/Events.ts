@@ -84,6 +84,15 @@ export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<
   },
 ) {}
 
+export class FailedToCategorizeAReviewRequestForAPreprint extends Schema.TaggedClass<FailedToCategorizeAReviewRequestForAPreprint>()(
+  'FailedToCategorizeAReviewRequestForAPreprint',
+  {
+    failedAt: Temporal.InstantSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    failureMessage: Schema.String,
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schema.TaggedClass<ReviewRequestForAPreprintWasSharedOnTheCommunitySlack>()(
   'ReviewRequestForAPreprintWasSharedOnTheCommunitySlack',
   {
@@ -100,6 +109,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestFromAPreprintServerWasImported,
   ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,
+  FailedToCategorizeAReviewRequestForAPreprint,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
 

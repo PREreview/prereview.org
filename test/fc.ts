@@ -2411,6 +2411,19 @@ export const reviewRequestForAPreprintWasCategorized = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
 
+export const failedToCategorizeAReviewRequestForAPreprint = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint> =>
+  fc
+    .record({
+      failedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      failureMessage: fc.string(),
+    })
+    .map(data => new Events.FailedToCategorizeAReviewRequestForAPreprint(data))
+
 export const reviewRequestForAPreprintWasSharedOnTheCommunitySlack = ({
   reviewRequestId,
 }: {
@@ -2436,6 +2449,7 @@ export const reviewRequestEvent = (
     reviewRequestFromAPreprintServerWasImported(args),
     reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
+    failedToCategorizeAReviewRequestForAPreprint(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )
 
