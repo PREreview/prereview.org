@@ -81,7 +81,7 @@ const workflowsLayer = Layer.mergeAll(
         }
 
         yield* DurableClock.sleep({
-          name: `sleep-${executionId}`,
+          name: `sleep-${executionId}-${currentAttempt}`,
           duration: '1 hour',
         })
       }),
