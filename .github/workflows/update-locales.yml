@@ -26,7 +26,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: 'Download translations from Crowdin'
-        uses: crowdin/github-action@v2.13.0
+        uses: crowdin/github-action@v2.14.0
         with:
           upload_sources: false
           upload_translations: false
