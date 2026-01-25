@@ -14,18 +14,21 @@ const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
@@ -42,20 +45,23 @@ const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewReque
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
@@ -197,7 +203,7 @@ describe('query', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasImported()
+        .reviewRequestFromAPreprintServerWasImported()
         .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
     ],
     {

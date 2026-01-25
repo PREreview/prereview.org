@@ -64,22 +64,10 @@ export function mjmlToHtml(mjml: Html): Html {
   return new Html({ value })
 }
 
-export function sanitizeHtml(html: string, trusted = false): Html {
+export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
-      'dd',
-      'dl',
-      'dt',
-      'h1',
-      'h2',
-      'h3',
-      'h4',
-      'h5',
-      'h6',
-      'li',
-      'ol',
-      'p',
-      'ul',
+      ...(allowBlockLevel ? ['dd', 'dl', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'] : []),
       'a',
       'b',
       'i',
@@ -120,7 +108,7 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       annotation: ['encoding'],
       col: ['span'],
       img: ['alt', 'height', 'src', 'width'],
-      math: ['display'],
+      math: allowBlockLevel ? ['display'] : [],
       mo: [
         'fence',
         'largeop',
@@ -166,11 +154,20 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       strong: 'b',
     },
     exclusiveFilter: frame =>
-      ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
+      ['a', 'b', 'em', 'i', 'strong', 'sub', 'sup'].includes(frame.tag) && frame.text.trim() === ''
+        ? 'excludeTag'
+        : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
     nonTextTags: ['style', 'script', 'textarea', 'option', 'annotation-xml'],
   })
 
-  return rawHtml(sanitized)
+  return rawHtml(
+    sanitized
+      .replaceAll(/\s*\u00a0\s*/g, '\u00a0')
+      .replaceAll(/[^\S\u00a0]+/g, ' ')
+      .replaceAll(/(?<=<(h[1-6]|ol|p|ul)>)\s+|\s+(?=<\/(h[1-6]|ol|p|ul)>)/g, '')
+      .replaceAll(/(?<=<\/(h[1-6]|ol|p|ul)>)\s+|\s+(?=<(h[1-6]|ol|p|ul)[\s>])/g, '')
+      .replaceAll(/<\/(h[1-6]|ol|p|ul)><(h[1-6]|ol|p|ul)([\s>])/g, '</$1>\n\n<$2$3'),
+  )
 }
 
 export function fixHeadingLevels(currentLevel: 1 | 2 | 3, input: Html): Html {

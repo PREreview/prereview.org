@@ -5,12 +5,12 @@ import type { Uuid } from '../../types/index.ts'
 export type Result = ReadonlyArray<Uuid.Uuid>
 
 export const filter = Events.EventFilter({
-  types: ['ReviewRequestForAPreprintWasImported', 'ReviewRequestForAPreprintWasCategorized'],
+  types: ['ReviewRequestFromAPreprintServerWasImported', 'ReviewRequestForAPreprintWasCategorized'],
 })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
   const state = Array.reduce(events, new Set<Uuid.Uuid>(), (state, event) => {
-    if (event._tag === 'ReviewRequestForAPreprintWasImported') {
+    if (event._tag === 'ReviewRequestFromAPreprintServerWasImported') {
       state.add(event.reviewRequestId)
       return state
     }

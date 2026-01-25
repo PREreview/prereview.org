@@ -5,7 +5,7 @@ import type * as Preprints from '../../Preprints/index.ts'
 import type { EmailAddress, NonEmptyString, OrcidId, SciProfilesId, Uuid } from '../../types/index.ts'
 
 export interface Command {
-  readonly receivedAt: Temporal.Instant
+  readonly publishedAt: Temporal.Instant
   readonly receivedFrom: URL
   readonly preprintId: Preprints.IndeterminatePreprintId
   readonly reviewRequestId: Uuid.Uuid
@@ -17,16 +17,16 @@ export interface Command {
   }
 }
 
-export type State = NotReceived | HasBeenReceived
+export type State = NotImported | HasBeenImported
 
-export class NotReceived extends Data.TaggedClass('NotReceived') {}
+export class NotImported extends Data.TaggedClass('NotImported') {}
 
-export class HasBeenReceived extends Data.TaggedClass('HasBeenReceived') {}
+export class HasBeenImported extends Data.TaggedClass('HasBeenImported') {}
 
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
   types: [
-    'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestFromAPreprintServerWasImported',
+    'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestByAPrereviewerWasImported',
   ],
   predicates: { reviewRequestId },
@@ -36,8 +36,8 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))
 
   return Array.match(filteredEvents, {
-    onEmpty: () => new NotReceived(),
-    onNonEmpty: () => new HasBeenReceived(),
+    onEmpty: () => new NotImported(),
+    onNonEmpty: () => new HasBeenImported(),
   })
 }
 
@@ -48,11 +48,11 @@ export const decide: {
   2,
   (state: State, command: Command): Option.Option<Events.ReviewRequestEvent> =>
     Match.valueTags(state, {
-      HasBeenReceived: () => Option.none(),
-      NotReceived: () =>
+      HasBeenImported: () => Option.none(),
+      NotImported: () =>
         Option.some(
-          new Events.ReviewRequestForAPreprintWasReceived({
-            receivedAt: command.receivedAt,
+          new Events.ReviewRequestFromAPreprintServerWasImported({
+            publishedAt: command.publishedAt,
             receivedFrom: command.receivedFrom,
             preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,

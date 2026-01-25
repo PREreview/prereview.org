@@ -3,8 +3,12 @@
 import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Schema } from 'effect'
+import { capitalCase } from 'case-anything'
+import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema } from 'effect'
 import { v5 as uuid5 } from 'uuid'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment, no-comments/disallowComments
+// @ts-ignore
+import pseudonyms from '../data/pseudonyms.json' with { type: 'json' } // eslint-disable-line import/no-unresolved
 import * as Events from '../src/Events.ts'
 import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
 import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
@@ -14,7 +18,7 @@ import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import { CategorizeReviewRequest } from '../src/ReviewRequests/Reactions/CategorizeReviewRequest.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
-import { EmailAddress, OrcidId, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
+import { EmailAddress, OrcidId, Pseudonym, SciProfilesId, Temporal, Uuid } from '../src/types/index.ts'
 
 const ReviewRequestSchema = Schema.Struct({
   timestamp: Temporal.InstantFromMillisecondsSchema,
@@ -25,9 +29,6 @@ const getReviewRequests = pipe(
   Redis.DataStoreRedis,
   Effect.andThen(redis => Effect.tryPromise(() => redis.lrange('notifications', 0, -1))),
   Effect.andThen(Schema.decode(Schema.Array(Schema.parseJson(ReviewRequestSchema)))),
-  Effect.andThen(
-    Array.filter(({ notification }) => notification.origin.id !== new URL('https://coar-notify.prereview.org/')),
-  ),
 )
 const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   if (actor.type !== 'Person') {
@@ -48,6 +49,49 @@ const ActorToRequester = (actor: CoarNotify.RequestReview['actor']) => {
   }
 }
 
+const KebabCaseSchema = Schema.transform(Schema.Lowercase, Schema.String, {
+  strict: true,
+  decode: string => string.replaceAll('-', ' '),
+  encode: string => string.replaceAll(' ', '-'),
+})
+
+const PseudonymSlugSchema = Schema.transform(KebabCaseSchema, Pseudonym.PseudonymSchema, {
+  strict: true,
+  decode: string => capitalCase(string),
+  encode: string => string,
+})
+
+const PrereviewProfileUrl = Schema.transform(
+  Schema.TemplateLiteralParser(
+    'https://prereview.org/profiles/',
+    Schema.Union(OrcidId.OrcidIdSchema, PseudonymSlugSchema),
+  ),
+  Schema.typeSchema(Schema.Union(OrcidId.OrcidIdSchema, PseudonymSlugSchema)),
+  {
+    strict: true,
+    decode: ([, orcidOrPseudonym]) => orcidOrPseudonym,
+    encode: orcidOrPseudonym => ['https://prereview.org/profiles/', orcidOrPseudonym] as const,
+  },
+)
+
+const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview['actor']) {
+  const orcidIdOrPseudonym = yield* Schema.decodeUnknown(PrereviewProfileUrl)(actor.id.href)
+
+  if (OrcidId.isOrcidId(orcidIdOrPseudonym)) {
+    return {
+      persona: 'public' as const,
+      orcidId: orcidIdOrPseudonym,
+    }
+  }
+
+  const orcidId = yield* Record.get(pseudonyms as Record<string, string>, orcidIdOrPseudonym as never)
+
+  return {
+    persona: 'pseudonym' as const,
+    orcidId: OrcidId.OrcidId(orcidId),
+  }
+})
+
 const TimestampToUuid = (timestamp: Temporal.Instant): Uuid.Uuid =>
   Uuid.Uuid(uuid5(timestamp.epochMilliseconds.toString(), 'a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
 
@@ -66,8 +110,18 @@ const program = pipe(
   Effect.andThen(
     Effect.forEach(
       Effect.fn(function* ({ timestamp, notification }) {
-        yield* ReviewRequests.importReviewRequest({
+        if (notification.origin.id.href === 'https://coar-notify.prereview.org/') {
+          return yield* ReviewRequests.importReviewRequestFromPrereviewer({
+            publishedAt: timestamp,
+            preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
+            reviewRequestId: TimestampToUuid(timestamp),
+            requester: yield* ActorToPrereviewer(notification.actor),
+          })
+        }
+
+        yield* ReviewRequests.importReviewRequestFromPreprintServer({
           publishedAt: timestamp,
+          receivedFrom: notification.origin.id,
           preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
           reviewRequestId: TimestampToUuid(timestamp),
           requester: ActorToRequester(notification.actor),

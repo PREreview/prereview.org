@@ -12,6 +12,7 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
   'ReviewRequestForAPreprintWasReceived',
   {
     receivedAt: Temporal.InstantSchema,
+    receivedFrom: Schema.URL,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(
@@ -42,10 +43,11 @@ export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<Rev
   },
 ) {}
 
-export class ReviewRequestForAPreprintWasImported extends Schema.TaggedClass<ReviewRequestForAPreprintWasImported>()(
-  'ReviewRequestForAPreprintWasImported',
+export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedClass<ReviewRequestFromAPreprintServerWasImported>()(
+  'ReviewRequestFromAPreprintServerWasImported',
   {
     publishedAt: Temporal.InstantSchema,
+    receivedFrom: Schema.URL,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
     requester: SensitiveData(
@@ -59,6 +61,19 @@ export class ReviewRequestForAPreprintWasImported extends Schema.TaggedClass<Rev
   },
 ) {}
 
+export class ReviewRequestByAPrereviewerWasImported extends Schema.TaggedClass<ReviewRequestByAPrereviewerWasImported>()(
+  'ReviewRequestByAPrereviewerWasImported',
+  {
+    publishedAt: Temporal.InstantSchema,
+    preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    requester: Schema.Struct({
+      orcidId: OrcidId.OrcidIdSchema,
+      persona: Schema.Literal('public', 'pseudonym'),
+    }),
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasCategorized>()(
   'ReviewRequestForAPreprintWasCategorized',
   {
@@ -66,6 +81,15 @@ export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<
     language: Iso639.Iso6391Schema,
     keywords: Schema.Array(KeywordIdSchema),
     topics: Schema.Array(TopicIdSchema),
+  },
+) {}
+
+export class FailedToCategorizeAReviewRequestForAPreprint extends Schema.TaggedClass<FailedToCategorizeAReviewRequestForAPreprint>()(
+  'FailedToCategorizeAReviewRequestForAPreprint',
+  {
+    failedAt: Temporal.InstantSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    failureMessage: Schema.String,
   },
 ) {}
 
@@ -82,8 +106,10 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
-  ReviewRequestForAPreprintWasImported,
+  ReviewRequestFromAPreprintServerWasImported,
+  ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,
+  FailedToCategorizeAReviewRequestForAPreprint,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
 

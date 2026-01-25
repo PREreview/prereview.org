@@ -2319,6 +2319,7 @@ export const reviewRequestForAPreprintWasReceived = ({
   fc
     .record({
       receivedAt: instant(),
+      receivedFrom: url(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: maybe(
@@ -2357,14 +2358,15 @@ export const reviewRequestForAPreprintWasRejected = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasRejected(data))
 
-export const reviewRequestForAPreprintWasImported = ({
+export const reviewRequestFromAPreprintServerWasImported = ({
   reviewRequestId,
 }: {
-  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasImported['reviewRequestId']>
-} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasImported> =>
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestFromAPreprintServerWasImported['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestFromAPreprintServerWasImported> =>
   fc
     .record({
       publishedAt: instant(),
+      receivedFrom: url(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: maybe(
@@ -2376,7 +2378,24 @@ export const reviewRequestForAPreprintWasImported = ({
         }),
       ),
     })
-    .map(data => new Events.ReviewRequestForAPreprintWasImported(data))
+    .map(data => new Events.ReviewRequestFromAPreprintServerWasImported(data))
+
+export const reviewRequestByAPrereviewerWasImported = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported> =>
+  fc
+    .record({
+      publishedAt: instant(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: fc.record({
+        orcidId: orcidId(),
+        persona: constantFrom('public', 'pseudonym'),
+      }),
+    })
+    .map(data => new Events.ReviewRequestByAPrereviewerWasImported(data))
 
 export const reviewRequestForAPreprintWasCategorized = ({
   reviewRequestId,
@@ -2391,6 +2410,19 @@ export const reviewRequestForAPreprintWasCategorized = ({
       keywords: fc.array(keywordId()),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
+
+export const failedToCategorizeAReviewRequestForAPreprint = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint> =>
+  fc
+    .record({
+      failedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      failureMessage: fc.string(),
+    })
+    .map(data => new Events.FailedToCategorizeAReviewRequestForAPreprint(data))
 
 export const reviewRequestForAPreprintWasSharedOnTheCommunitySlack = ({
   reviewRequestId,
@@ -2414,8 +2446,10 @@ export const reviewRequestEvent = (
     reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasRejected(args),
-    reviewRequestForAPreprintWasImported(args),
+    reviewRequestFromAPreprintServerWasImported(args),
+    reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
+    failedToCategorizeAReviewRequestForAPreprint(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )
 

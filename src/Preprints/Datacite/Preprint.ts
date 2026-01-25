@@ -136,7 +136,7 @@ const getTitle = (
   id: DatacitePreprintId,
 ): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
-    const text = sanitizeHtml(titles[0].title)
+    const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
     const language = yield* Either.fromOption(
       detectLanguageForServer({ id, text }),
@@ -163,8 +163,10 @@ const getAbstract = (
 
   const text = pipe(
     Match.value(id),
-    Match.tag('ZenodoPreprintId', () => sanitizeHtml(`<p>${encode(abstract.description)}</p>`)),
-    Match.orElse(() => sanitizeHtml(`<p>${abstract.description}</p>`)),
+    Match.tag('ZenodoPreprintId', () =>
+      sanitizeHtml(`<p>${encode(abstract.description).replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`),
+    ),
+    Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
   )
 
   return Option.match(detectLanguageForServer({ id, text }), {

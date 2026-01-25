@@ -23,7 +23,7 @@ export const createFilter = ({ reviewRequestId }: Input): EventFilter<Events.Rev
   types: [
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
-    'ReviewRequestForAPreprintWasImported',
+    'ReviewRequestFromAPreprintServerWasImported',
   ],
   predicates: { reviewRequestId },
 })
@@ -42,7 +42,7 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
       onNone: () =>
         Either.fromOption(
           pipe(
-            Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasImported')),
+            Array.findLast(filteredEvents, hasTag('ReviewRequestFromAPreprintServerWasImported')),
             Option.andThen(imported => ({
               author: imported.requester,
               preprintId: imported.preprintId,

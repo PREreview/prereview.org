@@ -18,8 +18,9 @@ const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67
 
 const now = Temporal.Now.instant()
 
-const request1Imported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const request1Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester1),
   reviewRequestId: request1Id,
@@ -30,8 +31,9 @@ const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })
-const request2Imported = new ReviewRequests.ReviewRequestForAPreprintWasImported({
+const request2Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 1 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester2),
   reviewRequestId: request2Id,

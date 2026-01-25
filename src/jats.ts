@@ -1,14 +1,14 @@
 import sanitize from 'sanitize-html'
-import { type Html, rawHtml } from './html.ts'
+import { sanitizeHtml, type Html } from './html.ts'
 
 export function transformJatsToHtml(jats: string): Html {
-  const sanitized = sanitize(jats, {
+  const sanitized = sanitize(jats.replaceAll(/(?<=<\/?)[a-z]+:(?=[a-z-]+[\s|>])/g, ''), {
     allowedAttributes: {
       '*': ['dir', 'lang'],
       a: ['href'],
     },
     exclusiveFilter: frame =>
-      frame.tag === 'jats:title' &&
+      frame.tag === 'title' &&
       (frame.text.toLowerCase() === 'abstract' ||
         frame.text.toLowerCase() === 'abstract:' ||
         frame.text.toLowerCase() === 'graphical abstract'),
@@ -21,7 +21,7 @@ export function transformJatsToHtml(jats: string): Html {
 
         return { tagName, attribs }
       },
-      'jats:ext-link': (_, attribs) => {
+      'ext-link': (_, attribs) => {
         if (
           attribs['ext-link-type'] !== 'uri' ||
           typeof attribs['xlink:href'] !== 'string' ||
@@ -32,13 +32,12 @@ export function transformJatsToHtml(jats: string): Html {
 
         return { tagName: 'a', attribs: { ...attribs, href: attribs['xlink:href'] } }
       },
-      'jats:italic': 'i',
-      'jats:list': (_, attribs) => {
+      italic: 'i',
+      list: (_, attribs) => {
         return { tagName: attribs['list-type'] === 'order' ? 'ol' : 'ul', attribs }
       },
-      'jats:list-item': 'li',
-      'jats:p': 'p',
-      'jats:related-object': (_, attribs) => {
+      'list-item': 'li',
+      'related-object': (_, attribs) => {
         if (
           attribs['ext-link-type'] !== 'uri' ||
           typeof attribs['xlink:href'] !== 'string' ||
@@ -49,11 +48,10 @@ export function transformJatsToHtml(jats: string): Html {
 
         return { tagName: 'a', attribs: { ...attribs, href: attribs['xlink:href'] } }
       },
-      'jats:sub': 'sub',
-      'jats:sup': 'sup',
-      'jats:title': 'h4',
+      title: 'h4',
     },
+    nonTextTags: [],
   })
 
-  return rawHtml(sanitized)
+  return sanitizeHtml(sanitized)
 }

@@ -4,8 +4,10 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
-import * as ImportReviewRequest from './ImportReviewRequest.ts'
+import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
+import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
+import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
 
@@ -15,12 +17,14 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
-    importReviewRequest: CommandHandler<ImportReviewRequest.Command>
+    importReviewRequestFromPreprintServer: CommandHandler<ImportReviewRequestFromPreprintServer.Command>
+    importReviewRequestFromPrereviewer: CommandHandler<ImportReviewRequestFromPrereviewer.Command>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,
       RecordReviewRequestSharedOnTheCommunitySlack.Error
     >
+    recordFailureToCategorizeReviewRequest: CommandHandler<RecordFailureToCategorizeReviewRequest.Command>
   }
 >() {}
 
@@ -34,9 +38,11 @@ export const {
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
-  importReviewRequest,
+  importReviewRequestFromPreprintServer,
+  importReviewRequestFromPrereviewer,
   categorizeReviewRequest,
   recordReviewRequestSharedOnTheCommunitySlack,
+  recordFailureToCategorizeReviewRequest,
 } = Effect.serviceFunctions(ReviewRequestCommands)
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
@@ -104,10 +110,15 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         RejectReviewRequest.foldState,
         RejectReviewRequest.decide,
       ),
-      importReviewRequest: handleCommand(
-        ImportReviewRequest.createFilter,
-        ImportReviewRequest.foldState,
-        ImportReviewRequest.decide,
+      importReviewRequestFromPreprintServer: handleCommand(
+        ImportReviewRequestFromPreprintServer.createFilter,
+        ImportReviewRequestFromPreprintServer.foldState,
+        ImportReviewRequestFromPreprintServer.decide,
+      ),
+      importReviewRequestFromPrereviewer: handleCommand(
+        ImportReviewRequestFromPrereviewer.createFilter,
+        ImportReviewRequestFromPrereviewer.foldState,
+        ImportReviewRequestFromPrereviewer.decide,
       ),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
@@ -119,6 +130,14 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         RecordReviewRequestSharedOnTheCommunitySlack.foldState,
         RecordReviewRequestSharedOnTheCommunitySlack.decide,
       ),
+      recordFailureToCategorizeReviewRequest: command =>
+        pipe(
+          command,
+          RecordFailureToCategorizeReviewRequest.decide,
+          EventStore.append,
+          Effect.catchTag('FailedToCommitEvent', 'NewEventsFound', cause => new UnableToHandleCommand({ cause })),
+          Effect.provide(context),
+        ),
     }
   })
 

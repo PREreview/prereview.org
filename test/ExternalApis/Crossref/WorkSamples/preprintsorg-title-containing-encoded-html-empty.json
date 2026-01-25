@@ -1,0 +1,68 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 1, 15]],
+      "date-time": "2026-01-15T20:49:09Z",
+      "timestamp": 1768510149286,
+      "version": "3.49.0"
+    },
+    "posted": { "date-parts": [[2026, 1, 2]] },
+    "group-title": "Public Health and Healthcare",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 1, 2]], "date-time": "2026-01-02T00:00:00Z", "timestamp": 1767312000000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2025, 12, 31]] },
+    "abstract": "<jats:p>HIV infection is a nowadays pathology that affect persons from all of the world. Pathogenesis of the HIV-infection and cancer is a great  problem, with a complexity directions in research. More important  in HIV infection to patients, is also to take into consideration others things, such as  prevention, diagnosis, monitoring, treatment, including control measures. This previously mentioned, should be supported by statistical studies that report on restricted or extended geographical areas, to the level of social class and age. In our written text we try to describe  from our opinion, strategies in HIV, infection, status knowing as a social and as a healthcare problem.<\/jats:p>",
+    "DOI": "10.20944\/preprints202202.0061.v4",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 1, 5]], "date-time": "2026-01-05T02:34:01Z", "timestamp": 1767580441000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Key Points in HIV Infection Pathology&lt;b&gt;&lt;\/b&gt;"],
+    "prefix": "10.20944",
+    "author": [
+      { "given": "Antonella", "family": "Chesca", "sequence": "first", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-8304-8274",
+        "authenticated-orcid": false,
+        "given": "Tim",
+        "family": "Sandle",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 1, 15]], "date-time": "2026-01-15T05:53:17Z", "timestamp": 1768456397000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202202.0061\/v4" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 1, 2]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202202.0061.v4",
+    "relation": {
+      "is-version-of": [
+        { "id-type": "doi", "id": "10.20944\/preprints202202.0061.v1", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.20944\/preprints202202.0061.v2", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.20944\/preprints202202.0061.v3", "asserted-by": "subject" }
+      ]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2026, 1, 2]] },
+    "subtype": "preprint"
+  }
+}

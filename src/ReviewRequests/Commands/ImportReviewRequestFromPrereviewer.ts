@@ -2,17 +2,15 @@ import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import type { EmailAddress, NonEmptyString, OrcidId, SciProfilesId, Uuid } from '../../types/index.ts'
+import type { OrcidId, Uuid } from '../../types/index.ts'
 
 export interface Command {
   readonly publishedAt: Temporal.Instant
   readonly preprintId: Preprints.IndeterminatePreprintId
   readonly reviewRequestId: Uuid.Uuid
   readonly requester: {
-    readonly name: NonEmptyString.NonEmptyString
-    readonly orcidId?: OrcidId.OrcidId
-    readonly sciProfilesId?: SciProfilesId.SciProfilesId
-    readonly emailAddress?: EmailAddress.EmailAddress
+    readonly persona: 'public' | 'pseudonym'
+    readonly orcidId: OrcidId.OrcidId
   }
 }
 
@@ -23,7 +21,11 @@ export class NotImported extends Data.TaggedClass('NotImported') {}
 export class HasBeenImported extends Data.TaggedClass('HasBeenImported') {}
 
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasImported', 'ReviewRequestForAPreprintWasReceived'],
+  types: [
+    'ReviewRequestFromAPreprintServerWasImported',
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestByAPrereviewerWasImported',
+  ],
   predicates: { reviewRequestId },
 })
 
@@ -46,11 +48,14 @@ export const decide: {
       HasBeenImported: () => Option.none(),
       NotImported: () =>
         Option.some(
-          new Events.ReviewRequestForAPreprintWasImported({
+          new Events.ReviewRequestByAPrereviewerWasImported({
             publishedAt: command.publishedAt,
             preprintId: command.preprintId,
             reviewRequestId: command.reviewRequestId,
-            requester: Option.some(command.requester),
+            requester: {
+              persona: command.requester.persona,
+              orcidId: command.requester.orcidId,
+            },
           }),
         ),
     }),
