@@ -107,7 +107,7 @@
     "postcss": "^8.5.6",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^8.2.0",
-    "postcss-preset-env": "^11.1.1",
+    "postcss-preset-env": "^11.1.2",
     "prettier": "^3.8.1",
     "prettier-plugin-embed": "^0.5.1",
     "prettier-plugin-organize-imports": "^4.3.0",
