@@ -593,6 +593,9 @@ describe('transformJatsToHtml', () => {
     ['<jats:word-count>', '<jats:word-count>word-count</jats:word-count>', rawHtml('word-count')],
     ['<jats:xref>', '<jats:xref>xref</jats:xref>', rawHtml('xref')],
     ['<jats:year>', '<jats:year>year</jats:year>', rawHtml('year')],
+    ['different namespace', '<maybejats:p>p</maybejats:p>', rawHtml('<p>p</p>')],
+    ['no namespace', '<jats:p>p</jats:p>', rawHtml('<p>p</p>')],
+    ['extra whitespace', '   <jats:p> \n   p1\n\n </jats:p><jats:p> p2\n</p> \n ', rawHtml('<p>p1</p>\n\n<p>p2</p>')],
   ])('%s', (_name, input, expected) => {
     const actual = _.transformJatsToHtml(input)
 

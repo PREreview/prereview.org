@@ -4,17 +4,27 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
+import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
+import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
+import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
+import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
+import * as RejectReviewRequest from './RejectReviewRequest.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
-    acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command>
+    receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
+    acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
+    rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
+    importReviewRequestFromPreprintServer: CommandHandler<ImportReviewRequestFromPreprintServer.Command>
+    importReviewRequestFromPrereviewer: CommandHandler<ImportReviewRequestFromPrereviewer.Command>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,
       RecordReviewRequestSharedOnTheCommunitySlack.Error
     >
+    recordFailureToCategorizeReviewRequest: CommandHandler<RecordFailureToCategorizeReviewRequest.Command>
   }
 >() {}
 
@@ -24,8 +34,16 @@ type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = neve
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-export const { acceptReviewRequest, categorizeReviewRequest, recordReviewRequestSharedOnTheCommunitySlack } =
-  Effect.serviceFunctions(ReviewRequestCommands)
+export const {
+  receiveReviewRequest,
+  acceptReviewRequest,
+  rejectReviewRequest,
+  importReviewRequestFromPreprintServer,
+  importReviewRequestFromPrereviewer,
+  categorizeReviewRequest,
+  recordReviewRequestSharedOnTheCommunitySlack,
+  recordFailureToCategorizeReviewRequest,
+} = Effect.serviceFunctions(ReviewRequestCommands)
 
 const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
@@ -77,10 +95,30 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       )
 
     return {
+      receiveReviewRequest: handleCommand(
+        ReceiveReviewRequest.createFilter,
+        ReceiveReviewRequest.foldState,
+        ReceiveReviewRequest.decide,
+      ),
       acceptReviewRequest: handleCommand(
         AcceptReviewRequest.createFilter,
         AcceptReviewRequest.foldState,
         AcceptReviewRequest.decide,
+      ),
+      rejectReviewRequest: handleCommand(
+        RejectReviewRequest.createFilter,
+        RejectReviewRequest.foldState,
+        RejectReviewRequest.decide,
+      ),
+      importReviewRequestFromPreprintServer: handleCommand(
+        ImportReviewRequestFromPreprintServer.createFilter,
+        ImportReviewRequestFromPreprintServer.foldState,
+        ImportReviewRequestFromPreprintServer.decide,
+      ),
+      importReviewRequestFromPrereviewer: handleCommand(
+        ImportReviewRequestFromPrereviewer.createFilter,
+        ImportReviewRequestFromPrereviewer.foldState,
+        ImportReviewRequestFromPrereviewer.decide,
       ),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
@@ -92,6 +130,14 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         RecordReviewRequestSharedOnTheCommunitySlack.foldState,
         RecordReviewRequestSharedOnTheCommunitySlack.decide,
       ),
+      recordFailureToCategorizeReviewRequest: command =>
+        pipe(
+          command,
+          RecordFailureToCategorizeReviewRequest.decide,
+          EventStore.append,
+          Effect.catchTag('FailedToCommitEvent', 'NewEventsFound', cause => new UnableToHandleCommand({ cause })),
+          Effect.provide(context),
+        ),
     }
   })
 

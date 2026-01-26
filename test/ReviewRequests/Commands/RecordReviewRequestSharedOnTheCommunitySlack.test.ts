@@ -3,20 +3,15 @@ import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, Option, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
-import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
-const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =

@@ -1,56 +1,71 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Function, Match, Option } from 'effect'
+import { Array, Data, Either, Function, Match, Option } from 'effect'
 import * as Events from '../../Events.ts'
-import type * as Preprints from '../../Preprints/index.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { Uuid } from '../../types/index.ts'
+import * as Errors from '../Errors.ts'
 
 export interface Command {
-  readonly receivedAt: Temporal.Instant
   readonly acceptedAt: Temporal.Instant
-  readonly preprintId: Preprints.PreprintId
   readonly reviewRequestId: Uuid.Uuid
-  readonly requester: {
-    readonly name: NonEmptyString.NonEmptyString
-  }
 }
 
-export type State = NotAccepted | HasBeenAccepted
+export type Error = Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest
+
+export type State = NotReceived | NotAccepted | HasBeenAccepted | HasBeenRejected
+
+export class NotReceived extends Data.TaggedClass('NotReceived') {}
 
 export class NotAccepted extends Data.TaggedClass('NotAccepted') {}
 
 export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
+export class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
+
 export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
-  types: ['ReviewRequestForAPreprintWasAccepted'],
+  types: [
+    'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestForAPreprintWasRejected',
+  ],
   predicates: { reviewRequestId },
 })
 
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))
 
-  return Option.match(Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted')), {
-    onNone: () => new NotAccepted(),
-    onSome: () => new HasBeenAccepted(),
-  })
+  if (!Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))) {
+    return new NotReceived()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))) {
+    return new HasBeenAccepted()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasRejected'))) {
+    return new HasBeenRejected()
+  }
+
+  return new NotAccepted()
 }
 
 export const decide: {
-  (state: State, command: Command): Option.Option<Events.ReviewRequestEvent>
-  (command: Command): (state: State) => Option.Option<Events.ReviewRequestEvent>
+  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
+  (command: Command): (state: State) => Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
 } = Function.dual(
   2,
-  (state: State, command: Command): Option.Option<Events.ReviewRequestEvent> =>
+  (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
     Match.valueTags(state, {
-      HasBeenAccepted: () => Option.none(),
+      NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
+      HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
+      HasBeenAccepted: () => Either.right(Option.none()),
       NotAccepted: () =>
-        Option.some(
-          new Events.ReviewRequestForAPreprintWasAccepted({
-            receivedAt: command.receivedAt,
-            acceptedAt: command.acceptedAt,
-            preprintId: command.preprintId,
-            reviewRequestId: command.reviewRequestId,
-            requester: command.requester,
-          }),
+        Either.right(
+          Option.some(
+            new Events.ReviewRequestForAPreprintWasAccepted({
+              acceptedAt: command.acceptedAt,
+              reviewRequestId: command.reviewRequestId,
+            }),
+          ),
         ),
     }),
 )

@@ -211,12 +211,15 @@ pipe(
         ),
       ),
       Layer.provide(
-        Layer.effect(
-          Orcid.OrcidApi,
-          Config.all({
-            origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
-            token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
-          }),
+        Layer.mergeAll(
+          Layer.effect(
+            Orcid.OrcidApi,
+            Config.all({
+              origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
+              token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
+            }),
+          ),
+          OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
         ),
       ),
       Layer.provide(setUpFetch),

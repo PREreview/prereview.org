@@ -7,7 +7,7 @@ export const getPage = (id: string) =>
     Ghost.getPage(id),
     Effect.andThen(page =>
       rawHtml(
-        sanitizeHtml(page.html.toString(), true)
+        sanitizeHtml(page.html.toString(), { trusted: true })
           .toString()
           .replaceAll(/href="https?:\/\/prereview\.org\/?(.*?)"/g, 'href="/$1"'),
       ),

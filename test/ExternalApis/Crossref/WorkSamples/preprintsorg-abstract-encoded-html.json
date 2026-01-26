@@ -1,0 +1,71 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 5, 17]],
+      "date-time": "2025-05-17T04:01:26Z",
+      "timestamp": 1747454486746,
+      "version": "3.40.5"
+    },
+    "posted": { "date-parts": [[2025, 5, 14]] },
+    "group-title": "Public Health and Healthcare",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 5, 14]], "date-time": "2025-05-14T00:00:00Z", "timestamp": 1747180800000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2025, 5, 12]] },
+    "abstract": "<jats:p>H&amp;aacute;tt&amp;eacute;r: Ez a koncepcion&amp;aacute;lis szakpolitikai dokumentum a kort&amp;aacute;rs eg&amp;eacute;szs&amp;eacute;g&amp;uuml;gyi rendszerek kulcsfontoss&amp;aacute;g&amp;uacute; struktur&amp;aacute;lis kih&amp;iacute;v&amp;aacute;saival foglalkozik &amp;ndash; nevezetesen a sz&amp;eacute;tt&amp;ouml;redezetts&amp;eacute;ggel, a kapacit&amp;aacute;s egyens&amp;uacute;lyhi&amp;aacute;nnyal &amp;eacute;s a technol&amp;oacute;giai alulkihaszn&amp;aacute;lts&amp;aacute;ggal. T&amp;ouml;bb reform ellen&amp;eacute;re az eg&amp;eacute;szs&amp;eacute;g&amp;uuml;gyi rendszerek tov&amp;aacute;bbra is hat&amp;eacute;konytalanok &amp;eacute;s egyenl\u0151tlenek, k&amp;uuml;l&amp;ouml;n&amp;ouml;sen a specializ&amp;aacute;lt szolg&amp;aacute;ltat&amp;aacute;sny&amp;uacute;jt&amp;aacute;s ter&amp;eacute;n. C&amp;eacute;lkit\u0171z&amp;eacute;s: Bemutatjuk az Integr&amp;aacute;lt Specializ&amp;aacute;lt Eg&amp;eacute;szs&amp;eacute;g&amp;uuml;gyi Modellt (ISHM), amely egy koncepcion&amp;aacute;lis keretrendszer a specializ&amp;aacute;lt szolg&amp;aacute;ltat&amp;aacute;sok strat&amp;eacute;giai szervez&amp;eacute;s&amp;eacute;re egy integr&amp;aacute;lt, digit&amp;aacute;lisan t&amp;aacute;mogatott eg&amp;eacute;szs&amp;eacute;g&amp;uuml;gyi h&amp;aacute;l&amp;oacute;zaton bel&amp;uuml;l. M&amp;oacute;dszerek: Az ISHM olyan nemzetk&amp;ouml;zi modellekkel szemben helyezkedik el, mint a Betegk&amp;ouml;zpont&amp;uacute; Orvosi Otthon, az Elsz&amp;aacute;moltathat&amp;oacute; Ell&amp;aacute;t&amp;oacute; Szervezetek &amp;eacute;s a skandin&amp;aacute;v region&amp;aacute;lis ell&amp;aacute;t&amp;oacute;rendszerek. Integr&amp;aacute;lja a digit&amp;aacute;lis interoperabilit&amp;aacute;st, a mesters&amp;eacute;ges intelligenci&amp;aacute;t &amp;eacute;s a robotik&amp;aacute;t egy h&amp;aacute;l&amp;oacute;zatalap&amp;uacute;, modul&amp;aacute;ris strukt&amp;uacute;r&amp;aacute;ban. Eredm&amp;eacute;nyek: A modell el\u0151ny&amp;ouml;ket biztos&amp;iacute;t a klinikai min\u0151s&amp;eacute;g, az er\u0151forr&amp;aacute;s-hat&amp;eacute;konys&amp;aacute;g &amp;eacute;s a beteg&amp;eacute;lm&amp;eacute;ny ter&amp;eacute;n. Javaslatot tesz&amp;uuml;nk egy k&amp;iacute;s&amp;eacute;rleti megval&amp;oacute;s&amp;iacute;t&amp;aacute;si &amp;uacute;tvonalra, amely mag&amp;aacute;ban foglalja a megosztott infrastrukt&amp;uacute;r&amp;aacute;t, a harmoniz&amp;aacute;lt protokollokat &amp;eacute;s az eredm&amp;eacute;nyalap&amp;uacute; monitoroz&amp;aacute;st. Az ISHM k&amp;uuml;l&amp;ouml;n&amp;ouml;sen alkalmas a struktur&amp;aacute;lisan sz&amp;eacute;tt&amp;ouml;redezett vagy alulfinansz&amp;iacute;rozott rendszerekhez, mint p&amp;eacute;ld&amp;aacute;ul a k&amp;ouml;z&amp;eacute;p- &amp;eacute;s kelet-eur&amp;oacute;pai rendszerekhez. K&amp;ouml;vetkeztet&amp;eacute;sek: Az ISHM egy sk&amp;aacute;l&amp;aacute;zhat&amp;oacute; &amp;eacute;s szakpolitik&amp;aacute;val &amp;ouml;sszehangolt keretrendszert k&amp;iacute;n&amp;aacute;l a specializ&amp;aacute;ci&amp;oacute; &amp;eacute;s az integr&amp;aacute;ci&amp;oacute;, valamint a digit&amp;aacute;lis innov&amp;aacute;ci&amp;oacute; &amp;eacute;s a rendszerszint\u0171 ellen&amp;aacute;ll&amp;oacute; k&amp;eacute;pess&amp;eacute;g &amp;ouml;sszekapcsol&amp;aacute;s&amp;aacute;ra. Koncepcion&amp;aacute;lis fel&amp;eacute;p&amp;iacute;t&amp;eacute;se t&amp;aacute;mogatja a tov&amp;aacute;bbi empirikus valid&amp;aacute;ci&amp;oacute;t &amp;eacute;s a szakpolitikai adapt&amp;aacute;ci&amp;oacute;t.<\/jats:p>",
+    "DOI": "10.20944\/preprints202505.1032.v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 5, 16]], "date-time": "2025-05-16T03:11:12Z", "timestamp": 1747365072000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Integrated Specialized Health Model (ISHM): A Conceptual Policy Framework for Sustainable and Digitally Supported Healthcare Systems"
+    ],
+    "prefix": "10.20944",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0009-0002-6013-1371",
+        "authenticated-orcid": false,
+        "given": "Istv\u00e1n",
+        "family": "Bir\u00f3",
+        "sequence": "first",
+        "affiliation": []
+      },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0003-3612-8826",
+        "authenticated-orcid": false,
+        "given": "G\u00e1bor",
+        "family": "Fazekas",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2025, 5, 16]], "date-time": "2025-05-16T03:11:27Z", "timestamp": 1747365087000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202505.1032\/v1" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 5, 14]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202505.1032.v1",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2025, 5, 14]] },
+    "subtype": "preprint"
+  }
+}

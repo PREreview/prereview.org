@@ -1,5 +1,5 @@
 import { isEmailValid } from '@hapi/address'
-import { Either, Schema, pipe } from 'effect'
+import { Either, Schema, Tuple, flow, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -28,4 +28,19 @@ export const EmailAddressSchema = pipe(
   Schema.brand(EmailAddressBrand),
 )
 
+export const EmailAddressFromUrlSchema = Schema.transform(
+  Schema.TemplateLiteralParser('mailto:', Schema.compose(Schema.StringFromUriComponent, EmailAddressSchema)),
+  Schema.typeSchema(EmailAddressSchema),
+  {
+    strict: true,
+    decode: Tuple.at(1),
+    encode: id => Tuple.make('mailto:' as const, id),
+  },
+)
+
 export const EmailAddress = (email: string) => EmailAddressSchema.make(email)
+
+export const toUrl: (emailAddress: EmailAddress) => URL = flow(
+  Schema.encodeSync(EmailAddressFromUrlSchema),
+  url => new URL(url),
+)

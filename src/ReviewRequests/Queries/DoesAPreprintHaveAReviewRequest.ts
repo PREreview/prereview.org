@@ -1,4 +1,4 @@
-import { Array, Equal, Option, Record } from 'effect'
+import { Array, Equal, Match, Option, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -12,7 +12,12 @@ export type Result = boolean
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createFilter = ({ preprintId }: Input) =>
   Events.EventFilter({
-    types: ['ReviewRequestForAPreprintWasAccepted'],
+    types: [
+      'ReviewRequestForAPreprintWasReceived',
+      'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestFromAPreprintServerWasImported',
+      'ReviewRequestByAPrereviewerWasImported',
+    ],
   })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
@@ -22,12 +27,34 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
 
   const reviewRequests = Array.reduce(
     filteredEvents,
-    Record.empty<Uuid.Uuid, Preprints.IndeterminatePreprintId>(),
+    Record.empty<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>(),
     (map, event) =>
-      Option.getOrElse(Record.replaceOption(map, event.reviewRequestId, event.preprintId), () =>
-        Record.set(map, event.reviewRequestId, event.preprintId),
-      ),
+      Match.valueTags(event, {
+        ReviewRequestForAPreprintWasReceived: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
+          ),
+        ReviewRequestForAPreprintWasAccepted: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, accepted: true })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: undefined, accepted: true }),
+          ),
+        ReviewRequestFromAPreprintServerWasImported: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
+          ),
+        ReviewRequestByAPrereviewerWasImported: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+            () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
+          ),
+      }),
   )
 
-  return Record.some(reviewRequests, Equal.equals(input.preprintId))
+  return Record.some(
+    reviewRequests,
+    reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
+  )
 }

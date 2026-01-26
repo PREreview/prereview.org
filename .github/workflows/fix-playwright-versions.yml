@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}

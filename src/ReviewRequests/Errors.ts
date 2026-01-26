@@ -1,5 +1,10 @@
 import { Data, Schema } from 'effect'
 
+export class FailedToProcessReceivedReviewRequest extends Schema.TaggedError<FailedToProcessReceivedReviewRequest>()(
+  'FailedToProcessReceivedReviewRequest',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
 export class FailedToCategorizeReviewRequest extends Schema.TaggedError<FailedToCategorizeReviewRequest>()(
   'FailedToCategorizeReviewRequest',
   { cause: Schema.optional(Schema.Unknown) },
@@ -21,5 +26,13 @@ export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.Tag
 ) {}
 
 export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}
+
+export class ReviewRequestHasBeenAccepted extends Data.TaggedError('ReviewRequestHasBeenAccepted')<{
+  cause?: unknown
+}> {}
+
+export class ReviewRequestHasBeenRejected extends Data.TaggedError('ReviewRequestHasBeenRejected')<{
+  cause?: unknown
+}> {}
 
 export class UnknownReviewRequest extends Data.TaggedError('UnknownReviewRequest')<{ cause?: unknown }> {}

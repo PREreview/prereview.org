@@ -1,7 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Either, Layer, Option, pipe } from 'effect'
+import { Effect, Either, Layer, pipe } from 'effect'
 import { OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
+import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Reactions/CategorizeReviewRequest.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -12,12 +13,13 @@ describe('CategorizeReviewRequest', () => {
     test.prop([
       fc.uuid(),
       fc.publishedReviewRequest(),
+      fc.preprintTitle(),
       fc.record({
         language: fc.some(fc.languageCode()),
         keywords: fc.array(fc.keywordId()),
         topics: fc.array(fc.topicId()),
       }),
-    ])('when the command can be completed', (reviewRequestId, reviewRequest, categories) =>
+    ])('when the command can be completed', (reviewRequestId, reviewRequest, preprint, categories) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
 
@@ -28,6 +30,7 @@ describe('CategorizeReviewRequest', () => {
             Layer.mock(OpenAlexWorks.OpenAlexWorks, {
               getCategoriesForAReviewRequest: () => Effect.succeed(categories),
             }),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {
               categorizeReviewRequest: () => Effect.void,
             }),
@@ -42,6 +45,7 @@ describe('CategorizeReviewRequest', () => {
     test.prop([
       fc.uuid(),
       fc.publishedReviewRequest(),
+      fc.preprintTitle(),
       fc.record({
         language: fc.some(fc.languageCode()),
         keywords: fc.array(fc.keywordId()),
@@ -55,7 +59,7 @@ describe('CategorizeReviewRequest', () => {
             new ReviewRequests.UnableToHandleCommand({ cause }),
           ),
         ),
-    ])("when the command can't be completed", (reviewRequestId, reviewRequest, categories, error) =>
+    ])("when the command can't be completed", (reviewRequestId, reviewRequest, preprint, categories, error) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
 
@@ -66,6 +70,7 @@ describe('CategorizeReviewRequest', () => {
             Layer.mock(OpenAlexWorks.OpenAlexWorks, {
               getCategoriesForAReviewRequest: () => Effect.succeed(categories),
             }),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, {
               categorizeReviewRequest: () => error,
             }),
@@ -83,21 +88,25 @@ describe('CategorizeReviewRequest', () => {
     fc.uuid(),
     fc.publishedReviewRequest(),
     fc.record({
-      language: fc.constant(Option.none()),
+      language: fc.some(fc.languageCode()),
       keywords: fc.array(fc.keywordId()),
       topics: fc.array(fc.topicId()),
     }),
-  ])("when the request doesn't have a language", (reviewRequestId, reviewRequest, categories) =>
+    fc
+      .anything()
+      .chain(cause =>
+        fc.constantFrom(new Preprints.PreprintIsNotFound({ cause }), new Preprints.PreprintIsUnavailable({ cause })),
+      ),
+  ])("when the preprint can't be loaded", (reviewRequestId, reviewRequest, categories, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
 
-      expect(actual).toStrictEqual(
-        Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: 'no language' })),
-      )
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
     }).pipe(
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => Effect.succeed(categories) }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
@@ -111,8 +120,9 @@ describe('CategorizeReviewRequest', () => {
   test.prop([
     fc.uuid(),
     fc.publishedReviewRequest(),
+    fc.preprintTitle(),
     fc.anything().map(cause => new OpenAlexWorks.CategoriesAreNotAvailable({ cause })),
-  ])("when the request can't be categorized", (reviewRequestId, reviewRequest, error) =>
+  ])("when the request can't be categorized", (reviewRequestId, reviewRequest, preprint, error) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.CategorizeReviewRequest(reviewRequestId), Effect.either)
 
@@ -121,6 +131,7 @@ describe('CategorizeReviewRequest', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => error }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
@@ -150,6 +161,7 @@ describe('CategorizeReviewRequest', () => {
       Effect.provide(
         Layer.mergeAll(
           Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
+          Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),
         ),

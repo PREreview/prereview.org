@@ -1,0 +1,54 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 1, 19]],
+      "date-time": "2026-01-19T20:20:38Z",
+      "timestamp": 1768854038346,
+      "version": "3.49.0"
+    },
+    "posted": { "date-parts": [[2026, 1, 15]] },
+    "group-title": "Physical Sciences",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 1, 15]], "date-time": "2026-01-15T00:00:00Z", "timestamp": 1768435200000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2025, 12, 19]] },
+    "abstract": "<jats:p>We develop a symmetry-based reconstruction of the vacuum impedance and the fine-structure\nconstant. Hyperbolic geometry and discrete sectorization of the electromagnetic field plane are the only input assumptions. The construction identifies a unique integer-square hyperbolic selector that fixes the electric\u2013magnetic partition without adjustable parameters. This yield the geometric part of the vacuum impedance when combined with the quantum scale $h\/e^{2}$. The same discrete structure provides a normalization for the fine-structure constant through a universal sector angle $\\pi\/24$, connecting topological quantization phenomena in metals and alloys, including Berry phases, Zak phases, and quantized Hall responses. The resulting framework places electromagnetic constants within a unified geometric\u2013topological setting and suggests experimentally accessible consequences in systems with discrete rotational or modular symmetry.<\/jats:p>",
+    "DOI": "10.20944\/preprints202601.1190.v1",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 1, 19]], "date-time": "2026-01-19T06:14:47Z", "timestamp": 1768803287000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "&lt;span class=\"word\"&gt;Hyperbolic &lt;span class=\"word allCaps\"&gt;EM &lt;span class=\"word\"&gt;&lt;span class=\"changedDisabled\"&gt;Symmetry &lt;span class=\"word\"&gt;and &lt;span class=\"word\"&gt;&lt;span class=\"changedDisabled\"&gt;Metrological &lt;span class=\"word\"&gt;&lt;span class=\"changedDisabled\"&gt;Closure &lt;span class=\"word\"&gt;of &lt;span class=\"word\"&gt;&lt;span class=\"changedDisabled\"&gt;Vacuum &lt;span class=\"word\"&gt;&lt;span class=\"changedDisabled\"&gt;Impedance &lt;span class=\"changedDisabled\"&gt;with &lt;span class=\"changedDisabled\"&gt;Links to &lt;span class=\"changedDisabled\"&gt;Topological &lt;span class=\"changedDisabled\"&gt;Response in &lt;span class=\"changedDisabled\"&gt;Metals and &lt;span class=\"changedDisabled\"&gt;Alloys"
+    ],
+    "prefix": "10.20944",
+    "author": [{ "given": "Tihomir", "family": "Car", "sequence": "first", "affiliation": [] }],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 1, 19]], "date-time": "2026-01-19T06:15:15Z", "timestamp": 1768803315000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202601.1190\/v1" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 1, 15]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202601.1190.v1",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026, 1, 15]] },
+    "subtype": "preprint"
+  }
+}

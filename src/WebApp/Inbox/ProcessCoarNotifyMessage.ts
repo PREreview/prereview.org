@@ -1,8 +1,9 @@
-import { Effect, Either, pipe } from 'effect'
+import { Effect, Either } from 'effect'
 import type { CoarNotify } from '../../ExternalApis/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
-import { Temporal, type Uuid } from '../../types/index.ts'
+import type { Temporal, Uuid } from '../../types/index.ts'
+import { ActorToRequester } from './ActorToRequester.ts'
 import * as Errors from './Errors.ts'
 
 export const ProcessCoarNotifyMessage = Effect.fn(
@@ -15,30 +16,21 @@ export const ProcessCoarNotifyMessage = Effect.fn(
     messageId: Uuid.Uuid
     receivedAt: Temporal.Instant
   }) {
-    const preprintId = yield* pipe(
-      Either.fromOption(
-        Preprints.parsePreprintDoi(message.object['ietf:cite-as']),
-        () => new Preprints.NotAPreprint({}),
-      ),
-      Effect.andThen(Preprints.resolvePreprintId),
+    const preprintId = yield* Either.fromOption(
+      Preprints.parsePreprintDoi(message.object['ietf:cite-as']),
+      () => new Preprints.NotAPreprint({}),
     )
 
-    const acceptedAt = yield* Temporal.currentInstant
-
-    yield* ReviewRequests.acceptReviewRequest({
+    yield* ReviewRequests.receiveReviewRequest({
       receivedAt,
-      acceptedAt,
+      receivedFrom: message.origin.id,
       preprintId,
       reviewRequestId: messageId,
-      requester: {
-        name: message.actor.name,
-      },
+      requester: ActorToRequester(message.actor),
     })
   },
   Effect.catchTags({
     NotAPreprint: error => new Errors.RejectedRequestReview({ cause: error }),
-    PreprintIsNotFound: error => new Errors.FailedToProcessRequestReview({ cause: error }),
-    PreprintIsUnavailable: error => new Errors.FailedToProcessRequestReview({ cause: error }),
     UnableToHandleCommand: error => new Errors.FailedToProcessRequestReview({ cause: error }),
   }),
 )

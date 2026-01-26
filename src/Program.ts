@@ -43,8 +43,8 @@ import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as ReviewRequests from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
+import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
-import * as Inbox from './WebApp/Inbox/index.ts' // eslint-disable-line import/no-internal-modules
 import * as WebApp from './WebApp/index.ts'
 import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
@@ -334,9 +334,7 @@ export const Program = pipe(
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
   ),
-  Layer.provide(
-    Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment, Inbox.layer),
-  ),
+  Layer.provide(Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
     Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
   ),
@@ -401,6 +399,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide(SqlSensitiveDataStore.layer),
   Layer.provide(
     Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
   ),

@@ -43,7 +43,7 @@ import {
 } from '../src/contact-email-address.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import { createAuthorInviteEmail } from '../src/email.ts'
-import { Cloudinary, Ghost, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
+import { Cloudinary, Ghost, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { rawHtml } from '../src/html.ts'
@@ -2342,6 +2342,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               key: Redacted.make('key'),
               origin: new URL('http://zenodo.test/'),
             }),
+            OpenAlex.layerApi({ key: Redacted.make('key') }),
             WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
             WorkflowEngine.layerMemory,
             Layer.mock(LanguageModel.LanguageModel, {}),

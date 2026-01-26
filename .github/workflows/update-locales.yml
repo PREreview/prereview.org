@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
           sparse-checkout: |
@@ -26,7 +26,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: 'Download translations from Crowdin'
-        uses: crowdin/github-action@v2.13.0
+        uses: crowdin/github-action@v2.14.0
         with:
           upload_sources: false
           upload_translations: false

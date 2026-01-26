@@ -7,7 +7,7 @@ import { renderDateString } from '../../../time.ts'
 import { Doi, type NonEmptyString } from '../../../types/index.ts'
 
 export interface PreprintReviewRequest {
-  readonly author: NonEmptyString.NonEmptyString
+  readonly author: Option.Option<NonEmptyString.NonEmptyString>
   readonly preprint: Preprints.Preprint
 }
 
@@ -81,7 +81,10 @@ In the final reply, provide a call to action to write the review or to pass on t
         {
           role: 'user',
           content: `
-Requester: """${author}"""
+${Option.match(author, {
+  onNone: () => 'Requester: Unknown',
+  onSome: author => `Requester: """${author}"""`,
+})}
 
 Title: """${preprint.title.text.toString()}"""
 
@@ -173,7 +176,7 @@ const examples: Array.NonEmptyReadonlyArray<Schema.Schema.Encoded<typeof ThreadS
       'Thanks for reading this far. 🌟\n\nPlease consider writing a PREreview for Chris or share this opportunity with others who might be interested.',
   },
   {
-    main: 'SciELO Preprints is looking for PREreviews of a paper on **distributed leadership patterns** in 🇨🇱 **Chilean technical professional education**. See in the replies for more.',
+    main: 'Someone is looking for PREreviews of a paper on **distributed leadership patterns** in 🇨🇱 **Chilean technical professional education**. See in the replies for more.',
     detail:
       '👏 Thanks for checking this out! The preprint is **[Patrones de Liderazgo Distribuido en Centros Secundarios de Formación Profesional en Chile](https://doi.org/10.1590/scielopreprints.8341)** by Oscar Maureira Cabrera, Luis Ahumada-Figueroa, and Erick Vidal-Muñoz.\n\n**Posted**\nApril 1, 2024\n\n**Server**\nSciELO Preprints',
     abstract: 'Excited to learn more? Here’s the abstract:',

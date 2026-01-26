@@ -120,7 +120,7 @@ import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
-import { OrcidLocale, ProfileId } from '../src/types/index.ts'
+import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
@@ -1157,6 +1157,9 @@ export const orcidId = (): fc.Arbitrary<OrcidId> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcidId)
 
+export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
+  fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
+
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
   fc.oneof(
     advancePreprintId(),
@@ -1867,10 +1870,16 @@ export const datasetReviewDataForZenodoRecord = ({
 
 export const publishedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedReviewRequest> =>
   fc.record({
-    author: fc.record({ name: nonEmptyString() }),
+    author: maybe(fc.record({ name: nonEmptyString() })),
     preprintId: indeterminatePreprintId(),
     id: uuid(),
     published: instant(),
+  })
+
+export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedReviewRequest> =>
+  fc.record({
+    preprintId: indeterminatePreprintId(),
+    id: uuid(),
   })
 
 export const commentWasStarted = ({
@@ -2302,6 +2311,28 @@ export const prereviewerEvent = (
   } = {},
 ): fc.Arbitrary<Events.PrereviewerEvent> => prereviewerSubscribedToAKeyword(args)
 
+export const reviewRequestForAPreprintWasReceived = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived> =>
+  fc
+    .record({
+      receivedAt: instant(),
+      receivedFrom: url(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: maybe(
+        fc.record({
+          name: nonEmptyString(),
+          orcidId: fc.option(orcidId(), { nil: undefined }),
+          sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
+          emailAddress: fc.option(emailAddress(), { nil: undefined }),
+        }),
+      ),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasReceived(data))
+
 export const reviewRequestForAPreprintWasAccepted = ({
   reviewRequestId,
 }: {
@@ -2309,15 +2340,62 @@ export const reviewRequestForAPreprintWasAccepted = ({
 } = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasAccepted> =>
   fc
     .record({
-      receivedAt: instant(),
       acceptedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
+
+export const reviewRequestForAPreprintWasRejected = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasRejected['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasRejected> =>
+  fc
+    .record({
+      rejectedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      reason: constantFrom('not-a-preprint', 'unknown-preprint'),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasRejected(data))
+
+export const reviewRequestFromAPreprintServerWasImported = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestFromAPreprintServerWasImported['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestFromAPreprintServerWasImported> =>
+  fc
+    .record({
+      publishedAt: instant(),
+      receivedFrom: url(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requester: maybe(
+        fc.record({
+          name: nonEmptyString(),
+          orcidId: fc.option(orcidId(), { nil: undefined }),
+          sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
+          emailAddress: fc.option(emailAddress(), { nil: undefined }),
+        }),
+      ),
+    })
+    .map(data => new Events.ReviewRequestFromAPreprintServerWasImported(data))
+
+export const reviewRequestByAPrereviewerWasImported = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestByAPrereviewerWasImported> =>
+  fc
+    .record({
+      publishedAt: instant(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
       requester: fc.record({
-        name: nonEmptyString(),
+        orcidId: orcidId(),
+        persona: constantFrom('public', 'pseudonym'),
       }),
     })
-    .map(data => new Events.ReviewRequestForAPreprintWasAccepted(data))
+    .map(data => new Events.ReviewRequestByAPrereviewerWasImported(data))
 
 export const reviewRequestForAPreprintWasCategorized = ({
   reviewRequestId,
@@ -2332,6 +2410,19 @@ export const reviewRequestForAPreprintWasCategorized = ({
       keywords: fc.array(keywordId()),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
+
+export const failedToCategorizeAReviewRequestForAPreprint = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.FailedToCategorizeAReviewRequestForAPreprint> =>
+  fc
+    .record({
+      failedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      failureMessage: fc.string(),
+    })
+    .map(data => new Events.FailedToCategorizeAReviewRequestForAPreprint(data))
 
 export const reviewRequestForAPreprintWasSharedOnTheCommunitySlack = ({
   reviewRequestId,
@@ -2352,8 +2443,13 @@ export const reviewRequestEvent = (
   } = {},
 ): fc.Arbitrary<Events.ReviewRequestEvent> =>
   fc.oneof(
+    reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
+    reviewRequestForAPreprintWasRejected(args),
+    reviewRequestFromAPreprintServerWasImported(args),
+    reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
+    failedToCategorizeAReviewRequestForAPreprint(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )
 

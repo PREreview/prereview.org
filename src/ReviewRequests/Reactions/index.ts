@@ -1,10 +1,12 @@
-import { Activity, Workflow, type WorkflowEngine } from '@effect/workflow'
-import { Effect, Layer, Match, pipe, PubSub, Queue, Struct, type Scope } from 'effect'
+import { Activity, DurableClock, Workflow, type WorkflowEngine } from '@effect/workflow'
+import { Effect, Inspectable, Layer, Match, pipe, PubSub, Queue, Struct, type Scope } from 'effect'
 import * as Events from '../../Events.ts'
-import { Uuid } from '../../types/index.ts'
+import { Temporal, Uuid } from '../../types/index.ts'
+import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
 import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
+import { ProcessReceivedReviewRequest as executeProcessReceivedReviewRequest } from './ProcessReceivedReviewRequest.ts'
 
 const CategorizeReviewRequest = Workflow.make({
   name: 'CategorizeReviewRequest',
@@ -18,6 +20,15 @@ const CategorizeReviewRequest = Workflow.make({
 const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   name: 'NotifyCommunitySlackOfReviewRequest',
   error: Errors.FailedToNotifyCommunitySlack,
+  payload: {
+    reviewRequestId: Uuid.UuidSchema,
+  },
+  idempotencyKey: Struct.get('reviewRequestId'),
+})
+
+const ProcessReceivedReviewRequest = Workflow.make({
+  name: 'ProcessReceivedReviewRequest',
+  error: Errors.FailedToProcessReceivedReviewRequest,
   payload: {
     reviewRequestId: Uuid.UuidSchema,
   },
@@ -46,6 +57,12 @@ const makeReviewRequestReactions: Effect.Effect<
             { concurrency: 'inherit' },
           ),
         ),
+        Match.tag('ReviewRequestFromAPreprintServerWasImported', event =>
+          CategorizeReviewRequest.execute(event, { discard: true }),
+        ),
+        Match.tag('ReviewRequestForAPreprintWasReceived', event =>
+          ProcessReceivedReviewRequest.execute(event, { discard: true }),
+        ),
         Match.orElse(() => Effect.void),
       ),
     ),
@@ -54,18 +71,53 @@ const makeReviewRequestReactions: Effect.Effect<
 })
 
 const workflowsLayer = Layer.mergeAll(
-  CategorizeReviewRequest.toLayer(({ reviewRequestId }) =>
-    Activity.make({
-      name: CategorizeReviewRequest.name,
-      error: CategorizeReviewRequest.errorSchema,
-      execute: executeCategorizeReviewRequest(reviewRequestId),
-    }),
+  CategorizeReviewRequest.toLayer(({ reviewRequestId }, executionId) =>
+    pipe(
+      Effect.gen(function* () {
+        const currentAttempt = yield* Activity.CurrentAttempt
+
+        if (currentAttempt === 1) {
+          return
+        }
+
+        yield* DurableClock.sleep({
+          name: `sleep-${executionId}-${currentAttempt}`,
+          duration: '1 hour',
+        })
+      }),
+      Effect.andThen(
+        Activity.make({
+          name: CategorizeReviewRequest.name,
+          error: CategorizeReviewRequest.errorSchema,
+          execute: executeCategorizeReviewRequest(reviewRequestId),
+        }),
+      ),
+      Activity.retry({ times: 48 }),
+      Effect.tapError(error =>
+        Effect.gen(function* () {
+          const failedAt = yield* Temporal.currentInstant
+          const failureMessage = Inspectable.toStringUnknown(error.cause)
+
+          yield* pipe(
+            Commands.recordFailureToCategorizeReviewRequest({ failedAt, failureMessage, reviewRequestId }),
+            Effect.ignoreLogged,
+          )
+        }),
+      ),
+    ),
   ),
   NotifyCommunitySlackOfReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
       name: NotifyCommunitySlackOfReviewRequest.name,
       error: NotifyCommunitySlackOfReviewRequest.errorSchema,
       execute: executeNotifyCommunitySlackOfReviewRequest(reviewRequestId),
+    }),
+  ),
+  ProcessReceivedReviewRequest.toLayer(({ reviewRequestId }) =>
+    Activity.make({
+      name: ProcessReceivedReviewRequest.name,
+      error: ProcessReceivedReviewRequest.errorSchema,
+      execute: executeProcessReceivedReviewRequest(reviewRequestId),
     }),
   ),
 )

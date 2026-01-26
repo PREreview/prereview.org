@@ -74,7 +74,7 @@ test.each([
       posted: Temporal.PlainDate.from({ year: 2024, month: 12, day: 15 }),
       title: {
         language: 'en',
-        text: rawHtml('Little Science, Big Science, and Beyond: How Amateurs\nShape the Scientific Landscape'),
+        text: rawHtml('Little Science, Big Science, and Beyond: How Amateurs Shape the Scientific Landscape'),
       },
       url: new URL('https://neurolibre.org/papers/10.55458/neurolibre.00031'),
     }),
@@ -238,6 +238,118 @@ test.each([
     }),
   },
   {
+    response: 'preprintsorg-title-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Tihomir Car', orcid: undefined }],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1190.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 15 }),
+      title: {
+        text: rawHtml(
+          'Hyperbolic EM Symmetry and Metrological Closure of Vacuum Impedance with Links to Topological Response in Metals and Alloys',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>We develop a symmetry-based reconstruction of the vacuum impedance and the fine-structure constant. Hyperbolic geometry and discrete sectorization of the electromagnetic field plane are the only input assumptions. The construction identifies a unique integer-square hyperbolic selector that fixes the electric–magnetic partition without adjustable parameters. This yield the geometric part of the vacuum impedance when combined with the quantum scale <math><semantics><mrow><mi>h</mi><mi mathvariant="normal">/</mi><msup><mi>e</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">h/e^{2}</annotation></semantics></math>. The same discrete structure provides a normalization for the fine-structure constant through a universal sector angle <math><semantics><mrow><mi>π</mi><mi mathvariant="normal">/</mi><mn>24</mn></mrow><annotation encoding="application/x-tex">\\pi/24</annotation></semantics></math>, connecting topological quantization phenomena in metals and alloys, including Berry phases, Zak phases, and quantized Hall responses. The resulting framework places electromagnetic constants within a unified geometric–topological setting and suggests experimentally accessible consequences in systems with discrete rotational or modular symmetry.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.1190/v1'),
+    }),
+  },
+  {
+    response: 'preprintsorg-title-encoded-html-paragraph.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Pascal Stiefenhofer', orcid: undefined },
+        { name: 'Jing Qian', orcid: undefined },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.0801.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 13 }),
+      title: {
+        text: rawHtml(
+          'A Hybrid Systems Framework for Electric Vehicle Adoption: Microfoundations, Networks, and Filippov Dynamics',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Electric-vehicle (EV) diffusion exhibits nonlinear, path-dependent dynamics shaped by interacting economic, technological, and social constraints. This paper develops a unified hybrid-systems framework that captures these complexities by integrating microfounded household choice, capacity constrained firm behavior, local network spillovers, and multi-level policy intervention within a Filippov differential-inclusion structure. Households face heterogeneous preferences, liquidity limits, and network-mediated moral and informational influences; firms invest irreversibly under learning-by-doing and profitability thresholds; and national and local governments implement distinct financial and infrastructure policies subject to budget constraints. The resulting aggregate adoption dynamics feature endogenous switching, sliding modes at economic bottlenecks, network-amplified tipping, and hysteresis arising from irreversible investment. We establish conditions for the existence of Filippov solutions, derive network-dependent tipping thresholds, characterize sliding regimes at capacity and liquidity constraints, and show how network structure magnifies hysteresis and shapes the effectiveness of local versus national policy. Optimal-control analysis further demonstrates that national subsidies follow bang--bang patterns and that network-targeted local interventions minimize the fiscal cost of achieving regional tipping. The framework provides a complex-systems perspective on sustainable mobility transitions and clarifies why identical national policies can generate asynchronous regional outcomes. These results offer theoretical foundations for designing coordinated, cost-effective, and network-aware EV transition strategies.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.0801/v1'),
+    }),
+  },
+  {
+    response: 'preprintsorg-title-containing-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Mariya Zhelyazkova', orcid: OrcidId('0000-0001-7479-4139') }],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1248.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 16 }),
+      title: {
+        text: rawHtml(
+          'Capability of ISSR, SCoT and CEAP Markers for Genetic Diversity Assessment of Lavender (<i>Lavandula angustifolia Mill.</i>) Genotypes',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          "<p>Lavender has been cultivated in Bulgaria for over a century. The high essential oil content and quality of Bulgarian lavender varieties have established the country as a leading global producer. Studies into the crop's genetic diversity is essential for selecting varieties best suited to specific environmental conditions, maximising resilience and yield. Therefore, identifying appropriate genetic markers to monitor lavender diversity is a key prerequisite for developing effective crop selection strategies, particularly in response to the challenges posed by global climate change. In this study, we evaluate the versatility of markers for assessing genetic diversity of lavender genotypes. A total of 96, 97 and 96 bands were recorded using the 13 SCoT, 13 ISSR and 14 CEAP primers, respectively. All amplification programs used were successful in the studied genotypes. Additionally, were applied four informative primers of each marker systems for assessment of the within-field genetic variability in two lavender plantations from Bulgaria. This is the first report on the combined use and comparison of CEAP, SCoT and ISSR primers in lavender genotypes in Bulgaria.</p>",
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.1248/v1'),
+    }),
+  },
+  {
+    response: 'preprintsorg-title-containing-encoded-html-empty.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Antonella Chesca', orcid: undefined },
+        { name: 'Tim Sandle', orcid: OrcidId('0000-0002-8304-8274') },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202202.0061.v4') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 1, day: 2 }),
+      title: {
+        text: rawHtml('Key Points in HIV Infection Pathology'),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>HIV infection is a nowadays pathology that affect persons from all of the world. Pathogenesis of the HIV-infection and cancer is a great problem, with a complexity directions in research. More important in HIV infection to patients, is also to take into consideration others things, such as prevention, diagnosis, monitoring, treatment, including control measures. This previously mentioned, should be supported by statistical studies that report on restricted or extended geographical areas, to the level of social class and age. In our written text we try to describe from our opinion, strategies in HIV, infection, status knowing as a social and as a healthcare problem.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202202.0061/v4'),
+    }),
+  },
+  {
+    response: 'preprintsorg-abstract-encoded-html.json',
+    expected: Preprint({
+      authors: [
+        { name: 'István Biró', orcid: OrcidId('0009-0002-6013-1371') },
+        { name: 'Gábor Fazekas', orcid: OrcidId('0000-0003-3612-8826') },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202505.1032.v1') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 5, day: 14 }),
+      title: {
+        text: rawHtml(
+          'Integrated Specialized Health Model (ISHM): A Conceptual Policy Framework for Sustainable and Digitally Supported Healthcare Systems',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Háttér: Ez a koncepcionális szakpolitikai dokumentum a kortárs egészségügyi rendszerek kulcsfontosságú strukturális kihívásaival foglalkozik – nevezetesen a széttöredezettséggel, a kapacitás egyensúlyhiánnyal és a technológiai alulkihasználtsággal. Több reform ellenére az egészségügyi rendszerek továbbra is hatékonytalanok és egyenlőtlenek, különösen a specializált szolgáltatásnyújtás terén. Célkitűzés: Bemutatjuk az Integrált Specializált Egészségügyi Modellt (ISHM), amely egy koncepcionális keretrendszer a specializált szolgáltatások stratégiai szervezésére egy integrált, digitálisan támogatott egészségügyi hálózaton belül. Módszerek: Az ISHM olyan nemzetközi modellekkel szemben helyezkedik el, mint a Betegközpontú Orvosi Otthon, az Elszámoltatható Ellátó Szervezetek és a skandináv regionális ellátórendszerek. Integrálja a digitális interoperabilitást, a mesterséges intelligenciát és a robotikát egy hálózatalapú, moduláris struktúrában. Eredmények: A modell előnyöket biztosít a klinikai minőség, az erőforrás-hatékonyság és a betegélmény terén. Javaslatot teszünk egy kísérleti megvalósítási útvonalra, amely magában foglalja a megosztott infrastruktúrát, a harmonizált protokollokat és az eredményalapú monitorozást. Az ISHM különösen alkalmas a strukturálisan széttöredezett vagy alulfinanszírozott rendszerekhez, mint például a közép- és kelet-európai rendszerekhez. Következtetések: Az ISHM egy skálázható és szakpolitikával összehangolt keretrendszert kínál a specializáció és az integráció, valamint a digitális innováció és a rendszerszintű ellenálló képesség összekapcsolására. Koncepcionális felépítése támogatja a további empirikus validációt és a szakpolitikai adaptációt.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202505.1032/v1'),
+    }),
+  },
+  {
     response: 'verixiv.json',
     expected: Preprint({
       authors: [
@@ -364,7 +476,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '\n        <p>The evidence base available to trialists to support trial process decisions– e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants – is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process. SWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste. This paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.</p>',
+          '<p>The evidence base available to trialists to support trial process decisions– e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants – is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process. SWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste. This paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.</p>',
         ),
       },
       url: new URL('https://www.researchsquare.com/article/rs-2/v2'),
@@ -405,7 +517,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '<p>The restitution of a Sámi drum confiscated in 1691 in Karasjok, present-day  Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in Sápmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the Sámi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
+          '<p>The restitution of a Sámi drum confiscated in 1691 in Karasjok, present-day Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in Sápmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the Sámi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
         ),
       },
       url: new URL('https://osf.io/ny6h2'),
@@ -462,7 +574,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '<p>The Beninese agricultural sector suffers mainly from a lack of financing. This study, conducted on a random sample of 150 households in Parakou commune, shows that participatory financing with a counterpart in agricultural product is an alternative to financing the production of local farms. Food among the population of Parakou consists mainly of cereals, particularly maize (according to 75% of households surveyed). Non-agricultural households purchase agricultural products according to their purchasing power and the economic situation. This study confirms that people are suffering from social injustice caused by an increase in product prices caused by the agricultural financing activity of loan sharks.  It should be noted that 75% of households are willing to adopt the participatory financing proposed in this article. Households are ready to buy at an average price of 12.172 XOF/Kg.</p>',
+          '<p>The Beninese agricultural sector suffers mainly from a lack of financing. This study, conducted on a random sample of 150 households in Parakou commune, shows that participatory financing with a counterpart in agricultural product is an alternative to financing the production of local farms. Food among the population of Parakou consists mainly of cereals, particularly maize (according to 75% of households surveyed). Non-agricultural households purchase agricultural products according to their purchasing power and the economic situation. This study confirms that people are suffering from social injustice caused by an increase in product prices caused by the agricultural financing activity of loan sharks. It should be noted that 75% of households are willing to adopt the participatory financing proposed in this article. Households are ready to buy at an average price of 12.172 XOF/Kg.</p>',
         ),
       },
       url: new URL('https://osf.io/yv9az'),
@@ -485,7 +597,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '<p>Across the world, there is a growing interest in Open Access (OA) publishing. Therefore, OA publishing has become a trend and is of key importance to the scientific community. However, observing the publication landscape in Germany leads to a striking finding of very different approaches. In particular, OA book publishing is still in relatively early stages, leading to OA books being much less frequently published than OA journal articles. However, although well-established publishers offer the publication of OA books, only certain researchers can actually publish, because of high Book Processing Charges (BPCs). In contrast to such publishers, university presses publish books as OA without any or at significantly lower charges; however, university presses are often inadequately staffed and do not have the technical know-how of the state-of-the-art publishing of OA books possessed by well-established publishers.</p>\n                <p>For these reasons, our research project aims to develop an ideal and transferable publication workflow for OA books that is both cost-effective and personnel-efficient as well as media-neutral to enable universities to publish their publications as OA. To this end, a one-day meeting with stakeholders of the publication landscape was held in June 2018 at the University of Applied Science in Leipzig, Germany. During the meeting, the stakeholders were asked to present their views on the current situation and also the lessons learned and the shortcomings of the existing approaches.</p>\n                <p>As a result, the observation was confirmed that the publication landscape is very heterogeneous and that there are no standardised interfaces and no harmonised practices for publishing OA books. Furthermore, in a discussion with the stakeholders during the second part of the meeting, further various issues of OA book publishing were revealed that have to be considered. Additionally, the various challenges and wishes of the stakeholders could be classified into five topic areas.</p>\n                <p>These findings illustrate that the primary task of the research project has to be the analysis of the existing publishing workflows and abstracting generally valid processes that are needed to publish OA books. Additionally, the further issues of OA book publishing, mentioned by the stakeholders, have to be addressed during the development. The five topic areas will help reduce the complexity of this project.</p>',
+          '<p>Across the world, there is a growing interest in Open Access (OA) publishing. Therefore, OA publishing has become a trend and is of key importance to the scientific community. However, observing the publication landscape in Germany leads to a striking finding of very different approaches. In particular, OA book publishing is still in relatively early stages, leading to OA books being much less frequently published than OA journal articles. However, although well-established publishers offer the publication of OA books, only certain researchers can actually publish, because of high Book Processing Charges (BPCs). In contrast to such publishers, university presses publish books as OA without any or at significantly lower charges; however, university presses are often inadequately staffed and do not have the technical know-how of the state-of-the-art publishing of OA books possessed by well-established publishers.</p>\n\n<p>For these reasons, our research project aims to develop an ideal and transferable publication workflow for OA books that is both cost-effective and personnel-efficient as well as media-neutral to enable universities to publish their publications as OA. To this end, a one-day meeting with stakeholders of the publication landscape was held in June 2018 at the University of Applied Science in Leipzig, Germany. During the meeting, the stakeholders were asked to present their views on the current situation and also the lessons learned and the shortcomings of the existing approaches.</p>\n\n<p>As a result, the observation was confirmed that the publication landscape is very heterogeneous and that there are no standardised interfaces and no harmonised practices for publishing OA books. Furthermore, in a discussion with the stakeholders during the second part of the meeting, further various issues of OA book publishing were revealed that have to be considered. Additionally, the various challenges and wishes of the stakeholders could be classified into five topic areas.</p>\n\n<p>These findings illustrate that the primary task of the research project has to be the analysis of the existing publishing workflows and abstracting generally valid processes that are needed to publish OA books. Additionally, the further issues of OA book publishing, mentioned by the stakeholders, have to be addressed during the development. The five topic areas will help reduce the complexity of this project.</p>',
         ),
       },
       url: new URL('https://scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPX3EC5.v1'),
@@ -510,7 +622,7 @@ test.each([
       abstract: {
         language: 'de',
         text: rawHtml(
-          '<p>Einer ihrer Kerntätigkeiten nachkommend, erarbeiten Hochschuldozierende jedesSemester unter Einsatz personeller, zeitlicher und finanzieller Ressourcen eineVielzahl an Lehrkonzepten und Lehr-/Lernmaterialien. Lehrbezogenem Wissensmanagement, d. h. der systematischen, effizienten und nachhaltigen Nutzung von Wissen im Kontext Lehre, wird bis dato häufig wenig Bedeutung beigemessen. Das übergreifende Ziel bestand deshalb darin, ein theoriebasiertes und praktikables Reflexionsinstrument zu entwickeln, das es Dozierenden ermöglicht, ihr pädagogisches Arbeitshandeln respektive ihren Umgang mit lehrbezogenem Wissen aus einer wissensmanagementtheoretischen Perspektive in den Blick zu nehmen. In diesem Beitrag beschreiben wir die theoretische Fundierung, die Entwicklung, den Aufbau und wesentliche Einsatzmöglichkeiten des Instruments (LeWiMa). Es soll Dozierenden dabei helfen, ihr lehrbezogenes Wissensmanagement systematisch zu reflektieren, etwaige  Verbesserungspotenziale, Kompetenz- und Fortbildungsbedarfe zu erkennen und bedarfsorientierte Maßnahmen zu ergreifen, durch die sie ihre Lehre mittel- und langfristig effizienter, systematischer, offener und nachhaltiger gestalten können.</p>',
+          '<p>Einer ihrer Kerntätigkeiten nachkommend, erarbeiten Hochschuldozierende jedesSemester unter Einsatz personeller, zeitlicher und finanzieller Ressourcen eineVielzahl an Lehrkonzepten und Lehr-/Lernmaterialien. Lehrbezogenem Wissensmanagement, d. h. der systematischen, effizienten und nachhaltigen Nutzung von Wissen im Kontext Lehre, wird bis dato häufig wenig Bedeutung beigemessen. Das übergreifende Ziel bestand deshalb darin, ein theoriebasiertes und praktikables Reflexionsinstrument zu entwickeln, das es Dozierenden ermöglicht, ihr pädagogisches Arbeitshandeln respektive ihren Umgang mit lehrbezogenem Wissen aus einer wissensmanagementtheoretischen Perspektive in den Blick zu nehmen. In diesem Beitrag beschreiben wir die theoretische Fundierung, die Entwicklung, den Aufbau und wesentliche Einsatzmöglichkeiten des Instruments (LeWiMa). Es soll Dozierenden dabei helfen, ihr lehrbezogenes Wissensmanagement systematisch zu reflektieren, etwaige Verbesserungspotenziale, Kompetenz- und Fortbildungsbedarfe zu erkennen und bedarfsorientierte Maßnahmen zu ergreifen, durch die sie ihre Lehre mittel- und langfristig effizienter, systematischer, offener und nachhaltiger gestalten können.</p>',
         ),
       },
       url: new URL('https://osf.io/dqw5h'),
@@ -549,7 +661,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '<p>Some properties of the Dawson Integral are presented first in the\ncurrent work, followed by the introduction of the Dawson Integral\nTransform. Iteration identities and relationships, similar to the\nParseval Goldstein type, are established involving various well-known\nintegral transforms, such as the Laplace Transform, the L 2 -Transform,\nand the Dawson Integral for the new integral transform. Furthermore,\nimproper integrals of well-known functions, including the Dawson\nIntegral, Exponential Integral, and the Macdonald Function, are\nevaluated using the results obtained.</p>',
+          '<p>Some properties of the Dawson Integral are presented first in the current work, followed by the introduction of the Dawson Integral Transform. Iteration identities and relationships, similar to the Parseval Goldstein type, are established involving various well-known integral transforms, such as the Laplace Transform, the L 2 -Transform, and the Dawson Integral for the new integral transform. Furthermore, improper integrals of well-known functions, including the Dawson Integral, Exponential Integral, and the Macdonald Function, are evaluated using the results obtained.</p>',
         ),
       },
       authors: [
@@ -599,7 +711,7 @@ test.each([
       abstract: {
         language: 'en',
         text: rawHtml(
-          '<p>The ability to build upon existing knowledge is fundamental to the process of\n          science. Yet, despite the rapid advancement of science, the methods for citing and\n          referencing content have remained surprisingly static. Today, we’re on the brink of\n          transforming how we interact with scientific literature and educational content. The\n          Curvenote team has been working in the MyST Markdown ecosystem to simplify the ways to\n          reference and embed figures directly into publications. We are starting this process by\n          integrating a <a href="https://mystmd.org/guide/external-references#tbl-syntax-xref">simple\n            markdown syntax for hover-references</a>, which aims to not only streamline\n          referencing academic citations but also enhance the readability and interactive capacity\n          of scholarly articles. This blog post explores the importance of scientific reuse, as the\n          driving FAIR principle, and introduces new tools to reshape how knowledge is reused,\n          shared, and improved in the scientific community.</p>',
+          '<p>The ability to build upon existing knowledge is fundamental to the process of science. Yet, despite the rapid advancement of science, the methods for citing and referencing content have remained surprisingly static. Today, we’re on the brink of transforming how we interact with scientific literature and educational content. The Curvenote team has been working in the MyST Markdown ecosystem to simplify the ways to reference and embed figures directly into publications. We are starting this process by integrating a <a href="https://mystmd.org/guide/external-references#tbl-syntax-xref">simple markdown syntax for hover-references</a>, which aims to not only streamline referencing academic citations but also enhance the readability and interactive capacity of scholarly articles. This blog post explores the importance of scientific reuse, as the driving FAIR principle, and introduces new tools to reshape how knowledge is reused, shared, and improved in the scientific community.</p>',
         ),
       },
       authors: [{ name: 'Rowan Cockett', orcid: OrcidId('0000-0002-7859-8394') }],

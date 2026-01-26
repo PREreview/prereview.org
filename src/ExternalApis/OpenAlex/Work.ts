@@ -1,14 +1,9 @@
-import { Data, Option, Schema } from 'effect'
-import { Iso639 } from '../../types/index.ts'
+import { Data, Schema } from 'effect'
 
 export type Work = typeof WorkSchema.Type
 
 export const WorkSchema = Schema.Struct({
   title: Schema.String,
-  language: Schema.requiredToOptional(Schema.NullOr(Schema.String), Iso639.Iso6391Schema, {
-    decode: Option.fromNullable,
-    encode: Option.getOrNull,
-  }),
   keywords: Schema.Array(
     Schema.Struct({
       id: Schema.URL,

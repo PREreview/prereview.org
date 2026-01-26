@@ -59,7 +59,7 @@ export const RecordToDataset = (
       id: datasetId,
       posted,
       title: {
-        text: sanitizeHtml(record.titles[0].title),
+        text: sanitizeHtml(record.titles[0].title, { allowBlockLevel: false }),
         language: 'en',
       },
       url: record.url,

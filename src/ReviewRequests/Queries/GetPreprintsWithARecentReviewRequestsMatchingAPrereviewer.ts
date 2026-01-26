@@ -24,7 +24,12 @@ export const createFilter = ({ prereviewerId }: Input) =>
       predicates: { prereviewerId },
     },
     {
-      types: ['ReviewRequestForAPreprintWasAccepted', 'ReviewRequestForAPreprintWasCategorized'],
+      types: [
+        'ReviewRequestForAPreprintWasReceived',
+        'ReviewRequestForAPreprintWasAccepted',
+        'ReviewRequestFromAPreprintServerWasImported',
+        'ReviewRequestForAPreprintWasCategorized',
+      ],
     },
   ])
 
@@ -50,16 +55,42 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
     (map, event) =>
       Match.valueTags(event, {
         PrereviewerSubscribedToAKeyword: () => map,
+        ReviewRequestForAPreprintWasReceived: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({
+              ...review,
+              preprintId: event.preprintId,
+            })),
+            () =>
+              Record.set(map, event.reviewRequestId, {
+                published: undefined,
+                keywords: [],
+                preprintId: event.preprintId,
+              }),
+          ),
         ReviewRequestForAPreprintWasAccepted: event =>
           Option.getOrElse(
             Record.modifyOption(map, event.reviewRequestId, review => ({
               ...review,
               published: event.acceptedAt,
-              preprintId: event.preprintId,
             })),
             () =>
               Record.set(map, event.reviewRequestId, {
                 published: event.acceptedAt,
+                keywords: [],
+                preprintId: undefined,
+              }),
+          ),
+        ReviewRequestFromAPreprintServerWasImported: event =>
+          Option.getOrElse(
+            Record.modifyOption(map, event.reviewRequestId, review => ({
+              ...review,
+              preprintId: event.preprintId,
+              published: event.publishedAt,
+            })),
+            () =>
+              Record.set(map, event.reviewRequestId, {
+                published: event.publishedAt,
                 keywords: [],
                 preprintId: event.preprintId,
               }),

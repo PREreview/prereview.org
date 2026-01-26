@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option, Struct } from 'effect'
 import { CommunitySlack } from '../../ExternalInteractions/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -12,7 +12,10 @@ export const NotifyCommunitySlack = Effect.fn(
 
     const preprint = yield* Preprints.getPreprint(reviewRequest.preprintId)
 
-    const message = yield* CommunitySlack.sharePreprintReviewRequest({ author: reviewRequest.author.name, preprint })
+    const message = yield* CommunitySlack.sharePreprintReviewRequest({
+      author: Option.map(reviewRequest.author, Struct.get('name')),
+      preprint,
+    })
 
     yield* Commands.recordReviewRequestSharedOnTheCommunitySlack({
       channelId: message.channelId,

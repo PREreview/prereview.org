@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/SearchForPublishedReviewRequests.ts'
@@ -28,18 +28,26 @@ const preprintId3 = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('1
 
 const now = Temporal.Now.instant()
 
+const request1Received1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester1),
+  reviewRequestId: request1Id,
+})
+const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId2,
+  requester: Option.some(requester2),
+  reviewRequestId: request1Id,
+})
 const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 1 }),
-  receivedAt: now.subtract({ hours: 2 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request1Id,
 })
 const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 10 }),
-  receivedAt: now.subtract({ minutes: 20 }),
-  preprintId: preprintId2,
-  requester: requester2,
   reviewRequestId: request1Id,
 })
 const request1Categorized1 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -54,11 +62,15 @@ const request1Categorized2 = new ReviewRequests.ReviewRequestForAPreprintWasCate
   topics: ['13499'],
   reviewRequestId: request1Id,
 })
+const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 72 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester3),
+  reviewRequestId: request2Id,
+})
 const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 1 }),
-  receivedAt: now.subtract({ hours: 72 }),
-  preprintId: preprintId1,
-  requester: requester3,
   reviewRequestId: request2Id,
 })
 const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -67,11 +79,15 @@ const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: ['14362'],
   reviewRequestId: request2Id,
 })
+const request3Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId3,
+  requester: Option.some(requester4),
+  reviewRequestId: request3Id,
+})
 const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 3 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId3,
-  requester: requester4,
   reviewRequestId: request3Id,
 })
 const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -80,11 +96,15 @@ const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request3Id,
 })
+const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester1),
+  reviewRequestId: request4Id,
+})
 const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 4 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request4Id,
 })
 const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -93,11 +113,15 @@ const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request4Id,
 })
+const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester1),
+  reviewRequestId: request5Id,
+})
 const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 5 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester1,
   reviewRequestId: request5Id,
 })
 const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -106,11 +130,15 @@ const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request5Id,
 })
+const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId2,
+  requester: Option.some(requester2),
+  reviewRequestId: request6Id,
+})
 const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 6 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId2,
-  requester: requester2,
   reviewRequestId: request6Id,
 })
 const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -119,11 +147,15 @@ const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request6Id,
 })
+const request7Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId3,
+  requester: Option.some(requester3),
+  reviewRequestId: request7Id,
+})
 const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 7 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId3,
-  requester: requester3,
   reviewRequestId: request7Id,
 })
 const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -132,11 +164,15 @@ const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request7Id,
 })
+const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: now.subtract({ hours: 200 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId: preprintId1,
+  requester: Option.some(requester4),
+  reviewRequestId: request8Id,
+})
 const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 8 }),
-  receivedAt: now.subtract({ hours: 200 }),
-  preprintId: preprintId1,
-  requester: requester4,
   reviewRequestId: request8Id,
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -145,11 +181,11 @@ const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request8Id,
 })
-const request9Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 9 }),
-  receivedAt: now.subtract({ hours: 200 }),
+const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: now.subtract({ hours: 9 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
-  requester: requester1,
+  requester: Option.some(requester1),
   reviewRequestId: request9Id,
 })
 const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -162,15 +198,21 @@ const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   ['no events', { page: 1 }, [], Either.left(new ReviewRequests.NoReviewRequestsFound({}))],
   [
-    'no accepted events',
+    'no received events',
     { page: 1 },
-    [request1Categorized1],
+    [request1Accepted1, request1Categorized1],
     Either.left(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
-    'only accepted events',
+    'no accepted events',
     { page: 1 },
-    [request1Accepted1, request1Accepted2],
+    [request1Received1, request1Categorized1],
+    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
+  ],
+  [
+    'only recieved and accepted events',
+    { page: 1 },
+    [request1Received1, request1Received2, request1Accepted1, request1Accepted2],
     Either.right({
       currentPage: 1,
       totalPages: 1,
@@ -181,7 +223,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           id: request1Id,
           published: request1Accepted2.acceptedAt,
           topics: [],
-          preprintId: request1Accepted2.preprintId,
+          preprintId: request1Received2.preprintId,
         },
       ],
     }),
@@ -189,32 +231,41 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
   [
     'impossible page',
     { page: 0 },
-    [request1Accepted1, request1Categorized1, request2Accepted],
+    [request1Received1, request1Accepted1, request1Categorized1, request2Accepted],
     Either.left(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'more results',
     { page: 1 },
     [
+      request1Received1,
       request1Accepted1,
       request1Categorized1,
       request1Categorized2,
+      request1Received2,
       request1Accepted2,
+      request2Received,
       request2Accepted,
       request2Categorized,
+      request3Received,
       request3Accepted,
       request3Categorized,
+      request4Received,
       request4Accepted,
       request4Categorized,
+      request5Received,
       request5Accepted,
       request5Categorized,
+      request6Received,
       request6Accepted,
       request6Categorized,
+      request7Received,
       request7Accepted,
       request7Categorized,
+      request8Received,
       request8Accepted,
       request8Categorized,
-      request9Accepted,
+      request9Imported,
       request9Categorized,
     ],
     Either.right({
@@ -227,31 +278,31 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           id: request2Id,
           published: request2Accepted.acceptedAt,
           topics: request2Categorized.topics,
-          preprintId: request2Accepted.preprintId,
+          preprintId: request2Received.preprintId,
         },
         {
           id: request1Id,
           published: request1Accepted2.acceptedAt,
           topics: request1Categorized2.topics,
-          preprintId: request1Accepted2.preprintId,
+          preprintId: request1Received2.preprintId,
         },
         {
           id: request3Id,
           published: request3Accepted.acceptedAt,
           topics: request3Categorized.topics,
-          preprintId: request3Accepted.preprintId,
+          preprintId: request3Received.preprintId,
         },
         {
           id: request4Id,
           published: request4Accepted.acceptedAt,
           topics: request4Categorized.topics,
-          preprintId: request4Accepted.preprintId,
+          preprintId: request4Received.preprintId,
         },
         {
           id: request5Id,
           published: request5Accepted.acceptedAt,
           topics: request5Categorized.topics,
-          preprintId: request5Accepted.preprintId,
+          preprintId: request5Received.preprintId,
         },
       ],
     }),
@@ -260,23 +311,31 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'second page',
     { page: 2 },
     [
+      request1Received1,
       request1Accepted1,
       request1Categorized1,
+      request2Received,
       request2Accepted,
       request2Categorized,
+      request3Received,
       request3Accepted,
       request3Categorized,
+      request4Received,
       request4Accepted,
       request4Categorized,
+      request5Received,
       request5Accepted,
       request5Categorized,
+      request6Received,
       request6Accepted,
       request6Categorized,
+      request7Received,
       request7Accepted,
       request7Categorized,
+      request8Received,
       request8Accepted,
       request8Categorized,
-      request9Accepted,
+      request9Imported,
       request9Categorized,
     ],
     Either.right({
@@ -289,25 +348,25 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           id: request6Id,
           published: request6Accepted.acceptedAt,
           topics: request6Categorized.topics,
-          preprintId: request6Accepted.preprintId,
+          preprintId: request6Received.preprintId,
         },
         {
           id: request7Id,
           published: request7Accepted.acceptedAt,
           topics: request7Categorized.topics,
-          preprintId: request7Accepted.preprintId,
+          preprintId: request7Received.preprintId,
         },
         {
           id: request8Id,
           published: request8Accepted.acceptedAt,
           topics: request8Categorized.topics,
-          preprintId: request8Accepted.preprintId,
+          preprintId: request8Received.preprintId,
         },
         {
           id: request9Id,
-          published: request9Accepted.acceptedAt,
+          published: request9Imported.publishedAt,
           topics: request9Categorized.topics,
-          preprintId: request9Accepted.preprintId,
+          preprintId: request9Imported.preprintId,
         },
       ],
     }),
@@ -315,13 +374,29 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
   [
     'no matches on language',
     { page: 1, language: 'es' as const },
-    [request1Accepted1, request1Categorized1, request1Categorized2, request2Accepted],
+    [
+      request1Received1,
+      request1Accepted1,
+      request1Categorized1,
+      request1Categorized2,
+      request2Received,
+      request2Accepted,
+    ],
     Either.left(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'matches on language',
     { page: 1, language: 'pt' as const },
-    [request1Accepted1, request1Categorized1, request1Categorized2, request1Accepted2, request2Accepted],
+    [
+      request1Received1,
+      request1Accepted1,
+      request1Categorized1,
+      request1Categorized2,
+      request1Received2,
+      request1Accepted2,
+      request2Received,
+      request2Accepted,
+    ],
     Either.right({
       currentPage: 1,
       totalPages: 1,
@@ -332,7 +407,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           id: request1Id,
           published: request1Accepted2.acceptedAt,
           topics: request1Categorized2.topics,
-          preprintId: request1Accepted2.preprintId,
+          preprintId: request1Received2.preprintId,
         },
       ],
     }),
@@ -340,7 +415,16 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
   [
     'matches on field',
     { page: 1, field: '20' },
-    [request1Accepted1, request1Categorized1, request1Categorized2, request1Accepted2, request2Accepted],
+    [
+      request1Received1,
+      request1Accepted1,
+      request1Categorized1,
+      request1Categorized2,
+      request1Received2,
+      request1Accepted2,
+      request2Received,
+      request2Accepted,
+    ],
     Either.right({
       currentPage: 1,
       totalPages: 1,
@@ -351,7 +435,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           id: request1Id,
           published: request1Accepted2.acceptedAt,
           topics: request1Categorized2.topics,
-          preprintId: request1Accepted2.preprintId,
+          preprintId: request1Received2.preprintId,
         },
       ],
     }),

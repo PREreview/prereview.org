@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Predicate, Tuple } from 'effect'
+import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -12,25 +12,58 @@ import * as fc from '../../fc.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasAccepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
-  receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
-  preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') },
   reviewRequestId,
 })
 const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-  receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  reviewRequestId: otherReviewRequestId,
+})
+const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: { name: NonEmptyString.NonEmptyString('Josiah Carberry') },
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
@@ -44,15 +77,47 @@ describe('query', () => {
   test.prop(
     [
       fc.array(
-        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'))),
+        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasReceived'))),
       ),
       fc.uuid(),
     ],
     {
       examples: [
         [[], reviewRequestId], // no events
-        [[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId], // with events
-        [[otherReviewRequestForAPreprintWasAccepted], reviewRequestId], // with events for other dataset review
+        [
+          [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+          reviewRequestId,
+        ], // with events
+        [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
+      ],
+    },
+  )('not received', (events, reviewRequestId) => {
+    const actual = _.query(events, { reviewRequestId })
+
+    expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+  })
+
+  test.prop(
+    [
+      fc.array(
+        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'))),
+      ),
+      fc.uuid(),
+    ],
+    {
+      examples: [
+        [
+          [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+          reviewRequestId,
+        ], // with events
+        [
+          [
+            otherReviewRequestForAPreprintWasReceived,
+            otherReviewRequestForAPreprintWasAccepted,
+            otherReviewRequestForAPreprintWasImported,
+          ],
+          reviewRequestId,
+        ], // with events for other dataset review
       ],
     },
   )('not accepted', (events, reviewRequestId) => {
@@ -64,24 +129,60 @@ describe('query', () => {
   test.prop(
     [
       fc
-        .reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) })
-        .map(accepted => Tuple.make(Array.make(accepted), accepted.reviewRequestId, accepted)),
+        .tuple(
+          fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
+          fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
+        )
+        .map(([received, accepted]) =>
+          Tuple.make(
+            Array.make(received, accepted as ReviewRequests.ReviewRequestEvent),
+            reviewRequestId,
+            Tuple.make(received, accepted),
+          ),
+        ),
     ],
     {
       examples: [
-        [[[reviewRequestForAPreprintWasAccepted1], reviewRequestId, reviewRequestForAPreprintWasAccepted1]], // accepted
         [
           [
-            [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasAccepted2],
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
             reviewRequestId,
-            reviewRequestForAPreprintWasAccepted2,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
+          ],
+        ], // accepted
+        [
+          [
+            [
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted1,
+              reviewRequestForAPreprintWasImported1,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+            reviewRequestId,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
+          ],
+        ], // withOtherEvents
+        [
+          [
+            [
+              reviewRequestForAPreprintWasAccepted1,
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted2,
+              reviewRequestForAPreprintWasReceived2,
+            ],
+            reviewRequestId,
+            [reviewRequestForAPreprintWasReceived2, reviewRequestForAPreprintWasAccepted2],
           ],
         ], // multiple times
         [
           [
-            [reviewRequestForAPreprintWasAccepted1, otherReviewRequestForAPreprintWasAccepted],
+            [
+              reviewRequestForAPreprintWasReceived1,
+              reviewRequestForAPreprintWasAccepted1,
+              otherReviewRequestForAPreprintWasAccepted,
+            ],
             reviewRequestId,
-            reviewRequestForAPreprintWasAccepted1,
+            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
           ],
         ], // other requests
       ],
@@ -91,10 +192,48 @@ describe('query', () => {
 
     expect(actual).toStrictEqual(
       Either.right({
+        author: expected[0].requester,
+        preprintId: expected[0].preprintId,
+        id: expected[0].reviewRequestId,
+        published: expected[1].acceptedAt,
+      }),
+    )
+  })
+
+  test.prop(
+    [
+      fc
+        .reviewRequestFromAPreprintServerWasImported()
+        .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
+    ],
+    {
+      examples: [
+        [[[reviewRequestForAPreprintWasImported1], reviewRequestId, reviewRequestForAPreprintWasImported1]], // imported
+        [
+          [
+            [reviewRequestForAPreprintWasImported1, reviewRequestForAPreprintWasImported2],
+            reviewRequestId,
+            reviewRequestForAPreprintWasImported2,
+          ],
+        ], // multiple times
+        [
+          [
+            [reviewRequestForAPreprintWasImported1, otherReviewRequestForAPreprintWasImported],
+            reviewRequestId,
+            reviewRequestForAPreprintWasImported1,
+          ],
+        ], // other requests
+      ],
+    },
+  )('has been imported', ([events, reviewRequestId, expected]) => {
+    const actual = _.query(events, { reviewRequestId })
+
+    expect(actual).toStrictEqual(
+      Either.right({
         author: expected.requester,
         preprintId: expected.preprintId,
         id: expected.reviewRequestId,
-        published: expected.acceptedAt,
+        published: expected.publishedAt,
       }),
     )
   })

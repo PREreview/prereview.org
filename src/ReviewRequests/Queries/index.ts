@@ -2,9 +2,11 @@ import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from '
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
+import * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
+import * as GetReceivedReviewRequest from './GetReceivedReviewRequest.ts'
 import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -14,6 +16,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       (input: DoesAPreprintHaveAReviewRequest.Input) => DoesAPreprintHaveAReviewRequest.Result
     >
     getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
+    getReceivedReviewRequest: Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Query<
       (
@@ -23,6 +26,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     searchForPublishedReviewRequests: Query<
       (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
     >
+    findReviewRequestsNeedingCategorization: SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
 >() {}
 
@@ -39,14 +43,17 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 export const {
   doesAPreprintHaveAReviewRequest,
   getFiveMostRecentReviewRequests,
+  getReceivedReviewRequest,
   getPublishedReviewRequest,
   getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
+  findReviewRequestsNeedingCategorization,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
 export type { RecentReviewRequestMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 export type { PublishedReviewRequest } from './GetPublishedReviewRequest.ts'
+export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
 const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
   Effect.gen(function* () {
@@ -100,6 +107,7 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
         GetFiveMostRecentReviewRequests.filter,
         GetFiveMostRecentReviewRequests.query,
       ),
+      getReceivedReviewRequest: handleQuery(GetReceivedReviewRequest.createFilter, GetReceivedReviewRequest.query),
       getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
       getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
         GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
@@ -108,6 +116,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
       searchForPublishedReviewRequests: handleQuery(
         SearchForPublishedReviewRequests.createFilter,
         SearchForPublishedReviewRequests.query,
+      ),
+      findReviewRequestsNeedingCategorization: handleSimpleQuery(
+        FindReviewRequestsNeedingCategorization.filter,
+        FindReviewRequestsNeedingCategorization.query,
       ),
     }
   })

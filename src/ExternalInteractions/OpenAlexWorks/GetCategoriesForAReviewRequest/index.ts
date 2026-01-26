@@ -1,6 +1,4 @@
 import { Array, Data, Effect, Match, Option, pipe, Schema } from 'effect'
-import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage } from '../../../detect-language.ts'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/Keyword.ts'
@@ -8,7 +6,6 @@ import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic
 
 export interface CategoriesForAReviewRequest {
   readonly title: string
-  readonly language: Option.Option<LanguageCode>
   readonly topics: ReadonlyArray<TopicId>
   readonly keywords: ReadonlyArray<{
     id: KeywordId
@@ -29,7 +26,6 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
       work =>
         ({
           title: work.title,
-          language: Option.orElse(Option.fromNullable(work.language), () => detectLanguage(work.title)),
           topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
           keywords: Array.filterMap(work.keywords, ({ id, score }) =>
             pipe(
