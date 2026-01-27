@@ -3,6 +3,7 @@ primary_region = "iad"
 
 [[vm]]
 size = "shared-cpu-2x"
+memory = "1gb"
 
 [deploy]
 strategy = "bluegreen"
