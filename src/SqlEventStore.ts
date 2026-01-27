@@ -107,9 +107,10 @@ export const make: Effect.Effect<
     ),
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     Effect.provide(context),
+    Effect.withSpan('SqlEventStore.all'),
   )
 
-  const query: EventStore.EventStore['query'] = Effect.fn(function* (filter) {
+  const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
     return yield* Array.match(rows, {
@@ -122,7 +123,7 @@ export const make: Effect.Effect<
     })
   }, Effect.provide(context))
 
-  const append: EventStore.EventStore['append'] = Effect.fn(
+  const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
     function* (event, appendCondition) {
       const id = yield* generateUuid
       const timestamp = yield* DateTime.now
