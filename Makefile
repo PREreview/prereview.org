@@ -31,6 +31,7 @@ start-app: .env node_modules start-services src/manifest.json
 	REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) \
+	ENABLE_OPENTELEMETRY=true \
   node --watch --watch-preserve-output --env-file=.env src/index.ts
 
 start:
@@ -44,7 +45,7 @@ prod: .env
 	source .env && mkcert -install -cert-file .dev/server.crt -key-file .dev/server.key $$(echo $${PUBLIC_URL} | awk -F[/:] '{print $$4}')
 
 start-services: .dev/server.crt .dev/server.key
-	docker compose up --detach mailcatcher nginx postgres redis
+	docker compose up --detach mailcatcher nginx opentelemetry postgres redis
 
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
