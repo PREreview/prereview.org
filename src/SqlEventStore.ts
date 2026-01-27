@@ -79,7 +79,7 @@ export const make: Effect.Effect<
             EventsTable(
               Events.Event.pipe(Schema.filter(hasTag(...Array.flatMap(Array.ensure(filter), Struct.get('types'))))),
             ),
-          ).annotations({ concurrency: 'inherit' }),
+          ).annotations({ batching: true, concurrency: 'inherit' }),
         ),
       ),
       Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
@@ -99,7 +99,9 @@ export const make: Effect.Effect<
         timestamp ASC
     `,
     Effect.andThen(
-      Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event)).annotations({ concurrency: 'inherit' })),
+      Schema.decodeUnknown(
+        Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+      ),
     ),
     Effect.andThen(Array.map(Struct.get('event'))),
     Effect.tapError(error =>

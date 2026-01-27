@@ -1,4 +1,4 @@
-import { Context, Data, Effect, type Option } from 'effect'
+import { type Array, Context, Data, Effect, type Option, type Record } from 'effect'
 import type { Uuid } from './types/index.ts'
 
 export const SensitiveDataStore = Context.GenericTag<SensitiveDataStore>('SensitiveDataStore')
@@ -10,7 +10,11 @@ export class FailedToAddSensitiveData extends Data.TaggedError('FailedToAddSensi
 export interface SensitiveDataStore {
   readonly get: (id: Uuid.Uuid) => Effect.Effect<Option.Option<string>, FailedToGetSensitiveData>
 
+  readonly getMany: (
+    ids: Array.NonEmptyReadonlyArray<Uuid.Uuid>,
+  ) => Effect.Effect<Record<Uuid.Uuid, string>, FailedToGetSensitiveData>
+
   readonly add: (value: string) => Effect.Effect<Uuid.Uuid, FailedToAddSensitiveData>
 }
 
-export const { get, add } = Effect.serviceFunctions(SensitiveDataStore)
+export const { add, get, getMany } = Effect.serviceFunctions(SensitiveDataStore)
