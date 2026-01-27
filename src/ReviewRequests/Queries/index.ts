@@ -60,6 +60,7 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
+      name: string,
       createFilter: (input: Input) => Events.EventFilter<Event>,
       query: (
         events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
@@ -75,13 +76,17 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
             Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
           )
 
-          return yield* query(events, input)
+          return yield* pipe(
+            Effect.suspend(() => query(events, input)),
+            Effect.withSpan(name),
+          )
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
       )
 
     const handleSimpleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Result>(
+      name: string,
       filter: Events.EventFilter<Event>,
       query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,
     ): (() => Effect.Effect<Result, UnableToQuery>) =>
@@ -92,7 +97,10 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
             Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
           )
 
-          return query(events)
+          return yield* pipe(
+            Effect.sync(() => query(events)),
+            Effect.withSpan(name),
+          )
         },
         Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
         Effect.provide(context),
@@ -100,24 +108,37 @@ const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Servic
 
     return {
       doesAPreprintHaveAReviewRequest: handleQuery(
+        'DoesAPreprintHaveAReviewRequest',
         DoesAPreprintHaveAReviewRequest.createFilter,
         flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
       ),
       getFiveMostRecentReviewRequests: handleSimpleQuery(
+        'GetFiveMostRecentReviewRequests',
         GetFiveMostRecentReviewRequests.filter,
         GetFiveMostRecentReviewRequests.query,
       ),
-      getReceivedReviewRequest: handleQuery(GetReceivedReviewRequest.createFilter, GetReceivedReviewRequest.query),
-      getPublishedReviewRequest: handleQuery(GetPublishedReviewRequest.createFilter, GetPublishedReviewRequest.query),
+      getReceivedReviewRequest: handleQuery(
+        'GetReceivedReviewRequest',
+        GetReceivedReviewRequest.createFilter,
+        GetReceivedReviewRequest.query,
+      ),
+      getPublishedReviewRequest: handleQuery(
+        'GetPublishedReviewRequest',
+        GetPublishedReviewRequest.createFilter,
+        GetPublishedReviewRequest.query,
+      ),
       getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
+        'GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
         GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
         flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
       ),
       searchForPublishedReviewRequests: handleQuery(
+        'SearchForPublishedReviewRequests',
         SearchForPublishedReviewRequests.createFilter,
         SearchForPublishedReviewRequests.query,
       ),
       findReviewRequestsNeedingCategorization: handleSimpleQuery(
+        'FindReviewRequestsNeedingCategorization',
         FindReviewRequestsNeedingCategorization.filter,
         FindReviewRequestsNeedingCategorization.query,
       ),
