@@ -84,7 +84,10 @@ const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview[
     }
   }
 
-  const orcidId = yield* Record.get(pseudonyms as Record<string, string>, orcidIdOrPseudonym as never)
+  const orcidId = yield* Effect.mapError(
+    Record.get(pseudonyms as Record<string, string>, orcidIdOrPseudonym as never),
+    () => `unknown pseudonym ${orcidIdOrPseudonym}`,
+  )
 
   return {
     persona: 'pseudonym' as const,
