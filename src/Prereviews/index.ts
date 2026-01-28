@@ -124,10 +124,13 @@ export const layer = Layer.effect(
           ),
           Effect.orElseSucceed(Array.empty),
           Effect.provide(context),
+          Effect.withSpan('Prereviews.getFiveMostRecent'),
         )
       }),
-      getForClub: Effect.fn(
+      getForClub: Effect.fn('Prereviews.getForClub')(
         function* (id) {
+          yield* Effect.annotateCurrentSpan({ id })
+
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(id), {
@@ -140,8 +143,10 @@ export const layer = Layer.effect(
         },
         Effect.mapError(() => new PrereviewsAreUnavailable()),
       ),
-      getForPreprint: Effect.fn(
+      getForPreprint: Effect.fn('Prereviews.getForPreprint')(
         function* (id) {
+          yield* Effect.annotateCurrentSpan({ id })
+
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
@@ -153,8 +158,10 @@ export const layer = Layer.effect(
         },
         Effect.mapError(() => new PrereviewsAreUnavailable()),
       ),
-      getForProfile: Effect.fn(
+      getForProfile: Effect.fn('Prereviews.getForProfile')(
         function* (profile) {
+          yield* Effect.annotateCurrentSpan({ profile })
+
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
@@ -180,8 +187,10 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getForUser: Effect.fn(
+      getForUser: Effect.fn('Prereviews.getForUser')(
         function* (user) {
+          yield* Effect.annotateCurrentSpan({ user })
+
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForUserFromZenodo(user), {
@@ -230,8 +239,11 @@ export const layer = Layer.effect(
               Match.exhaustive,
             ),
           ),
+          Effect.withSpan('Prereviews.getRapidPrereviewsForPreprint', { attributes: { id } }),
         ),
-      getPrereview: Effect.fn(function* (id) {
+      getPrereview: Effect.fn('Prereviews.getPrereview')(function* (id) {
+        yield* Effect.annotateCurrentSpan({ id })
+
         const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
         return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
@@ -243,8 +255,10 @@ export const layer = Layer.effect(
           ...loggerEnv,
         })
       }),
-      search: Effect.fn(
+      search: Effect.fn('Prereviews.search')(
         function* (args) {
+          yield* Effect.annotateCurrentSpan({ args })
+
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
           return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
