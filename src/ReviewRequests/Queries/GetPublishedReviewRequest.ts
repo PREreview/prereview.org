@@ -1,17 +1,26 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, pipe } from 'effect'
+import { Array, Data, Either, Option, pipe } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
-export interface PublishedReviewRequest {
+export type PublishedReviewRequest = PublishedPrereviewerReviewRequest | PublishedReceivedReviewRequest
+
+export class PublishedPrereviewerReviewRequest extends Data.TaggedClass('PublishedPrereviewerReviewRequest')<{
+  author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
+  preprintId: Preprints.IndeterminatePreprintId
+  id: Uuid.Uuid
+  published: Temporal.Instant
+}> {}
+
+export class PublishedReceivedReviewRequest extends Data.TaggedClass('PublishedReceivedReviewRequest')<{
   author: Option.Option<{ name: NonEmptyString.NonEmptyString }>
   preprintId: Preprints.IndeterminatePreprintId
   id: Uuid.Uuid
   published: Temporal.Instant
-}
+}> {}
 
 export interface Input {
   reviewRequestId: Uuid.Uuid
@@ -43,22 +52,27 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
         Either.fromOption(
           pipe(
             Array.findLast(filteredEvents, hasTag('ReviewRequestFromAPreprintServerWasImported')),
-            Option.andThen(imported => ({
-              author: imported.requester,
-              preprintId: imported.preprintId,
-              id: imported.reviewRequestId,
-              published: imported.publishedAt,
-            })),
+            Option.andThen(
+              imported =>
+                new PublishedReceivedReviewRequest({
+                  author: imported.requester,
+                  preprintId: imported.preprintId,
+                  id: imported.reviewRequestId,
+                  published: imported.publishedAt,
+                }),
+            ),
           ),
           () => new Errors.UnknownReviewRequest({}),
         ),
       onSome: ([received, accepted]) =>
-        Either.right({
-          author: received.requester,
-          preprintId: received.preprintId,
-          id: received.reviewRequestId,
-          published: accepted.acceptedAt,
-        }),
+        Either.right(
+          new PublishedReceivedReviewRequest({
+            author: received.requester,
+            preprintId: received.preprintId,
+            id: received.reviewRequestId,
+            published: accepted.acceptedAt,
+          }),
+        ),
     })
   })
 

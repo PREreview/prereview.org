@@ -191,12 +191,14 @@ describe('query', () => {
     const actual = _.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(
-      Either.right({
-        author: expected[0].requester,
-        preprintId: expected[0].preprintId,
-        id: expected[0].reviewRequestId,
-        published: expected[1].acceptedAt,
-      }),
+      Either.right(
+        new _.PublishedReceivedReviewRequest({
+          author: expected[0].requester,
+          preprintId: expected[0].preprintId,
+          id: expected[0].reviewRequestId,
+          published: expected[1].acceptedAt,
+        }),
+      ),
     )
   })
 
@@ -229,12 +231,14 @@ describe('query', () => {
     const actual = _.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(
-      Either.right({
-        author: expected.requester,
-        preprintId: expected.preprintId,
-        id: expected.reviewRequestId,
-        published: expected.publishedAt,
-      }),
+      Either.right(
+        new _.PublishedReceivedReviewRequest({
+          author: expected.requester,
+          preprintId: expected.preprintId,
+          id: expected.reviewRequestId,
+          published: expected.publishedAt,
+        }),
+      ),
     )
   })
 })

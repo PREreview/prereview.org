@@ -114,7 +114,7 @@ import type {
   ReviewRequest,
   ReviewRequestPreprintId,
 } from '../src/review-request.ts'
-import type * as ReviewRequests from '../src/ReviewRequests/index.ts'
+import * as ReviewRequests from '../src/ReviewRequests/index.js'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
@@ -1868,13 +1868,33 @@ export const datasetReviewDataForZenodoRecord = ({
     answerToIfTheDatasetIsMissingAnything: answeredIfTheDatasetIsMissingAnything().map(Struct.get('answer')),
   })
 
+export const publishedPrereviewerReviewRequest = ({
+  persona,
+}: {
+  persona?: fc.Arbitrary<'public' | 'pseudonym'>
+} = {}): fc.Arbitrary<ReviewRequests.PublishedPrereviewerReviewRequest> =>
+  fc
+    .record({
+      author: fc.record({ orcidId: orcidId(), persona: persona ?? constantFrom('public', 'pseudonym') }),
+      preprintId: indeterminatePreprintId(),
+      id: uuid(),
+      published: instant(),
+    })
+    .map(args => new ReviewRequests.PublishedPrereviewerReviewRequest(args))
+
+export const publishedReceivedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedReceivedReviewRequest> =>
+  fc
+    .record({
+      _tag: constant('PublishedReceivedReviewRequest'),
+      author: maybe(fc.record({ name: nonEmptyString() })),
+      preprintId: indeterminatePreprintId(),
+      id: uuid(),
+      published: instant(),
+    })
+    .map(args => new ReviewRequests.PublishedReceivedReviewRequest(args))
+
 export const publishedReviewRequest = (): fc.Arbitrary<ReviewRequests.PublishedReviewRequest> =>
-  fc.record({
-    author: maybe(fc.record({ name: nonEmptyString() })),
-    preprintId: indeterminatePreprintId(),
-    id: uuid(),
-    published: instant(),
-  })
+  fc.oneof(publishedPrereviewerReviewRequest(), publishedReceivedReviewRequest())
 
 export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedReviewRequest> =>
   fc.record({
