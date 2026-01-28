@@ -119,7 +119,7 @@
     "prettier-plugin-sql": "^0.19.2",
     "prettier-plugin-toml": "^2.0.6",
     "purgecss-webpack-plugin": "^8.0.0",
-    "remixicon": "^4.8.0",
+    "remixicon": "^4.9.0",
     "stylelint": "^16.26.1",
     "stylelint-config-property-sort-order-smacss": "^10.0.0",
     "stylelint-config-standard": "^39.0.1",
