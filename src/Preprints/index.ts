@@ -1,4 +1,4 @@
-import { Array, Context, Effect, flow, Layer, Match, pipe, Scope, Struct } from 'effect'
+import { Array, Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
 import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../ExternalApis/index.ts'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.ts'
 import { getPreprintFromDatacite, isDatacitePreprintId } from './Datacite/index.ts'
@@ -46,36 +46,38 @@ export const layer = Layer.effect(
     )
 
     return {
-      getPreprint: flow(
-        getPreprintFromSource,
-        Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
-        Effect.provide(context),
-      ),
-      getPreprintTitle: flow(
-        getPreprintFromSource,
-        Effect.map(preprint => ({
-          id: preprint.id,
-          language: preprint.title.language,
-          title: preprint.title.text,
-        })),
-        Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
-        Effect.provide(context),
-      ),
+      getPreprint: id =>
+        pipe(
+          getPreprintFromSource(id),
+          Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
+          Effect.provide(context),
+          Effect.withSpan('Preprints.getPreprint', { attributes: { id } }),
+        ),
+      getPreprintTitle: id =>
+        pipe(
+          getPreprintFromSource(id),
+          Effect.map(preprint => ({
+            id: preprint.id,
+            language: preprint.title.language,
+            title: preprint.title.text,
+          })),
+          Effect.catchTag('NotAPreprint', error => new Preprint.PreprintIsNotFound({ cause: error })),
+          Effect.provide(context),
+          Effect.withSpan('Preprints.getPreprintTitle', { attributes: { id } }),
+        ),
       resolvePreprintId: (...ids: Array.NonEmptyReadonlyArray<IndeterminatePreprintId>) =>
         pipe(
           Array.map(ids, getPreprintFromSource),
           Effect.raceAll,
           Effect.map(Struct.get('id')),
           Effect.provide(context),
+          Effect.withSpan('Preprints.resolvePreprintId', { attributes: { ids } }),
         ),
       getPreprintId: pipe(
         Match.type<IndeterminatePreprintId>(),
-        Match.tag(
-          'BiorxivOrMedrxivPreprintId',
-          'OsfOrLifecycleJournalPreprintId',
-          'ZenodoOrAfricarxivPreprintId',
-          flow(
-            getPreprintFromSource,
+        Match.tag('BiorxivOrMedrxivPreprintId', 'OsfOrLifecycleJournalPreprintId', 'ZenodoOrAfricarxivPreprintId', id =>
+          pipe(
+            getPreprintFromSource(id),
             Effect.map(Struct.get('id')),
             Effect.catchTag(
               'NotAPreprint',
@@ -83,6 +85,7 @@ export const layer = Layer.effect(
               error => new Preprint.PreprintIsUnavailable({ cause: error }),
             ),
             Effect.provide(context),
+            Effect.withSpan('Preprints.getPreprintId', { attributes: { id } }),
           ),
         ),
         Match.orElse(id => Effect.succeed(id)),
