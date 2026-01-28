@@ -5,7 +5,7 @@ import { Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/SearchForPublishedReviewRequests.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
 const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }
@@ -164,15 +164,10 @@ const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request7Id,
 })
-const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
-  receivedFrom: new URL('http://example.com'),
+const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
-  requester: Option.some(requester4),
-  reviewRequestId: request8Id,
-})
-const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 8 }),
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request8Id,
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -262,8 +257,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request7Received,
       request7Accepted,
       request7Categorized,
-      request8Received,
-      request8Accepted,
+      request8Imported,
       request8Categorized,
       request9Imported,
       request9Categorized,
@@ -332,8 +326,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       request7Received,
       request7Accepted,
       request7Categorized,
-      request8Received,
-      request8Accepted,
+      request8Imported,
       request8Categorized,
       request9Imported,
       request9Categorized,
@@ -358,9 +351,9 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
         },
         {
           id: request8Id,
-          published: request8Accepted.acceptedAt,
+          published: request8Imported.publishedAt,
           topics: request8Categorized.topics,
-          preprintId: request8Received.preprintId,
+          preprintId: request8Imported.preprintId,
         },
         {
           id: request9Id,

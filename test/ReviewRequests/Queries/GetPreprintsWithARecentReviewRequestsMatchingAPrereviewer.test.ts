@@ -174,15 +174,10 @@ const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request7Id,
 })
-const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
-  receivedFrom: new URL('http://example.com'),
+const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
-  requester: Option.some(requester4),
-  reviewRequestId: request8Id,
-})
-const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 8 }),
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request8Id,
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -325,8 +320,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       request7Received,
       request7Accepted,
       request7Categorized,
-      request8Received,
-      request8Accepted,
+      request8Imported,
       request8Categorized,
       request9Imported,
       request9Categorized,
