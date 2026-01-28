@@ -32,6 +32,7 @@ export const createFilter = ({ reviewRequestId }: Input): EventFilter<Events.Rev
   types: [
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestByAPrereviewerWasImported',
     'ReviewRequestFromAPreprintServerWasImported',
   ],
   predicates: { reviewRequestId },
@@ -60,6 +61,20 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
                   id: imported.reviewRequestId,
                   published: imported.publishedAt,
                 }),
+            ),
+            Option.orElse(() =>
+              pipe(
+                Array.findLast(filteredEvents, hasTag('ReviewRequestByAPrereviewerWasImported')),
+                Option.andThen(
+                  imported =>
+                    new PublishedPrereviewerReviewRequest({
+                      author: imported.requester,
+                      preprintId: imported.preprintId,
+                      id: imported.reviewRequestId,
+                      published: imported.publishedAt,
+                    }),
+                ),
+              ),
             ),
           ),
           () => new Errors.UnknownReviewRequest({}),
