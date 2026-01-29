@@ -3,9 +3,10 @@ import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 
-let numberOfKnownEvents = 0
-
 type Subscriber = (event: Events.Event) => void
+
+let numberOfKnownEvents = 0
+const subscribers: Array<Subscriber> = []
 
 export class EventDispatcher extends Context.Tag('EventDispatcher')<
   EventDispatcher,
@@ -15,7 +16,7 @@ export class EventDispatcher extends Context.Tag('EventDispatcher')<
 >() {}
 
 export const EventDispatcherLayer = Layer.succeed(EventDispatcher, {
-  addSubscriber: () => Effect.void,
+  addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
 })
 
 export class EventsForQueries extends Context.Tag('EventsForQueries')<
@@ -43,7 +44,8 @@ const dispatchNewEvents = Effect.gen(function* () {
   numberOfKnownEvents = events.length
 
   yield* Console.log(`Found ${newEvents.length} new event${newEvents.length > 1 ? 's' : ''}`)
-  yield* PubSub.publishAll(yield* EventsForQueries, newEvents)
+  yield* Console.log(`Subscriber count: ${subscribers.length}`)
+  Array.forEach(newEvents, event => Array.forEach(subscribers, subscriber => subscriber(event)))
 })
 
 export const worker = Layer.effectDiscard(
