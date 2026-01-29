@@ -36,6 +36,8 @@ type State = Record<
   }
 >
 
+const InitialState: State = Record.empty()
+
 const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: EventType }>): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
@@ -110,7 +112,7 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
   const filteredEvents = Array.filter(events, Events.matches(filter))
 
-  const reviewRequests = Array.reduce(filteredEvents, Record.empty() as State, updateStateWithEvent)
+  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithEvent)
 
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
