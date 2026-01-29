@@ -9,6 +9,7 @@ import { v5 as uuid5 } from 'uuid'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment, no-comments/disallowComments
 // @ts-ignore
 import pseudonyms from '../data/pseudonyms.json' with { type: 'json' } // eslint-disable-line import/no-unresolved
+import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
 import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
@@ -176,6 +177,7 @@ pipe(
       Layer.provideMerge(
         Layer.mergeAll(
           Events.layer,
+          EventDispatcher.EventsForQueriesLayer,
           SqlSensitiveDataStore.layer,
           httpClient,
           OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),

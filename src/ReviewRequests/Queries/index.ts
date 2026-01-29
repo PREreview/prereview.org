@@ -1,4 +1,5 @@
-import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
+import { Array, Console, Context, Data, Effect, Either, flow, Layer, pipe, PubSub, Queue, Scope } from 'effect'
+import * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
@@ -59,94 +60,107 @@ export {
 } from './GetPublishedReviewRequest.ts'
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
-const makeReviewRequestQueries: Effect.Effect<typeof ReviewRequestQueries.Service, never, EventStore.EventStore> =
-  Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+const makeReviewRequestQueries: Effect.Effect<
+  typeof ReviewRequestQueries.Service,
+  never,
+  EventStore.EventStore | EventDispatcher.EventsForQueries | Scope.Scope
+> = Effect.gen(function* () {
+  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
-      name: string,
-      createFilter: (input: Input) => Events.EventFilter<Event>,
-      query: (
-        events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
-        input: Input,
-      ) => Either.Either<Result, Error>,
-    ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
-      Effect.fn(`ReviewRequestQueries.${name}`)(
-        function* (input) {
-          const filter = createFilter(input)
+  const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
+    name: string,
+    createFilter: (input: Input) => Events.EventFilter<Event>,
+    query: (
+      events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
+      input: Input,
+    ) => Either.Either<Result, Error>,
+  ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
+    Effect.fn(`ReviewRequestQueries.${name}`)(
+      function* (input) {
+        const filter = createFilter(input)
 
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
+        const { events } = yield* pipe(
+          EventStore.query(filter),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+        )
 
-          return yield* pipe(
-            Effect.suspend(() => query(events, input)),
-            Effect.withSpan('query'),
-          )
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      )
+        return yield* pipe(
+          Effect.suspend(() => query(events, input)),
+          Effect.withSpan('query'),
+        )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.provide(context),
+    )
 
-    const handleSimpleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Result>(
-      name: string,
-      filter: Events.EventFilter<Event>,
-      query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,
-    ): (() => Effect.Effect<Result, UnableToQuery>) =>
-      Effect.fn(`ReviewRequestQueries.${name}`)(
-        function* () {
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
+  const handleSimpleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Result>(
+    name: string,
+    filter: Events.EventFilter<Event>,
+    query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,
+  ): (() => Effect.Effect<Result, UnableToQuery>) =>
+    Effect.fn(`ReviewRequestQueries.${name}`)(
+      function* () {
+        const { events } = yield* pipe(
+          EventStore.query(filter),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+        )
 
-          return yield* pipe(
-            Effect.sync(() => query(events)),
-            Effect.withSpan('query'),
-          )
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      )
+        return yield* pipe(
+          Effect.sync(() => query(events)),
+          Effect.withSpan('query'),
+        )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.provide(context),
+    )
 
-    return {
-      doesAPreprintHaveAReviewRequest: handleQuery(
-        'doesAPreprintHaveAReviewRequest',
-        DoesAPreprintHaveAReviewRequest.createFilter,
-        flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
-      ),
-      getFiveMostRecentReviewRequests: handleSimpleQuery(
-        'getFiveMostRecentReviewRequests',
-        GetFiveMostRecentReviewRequests.filter,
-        GetFiveMostRecentReviewRequests.query,
-      ),
-      getReceivedReviewRequest: handleQuery(
-        'getReceivedReviewRequest',
-        GetReceivedReviewRequest.createFilter,
-        GetReceivedReviewRequest.query,
-      ),
-      getPublishedReviewRequest: handleQuery(
-        'getPublishedReviewRequest',
-        GetPublishedReviewRequest.createFilter,
-        GetPublishedReviewRequest.query,
-      ),
-      getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
-        'getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
-        GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
-        flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
-      ),
-      searchForPublishedReviewRequests: handleQuery(
-        'searchForPublishedReviewRequests',
-        SearchForPublishedReviewRequests.createFilter,
-        SearchForPublishedReviewRequests.query,
-      ),
-      findReviewRequestsNeedingCategorization: handleSimpleQuery(
-        'findReviewRequestsNeedingCategorization',
-        FindReviewRequestsNeedingCategorization.filter,
-        FindReviewRequestsNeedingCategorization.query,
-      ),
-    }
-  })
+  const eventsForQueries = yield* EventDispatcher.EventsForQueries
+  const dequeue = yield* PubSub.subscribe(eventsForQueries)
+
+  yield* pipe(
+    Queue.take(dequeue),
+    Effect.andThen(event => Console.log(event._tag)),
+    Effect.forever,
+    Effect.fork,
+  )
+
+  return {
+    doesAPreprintHaveAReviewRequest: handleQuery(
+      'doesAPreprintHaveAReviewRequest',
+      DoesAPreprintHaveAReviewRequest.createFilter,
+      flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
+    ),
+    getFiveMostRecentReviewRequests: handleSimpleQuery(
+      'getFiveMostRecentReviewRequests',
+      GetFiveMostRecentReviewRequests.filter,
+      GetFiveMostRecentReviewRequests.query,
+    ),
+    getReceivedReviewRequest: handleQuery(
+      'getReceivedReviewRequest',
+      GetReceivedReviewRequest.createFilter,
+      GetReceivedReviewRequest.query,
+    ),
+    getPublishedReviewRequest: handleQuery(
+      'getPublishedReviewRequest',
+      GetPublishedReviewRequest.createFilter,
+      GetPublishedReviewRequest.query,
+    ),
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
+      'getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
+      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
+      flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
+    ),
+    searchForPublishedReviewRequests: handleQuery(
+      'searchForPublishedReviewRequests',
+      SearchForPublishedReviewRequests.createFilter,
+      SearchForPublishedReviewRequests.query,
+    ),
+    findReviewRequestsNeedingCategorization: handleSimpleQuery(
+      'findReviewRequestsNeedingCategorization',
+      FindReviewRequestsNeedingCategorization.filter,
+      FindReviewRequestsNeedingCategorization.query,
+    ),
+  }
+})
 
 export const queriesLayer = Layer.effect(ReviewRequestQueries, makeReviewRequestQueries)
