@@ -38,16 +38,24 @@ type State = Record<
 
 const InitialState: State = Record.empty()
 
-const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: EventType }>): State =>
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
+  if (!Events.matches(event, filter)) {
+    return state
+  }
+
+  return updateStateWithPertinentEvent(state, event)
+}
+
+const updateStateWithPertinentEvent = (state: State, event: Extract<Events.Event, { _tag: EventType }>): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
       Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
+        Record.modifyOption(state, event.reviewRequestId, review => ({
           ...review,
           preprintId: event.preprintId,
         })),
         () =>
-          Record.set(map, event.reviewRequestId, {
+          Record.set(state, event.reviewRequestId, {
             published: undefined,
             topics: [],
             preprintId: event.preprintId,
@@ -55,12 +63,12 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
       ),
     ReviewRequestForAPreprintWasAccepted: event =>
       Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
+        Record.modifyOption(state, event.reviewRequestId, review => ({
           ...review,
           published: event.acceptedAt,
         })),
         () =>
-          Record.set(map, event.reviewRequestId, {
+          Record.set(state, event.reviewRequestId, {
             published: event.acceptedAt,
             topics: [],
             preprintId: undefined,
@@ -68,13 +76,13 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
       ),
     ReviewRequestByAPrereviewerWasImported: event =>
       Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
+        Record.modifyOption(state, event.reviewRequestId, review => ({
           ...review,
           preprintId: event.preprintId,
           published: event.publishedAt,
         })),
         () =>
-          Record.set(map, event.reviewRequestId, {
+          Record.set(state, event.reviewRequestId, {
             published: event.publishedAt,
             topics: [],
             preprintId: event.preprintId,
@@ -82,13 +90,13 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
       ),
     ReviewRequestFromAPreprintServerWasImported: event =>
       Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
+        Record.modifyOption(state, event.reviewRequestId, review => ({
           ...review,
           preprintId: event.preprintId,
           published: event.publishedAt,
         })),
         () =>
-          Record.set(map, event.reviewRequestId, {
+          Record.set(state, event.reviewRequestId, {
             published: event.publishedAt,
             topics: [],
             preprintId: event.preprintId,
@@ -96,12 +104,12 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
       ),
     ReviewRequestForAPreprintWasCategorized: event =>
       Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
+        Record.modifyOption(state, event.reviewRequestId, review => ({
           ...review,
           topics: event.topics,
         })),
         () =>
-          Record.set(map, event.reviewRequestId, {
+          Record.set(state, event.reviewRequestId, {
             published: undefined,
             topics: event.topics,
             preprintId: undefined,
