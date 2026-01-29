@@ -1,4 +1,4 @@
-import { Array, Console, Context, Data, Effect, Either, flow, Layer, pipe, PubSub, Queue, Scope } from 'effect'
+import { Array, Context, Data, Effect, Either, flow, Layer, pipe, PubSub, Queue, Scope } from 'effect'
 import * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -114,12 +114,19 @@ const makeReviewRequestQueries: Effect.Effect<
       Effect.provide(context),
     )
 
+  let getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.InitialState
+
   const eventsForQueries = yield* EventDispatcher.EventsForQueries
   const dequeue = yield* PubSub.subscribe(eventsForQueries)
 
   yield* pipe(
     Queue.take(dequeue),
-    Effect.andThen(event => Console.log(event._tag)),
+    Effect.andThen(event => {
+      getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.updateStateWithEvent(
+        getFiveMostRecentReviewRequestsState,
+        event,
+      )
+    }),
     Effect.forever,
     Effect.fork,
   )
@@ -130,11 +137,8 @@ const makeReviewRequestQueries: Effect.Effect<
       DoesAPreprintHaveAReviewRequest.createFilter,
       flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
     ),
-    getFiveMostRecentReviewRequests: handleSimpleQuery(
-      'getFiveMostRecentReviewRequests',
-      GetFiveMostRecentReviewRequests.filter,
-      GetFiveMostRecentReviewRequests.query,
-    ),
+    getFiveMostRecentReviewRequests: () =>
+      Effect.succeed(GetFiveMostRecentReviewRequests.statefulQuery(getFiveMostRecentReviewRequestsState)),
     getReceivedReviewRequest: handleQuery(
       'getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,

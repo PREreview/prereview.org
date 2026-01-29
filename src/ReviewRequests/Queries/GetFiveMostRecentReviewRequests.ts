@@ -36,9 +36,9 @@ type State = Record<
   }
 >
 
-const InitialState: State = Record.empty()
+export const InitialState: State = Record.empty()
 
-const updateStateWithEvent = (state: State, event: Events.Event): State => {
+export const updateStateWithEvent = (state: State, event: Events.Event): State => {
   if (!Events.matches(event, filter)) {
     return state
   }
@@ -117,7 +117,7 @@ const updateStateWithPertinentEvent = (state: State, event: Extract<Events.Event
       ),
   })
 
-const statefulQuery = (reviewRequests: State): Result => {
+export const statefulQuery = (reviewRequests: State): Result => {
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
   ) as Record<
