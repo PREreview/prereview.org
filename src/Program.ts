@@ -1,6 +1,6 @@
 import type { HttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
-import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
+import { Console, Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Schedule, Scope } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
@@ -24,6 +24,7 @@ import {
   Zenodo,
 } from './ExternalApis/index.ts'
 import { CommunitySlack, GhostPage, OpenAlexWorks, ZenodoRecords } from './ExternalInteractions/index.ts'
+import * as FeatureFlags from './FeatureFlags.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
@@ -333,6 +334,12 @@ export const Program = pipe(
     ReviewRequests.reactionsWorker,
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
+    Layer.effectDiscard(
+      Effect.if(FeatureFlags.enableCoarNotifyInbox, {
+        onTrue: () => Effect.repeat(Console.log('hello'), Schedule.fixed('2 seconds')),
+        onFalse: () => Effect.void,
+      }),
+    ),
   ),
   Layer.provide(Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
