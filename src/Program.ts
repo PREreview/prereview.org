@@ -336,6 +336,7 @@ export const Program = pipe(
     CachingHttpClient.layerRevalidationWorker,
     EventDispatcher.worker,
   ),
+  Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide(Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
     Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),

@@ -41,3 +41,5 @@ export const worker = Layer.effectDiscard(
     onFalse: () => Effect.void,
   }),
 )
+
+export const replayExistingEvents = dispatchNewEvents
