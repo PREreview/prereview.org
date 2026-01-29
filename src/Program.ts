@@ -403,6 +403,12 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(SqlSensitiveDataStore.layer),
   Layer.provide(
-    Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
+    Layer.mergeAll(
+      Events.layer,
+      EventDispatcher.EventsForQueriesLayer,
+      Uuid.layer,
+      CachingHttpClient.layerRevalidationQueue,
+      CookieSignature.layer,
+    ),
   ),
 )
