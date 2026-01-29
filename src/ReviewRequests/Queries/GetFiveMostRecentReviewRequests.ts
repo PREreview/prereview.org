@@ -23,89 +23,88 @@ export const filter = Events.EventFilter({
   ],
 })
 
+type State = Record<
+  Uuid.Uuid,
+  {
+    published: Temporal.Instant | undefined
+    topics: ReadonlyArray<TopicId>
+    preprintId: Preprints.IndeterminatePreprintId | undefined
+  }
+>
+
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
   const filteredEvents = Array.filter(events, Events.matches(filter))
 
-  const reviewRequests = Array.reduce(
-    filteredEvents,
-    Record.empty<
-      Uuid.Uuid,
-      {
-        published: Temporal.Instant | undefined
-        topics: ReadonlyArray<TopicId>
-        preprintId: Preprints.IndeterminatePreprintId | undefined
-      }
-    >(),
-    (map, event) =>
-      Match.valueTags(event, {
-        ReviewRequestForAPreprintWasReceived: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
+  const reviewRequests = Array.reduce(filteredEvents, Record.empty() as State, (map, event) =>
+    Match.valueTags(event, {
+      ReviewRequestForAPreprintWasReceived: event =>
+        Option.getOrElse(
+          Record.modifyOption(map, event.reviewRequestId, review => ({
+            ...review,
+            preprintId: event.preprintId,
+          })),
+          () =>
+            Record.set(map, event.reviewRequestId, {
+              published: undefined,
+              topics: [],
               preprintId: event.preprintId,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: undefined,
-                topics: [],
-                preprintId: event.preprintId,
-              }),
-          ),
-        ReviewRequestForAPreprintWasAccepted: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
+            }),
+        ),
+      ReviewRequestForAPreprintWasAccepted: event =>
+        Option.getOrElse(
+          Record.modifyOption(map, event.reviewRequestId, review => ({
+            ...review,
+            published: event.acceptedAt,
+          })),
+          () =>
+            Record.set(map, event.reviewRequestId, {
               published: event.acceptedAt,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: event.acceptedAt,
-                topics: [],
-                preprintId: undefined,
-              }),
-          ),
-        ReviewRequestByAPrereviewerWasImported: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
-              preprintId: event.preprintId,
+              topics: [],
+              preprintId: undefined,
+            }),
+        ),
+      ReviewRequestByAPrereviewerWasImported: event =>
+        Option.getOrElse(
+          Record.modifyOption(map, event.reviewRequestId, review => ({
+            ...review,
+            preprintId: event.preprintId,
+            published: event.publishedAt,
+          })),
+          () =>
+            Record.set(map, event.reviewRequestId, {
               published: event.publishedAt,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: event.publishedAt,
-                topics: [],
-                preprintId: event.preprintId,
-              }),
-          ),
-        ReviewRequestFromAPreprintServerWasImported: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
+              topics: [],
               preprintId: event.preprintId,
+            }),
+        ),
+      ReviewRequestFromAPreprintServerWasImported: event =>
+        Option.getOrElse(
+          Record.modifyOption(map, event.reviewRequestId, review => ({
+            ...review,
+            preprintId: event.preprintId,
+            published: event.publishedAt,
+          })),
+          () =>
+            Record.set(map, event.reviewRequestId, {
               published: event.publishedAt,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: event.publishedAt,
-                topics: [],
-                preprintId: event.preprintId,
-              }),
-          ),
-        ReviewRequestForAPreprintWasCategorized: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
+              topics: [],
+              preprintId: event.preprintId,
+            }),
+        ),
+      ReviewRequestForAPreprintWasCategorized: event =>
+        Option.getOrElse(
+          Record.modifyOption(map, event.reviewRequestId, review => ({
+            ...review,
+            topics: event.topics,
+          })),
+          () =>
+            Record.set(map, event.reviewRequestId, {
+              published: undefined,
               topics: event.topics,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: undefined,
-                topics: event.topics,
-                preprintId: undefined,
-              }),
-          ),
-      }),
+              preprintId: undefined,
+            }),
+        ),
+    }),
   )
 
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
