@@ -2359,7 +2359,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         ),
         Effect.provide(NodeFileSystem.layer),
         Logger.withMinimumLogLevel(LogLevel.Debug),
-        Effect.scoped,
         Effect.orDie,
       )
 

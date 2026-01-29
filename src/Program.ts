@@ -406,7 +406,6 @@ export const Program = pipe(
     Layer.mergeAll(
       Events.layer,
       EventDispatcher.EventDispatcherLayer,
-      EventDispatcher.EventsForQueriesLayer,
       Uuid.layer,
       CachingHttpClient.layerRevalidationQueue,
       CookieSignature.layer,

@@ -1,4 +1,4 @@
-import { Array, Console, Context, Effect, Layer, PubSub, Schedule, flow, pipe } from 'effect'
+import { Array, Console, Context, Effect, Layer, Schedule } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -18,19 +18,6 @@ export class EventDispatcher extends Context.Tag('EventDispatcher')<
 export const EventDispatcherLayer = Layer.succeed(EventDispatcher, {
   addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
 })
-
-export class EventsForQueries extends Context.Tag('EventsForQueries')<
-  EventsForQueries,
-  PubSub.PubSub<Events.Event>
->() {}
-
-export const EventsForQueriesLayer = Layer.scoped(
-  EventsForQueries,
-  Effect.acquireRelease(
-    pipe(PubSub.bounded<Events.Event>(100), Effect.tap(Effect.logDebug('EventsForQueries started'))),
-    flow(PubSub.shutdown, Effect.tap(Effect.logDebug('EventsForQueries stopped'))),
-  ),
-)
 
 const dispatchNewEvents = Effect.gen(function* () {
   const events = yield* EventStore.all

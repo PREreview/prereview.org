@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, Either, flow, Layer, pipe, PubSub, Queue, Scope } from 'effect'
+import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
 import * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -63,7 +63,7 @@ export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
   never,
-  EventStore.EventStore | EventDispatcher.EventDispatcher | EventDispatcher.EventsForQueries | Scope.Scope
+  EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
   const eventDispatcher = yield* EventDispatcher.EventDispatcher
 
@@ -124,21 +124,6 @@ const makeReviewRequestQueries: Effect.Effect<
       event,
     )
   })
-
-  const eventsForQueries = yield* EventDispatcher.EventsForQueries
-  const dequeue = yield* PubSub.subscribe(eventsForQueries)
-
-  yield* pipe(
-    Queue.take(dequeue),
-    Effect.andThen(event => {
-      getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.updateStateWithEvent(
-        getFiveMostRecentReviewRequestsState,
-        event,
-      )
-    }),
-    Effect.forever,
-    Effect.fork,
-  )
 
   return {
     doesAPreprintHaveAReviewRequest: handleQuery(

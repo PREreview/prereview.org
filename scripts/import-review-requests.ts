@@ -177,7 +177,7 @@ pipe(
       Layer.provideMerge(
         Layer.mergeAll(
           Events.layer,
-          EventDispatcher.EventsForQueriesLayer,
+          EventDispatcher.EventDispatcherLayer,
           SqlSensitiveDataStore.layer,
           httpClient,
           OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
