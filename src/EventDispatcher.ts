@@ -5,6 +5,19 @@ import * as FeatureFlags from './FeatureFlags.ts'
 
 let numberOfKnownEvents = 0
 
+type Subscriber = (event: Events.Event) => void
+
+export class EventDispatcher extends Context.Tag('EventDispatcher')<
+  EventDispatcher,
+  {
+    addSubscriber: (subscriber: Subscriber) => Effect.Effect<void>
+  }
+>() {}
+
+export const EventDispatcherLayer = Layer.succeed(EventDispatcher, {
+  addSubscriber: () => Effect.void,
+})
+
 export class EventsForQueries extends Context.Tag('EventsForQueries')<
   EventsForQueries,
   PubSub.PubSub<Events.Event>

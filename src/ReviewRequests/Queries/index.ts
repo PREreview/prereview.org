@@ -63,8 +63,10 @@ export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
   never,
-  EventStore.EventStore | EventDispatcher.EventsForQueries | Scope.Scope
+  EventStore.EventStore | EventDispatcher.EventDispatcher | EventDispatcher.EventsForQueries | Scope.Scope
 > = Effect.gen(function* () {
+  const eventDispatcher = yield* EventDispatcher.EventDispatcher
+
   const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
@@ -115,6 +117,13 @@ const makeReviewRequestQueries: Effect.Effect<
     )
 
   let getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.InitialState
+
+  yield* eventDispatcher.addSubscriber(event => {
+    getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.updateStateWithEvent(
+      getFiveMostRecentReviewRequestsState,
+      event,
+    )
+  })
 
   const eventsForQueries = yield* EventDispatcher.EventsForQueries
   const dequeue = yield* PubSub.subscribe(eventsForQueries)

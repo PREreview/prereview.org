@@ -405,6 +405,7 @@ export const Program = pipe(
   Layer.provide(
     Layer.mergeAll(
       Events.layer,
+      EventDispatcher.EventDispatcherLayer,
       EventDispatcher.EventsForQueriesLayer,
       Uuid.layer,
       CachingHttpClient.layerRevalidationQueue,
