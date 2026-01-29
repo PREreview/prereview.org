@@ -109,11 +109,7 @@ const updateStateWithEvent = (map: State, event: Extract<Events.Event, { _tag: E
       ),
   })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
-  const filteredEvents = Array.filter(events, Events.matches(filter))
-
-  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithEvent)
-
+const statefulQuery = (reviewRequests: State): Result => {
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
   ) as Record<
@@ -134,4 +130,12 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
   )
 
   return Array.take(sortedReviewRequests, 5)
+}
+
+export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithEvent)
+
+  return statefulQuery(reviewRequests)
 }
