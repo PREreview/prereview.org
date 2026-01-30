@@ -96,7 +96,7 @@ const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, 
       state = updateStateWithEvent(state, event)
     })
 
-    return Effect.fn(`ReviewRequestQueries.${name}`)(function* (...input: Input) {
+    return Effect.fn(name)(function* (...input: Input) {
       return yield* query(state, ...input)
     })
   })
@@ -113,7 +113,7 @@ const makeReviewRequestQueries: Effect.Effect<
     createFilter: (input: Input) => Events.EventFilter<Event>,
     query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
   ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
-    Effect.fn(`ReviewRequestQueries.${name}`)(
+    Effect.fn(name)(
       function* (input) {
         const filter = createFilter(input)
 
@@ -136,7 +136,7 @@ const makeReviewRequestQueries: Effect.Effect<
     filter: Events.EventFilter<Event>,
     query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>) => Result,
   ): (() => Effect.Effect<Result, UnableToQuery>) =>
-    Effect.fn(`ReviewRequestQueries.${name}`)(
+    Effect.fn(name)(
       function* () {
         const { events } = yield* pipe(
           EventStore.query(filter),
@@ -160,17 +160,17 @@ const makeReviewRequestQueries: Effect.Effect<
       GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests,
     ),
     getReceivedReviewRequest: handleQuery(
-      'getReceivedReviewRequest',
+      'ReviewRequestQueries.getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,
       GetReceivedReviewRequest.query,
     ),
     getPublishedReviewRequest: handleQuery(
-      'getPublishedReviewRequest',
+      'ReviewRequestQueries.getPublishedReviewRequest',
       GetPublishedReviewRequest.createFilter,
       GetPublishedReviewRequest.query,
     ),
     getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
-      'getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
+      'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
       GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
@@ -178,7 +178,7 @@ const makeReviewRequestQueries: Effect.Effect<
       SearchForPublishedReviewRequests.searchForPublishedReviewRequests,
     ),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(
-      'findReviewRequestsNeedingCategorization',
+      'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,
       FindReviewRequestsNeedingCategorization.query,
     ),

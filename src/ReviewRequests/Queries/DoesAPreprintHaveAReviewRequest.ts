@@ -65,7 +65,7 @@ const query = (state: State, input: Input): Result => {
 }
 
 export const doesAPreprintHaveAReviewRequest: StatefulQuery<State, [Input], Result, never> = {
-  name: 'doesAPreprintHaveAReviewRequest',
+  name: 'ReviewRequestQueries.doesAPreprintHaveAReviewRequest',
   initialState,
   updateStateWithEvent,
   query: flow(query, Either.right),

@@ -140,7 +140,7 @@ const query = (reviewRequests: State): Result => {
 }
 
 export const getFiveMostRecentReviewRequests: StatefulQuery<State, [], Result, never> = {
-  name: 'getFiveMostRecentReviewRequests',
+  name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
   initialState,
   updateStateWithEvent,
   query: flow(query, Either.right),
