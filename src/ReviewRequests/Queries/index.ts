@@ -158,7 +158,7 @@ const makeReviewRequestQueries: Effect.Effect<
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
     searchForPublishedReviewRequests: input =>
-      SearchForPublishedReviewRequests.statefulQuery(searchForPublishedReviewRequestsState, input),
+      SearchForPublishedReviewRequests.query(searchForPublishedReviewRequestsState, input),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(
       'findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,

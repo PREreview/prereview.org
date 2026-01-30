@@ -151,7 +151,7 @@ const updateStateWithPertinentEvent = (map: State, event: Extract<Events.Event, 
       ),
   })
 
-export const statefulQuery = (state: State, input: Input): Result =>
+export const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
     const filteredReviewRequests = Record.filter(state, reviewRequest =>
       Boolean.every([
@@ -200,9 +200,3 @@ export const statefulQuery = (state: State, input: Input): Result =>
       })),
     }
   })
-
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const state = Array.reduce(events, InitialState, updateStateWithEvent)
-
-  return statefulQuery(state, input)
-}
