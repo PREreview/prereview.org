@@ -142,11 +142,9 @@ const makeReviewRequestQueries: Effect.Effect<
     )
 
   return {
-    doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery({
-      initialState: DoesAPreprintHaveAReviewRequest.InitialState,
-      updateStateWithEvent: DoesAPreprintHaveAReviewRequest.updateStateWithEvent,
-      query: flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
-    }),
+    doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery(
+      DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest,
+    ),
     getFiveMostRecentReviewRequests: yield* makeStatefulQuery({
       initialState: GetFiveMostRecentReviewRequests.InitialState,
       updateStateWithEvent: GetFiveMostRecentReviewRequests.updateStateWithEvent,

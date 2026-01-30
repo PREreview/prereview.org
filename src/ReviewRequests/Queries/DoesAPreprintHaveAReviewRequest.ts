@@ -1,7 +1,8 @@
-import { Equal, Match, Option, Record } from 'effect'
+import { Either, Equal, flow, Match, Option, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../types/index.ts'
+import type { StatefulQuery } from './index.ts'
 
 export interface Input {
   preprintId: Preprints.IndeterminatePreprintId
@@ -18,13 +19,13 @@ const eventTypes = [
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
-export const filter = Events.EventFilter({ types: eventTypes })
+const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>
 
-export const InitialState: State = Record.empty()
+const initialState: State = Record.empty()
 
-export const updateStateWithEvent = (state: State, event: Events.Event): State => {
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
   if (!Events.matches(event, filter)) {
     return state
   }
@@ -56,9 +57,15 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       ),
   })
 
-export const query = (state: State, input: Input): Result => {
+const query = (state: State, input: Input): Result => {
   return Record.some(
     state,
     reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
   )
+}
+
+export const doesAPreprintHaveAReviewRequest: StatefulQuery<State, [Input], Result, never> = {
+  initialState,
+  updateStateWithEvent,
+  query: flow(query, Either.right),
 }
