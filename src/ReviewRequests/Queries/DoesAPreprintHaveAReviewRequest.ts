@@ -24,6 +24,14 @@ type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId |
 
 export const InitialState: State = Record.empty()
 
+export const updateStateWithEvent = (state: State, event: Events.Event): State => {
+  if (!Events.matches(event, filter)) {
+    return state
+  }
+
+  return updateStateWithPertinentEvent(state, event)
+}
+
 const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
@@ -49,9 +57,7 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
   })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const filteredEvents = Array.filter(events, Events.matches(filter))
-
-  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
+  const reviewRequests = Array.reduce(events, InitialState, updateStateWithEvent)
 
   return Record.some(
     reviewRequests,
