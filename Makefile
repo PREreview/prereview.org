@@ -74,7 +74,7 @@ test: node_modules src/manifest.json
 	npx jest ${TEST}
 
 test-fast: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged
+	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged --maxWorkers=50%
 
 test-integration: test-integration-image
 	docker compose up postgres --wait
