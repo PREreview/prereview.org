@@ -111,10 +111,7 @@ const makeReviewRequestQueries: Effect.Effect<
   const handleQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
     name: string,
     createFilter: (input: Input) => Events.EventFilter<Event>,
-    query: (
-      events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
-      input: Input,
-    ) => Either.Either<Result, Error>,
+    query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
   ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
     Effect.fn(`ReviewRequestQueries.${name}`)(
       function* (input) {
@@ -137,7 +134,7 @@ const makeReviewRequestQueries: Effect.Effect<
   const handleSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
     name: string,
     filter: Events.EventFilter<Event>,
-    query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,
+    query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>) => Result,
   ): (() => Effect.Effect<Result, UnableToQuery>) =>
     Effect.fn(`ReviewRequestQueries.${name}`)(
       function* () {

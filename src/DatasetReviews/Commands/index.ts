@@ -140,7 +140,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       Error,
     >(
       createFilter: (datasetReviewId: Uuid.Uuid) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, datasetReviewId: Uuid.Uuid) => State,
+      foldState: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, datasetReviewId: Uuid.Uuid) => State,
       authorize: (command: Command) => (state: State) => boolean,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>

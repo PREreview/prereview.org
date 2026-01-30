@@ -183,7 +183,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
     const handleQuery = <Event extends Types.Tags<Events.DatasetReviewEvent>, Input, Result, Error>(
       createFilter: (input: Input) => Events.EventFilter<Event>,
       query: (
-        events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
+        events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>,
         input: Input,
       ) => Either.Either<Result, Error>,
     ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>

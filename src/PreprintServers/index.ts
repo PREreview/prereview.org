@@ -49,4 +49,4 @@ const coarNotifyTargets = {
   },
 } satisfies Partial<Record<Types.Tags<PreprintId>, CoarNotify.Message['target']>>
 
-export type CoarNotifyTargetPreprintId = Extract<PreprintId, { _tag: keyof typeof coarNotifyTargets }>
+export type CoarNotifyTargetPreprintId = Types.ExtractTag<PreprintId, keyof typeof coarNotifyTargets>

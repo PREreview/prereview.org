@@ -24,7 +24,7 @@ const makePrereviewerQueries: Effect.Effect<typeof PrereviewerQueries.Service, n
 
     const handleQuery = <Event extends Types.Tags<Events.PrereviewerEvent>, Input, Result>(
       createFilter: (input: Input) => Events.EventFilter<Event>,
-      query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, input: Input) => Result,
+      query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Result,
     ): ((input: Input) => Effect.Effect<Result, UnableToQuery>) =>
       Effect.fn(
         function* (input) {

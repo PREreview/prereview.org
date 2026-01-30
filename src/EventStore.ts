@@ -18,7 +18,7 @@ export interface EventStore {
   readonly query: <Tag extends Types.Tags<Event>>(
     filter: EventFilter<Tag>,
   ) => Effect.Effect<
-    { readonly events: Array.NonEmptyReadonlyArray<Extract<Event, { _tag: Tag }>>; readonly lastKnownEvent: Uuid.Uuid },
+    { readonly events: Array.NonEmptyReadonlyArray<Types.ExtractTag<Event, Tag>>; readonly lastKnownEvent: Uuid.Uuid },
     NoEventsFound | FailedToGetEvents
   >
 

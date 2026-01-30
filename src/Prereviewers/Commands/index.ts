@@ -22,7 +22,7 @@ const makePrereviewerCommands: Effect.Effect<typeof PrereviewerCommands.Service,
 
     const handleCommand = <Event extends Types.Tags<Events.PrereviewerEvent>, State, Command>(
       createFilter: (command: Command) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, command: Command) => State,
+      foldState: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, command: Command) => State,
       decide: (command: Command) => (state: State) => Option.Option<Events.PrereviewerEvent>,
     ): CommandHandler<Command> =>
       Effect.fn(
