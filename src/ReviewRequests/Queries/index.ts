@@ -125,6 +125,15 @@ const makeReviewRequestQueries: Effect.Effect<
     )
   })
 
+  let searchForPublishedReviewRequestsState = SearchForPublishedReviewRequests.InitialState
+
+  yield* eventDispatcher.addSubscriber(event => {
+    searchForPublishedReviewRequestsState = SearchForPublishedReviewRequests.updateStateWithEvent(
+      searchForPublishedReviewRequestsState,
+      event,
+    )
+  })
+
   return {
     doesAPreprintHaveAReviewRequest: handleQuery(
       'doesAPreprintHaveAReviewRequest',
@@ -148,11 +157,8 @@ const makeReviewRequestQueries: Effect.Effect<
       GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
-    searchForPublishedReviewRequests: handleQuery(
-      'searchForPublishedReviewRequests',
-      () => SearchForPublishedReviewRequests.filter,
-      SearchForPublishedReviewRequests.query,
-    ),
+    searchForPublishedReviewRequests: input =>
+      SearchForPublishedReviewRequests.statefulQuery(searchForPublishedReviewRequestsState, input),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(
       'findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,
