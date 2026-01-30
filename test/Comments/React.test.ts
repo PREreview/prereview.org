@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, pipe } from 'effect'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
+import * as Queries from '../../src/Queries.ts'
 import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
@@ -71,14 +72,12 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
-          Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () =>
-            Effect.fail(new Comments.UnableToQuery({})),
-          ),
+          Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.either,
         )
 
-        expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
+        expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         EffectTest.run,
@@ -89,13 +88,13 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.CheckIfUserHasAVerifiedEmailAddress(commentId),
-        Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+        Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, shouldNotBeCalled),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.either,
       )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToQuery({})))
+      expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
     }).pipe(EffectTest.run),
   )
 })

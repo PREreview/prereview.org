@@ -39,6 +39,7 @@ import * as Preprints from './Preprints/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
+import * as Queries from './Queries.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
@@ -103,7 +104,7 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
         error => error === 'not-found',
         () => Effect.succeed(false),
       ),
-      Effect.orElseFail(() => new Comments.UnableToQuery({})),
+      Effect.orElseFail(() => new Queries.UnableToQuery({})),
     )
   }),
 )

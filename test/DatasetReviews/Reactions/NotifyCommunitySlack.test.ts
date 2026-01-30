@@ -6,6 +6,7 @@ import * as _ from '../../../src/DatasetReviews/Reactions/NotifyCommunitySlack.t
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
@@ -127,7 +128,7 @@ describe('NotifyCommunitySlack', () => {
       .chain(cause =>
         fc.constantFrom(
           new DatasetReviews.DatasetReviewHasNotBeenPublished({ cause }),
-          new DatasetReviews.UnableToQuery({ cause }),
+          new Queries.UnableToQuery({ cause }),
           new DatasetReviews.UnknownDatasetReview({ cause }),
         ),
       ),

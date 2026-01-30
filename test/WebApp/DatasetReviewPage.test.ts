@@ -5,6 +5,7 @@ import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
+import * as Queries from '../../src/Queries.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/DatasetReviewPage/index.ts'
@@ -249,7 +250,7 @@ describe('DatasetReviewPage', () => {
     }).pipe(
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          getPublishedReview: () => new DatasetReviews.UnableToQuery({}),
+          getPublishedReview: () => new Queries.UnableToQuery({}),
         }),
       ),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),

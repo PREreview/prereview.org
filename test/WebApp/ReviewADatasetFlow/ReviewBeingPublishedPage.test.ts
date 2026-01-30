@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Equal, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
@@ -162,7 +163,7 @@ describe('ReviewBeingPublishedPage', () => {
         })
       }).pipe(
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new Queries.UnableToQuery({}) }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),

@@ -4,6 +4,7 @@ import { Effect, Either, Layer, pipe } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/PublishRecordOnZenodo.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
@@ -110,7 +111,7 @@ describe('PublishRecordOnZenodo', () => {
     fc.constantFrom(
       new DatasetReviews.UnknownDatasetReview({}),
       new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({}),
-      new DatasetReviews.UnableToQuery({}),
+      new Queries.UnableToQuery({}),
     ),
   ])("when the Zenodo record ID can't be found", (datasetReviewId, error) =>
     Effect.gen(function* () {

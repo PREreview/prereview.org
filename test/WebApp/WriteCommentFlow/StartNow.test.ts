@@ -4,6 +4,7 @@ import { Effect, Either, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -167,9 +168,7 @@ describe('StartNow', () => {
           Effect.provideService(Locale, locale),
           Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
-          Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
-            Effect.fail(new Comments.UnableToQuery({})),
-          ),
+          Effect.provideService(Comments.GetNextExpectedCommandForUser, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provide(Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) })),
           Effect.provideService(LoggedInUser, user),

@@ -1,6 +1,7 @@
 import type { Doi } from 'doi-ts'
 import { Context, Data, type Effect, type Option } from 'effect'
 import type { Html } from '../html.ts'
+import type { UnableToQuery } from '../Queries.ts'
 import type { NonEmptyString, Uuid } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { CommentCommand } from './Commands.ts'
@@ -60,5 +61,3 @@ export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{
 export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}
-
-export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: Error }> {}
