@@ -117,7 +117,7 @@ const updateStateWithPertinentEvent = (state: State, event: Extract<Events.Event
       ),
   })
 
-export const statefulQuery = (reviewRequests: State): Result => {
+export const query = (reviewRequests: State): Result => {
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
   ) as Record<

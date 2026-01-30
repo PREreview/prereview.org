@@ -280,7 +280,7 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
 ])('%s', (_name, events, expected) => {
   const state = Array.reduce(events, _.InitialState, _.updateStateWithEvent)
 
-  const actual = _.statefulQuery(state)
+  const actual = _.query(state)
 
   expect(actual).toStrictEqual(expected)
 })

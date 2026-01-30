@@ -132,7 +132,7 @@ const makeReviewRequestQueries: Effect.Effect<
       flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
     ),
     getFiveMostRecentReviewRequests: () =>
-      Effect.succeed(GetFiveMostRecentReviewRequests.statefulQuery(getFiveMostRecentReviewRequestsState)),
+      Effect.succeed(GetFiveMostRecentReviewRequests.query(getFiveMostRecentReviewRequestsState)),
     getReceivedReviewRequest: handleQuery(
       'getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,
