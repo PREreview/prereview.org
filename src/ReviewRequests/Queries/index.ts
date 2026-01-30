@@ -1,4 +1,4 @@
-import { Context, Effect, Either, flow, Layer, Scope } from 'effect'
+import { Context, Effect, Either, flow, Layer } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
@@ -59,8 +59,6 @@ const makeReviewRequestQueries: Effect.Effect<
   never,
   EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
-
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(
       DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest,
@@ -68,40 +66,28 @@ const makeReviewRequestQueries: Effect.Effect<
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(
       GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests,
     ),
-    getReceivedReviewRequest: flow(
-      Queries.handleQuery(
-        'ReviewRequestQueries.getReceivedReviewRequest',
-        GetReceivedReviewRequest.createFilter,
-        GetReceivedReviewRequest.query,
-      ),
-      Effect.provide(context),
+    getReceivedReviewRequest: yield* Queries.makeQuery(
+      'ReviewRequestQueries.getReceivedReviewRequest',
+      GetReceivedReviewRequest.createFilter,
+      GetReceivedReviewRequest.query,
     ),
-    getPublishedReviewRequest: flow(
-      Queries.handleQuery(
-        'ReviewRequestQueries.getPublishedReviewRequest',
-        GetPublishedReviewRequest.createFilter,
-        GetPublishedReviewRequest.query,
-      ),
-      Effect.provide(context),
+    getPublishedReviewRequest: yield* Queries.makeQuery(
+      'ReviewRequestQueries.getPublishedReviewRequest',
+      GetPublishedReviewRequest.createFilter,
+      GetPublishedReviewRequest.query,
     ),
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: flow(
-      Queries.handleQuery(
-        'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
-        GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
-        flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
-      ),
-      Effect.provide(context),
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: yield* Queries.makeQuery(
+      'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
+      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
+      flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(
       SearchForPublishedReviewRequests.searchForPublishedReviewRequests,
     ),
-    findReviewRequestsNeedingCategorization: flow(
-      Queries.handleSimpleQuery(
-        'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
-        FindReviewRequestsNeedingCategorization.filter,
-        FindReviewRequestsNeedingCategorization.query,
-      ),
-      Effect.provide(context),
+    findReviewRequestsNeedingCategorization: yield* Queries.makeSimpleQuery(
+      'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
+      FindReviewRequestsNeedingCategorization.filter,
+      FindReviewRequestsNeedingCategorization.query,
     ),
   }
 })

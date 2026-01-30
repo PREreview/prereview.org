@@ -52,44 +52,52 @@ export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, R
     })
   })
 
-export const handleQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
+export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
   name: string,
   createFilter: (input: Input) => Events.EventFilter<Event>,
   query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
-): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error, EventStore.EventStore>) =>
-  Effect.fn(name)(
-    function* (input) {
-      const filter = createFilter(input)
+): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
+  Effect.gen(function* () {
+    const eventStore = yield* EventStore.EventStore
 
-      const { events } = yield* pipe(
-        EventStore.query(filter),
-        Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-      )
+    return Effect.fn(name)(
+      function* (input) {
+        const filter = createFilter(input)
 
-      return yield* pipe(
-        Effect.suspend(() => query(events, input)),
-        Effect.withSpan('query'),
-      )
-    },
-    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-  )
+        const { events } = yield* pipe(
+          eventStore.query(filter),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+        )
 
-export const handleSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
+        return yield* pipe(
+          Effect.suspend(() => query(events, input)),
+          Effect.withSpan('query'),
+        )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    )
+  })
+
+export const makeSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
   name: string,
   filter: Events.EventFilter<Event>,
   query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>) => Result,
-): (() => Effect.Effect<Result, UnableToQuery, EventStore.EventStore>) =>
-  Effect.fn(name)(
-    function* () {
-      const { events } = yield* pipe(
-        EventStore.query(filter),
-        Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-      )
+): Effect.Effect<() => Effect.Effect<Result, UnableToQuery>, never, EventStore.EventStore> =>
+  Effect.gen(function* () {
+    const eventStore = yield* EventStore.EventStore
 
-      return yield* pipe(
-        Effect.sync(() => query(events)),
-        Effect.withSpan('query'),
-      )
-    },
-    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-  )
+    return Effect.fn(name)(
+      function* () {
+        const { events } = yield* pipe(
+          eventStore.query(filter),
+          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+        )
+
+        return yield* pipe(
+          Effect.sync(() => query(events)),
+          Effect.withSpan('query'),
+        )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    )
+  })
