@@ -9,50 +9,52 @@ export interface Input {
 
 export type Result = boolean
 
+const eventTypes = [
+  'ReviewRequestForAPreprintWasReceived',
+  'ReviewRequestForAPreprintWasAccepted',
+  'ReviewRequestFromAPreprintServerWasImported',
+  'ReviewRequestByAPrereviewerWasImported',
+] as const
+
+type PertinentEvent = Events.EventSubset<typeof eventTypes>
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const createFilter = ({ preprintId }: Input) =>
-  Events.EventFilter({
-    types: [
-      'ReviewRequestForAPreprintWasReceived',
-      'ReviewRequestForAPreprintWasAccepted',
-      'ReviewRequestFromAPreprintServerWasImported',
-      'ReviewRequestByAPrereviewerWasImported',
-    ],
-  })
+export const createFilter = ({ preprintId }: Input) => Events.EventFilter({ types: eventTypes })
 
 type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>
 
 export const InitialState: State = Record.empty()
+
+const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
+  Match.valueTags(event, {
+    ReviewRequestForAPreprintWasReceived: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
+      ),
+    ReviewRequestForAPreprintWasAccepted: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, accepted: true })),
+        () => Record.set(state, event.reviewRequestId, { preprintId: undefined, accepted: true }),
+      ),
+    ReviewRequestFromAPreprintServerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
+      ),
+    ReviewRequestByAPrereviewerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
+        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
+      ),
+  })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
   const filter = createFilter(input)
 
   const filteredEvents = Array.filter(events, Events.matches(filter))
 
-  const reviewRequests = Array.reduce(filteredEvents, InitialState, (map, event) =>
-    Match.valueTags(event, {
-      ReviewRequestForAPreprintWasReceived: event =>
-        Option.getOrElse(
-          Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-          () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
-        ),
-      ReviewRequestForAPreprintWasAccepted: event =>
-        Option.getOrElse(
-          Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, accepted: true })),
-          () => Record.set(map, event.reviewRequestId, { preprintId: undefined, accepted: true }),
-        ),
-      ReviewRequestFromAPreprintServerWasImported: event =>
-        Option.getOrElse(
-          Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-          () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
-        ),
-      ReviewRequestByAPrereviewerWasImported: event =>
-        Option.getOrElse(
-          Record.modifyOption(map, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-          () => Record.set(map, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
-        ),
-    }),
-  )
+  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
 
   return Record.some(
     reviewRequests,
