@@ -1,9 +1,9 @@
 import { Array, Boolean, Either, flow, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { TopicId } from '../../types/Topic.ts'
-import type { StatefulQuery } from './index.ts'
 
 export interface RecentReviewRequest {
   readonly id: Uuid.Uuid
@@ -139,7 +139,7 @@ const query = (reviewRequests: State): Result => {
   return Array.take(sortedReviewRequests, 5)
 }
 
-export const getFiveMostRecentReviewRequests: StatefulQuery<State, [], Result, never> = {
+export const getFiveMostRecentReviewRequests: Queries.StatefulQuery<State, [], Result, never> = {
   name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
   initialState,
   updateStateWithEvent,

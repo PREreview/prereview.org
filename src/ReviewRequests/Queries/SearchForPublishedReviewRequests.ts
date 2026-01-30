@@ -2,12 +2,12 @@ import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'ef
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type * as Queries from '../../Queries.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
 import { getTopicField, getTopicSubfield, type TopicId } from '../../types/Topic.ts'
 import * as Errors from '../Errors.ts'
-import type { StatefulQuery } from './index.ts'
 
 export interface PageOfReviewRequests {
   readonly currentPage: number
@@ -202,7 +202,7 @@ const query = (state: State, input: Input): Result =>
     }
   })
 
-export const searchForPublishedReviewRequests: StatefulQuery<
+export const searchForPublishedReviewRequests: Queries.StatefulQuery<
   State,
   [Input],
   Either.Either.Right<Result>,

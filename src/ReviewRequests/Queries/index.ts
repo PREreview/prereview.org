@@ -1,7 +1,7 @@
-import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope, type Types } from 'effect'
-import * as EventDispatcher from '../../EventDispatcher.ts'
-import type * as Events from '../../Events.ts'
-import * as EventStore from '../../EventStore.ts'
+import { Context, Effect, Either, flow, Layer, Scope } from 'effect'
+import type * as EventDispatcher from '../../EventDispatcher.ts'
+import type * as EventStore from '../../EventStore.ts'
+import * as Queries from '../../Queries.ts'
 import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
 import * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
 import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
@@ -13,43 +13,27 @@ import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewReq
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
-    doesAPreprintHaveAReviewRequest: FromStatefulQuery<
+    doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<
       typeof DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest
     >
-    getFiveMostRecentReviewRequests: FromStatefulQuery<
+    getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<
       typeof GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests
     >
-    getReceivedReviewRequest: Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
-    getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Query<
+    getReceivedReviewRequest: Queries.Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
+    getPublishedReviewRequest: Queries.Query<
+      (input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result
+    >
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Queries.Query<
       (
         input: GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Input,
       ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
     >
-    searchForPublishedReviewRequests: FromStatefulQuery<
+    searchForPublishedReviewRequests: Queries.FromStatefulQuery<
       typeof SearchForPublishedReviewRequests.searchForPublishedReviewRequests
     >
-    findReviewRequestsNeedingCategorization: SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
+    findReviewRequestsNeedingCategorization: Queries.SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
 >() {}
-
-type Query<F extends (...args: never) => unknown, E = never> = (
-  ...args: Parameters<F>
-) => ReturnType<F> extends Either.Either<infer R, infer L>
-  ? Effect.Effect<R, UnableToQuery | E | L>
-  : Effect.Effect<ReturnType<F>, UnableToQuery | E>
-
-type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  StatefulQuery<any, infer Input, infer Result, infer Error>,
-]
-  ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
-  : never
-
-export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
 export const {
   doesAPreprintHaveAReviewRequest,
@@ -70,37 +54,6 @@ export {
 } from './GetPublishedReviewRequest.ts'
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
-export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
-  name: string
-  initialState: State
-  updateStateWithEvent: (state: State, event: Events.Event) => State
-  query: (state: State, ...input: Input) => Either.Either<Result, Error>
-}
-
-const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
-  name,
-  initialState,
-  updateStateWithEvent,
-  query,
-}: StatefulQuery<State, Input, Result, Error>): Effect.Effect<
-  (...input: Input) => Effect.Effect<Result, Error>,
-  never,
-  EventDispatcher.EventDispatcher
-> =>
-  Effect.gen(function* () {
-    const eventDispatcher = yield* EventDispatcher.EventDispatcher
-
-    let state = initialState
-
-    yield* eventDispatcher.addSubscriber(event => {
-      state = updateStateWithEvent(state, event)
-    })
-
-    return Effect.fn(name)(function* (...input: Input) {
-      return yield* query(state, ...input)
-    })
-  })
-
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
   never,
@@ -108,79 +61,47 @@ const makeReviewRequestQueries: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  const handleQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
-    name: string,
-    createFilter: (input: Input) => Events.EventFilter<Event>,
-    query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
-  ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
-    Effect.fn(name)(
-      function* (input) {
-        const filter = createFilter(input)
-
-        const { events } = yield* pipe(
-          EventStore.query(filter),
-          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-        )
-
-        return yield* pipe(
-          Effect.suspend(() => query(events, input)),
-          Effect.withSpan('query'),
-        )
-      },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-      Effect.provide(context),
-    )
-
-  const handleSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
-    name: string,
-    filter: Events.EventFilter<Event>,
-    query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>) => Result,
-  ): (() => Effect.Effect<Result, UnableToQuery>) =>
-    Effect.fn(name)(
-      function* () {
-        const { events } = yield* pipe(
-          EventStore.query(filter),
-          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-        )
-
-        return yield* pipe(
-          Effect.sync(() => query(events)),
-          Effect.withSpan('query'),
-        )
-      },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-      Effect.provide(context),
-    )
-
   return {
-    doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery(
+    doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(
       DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest,
     ),
-    getFiveMostRecentReviewRequests: yield* makeStatefulQuery(
+    getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(
       GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests,
     ),
-    getReceivedReviewRequest: handleQuery(
-      'ReviewRequestQueries.getReceivedReviewRequest',
-      GetReceivedReviewRequest.createFilter,
-      GetReceivedReviewRequest.query,
+    getReceivedReviewRequest: flow(
+      Queries.handleQuery(
+        'ReviewRequestQueries.getReceivedReviewRequest',
+        GetReceivedReviewRequest.createFilter,
+        GetReceivedReviewRequest.query,
+      ),
+      Effect.provide(context),
     ),
-    getPublishedReviewRequest: handleQuery(
-      'ReviewRequestQueries.getPublishedReviewRequest',
-      GetPublishedReviewRequest.createFilter,
-      GetPublishedReviewRequest.query,
+    getPublishedReviewRequest: flow(
+      Queries.handleQuery(
+        'ReviewRequestQueries.getPublishedReviewRequest',
+        GetPublishedReviewRequest.createFilter,
+        GetPublishedReviewRequest.query,
+      ),
+      Effect.provide(context),
     ),
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: handleQuery(
-      'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
-      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
-      flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: flow(
+      Queries.handleQuery(
+        'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
+        GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
+        flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
+      ),
+      Effect.provide(context),
     ),
-    searchForPublishedReviewRequests: yield* makeStatefulQuery(
+    searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(
       SearchForPublishedReviewRequests.searchForPublishedReviewRequests,
     ),
-    findReviewRequestsNeedingCategorization: handleSimpleQuery(
-      'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
-      FindReviewRequestsNeedingCategorization.filter,
-      FindReviewRequestsNeedingCategorization.query,
+    findReviewRequestsNeedingCategorization: flow(
+      Queries.handleSimpleQuery(
+        'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
+        FindReviewRequestsNeedingCategorization.filter,
+        FindReviewRequestsNeedingCategorization.query,
+      ),
+      Effect.provide(context),
     ),
   }
 })

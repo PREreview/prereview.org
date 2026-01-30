@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, Layer, pipe, TestClock } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Reactions/ProcessReceivedReviewRequest.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -239,7 +240,7 @@ describe('ProcessReceivedReviewRequest', () => {
           new ReviewRequests.ReviewRequestHasBeenAccepted({ cause }),
           new ReviewRequests.ReviewRequestHasBeenRejected({ cause }),
           new ReviewRequests.UnknownReviewRequest({ cause }),
-          new ReviewRequests.UnableToQuery({ cause }),
+          new Queries.UnableToQuery({ cause }),
         ),
       ),
   ])("when the review request can't be loaded", (reviewRequestId, error) =>

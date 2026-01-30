@@ -1,8 +1,8 @@
 import { Either, Equal, flow, Match, Option, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
-import type { StatefulQuery } from './index.ts'
 
 export interface Input {
   preprintId: Preprints.IndeterminatePreprintId
@@ -64,7 +64,7 @@ const query = (state: State, input: Input): Result => {
   )
 }
 
-export const doesAPreprintHaveAReviewRequest: StatefulQuery<State, [Input], Result, never> = {
+export const doesAPreprintHaveAReviewRequest: Queries.StatefulQuery<State, [Input], Result, never> = {
   name: 'ReviewRequestQueries.doesAPreprintHaveAReviewRequest',
   initialState,
   updateStateWithEvent,
