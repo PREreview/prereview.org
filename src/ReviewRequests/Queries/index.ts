@@ -60,13 +60,28 @@ export {
 } from './GetPublishedReviewRequest.ts'
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
+const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>(
+  initialState: State,
+  updateStateWithEvent: (state: State, event: Events.Event) => State,
+  query: (state: State, ...input: Input) => Either.Either<Result, Error>,
+): Effect.Effect<(...input: Input) => Either.Either<Result, Error>, never, EventDispatcher.EventDispatcher> =>
+  Effect.gen(function* () {
+    const eventDispatcher = yield* EventDispatcher.EventDispatcher
+
+    let state = initialState
+
+    yield* eventDispatcher.addSubscriber(event => {
+      state = updateStateWithEvent(state, event)
+    })
+
+    return (...input) => query(state, ...input)
+  })
+
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
   never,
   EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
-  const eventDispatcher = yield* EventDispatcher.EventDispatcher
-
   const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
   const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
@@ -115,21 +130,6 @@ const makeReviewRequestQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
       Effect.provide(context),
     )
-
-  const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>(
-    initialState: State,
-    updateStateWithEvent: (state: State, event: Events.Event) => State,
-    query: (state: State, ...input: Input) => Either.Either<Result, Error>,
-  ): Effect.Effect<(...input: Input) => Either.Either<Result, Error>> =>
-    Effect.gen(function* () {
-      let state = initialState
-
-      yield* eventDispatcher.addSubscriber(event => {
-        state = updateStateWithEvent(state, event)
-      })
-
-      return (...input) => query(state, ...input)
-    })
 
   return {
     doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery(
