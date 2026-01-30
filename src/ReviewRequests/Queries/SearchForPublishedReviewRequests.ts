@@ -54,6 +54,14 @@ type State = Record<
 
 export const InitialState: State = Record.empty()
 
+export const updateStateWithEvent = (state: State, event: Events.Event): State => {
+  if (!Events.matches(event, filter)) {
+    return state
+  }
+
+  return updateStateWithPertinentEvent(state, event)
+}
+
 const updateStateWithPertinentEvent = (map: State, event: Extract<Events.Event, { _tag: EventType }>) =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
@@ -194,9 +202,7 @@ export const statefulQuery = (state: State, input: Input): Result =>
   })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const filteredEvents = Array.filter(events, Events.matches(filter))
-
-  const state = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
+  const state = Array.reduce(events, InitialState, updateStateWithEvent)
 
   return statefulQuery(state, input)
 }
