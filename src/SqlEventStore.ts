@@ -45,15 +45,30 @@ export const make: Effect.Effect<
     )
   `
 
+  yield* sql.onDialectOrElse({
+    pg: () => sql`
+      CREATE INDEX IF NOT EXISTS idx_events_type ON events (type);
+
+      CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
+    `,
+    orElse: () => Effect.void,
+  })
+
   const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     sql.or(
       Array.map(Array.ensure(filter), filter =>
         filter.predicates && Struct.keys(filter.predicates).length > 0
           ? sql.and([
               sql.in('type', filter.types),
-              ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-              ),
+              ...sql.onDialectOrElse({
+                pg: () => [sql`payload @> ${filter.predicates}`],
+                orElse: () =>
+                  Record.reduce(filter.predicates ?? {}, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+                    typeof value === 'string'
+                      ? Array.append(conditions, sql`payload ->> ${key} = ${value}`)
+                      : conditions,
+                  ),
+              }),
             ])
           : sql.in('type', filter.types),
       ),
