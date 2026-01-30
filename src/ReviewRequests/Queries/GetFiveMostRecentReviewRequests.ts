@@ -139,11 +139,3 @@ export const statefulQuery = (reviewRequests: State): Result => {
 
   return Array.take(sortedReviewRequests, 5)
 }
-
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
-  const filteredEvents = Array.filter(events, Events.matches(filter))
-
-  const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithEvent)
-
-  return statefulQuery(reviewRequests)
-}
