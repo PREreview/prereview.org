@@ -143,13 +143,9 @@ const updateStateWithPertinentEvent = (map: State, event: Extract<Events.Event, 
       ),
   })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result =>
+export const statefulQuery = (state: State, input: Input): Result =>
   Either.gen(function* () {
-    const filteredEvents = Array.filter(events, Events.matches(filter))
-
-    const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
-
-    const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
+    const filteredReviewRequests = Record.filter(state, reviewRequest =>
       Boolean.every([
         reviewRequest.published !== undefined,
         reviewRequest.preprintId !== undefined,
@@ -196,3 +192,11 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
       })),
     }
   })
+
+export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  const state = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
+
+  return statefulQuery(state, input)
+}
