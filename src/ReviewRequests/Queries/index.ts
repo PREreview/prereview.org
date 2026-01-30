@@ -116,6 +116,15 @@ const makeReviewRequestQueries: Effect.Effect<
       Effect.provide(context),
     )
 
+  let doesAPreprintHaveAReviewRequestState = DoesAPreprintHaveAReviewRequest.InitialState
+
+  yield* eventDispatcher.addSubscriber(event => {
+    doesAPreprintHaveAReviewRequestState = DoesAPreprintHaveAReviewRequest.updateStateWithEvent(
+      doesAPreprintHaveAReviewRequestState,
+      event,
+    )
+  })
+
   let getFiveMostRecentReviewRequestsState = GetFiveMostRecentReviewRequests.InitialState
 
   yield* eventDispatcher.addSubscriber(event => {
@@ -135,11 +144,8 @@ const makeReviewRequestQueries: Effect.Effect<
   })
 
   return {
-    doesAPreprintHaveAReviewRequest: handleQuery(
-      'doesAPreprintHaveAReviewRequest',
-      () => DoesAPreprintHaveAReviewRequest.filter,
-      flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
-    ),
+    doesAPreprintHaveAReviewRequest: input =>
+      Effect.succeed(DoesAPreprintHaveAReviewRequest.statefulQuery(doesAPreprintHaveAReviewRequestState, input)),
     getFiveMostRecentReviewRequests: () =>
       Effect.succeed(GetFiveMostRecentReviewRequests.query(getFiveMostRecentReviewRequestsState)),
     getReceivedReviewRequest: handleQuery(
