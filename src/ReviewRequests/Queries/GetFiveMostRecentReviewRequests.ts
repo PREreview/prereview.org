@@ -1,4 +1,4 @@
-import { Array, Boolean, Match, Option, Record, Struct, type Types } from 'effect'
+import { Array, Boolean, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -21,7 +21,7 @@ const eventTypes = [
   'ReviewRequestForAPreprintWasCategorized',
 ] as const
 
-type PertinentEvent = Types.ExtractTag<Events.Event, (typeof eventTypes)[number]>
+type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
 export const filter = Events.EventFilter({ types: eventTypes })
 

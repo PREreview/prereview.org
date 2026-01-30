@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Function, Layer, PubSub, Record, Schema, Struct, flow, pipe } from 'effect'
+import { Array, Context, Effect, Function, Layer, PubSub, Record, Schema, Struct, type Types, flow, pipe } from 'effect'
 import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PrereviewerEvents from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
@@ -21,28 +21,26 @@ export const Event = Schema.Union(
 export type EventFilter<T extends Event['_tag']> =
   | {
       types: Array.NonEmptyReadonlyArray<T>
-      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+      predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
     }
   | Array.NonEmptyReadonlyArray<{
       types: Array.NonEmptyReadonlyArray<T>
-      predicates?: Partial<Omit<Extract<Event, { _tag: T }>, '_tag'>>
+      predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
     }>
 
 export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
 
 export const matches: {
-  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }>
-  <T extends Event['_tag']>(filter: EventFilter<T>): (event: Event) => event is Extract<Event, { _tag: T }>
-} = Function.dual(
-  2,
-  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is Extract<Event, { _tag: T }> =>
-    Array.some(Array.ensure(filter), filter => {
-      if (!Array.contains(filter.types, event._tag)) {
-        return false
-      }
+  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is EventSubset<T>
+  <T extends Event['_tag']>(filter: EventFilter<T>): (event: Event) => event is EventSubset<T>
+} = Function.dual(2, <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is EventSubset<T> =>
+  Array.some(Array.ensure(filter), filter => {
+    if (!Array.contains(filter.types, event._tag)) {
+      return false
+    }
 
-      return Record.isSubrecord(filter.predicates ?? Record.empty(), event as never)
-    }),
+    return Record.isSubrecord(filter.predicates ?? Record.empty(), event as never)
+  }),
 )
 
 export const EventTypes = Array.map(Event.members, Struct.get('_tag'))
@@ -61,6 +59,11 @@ export const layer = Layer.scoped(
   ),
 )
 
+export type EventSubset<SubsetTags extends Event['_tag'] | ReadonlyArray<Event['_tag']>> = Types.ExtractTag<
+  Event,
+  SubsetTags extends ReadonlyArray<unknown> ? SubsetTags[number] : SubsetTags
+>
+
 function isA<Tag extends Event['_tag']>(...tags: ReadonlyArray<Tag>) {
-  return (event: Event): event is Extract<Event, { _tag: Tag }> => Array.contains(tags, event._tag)
+  return (event: Event): event is EventSubset<Tag> => Array.contains(tags, event._tag)
 }
