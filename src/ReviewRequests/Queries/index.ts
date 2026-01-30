@@ -60,11 +60,21 @@ export {
 } from './GetPublishedReviewRequest.ts'
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
-const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>(
-  initialState: State,
-  updateStateWithEvent: (state: State, event: Events.Event) => State,
-  query: (state: State, ...input: Input) => Either.Either<Result, Error>,
-): Effect.Effect<(...input: Input) => Either.Either<Result, Error>, never, EventDispatcher.EventDispatcher> =>
+export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
+  initialState: State
+  updateStateWithEvent: (state: State, event: Events.Event) => State
+  query: (state: State, ...input: Input) => Either.Either<Result, Error>
+}
+
+const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
+  initialState,
+  updateStateWithEvent,
+  query,
+}: StatefulQuery<State, Input, Result, Error>): Effect.Effect<
+  (...input: Input) => Either.Either<Result, Error>,
+  never,
+  EventDispatcher.EventDispatcher
+> =>
   Effect.gen(function* () {
     const eventDispatcher = yield* EventDispatcher.EventDispatcher
 
@@ -132,16 +142,16 @@ const makeReviewRequestQueries: Effect.Effect<
     )
 
   return {
-    doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery(
-      DoesAPreprintHaveAReviewRequest.InitialState,
-      DoesAPreprintHaveAReviewRequest.updateStateWithEvent,
-      flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
-    ),
-    getFiveMostRecentReviewRequests: yield* makeStatefulQuery(
-      GetFiveMostRecentReviewRequests.InitialState,
-      GetFiveMostRecentReviewRequests.updateStateWithEvent,
-      flow(GetFiveMostRecentReviewRequests.query, Either.right),
-    ),
+    doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery({
+      initialState: DoesAPreprintHaveAReviewRequest.InitialState,
+      updateStateWithEvent: DoesAPreprintHaveAReviewRequest.updateStateWithEvent,
+      query: flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
+    }),
+    getFiveMostRecentReviewRequests: yield* makeStatefulQuery({
+      initialState: GetFiveMostRecentReviewRequests.InitialState,
+      updateStateWithEvent: GetFiveMostRecentReviewRequests.updateStateWithEvent,
+      query: flow(GetFiveMostRecentReviewRequests.query, Either.right),
+    }),
     getReceivedReviewRequest: handleQuery(
       'getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,
@@ -157,11 +167,11 @@ const makeReviewRequestQueries: Effect.Effect<
       GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
-    searchForPublishedReviewRequests: yield* makeStatefulQuery(
-      SearchForPublishedReviewRequests.InitialState,
-      SearchForPublishedReviewRequests.updateStateWithEvent,
-      SearchForPublishedReviewRequests.query,
-    ),
+    searchForPublishedReviewRequests: yield* makeStatefulQuery({
+      initialState: SearchForPublishedReviewRequests.InitialState,
+      updateStateWithEvent: SearchForPublishedReviewRequests.updateStateWithEvent,
+      query: SearchForPublishedReviewRequests.query,
+    }),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(
       'findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,
