@@ -150,7 +150,7 @@ const makeReviewRequestQueries: Effect.Effect<
     ),
     searchForPublishedReviewRequests: handleQuery(
       'searchForPublishedReviewRequests',
-      SearchForPublishedReviewRequests.createFilter,
+      () => SearchForPublishedReviewRequests.filter,
       SearchForPublishedReviewRequests.query,
     ),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(

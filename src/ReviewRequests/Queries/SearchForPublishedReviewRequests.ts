@@ -39,8 +39,7 @@ const eventTypes = [
 
 type EventType = (typeof eventTypes)[number]
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const createFilter = (input: Input) => Events.EventFilter({ types: eventTypes })
+export const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<
   Uuid.Uuid,
@@ -146,8 +145,6 @@ const updateStateWithPertinentEvent = (map: State, event: Extract<Events.Event, 
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result =>
   Either.gen(function* () {
-    const filter = createFilter(input)
-
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
     const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)
