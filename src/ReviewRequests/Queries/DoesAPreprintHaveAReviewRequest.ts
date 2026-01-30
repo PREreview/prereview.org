@@ -18,8 +18,7 @@ const eventTypes = [
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const createFilter = ({ preprintId }: Input) => Events.EventFilter({ types: eventTypes })
+export const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>
 
@@ -50,8 +49,6 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
   })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const filter = createFilter(input)
-
   const filteredEvents = Array.filter(events, Events.matches(filter))
 
   const reviewRequests = Array.reduce(filteredEvents, InitialState, updateStateWithPertinentEvent)

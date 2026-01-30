@@ -137,7 +137,7 @@ const makeReviewRequestQueries: Effect.Effect<
   return {
     doesAPreprintHaveAReviewRequest: handleQuery(
       'doesAPreprintHaveAReviewRequest',
-      DoesAPreprintHaveAReviewRequest.createFilter,
+      () => DoesAPreprintHaveAReviewRequest.filter,
       flow(DoesAPreprintHaveAReviewRequest.query, Either.right),
     ),
     getFiveMostRecentReviewRequests: () =>
