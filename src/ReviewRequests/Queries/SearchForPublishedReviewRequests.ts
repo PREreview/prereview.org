@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'effect'
+import { Array, Boolean, Either, Equal, Match, Option, Record, Struct, type Types } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -37,7 +37,7 @@ const eventTypes = [
   'ReviewRequestForAPreprintWasCategorized',
 ] as const
 
-type EventType = (typeof eventTypes)[number]
+type PertinentEvent = Types.ExtractTag<Events.Event, (typeof eventTypes)[number]>
 
 export const filter = Events.EventFilter({ types: eventTypes })
 
@@ -62,7 +62,7 @@ export const updateStateWithEvent = (state: State, event: Events.Event): State =
   return updateStateWithPertinentEvent(state, event)
 }
 
-const updateStateWithPertinentEvent = (map: State, event: Extract<Events.Event, { _tag: EventType }>) =>
+const updateStateWithPertinentEvent = (map: State, event: PertinentEvent) =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
       Option.getOrElse(

@@ -1,4 +1,4 @@
-import { Array, Boolean, Match, Option, Record, Struct } from 'effect'
+import { Array, Boolean, Match, Option, Record, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -21,11 +21,9 @@ const eventTypes = [
   'ReviewRequestForAPreprintWasCategorized',
 ] as const
 
-type EventType = (typeof eventTypes)[number]
+type PertinentEvent = Types.ExtractTag<Events.Event, (typeof eventTypes)[number]>
 
-export const filter = Events.EventFilter({
-  types: eventTypes,
-})
+export const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<
   Uuid.Uuid,
@@ -46,7 +44,7 @@ export const updateStateWithEvent = (state: State, event: Events.Event): State =
   return updateStateWithPertinentEvent(state, event)
 }
 
-const updateStateWithPertinentEvent = (state: State, event: Extract<Events.Event, { _tag: EventType }>): State =>
+const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
       Option.getOrElse(
