@@ -13,10 +13,12 @@ import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewReq
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
-    doesAPreprintHaveAReviewRequest: Query<
-      (input: DoesAPreprintHaveAReviewRequest.Input) => DoesAPreprintHaveAReviewRequest.Result
+    doesAPreprintHaveAReviewRequest: FromStatefulQuery<
+      typeof DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest
     >
-    getFiveMostRecentReviewRequests: SimpleQuery<GetFiveMostRecentReviewRequests.Result>
+    getFiveMostRecentReviewRequests: FromStatefulQuery<
+      typeof GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests
+    >
     getReceivedReviewRequest: Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
     getPublishedReviewRequest: Query<(input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result>
     getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Query<
@@ -24,8 +26,8 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
         input: GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Input,
       ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
     >
-    searchForPublishedReviewRequests: Query<
-      (input: SearchForPublishedReviewRequests.Input) => SearchForPublishedReviewRequests.Result
+    searchForPublishedReviewRequests: FromStatefulQuery<
+      typeof SearchForPublishedReviewRequests.searchForPublishedReviewRequests
     >
     findReviewRequestsNeedingCategorization: SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
@@ -38,6 +40,14 @@ type Query<F extends (...args: never) => unknown, E = never> = (
   : Effect.Effect<ReturnType<F>, UnableToQuery | E>
 
 type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  StatefulQuery<any, infer Input, infer Result, infer Error>,
+]
+  ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
+  : never
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
