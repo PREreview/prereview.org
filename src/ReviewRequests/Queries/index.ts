@@ -61,17 +61,19 @@ export {
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 
 export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
+  name: string
   initialState: State
   updateStateWithEvent: (state: State, event: Events.Event) => State
   query: (state: State, ...input: Input) => Either.Either<Result, Error>
 }
 
 const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
+  name,
   initialState,
   updateStateWithEvent,
   query,
 }: StatefulQuery<State, Input, Result, Error>): Effect.Effect<
-  (...input: Input) => Either.Either<Result, Error>,
+  (...input: Input) => Effect.Effect<Result, Error>,
   never,
   EventDispatcher.EventDispatcher
 > =>
@@ -84,7 +86,9 @@ const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, 
       state = updateStateWithEvent(state, event)
     })
 
-    return (...input) => query(state, ...input)
+    return Effect.fn(`ReviewRequestQueries.${name}`)(function* (...input: Input) {
+      return yield* query(state, ...input)
+    })
   })
 
 const makeReviewRequestQueries: Effect.Effect<

@@ -208,6 +208,7 @@ export const searchForPublishedReviewRequests: StatefulQuery<
   Either.Either.Right<Result>,
   Either.Either.Left<Result>
 > = {
+  name: 'searchForPublishedReviewRequests',
   initialState,
   updateStateWithEvent,
   query,
