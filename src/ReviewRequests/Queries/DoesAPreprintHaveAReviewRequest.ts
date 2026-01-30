@@ -56,11 +56,15 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       ),
   })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const reviewRequests = Array.reduce(events, InitialState, updateStateWithEvent)
-
+export const statefulQuery = (state: State, input: Input): Result => {
   return Record.some(
-    reviewRequests,
+    state,
     reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
   )
+}
+
+export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
+  const state = Array.reduce(events, InitialState, updateStateWithEvent)
+
+  return statefulQuery(state, input)
 }
