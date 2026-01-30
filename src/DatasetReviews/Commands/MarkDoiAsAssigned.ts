@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
 import type { Doi, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'
@@ -54,6 +54,6 @@ export const decide: {
     }),
 )
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }

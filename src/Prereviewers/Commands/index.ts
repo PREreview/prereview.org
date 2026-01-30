@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, Layer, Option, pipe, Scope, type Types } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as SubscribeToAKeyword from './SubscribeToAKeyword.ts'
@@ -20,7 +20,7 @@ const makePrereviewerCommands: Effect.Effect<typeof PrereviewerCommands.Service,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleCommand = <Event extends Events.PrereviewerEvent['_tag'], State, Command>(
+    const handleCommand = <Event extends Types.Tags<Events.PrereviewerEvent>, State, Command>(
       createFilter: (command: Command) => Events.EventFilter<Event>,
       foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, command: Command) => State,
       decide: (command: Command) => (state: State) => Option.Option<Events.PrereviewerEvent>,

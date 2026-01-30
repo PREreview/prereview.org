@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, Layer, pipe, Scope, type Types } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as GetSubscribedKeywords from './GetSubscribedKeywords.ts'
@@ -22,7 +22,7 @@ const makePrereviewerQueries: Effect.Effect<typeof PrereviewerQueries.Service, n
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleQuery = <Event extends Events.PrereviewerEvent['_tag'], Input, Result>(
+    const handleQuery = <Event extends Types.Tags<Events.PrereviewerEvent>, Input, Result>(
       createFilter: (input: Input) => Events.EventFilter<Event>,
       query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, input: Input) => Result,
     ): ((input: Input) => Effect.Effect<Result, UnableToQuery>) =>

@@ -1,6 +1,6 @@
 import { Array, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'

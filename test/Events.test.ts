@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Tuple } from 'effect'
+import { Tuple, type Types } from 'effect'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as _ from '../src/Events.ts'
 import { Doi, OrcidId, Uuid } from '../src/types/index.ts'
@@ -15,7 +15,11 @@ const datasetReviewWasStarted = new _.DatasetReviewWasStarted({ authorId, datase
 
 describe('matches', () => {
   test.prop(
-    [fc.event().map(event => Tuple.make<[_.Event, _.EventFilter<_.Event['_tag']>]>(event, { types: [event._tag] }))],
+    [
+      fc
+        .event()
+        .map(event => Tuple.make<[_.Event, _.EventFilter<Types.Tags<_.Event>>]>(event, { types: [event._tag] })),
+    ],
     {
       examples: [
         [[datasetReviewWasStarted, { types: ['DatasetReviewWasStarted'] }]], // single type
@@ -74,7 +78,7 @@ describe('matches', () => {
         .tuple(fc.event(), fc.event())
         .filter(([event1, event2]) => event1._tag !== event2._tag)
         .map(([event1, event2]) =>
-          Tuple.make<[_.Event, _.EventFilter<_.Event['_tag']>]>(event1, { types: [event2._tag] }),
+          Tuple.make<[_.Event, _.EventFilter<Types.Tags<_.Event>>]>(event1, { types: [event2._tag] }),
         ),
     ],
     {

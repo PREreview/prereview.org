@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope, type Types } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -180,7 +180,7 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleQuery = <Event extends Events.DatasetReviewEvent['_tag'], Input, Result, Error>(
+    const handleQuery = <Event extends Types.Tags<Events.DatasetReviewEvent>, Input, Result, Error>(
       createFilter: (input: Input) => Events.EventFilter<Event>,
       query: (
         events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,

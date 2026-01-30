@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { type Array, Effect, Layer, Option, type PubSub, TestClock } from 'effect'
+import { type Array, Effect, Layer, Option, type PubSub, TestClock, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -167,7 +167,7 @@ const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
 test.each<
   [
     string,
-    Events.EventFilter<Events.Event['_tag']>,
+    Events.EventFilter<Types.Tags<Events.Event>>,
     Array.NonEmptyReadonlyArray<Events.Event>,
     ReadonlyArray<Events.Event>,
   ]

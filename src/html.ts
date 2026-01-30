@@ -1,4 +1,4 @@
-import { Array, Data, Match, type Predicate, pipe } from 'effect'
+import { Array, Data, Match, pipe, type Predicate } from 'effect'
 import { decode } from 'html-entities'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'

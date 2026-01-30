@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Either, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, Either, Layer, Option, pipe, Scope, type Types } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -50,7 +50,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
-      Event extends Events.ReviewRequestEvent['_tag'],
+      Event extends Types.Tags<Events.ReviewRequestEvent>,
       State,
       Command extends { reviewRequestId: Uuid.Uuid },
       Error,

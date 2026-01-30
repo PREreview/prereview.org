@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
+import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -26,7 +26,9 @@ export class IsBeingPublished extends Data.TaggedClass('IsBeingPublished')<{ aut
 
 export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished')<{ authorId: OrcidId.OrcidId }> {}
 
-export const createFilter = (datasetReviewId: Uuid.Uuid): Events.EventFilter<Events.DatasetReviewEvent['_tag']> => ({
+export const createFilter = (
+  datasetReviewId: Uuid.Uuid,
+): Events.EventFilter<Types.Tags<Events.DatasetReviewEvent>> => ({
   types: [
     'DatasetReviewWasStarted',
     'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
@@ -92,6 +94,6 @@ export const decide: {
     }),
 )
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }

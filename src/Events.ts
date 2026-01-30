@@ -18,7 +18,7 @@ export const Event = Schema.Union(
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
 )
 
-export type EventFilter<T extends Event['_tag']> =
+export type EventFilter<T extends Types.Tags<Event>> =
   | {
       types: Array.NonEmptyReadonlyArray<T>
       predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
@@ -28,12 +28,12 @@ export type EventFilter<T extends Event['_tag']> =
       predicates?: Partial<Omit<EventSubset<T>, '_tag'>>
     }>
 
-export const EventFilter = <T extends Event['_tag']>(filter: EventFilter<T>) => filter
+export const EventFilter = <T extends Types.Tags<Event>>(filter: EventFilter<T>) => filter
 
 export const matches: {
-  <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is EventSubset<T>
-  <T extends Event['_tag']>(filter: EventFilter<T>): (event: Event) => event is EventSubset<T>
-} = Function.dual(2, <T extends Event['_tag']>(event: Event, filter: EventFilter<T>): event is EventSubset<T> =>
+  <T extends Types.Tags<Event>>(event: Event, filter: EventFilter<T>): event is EventSubset<T>
+  <T extends Types.Tags<Event>>(filter: EventFilter<T>): (event: Event) => event is EventSubset<T>
+} = Function.dual(2, <T extends Types.Tags<Event>>(event: Event, filter: EventFilter<T>): event is EventSubset<T> =>
   Array.some(Array.ensure(filter), filter => {
     if (!Array.contains(filter.types, event._tag)) {
       return false
@@ -59,11 +59,11 @@ export const layer = Layer.scoped(
   ),
 )
 
-export type EventSubset<SubsetTags extends Event['_tag'] | ReadonlyArray<Event['_tag']>> = Types.ExtractTag<
+export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> = Types.ExtractTag<
   Event,
   SubsetTags extends ReadonlyArray<unknown> ? SubsetTags[number] : SubsetTags
 >
 
-function isA<Tag extends Event['_tag']>(...tags: ReadonlyArray<Tag>) {
+function isA<Tag extends Types.Tags<Event>>(...tags: ReadonlyArray<Tag>) {
   return (event: Event): event is EventSubset<Tag> => Array.contains(tags, event._tag)
 }

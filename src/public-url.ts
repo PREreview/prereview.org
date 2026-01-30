@@ -1,6 +1,6 @@
 import { Url } from '@effect/platform'
 import { Context, Effect, Function, pipe } from 'effect'
-import { type Formatter, format } from 'fp-ts-routing'
+import { format, type Formatter } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import type { Route } from './routes.ts'

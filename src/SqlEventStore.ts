@@ -14,6 +14,7 @@ import {
   Schema,
   Scope,
   Struct,
+  type Types,
 } from 'effect'
 import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
@@ -44,7 +45,7 @@ export const make: Effect.Effect<
     )
   `
 
-  const buildFilterCondition = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
+  const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     sql.or(
       Array.map(Array.ensure(filter), filter =>
         filter.predicates && Struct.keys(filter.predicates).length > 0
@@ -58,7 +59,7 @@ export const make: Effect.Effect<
       ),
     )
 
-  const selectEventRows = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
+  const selectEventRows = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     pipe(
       sql`
         SELECT

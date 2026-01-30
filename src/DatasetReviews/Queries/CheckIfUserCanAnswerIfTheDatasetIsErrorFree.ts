@@ -1,4 +1,4 @@
-import { Array, Either, Equal, Option, Struct } from 'effect'
+import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
@@ -17,7 +17,7 @@ export type Result = Either.Either<
   | Errors.DatasetReviewHasBeenPublished
 >
 
-export const createFilter = ({ datasetReviewId }: Input): EventFilter<Events.DatasetReviewEvent['_tag']> => ({
+export const createFilter = ({ datasetReviewId }: Input): EventFilter<Types.Tags<Events.DatasetReviewEvent>> => ({
   types: [
     'DatasetReviewWasStarted',
     'AnsweredIfTheDatasetIsErrorFree',
@@ -56,6 +56,6 @@ export const query = (events: ReadonlyArray<Events.DatasetReviewEvent>, input: I
     )
   })
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }

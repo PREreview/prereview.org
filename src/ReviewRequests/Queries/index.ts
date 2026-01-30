@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, Either, flow, Layer, pipe, Scope, type Types } from 'effect'
 import * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -108,7 +108,7 @@ const makeReviewRequestQueries: Effect.Effect<
 > = Effect.gen(function* () {
   const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-  const handleQuery = <Event extends Events.Event['_tag'], Input, Result, Error>(
+  const handleQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
     name: string,
     createFilter: (input: Input) => Events.EventFilter<Event>,
     query: (
@@ -134,7 +134,7 @@ const makeReviewRequestQueries: Effect.Effect<
       Effect.provide(context),
     )
 
-  const handleSimpleQuery = <Event extends Events.ReviewRequestEvent['_tag'], Result>(
+  const handleSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
     name: string,
     filter: Events.EventFilter<Event>,
     query: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>) => Result,

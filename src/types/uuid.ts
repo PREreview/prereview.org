@@ -3,7 +3,7 @@ import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { type Uuid, isUuid, v4 } from 'uuid-ts'
+import { isUuid, v4, type Uuid } from 'uuid-ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { Uuid } from 'uuid-ts'

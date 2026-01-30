@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Function, Match, Option } from 'effect'
+import { Array, Data, Either, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -22,7 +22,9 @@ export class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
 
 export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
-export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
+export const createFilter = (
+  reviewRequestId: Uuid.Uuid,
+): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasRejected',
@@ -72,6 +74,6 @@ export const decide: {
     }),
 )
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }

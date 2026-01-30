@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, Option, pipe } from 'effect'
+import { Array, Data, Either, Option, pipe, type Types } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -28,7 +28,7 @@ export interface Input {
 
 export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
-export const createFilter = ({ reviewRequestId }: Input): EventFilter<Events.ReviewRequestEvent['_tag']> => ({
+export const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
@@ -91,6 +91,6 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
     })
   })
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }

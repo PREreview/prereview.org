@@ -8,7 +8,7 @@ import type { FieldId } from '../../types/field.ts'
 import { havingProblemsPage, pageNotFound } from '../http-error.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { createEmptyPage, createPage } from './review-requests-page.ts'
-import { type GetReviewRequestsEnv, getReviewRequests } from './review-requests.ts'
+import { getReviewRequests, type GetReviewRequestsEnv } from './review-requests.ts'
 
 export {
   ReviewRequestsAreUnavailable,

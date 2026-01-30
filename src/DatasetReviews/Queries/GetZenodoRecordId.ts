@@ -1,4 +1,4 @@
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, type Types } from 'effect'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 
@@ -20,10 +20,13 @@ export const GetZenodoRecordId = (
   })
 }
 
-function hasEvent(events: ReadonlyArray<Events.DatasetReviewEvent>, tag: Events.DatasetReviewEvent['_tag']): boolean {
+function hasEvent(
+  events: ReadonlyArray<Events.DatasetReviewEvent>,
+  tag: Types.Tags<Events.DatasetReviewEvent>,
+): boolean {
   return Array.some(events, hasTag(tag))
 }
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
 }
