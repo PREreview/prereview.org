@@ -145,7 +145,7 @@ const makeReviewRequestQueries: Effect.Effect<
 
   return {
     doesAPreprintHaveAReviewRequest: input =>
-      Effect.succeed(DoesAPreprintHaveAReviewRequest.statefulQuery(doesAPreprintHaveAReviewRequestState, input)),
+      Effect.succeed(DoesAPreprintHaveAReviewRequest.query(doesAPreprintHaveAReviewRequestState, input)),
     getFiveMostRecentReviewRequests: () =>
       Effect.succeed(GetFiveMostRecentReviewRequests.query(getFiveMostRecentReviewRequestsState)),
     getReceivedReviewRequest: handleQuery(

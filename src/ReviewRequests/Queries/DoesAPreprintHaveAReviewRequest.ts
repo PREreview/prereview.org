@@ -1,4 +1,4 @@
-import { Array, Equal, Match, Option, Record } from 'effect'
+import { Equal, Match, Option, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -56,15 +56,9 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       ),
   })
 
-export const statefulQuery = (state: State, input: Input): Result => {
+export const query = (state: State, input: Input): Result => {
   return Record.some(
     state,
     reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
   )
-}
-
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result => {
-  const state = Array.reduce(events, InitialState, updateStateWithEvent)
-
-  return statefulQuery(state, input)
 }
