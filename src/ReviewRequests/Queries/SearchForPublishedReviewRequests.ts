@@ -7,6 +7,7 @@ import { Temporal, type Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
 import { getTopicField, getTopicSubfield, type TopicId } from '../../types/Topic.ts'
 import * as Errors from '../Errors.ts'
+import type { StatefulQuery } from './index.ts'
 
 export interface PageOfReviewRequests {
   readonly currentPage: number
@@ -39,7 +40,7 @@ const eventTypes = [
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
-export const filter = Events.EventFilter({ types: eventTypes })
+const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<
   Uuid.Uuid,
@@ -52,9 +53,9 @@ type State = Record<
   }
 >
 
-export const InitialState: State = Record.empty()
+const initialState: State = Record.empty()
 
-export const updateStateWithEvent = (state: State, event: Events.Event): State => {
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
   if (!Events.matches(event, filter)) {
     return state
   }
@@ -151,7 +152,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent) =>
       ),
   })
 
-export const query = (state: State, input: Input): Result =>
+const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
     const filteredReviewRequests = Record.filter(state, reviewRequest =>
       Boolean.every([
@@ -200,3 +201,14 @@ export const query = (state: State, input: Input): Result =>
       })),
     }
   })
+
+export const searchForPublishedReviewRequests: StatefulQuery<
+  State,
+  [Input],
+  Either.Either.Right<Result>,
+  Either.Either.Left<Result>
+> = {
+  initialState,
+  updateStateWithEvent,
+  query,
+}

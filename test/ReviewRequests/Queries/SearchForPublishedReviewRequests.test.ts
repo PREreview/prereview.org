@@ -434,9 +434,11 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     }),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const state = Array.reduce(events, _.InitialState, _.updateStateWithEvent)
+  const { initialState, updateStateWithEvent, query } = _.searchForPublishedReviewRequests
 
-  const actual = _.query(state, input)
+  const state = Array.reduce(events, initialState, updateStateWithEvent)
+
+  const actual = query(state, input)
 
   expect(actual).toStrictEqual(expected)
 })

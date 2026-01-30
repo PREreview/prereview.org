@@ -145,11 +145,9 @@ const makeReviewRequestQueries: Effect.Effect<
     doesAPreprintHaveAReviewRequest: yield* makeStatefulQuery(
       DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest,
     ),
-    getFiveMostRecentReviewRequests: yield* makeStatefulQuery({
-      initialState: GetFiveMostRecentReviewRequests.InitialState,
-      updateStateWithEvent: GetFiveMostRecentReviewRequests.updateStateWithEvent,
-      query: flow(GetFiveMostRecentReviewRequests.query, Either.right),
-    }),
+    getFiveMostRecentReviewRequests: yield* makeStatefulQuery(
+      GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests,
+    ),
     getReceivedReviewRequest: handleQuery(
       'getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,
@@ -165,11 +163,9 @@ const makeReviewRequestQueries: Effect.Effect<
       GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
-    searchForPublishedReviewRequests: yield* makeStatefulQuery({
-      initialState: SearchForPublishedReviewRequests.InitialState,
-      updateStateWithEvent: SearchForPublishedReviewRequests.updateStateWithEvent,
-      query: SearchForPublishedReviewRequests.query,
-    }),
+    searchForPublishedReviewRequests: yield* makeStatefulQuery(
+      SearchForPublishedReviewRequests.searchForPublishedReviewRequests,
+    ),
     findReviewRequestsNeedingCategorization: handleSimpleQuery(
       'findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,

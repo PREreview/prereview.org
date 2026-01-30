@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Option } from 'effect'
+import { Array, Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetFiveMostRecentReviewRequests.ts'
@@ -278,9 +278,11 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
     ],
   ],
 ])('%s', (_name, events, expected) => {
-  const state = Array.reduce(events, _.InitialState, _.updateStateWithEvent)
+  const { initialState, updateStateWithEvent, query } = _.getFiveMostRecentReviewRequests
 
-  const actual = _.query(state)
+  const state = Array.reduce(events, initialState, updateStateWithEvent)
 
-  expect(actual).toStrictEqual(expected)
+  const actual = query(state)
+
+  expect(actual).toStrictEqual(Either.right(expected))
 })

@@ -1,8 +1,9 @@
-import { Array, Boolean, Match, Option, Record, Struct } from 'effect'
+import { Array, Boolean, Either, flow, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { TopicId } from '../../types/Topic.ts'
+import type { StatefulQuery } from './index.ts'
 
 export interface RecentReviewRequest {
   readonly id: Uuid.Uuid
@@ -23,7 +24,7 @@ const eventTypes = [
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
-export const filter = Events.EventFilter({ types: eventTypes })
+const filter = Events.EventFilter({ types: eventTypes })
 
 type State = Record<
   Uuid.Uuid,
@@ -34,9 +35,9 @@ type State = Record<
   }
 >
 
-export const InitialState: State = Record.empty()
+const initialState: State = Record.empty()
 
-export const updateStateWithEvent = (state: State, event: Events.Event): State => {
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
   if (!Events.matches(event, filter)) {
     return state
   }
@@ -115,7 +116,7 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       ),
   })
 
-export const query = (reviewRequests: State): Result => {
+const query = (reviewRequests: State): Result => {
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
   ) as Record<
@@ -136,4 +137,10 @@ export const query = (reviewRequests: State): Result => {
   )
 
   return Array.take(sortedReviewRequests, 5)
+}
+
+export const getFiveMostRecentReviewRequests: StatefulQuery<State, [], Result, never> = {
+  initialState,
+  updateStateWithEvent,
+  query: flow(query, Either.right),
 }
