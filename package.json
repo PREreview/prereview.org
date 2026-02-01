@@ -61,7 +61,7 @@
     "zenodo-ts": "^0.1.22"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.28.6",
+    "@babel/preset-env": "^7.29.0",
     "@babel/preset-typescript": "^7.28.5",
     "@csstools/postcss-global-data": "^4.0.0",
     "@effect/language-service": "^0.72.0",
