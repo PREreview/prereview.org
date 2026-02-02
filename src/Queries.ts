@@ -1,4 +1,4 @@
-import { Array, Data, Effect, pipe, type Either, type Types } from 'effect'
+import { Array, Data, Effect, Option, pipe, Struct, type Either, type Types } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -64,9 +64,9 @@ export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result,
       function* (input) {
         const filter = createFilter(input)
 
-        const { events } = yield* pipe(
+        const events = yield* pipe(
           eventStore.query(filter),
-          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
         return yield* pipe(
@@ -88,9 +88,9 @@ export const makeSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEve
 
     return Effect.fn(name)(
       function* () {
-        const { events } = yield* pipe(
+        const events = yield* pipe(
           eventStore.query(filter),
-          Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
+          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
         return yield* pipe(

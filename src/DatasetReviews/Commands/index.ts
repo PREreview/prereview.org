@@ -150,7 +150,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
 
           const { events, lastKnownEvent } = yield* pipe(
             EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
+            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
           )
 
           yield* pipe(

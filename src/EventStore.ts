@@ -4,8 +4,6 @@ import type { Uuid } from './types/index.ts'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
 
-export class NoEventsFound extends Data.TaggedClass('NoEventsFound') {}
-
 export class FailedToGetEvents extends Data.TaggedError('FailedToGetEvents')<{ cause?: Error }> {}
 
 export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')<{ cause?: Error }> {}
@@ -18,8 +16,11 @@ export interface EventStore {
   readonly query: <Tag extends Types.Tags<Event>>(
     filter: EventFilter<Tag>,
   ) => Effect.Effect<
-    { readonly events: Array.NonEmptyReadonlyArray<Types.ExtractTag<Event, Tag>>; readonly lastKnownEvent: Uuid.Uuid },
-    NoEventsFound | FailedToGetEvents
+    Option.Option<{
+      readonly events: Array.NonEmptyReadonlyArray<Types.ExtractTag<Event, Tag>>
+      readonly lastKnownEvent: Uuid.Uuid
+    }>,
+    FailedToGetEvents
   >
 
   readonly append: <Tag extends Types.Tags<Event>>(

@@ -133,10 +133,10 @@ export const make: Effect.Effect<
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
-    return yield* Array.match(rows, {
-      onEmpty: () => Effect.fail(new EventStore.NoEventsFound()),
+    return Array.match(rows, {
+      onEmpty: Option.none,
       onNonEmpty: rows =>
-        Effect.succeed({
+        Option.some({
           events: Array.map(rows, Struct.get('event')),
           lastKnownEvent: Array.lastNonEmpty(rows).id,
         }),
