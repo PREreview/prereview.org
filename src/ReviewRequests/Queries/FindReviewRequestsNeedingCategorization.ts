@@ -6,6 +6,7 @@ export type Result = ReadonlyArray<{ id: Uuid.Uuid; publishedAt: Temporal.Instan
 
 export const filter = Events.EventFilter({
   types: [
+    'ReviewRequestForAPreprintWasAccepted',
     'ReviewRequestFromAPreprintServerWasImported',
     'ReviewRequestByAPrereviewerWasImported',
     'ReviewRequestForAPreprintWasCategorized',
@@ -14,6 +15,9 @@ export const filter = Events.EventFilter({
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
   const state = Array.reduce(events, Record.empty<Uuid.Uuid, Temporal.Instant>(), (state, event) => {
+    if (event._tag === 'ReviewRequestForAPreprintWasAccepted') {
+      return Record.set(state, event.reviewRequestId, event.acceptedAt)
+    }
     if (event._tag === 'ReviewRequestByAPrereviewerWasImported') {
       return Record.set(state, event.reviewRequestId, event.publishedAt)
     }

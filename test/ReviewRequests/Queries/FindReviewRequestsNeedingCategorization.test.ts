@@ -13,6 +13,7 @@ const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') 
 const request1Id = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const request2Id = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const request3Id = Uuid.Uuid('33389df7-6e3d-4507-a59e-3215d82e2375')
+const request4Id = Uuid.Uuid('452eb59b-5f3a-45b1-9822-40e86d27ef3f')
 
 const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67890') })
@@ -45,6 +46,10 @@ const request3Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImport
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request3Id,
 })
+const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+  acceptedAt: now.subtract({ hours: 4 }),
+  reviewRequestId: request4Id,
+})
 
 test('query', () => {
   const actual = _.query([request1Imported, request1Categorized])
@@ -55,9 +60,10 @@ test('query', () => {
 test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   ['single not categorized', [request1Imported], [{ id: request1Id, publishedAt: request1Imported.publishedAt }]],
   [
-    'three not categorized',
-    [request1Imported, request2Imported, request3Imported],
+    'four not categorized',
+    [request1Imported, request2Imported, request3Imported, request4Accepted],
     [
+      { id: request4Id, publishedAt: request4Accepted.acceptedAt },
       { id: request1Id, publishedAt: request1Imported.publishedAt },
       { id: request2Id, publishedAt: request2Imported.publishedAt },
       { id: request3Id, publishedAt: request3Imported.publishedAt },
