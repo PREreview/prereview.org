@@ -1,7 +1,21 @@
 /* eslint-disable import/no-internal-modules */
 import { HttpClient, HttpClientResponse, Terminal } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime, NodeTerminal } from '@effect/platform-node'
-import { Array, Config, Effect, Layer, Logger, LogLevel, Number, Order, pipe, Record, Schema, Tuple } from 'effect'
+import {
+  Array,
+  Config,
+  Effect,
+  Layer,
+  Logger,
+  LogLevel,
+  Number,
+  Option,
+  Order,
+  pipe,
+  Record,
+  Schema,
+  Tuple,
+} from 'effect'
 import * as CachingHttpClient from '../src/CachingHttpClient/index.ts'
 import * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
@@ -18,6 +32,7 @@ import { PublicUrl } from '../src/public-url.ts'
 import * as Redis from '../src/Redis.ts'
 import { Doi, Keyword, OrcidId, ProfileId } from '../src/types/index.ts'
 import { getKeywordName, type KeywordId } from '../src/types/Keyword.ts'
+import { TopicIdFromOpenAlexUrlSchema } from '../src/types/Topic.ts'
 
 const orcidId = OrcidId.OrcidId('0000-0001-6478-3815')
 
@@ -30,8 +45,10 @@ const program = Effect.gen(function* () {
     prereviews,
     Array.filter(prereview => prereview._tag === 'RecentPreprintPrereview'),
     Array.map(prereview => prereview.preprint.id),
+    Array.filter(id => id._tag !== 'PhilsciPreprintId'),
     Array.dedupe,
   )
+  const workIds = [...Array.map(preprintIds, preprintId => preprintId.value)]
 
   const statsRequestsSchema = Schema.Array(
     Schema.Struct({
@@ -63,26 +80,35 @@ const program = Effect.gen(function* () {
     ),
   )) as unknown as ReadonlyArray<[Preprints.PreprintId, ReadonlyArray<{ id: string; confidence: number }>]>
 
-  const preprintKeywords = (yield* pipe(
-    preprintIds,
+  const workKeywords = (yield* pipe(
+    workIds,
     Effect.forEach(
-      Effect.fn(function* (preprintId) {
+      Effect.fn(function* (workId) {
         const work = yield* pipe(
-          OpenAlexWorks.getCategoriesForAReviewRequest(preprintId),
+          OpenAlex.getWork(workId),
+          Effect.andThen(work => ({
+            title: work.title,
+            topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
+            keywords: Array.filterMap(work.keywords, ({ id, score }) =>
+              pipe(
+                Schema.decodeOption(Keyword.KeywordIdFromOpenAlexUrlSchema)(id),
+                Option.map(keywordId => ({ id: keywordId, confidence: score })),
+              ),
+            ),
+          })),
           Effect.catchIf(
             error => error.cause?._tag === 'WorkIsNotFound',
-
             () => Effect.succeed({ title: 'not-found', keywords: [] }),
           ),
         )
         return [
-          preprintId,
-          { title: work.title, keywords: Array.filter(work.keywords, ({ confidence }) => confidence > 0.5) },
+          workId,
+          { title: work.title, keywords: Array.filter(work.keywords, ({ confidence }) => confidence > 0.3) },
         ] as const
       }),
     ),
   )) as unknown as ReadonlyArray<
-    [Preprints.PreprintId, { title: string; keywords: ReadonlyArray<{ id: string; confidence: number }> }]
+    [Doi.Doi, { title: string; keywords: ReadonlyArray<{ id: string; confidence: number }> }]
   >
 
   const findRequestedPreprintIdsForAKeyword = (keywordId: string) =>
@@ -95,7 +121,7 @@ const program = Effect.gen(function* () {
     )
 
   const countedKeywords = pipe(
-    preprintKeywords,
+    workKeywords,
     Array.flatMap(foo => foo[1].keywords),
     Array.groupBy(keyword => keyword.id),
     Record.map(Array.map(keyword => keyword.confidence * 10)),
@@ -137,9 +163,9 @@ const program = Effect.gen(function* () {
 
   const terminal = yield* Terminal.Terminal
 
-  yield* Effect.forEach(preprintKeywords, item =>
+  yield* Effect.forEach(workKeywords, item =>
     terminal.display(
-      `"${Doi.toUrl(item[0].value).href}","${item[1].title}","${item[1].keywords.map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}"\n`,
+      `"${Doi.toUrl(item[0]).href}","${item[1].title}","${item[1].keywords.map(({ id }) => getKeywordName(id as KeywordId)).join(', ')}"\n`,
     ),
   )
   yield* terminal.display('\n')

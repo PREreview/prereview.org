@@ -5,7 +5,6 @@ import { KeywordIdFromOpenAlexUrlSchema, type KeywordId } from '../../../types/K
 import { TopicIdFromOpenAlexUrlSchema, type TopicId } from '../../../types/Topic.ts'
 
 export interface CategoriesForAReviewRequest {
-  readonly title: string
   readonly topics: ReadonlyArray<TopicId>
   readonly keywords: ReadonlyArray<{
     id: KeywordId
@@ -25,7 +24,6 @@ export const GetCategoriesForAReviewRequest = (preprintId: Preprints.Indetermina
     Effect.andThen(
       work =>
         ({
-          title: work.title,
           topics: Array.filterMap(work.topics, ({ id }) => Schema.decodeOption(TopicIdFromOpenAlexUrlSchema)(id)),
           keywords: Array.filterMap(work.keywords, ({ id, score }) =>
             pipe(
