@@ -49,6 +49,8 @@ export const make: Effect.Effect<
     pg: () => sql`
       CREATE INDEX IF NOT EXISTS idx_events_type ON events (type);
 
+      CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
+
       CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
     `,
     orElse: () => Effect.void,
@@ -137,6 +139,56 @@ export const make: Effect.Effect<
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     Effect.provide(context),
     Effect.withSpan('SqlEventStore.all'),
+  )
+
+  const since: EventStore.EventStore['since'] = Effect.fn('SqlEventStore.since')(
+    function* (lastKnownEvent) {
+      const rows = yield* pipe(
+        sql`
+          SELECT
+            id,
+            type,
+            timestamp,
+            payload
+          FROM
+            events
+          WHERE
+            timestamp > (
+              SELECT
+                timestamp
+              FROM
+                events
+              WHERE
+                id = ${lastKnownEvent}
+              LIMIT
+                1
+            )
+          ORDER BY
+            timestamp ASC
+        `,
+        Effect.andThen(
+          Schema.decodeUnknown(
+            Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+          ),
+        ),
+      )
+
+      return yield* Array.match(rows, {
+        onEmpty: () => Effect.succeedNone,
+        onNonEmpty: rows =>
+          Effect.succeedSome({
+            events: Array.map(rows, Struct.get('event')),
+            lastKnownEvent: Array.lastNonEmpty(rows).id,
+          }),
+      })
+    },
+    Effect.tapError(error =>
+      Effect.annotateLogs(Effect.logError('Unable to get events'), {
+        error,
+      }),
+    ),
+    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    Effect.provide(context),
   )
 
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
@@ -230,7 +282,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, query, append }
+  return { all, since, query, append }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)

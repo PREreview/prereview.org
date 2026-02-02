@@ -16,6 +16,13 @@ export interface EventStore {
     FailedToGetEvents
   >
 
+  readonly since: (
+    lastKnownEvent: Uuid.Uuid,
+  ) => Effect.Effect<
+    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownEvent: Uuid.Uuid }>,
+    FailedToGetEvents
+  >
+
   readonly query: <Tag extends Types.Tags<Event>>(
     filter: EventFilter<Tag>,
   ) => Effect.Effect<
@@ -33,6 +40,8 @@ export interface EventStore {
 }
 
 export const { all } = Effect.serviceConstants(EventStore)
+
+export const { since } = Effect.serviceFunctions(EventStore)
 
 export const query = Effect.fn(function* <Tag extends Types.Tags<Event>>(filter: EventFilter<Tag>) {
   const eventStore = yield* EventStore

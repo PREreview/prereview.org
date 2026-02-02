@@ -367,6 +367,32 @@ test.each<
   ),
 )
 
+test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())])(
+  'lists events since',
+  (existingEvents, newEvents) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
+
+      yield* Effect.forEach(existingEvents, existingEvent =>
+        TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
+      )
+
+      const { lastKnownEvent } = yield* Effect.flatten(eventStore.all)
+
+      yield* Effect.forEach(newEvents, newEvent => TestClock.adjustWith(eventStore.append(newEvent), '1 milli'))
+
+      const actual = yield* eventStore.since(lastKnownEvent)
+
+      expect(actual).toStrictEqual(Option.some({ events: newEvents, lastKnownEvent: expect.anything() }))
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
+)
+
 const TestLibsqlClient = Layer.unwrapScoped(
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
