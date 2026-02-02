@@ -4,25 +4,21 @@ import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.ts'
 import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.ts'
-import { serializationErrorChecking } from './SerializationErrorChecking.ts'
 
 export const layerPersistedToRedis = Layer.effect(
   HttpCache,
   Effect.gen(function* () {
     const redis = yield* Redis.HttpCacheRedis
 
-    return pipe(
-      {
-        get: request =>
-          Effect.if(redis.primary.status === 'ready', {
-            onTrue: () => getFromRedis(redis.primary)(request),
-            onFalse: () => getFromRedis(redis.readonlyFallback)(request),
-          }),
-        set: writeToRedis(redis.primary),
-        delete: deleteFromRedis(redis.primary),
-      },
-      serializationErrorChecking,
-    )
+    return {
+      get: request =>
+        Effect.if(redis.primary.status === 'ready', {
+          onTrue: () => getFromRedis(redis.primary)(request),
+          onFalse: () => getFromRedis(redis.readonlyFallback)(request),
+        }),
+      set: writeToRedis(redis.primary),
+      delete: deleteFromRedis(redis.primary),
+    }
   }),
 )
 

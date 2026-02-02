@@ -29,7 +29,6 @@
     "cloudinary": "^2.9.0",
     "content-security-policy-builder": "^2.3.0",
     "cookie-signature": "^1.2.2",
-    "deep-object-diff": "^1.1.9",
     "doi-ts": "^0.1.10",
     "effect": "^3.19.9",
     "fetch-fp-ts": "^0.1.6",
