@@ -53,6 +53,8 @@ export const getFromRedis =
         error => typeof error === 'string',
         cause => new InternalHttpCacheFailure({ cause }),
       ),
+      Effect.uninterruptible,
+      Effect.withSpan('PersistedToRedis.getFromRedis'),
     )
 
 export const writeToRedis =
@@ -78,6 +80,8 @@ export const writeToRedis =
       ),
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+      Effect.uninterruptible,
+      Effect.withSpan('PersistedToRedis.writeToRedis'),
     )
 
 export const deleteFromRedis =
@@ -87,6 +91,8 @@ export const deleteFromRedis =
       Effect.tryPromise({ try: () => redis.del(normalizeUrl(url)), catch: String }),
       Effect.asVoid,
       Effect.catchAll(cause => new InternalHttpCacheFailure({ cause })),
+      Effect.uninterruptible,
+      Effect.withSpan('PersistedToRedis.deleteFromRedis'),
     )
 
 export type CacheKey = string

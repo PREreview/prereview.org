@@ -1,6 +1,12 @@
 import { HttpClient } from '@effect/platform'
-import { Effect, flow } from 'effect'
+import { Effect, pipe } from 'effect'
 import { CreateRequest } from './CreateRequest.ts'
 import { HandleResponse } from './HandleResponse.ts'
 
-export const GetEprint = flow(CreateRequest, HttpClient.execute, Effect.andThen(HandleResponse))
+export const GetEprint = (eprintId: number) =>
+  pipe(
+    CreateRequest(eprintId),
+    HttpClient.execute,
+    Effect.andThen(HandleResponse),
+    Effect.withSpan('Philsci.getEprint', { attributes: { eprintId } }),
+  )
