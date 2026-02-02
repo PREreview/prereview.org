@@ -1,6 +1,7 @@
 import { Activity, DurableClock, Workflow, type WorkflowEngine } from '@effect/workflow'
-import { Effect, Inspectable, Layer, Match, pipe, PubSub, Queue, Struct, type Scope } from 'effect'
+import { Duration, Effect, Inspectable, Layer, Match, pipe, PubSub, Queue, Schema, Struct, type Scope } from 'effect'
 import * as Events from '../../Events.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
@@ -113,12 +114,43 @@ const workflowsLayer = Layer.mergeAll(
       execute: executeNotifyCommunitySlackOfReviewRequest(reviewRequestId),
     }),
   ),
-  ProcessReceivedReviewRequest.toLayer(({ reviewRequestId }) =>
-    Activity.make({
-      name: ProcessReceivedReviewRequest.name,
-      error: ProcessReceivedReviewRequest.errorSchema,
-      execute: executeProcessReceivedReviewRequest(reviewRequestId),
-    }),
+  ProcessReceivedReviewRequest.toLayer(({ reviewRequestId }, executionId) =>
+    pipe(
+      Effect.gen(function* () {
+        const currentAttempt = yield* Activity.CurrentAttempt
+
+        if (currentAttempt === 1) {
+          return
+        }
+
+        yield* DurableClock.sleep({
+          name: `sleep-${executionId}-${currentAttempt}`,
+          duration: Duration.min(Duration.times('10 minutes', Math.pow(2, currentAttempt - 2)), '12 hours'),
+        })
+      }),
+      Effect.andThen(
+        Activity.make({
+          name: ProcessReceivedReviewRequest.name,
+          error: Schema.Union(ProcessReceivedReviewRequest.errorSchema, Preprints.PreprintIsNotFound),
+          execute: executeProcessReceivedReviewRequest(reviewRequestId),
+        }),
+      ),
+      Activity.retry({ times: 10 }),
+      Effect.catchTag('PreprintIsNotFound', () =>
+        Effect.gen(function* () {
+          const rejectedAt = yield* Temporal.currentInstant
+
+          yield* pipe(
+            Commands.rejectReviewRequest({
+              rejectedAt,
+              reviewRequestId,
+              reason: 'unknown-preprint',
+            }),
+            Effect.ignoreLogged,
+          )
+        }),
+      ),
+    ),
   ),
 )
 

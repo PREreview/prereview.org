@@ -20,17 +20,6 @@ export const ProcessReceivedReviewRequest = Effect.fn(
           reviewRequestId: reviewRequest.id,
         })
       }),
-      Effect.catchTag('PreprintIsNotFound', () =>
-        Effect.gen(function* () {
-          const rejectedAt = yield* Temporal.currentInstant
-
-          yield* Commands.rejectReviewRequest({
-            rejectedAt,
-            reviewRequestId: reviewRequest.id,
-            reason: 'unknown-preprint',
-          })
-        }),
-      ),
       Effect.catchTag('NotAPreprint', () =>
         Effect.gen(function* () {
           const rejectedAt = yield* Temporal.currentInstant
@@ -44,5 +33,8 @@ export const ProcessReceivedReviewRequest = Effect.fn(
       ),
     )
   },
-  Effect.catchAll(error => new Errors.FailedToProcessReceivedReviewRequest({ cause: error })),
+  Effect.catchIf(
+    error => error._tag !== 'PreprintIsNotFound',
+    error => new Errors.FailedToProcessReceivedReviewRequest({ cause: error }),
+  ),
 )

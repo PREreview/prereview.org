@@ -1,4 +1,4 @@
-import { type Array, Data } from 'effect'
+import { type Array, Data, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PartialDate } from '../time.ts'
@@ -31,7 +31,9 @@ export interface PreprintTitle {
 
 export class NotAPreprint extends Data.TaggedError('NotAPreprint')<{ cause?: unknown }> {}
 
-export class PreprintIsNotFound extends Data.TaggedError('PreprintIsNotFound')<{ cause?: unknown }> {}
+export class PreprintIsNotFound extends Schema.TaggedError<PreprintIsNotFound>()('PreprintIsNotFound', {
+  cause: Schema.optional(Schema.Unknown),
+}) {}
 
 export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
 
