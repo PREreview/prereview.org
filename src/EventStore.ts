@@ -11,7 +11,10 @@ export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')
 export class NewEventsFound extends Data.TaggedError('NewEventsFound') {}
 
 export interface EventStore {
-  readonly all: Effect.Effect<ReadonlyArray<Event>, FailedToGetEvents>
+  readonly all: Effect.Effect<
+    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownEvent: Uuid.Uuid }>,
+    FailedToGetEvents
+  >
 
   readonly query: <Tag extends Types.Tags<Event>>(
     filter: EventFilter<Tag>,

@@ -1,4 +1,4 @@
-import { Array, Console, Context, Effect, Layer, Schedule } from 'effect'
+import { Array, Console, Context, Effect, Layer, Option, Schedule, Struct } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -20,7 +20,10 @@ export const EventDispatcherLayer = Layer.succeed(EventDispatcher, {
 })
 
 const dispatchNewEvents = Effect.gen(function* () {
-  const events = yield* EventStore.all
+  const events = yield* Effect.andThen(
+    EventStore.all,
+    Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
+  )
 
   if (events.length <= numberOfKnownEvents) {
     return

@@ -119,7 +119,16 @@ export const make: Effect.Effect<
         Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
       ),
     ),
-    Effect.andThen(Array.map(Struct.get('event'))),
+    Effect.andThen(
+      Array.match({
+        onEmpty: () => Effect.succeedNone,
+        onNonEmpty: rows =>
+          Effect.succeedSome({
+            events: Array.map(rows, Struct.get('event')),
+            lastKnownEvent: Array.lastNonEmpty(rows).id,
+          }),
+      }),
+    ),
     Effect.tapError(error =>
       Effect.annotateLogs(Effect.logError('Unable to get all events'), {
         error,

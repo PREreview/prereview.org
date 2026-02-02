@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { type Array, Effect, Layer, Option, type PubSub, TestClock, type Types } from 'effect'
+import { Array, Effect, Layer, Option, type PubSub, TestClock, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -40,7 +40,7 @@ it.prop([
     const all = yield* eventStore.all
 
     expect(actual).toStrictEqual(Option.none())
-    expect(all).toStrictEqual([])
+    expect(all).toStrictEqual(Option.none())
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -86,7 +86,7 @@ describe('when the last known event is none', () => {
       const all = yield* eventStore.all
 
       expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownEvent: expect.anything() }))
-      expect(all).toStrictEqual([...otherEvents, event])
+      expect(all).toStrictEqual(Option.some({ events: [...otherEvents, event], lastKnownEvent: expect.anything() }))
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -117,7 +117,7 @@ describe('when the last known event matches', () => {
 
       const all = yield* eventStore.all
 
-      expect(all).toStrictEqual([...existingEvents, event])
+      expect(all).toStrictEqual(Option.some({ events: [...existingEvents, event], lastKnownEvent: expect.anything() }))
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -148,7 +148,12 @@ describe('when the last known event is different', () => {
 
         const all = yield* eventStore.all
 
-        expect(all).toHaveLength(existingEvents.length)
+        expect(all).toStrictEqual(
+          Array.match(existingEvents, {
+            onEmpty: Option.none,
+            onNonEmpty: events => Option.some({ events, lastKnownEvent: expect.anything() }),
+          }),
+        )
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
