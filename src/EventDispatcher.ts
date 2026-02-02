@@ -1,4 +1,4 @@
-import { Array, Console, Context, Effect, Layer, Option, Schedule } from 'effect'
+import { Array, Context, Effect, Layer, Option, Schedule } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -31,8 +31,6 @@ const dispatchNewEvents = Effect.gen(function* () {
 
   lastKnownEvent = Option.some(newLastKnownEvent)
 
-  yield* Console.log(`Found ${newEvents.length} new event${newEvents.length > 1 ? 's' : ''}`)
-  yield* Console.log(`Subscriber count: ${subscribers.length}`)
   Array.forEach(newEvents, event => Array.forEach(subscribers, subscriber => subscriber(event)))
 })
 
