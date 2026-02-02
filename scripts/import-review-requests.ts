@@ -4,7 +4,7 @@ import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { capitalCase } from 'case-anything'
-import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema } from 'effect'
+import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema, Struct } from 'effect'
 import { v5 as uuid5 } from 'uuid'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment, no-comments/disallowComments
 // @ts-ignore
@@ -136,6 +136,7 @@ const program = pipe(
   Effect.andThen(Effect.logDebug('Import done!')),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
   Effect.andThen(Array.take(100)),
+  Effect.andThen(Array.map(Struct.get('id'))),
   Effect.andThen(Effect.forEach(categorizeReviewRequest, { concurrency: 5 })),
   Effect.andThen(Effect.logDebug('Categorisation done!')),
 )

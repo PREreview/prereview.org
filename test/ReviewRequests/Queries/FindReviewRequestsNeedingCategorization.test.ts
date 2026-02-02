@@ -53,13 +53,21 @@ test('query', () => {
 })
 
 test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
-  ['single not categorized', [request1Imported], [request1Id]],
+  ['single not categorized', [request1Imported], [{ id: request1Id, publishedAt: request1Imported.publishedAt }]],
   [
     'three not categorized',
     [request1Imported, request2Imported, request3Imported],
-    [request1Id, request2Id, request3Id],
+    [
+      { id: request1Id, publishedAt: request1Imported.publishedAt },
+      { id: request2Id, publishedAt: request2Imported.publishedAt },
+      { id: request3Id, publishedAt: request3Imported.publishedAt },
+    ],
   ],
-  ['partially categorized', [request1Imported, request2Imported, request1Categorized], [request2Id]],
+  [
+    'partially categorized',
+    [request1Imported, request2Imported, request1Categorized],
+    [{ id: request2Id, publishedAt: request2Imported.publishedAt }],
+  ],
 ])('query (%s)', (_name, events, expected) => {
   const actual = _.query(events)
 

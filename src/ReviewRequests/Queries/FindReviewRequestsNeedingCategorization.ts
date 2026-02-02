@@ -1,8 +1,8 @@
-import { Array } from 'effect'
+import { Array, pipe, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
-import type { Uuid } from '../../types/index.ts'
+import { Temporal, type Uuid } from '../../types/index.ts'
 
-export type Result = ReadonlyArray<Uuid.Uuid>
+export type Result = ReadonlyArray<{ id: Uuid.Uuid; publishedAt: Temporal.Instant }>
 
 export const filter = Events.EventFilter({
   types: [
@@ -13,20 +13,22 @@ export const filter = Events.EventFilter({
 })
 
 export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
-  const state = Array.reduce(events, new Set<Uuid.Uuid>(), (state, event) => {
+  const state = Array.reduce(events, Record.empty<Uuid.Uuid, Temporal.Instant>(), (state, event) => {
     if (event._tag === 'ReviewRequestByAPrereviewerWasImported') {
-      state.add(event.reviewRequestId)
-      return state
+      return Record.set(state, event.reviewRequestId, event.publishedAt)
     }
     if (event._tag === 'ReviewRequestFromAPreprintServerWasImported') {
-      state.add(event.reviewRequestId)
-      return state
+      return Record.set(state, event.reviewRequestId, event.publishedAt)
     }
     if (event._tag === 'ReviewRequestForAPreprintWasCategorized') {
-      state.delete(event.reviewRequestId)
-      return state
+      return Record.remove(state, event.reviewRequestId)
     }
     return state
   })
-  return [...state]
+
+  return pipe(
+    Record.toEntries(state),
+    Array.map(([id, publishedAt]) => ({ id, publishedAt })),
+    Array.sortWith(Struct.get('publishedAt'), Temporal.OrderInstant),
+  )
 }

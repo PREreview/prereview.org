@@ -1,5 +1,6 @@
 import { NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Config, Console, Effect, flow, Layer, pipe } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
@@ -14,7 +15,14 @@ const program = pipe(
   Effect.tapBoth({
     onSuccess: flow(
       Array.map(result => ({
-        ID: result,
+        ID: result.id,
+        Published: result.publishedAt
+          .toZonedDateTimeISO('UTC')
+          .until(Temporal.Now.zonedDateTimeISO('UTC'), {
+            largestUnit: 'day',
+            smallestUnit: 'hour',
+          })
+          .toLocaleString('en-US'),
       })),
       Console.table,
     ),
