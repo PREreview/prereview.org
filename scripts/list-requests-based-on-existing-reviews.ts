@@ -181,6 +181,7 @@ pipe(
           ),
           Layer.succeed(EventStore.EventStore, {
             all: new EventStore.FailedToGetEvents({}),
+            since: () => new EventStore.FailedToGetEvents({}),
             query: () => new EventStore.FailedToGetEvents({}),
             append: () => new EventStore.FailedToCommitEvent({}),
           }),

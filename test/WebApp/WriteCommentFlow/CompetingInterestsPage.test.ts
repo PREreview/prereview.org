@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Effect, Either, Equal, Option } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
@@ -152,7 +153,7 @@ describe('CompetingInterestsPage', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -429,7 +430,7 @@ describe('CompetingInterestsSubmission', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Comments.GetComment, () => Effect.fail(new Comments.UnableToQuery({}))),
+          Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
           Effect.provideService(LoggedInUser, user),

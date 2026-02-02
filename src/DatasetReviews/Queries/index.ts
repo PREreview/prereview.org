@@ -1,6 +1,6 @@
-import { Array, Context, Data, Effect, type Either, Layer, pipe, Scope } from 'effect'
-import type * as Events from '../../Events.ts'
+import { Array, Context, Effect, type Either, Layer, Scope } from 'effect'
 import * as EventStore from '../../EventStore.ts'
+import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
@@ -133,10 +133,8 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
 type Query<F extends (...args: never) => unknown, E = never> = (
   ...args: Parameters<F>
 ) => ReturnType<F> extends Either.Either<infer R, infer L>
-  ? Effect.Effect<R, UnableToQuery | E | Exclude<L, { _tag: 'UnexpectedSequenceOfEvents' }>>
-  : Effect.Effect<ReturnType<F>, UnableToQuery | E>
-
-export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
+  ? Effect.Effect<R, Queries.UnableToQuery | E | Exclude<L, { _tag: 'UnexpectedSequenceOfEvents' }>>
+  : Effect.Effect<ReturnType<F>, Queries.UnableToQuery | E>
 
 export const {
   checkIfReviewIsBeingPublished,
@@ -180,215 +178,256 @@ const makeDatasetReviewQueries: Effect.Effect<typeof DatasetReviewQueries.Servic
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
-    const handleQuery = <Event extends Events.DatasetReviewEvent['_tag'], Input, Result, Error>(
-      createFilter: (input: Input) => Events.EventFilter<Event>,
-      query: (
-        events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>,
-        input: Input,
-      ) => Either.Either<Result, Error>,
-    ): ((input: Input) => Effect.Effect<Result, UnableToQuery | Error>) =>
-      Effect.fn(
-        function* (input) {
-          const filter = createFilter(input)
-
-          const { events } = yield* pipe(
-            EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: Array.empty() })),
-          )
-
-          return yield* query(events, input)
-        },
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
-        Effect.provide(context),
-      )
-
     return {
       checkIfReviewIsBeingPublished: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* CheckIfReviewIsBeingPublished(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
-      checkIfUserCanRateTheQuality: handleQuery(
+      checkIfUserCanRateTheQuality: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanRateTheQuality',
         CheckIfUserCanRateTheQuality.createFilter,
         CheckIfUserCanRateTheQuality.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples',
         CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.createFilter,
         CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted',
         CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.createFilter,
         CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetHasEnoughMetadata',
         CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.createFilter,
         CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetHasTrackedChanges: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetHasTrackedChanges',
         CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.createFilter,
         CheckIfUserCanAnswerIfTheDatasetHasTrackedChanges.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
         CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsAppropriateForThisKindOfResearch.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions',
         CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.createFilter,
         CheckIfUserCanAnswerIfTheDatasetSupportsRelatedConclusions.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetIsDetailedEnough',
         CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsDetailedEnough.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetIsErrorFree: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetIsErrorFree: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetIsErrorFree',
         CheckIfUserCanAnswerIfTheDatasetIsErrorFree.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsErrorFree.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetMattersToItsAudience: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetMattersToItsAudience',
         CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.createFilter,
         CheckIfUserCanAnswerIfTheDatasetMattersToItsAudience.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared',
         CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsReadyToBeShared.query,
       ),
-      checkIfUserCanAnswerIfTheDatasetIsMissingAnything: handleQuery(
+      checkIfUserCanAnswerIfTheDatasetIsMissingAnything: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanAnswerIfTheDatasetIsMissingAnything',
         CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.createFilter,
         CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.query,
       ),
-      checkIfUserCanChoosePersona: handleQuery(
+      checkIfUserCanChoosePersona: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanChoosePersona',
         CheckIfUserCanChoosePersona.createFilter,
         CheckIfUserCanChoosePersona.query,
       ),
-      checkIfUserCanDeclareCompetingInterests: handleQuery(
+      checkIfUserCanDeclareCompetingInterests: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanDeclareCompetingInterests',
         CheckIfUserCanDeclareCompetingInterests.createFilter,
         CheckIfUserCanDeclareCompetingInterests.query,
       ),
-      checkIfUserCanDeclareFollowingCodeOfConduct: handleQuery(
+      checkIfUserCanDeclareFollowingCodeOfConduct: yield* Queries.makeQuery(
+        'DatasetReviewQueries.checkIfUserCanDeclareFollowingCodeOfConduct',
         CheckIfUserCanDeclareFollowingCodeOfConduct.createFilter,
         CheckIfUserCanDeclareFollowingCodeOfConduct.query,
       ),
       findInProgressReviewForADataset: Effect.fn(
         function* (...args) {
-          const { events } = yield* EventStore.query({
-            types: ['DatasetReviewWasStarted', 'PublicationOfDatasetReviewWasRequested', 'DatasetReviewWasPublished'],
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: ['DatasetReviewWasStarted', 'PublicationOfDatasetReviewWasRequested', 'DatasetReviewWasPublished'],
+            }),
+          )
 
           return FindInProgressReviewForADataset(events)(...args)
         },
-        Effect.catchTag('NoEventsFound', () => Effect.succeedNone),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', () => Effect.succeedNone),
+        Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       findPublishedReviewsForADataset: Effect.fn(
         function* (...args) {
-          const { events } = yield* EventStore.query({
-            types: ['DatasetReviewWasStarted', 'DatasetReviewWasPublished'],
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: ['DatasetReviewWasStarted', 'DatasetReviewWasPublished'],
+            }),
+          )
 
           return FindPublishedReviewsForADataset(events)(...args)
         },
-        Effect.catchTag('NoEventsFound', () => Effect.sync(Array.empty)),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', () => Effect.sync(Array.empty)),
+        Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       getAuthor: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetAuthor(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
       getNextExpectedCommandForAUserOnADatasetReview: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return GetNextExpectedCommandForAUserOnADatasetReview(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
         Effect.provide(context),
       ),
       getPreviewForAReviewReadyToBePublished: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetPreviewForAReviewReadyToBePublished(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
       getPublishedReview: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetPublishedReview(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
       getPublishedReviewDetails: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetPublishedReviewDetails(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
       getDataForZenodoRecord: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetDataForZenodoRecord(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
       getZenodoRecordId: Effect.fn(
         function* (datasetReviewId) {
-          const { events } = yield* EventStore.query({
-            types: DatasetReviewEventTypes,
-            predicates: { datasetReviewId },
-          })
+          const { events } = yield* Effect.flatten(
+            EventStore.query({
+              types: DatasetReviewEventTypes,
+              predicates: { datasetReviewId },
+            }),
+          )
 
           return yield* GetZenodoRecordId(events)
         },
-        Effect.catchTag('NoEventsFound', cause => new Errors.UnknownDatasetReview({ cause })),
-        Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
+        Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
+        Effect.catchTag(
+          'FailedToGetEvents',
+          'UnexpectedSequenceOfEvents',
+          cause => new Queries.UnableToQuery({ cause }),
+        ),
         Effect.provide(context),
       ),
     }

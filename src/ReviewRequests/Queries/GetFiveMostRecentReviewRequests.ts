@@ -1,6 +1,7 @@
-import { Array, Boolean, Match, Option, Record, Struct } from 'effect'
+import { Array, Boolean, Either, flow, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { TopicId } from '../../types/Topic.ts'
 
@@ -13,86 +14,109 @@ export interface RecentReviewRequest {
 
 export type Result = ReadonlyArray<RecentReviewRequest>
 
-export const filter = Events.EventFilter({
-  types: [
-    'ReviewRequestForAPreprintWasReceived',
-    'ReviewRequestForAPreprintWasAccepted',
-    'ReviewRequestFromAPreprintServerWasImported',
-    'ReviewRequestForAPreprintWasCategorized',
-  ],
-})
+const eventTypes = [
+  'ReviewRequestForAPreprintWasReceived',
+  'ReviewRequestForAPreprintWasAccepted',
+  'ReviewRequestByAPrereviewerWasImported',
+  'ReviewRequestFromAPreprintServerWasImported',
+  'ReviewRequestForAPreprintWasCategorized',
+] as const
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
-  const filteredEvents = Array.filter(events, Events.matches(filter))
+type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
-  const reviewRequests = Array.reduce(
-    filteredEvents,
-    Record.empty<
-      Uuid.Uuid,
-      {
-        published: Temporal.Instant | undefined
-        topics: ReadonlyArray<TopicId>
-        preprintId: Preprints.IndeterminatePreprintId | undefined
-      }
-    >(),
-    (map, event) =>
-      Match.valueTags(event, {
-        ReviewRequestForAPreprintWasReceived: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
-              preprintId: event.preprintId,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: undefined,
-                topics: [],
-                preprintId: event.preprintId,
-              }),
-          ),
-        ReviewRequestForAPreprintWasAccepted: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
-              published: event.acceptedAt,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: event.acceptedAt,
-                topics: [],
-                preprintId: undefined,
-              }),
-          ),
-        ReviewRequestFromAPreprintServerWasImported: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
-              preprintId: event.preprintId,
-              published: event.publishedAt,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: event.publishedAt,
-                topics: [],
-                preprintId: event.preprintId,
-              }),
-          ),
-        ReviewRequestForAPreprintWasCategorized: event =>
-          Option.getOrElse(
-            Record.modifyOption(map, event.reviewRequestId, review => ({
-              ...review,
-              topics: event.topics,
-            })),
-            () =>
-              Record.set(map, event.reviewRequestId, {
-                published: undefined,
-                topics: event.topics,
-                preprintId: undefined,
-              }),
-          ),
-      }),
-  )
+const filter = Events.EventFilter({ types: eventTypes })
 
+type State = Record<
+  Uuid.Uuid,
+  {
+    published: Temporal.Instant | undefined
+    topics: ReadonlyArray<TopicId>
+    preprintId: Preprints.IndeterminatePreprintId | undefined
+  }
+>
+
+const initialState: State = Record.empty()
+
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
+  if (!Events.matches(event, filter)) {
+    return state
+  }
+
+  return updateStateWithPertinentEvent(state, event)
+}
+
+const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
+  Match.valueTags(event, {
+    ReviewRequestForAPreprintWasReceived: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+        })),
+        () =>
+          Record.set(state, event.reviewRequestId, {
+            published: undefined,
+            topics: [],
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestForAPreprintWasAccepted: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({
+          ...review,
+          published: event.acceptedAt,
+        })),
+        () =>
+          Record.set(state, event.reviewRequestId, {
+            published: event.acceptedAt,
+            topics: [],
+            preprintId: undefined,
+          }),
+      ),
+    ReviewRequestByAPrereviewerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+          published: event.publishedAt,
+        })),
+        () =>
+          Record.set(state, event.reviewRequestId, {
+            published: event.publishedAt,
+            topics: [],
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestFromAPreprintServerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+          published: event.publishedAt,
+        })),
+        () =>
+          Record.set(state, event.reviewRequestId, {
+            published: event.publishedAt,
+            topics: [],
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestForAPreprintWasCategorized: event =>
+      Option.getOrElse(
+        Record.modifyOption(state, event.reviewRequestId, review => ({
+          ...review,
+          topics: event.topics,
+        })),
+        () =>
+          Record.set(state, event.reviewRequestId, {
+            published: undefined,
+            topics: event.topics,
+            preprintId: undefined,
+          }),
+      ),
+  })
+
+const query = (reviewRequests: State): Result => {
   const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
   ) as Record<
@@ -113,4 +137,11 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
   )
 
   return Array.take(sortedReviewRequests, 5)
+}
+
+export const getFiveMostRecentReviewRequests: Queries.StatefulQuery<State, [], Result, never> = {
+  name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
+  initialState,
+  updateStateWithEvent,
+  query: flow(query, Either.right),
 }

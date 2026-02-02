@@ -18,7 +18,7 @@ import { URL } from 'url'
 import type { EnvFor } from '../../Fpts.ts'
 import type { PublicUrlEnv } from '../../public-url.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
-import { type NonEmptyString, NonEmptyStringC } from '../../types/NonEmptyString.ts'
+import { NonEmptyStringC, type NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 
 export interface CloudinaryApiEnv {

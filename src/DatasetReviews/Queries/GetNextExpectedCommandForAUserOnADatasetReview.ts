@@ -1,4 +1,4 @@
-import { Array, Option } from 'effect'
+import { Array, Option, type Types } from 'effect'
 import type * as Events from '../Events.ts'
 
 export type NextExpectedCommand =
@@ -95,11 +95,11 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
 
 function hasEvent(
   events: ReadonlyArray<Events.DatasetReviewEvent>,
-  ...tags: ReadonlyArray<Events.DatasetReviewEvent['_tag']>
+  ...tags: ReadonlyArray<Types.Tags<Events.DatasetReviewEvent>>
 ): boolean {
   return Array.some(events, hasTag(...tags))
 }
 
-function hasTag<Tag extends T['_tag'], T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Extract<T, { _tag: Tag }> => Array.contains(tags, tagged._tag)
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
 }

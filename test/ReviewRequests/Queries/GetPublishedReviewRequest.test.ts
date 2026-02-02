@@ -6,7 +6,7 @@ import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetPublishedReviewRequest.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
@@ -45,25 +45,45 @@ const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewReque
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const reviewRequestFromAPreprintServerWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const reviewRequestFromAPreprintServerWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const otherReviewRequestFromAPreprintServerWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported(
+  {
+    publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+    receivedFrom: new URL('http://example.com'),
+    preprintId,
+    requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+    reviewRequestId: otherReviewRequestId,
+  },
+)
+const reviewRequestByAPrereviewerWasImported1 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-  receivedFrom: new URL('http://example.com'),
   preprintId,
-  requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
+  reviewRequestId,
+})
+const reviewRequestByAPrereviewerWasImported2 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  preprintId,
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
+  reviewRequestId,
+})
+const otherReviewRequestByAPrereviewerWasImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
@@ -114,7 +134,7 @@ describe('query', () => {
           [
             otherReviewRequestForAPreprintWasReceived,
             otherReviewRequestForAPreprintWasAccepted,
-            otherReviewRequestForAPreprintWasImported,
+            otherReviewRequestFromAPreprintServerWasImported,
           ],
           reviewRequestId,
         ], // with events for other dataset review
@@ -155,7 +175,7 @@ describe('query', () => {
             [
               reviewRequestForAPreprintWasReceived1,
               reviewRequestForAPreprintWasAccepted1,
-              reviewRequestForAPreprintWasImported1,
+              reviewRequestFromAPreprintServerWasImported1,
               reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
             ],
             reviewRequestId,
@@ -191,50 +211,102 @@ describe('query', () => {
     const actual = _.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(
-      Either.right({
-        author: expected[0].requester,
-        preprintId: expected[0].preprintId,
-        id: expected[0].reviewRequestId,
-        published: expected[1].acceptedAt,
-      }),
+      Either.right(
+        new _.PublishedReceivedReviewRequest({
+          author: expected[0].requester,
+          preprintId: expected[0].preprintId,
+          id: expected[0].reviewRequestId,
+          published: expected[1].acceptedAt,
+        }),
+      ),
     )
   })
 
-  test.prop(
-    [
-      fc
-        .reviewRequestFromAPreprintServerWasImported()
-        .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
-    ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasImported1], reviewRequestId, reviewRequestForAPreprintWasImported1]], // imported
-        [
-          [
-            [reviewRequestForAPreprintWasImported1, reviewRequestForAPreprintWasImported2],
-            reviewRequestId,
-            reviewRequestForAPreprintWasImported2,
-          ],
-        ], // multiple times
-        [
-          [
-            [reviewRequestForAPreprintWasImported1, otherReviewRequestForAPreprintWasImported],
-            reviewRequestId,
-            reviewRequestForAPreprintWasImported1,
-          ],
-        ], // other requests
+  describe('has been imported', () => {
+    test.prop(
+      [
+        fc
+          .reviewRequestByAPrereviewerWasImported()
+          .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
       ],
-    },
-  )('has been imported', ([events, reviewRequestId, expected]) => {
-    const actual = _.query(events, { reviewRequestId })
+      {
+        examples: [
+          [[[reviewRequestByAPrereviewerWasImported1], reviewRequestId, reviewRequestByAPrereviewerWasImported1]], // imported
+          [
+            [
+              [reviewRequestByAPrereviewerWasImported1, reviewRequestByAPrereviewerWasImported2],
+              reviewRequestId,
+              reviewRequestByAPrereviewerWasImported2,
+            ],
+          ], // multiple times
+          [
+            [
+              [reviewRequestByAPrereviewerWasImported1, otherReviewRequestByAPrereviewerWasImported],
+              reviewRequestId,
+              reviewRequestByAPrereviewerWasImported1,
+            ],
+          ], // other requests
+        ],
+      },
+    )('by a PREreviewer', ([events, reviewRequestId, expected]) => {
+      const actual = _.query(events, { reviewRequestId })
 
-    expect(actual).toStrictEqual(
-      Either.right({
-        author: expected.requester,
-        preprintId: expected.preprintId,
-        id: expected.reviewRequestId,
-        published: expected.publishedAt,
-      }),
-    )
+      expect(actual).toStrictEqual(
+        Either.right(
+          new _.PublishedPrereviewerReviewRequest({
+            author: expected.requester,
+            preprintId: expected.preprintId,
+            id: expected.reviewRequestId,
+            published: expected.publishedAt,
+          }),
+        ),
+      )
+    })
+
+    test.prop(
+      [
+        fc
+          .reviewRequestFromAPreprintServerWasImported()
+          .map(imported => Tuple.make(Array.make(imported), imported.reviewRequestId, imported)),
+      ],
+      {
+        examples: [
+          [
+            [
+              [reviewRequestFromAPreprintServerWasImported1],
+              reviewRequestId,
+              reviewRequestFromAPreprintServerWasImported1,
+            ],
+          ], // imported
+          [
+            [
+              [reviewRequestFromAPreprintServerWasImported1, reviewRequestFromAPreprintServerWasImported2],
+              reviewRequestId,
+              reviewRequestFromAPreprintServerWasImported2,
+            ],
+          ], // multiple times
+          [
+            [
+              [reviewRequestFromAPreprintServerWasImported1, otherReviewRequestFromAPreprintServerWasImported],
+              reviewRequestId,
+              reviewRequestFromAPreprintServerWasImported1,
+            ],
+          ], // other requests
+        ],
+      },
+    )('from a preprint server', ([events, reviewRequestId, expected]) => {
+      const actual = _.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(
+        Either.right(
+          new _.PublishedReceivedReviewRequest({
+            author: expected.requester,
+            preprintId: expected.preprintId,
+            id: expected.reviewRequestId,
+            published: expected.publishedAt,
+          }),
+        ),
+      )
+    })
   })
 })

@@ -81,4 +81,5 @@ export const GetRecord = (
     Effect.tapErrorTag('RecordIsUnavailable', error =>
       Effect.logError('Failed to get record from Japan Link Center').pipe(Effect.annotateLogs({ error })),
     ),
+    Effect.withSpan('JapanLinkCenter.getRecord', { attributes: { doi } }),
   )

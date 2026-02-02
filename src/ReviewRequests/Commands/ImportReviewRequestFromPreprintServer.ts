@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Function, Match, Option } from 'effect'
+import { Array, Data, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { EmailAddress, NonEmptyString, OrcidId, SciProfilesId, Uuid } from '../../types/index.ts'
@@ -23,7 +23,9 @@ export class NotImported extends Data.TaggedClass('NotImported') {}
 
 export class HasBeenImported extends Data.TaggedClass('HasBeenImported') {}
 
-export const createFilter = (reviewRequestId: Uuid.Uuid): Events.EventFilter<Events.ReviewRequestEvent['_tag']> => ({
+export const createFilter = (
+  reviewRequestId: Uuid.Uuid,
+): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
     'ReviewRequestFromAPreprintServerWasImported',
     'ReviewRequestForAPreprintWasReceived',

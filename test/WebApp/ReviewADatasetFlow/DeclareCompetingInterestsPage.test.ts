@@ -4,6 +4,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/index.ts'
 import { RouteForCommand } from '../../../src/WebApp/ReviewADatasetFlow/RouteForCommand.ts'
@@ -158,7 +159,7 @@ describe('DeclareCompetingInterestsPage', () => {
       }).pipe(
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            checkIfUserCanDeclareCompetingInterests: () => new DatasetReviews.UnableToQuery({}),
+            checkIfUserCanDeclareCompetingInterests: () => new Queries.UnableToQuery({}),
           }),
         ),
         Effect.provideService(Locale, locale),
@@ -225,7 +226,7 @@ describe('DeclareCompetingInterestsSubmission', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
-          fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+          fc.anything().map(cause => new Queries.UnableToQuery({ cause })),
           fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
           fc.constant(Effect.succeedNone),
         ),

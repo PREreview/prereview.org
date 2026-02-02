@@ -1,4 +1,4 @@
-import { Array, Data, Function, Match, Option } from 'effect'
+import { Array, Data, Function, Match, Option, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import type { OrcidId } from '../../types/index.ts'
 import type { KeywordId } from '../../types/Keyword.ts'
@@ -17,7 +17,7 @@ export class HasBeenSubscribed extends Data.TaggedClass('HasBeenSubscribed') {}
 export const createFilter = ({
   prereviewerId,
   keywordId,
-}: Command): Events.EventFilter<Events.PrereviewerEvent['_tag']> => ({
+}: Command): Events.EventFilter<Types.Tags<Events.PrereviewerEvent>> => ({
   types: ['PrereviewerSubscribedToAKeyword'],
   predicates: { prereviewerId, keywordId },
 })

@@ -10,6 +10,7 @@ import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
+import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import {
   CoarNotify,
@@ -38,6 +39,7 @@ import * as Preprints from './Preprints/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
+import * as Queries from './Queries.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
@@ -102,7 +104,7 @@ const doesUserHaveAVerifiedEmailAddress = Layer.effect(
         error => error === 'not-found',
         () => Effect.succeed(false),
       ),
-      Effect.orElseFail(() => new Comments.UnableToQuery({})),
+      Effect.orElseFail(() => new Queries.UnableToQuery({})),
     )
   }),
 )
@@ -333,7 +335,9 @@ export const Program = pipe(
     ReviewRequests.reactionsWorker,
     Comments.ReactToCommentEvents,
     CachingHttpClient.layerRevalidationWorker,
+    EventDispatcher.worker,
   ),
+  Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide(Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment)),
   Layer.provide(
     Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
@@ -401,6 +405,12 @@ export const Program = pipe(
   Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provide(SqlSensitiveDataStore.layer),
   Layer.provide(
-    Layer.mergeAll(Events.layer, Uuid.layer, CachingHttpClient.layerRevalidationQueue, CookieSignature.layer),
+    Layer.mergeAll(
+      Events.layer,
+      EventDispatcher.EventDispatcherLayer,
+      Uuid.layer,
+      CachingHttpClient.layerRevalidationQueue,
+      CookieSignature.layer,
+    ),
   ),
 )

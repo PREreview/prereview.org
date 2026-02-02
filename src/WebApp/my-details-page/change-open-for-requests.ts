@@ -6,10 +6,10 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
 import {
-  type IsOpenForRequests,
-  type IsOpenForRequestsEnv,
   isOpenForRequests,
   saveOpenForRequests,
+  type IsOpenForRequests,
+  type IsOpenForRequestsEnv,
 } from '../../is-open-for-requests.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { myDetailsMatch } from '../../routes.ts'

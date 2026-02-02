@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { type Array, Effect, Layer, Option, type PubSub, TestClock } from 'effect'
+import { Array, Effect, Layer, Option, type PubSub, TestClock, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -36,11 +36,11 @@ it.prop([
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    const error = yield* Effect.flip(eventStore.query(filter))
+    const actual = yield* eventStore.query(filter)
     const all = yield* eventStore.all
 
-    expect(error).toBeInstanceOf(EventStore.NoEventsFound)
-    expect(all).toStrictEqual([])
+    expect(actual).toStrictEqual(Option.none())
+    expect(all).toStrictEqual(Option.none())
   }).pipe(
     Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -85,8 +85,8 @@ describe('when the last known event is none', () => {
       const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
       const all = yield* eventStore.all
 
-      expect(actual).toStrictEqual({ events: [event], lastKnownEvent: expect.anything() })
-      expect(all).toStrictEqual([...otherEvents, event])
+      expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownEvent: expect.anything() }))
+      expect(all).toStrictEqual(Option.some({ events: [...otherEvents, event], lastKnownEvent: expect.anything() }))
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -108,7 +108,7 @@ describe('when the last known event matches', () => {
         TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
       )
 
-      const { lastKnownEvent } = yield* eventStore.query({ types: Events.CommentEventTypes })
+      const { lastKnownEvent } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
 
       yield* eventStore.append(event, {
         filter: { types: Events.CommentEventTypes },
@@ -117,7 +117,7 @@ describe('when the last known event matches', () => {
 
       const all = yield* eventStore.all
 
-      expect(all).toStrictEqual([...existingEvents, event])
+      expect(all).toStrictEqual(Option.some({ events: [...existingEvents, event], lastKnownEvent: expect.anything() }))
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -148,7 +148,12 @@ describe('when the last known event is different', () => {
 
         const all = yield* eventStore.all
 
-        expect(all).toHaveLength(existingEvents.length)
+        expect(all).toStrictEqual(
+          Array.match(existingEvents, {
+            onEmpty: Option.none,
+            onNonEmpty: events => Option.some({ events, lastKnownEvent: expect.anything() }),
+          }),
+        )
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -167,7 +172,7 @@ const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
 test.each<
   [
     string,
-    Events.EventFilter<Events.Event['_tag']>,
+    Events.EventFilter<Types.Tags<Events.Event>>,
     Array.NonEmptyReadonlyArray<Events.Event>,
     ReadonlyArray<Events.Event>,
   ]
@@ -350,9 +355,9 @@ test.each<
 
     yield* Effect.forEach(events, event => eventStore.append(event))
 
-    const { events: actual } = yield* eventStore.query(filter)
+    const actual = yield* eventStore.query(filter)
 
-    expect(actual).toStrictEqual(expected)
+    expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownEvent: expect.anything() }))
   }).pipe(
     Effect.provide(Uuid.layer),
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -360,6 +365,32 @@ test.each<
     Effect.provide(TestLibsqlClient),
     EffectTest.run,
   ),
+)
+
+test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())])(
+  'lists events since',
+  (existingEvents, newEvents) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
+
+      yield* Effect.forEach(existingEvents, existingEvent =>
+        TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
+      )
+
+      const { lastKnownEvent } = yield* Effect.flatten(eventStore.all)
+
+      yield* Effect.forEach(newEvents, newEvent => TestClock.adjustWith(eventStore.append(newEvent), '1 milli'))
+
+      const actual = yield* eventStore.since(lastKnownEvent)
+
+      expect(actual).toStrictEqual(Option.some({ events: newEvents, lastKnownEvent: expect.anything() }))
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(

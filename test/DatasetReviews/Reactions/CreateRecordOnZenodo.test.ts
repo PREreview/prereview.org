@@ -7,6 +7,7 @@ import * as Datasets from '../../../src/Datasets/index.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
@@ -228,7 +229,7 @@ describe('CreateRecordOnZenodo', () => {
       new DatasetReviews.UnknownDatasetReview({}),
       new DatasetReviews.DatasetReviewIsInProgress(),
       new DatasetReviews.DatasetReviewHasBeenPublished(),
-      new DatasetReviews.UnableToQuery({}),
+      new Queries.UnableToQuery({}),
     ),
   ])("when the data can't be generated", (datasetReviewId, publicUrl, error) =>
     Effect.gen(function* () {

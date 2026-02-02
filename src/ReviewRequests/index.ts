@@ -89,12 +89,14 @@ export const layer = Layer.provideMerge(
               ),
               Effect.orElseSucceed(Array.empty),
               Effect.provide(context),
+              Effect.withSpan('ReviewRequests.getFiveMostRecent'),
             ),
             isReviewRequested: flow(
               (preprintId: Preprints.IndeterminatePreprintId) =>
                 Queries.doesAPreprintHaveAReviewRequest({ preprintId }),
               Effect.orElseSucceed(() => false),
               Effect.provide(context),
+              Effect.withSpan('ReviewRequests.isReviewRequested'),
             ),
             search: flow(
               Queries.searchForPublishedReviewRequests,
@@ -124,6 +126,7 @@ export const layer = Layer.provideMerge(
                 UnableToQuery: error => new ReviewRequestsAreUnavailable({ cause: error }),
               }),
               Effect.provide(context),
+              Effect.withSpan('ReviewRequests.search'),
             ),
           }),
         onFalse: () =>
@@ -132,13 +135,19 @@ export const layer = Layer.provideMerge(
               PrereviewCoarNotify.getFirstPageOfReviewRequestsFromPrereviewCoarNotify,
               Effect.orElseSucceed(Array.empty),
               Effect.provide(context),
+              Effect.withSpan('ReviewRequests.getFiveMostRecent'),
             ),
             isReviewRequested: flow(
               PrereviewCoarNotify.isReviewRequested,
               Effect.orElseSucceed(() => false),
               Effect.provide(context),
+              Effect.withSpan('ReviewRequests.isReviewRequested'),
             ),
-            search: flow(getReviewRequestsFromPrereviewCoarNotify, Effect.provide(context)),
+            search: flow(
+              getReviewRequestsFromPrereviewCoarNotify,
+              Effect.provide(context),
+              Effect.withSpan('ReviewRequests.search'),
+            ),
           }),
       })
     }),

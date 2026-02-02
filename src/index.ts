@@ -1,10 +1,14 @@
 import { OpenAiClient, OpenAiLanguageModel } from '@effect/ai-openai'
 import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
+import { NodeSdk } from '@effect/opentelemetry'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import {
   Array,
+  Boolean,
   Config,
   Effect,
   flow,
@@ -78,6 +82,20 @@ const ClusterLayer = Layer.unwrapEffect(
           runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
         },
       }),
+  ),
+)
+
+const OpenTelemetry = Layer.unwrapEffect(
+  Effect.andThen(
+    Config.withDefault(Config.boolean('ENABLE_OPENTELEMETRY'), false),
+    Boolean.match({
+      onTrue: () =>
+        NodeSdk.layer(() => ({
+          resource: { serviceName: 'prereview' },
+          spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
+        })),
+      onFalse: () => Layer.empty,
+    }),
   ),
 )
 
@@ -227,6 +245,7 @@ pipe(
       OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
     ),
   ),
+  Layer.provide(OpenTelemetry),
   Layer.provide(
     Logger.replaceEffect(
       Logger.defaultLogger,

@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Option } from 'effect'
+import { Array, Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/GetFiveMostRecentReviewRequests.ts'
-import { Doi, NonEmptyString, Uuid } from '../../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
 const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }
@@ -164,15 +164,10 @@ const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: [],
   reviewRequestId: request7Id,
 })
-const request8Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 200 }),
-  receivedFrom: new URL('http://example.com'),
+const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
-  requester: Option.some(requester4),
-  reviewRequestId: request8Id,
-})
-const request8Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 8 }),
+  requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request8Id,
 })
 const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -201,8 +196,14 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
   ['no accepted events', [request1Received1, request1Categorized1], []],
   [
     'imported only',
-    [request9Imported, request9Categorized],
+    [request8Imported, request8Categorized, request9Imported, request9Categorized],
     [
+      {
+        id: request8Imported.reviewRequestId,
+        published: request8Imported.publishedAt,
+        topics: request8Categorized.topics,
+        preprintId: request8Imported.preprintId,
+      },
       {
         id: request9Imported.reviewRequestId,
         published: request9Imported.publishedAt,
@@ -238,8 +239,7 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
       request7Received,
       request7Accepted,
       request7Categorized,
-      request8Received,
-      request8Accepted,
+      request8Imported,
       request8Categorized,
       request9Imported,
       request9Categorized,
@@ -277,8 +277,12 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
       },
     ],
   ],
-])('query (%s)', (_name, events, expected) => {
-  const actual = _.query(events)
+])('%s', (_name, events, expected) => {
+  const { initialState, updateStateWithEvent, query } = _.getFiveMostRecentReviewRequests
 
-  expect(actual).toStrictEqual(expected)
+  const state = Array.reduce(events, initialState, updateStateWithEvent)
+
+  const actual = query(state)
+
+  expect(actual).toStrictEqual(Either.right(expected))
 })

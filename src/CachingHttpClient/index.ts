@@ -87,7 +87,7 @@ export const CachingHttpClient = (
             }),
           ),
         )
-      })
+      }).pipe(Effect.withSpan('CachingHttpClient'))
 
     return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
   })

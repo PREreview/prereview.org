@@ -1,4 +1,4 @@
-import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -134,13 +134,13 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
     const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     const handleCommand = <
-      Event extends Events.DatasetReviewEvent['_tag'],
+      Event extends Types.Tags<Events.DatasetReviewEvent>,
       State,
       Command extends { datasetReviewId: Uuid.Uuid },
       Error,
     >(
       createFilter: (datasetReviewId: Uuid.Uuid) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Extract<Events.Event, { _tag: Event }>>, datasetReviewId: Uuid.Uuid) => State,
+      foldState: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, datasetReviewId: Uuid.Uuid) => State,
       authorize: (command: Command) => (state: State) => boolean,
       decide: (command: Command) => (state: State) => Either.Either<Option.Option<Events.DatasetReviewEvent>, Error>,
     ): CommandHandler<Command, Error> =>
@@ -150,7 +150,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
 
           const { events, lastKnownEvent } = yield* pipe(
             EventStore.query(filter),
-            Effect.catchTag('NoEventsFound', () => Effect.succeed({ events: [], lastKnownEvent: undefined })),
+            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
           )
 
           yield* pipe(

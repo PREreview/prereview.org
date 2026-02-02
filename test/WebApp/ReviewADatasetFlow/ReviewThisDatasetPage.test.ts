@@ -4,6 +4,7 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
@@ -251,7 +252,7 @@ describe('ReviewThisDatasetPage', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              findInProgressReviewForADataset: () => new DatasetReviews.UnableToQuery({ cause }),
+              findInProgressReviewForADataset: () => new Queries.UnableToQuery({ cause }),
             }),
           ),
           Effect.provide(

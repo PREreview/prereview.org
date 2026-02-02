@@ -4,6 +4,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
@@ -165,7 +166,7 @@ describe('IsReadyToBeSharedQuestion', () => {
       }).pipe(
         Effect.provide(
           Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: () => new DatasetReviews.UnableToQuery({}),
+            checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared: () => new Queries.UnableToQuery({}),
           }),
         ),
         Effect.provideService(Locale, locale),
@@ -234,7 +235,7 @@ describe('IsReadyToBeSharedSubmission', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.oneof(
-          fc.anything().map(cause => new DatasetReviews.UnableToQuery({ cause })),
+          fc.anything().map(cause => new Queries.UnableToQuery({ cause })),
           fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
           fc.constant(Effect.succeedNone),
         ),

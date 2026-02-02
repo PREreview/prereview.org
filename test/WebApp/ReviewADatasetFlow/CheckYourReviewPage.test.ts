@@ -5,6 +5,7 @@ import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { Uuid } from '../../../src/types/index.ts'
@@ -412,7 +413,7 @@ describe('CheckYourReviewPage', () => {
         })
       }).pipe(
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new Queries.UnableToQuery({}) }),
         ),
         Effect.provide(Layer.mock(Datasets.Datasets, {})),
         Effect.provide(Layer.mock(Personas.Personas, {})),
@@ -560,7 +561,7 @@ describe('CheckYourReviewSubmission', () => {
       }).pipe(
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
         Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new DatasetReviews.UnableToQuery({}) }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getAuthor: () => new Queries.UnableToQuery({}) }),
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),

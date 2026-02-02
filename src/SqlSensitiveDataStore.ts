@@ -1,5 +1,5 @@
-import { Model, SqlClient, type SqlError } from '@effect/sql'
-import { Effect, Layer, Option, pipe, Schema, Struct } from 'effect'
+import { Model, SqlClient, SqlSchema, type SqlError } from '@effect/sql'
+import { Array, Effect, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
@@ -24,12 +24,34 @@ export const make: Effect.Effect<
     idColumn: 'id',
   })
 
+  const findManySchema = SqlSchema.findAll({
+    Request: Schema.NonEmptyArray(Uuid.UuidSchema),
+    Result: SensitiveData,
+    execute: ids => sql`
+      SELECT
+        *
+      FROM
+        sensitive_data
+      where
+        ${sql.in('id', ids)}
+    `,
+  })
+
   return {
     get: id =>
       pipe(
         sensitiveData.findById(id),
         Effect.map(Option.map(Struct.get('value'))),
         Effect.catchAllDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
+      ),
+    getMany: ids =>
+      pipe(
+        findManySchema(ids),
+        Effect.orDie,
+        Effect.map(Array.map(row => Tuple.make(row.id, row.value))),
+        Effect.map(Record.fromEntries),
+        Effect.catchAllDefect(cause => new SensitiveDataStore.FailedToGetSensitiveData({ cause })),
+        Effect.withSpan('SqlSensitiveDataStore.getMany', { attributes: { ids } }),
       ),
     add: value =>
       pipe(

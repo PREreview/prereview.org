@@ -15,7 +15,7 @@ import * as StatusCodes from '../../../StatusCodes.ts'
 import type { ProfileId } from '../../../types/profile-id.ts'
 import { UuidC } from '../../../types/uuid.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
-import { type PageResponse, RedirectResponse } from '../../Response/index.ts'
+import { RedirectResponse, type PageResponse } from '../../Response/index.ts'
 
 export type LegacyEnv = GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & { locale: SupportedLocale }
 

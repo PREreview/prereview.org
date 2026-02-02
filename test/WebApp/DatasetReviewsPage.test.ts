@@ -5,6 +5,7 @@ import { Locale } from '../../src/Context.ts'
 import * as DatasetReviews from '../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
+import * as Queries from '../../src/Queries.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/DatasetReviewsPage/index.ts'
@@ -107,7 +108,7 @@ describe('DatasetReviewsPage', () => {
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
-      new DatasetReviews.UnableToQuery({}),
+      new Queries.UnableToQuery({}),
       new DatasetReviews.UnknownDatasetReview({}),
     ),
     fc.dataset(),
@@ -147,7 +148,7 @@ describe('DatasetReviewsPage', () => {
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
-      new DatasetReviews.UnableToQuery({}),
+      new Queries.UnableToQuery({}),
       new DatasetReviews.UnknownDatasetReview({}),
     ),
     fc.publishedDatasetReview(),
@@ -196,7 +197,7 @@ describe('DatasetReviewsPage', () => {
     fc.nonEmptyArray(fc.uuid()),
     fc.constantFrom(
       new DatasetReviews.DatasetReviewHasNotBeenPublished({}),
-      new DatasetReviews.UnableToQuery({}),
+      new Queries.UnableToQuery({}),
       new DatasetReviews.UnknownDatasetReview({}),
     ),
     fc.publishedDatasetReview(),
@@ -254,7 +255,7 @@ describe('DatasetReviewsPage', () => {
     }).pipe(
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewQueries, {
-          findPublishedReviewsForADataset: () => new DatasetReviews.UnableToQuery({}),
+          findPublishedReviewsForADataset: () => new Queries.UnableToQuery({}),
         }),
       ),
       Effect.provide(Layer.mock(Datasets.Datasets, {})),

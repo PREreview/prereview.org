@@ -14,6 +14,7 @@ import {
   Schema,
   Scope,
   Struct,
+  type Types,
 } from 'effect'
 import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
@@ -44,21 +45,38 @@ export const make: Effect.Effect<
     )
   `
 
-  const buildFilterCondition = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
+  yield* sql.onDialectOrElse({
+    pg: () => sql`
+      CREATE INDEX IF NOT EXISTS idx_events_type ON events (type);
+
+      CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
+
+      CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
+    `,
+    orElse: () => Effect.void,
+  })
+
+  const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     sql.or(
       Array.map(Array.ensure(filter), filter =>
         filter.predicates && Struct.keys(filter.predicates).length > 0
           ? sql.and([
               sql.in('type', filter.types),
-              ...Record.reduce(filter.predicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-              ),
+              ...sql.onDialectOrElse({
+                pg: () => [sql`payload @> ${filter.predicates}`],
+                orElse: () =>
+                  Record.reduce(filter.predicates ?? {}, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+                    typeof value === 'string'
+                      ? Array.append(conditions, sql`payload ->> ${key} = ${value}`)
+                      : conditions,
+                  ),
+              }),
             ])
           : sql.in('type', filter.types),
       ),
     )
 
-  const selectEventRows = <T extends Events.Event['_tag']>(filter: Events.EventFilter<T>) =>
+  const selectEventRows = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     pipe(
       sql`
         SELECT
@@ -79,7 +97,7 @@ export const make: Effect.Effect<
             EventsTable(
               Events.Event.pipe(Schema.filter(hasTag(...Array.flatMap(Array.ensure(filter), Struct.get('types'))))),
             ),
-          ),
+          ).annotations({ batching: true, concurrency: 'inherit' }),
         ),
       ),
       Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
@@ -98,8 +116,21 @@ export const make: Effect.Effect<
       ORDER BY
         timestamp ASC
     `,
-    Effect.andThen(Schema.decodeUnknown(Schema.Array(EventsTable(Events.Event)))),
-    Effect.andThen(Array.map(Struct.get('event'))),
+    Effect.andThen(
+      Schema.decodeUnknown(
+        Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+      ),
+    ),
+    Effect.andThen(
+      Array.match({
+        onEmpty: () => Effect.succeedNone,
+        onNonEmpty: rows =>
+          Effect.succeedSome({
+            events: Array.map(rows, Struct.get('event')),
+            lastKnownEvent: Array.lastNonEmpty(rows).id,
+          }),
+      }),
+    ),
     Effect.tapError(error =>
       Effect.annotateLogs(Effect.logError('Unable to get all events'), {
         error,
@@ -107,22 +138,73 @@ export const make: Effect.Effect<
     ),
     Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
     Effect.provide(context),
+    Effect.withSpan('SqlEventStore.all'),
   )
 
-  const query: EventStore.EventStore['query'] = Effect.fn(function* (filter) {
+  const since: EventStore.EventStore['since'] = Effect.fn('SqlEventStore.since')(
+    function* (lastKnownEvent) {
+      const rows = yield* pipe(
+        sql`
+          SELECT
+            id,
+            type,
+            timestamp,
+            payload
+          FROM
+            events
+          WHERE
+            timestamp > (
+              SELECT
+                timestamp
+              FROM
+                events
+              WHERE
+                id = ${lastKnownEvent}
+              LIMIT
+                1
+            )
+          ORDER BY
+            timestamp ASC
+        `,
+        Effect.andThen(
+          Schema.decodeUnknown(
+            Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+          ),
+        ),
+      )
+
+      return yield* Array.match(rows, {
+        onEmpty: () => Effect.succeedNone,
+        onNonEmpty: rows =>
+          Effect.succeedSome({
+            events: Array.map(rows, Struct.get('event')),
+            lastKnownEvent: Array.lastNonEmpty(rows).id,
+          }),
+      })
+    },
+    Effect.tapError(error =>
+      Effect.annotateLogs(Effect.logError('Unable to get events'), {
+        error,
+      }),
+    ),
+    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    Effect.provide(context),
+  )
+
+  const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
-    return yield* Array.match(rows, {
-      onEmpty: () => Effect.fail(new EventStore.NoEventsFound()),
+    return Array.match(rows, {
+      onEmpty: Option.none,
       onNonEmpty: rows =>
-        Effect.succeed({
+        Option.some({
           events: Array.map(rows, Struct.get('event')),
           lastKnownEvent: Array.lastNonEmpty(rows).id,
         }),
     })
   }, Effect.provide(context))
 
-  const append: EventStore.EventStore['append'] = Effect.fn(
+  const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
     function* (event, appendCondition) {
       const id = yield* generateUuid
       const timestamp = yield* DateTime.now
@@ -200,7 +282,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, query, append }
+  return { all, since, query, append }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)

@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Effect, Either, Layer, pipe } from 'effect'
 import { OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Reactions/CategorizeReviewRequest.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -147,10 +148,7 @@ describe('CategorizeReviewRequest', () => {
     fc
       .anything()
       .chain(cause =>
-        fc.constantFrom(
-          new ReviewRequests.UnknownReviewRequest({ cause }),
-          new ReviewRequests.UnableToQuery({ cause }),
-        ),
+        fc.constantFrom(new ReviewRequests.UnknownReviewRequest({ cause }), new Queries.UnableToQuery({ cause })),
       ),
   ])("when the review request can't be loaded", (reviewRequestId, error) =>
     Effect.gen(function* () {

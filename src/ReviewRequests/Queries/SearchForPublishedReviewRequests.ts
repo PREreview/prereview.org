@@ -2,6 +2,7 @@ import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'ef
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import type * as Queries from '../../Queries.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
@@ -29,109 +30,131 @@ export interface Input {
 
 export type Result = Either.Either<PageOfReviewRequests, Errors.NoReviewRequestsFound>
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const createFilter = (input: Input) =>
-  Events.EventFilter({
-    types: [
-      'ReviewRequestForAPreprintWasReceived',
-      'ReviewRequestForAPreprintWasAccepted',
-      'ReviewRequestFromAPreprintServerWasImported',
-      'ReviewRequestForAPreprintWasCategorized',
-    ],
+const eventTypes = [
+  'ReviewRequestForAPreprintWasReceived',
+  'ReviewRequestForAPreprintWasAccepted',
+  'ReviewRequestByAPrereviewerWasImported',
+  'ReviewRequestFromAPreprintServerWasImported',
+  'ReviewRequestForAPreprintWasCategorized',
+] as const
+
+type PertinentEvent = Events.EventSubset<typeof eventTypes>
+
+const filter = Events.EventFilter({ types: eventTypes })
+
+type State = Record<
+  Uuid.Uuid,
+  {
+    published: Temporal.Instant | undefined
+    fields: ReadonlyArray<FieldId>
+    subfields: ReadonlyArray<SubfieldId>
+    language: LanguageCode | undefined
+    preprintId: Preprints.IndeterminatePreprintId | undefined
+  }
+>
+
+const initialState: State = Record.empty()
+
+const updateStateWithEvent = (state: State, event: Events.Event): State => {
+  if (!Events.matches(event, filter)) {
+    return state
+  }
+
+  return updateStateWithPertinentEvent(state, event)
+}
+
+const updateStateWithPertinentEvent = (map: State, event: PertinentEvent) =>
+  Match.valueTags(event, {
+    ReviewRequestForAPreprintWasReceived: event =>
+      Option.getOrElse(
+        Record.modifyOption(map, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+        })),
+        () =>
+          Record.set(map, event.reviewRequestId, {
+            published: undefined,
+            topics: [],
+            fields: [],
+            subfields: [],
+            language: undefined,
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestForAPreprintWasAccepted: event =>
+      Option.getOrElse(
+        Record.modifyOption(map, event.reviewRequestId, review => ({
+          ...review,
+          published: event.acceptedAt,
+        })),
+        () =>
+          Record.set(map, event.reviewRequestId, {
+            published: event.acceptedAt,
+            topics: [],
+            fields: [],
+            subfields: [],
+            language: undefined,
+            preprintId: undefined,
+          }),
+      ),
+    ReviewRequestByAPrereviewerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(map, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+          published: event.publishedAt,
+        })),
+        () =>
+          Record.set(map, event.reviewRequestId, {
+            published: event.publishedAt,
+            topics: [],
+            fields: [],
+            subfields: [],
+            language: undefined,
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestFromAPreprintServerWasImported: event =>
+      Option.getOrElse(
+        Record.modifyOption(map, event.reviewRequestId, review => ({
+          ...review,
+          preprintId: event.preprintId,
+          published: event.publishedAt,
+        })),
+        () =>
+          Record.set(map, event.reviewRequestId, {
+            published: event.publishedAt,
+            topics: [],
+            fields: [],
+            subfields: [],
+            language: undefined,
+            preprintId: event.preprintId,
+          }),
+      ),
+    ReviewRequestForAPreprintWasCategorized: event =>
+      Option.getOrElse(
+        Record.modifyOption(map, event.reviewRequestId, review => ({
+          ...review,
+          topics: event.topics,
+          fields: Array.map(event.topics, getTopicField),
+          subfields: Array.map(event.topics, getTopicSubfield),
+          language: event.language,
+        })),
+        () =>
+          Record.set(map, event.reviewRequestId, {
+            published: undefined,
+            topics: event.topics,
+            fields: Array.map(event.topics, getTopicField),
+            subfields: Array.map(event.topics, getTopicSubfield),
+            language: event.language,
+            preprintId: undefined,
+          }),
+      ),
   })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result =>
+const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
-    const filter = createFilter(input)
-
-    const filteredEvents = Array.filter(events, Events.matches(filter))
-
-    const reviewRequests = Array.reduce(
-      filteredEvents,
-      Record.empty<
-        Uuid.Uuid,
-        {
-          published: Temporal.Instant | undefined
-          fields: ReadonlyArray<FieldId>
-          subfields: ReadonlyArray<SubfieldId>
-          language: LanguageCode | undefined
-          preprintId: Preprints.IndeterminatePreprintId | undefined
-        }
-      >(),
-      (map, event) =>
-        Match.valueTags(event, {
-          ReviewRequestForAPreprintWasReceived: event =>
-            Option.getOrElse(
-              Record.modifyOption(map, event.reviewRequestId, review => ({
-                ...review,
-                preprintId: event.preprintId,
-              })),
-              () =>
-                Record.set(map, event.reviewRequestId, {
-                  published: undefined,
-                  topics: [],
-                  fields: [],
-                  subfields: [],
-                  language: undefined,
-                  preprintId: event.preprintId,
-                }),
-            ),
-          ReviewRequestForAPreprintWasAccepted: event =>
-            Option.getOrElse(
-              Record.modifyOption(map, event.reviewRequestId, review => ({
-                ...review,
-                published: event.acceptedAt,
-              })),
-              () =>
-                Record.set(map, event.reviewRequestId, {
-                  published: event.acceptedAt,
-                  topics: [],
-                  fields: [],
-                  subfields: [],
-                  language: undefined,
-                  preprintId: undefined,
-                }),
-            ),
-          ReviewRequestFromAPreprintServerWasImported: event =>
-            Option.getOrElse(
-              Record.modifyOption(map, event.reviewRequestId, review => ({
-                ...review,
-                preprintId: event.preprintId,
-                published: event.publishedAt,
-              })),
-              () =>
-                Record.set(map, event.reviewRequestId, {
-                  published: event.publishedAt,
-                  topics: [],
-                  fields: [],
-                  subfields: [],
-                  language: undefined,
-                  preprintId: event.preprintId,
-                }),
-            ),
-          ReviewRequestForAPreprintWasCategorized: event =>
-            Option.getOrElse(
-              Record.modifyOption(map, event.reviewRequestId, review => ({
-                ...review,
-                topics: event.topics,
-                fields: Array.map(event.topics, getTopicField),
-                subfields: Array.map(event.topics, getTopicSubfield),
-                language: event.language,
-              })),
-              () =>
-                Record.set(map, event.reviewRequestId, {
-                  published: undefined,
-                  topics: event.topics,
-                  fields: Array.map(event.topics, getTopicField),
-                  subfields: Array.map(event.topics, getTopicSubfield),
-                  language: event.language,
-                  preprintId: undefined,
-                }),
-            ),
-        }),
-    )
-
-    const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
+    const filteredReviewRequests = Record.filter(state, reviewRequest =>
       Boolean.every([
         reviewRequest.published !== undefined,
         reviewRequest.preprintId !== undefined,
@@ -178,3 +201,15 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
       })),
     }
   })
+
+export const searchForPublishedReviewRequests: Queries.StatefulQuery<
+  State,
+  [Input],
+  Either.Either.Right<Result>,
+  Either.Either.Left<Result>
+> = {
+  name: 'ReviewRequestQueries.searchForPublishedReviewRequests',
+  initialState,
+  updateStateWithEvent,
+  query,
+}
