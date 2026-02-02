@@ -1,11 +1,12 @@
-import { Array, Console, Context, Effect, Layer, Option, Schedule, Struct } from 'effect'
+import { Array, Console, Context, Effect, Layer, Option, Schedule } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
+import type { Uuid } from './types/index.ts'
 
 type Subscriber = (event: Events.Event) => void
 
-let numberOfKnownEvents = 0
+let lastKnownEvent = Option.none<Uuid.Uuid>()
 const subscribers: Array<Subscriber> = []
 
 export class EventDispatcher extends Context.Tag('EventDispatcher')<
@@ -20,18 +21,15 @@ export const EventDispatcherLayer = Layer.succeed(EventDispatcher, {
 })
 
 const dispatchNewEvents = Effect.gen(function* () {
-  const events = yield* Effect.andThen(
-    EventStore.all,
-    Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
-  )
+  const result = yield* Option.match(lastKnownEvent, { onNone: () => EventStore.all, onSome: EventStore.since })
 
-  if (events.length <= numberOfKnownEvents) {
+  if (Option.isNone(result)) {
     return
   }
 
-  const newEvents = Array.takeRight(events, events.length - numberOfKnownEvents)
+  const { events: newEvents, lastKnownEvent: newLastKnownEvent } = result.value
 
-  numberOfKnownEvents = events.length
+  lastKnownEvent = Option.some(newLastKnownEvent)
 
   yield* Console.log(`Found ${newEvents.length} new event${newEvents.length > 1 ? 's' : ''}`)
   yield* Console.log(`Subscriber count: ${subscribers.length}`)
