@@ -33,7 +33,7 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import { Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
-import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
+import { Cloudinary, Nodemailer, Slack, Zenodo } from '../../../ExternalApis/index.ts'
 import { CommunitySlack, type OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -41,7 +41,6 @@ import * as Keyv from '../../../keyv.ts'
 import * as LegacyPrereview from '../../../legacy-prereview.ts'
 import { LegacyPrereviewApi } from '../../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { Nodemailer } from '../../../nodemailer.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -91,7 +90,7 @@ export const nonEffectRouter: Effect.Effect<
   | ScietyListToken
   | SessionStore
   | PrereviewCoarNotifyConfig
-  | Nodemailer
+  | Nodemailer.Nodemailer
   | Runtime.Runtime.Context<Env['runtime']>
   | FileSystem.FileSystem
   | Path.Path
@@ -120,7 +119,7 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
-  const nodemailer = yield* Nodemailer
+  const nodemailer = yield* Nodemailer.Nodemailer
   const fileSystem = yield* FileSystem.FileSystem
 
   const locale = yield* Locale
@@ -257,7 +256,7 @@ export interface Env {
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
-  nodemailer: typeof Nodemailer.Service
+  nodemailer: typeof Nodemailer.Nodemailer.Service
 }
 
 const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A | B> = P.alt as never

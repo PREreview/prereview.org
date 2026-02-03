@@ -8,11 +8,10 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import { sendContactEmailAddressVerificationEmail } from '../../../email.ts'
-import { Cloudinary } from '../../../ExternalApis/index.ts'
+import { Cloudinary, Nodemailer } from '../../../ExternalApis/index.ts'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
 import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -492,7 +491,7 @@ export const MyDetailsRouter = pipe(
         verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, {
           locale: env.locale,
           publicUrl: env.publicUrl,
-          sendEmail: withEnv(sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
+          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
         }),
       }),
   ),

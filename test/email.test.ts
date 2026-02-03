@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as _ from '../src/email.ts'
+import type { Nodemailer } from '../src/ExternalApis/index.ts'
 import { translate } from '../src/locales/index.ts'
 import * as fc from './fc.ts'
 
@@ -10,7 +11,7 @@ describe('sendContactEmailAddressVerificationEmail', () => {
   test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
     'when the email can be sent',
     async (publicUrl, user, emailAddress, locale) => {
-      const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
+      const sendEmail = jest.fn<Nodemailer.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
       const actual = await _.sendContactEmailAddressVerificationEmail(
         user,
@@ -57,7 +58,7 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
     fc.indeterminatePreprintId(),
     fc.supportedLocale(),
   ])('when the email can be sent', async (publicUrl, user, emailAddress, preprint, locale) => {
-    const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
+    const sendEmail = jest.fn<Nodemailer.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
     const actual = await _.sendContactEmailAddressVerificationEmailForReview(
       user,

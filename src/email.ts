@@ -1,11 +1,11 @@
 import { pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as TE from 'fp-ts/lib/TaskEither.js'
 import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address.ts'
-import { type Html, html, mjmlToHtml, plainText, rawHtml } from './html.ts'
+import { Nodemailer } from './ExternalApis/index.ts'
+import { html, mjmlToHtml, plainText, rawHtml } from './html.ts'
 import { type SupportedLocale, translate } from './locales/index.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from './Preprints/index.ts'
 import { type PublicUrlEnv, toUrl } from './public-url.ts'
@@ -21,38 +21,23 @@ import { EmailAddress } from './types/EmailAddress.ts'
 import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { User } from './user.ts'
 
-export interface SendEmailEnv {
-  sendEmail: (email: Email) => TE.TaskEither<'unavailable', void>
-}
-
-export interface Email {
-  readonly from: { readonly name: string; readonly address: EmailAddress }
-  readonly to: { readonly name: string; readonly address: EmailAddress }
-  readonly subject: string
-  readonly text: string
-  readonly html: Html
-}
-
-export const sendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
-  R.asks(({ sendEmail }) => sendEmail(email))
-
 export const sendContactEmailAddressVerificationEmail = (
   user: User,
   emailAddress: UnverifiedContactEmailAddress,
-): RTE.ReaderTaskEither<SendEmailEnv & PublicUrlEnv & { locale: SupportedLocale }, 'unavailable', void> =>
+): RTE.ReaderTaskEither<Nodemailer.SendEmailEnv & PublicUrlEnv & { locale: SupportedLocale }, 'unavailable', void> =>
   pipe(
     RTE.fromReader(toUrl(verifyContactEmailAddressMatch.formatter, { verify: emailAddress.verificationToken })),
     RTE.chainReaderKW(verificationUrl =>
       createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
-    RTE.chainW(sendEmail),
+    RTE.chainW(Nodemailer.sendEmail),
   )
 
 export const sendContactEmailAddressVerificationEmailForReview = (
   user: User,
   emailAddress: UnverifiedContactEmailAddress,
   preprint: IndeterminatePreprintId,
-): RTE.ReaderTaskEither<SendEmailEnv & PublicUrlEnv & { locale: SupportedLocale }, 'unavailable', void> =>
+): RTE.ReaderTaskEither<Nodemailer.SendEmailEnv & PublicUrlEnv & { locale: SupportedLocale }, 'unavailable', void> =>
   pipe(
     RTE.fromReader(
       toUrl(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint, verify: emailAddress.verificationToken }),
@@ -60,7 +45,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
     RTE.chainReaderKW(verificationUrl =>
       createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
-    RTE.chainW(sendEmail),
+    RTE.chainW(Nodemailer.sendEmail),
   )
 
 export const createContactEmailAddressVerificationEmail = ({
@@ -95,7 +80,7 @@ export const createContactEmailAddressVerificationEmail = ({
             </mj-body>
           </mjml>
         `),
-      }) satisfies Email,
+      }) satisfies Nodemailer.Email,
   )
 
 export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
@@ -106,7 +91,7 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
   user: User
   emailAddress: UnverifiedContactEmailAddress
   authorInvite: Uuid
-}): R.Reader<PublicUrlEnv & { locale: SupportedLocale }, Email> =>
+}): R.Reader<PublicUrlEnv & { locale: SupportedLocale }, Nodemailer.Email> =>
   pipe(
     toUrl(authorInviteVerifyEmailAddressMatch.formatter, { id: authorInvite, verify: emailAddress.verificationToken }),
     R.chainW(verificationUrl =>
@@ -133,7 +118,7 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
                 </mj-body>
               </mjml>
             `),
-          }) satisfies Email,
+          }) satisfies Nodemailer.Email,
       ),
     ),
   )
@@ -148,7 +133,7 @@ export const createContactEmailAddressVerificationEmailForComment = ({
   emailAddress: UnverifiedContactEmailAddress
   comment: Uuid
   locale: SupportedLocale
-}): R.Reader<PublicUrlEnv, Email> =>
+}): R.Reader<PublicUrlEnv, Nodemailer.Email> =>
   pipe(
     toUrl(Routes.WriteCommentVerifyEmailAddress, { commentId: comment, token: emailAddress.verificationToken }),
     R.map(
@@ -174,7 +159,7 @@ export const createContactEmailAddressVerificationEmailForComment = ({
               </mj-body>
             </mjml>
           `),
-        }) satisfies Email,
+        }) satisfies Nodemailer.Email,
     ),
   )
 
@@ -183,7 +168,7 @@ export const createAuthorInviteEmail = (
   authorInviteId: Uuid,
   newPrereview: { author: string; preprint: PreprintTitle },
   locale: SupportedLocale,
-): R.Reader<PublicUrlEnv, Email> =>
+): R.Reader<PublicUrlEnv, Nodemailer.Email> =>
   pipe(
     R.Do,
     R.apS('inviteUrl', toUrl(authorInviteMatch.formatter, { id: authorInviteId })),
@@ -265,7 +250,7 @@ PREreview
               </mj-body>
             </mjml>
           `),
-        }) satisfies Email,
+        }) satisfies Nodemailer.Email,
     ),
   )
 

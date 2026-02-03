@@ -1,30 +1,23 @@
-import { Config, Context, Effect, flow, Layer, pipe, Redacted } from 'effect'
+import { flow, pipe } from 'effect'
 import { toError } from 'fp-ts/lib/Either.js'
+import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type * as E from 'io-ts/lib/Encoder.js'
 import * as L from 'logger-fp-ts'
-import { createTransport, type SendMailOptions, type Transporter } from 'nodemailer'
-import type { Email } from './email.ts'
+import type { SendMailOptions, Transporter } from 'nodemailer'
+import type { Email } from './Email.ts'
 
 export interface NodemailerEnv {
   nodemailer: Transporter<unknown>
 }
 
-export class Nodemailer extends Context.Tag('Nodemailer')<Nodemailer, Transporter<unknown>>() {}
+export interface SendEmailEnv {
+  sendEmail: (email: Email) => TE.TaskEither<'unavailable', void>
+}
 
-export const make = (options: Redacted.Redacted<URL> | Transporter<unknown>): Effect.Effect<Transporter<unknown>> =>
-  Redacted.isRedacted(options)
-    ? Effect.sync(() => createTransport(Redacted.value(options).href))
-    : Effect.succeed(options)
-
-export const layer: (options: Parameters<typeof make>[0]) => Layer.Layer<Nodemailer> = flow(
-  make,
-  Layer.effect(Nodemailer),
-)
-
-export const layerConfig = (options: Config.Config.Wrap<Parameters<typeof layer>[0]>) =>
-  Layer.unwrapEffect(Effect.andThen(Config.unwrap(options), layer))
+export const sendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
+  R.asks(({ sendEmail }) => sendEmail(email))
 
 const emailToNodemailerEmail: E.Encoder<SendMailOptions, Email> = {
   encode: email => ({

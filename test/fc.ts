@@ -36,9 +36,8 @@ import {
 } from '../src/contact-email-address.ts'
 import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
-import type { Email } from '../src/email.ts'
 import * as Events from '../src/Events.ts'
-import { type CoarNotify, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
+import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
 import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
@@ -1585,7 +1584,7 @@ export const userOnboarding = ({
     seenMyDetailsPage: seenMyDetailsPage ?? fc.boolean(),
   })
 
-export const email = (): fc.Arbitrary<Email> =>
+export const email = (): fc.Arbitrary<Nodemailer.Email> =>
   fc.record({
     from: fc.record({ name: fc.string(), address: emailAddress() }),
     to: fc.record({ name: fc.string(), address: emailAddress() }),

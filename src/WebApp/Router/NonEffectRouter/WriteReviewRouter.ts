@@ -6,16 +6,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
-import {
-  createAuthorInviteEmail,
-  sendContactEmailAddressVerificationEmailForReview,
-  sendEmail,
-} from '../../../email.ts'
+import { createAuthorInviteEmail, sendContactEmailAddressVerificationEmailForReview } from '../../../email.ts'
+import { Nodemailer } from '../../../ExternalApis/index.ts'
 import { OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../../legacy-prereview.ts'
-import { sendEmailWithNodemailer } from '../../../nodemailer.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -491,7 +487,7 @@ export const WriteReviewRouter = pipe(
           },
           publicUrl: env.publicUrl,
           runtime: env.runtime,
-          sendEmail: withEnv(sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
+          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
           zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
           zenodoUrl: env.zenodoApiConfig.origin,
           ...env.logger,
@@ -503,7 +499,7 @@ export const WriteReviewRouter = pipe(
         verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, {
           locale: env.locale,
           publicUrl: env.publicUrl,
-          sendEmail: withEnv(sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
+          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
         }),
       }),
   ),
@@ -541,7 +537,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                 newPrereview.locale,
               ),
             ),
-            RTE.chainW(sendEmail),
+            RTE.chainW(Nodemailer.sendEmail),
           ),
         ),
       ),

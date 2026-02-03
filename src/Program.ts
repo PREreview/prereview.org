@@ -18,6 +18,7 @@ import {
   Datacite,
   Ghost,
   JapanLinkCenter,
+  Nodemailer,
   OpenAlex,
   Orcid,
   Philsci,
@@ -32,7 +33,6 @@ import * as Keyv from './keyv.ts'
 import * as LegacyPrereview from './legacy-prereview.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
-import { Nodemailer, sendEmailWithNodemailer } from './nodemailer.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Preprints from './Preprints/index.ts'
@@ -164,7 +164,7 @@ const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
-    const nodemailer = yield* Nodemailer
+    const nodemailer = yield* Nodemailer.Nodemailer
 
     return (user, contactEmailAddress, comment) =>
       pipe(
@@ -184,7 +184,10 @@ const verifyContactEmailAddressForComment = Layer.effect(
           Effect.fn(function* (email) {
             const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-            return yield* FptsToEffect.readerTaskEither(sendEmailWithNodemailer(email), { nodemailer, ...loggerEnv })
+            return yield* FptsToEffect.readerTaskEither(Nodemailer.sendEmailWithNodemailer(email), {
+              nodemailer,
+              ...loggerEnv,
+            })
           }),
         ),
         Effect.mapError(
