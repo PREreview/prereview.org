@@ -1,20 +1,20 @@
 import { Doi } from 'doi-ts'
 import { Uuid } from 'uuid-ts'
-import { UnverifiedContactEmailAddress } from '../src/contact-email-address.ts'
+import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
 import {
   createAuthorInviteEmail,
   createContactEmailAddressVerificationEmail,
   createContactEmailAddressVerificationEmailForComment,
   createContactEmailAddressVerificationEmailForInvitedAuthor,
-} from '../src/email.ts'
-import { html } from '../src/html.ts'
-import { DefaultLocale } from '../src/locales/index.ts'
-import { BiorxivPreprintId } from '../src/Preprints/index.ts'
-import { EmailAddress } from '../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../src/types/NonEmptyString.ts'
-import { OrcidId } from '../src/types/OrcidId.ts'
-import { Pseudonym } from '../src/types/Pseudonym.ts'
-import { expect, test } from './base.ts'
+} from '../../src/ExternalInteractions/Email/legacy-email.ts'
+import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
+import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { expect, test } from '../base.ts'
 
 test('email-verification HTML looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({

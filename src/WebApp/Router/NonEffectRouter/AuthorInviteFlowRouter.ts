@@ -3,9 +3,8 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { createContactEmailAddressVerificationEmailForInvitedAuthor } from '../../../email.ts'
 import { Nodemailer } from '../../../ExternalApis/index.ts'
-import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
+import { Email, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
@@ -162,7 +161,7 @@ export const AuthorInviteFlowRouter = pipe(
         }),
         verifyContactEmailAddressForInvitedAuthor: withEnv(
           flow(
-            RTE.fromReaderK(createContactEmailAddressVerificationEmailForInvitedAuthor),
+            RTE.fromReaderK(Email.createContactEmailAddressVerificationEmailForInvitedAuthor),
             RTE.chainW(Nodemailer.sendEmail),
           ),
           {

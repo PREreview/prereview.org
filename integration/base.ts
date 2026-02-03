@@ -42,9 +42,8 @@ import {
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
-import { createAuthorInviteEmail } from '../src/email.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
-import { CommunitySlack } from '../src/ExternalInteractions/index.ts'
+import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { rawHtml } from '../src/html.ts'
 import {
@@ -3262,7 +3261,7 @@ export const invitedToBeAnAuthor: Fixtures<
       }),
     )
 
-    const email = createAuthorInviteEmail(
+    const email = Email.createAuthorInviteEmail(
       {
         name: NonEmptyString('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),

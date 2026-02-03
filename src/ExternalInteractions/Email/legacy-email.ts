@@ -3,23 +3,23 @@ import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
-import type { UnverifiedContactEmailAddress } from './contact-email-address.ts'
-import { Nodemailer } from './ExternalApis/index.ts'
-import { html, mjmlToHtml, plainText, rawHtml } from './html.ts'
-import { type SupportedLocale, translate } from './locales/index.ts'
-import type { IndeterminatePreprintId, PreprintTitle } from './Preprints/index.ts'
-import { type PublicUrlEnv, toUrl } from './public-url.ts'
-import * as Routes from './routes.ts'
+import type { UnverifiedContactEmailAddress } from '../../contact-email-address.ts'
+import { Nodemailer } from '../../ExternalApis/index.ts'
+import { html, mjmlToHtml, plainText, rawHtml } from '../../html.ts'
+import { type SupportedLocale, translate } from '../../locales/index.ts'
+import type { IndeterminatePreprintId, PreprintTitle } from '../../Preprints/index.ts'
+import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
+import * as Routes from '../../routes.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteVerifyEmailAddressMatch,
   verifyContactEmailAddressMatch,
   writeReviewVerifyEmailAddressMatch,
-} from './routes.ts'
-import { EmailAddress } from './types/EmailAddress.ts'
-import type { NonEmptyString } from './types/NonEmptyString.ts'
-import type { User } from './user.ts'
+} from '../../routes.ts'
+import { EmailAddress } from '../../types/EmailAddress.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import type { User } from '../../user.ts'
 
 export const sendContactEmailAddressVerificationEmail = (
   user: User,

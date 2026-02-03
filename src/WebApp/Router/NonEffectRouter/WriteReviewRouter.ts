@@ -6,9 +6,8 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
-import { createAuthorInviteEmail, sendContactEmailAddressVerificationEmailForReview } from '../../../email.ts'
 import { Nodemailer } from '../../../ExternalApis/index.ts'
-import { OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
+import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../../legacy-prereview.ts'
@@ -496,7 +495,7 @@ export const WriteReviewRouter = pipe(
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
         }),
-        verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, {
+        verifyContactEmailAddressForReview: withEnv(Email.sendContactEmailAddressVerificationEmailForReview, {
           locale: env.locale,
           publicUrl: env.publicUrl,
           sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
@@ -524,7 +523,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
           pipe(
             createAuthorInvite({ status: 'open', emailAddress: otherAuthor.emailAddress, review }),
             RTE.chainReaderKW(authorInvite =>
-              createAuthorInviteEmail(
+              Email.createAuthorInviteEmail(
                 otherAuthor,
                 authorInvite,
                 {

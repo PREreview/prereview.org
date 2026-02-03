@@ -2,10 +2,10 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/lib/Either.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import * as _ from '../src/email.ts'
-import type { Nodemailer } from '../src/ExternalApis/index.ts'
-import { translate } from '../src/locales/index.ts'
-import * as fc from './fc.ts'
+import type { Nodemailer } from '../../../src/ExternalApis/index.ts'
+import * as _ from '../../../src/ExternalInteractions/Email/legacy-email.ts'
+import { translate } from '../../../src/locales/index.ts'
+import * as fc from '../../fc.ts'
 
 describe('sendContactEmailAddressVerificationEmail', () => {
   test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(

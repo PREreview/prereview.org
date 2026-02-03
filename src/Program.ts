@@ -9,7 +9,6 @@ import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
-import { createContactEmailAddressVerificationEmailForComment } from './email.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import {
@@ -25,7 +24,7 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack, GhostPage, OpenAlexWorks, ZenodoRecords } from './ExternalInteractions/index.ts'
+import { CommunitySlack, Email, GhostPage, OpenAlexWorks, ZenodoRecords } from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
@@ -171,7 +170,7 @@ const verifyContactEmailAddressForComment = Layer.effect(
         Locale,
         Effect.andThen(locale =>
           FptsToEffect.reader(
-            createContactEmailAddressVerificationEmailForComment({
+            Email.createContactEmailAddressVerificationEmailForComment({
               user,
               emailAddress: contactEmailAddress,
               comment,
