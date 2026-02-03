@@ -39,10 +39,7 @@ export interface OnDemandQuery<
 > {
   name: string
   createFilter: (...input: Input) => Events.EventFilter<EventTags>
-  query: (
-    events: ReadonlyArray<Types.ExtractTag<Events.Event, EventTags>>,
-    ...input: Input
-  ) => Either.Either<Result, Error>
+  query: (events: ReadonlyArray<Events.Event>, ...input: Input) => Either.Either<Result, Error>
 }
 
 export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
@@ -65,17 +62,26 @@ export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result
   query: StatefulQuery<State, Input, Result, Error>,
 ) => StatefulQuery<State, Input, Result, Error> = Data.struct
 
-export const makeOnDemandQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
-  name: string,
-  createFilter: (input: Input) => Events.EventFilter<Event>,
-  query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
-): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
+export const makeOnDemandQuery = <
+  EventTags extends Types.Tags<Events.Event>,
+  Input extends ReadonlyArray<unknown>,
+  Result,
+  Error,
+>({
+  name,
+  createFilter,
+  query,
+}: OnDemandQuery<EventTags, Input, Result, Error>): Effect.Effect<
+  (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>,
+  never,
+  EventStore.EventStore
+> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
 
     return Effect.fn(name)(
-      function* (input) {
-        const filter = createFilter(input)
+      function* (...input: Input) {
+        const filter = createFilter(...input)
 
         const events = yield* pipe(
           eventStore.query(filter),
@@ -83,7 +89,7 @@ export const makeOnDemandQuery = <Event extends Types.Tags<Events.Event>, Input,
         )
 
         return yield* pipe(
-          Effect.suspend(() => query(events, input)),
+          Effect.suspend(() => query(events, ...input)),
           Effect.withSpan('query'),
         )
       },
