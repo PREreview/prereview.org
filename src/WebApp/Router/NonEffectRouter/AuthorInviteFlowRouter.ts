@@ -162,7 +162,7 @@ export const AuthorInviteFlowRouter = pipe(
         verifyContactEmailAddressForInvitedAuthor: withEnv(
           flow(
             RTE.fromReaderK(Email.createContactEmailAddressVerificationEmailForInvitedAuthor),
-            RTE.chainW(Nodemailer.sendEmail),
+            RTE.chainW(Nodemailer.legacySendEmail),
           ),
           {
             locale: env.locale,

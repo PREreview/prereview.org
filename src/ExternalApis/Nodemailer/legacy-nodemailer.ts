@@ -16,7 +16,7 @@ export interface SendEmailEnv {
   sendEmail: (email: Email) => TE.TaskEither<'unavailable', void>
 }
 
-export const sendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
+export const legacySendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
   R.asks(({ sendEmail }) => sendEmail(email))
 
 const emailToNodemailerEmail: E.Encoder<SendMailOptions, Email> = {

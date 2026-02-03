@@ -30,7 +30,7 @@ export const sendContactEmailAddressVerificationEmail = (
     RTE.chainReaderKW(verificationUrl =>
       createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
-    RTE.chainW(Nodemailer.sendEmail),
+    RTE.chainW(Nodemailer.legacySendEmail),
   )
 
 export const sendContactEmailAddressVerificationEmailForReview = (
@@ -45,7 +45,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
     RTE.chainReaderKW(verificationUrl =>
       createContactEmailAddressVerificationEmail({ emailAddress, user, verificationUrl }),
     ),
-    RTE.chainW(Nodemailer.sendEmail),
+    RTE.chainW(Nodemailer.legacySendEmail),
   )
 
 export const createContactEmailAddressVerificationEmail = ({

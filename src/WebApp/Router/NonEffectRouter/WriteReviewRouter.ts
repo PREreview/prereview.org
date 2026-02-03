@@ -536,7 +536,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                 newPrereview.locale,
               ),
             ),
-            RTE.chainW(Nodemailer.sendEmail),
+            RTE.chainW(Nodemailer.legacySendEmail),
           ),
         ),
       ),
