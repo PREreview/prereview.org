@@ -10,6 +10,11 @@ export class FailedToCategorizeReviewRequest extends Schema.TaggedError<FailedTo
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
+export class FailedToAcknowledgeReviewRequest extends Schema.TaggedError<FailedToAcknowledgeReviewRequest>()(
+  'FailedToAcknowledgeReviewRequest',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
 export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>()(
   'FailedToNotifyCommunitySlack',
   { cause: Schema.optional(Schema.Unknown) },

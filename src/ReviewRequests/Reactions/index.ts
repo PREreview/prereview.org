@@ -5,9 +5,19 @@ import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
 import * as Errors from '../Errors.ts'
+import { AcknowledgeReviewRequest as executeAcknowledgeReviewRequest } from './AcknowledgeReviewRequest.ts'
 import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 import { ProcessReceivedReviewRequest as executeProcessReceivedReviewRequest } from './ProcessReceivedReviewRequest.ts'
+
+const AcknowledgeReviewRequest = Workflow.make({
+  name: 'AcknowledgeReviewRequest',
+  error: Errors.FailedToAcknowledgeReviewRequest,
+  payload: {
+    reviewRequestId: Uuid.UuidSchema,
+  },
+  idempotencyKey: Struct.get('reviewRequestId'),
+})
 
 const CategorizeReviewRequest = Workflow.make({
   name: 'CategorizeReviewRequest',
@@ -52,6 +62,7 @@ const makeReviewRequestReactions: Effect.Effect<
         Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
           Effect.all(
             [
+              AcknowledgeReviewRequest.execute(event, { discard: true }),
               CategorizeReviewRequest.execute(event, { discard: true }),
               NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
             ],
@@ -72,6 +83,13 @@ const makeReviewRequestReactions: Effect.Effect<
 })
 
 const workflowsLayer = Layer.mergeAll(
+  AcknowledgeReviewRequest.toLayer(({ reviewRequestId }) =>
+    Activity.make({
+      name: AcknowledgeReviewRequest.name,
+      error: AcknowledgeReviewRequest.errorSchema,
+      execute: executeAcknowledgeReviewRequest(reviewRequestId),
+    }),
+  ),
   CategorizeReviewRequest.toLayer(({ reviewRequestId }, executionId) =>
     pipe(
       Effect.gen(function* () {

@@ -1901,6 +1901,9 @@ export const receivedReviewRequest = (): fc.Arbitrary<ReviewRequests.ReceivedRev
     id: uuid(),
   })
 
+export const reviewRequestToAcknowledge = (): fc.Arbitrary<ReviewRequests.ReviewRequestToAcknowledge> =>
+  fc.record({ requester: fc.record({ name: nonEmptyString(), emailAddress: emailAddress() }) })
+
 export const commentWasStarted = ({
   commentId,
 }: {
