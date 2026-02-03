@@ -182,7 +182,7 @@ pipe(
           update: Config.withDefault(Config.boolean('LEGACY_PREREVIEW_UPDATE'), false),
         }),
       ),
-      Nodemailer.layerConfig(Config.redacted(Config.url('SMTP_URI'))),
+      Nodemailer.layerTransporterConfig(Config.redacted(Config.url('SMTP_URI'))),
       Layer.effect(
         Orcid.OrcidApi,
         Config.all({

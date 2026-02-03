@@ -100,7 +100,7 @@ interface AppFixtures {
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
   enableCoarNotifyInbox: (typeof FeatureFlags.FeatureFlags.Service)['enableCoarNotifyInbox']
-  nodemailer: typeof Nodemailer.Nodemailer.Service
+  nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   emails: Array<nodemailer.SendMailOptions>
 }
 
@@ -2297,7 +2297,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
               canReviewDatasets,
               enableCoarNotifyInbox,
             }),
-            Nodemailer.layer(nodemailer),
+            Nodemailer.layerTransporter(nodemailer),
             Layer.succeed(IsUserBlocked, isUserBlocked),
             Layer.succeed(FetchHttpClient.Fetch, fetch.fetchHandler),
             Layer.succeed(Ghost.GhostApi, { key: Redacted.make('key') }),

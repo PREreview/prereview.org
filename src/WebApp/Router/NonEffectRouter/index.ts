@@ -90,7 +90,7 @@ export const nonEffectRouter: Effect.Effect<
   | ScietyListToken
   | SessionStore
   | PrereviewCoarNotifyConfig
-  | Nodemailer.Nodemailer
+  | Nodemailer.NodemailerTransporter
   | Runtime.Runtime.Context<Env['runtime']>
   | FileSystem.FileSystem
   | Path.Path
@@ -119,7 +119,7 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
-  const nodemailer = yield* Nodemailer.Nodemailer
+  const nodemailer = yield* Nodemailer.NodemailerTransporter
   const fileSystem = yield* FileSystem.FileSystem
 
   const locale = yield* Locale
@@ -256,7 +256,7 @@ export interface Env {
   prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
-  nodemailer: typeof Nodemailer.Nodemailer.Service
+  nodemailer: typeof Nodemailer.NodemailerTransporter.Service
 }
 
 const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A | B> = P.alt as never

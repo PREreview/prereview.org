@@ -163,7 +163,7 @@ const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
     const publicUrl = yield* PublicUrl
-    const nodemailer = yield* Nodemailer.Nodemailer
+    const nodemailer = yield* Nodemailer.NodemailerTransporter
 
     return (user, contactEmailAddress, comment) =>
       pipe(
