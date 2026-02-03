@@ -93,6 +93,14 @@ export class FailedToCategorizeAReviewRequestForAPreprint extends Schema.TaggedC
   },
 ) {}
 
+export class EmailToAcknowledgeAReviewRequestForAPreprintWasSent extends Schema.TaggedClass<EmailToAcknowledgeAReviewRequestForAPreprintWasSent>()(
+  'EmailToAcknowledgeAReviewRequestForAPreprintWasSent',
+  {
+    sentAt: Temporal.InstantSchema,
+    reviewRequestId: Uuid.UuidSchema,
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schema.TaggedClass<ReviewRequestForAPreprintWasSharedOnTheCommunitySlack>()(
   'ReviewRequestForAPreprintWasSharedOnTheCommunitySlack',
   {
@@ -110,6 +118,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,
   FailedToCategorizeAReviewRequestForAPreprint,
+  EmailToAcknowledgeAReviewRequestForAPreprintWasSent,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
 )
 
