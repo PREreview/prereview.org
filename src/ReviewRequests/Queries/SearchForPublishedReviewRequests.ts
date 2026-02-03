@@ -2,7 +2,7 @@ import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'ef
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import type * as Queries from '../../Queries.ts'
+import * as Queries from '../../Queries.js'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
@@ -202,14 +202,9 @@ const query = (state: State, input: Input): Result =>
     }
   })
 
-export const SearchForPublishedReviewRequests: Queries.StatefulQuery<
-  State,
-  [Input],
-  Either.Either.Right<Result>,
-  Either.Either.Left<Result>
-> = {
+export const SearchForPublishedReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.searchForPublishedReviewRequests',
   initialState,
   updateStateWithEvent,
   query,
-}
+})

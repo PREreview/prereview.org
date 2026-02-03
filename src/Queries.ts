@@ -28,6 +28,10 @@ export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Resu
   query: (state: State, ...input: Input) => Either.Either<Result, Error>
 }
 
+export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result, Error>(
+  query: StatefulQuery<State, Input, Result, Error>,
+) => StatefulQuery<State, Input, Result, Error> = Data.struct
+
 export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
   name,
   initialState,
