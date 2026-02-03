@@ -35,6 +35,7 @@ export const test = baseTest.extend<ShowPage>({
       pipe(
         Match.value(request.url()),
         Match.when(String.startsWith('https://placehold.co/'), () => route.continue()),
+        Match.when(String.startsWith('https://res.cloudinary.com/prereview/'), () => route.continue()),
         Match.when('http://example.com/', () =>
           route.fulfill({
             status: 200,

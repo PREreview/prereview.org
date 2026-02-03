@@ -368,6 +368,7 @@ export const Program = pipe(
       GhostPage.layer,
       CommunitySlack.layer,
       ZenodoRecords.layer,
+      Email.layer,
       Layer.effect(
         SessionStore,
         Effect.gen(function* () {
