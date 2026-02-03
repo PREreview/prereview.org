@@ -20,6 +20,14 @@ export class ReviewRequestWasAlreadyCategorized extends Schema.TaggedError<Revie
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
+export class ReviewRequestCannotBeAcknowledged extends Data.TaggedError('ReviewRequestCannotBeAcknowledged')<{
+  cause?: unknown
+}> {}
+
+export class ReviewRequestWasAlreadyAcknowledged extends Data.TaggedError('ReviewRequestWasAlreadyAcknowledged')<{
+  cause?: unknown
+}> {}
+
 export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.TaggedError<ReviewRequestWasAlreadySharedOnTheCommunitySlack>()(
   'ReviewRequestWasAlreadySharedOnTheCommunitySlack',
   { cause: Schema.optional(Schema.Unknown) },
@@ -28,6 +36,10 @@ export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.Tag
 export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}
 
 export class ReviewRequestHasBeenAccepted extends Data.TaggedError('ReviewRequestHasBeenAccepted')<{
+  cause?: unknown
+}> {}
+
+export class ReviewRequestHasNotBeenAccepted extends Data.TaggedError('ReviewRequestHasNotBeenAccepted')<{
   cause?: unknown
 }> {}
 

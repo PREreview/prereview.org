@@ -8,6 +8,7 @@ import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewReques
 import { GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 import { GetReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
+import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -22,6 +23,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     >
     searchForPublishedReviewRequests: Queries.FromStatefulQuery<typeof SearchForPublishedReviewRequests>
     findReviewRequestsNeedingCategorization: Queries.FromOnDemandQuery<typeof FindReviewRequestsNeedingCategorization>
+    getReviewRequestToAcknowledge: Queries.FromOnDemandQuery<typeof GetReviewRequestToAcknowledge>
   }
 >() {}
 
@@ -33,6 +35,7 @@ export const {
   getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
   findReviewRequestsNeedingCategorization,
+  getReviewRequestToAcknowledge,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
@@ -43,6 +46,7 @@ export {
   type PublishedReviewRequest,
 } from './GetPublishedReviewRequest.ts'
 export type { ReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
+export type { ReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
 
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
@@ -59,6 +63,7 @@ const makeReviewRequestQueries: Effect.Effect<
     ),
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(SearchForPublishedReviewRequests),
     findReviewRequestsNeedingCategorization: yield* Queries.makeOnDemandQuery(FindReviewRequestsNeedingCategorization),
+    getReviewRequestToAcknowledge: yield* Queries.makeOnDemandQuery(GetReviewRequestToAcknowledge),
   }
 })
 

@@ -2332,8 +2332,10 @@ export const prereviewerEvent = (
 
 export const reviewRequestForAPreprintWasReceived = ({
   reviewRequestId,
+  requester,
 }: {
   reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived['reviewRequestId']>
+  requester?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived['requester']>
 } = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasReceived> =>
   fc
     .record({
@@ -2341,14 +2343,16 @@ export const reviewRequestForAPreprintWasReceived = ({
       receivedFrom: url(),
       preprintId: indeterminatePreprintId(),
       reviewRequestId: reviewRequestId ?? uuid(),
-      requester: maybe(
-        fc.record({
-          name: nonEmptyString(),
-          orcidId: fc.option(orcidId(), { nil: undefined }),
-          sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
-          emailAddress: fc.option(emailAddress(), { nil: undefined }),
-        }),
-      ),
+      requester:
+        requester ??
+        maybe(
+          fc.record({
+            name: nonEmptyString(),
+            orcidId: fc.option(orcidId(), { nil: undefined }),
+            sciProfilesId: fc.option(sciProfilesId(), { nil: undefined }),
+            emailAddress: fc.option(emailAddress(), { nil: undefined }),
+          }),
+        ),
     })
     .map(data => new Events.ReviewRequestForAPreprintWasReceived(data))
 
