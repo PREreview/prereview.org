@@ -3,13 +3,23 @@ import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
+/** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (
   ...args: Parameters<F>
 ) => ReturnType<F> extends Either.Either<infer R, infer L>
   ? Effect.Effect<R, UnableToQuery | E | L>
   : Effect.Effect<ReturnType<F>, UnableToQuery | E>
 
+/** @deprecated */
 export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FromOnDemandQuery<T extends OnDemandQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  OnDemandQuery<any, infer Input, infer Result, infer Error>,
+]
+  ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
+  : never
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
@@ -21,6 +31,20 @@ export type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, a
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
+export interface OnDemandQuery<
+  EventTags extends Types.Tags<Events.Event>,
+  Input extends ReadonlyArray<unknown>,
+  Result,
+  Error,
+> {
+  name: string
+  createFilter: (...input: Input) => Events.EventFilter<EventTags>
+  query: (
+    events: ReadonlyArray<Types.ExtractTag<Events.Event, EventTags>>,
+    ...input: Input
+  ) => Either.Either<Result, Error>
+}
+
 export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
   name: string
   initialState: State
@@ -28,9 +52,44 @@ export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Resu
   query: (state: State, ...input: Input) => Either.Either<Result, Error>
 }
 
+export const OnDemandQuery: <
+  EventTags extends Types.Tags<Events.Event>,
+  Input extends ReadonlyArray<unknown>,
+  Result,
+  Error,
+>(
+  query: OnDemandQuery<EventTags, Input, Result, Error>,
+) => OnDemandQuery<EventTags, Input, Result, Error> = Data.struct
+
 export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result, Error>(
   query: StatefulQuery<State, Input, Result, Error>,
 ) => StatefulQuery<State, Input, Result, Error> = Data.struct
+
+export const makeOnDemandQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
+  name: string,
+  createFilter: (input: Input) => Events.EventFilter<Event>,
+  query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
+): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
+  Effect.gen(function* () {
+    const eventStore = yield* EventStore.EventStore
+
+    return Effect.fn(name)(
+      function* (input) {
+        const filter = createFilter(input)
+
+        const events = yield* pipe(
+          eventStore.query(filter),
+          Effect.andThen(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
+        )
+
+        return yield* pipe(
+          Effect.suspend(() => query(events, input)),
+          Effect.withSpan('query'),
+        )
+      },
+      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    )
+  })
 
 export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
   name,
@@ -56,6 +115,7 @@ export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, R
     })
   })
 
+/** @deprecated */
 export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
   name: string,
   createFilter: (input: Input) => Events.EventFilter<Event>,
@@ -82,6 +142,7 @@ export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result,
     )
   })
 
+/** @deprecated */
 export const makeSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
   name: string,
   filter: Events.EventFilter<Event>,
