@@ -401,6 +401,7 @@ export const Program = pipe(
       Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
       Slack.layer,
       Zenodo.layer,
+      Nodemailer.layer,
     ),
   ),
   Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
