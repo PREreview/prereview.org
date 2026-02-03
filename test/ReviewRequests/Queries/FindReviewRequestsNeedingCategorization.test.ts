@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Option } from 'effect'
+import { Either, Option } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as _ from '../../../src/ReviewRequests/Queries/FindReviewRequestsNeedingCategorization.ts'
@@ -51,10 +51,10 @@ const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
   reviewRequestId: request4Id,
 })
 
-test('query', () => {
-  const actual = _.query([request1Imported, request1Categorized])
+test('FindReviewRequestsNeedingCategorization', () => {
+  const actual = _.FindReviewRequestsNeedingCategorization.query([request1Imported, request1Categorized])
 
-  expect(actual).toStrictEqual([])
+  expect(actual).toStrictEqual(Either.right([]))
 })
 
 test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
@@ -74,8 +74,8 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
     [request1Imported, request2Imported, request1Categorized],
     [{ id: request2Id, publishedAt: request2Imported.publishedAt }],
   ],
-])('query (%s)', (_name, events, expected) => {
-  const actual = _.query(events)
+])('FindReviewRequestsNeedingCategorization (%s)', (_name, events, expected) => {
+  const actual = _.FindReviewRequestsNeedingCategorization.query(events)
 
-  expect(actual).toStrictEqual(expected)
+  expect(actual).toStrictEqual(Either.right(expected))
 })

@@ -93,7 +93,7 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
     reviewRequestId,
   })
 
-describe('query', () => {
+describe('GetPublishedReviewRequest', () => {
   test.prop(
     [
       fc.array(
@@ -112,7 +112,7 @@ describe('query', () => {
       ],
     },
   )('not received', (events, reviewRequestId) => {
-    const actual = _.query(events, { reviewRequestId })
+    const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
   })
@@ -141,7 +141,7 @@ describe('query', () => {
       ],
     },
   )('not accepted', (events, reviewRequestId) => {
-    const actual = _.query(events, { reviewRequestId })
+    const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
   })
@@ -208,7 +208,7 @@ describe('query', () => {
       ],
     },
   )('has been accepted', ([events, reviewRequestId, expected]) => {
-    const actual = _.query(events, { reviewRequestId })
+    const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(
       Either.right(
@@ -249,7 +249,7 @@ describe('query', () => {
         ],
       },
     )('by a PREreviewer', ([events, reviewRequestId, expected]) => {
-      const actual = _.query(events, { reviewRequestId })
+      const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
       expect(actual).toStrictEqual(
         Either.right(
@@ -295,7 +295,7 @@ describe('query', () => {
         ],
       },
     )('from a preprint server', ([events, reviewRequestId, expected]) => {
-      const actual = _.query(events, { reviewRequestId })
+      const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
       expect(actual).toStrictEqual(
         Either.right(

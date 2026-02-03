@@ -1,6 +1,7 @@
-import { Array, Boolean, Match, Option, pipe, Record, Schema, Struct } from 'effect'
+import { Array, Boolean, Either, flow, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import * as Queries from '../../Queries.ts'
 import { Temporal, type OrcidId, type Uuid } from '../../types/index.ts'
 import type { KeywordId } from '../../types/Keyword.ts'
 
@@ -17,7 +18,7 @@ export interface Input {
 
 export type Result = ReadonlyArray<RecentReviewRequestMatchingAPrereviewer>
 
-export const createFilter = ({ prereviewerId }: Input) =>
+const createFilter = ({ prereviewerId }: Input) =>
   Events.EventFilter([
     {
       types: ['PrereviewerSubscribedToAKeyword'],
@@ -34,7 +35,7 @@ export const createFilter = ({ prereviewerId }: Input) =>
     },
   ])
 
-export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   const filter = createFilter(input)
 
   const filteredEvents = Array.filter(events, Events.matches(filter))
@@ -176,3 +177,9 @@ export const query = (events: ReadonlyArray<Events.Event>, input: Input): Result
 
   return Array.take(sortedPreprintIds, 5)
 }
+
+export const GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer = Queries.OnDemandQuery({
+  name: 'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
+  createFilter,
+  query: flow(query, Either.right),
+})

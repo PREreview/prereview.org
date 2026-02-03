@@ -1,10 +1,11 @@
-import { Array, pipe, Record, Struct } from 'effect'
+import { Array, Either, flow, pipe, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
+import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 
 export type Result = ReadonlyArray<{ id: Uuid.Uuid; publishedAt: Temporal.Instant }>
 
-export const filter = Events.EventFilter({
+const filter = Events.EventFilter({
   types: [
     'ReviewRequestForAPreprintWasAccepted',
     'ReviewRequestFromAPreprintServerWasImported',
@@ -13,7 +14,7 @@ export const filter = Events.EventFilter({
   ],
 })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result => {
+const query = (events: ReadonlyArray<Events.Event>): Result => {
   const state = Array.reduce(events, Record.empty<Uuid.Uuid, Temporal.Instant>(), (state, event) => {
     if (event._tag === 'ReviewRequestForAPreprintWasAccepted') {
       return Record.set(state, event.reviewRequestId, event.acceptedAt)
@@ -36,3 +37,9 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>): Result 
     Array.sortWith(Struct.get('publishedAt'), Temporal.OrderInstant),
   )
 }
+
+export const FindReviewRequestsNeedingCategorization = Queries.OnDemandQuery({
+  name: 'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
+  createFilter: () => filter,
+  query: flow(query, Either.right),
+})

@@ -3,6 +3,7 @@ import { Array, Data, Either, Option, pipe, type Types } from 'effect'
 import type { EventFilter } from '../../Events.ts'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
+import * as Queries from '../../Queries.ts'
 import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
@@ -28,7 +29,7 @@ export interface Input {
 
 export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewRequest>
 
-export const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
+const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
@@ -38,7 +39,7 @@ export const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags
   predicates: { reviewRequestId },
 })
 
-export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: Input): Result =>
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
   Either.gen(function* () {
     const filter = createFilter(input)
 
@@ -90,6 +91,12 @@ export const query = (events: ReadonlyArray<Events.ReviewRequestEvent>, input: I
         ),
     })
   })
+
+export const GetPublishedReviewRequest = Queries.OnDemandQuery({
+  name: 'ReviewRequestQueries.getPublishedReviewRequest',
+  createFilter,
+  query,
+})
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)

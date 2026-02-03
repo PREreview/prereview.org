@@ -1,13 +1,13 @@
-import { Context, Effect, Either, flow, Layer } from 'effect'
+import { Context, Effect, Layer } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
-import * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
+import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
-import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
-import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
-import * as GetReceivedReviewRequest from './GetReceivedReviewRequest.ts'
+import { GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
+import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
+import { GetReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -15,17 +15,13 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
     getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<typeof GetFiveMostRecentReviewRequests>
-    getReceivedReviewRequest: Queries.Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
-    getPublishedReviewRequest: Queries.Query<
-      (input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result
-    >
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Queries.Query<
-      (
-        input: GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Input,
-      ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
+    getReceivedReviewRequest: Queries.FromOnDemandQuery<typeof GetReceivedReviewRequest>
+    getPublishedReviewRequest: Queries.FromOnDemandQuery<typeof GetPublishedReviewRequest>
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Queries.FromOnDemandQuery<
+      typeof GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer
     >
     searchForPublishedReviewRequests: Queries.FromStatefulQuery<typeof SearchForPublishedReviewRequests>
-    findReviewRequestsNeedingCategorization: Queries.SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
+    findReviewRequestsNeedingCategorization: Queries.FromOnDemandQuery<typeof FindReviewRequestsNeedingCategorization>
   }
 >() {}
 
@@ -56,27 +52,13 @@ const makeReviewRequestQueries: Effect.Effect<
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
-    getReceivedReviewRequest: yield* Queries.makeQuery(
-      'ReviewRequestQueries.getReceivedReviewRequest',
-      GetReceivedReviewRequest.createFilter,
-      GetReceivedReviewRequest.query,
-    ),
-    getPublishedReviewRequest: yield* Queries.makeQuery(
-      'ReviewRequestQueries.getPublishedReviewRequest',
-      GetPublishedReviewRequest.createFilter,
-      GetPublishedReviewRequest.query,
-    ),
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: yield* Queries.makeQuery(
-      'ReviewRequestQueries.getPreprintsWithARecentReviewRequestsMatchingAPrereviewer',
-      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
-      flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
+    getReceivedReviewRequest: yield* Queries.makeOnDemandQuery(GetReceivedReviewRequest),
+    getPublishedReviewRequest: yield* Queries.makeOnDemandQuery(GetPublishedReviewRequest),
+    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: yield* Queries.makeOnDemandQuery(
+      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
     ),
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(SearchForPublishedReviewRequests),
-    findReviewRequestsNeedingCategorization: yield* Queries.makeSimpleQuery(
-      'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
-      FindReviewRequestsNeedingCategorization.filter,
-      FindReviewRequestsNeedingCategorization.query,
-    ),
+    findReviewRequestsNeedingCategorization: yield* Queries.makeOnDemandQuery(FindReviewRequestsNeedingCategorization),
   }
 })
 

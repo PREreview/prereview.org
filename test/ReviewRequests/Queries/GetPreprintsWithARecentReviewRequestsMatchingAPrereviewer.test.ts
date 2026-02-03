@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Option } from 'effect'
+import { Either, Option } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Prereviewers/index.ts'
@@ -358,8 +358,8 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       },
     ],
   ],
-])('query (%s)', (_name, input, events, expected) => {
-  const actual = _.query(events, input)
+])('GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer (%s)', (_name, input, events, expected) => {
+  const actual = _.GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query(events, input)
 
-  expect(actual).toStrictEqual(expected)
+  expect(actual).toStrictEqual(Either.right(expected))
 })
