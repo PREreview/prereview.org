@@ -2,23 +2,19 @@ import { Context, Effect, Either, flow, Layer } from 'effect'
 import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
-import * as DoesAPreprintHaveAReviewRequest from './DoesAPreprintHaveAReviewRequest.ts'
+import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import * as FindReviewRequestsNeedingCategorization from './FindReviewRequestsNeedingCategorization.ts'
-import * as GetFiveMostRecentReviewRequests from './GetFiveMostRecentReviewRequests.ts'
+import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
 import * as GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import * as GetPublishedReviewRequest from './GetPublishedReviewRequest.ts'
 import * as GetReceivedReviewRequest from './GetReceivedReviewRequest.ts'
-import * as SearchForPublishedReviewRequests from './SearchForPublishedReviewRequests.ts'
+import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
-    doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<
-      typeof DoesAPreprintHaveAReviewRequest.DoesAPreprintHaveAReviewRequest
-    >
-    getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<
-      typeof GetFiveMostRecentReviewRequests.GetFiveMostRecentReviewRequests
-    >
+    doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
+    getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<typeof GetFiveMostRecentReviewRequests>
     getReceivedReviewRequest: Queries.Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
     getPublishedReviewRequest: Queries.Query<
       (input: GetPublishedReviewRequest.Input) => GetPublishedReviewRequest.Result
@@ -28,9 +24,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
         input: GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Input,
       ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
     >
-    searchForPublishedReviewRequests: Queries.FromStatefulQuery<
-      typeof SearchForPublishedReviewRequests.SearchForPublishedReviewRequests
-    >
+    searchForPublishedReviewRequests: Queries.FromStatefulQuery<typeof SearchForPublishedReviewRequests>
     findReviewRequestsNeedingCategorization: Queries.SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
 >() {}
@@ -60,12 +54,8 @@ const makeReviewRequestQueries: Effect.Effect<
   EventStore.EventStore | EventDispatcher.EventDispatcher
 > = Effect.gen(function* () {
   return {
-    doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(
-      DoesAPreprintHaveAReviewRequest.DoesAPreprintHaveAReviewRequest,
-    ),
-    getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(
-      GetFiveMostRecentReviewRequests.GetFiveMostRecentReviewRequests,
-    ),
+    doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
+    getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
     getReceivedReviewRequest: yield* Queries.makeQuery(
       'ReviewRequestQueries.getReceivedReviewRequest',
       GetReceivedReviewRequest.createFilter,
@@ -81,9 +71,7 @@ const makeReviewRequestQueries: Effect.Effect<
       GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.createFilter,
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
-    searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(
-      SearchForPublishedReviewRequests.SearchForPublishedReviewRequests,
-    ),
+    searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(SearchForPublishedReviewRequests),
     findReviewRequestsNeedingCategorization: yield* Queries.makeSimpleQuery(
       'ReviewRequestQueries.findReviewRequestsNeedingCategorization',
       FindReviewRequestsNeedingCategorization.filter,
