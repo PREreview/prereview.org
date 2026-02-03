@@ -139,7 +139,7 @@ const query = (reviewRequests: State): Result => {
   return Array.take(sortedReviewRequests, 5)
 }
 
-export const getFiveMostRecentReviewRequests: Queries.StatefulQuery<State, [], Result, never> = {
+export const GetFiveMostRecentReviewRequests: Queries.StatefulQuery<State, [], Result, never> = {
   name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
   initialState,
   updateStateWithEvent,

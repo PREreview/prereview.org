@@ -202,7 +202,7 @@ const query = (state: State, input: Input): Result =>
     }
   })
 
-export const searchForPublishedReviewRequests: Queries.StatefulQuery<
+export const SearchForPublishedReviewRequests: Queries.StatefulQuery<
   State,
   [Input],
   Either.Either.Right<Result>,

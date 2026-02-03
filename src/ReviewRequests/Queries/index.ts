@@ -14,10 +14,10 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<
-      typeof DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest
+      typeof DoesAPreprintHaveAReviewRequest.DoesAPreprintHaveAReviewRequest
     >
     getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<
-      typeof GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests
+      typeof GetFiveMostRecentReviewRequests.GetFiveMostRecentReviewRequests
     >
     getReceivedReviewRequest: Queries.Query<(input: GetReceivedReviewRequest.Input) => GetReceivedReviewRequest.Result>
     getPublishedReviewRequest: Queries.Query<
@@ -29,7 +29,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       ) => GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.Result
     >
     searchForPublishedReviewRequests: Queries.FromStatefulQuery<
-      typeof SearchForPublishedReviewRequests.searchForPublishedReviewRequests
+      typeof SearchForPublishedReviewRequests.SearchForPublishedReviewRequests
     >
     findReviewRequestsNeedingCategorization: Queries.SimpleQuery<FindReviewRequestsNeedingCategorization.Result>
   }
@@ -61,10 +61,10 @@ const makeReviewRequestQueries: Effect.Effect<
 > = Effect.gen(function* () {
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(
-      DoesAPreprintHaveAReviewRequest.doesAPreprintHaveAReviewRequest,
+      DoesAPreprintHaveAReviewRequest.DoesAPreprintHaveAReviewRequest,
     ),
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(
-      GetFiveMostRecentReviewRequests.getFiveMostRecentReviewRequests,
+      GetFiveMostRecentReviewRequests.GetFiveMostRecentReviewRequests,
     ),
     getReceivedReviewRequest: yield* Queries.makeQuery(
       'ReviewRequestQueries.getReceivedReviewRequest',
@@ -82,7 +82,7 @@ const makeReviewRequestQueries: Effect.Effect<
       flow(GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.query, Either.right),
     ),
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(
-      SearchForPublishedReviewRequests.searchForPublishedReviewRequests,
+      SearchForPublishedReviewRequests.SearchForPublishedReviewRequests,
     ),
     findReviewRequestsNeedingCategorization: yield* Queries.makeSimpleQuery(
       'ReviewRequestQueries.findReviewRequestsNeedingCategorization',

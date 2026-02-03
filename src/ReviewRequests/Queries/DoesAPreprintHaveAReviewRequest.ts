@@ -64,7 +64,7 @@ const query = (state: State, input: Input): Result => {
   )
 }
 
-export const doesAPreprintHaveAReviewRequest: Queries.StatefulQuery<State, [Input], Result, never> = {
+export const DoesAPreprintHaveAReviewRequest: Queries.StatefulQuery<State, [Input], Result, never> = {
   name: 'ReviewRequestQueries.doesAPreprintHaveAReviewRequest',
   initialState,
   updateStateWithEvent,

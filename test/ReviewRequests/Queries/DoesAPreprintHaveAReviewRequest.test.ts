@@ -186,7 +186,7 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     true,
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { initialState, updateStateWithEvent, query } = _.doesAPreprintHaveAReviewRequest
+  const { initialState, updateStateWithEvent, query } = _.DoesAPreprintHaveAReviewRequest
 
   const state = Array.reduce(events, initialState, updateStateWithEvent)
 
