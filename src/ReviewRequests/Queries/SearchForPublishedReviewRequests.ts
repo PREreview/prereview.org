@@ -2,7 +2,7 @@ import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'ef
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import * as Queries from '../../Queries.js'
+import * as Queries from '../../Queries.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'

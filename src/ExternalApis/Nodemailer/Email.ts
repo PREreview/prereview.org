@@ -1,6 +1,6 @@
 import { Data, Schema } from 'effect'
-import { Html, rawHtml } from '../../html.js'
-import { EmailAddress } from '../../types/index.js'
+import { Html, rawHtml } from '../../html.ts'
+import { EmailAddress } from '../../types/index.ts'
 
 const HtmlSchema: Schema.Schema<Html, string> = Schema.transform(Schema.String, Schema.instanceOf(Html), {
   strict: true,

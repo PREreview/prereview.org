@@ -1,7 +1,7 @@
 import { Either, Equal, flow, Match, Option, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import * as Queries from '../../Queries.js'
+import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 
 export interface Input {

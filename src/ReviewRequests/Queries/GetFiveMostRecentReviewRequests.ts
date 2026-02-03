@@ -1,7 +1,7 @@
 import { Array, Boolean, Either, flow, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
-import * as Queries from '../../Queries.js'
+import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { TopicId } from '../../types/Topic.ts'
 
