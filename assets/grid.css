@@ -2,7 +2,7 @@
 
 :root {
   --grid-max-width: 77.5rem;
-  --grid-gutter: var(--space-s-l, clamp(1rem, 0.4054rem + 2.7027vw, 2.5rem));
+  --grid-gutter: var(--space-s-l, clamp(1rem, 0.4054rem + 2.7027vi, 2.5rem));
   --grid-columns: 12;
   --min-viewport-size: 352px;
 }
