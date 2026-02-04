@@ -1,13 +1,7 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
-import { Effect, Either, Layer, pipe, Schema } from 'effect'
+import { Effect, Layer, pipe, Schema } from 'effect'
 import _normalizeUrl from 'normalize-url'
-import {
-  type CacheValue,
-  HttpCache,
-  InternalHttpCacheFailure,
-  NoCachedResponseFound,
-  StoredResponseSchema,
-} from './HttpCache.ts'
+import { type CacheValue, HttpCache, InternalHttpCacheFailure, StoredResponseSchema } from './HttpCache.ts'
 
 export type CacheKey = string
 
@@ -27,8 +21,8 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
       get: request =>
         pipe(
           cache.get(keyForRequest(request)),
-          Either.fromNullable(() => new NoCachedResponseFound({})),
-          Either.andThen(({ staleAt, response }) => ({
+          Effect.fromNullable,
+          Effect.andThen(({ staleAt, response }) => ({
             staleAt,
             response: HttpClientResponse.fromWeb(
               request,
@@ -38,6 +32,7 @@ export const layerInMemory = (cache = new Map<CacheKey, CacheValue>()) =>
               }),
             ),
           })),
+          Effect.optionFromOptional,
         ),
       set: (response, staleAt) =>
         pipe(

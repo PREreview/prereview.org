@@ -1,13 +1,9 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { it } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { DateTime, Effect, Either, Schema } from 'effect'
+import { DateTime, Effect, Either, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
-import {
-  CacheValueFromStringSchema,
-  InternalHttpCacheFailure,
-  NoCachedResponseFound,
-} from '../../src/CachingHttpClient/HttpCache.ts'
+import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
 import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
@@ -35,7 +31,7 @@ describe('getFromRedis', () => {
 
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
-          expect(result).toStrictEqual(Either.right(expect.anything()))
+          expect(result).toStrictEqual(Either.right(Option.some(expect.anything())))
         }).pipe(EffectTest.run),
       )
     })
@@ -45,9 +41,9 @@ describe('getFromRedis', () => {
         Effect.gen(function* () {
           const redis = stubbedRedisReturning(unreadableValue)
 
-          const result = yield* Effect.either(_.getFromRedis(redis)(request))
+          const result = yield* _.getFromRedis(redis)(request)
 
-          expect(result).toStrictEqual(Either.left(new NoCachedResponseFound({})))
+          expect(result).toStrictEqual(Option.none())
         }).pipe(EffectTest.run),
       )
 
@@ -55,7 +51,7 @@ describe('getFromRedis', () => {
         Effect.gen(function* () {
           const redis = stubbedRedisReturning(unreadableValue)
 
-          yield* Effect.either(_.getFromRedis(redis)(request))
+          yield* _.getFromRedis(redis)(request)
 
           // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(redis.del).toHaveBeenCalledTimes(1)
@@ -69,9 +65,9 @@ describe('getFromRedis', () => {
       Effect.gen(function* () {
         const redis = stubbedRedisReturning(null)
 
-        const result = yield* Effect.either(_.getFromRedis(redis)(request))
+        const result = yield* _.getFromRedis(redis)(request)
 
-        expect(result).toStrictEqual(Either.left(new NoCachedResponseFound({})))
+        expect(result).toStrictEqual(Option.none())
       }).pipe(EffectTest.run),
     )
   })

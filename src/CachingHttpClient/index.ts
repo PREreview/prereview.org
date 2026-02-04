@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientError, HttpClientResponse, UrlParams, type HttpClientRequest } from '@effect/platform'
-import { Context, DateTime, Effect, flow, Function, Layer, pipe, Queue, type Duration } from 'effect'
+import { Context, DateTime, Effect, flow, Function, Layer, Option, pipe, Queue, type Duration } from 'effect'
 import * as StatusCodes from '../StatusCodes.ts'
 import * as HttpCache from './HttpCache.ts'
 
@@ -36,7 +36,7 @@ export const CachingHttpClient = (
 
         const response = yield* pipe(
           cache.get(req),
-          Effect.catchTag('NoCachedResponseFound', () => Effect.succeed(undefined)),
+          Effect.andThen(Option.getOrUndefined),
           Effect.timeout(CacheTimeout),
           Effect.tapErrorTag('InternalHttpCacheFailure', error =>
             Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),

@@ -1,9 +1,9 @@
 import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from '@effect/platform'
-import { Effect, Either, Layer, pipe, Schema } from 'effect'
+import { Effect, Layer, Option, pipe, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.ts'
-import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure, NoCachedResponseFound } from './HttpCache.ts'
+import { CacheValueFromStringSchema, HttpCache, InternalHttpCacheFailure } from './HttpCache.ts'
 
 export const layerPersistedToRedis = Layer.effect(
   HttpCache,
@@ -27,7 +27,7 @@ export const getFromRedis =
   request =>
     pipe(
       Effect.tryPromise({ try: () => redis.get(keyForRequest(request)), catch: String }),
-      Effect.andThen(Either.fromNullable(() => new NoCachedResponseFound({}))),
+      Effect.andThen(Effect.fromNullable),
       Effect.andThen(Schema.decode(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
         staleAt,
@@ -39,16 +39,17 @@ export const getFromRedis =
           }),
         ),
       })),
-      Effect.catchTag('ParseError', cause =>
+      Effect.catchTag('ParseError', () =>
         pipe(
           Effect.tryPromise({ try: () => redis.del(keyForRequest(request)), catch: String }),
-          Effect.andThen(() => new NoCachedResponseFound({ cause })),
+          Effect.andThen(() => Option.none()),
         ),
       ),
       Effect.catchIf(
         error => typeof error === 'string',
         cause => new InternalHttpCacheFailure({ cause }),
       ),
+      Effect.optionFromOptional,
       Effect.uninterruptible,
       Effect.withSpan('PersistedToRedis.getFromRedis'),
     )

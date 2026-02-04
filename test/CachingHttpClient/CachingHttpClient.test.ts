@@ -60,7 +60,7 @@ describe('there is no cache entry', () => {
             _.CachingHttpClient(timeToStale),
             Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
             Effect.provideService(_.HttpCache, {
-              get: () => new _.NoCachedResponseFound({}),
+              get: () => Effect.succeedNone,
               set: () => new InternalHttpCacheFailure({ cause: error }),
               delete: () => Effect.void,
             }),
