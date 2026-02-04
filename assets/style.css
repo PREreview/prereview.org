@@ -423,15 +423,15 @@ body > footer {
   }
 
   @media screen {
-    padding-left: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
+    padding-left: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line plugin/use-logical-properties-and-values */
     background-image: url('logos/orcid.svg');
     background-repeat: no-repeat;
     background-position: left 0.1ch bottom 40%;
     background-size: 1em;
 
     .byline & {
-      padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
-      padding-left: 0; /* stylelint-disable-line liberty/use-logical-spec */
+      padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line plugin/use-logical-properties-and-values */
+      padding-left: 0; /* stylelint-disable-line plugin/use-logical-properties-and-values */
       background-position: right 0.1ch bottom 40%;
 
       @media (forced-colors: active) {
@@ -1823,7 +1823,7 @@ form[role='search'] {
 
     @media screen {
       @media (width >= 30em) {
-        max-inline-size: 40vw;
+        max-inline-size: 40vi;
       }
     }
   }
@@ -2306,7 +2306,7 @@ skip-link {
     }
 
     & article {
-      inline-size: min(95vw - var(--grid-gutter) * 2, 20em);
+      inline-size: min(95vi - var(--grid-gutter) * 2, 20em);
 
       > :not(.visually-hidden, header, :--list, dl) {
         flex-grow: 1;
@@ -2318,7 +2318,7 @@ skip-link {
     }
 
     @media screen {
-      margin-inline: calc(50% - 50vw);
+      margin-inline: calc(50% - 50vi);
       padding-inline: var(--grid-gutter);
 
       @media (width < 50em) {
