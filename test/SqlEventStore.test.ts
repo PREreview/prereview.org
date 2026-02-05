@@ -151,7 +151,7 @@ describe('when the last known position has changed', () => {
       expect(all).toStrictEqual(
         Array.match(existingEvents, {
           onEmpty: Option.none,
-          onNonEmpty: events => Option.some({ events, lastKnownEvent: expect.anything() }),
+          onNonEmpty: events => Option.some({ events, lastKnownPosition: expect.anything() }),
         }),
       )
     }).pipe(
@@ -357,7 +357,7 @@ test.each<
 
     const actual = yield* eventStore.query(filter)
 
-    expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownEvent: expect.anything() }))
+    expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownPosition: expect.anything() }))
   }).pipe(
     Effect.provide(Uuid.layer),
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
