@@ -52,9 +52,52 @@ export const make: Effect.Effect<
       CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
 
       CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
+
+      CREATE SEQUENCE IF NOT EXISTS events_sequence AS INTEGER;
     `,
     orElse: () => Effect.void,
   })
+
+  yield* sql
+    .onDialectOrElse({
+      pg: () =>
+        sql.withTransaction(sql`
+          LOCK events IN EXCLUSIVE MODE;
+
+          ALTER TABLE events
+          ADD COLUMN position INTEGER;
+
+          WITH
+            lck AS (
+              SELECT
+                id
+              FROM
+                events
+              WHERE
+                position IS NULL
+              ORDER BY
+                timestamp ASC
+              FOR UPDATE
+            )
+          UPDATE events
+          SET
+            position = nextval('events_sequence')
+          FROM
+            lck
+          WHERE
+            events.id = lck.id;
+
+          ALTER TABLE events
+          ALTER COLUMN position
+          SET DEFAULT nextval('events_sequence'),
+          ALTER COLUMN position
+          SET NOT NULL;
+
+          ALTER SEQUENCE IF EXISTS events_sequence OWNED BY events.position;
+        `),
+      orElse: () => Effect.void,
+    })
+    .pipe(Effect.ignoreLogged)
 
   const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     sql.or(
