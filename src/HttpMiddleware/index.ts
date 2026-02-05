@@ -7,8 +7,8 @@ import {
   HttpServerResponse,
   Path,
 } from '@effect/platform'
-import { Array, Cause, Duration, Effect, Layer, Option, pipe, Schema, String } from 'effect'
-import { AllowSiteCrawlers, FlashMessage, Locale, SessionStore } from '../Context.ts'
+import { Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
+import { AllowSiteCrawlers, FlashMessage, Locale, ScietyListToken, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
 import { KeyvStores } from '../keyv.ts'
@@ -245,6 +245,25 @@ export const getLocale = HttpMiddleware.make(app =>
     const response = yield* Effect.provideService(app, Locale, detectedLocale)
 
     return yield* pipe(response, LocaleCookie.setLocaleCookie(detectedLocale))
+  }),
+)
+
+export const requireScietyListToken = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const scietyListToken = yield* ScietyListToken
+    const request = yield* HttpServerRequest.HttpServerRequest
+
+    const authorizationHeader = Headers.get(request.headers, 'Authorization')
+
+    if (Option.isNone(authorizationHeader)) {
+      return yield* HttpServerResponse.empty({ status: StatusCodes.Unauthorized })
+    }
+
+    if (authorizationHeader.value !== `Bearer ${Redacted.value(scietyListToken)}`) {
+      return yield* HttpServerResponse.empty({ status: StatusCodes.Forbidden })
+    }
+
+    return yield* app
   }),
 )
 

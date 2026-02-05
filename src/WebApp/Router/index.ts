@@ -28,6 +28,7 @@ import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
+import { RequestsData } from '../RequestsData.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
@@ -443,6 +444,10 @@ const AuthRouter = HttpRouter.fromIterable([
   ),
 ])
 
+const DataRouter = HttpRouter.fromIterable([HttpRouter.makeRoute('GET', Routes.RequestsData, RequestsData)]).pipe(
+  HttpRouter.use(HttpMiddleware.requireScietyListToken),
+)
+
 export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.HomePage, HomePage),
@@ -472,6 +477,7 @@ export const Router = pipe(
       Effect.andThen(HttpServerResponse.setHeaders({ 'Cache-Control': 'no-cache, private', Vary: 'Cookie' })),
     ),
   ),
+  HttpRouter.concat(DataRouter),
   HttpRouter.post(
     Routes.Inbox,
     Effect.if(FeatureFlags.enableCoarNotifyInbox, {
