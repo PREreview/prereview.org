@@ -99,15 +99,16 @@ const DataToRequestSchema = Schema.transformOrFail(
     decode: (value, _, ast) => ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not implemented.')),
     encode: (data: ReviewRequests.ReviewRequestForStats, _, ast) =>
       Effect.gen(function* () {
-        const preprintId = yield* Effect.orElseFail(
+        const server = yield* pipe(
           Preprints.getPreprintId(data.preprintId),
-          () => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID'),
+          Effect.andThen(preprintIdToServer),
+          Effect.orElseFail(() => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID')),
         )
 
         return {
           timestamp: data.published,
-          preprint: preprintId,
-          server: preprintIdToServer(preprintId),
+          preprint: data.preprintId,
+          server,
           language: data.language ?? null,
           fields: data.fields,
           subfields: data.subfields,
