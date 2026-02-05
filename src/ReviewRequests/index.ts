@@ -101,28 +101,31 @@ export const layer = Layer.provideMerge(
             search: flow(
               Queries.searchForPublishedReviewRequests,
               Effect.andThen(pageOfReviewRequests =>
-                Effect.andThen(
-                  Effect.forEach(
-                    pageOfReviewRequests.reviewRequests,
-                    reviewRequest =>
-                      Effect.gen(function* () {
-                        return {
-                          ...reviewRequest,
-                          published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
-                          preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
-                          fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
-                          subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
-                        }
-                      }),
-                    { concurrency: 'inherit' },
+                pipe(
+                  pageOfReviewRequests.reviewRequests,
+                  Array.map(reviewRequest =>
+                    Effect.gen(function* () {
+                      return {
+                        ...reviewRequest,
+                        published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
+                        preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
+                        fields: Array.dedupe(Array.map(reviewRequest.topics, getTopicField)),
+                        subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
+                      }
+                    }),
                   ),
-                  reviewRequests => ({ ...pageOfReviewRequests, reviewRequests }),
+                  effects => Effect.allSuccesses(effects, { concurrency: 'inherit' }),
+                  Effect.andThen(
+                    Array.match({
+                      onNonEmpty: reviewRequests => Effect.succeed({ ...pageOfReviewRequests, reviewRequests }),
+                      onEmpty: () =>
+                        new ReviewRequestsAreUnavailable({ cause: 'no results remain after hiding failures' }),
+                    }),
+                  ),
                 ),
               ),
               Effect.catchTags({
                 NoReviewRequestsFound: error => new ReviewRequestsNotFound({ cause: error }),
-                PreprintIsNotFound: error => new ReviewRequestsAreUnavailable({ cause: error }),
-                PreprintIsUnavailable: error => new ReviewRequestsAreUnavailable({ cause: error }),
                 UnableToQuery: error => new ReviewRequestsAreUnavailable({ cause: error }),
               }),
               Effect.provide(context),
