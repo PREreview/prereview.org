@@ -36,14 +36,26 @@ export const make: Effect.Effect<
   const eventsTable = EventsTable(Events.Event)
   const events = yield* Events.Events
 
-  yield* sql`
-    CREATE TABLE IF NOT EXISTS events (
-      id TEXT NOT NULL PRIMARY KEY,
-      type TEXT NOT NULL,
-      timestamp TIMESTAMPTZ NOT NULL,
-      payload JSONB NOT NULL
-    )
-  `
+  yield* sql.onDialectOrElse({
+    pg: () => sql`
+      CREATE TABLE IF NOT EXISTS events (
+        id TEXT NOT NULL PRIMARY KEY,
+        type TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL,
+        payload JSONB NOT NULL,
+        position SERIAL
+      )
+    `,
+    orElse: () => sql`
+      CREATE TABLE IF NOT EXISTS events (
+        id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL,
+        payload JSONB NOT NULL,
+        position INTEGER PRIMARY KEY AUTOINCREMENT
+      )
+    `,
+  })
 
   yield* sql.onDialectOrElse({
     pg: () => sql`
