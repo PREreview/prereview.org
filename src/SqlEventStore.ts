@@ -144,7 +144,7 @@ export const make: Effect.Effect<
         WHERE
           ${buildFilterCondition(filter)}
         ORDER BY
-          timestamp ASC
+          position ASC
       `,
       Effect.andThen(
         Schema.decodeUnknown(
@@ -169,7 +169,7 @@ export const make: Effect.Effect<
       FROM
         events
       ORDER BY
-        timestamp ASC
+        position ASC
     `,
     Effect.andThen(
       Schema.decodeUnknown(
@@ -208,9 +208,9 @@ export const make: Effect.Effect<
           FROM
             events
           WHERE
-            timestamp > (
+            position > (
               SELECT
-                timestamp
+                position
               FROM
                 events
               WHERE
@@ -219,7 +219,7 @@ export const make: Effect.Effect<
                 1
             )
           ORDER BY
-            timestamp ASC
+            position ASC
         `,
         Effect.andThen(
           Schema.decodeUnknown(
@@ -305,7 +305,7 @@ export const make: Effect.Effect<
             WHERE
               ${buildFilterCondition(appendCondition.filter)}
             ORDER BY
-              timestamp DESC
+              position DESC
             LIMIT
               1
           ) = ${lastKnownEvent}
