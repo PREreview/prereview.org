@@ -226,8 +226,10 @@ export interface Env {
     | Prereviewers.PrereviewerQueries
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
+    | ReviewRequests.ReviewRequestCommands
     | WorkflowEngine.WorkflowEngine
     | Zenodo.ZenodoApi
+    | FeatureFlags.FeatureFlags
   >
   logger: LoggerEnv
   users: {
