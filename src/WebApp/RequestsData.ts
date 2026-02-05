@@ -102,6 +102,7 @@ const DataToRequestSchema = Schema.transformOrFail(
         const server = yield* pipe(
           Preprints.getPreprintId(data.preprintId),
           Effect.andThen(preprintIdToServer),
+          Effect.catchTag('PreprintIsNotFound', () => Effect.succeed('unable to determine server' as const)),
           Effect.orElseFail(() => new ParseResult.Type(ast, data.preprintId, 'Failed to get preprint ID')),
         )
 
