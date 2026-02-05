@@ -3,7 +3,7 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Array, Effect, Layer, Option, type PubSub, TestClock, type Types } from 'effect'
+import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -104,9 +104,7 @@ describe('when the last known position has not changed', () => {
 
       const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
-      yield* Effect.forEach(existingEvents, existingEvent =>
-        TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
-      )
+      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
       const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
 
@@ -373,13 +371,11 @@ test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* Effect.forEach(existingEvents, existingEvent =>
-        TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
-      )
+      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
       const { lastKnownPosition } = yield* Effect.flatten(eventStore.all)
 
-      yield* Effect.forEach(newEvents, newEvent => TestClock.adjustWith(eventStore.append(newEvent), '1 milli'))
+      yield* Effect.forEach(newEvents, newEvent => eventStore.append(newEvent))
 
       const actual = yield* eventStore.since(lastKnownPosition)
 
