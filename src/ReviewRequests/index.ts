@@ -73,8 +73,8 @@ export const layer = Layer.provideMerge(
             getFiveMostRecent: pipe(
               Queries.getFiveMostRecentReviewRequests(),
               Effect.andThen(
-                Effect.forEach(
-                  reviewRequest =>
+                flow(
+                  Array.map(reviewRequest =>
                     Effect.gen(function* () {
                       return {
                         ...reviewRequest,
@@ -84,7 +84,8 @@ export const layer = Layer.provideMerge(
                         subfields: Array.dedupe(Array.map(reviewRequest.topics, getTopicSubfield)),
                       }
                     }),
-                  { concurrency: 'inherit' },
+                  ),
+                  effects => Effect.allSuccesses(effects, { concurrency: 'inherit' }),
                 ),
               ),
               Effect.orElseSucceed(Array.empty),
