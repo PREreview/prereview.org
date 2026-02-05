@@ -1,6 +1,5 @@
-import { type Array, Context, Data, Effect, type Option, type Types } from 'effect'
+import { type Array, Context, Data, Effect, type Option, Schema, type Types, pipe } from 'effect'
 import type { Event, EventFilter } from './Events.ts'
-import type { Uuid } from './types/index.ts'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
 
@@ -10,16 +9,20 @@ export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')
 
 export class NewEventsFound extends Data.TaggedError('NewEventsFound') {}
 
+export const Position = pipe(Schema.Number, Schema.brand('Position'))
+
+export type Position = typeof Position.Type
+
 export interface EventStore {
   readonly all: Effect.Effect<
-    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownEvent: Uuid.Uuid }>,
+    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
     FailedToGetEvents
   >
 
   readonly since: (
-    lastKnownEvent: Uuid.Uuid,
+    lastKnownPosition: Position,
   ) => Effect.Effect<
-    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownEvent: Uuid.Uuid }>,
+    Option.Option<{ readonly events: Array.NonEmptyReadonlyArray<Event>; readonly lastKnownPosition: Position }>,
     FailedToGetEvents
   >
 
@@ -28,14 +31,14 @@ export interface EventStore {
   ) => Effect.Effect<
     Option.Option<{
       readonly events: Array.NonEmptyReadonlyArray<Types.ExtractTag<Event, Tag>>
-      readonly lastKnownEvent: Uuid.Uuid
+      readonly lastKnownPosition: Position
     }>,
     FailedToGetEvents
   >
 
   readonly append: <Tag extends Types.Tags<Event>>(
     event: Event,
-    condition?: { filter: EventFilter<Tag>; lastKnownEvent: Option.Option<Uuid.Uuid> },
+    condition?: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
@@ -51,7 +54,7 @@ export const query = Effect.fn(function* <Tag extends Types.Tags<Event>>(filter:
 
 export const append = Effect.fn(function* <Tag extends Types.Tags<Event>>(
   event: Event,
-  condition?: { filter: EventFilter<Tag>; lastKnownEvent: Option.Option<Uuid.Uuid> },
+  condition?: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
 ) {
   const eventStore = yield* EventStore
 

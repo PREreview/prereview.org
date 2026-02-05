@@ -138,7 +138,8 @@ export const make: Effect.Effect<
           id,
           type,
           timestamp,
-          payload
+          payload,
+          position
         FROM
           events
         WHERE
@@ -165,7 +166,8 @@ export const make: Effect.Effect<
         id,
         type,
         timestamp,
-        payload
+        payload,
+        position
       FROM
         events
       ORDER BY
@@ -182,7 +184,7 @@ export const make: Effect.Effect<
         onNonEmpty: rows =>
           Effect.succeedSome({
             events: Array.map(rows, Struct.get('event')),
-            lastKnownEvent: Array.lastNonEmpty(rows).id,
+            lastKnownPosition: Array.lastNonEmpty(rows).position,
           }),
       }),
     ),
@@ -197,27 +199,19 @@ export const make: Effect.Effect<
   )
 
   const since: EventStore.EventStore['since'] = Effect.fn('SqlEventStore.since')(
-    function* (lastKnownEvent) {
+    function* (lastKnownPosition) {
       const rows = yield* pipe(
         sql`
           SELECT
             id,
             type,
             timestamp,
-            payload
+            payload,
+            position
           FROM
             events
           WHERE
-            position > (
-              SELECT
-                position
-              FROM
-                events
-              WHERE
-                id = ${lastKnownEvent}
-              LIMIT
-                1
-            )
+            position > ${lastKnownPosition}
           ORDER BY
             position ASC
         `,
@@ -233,7 +227,7 @@ export const make: Effect.Effect<
         onNonEmpty: rows =>
           Effect.succeedSome({
             events: Array.map(rows, Struct.get('event')),
-            lastKnownEvent: Array.lastNonEmpty(rows).id,
+            lastKnownPosition: Array.lastNonEmpty(rows).position,
           }),
       })
     },
@@ -254,7 +248,7 @@ export const make: Effect.Effect<
       onNonEmpty: rows =>
         Option.some({
           events: Array.map(rows, Struct.get('event')),
-          lastKnownEvent: Array.lastNonEmpty(rows).id,
+          lastKnownPosition: Array.lastNonEmpty(rows).position,
         }),
     })
   }, Effect.provide(context))
@@ -263,11 +257,13 @@ export const make: Effect.Effect<
     function* (event, appendCondition) {
       const id = yield* generateUuid
       const timestamp = yield* DateTime.now
+      const positionThatShouldNeverReachTheDatabase = EventStore.Position.make(-1)
 
       const encoded = yield* Schema.encode(eventsTable)({
         id,
         timestamp,
         event,
+        position: positionThatShouldNeverReachTheDatabase,
       })
 
       if (!appendCondition) {
@@ -285,7 +281,7 @@ export const make: Effect.Effect<
         )
       }
 
-      const condition = Option.match(appendCondition.lastKnownEvent, {
+      const condition = Option.match(appendCondition.lastKnownPosition, {
         onNone: () => sql`
           NOT EXISTS (
             SELECT
@@ -296,10 +292,10 @@ export const make: Effect.Effect<
               ${buildFilterCondition(appendCondition.filter)}
           )
         `,
-        onSome: lastKnownEvent => sql`
+        onSome: lastKnownPosition => sql`
           (
             SELECT
-              id
+              position
             FROM
               events
             WHERE
@@ -308,7 +304,7 @@ export const make: Effect.Effect<
               position DESC
             LIMIT
               1
-          ) = ${lastKnownEvent}
+          ) = ${lastKnownPosition}
         `,
       })
 
@@ -352,6 +348,7 @@ const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Sch
     Schema.Struct({
       id: Uuid.UuidSchema,
       timestamp: Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate),
+      position: EventStore.Position,
       type: Schema.String,
       payload: Schema.Union(
         Schema.Record({ key: Schema.String, value: Schema.Unknown }),
@@ -362,6 +359,7 @@ const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Sch
       Schema.Struct({
         id: Uuid.UuidSchema,
         timestamp: Schema.DateTimeUtc,
+        position: EventStore.Position,
         event: eventSchema,
       }),
     ),

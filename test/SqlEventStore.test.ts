@@ -50,7 +50,7 @@ it.prop([
   ),
 )
 
-describe('when the last known event is none', () => {
+describe('when the last known position is none', () => {
   it.prop([
     fc.commentEvent(),
     fc.oneof(
@@ -80,13 +80,13 @@ describe('when the last known event is none', () => {
 
       yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
 
-      yield* eventStore.append(event, { filter, lastKnownEvent: Option.none() })
+      yield* eventStore.append(event, { filter, lastKnownPosition: Option.none() })
 
       const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
       const all = yield* eventStore.all
 
-      expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownEvent: expect.anything() }))
-      expect(all).toStrictEqual(Option.some({ events: [...otherEvents, event], lastKnownEvent: expect.anything() }))
+      expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
+      expect(all).toStrictEqual(Option.some({ events: [...otherEvents, event], lastKnownPosition: expect.anything() }))
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -97,7 +97,7 @@ describe('when the last known event is none', () => {
   )
 })
 
-describe('when the last known event matches', () => {
+describe('when the last known position has not changed', () => {
   it.prop([fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()])('appends the event', (existingEvents, event) =>
     Effect.gen(function* () {
       const publish = jest.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
@@ -108,16 +108,18 @@ describe('when the last known event matches', () => {
         TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
       )
 
-      const { lastKnownEvent } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
+      const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
 
       yield* eventStore.append(event, {
         filter: { types: Events.CommentEventTypes },
-        lastKnownEvent: Option.some(lastKnownEvent),
+        lastKnownPosition: Option.some(lastKnownPosition),
       })
 
       const all = yield* eventStore.all
 
-      expect(all).toStrictEqual(Option.some({ events: [...existingEvents, event], lastKnownEvent: expect.anything() }))
+      expect(all).toStrictEqual(
+        Option.some({ events: [...existingEvents, event], lastKnownPosition: expect.anything() }),
+      )
       expect(publish).toHaveBeenCalledWith(event)
     }).pipe(
       Effect.provide(Uuid.layer),
@@ -128,39 +130,37 @@ describe('when the last known event matches', () => {
   )
 })
 
-describe('when the last known event is different', () => {
-  it.prop([fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()])(
-    'does nothing',
-    (existingEvents, event, lastKnownEvent) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
+describe('when the last known position has changed', () => {
+  it.prop([fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()])('does nothing', (existingEvents, event) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
 
-        yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
-        const error = yield* Effect.flip(
-          eventStore.append(event, {
-            filter: { types: Events.CommentEventTypes },
-            lastKnownEvent: Option.some(lastKnownEvent),
-          }),
-        )
+      const error = yield* Effect.flip(
+        eventStore.append(event, {
+          filter: { types: Events.CommentEventTypes },
+          lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
+        }),
+      )
 
-        expect(error).toBeInstanceOf(EventStore.NewEventsFound)
+      expect(error).toBeInstanceOf(EventStore.NewEventsFound)
 
-        const all = yield* eventStore.all
+      const all = yield* eventStore.all
 
-        expect(all).toStrictEqual(
-          Array.match(existingEvents, {
-            onEmpty: Option.none,
-            onNonEmpty: events => Option.some({ events, lastKnownEvent: expect.anything() }),
-          }),
-        )
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
-        EffectTest.run,
-      ),
+      expect(all).toStrictEqual(
+        Array.match(existingEvents, {
+          onEmpty: Option.none,
+          onNonEmpty: events => Option.some({ events, lastKnownEvent: expect.anything() }),
+        }),
+      )
+    }).pipe(
+      Effect.provide(Uuid.layer),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+      EffectTest.run,
+    ),
   )
 })
 
@@ -377,13 +377,13 @@ test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent
         TestClock.adjustWith(eventStore.append(existingEvent), '1 milli'),
       )
 
-      const { lastKnownEvent } = yield* Effect.flatten(eventStore.all)
+      const { lastKnownPosition } = yield* Effect.flatten(eventStore.all)
 
       yield* Effect.forEach(newEvents, newEvent => TestClock.adjustWith(eventStore.append(newEvent), '1 milli'))
 
-      const actual = yield* eventStore.since(lastKnownEvent)
+      const actual = yield* eventStore.since(lastKnownPosition)
 
-      expect(actual).toStrictEqual(Option.some({ events: newEvents, lastKnownEvent: expect.anything() }))
+      expect(actual).toStrictEqual(Option.some({ events: newEvents, lastKnownPosition: expect.anything() }))
     }).pipe(
       Effect.provide(Uuid.layer),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),

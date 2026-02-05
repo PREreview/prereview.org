@@ -38,12 +38,12 @@ export const makeHandleCommentCommand: Effect.Effect<
 
   return command =>
     Effect.gen(function* () {
-      const { events, lastKnownEvent } = yield* pipe(
+      const { events, lastKnownPosition } = yield* pipe(
         EventStore.query({
           types: CommentEventTypes,
           predicates: { commentId: command.commentId },
         }),
-        Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
+        Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
       )
 
       const state = Array.reduce(events, new CommentNotStarted() as CommentState, (state, event) =>
@@ -61,7 +61,7 @@ export const makeHandleCommentCommand: Effect.Effect<
                   types: CommentEventTypes,
                   predicates: { commentId: command.commentId },
                 },
-                lastKnownEvent: Option.fromNullable(lastKnownEvent),
+                lastKnownPosition: Option.fromNullable(lastKnownPosition),
               }),
           }),
         ),

@@ -70,9 +70,9 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         function* (command) {
           const filter = createFilter(command.reviewRequestId)
 
-          const { events, lastKnownEvent } = yield* pipe(
+          const { events, lastKnownPosition } = yield* pipe(
             EventStore.query(filter),
-            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
+            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
           )
 
           yield* pipe(
@@ -83,7 +83,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
+                  EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
               }),
             ),
           )

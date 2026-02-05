@@ -29,9 +29,9 @@ const makePrereviewerCommands: Effect.Effect<typeof PrereviewerCommands.Service,
         function* (command) {
           const filter = createFilter(command)
 
-          const { events, lastKnownEvent } = yield* pipe(
+          const { events, lastKnownPosition } = yield* pipe(
             EventStore.query(filter),
-            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
+            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
           )
 
           yield* pipe(
@@ -41,7 +41,7 @@ const makePrereviewerCommands: Effect.Effect<typeof PrereviewerCommands.Service,
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
+                  EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
               }),
             ),
           )

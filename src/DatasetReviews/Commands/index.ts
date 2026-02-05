@@ -148,9 +148,9 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         function* (command) {
           const filter = createFilter(command.datasetReviewId)
 
-          const { events, lastKnownEvent } = yield* pipe(
+          const { events, lastKnownPosition } = yield* pipe(
             EventStore.query(filter),
-            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownEvent: undefined }))),
+            Effect.andThen(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
           )
 
           yield* pipe(
@@ -161,7 +161,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.append(event, { filter, lastKnownEvent: Option.fromNullable(lastKnownEvent) }),
+                  EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
               }),
             ),
           )
