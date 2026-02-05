@@ -16,7 +16,9 @@ export class Preprints extends Context.Tag('Preprints')<
     getPreprint: (
       id: IndeterminatePreprintId,
     ) => Effect.Effect<Preprint.Preprint, Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
-    getPreprintId: (id: IndeterminatePreprintId) => Effect.Effect<PreprintId, Preprint.PreprintIsUnavailable>
+    getPreprintId: (
+      id: IndeterminatePreprintId,
+    ) => Effect.Effect<PreprintId, Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
     getPreprintTitle: (
       id: IndeterminatePreprintId,
     ) => Effect.Effect<Preprint.PreprintTitle, Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable>
@@ -79,11 +81,6 @@ export const layer = Layer.effect(
           pipe(
             getPreprintFromSource(id),
             Effect.map(Struct.get('id')),
-            Effect.catchTag(
-              'NotAPreprint',
-              'PreprintIsNotFound',
-              error => new Preprint.PreprintIsUnavailable({ cause: error }),
-            ),
             Effect.provide(context),
             Effect.withSpan('Preprints.getPreprintId', { attributes: { id } }),
           ),

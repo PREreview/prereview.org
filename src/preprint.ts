@@ -17,7 +17,10 @@ export interface ResolvePreprintIdEnv {
 export interface GetPreprintIdEnv {
   getPreprintId: (
     id: Preprints.IndeterminatePreprintId,
-  ) => TE.TaskEither<Preprints.PreprintIsUnavailable, Preprints.PreprintId>
+  ) => TE.TaskEither<
+    Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
+    Preprints.PreprintId
+  >
 }
 
 /** @deprecated */
