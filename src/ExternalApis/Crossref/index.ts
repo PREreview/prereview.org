@@ -21,8 +21,10 @@ export const { getWork } = Effect.serviceFunctions(Crossref)
 const make: Effect.Effect<typeof Crossref.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.andThen(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
+  const concurrencyLimit = yield* Effect.makeSemaphore(3)
+
   return {
-    getWork: flow(GetWork, Effect.provide(context)),
+    getWork: flow(GetWork, concurrencyLimit.withPermits(1), Effect.provide(context)),
   }
 })
 
