@@ -1,10 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Either } from 'effect'
+import { Effect } from 'effect'
 import { Datacite } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/Preprints/Datacite/Preprint.ts'
 import { Doi } from '../../../src/types/Doi.ts'
+import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('recordToPreprint', () => {
@@ -14,87 +15,95 @@ describe('recordToPreprint', () => {
       ['ResearchArticle', 'DataPaper'],
       ['Journal contribution', 'Text'],
     ],
-  })('not a preprint', (resourceType, resourceTypeGeneral) => {
-    const record = new Datacite.Record({
-      ...stubRecord,
-      types: {
-        ...stubRecord.types,
-        resourceType,
-        resourceTypeGeneral,
-      },
-    })
+  })('not a preprint', (resourceType, resourceTypeGeneral) =>
+    Effect.gen(function* () {
+      const record = new Datacite.Record({
+        ...stubRecord,
+        types: {
+          ...stubRecord.types,
+          resourceType,
+          resourceTypeGeneral,
+        },
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+      const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-    expect(actual._tag).toStrictEqual('NotAPreprint')
-    expect(actual.cause).toStrictEqual({ ...stubRecord.types, resourceType, resourceTypeGeneral })
-  })
+      expect(actual._tag).toStrictEqual('NotAPreprint')
+      expect(actual.cause).toStrictEqual({ ...stubRecord.types, resourceType, resourceTypeGeneral })
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
     'not a DataCite preprint ID',
-    doi => {
-      const record = new Datacite.Record({
-        ...stubRecord,
-        doi,
-      })
+    doi =>
+      Effect.gen(function* () {
+        const record = new Datacite.Record({
+          ...stubRecord,
+          doi,
+        })
 
-      const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+        const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-      expect(actual.cause).toStrictEqual(doi)
-    },
+        expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+        expect(actual.cause).toStrictEqual(doi)
+      }).pipe(EffectTest.run),
   )
 
-  test('no creators', () => {
-    const record = new Datacite.Record({
-      ...stubRecord,
-      creators: [],
-    })
+  test('no creators', () =>
+    Effect.gen(function* () {
+      const record = new Datacite.Record({
+        ...stubRecord,
+        creators: [],
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+      const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual({ creators: [] })
-  })
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+      expect(actual.cause).toStrictEqual({ creators: [] })
+    }).pipe(EffectTest.run))
 
-  test('title language unknown', () => {
-    const record = new Datacite.Record({
-      ...stubRecord,
-      titles: [{ title: '12345' }],
-    })
+  test('title language unknown', () =>
+    Effect.gen(function* () {
+      const record = new Datacite.Record({
+        ...stubRecord,
+        titles: [{ title: '12345' }],
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+      const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual('unknown title language')
-  })
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+      expect(actual.cause).toStrictEqual('unknown title language')
+    }).pipe(EffectTest.run))
 
-  test('abstract language unknown', () => {
-    const record = new Datacite.Record({
-      ...stubRecord,
-      descriptions: [{ description: '12345', descriptionType: 'Abstract' }],
-    })
+  test('abstract language unknown', () =>
+    Effect.gen(function* () {
+      const record = new Datacite.Record({
+        ...stubRecord,
+        descriptions: [{ description: '12345', descriptionType: 'Abstract' }],
+      })
 
-    const actual = Either.getOrThrow(_.recordToPreprint(record))
+      const actual = yield* _.recordToPreprint(record)
 
-    expect(actual.abstract).toStrictEqual(undefined)
-  })
+      expect(actual.abstract).toStrictEqual(undefined)
+    }).pipe(EffectTest.run))
 
   test.prop([
     fc.nonEmptyArray(
       fc.record({ date: fc.oneof(fc.year(), fc.plainYearMonth(), fc.plainDate()), dateType: fc.lorem() }),
     ),
-  ])('no posted date', dates => {
-    const record = new Datacite.Record({
-      ...stubRecord,
-      dates,
-    })
+  ])('no posted date', dates =>
+    Effect.gen(function* () {
+      const record = new Datacite.Record({
+        ...stubRecord,
+        dates,
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.recordToPreprint(record)))
+      const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual({ dates })
-  })
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+      expect(actual.cause).toStrictEqual({ dates })
+    }).pipe(EffectTest.run),
+  )
 })
 
 const stubRecord = {

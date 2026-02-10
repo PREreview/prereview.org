@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Runtime } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
@@ -36,6 +37,7 @@ describe('writeReviewPublish', () => {
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -65,6 +67,7 @@ describe('writeReviewPublish', () => {
         getContactEmailAddress: () => TE.left('not-found'),
         getPreprintTitle: () => TE.right(preprintTitle),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -99,6 +102,7 @@ describe('writeReviewPublish', () => {
         getPreprintTitle: () => TE.right(preprintTitle),
         publishPrereview,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(publishPrereview).toHaveBeenCalledWith({
@@ -150,6 +154,7 @@ describe('writeReviewPublish', () => {
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
         publishPrereview,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(publishPrereview).toHaveBeenCalledWith({
@@ -204,6 +209,7 @@ describe('writeReviewPublish', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           publishPrereview,
+          runtime: Runtime.defaultRuntime,
         })()
 
         expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
@@ -235,6 +241,7 @@ describe('writeReviewPublish', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           publishPrereview,
+          runtime: Runtime.defaultRuntime,
         })()
 
         expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
@@ -262,6 +269,7 @@ describe('writeReviewPublish', () => {
         getPreprintTitle: () => TE.right(preprintTitle),
         formStore,
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -281,6 +289,7 @@ describe('writeReviewPublish', () => {
         getPreprintTitle: () => TE.right(preprintTitle),
         formStore: new Keyv(),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -300,6 +309,7 @@ describe('writeReviewPublish', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -322,6 +332,7 @@ describe('writeReviewPublish', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -344,6 +355,7 @@ describe('writeReviewPublish', () => {
         getPreprintTitle: () => TE.right(preprintTitle),
         formStore: new Keyv(),
         publishPrereview: shouldNotBeCalled,
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({
@@ -375,6 +387,7 @@ describe('writeReviewPublish', () => {
         getPreprintTitle: () => TE.right(preprintTitle),
         formStore,
         publishPrereview: () => TE.left('unavailable'),
+        runtime: Runtime.defaultRuntime,
       })()
 
       expect(actual).toStrictEqual({

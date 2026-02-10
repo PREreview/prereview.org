@@ -17,6 +17,7 @@ import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
@@ -61,7 +62,12 @@ export const writeReviewPublish = ({
   user?: User
   aiReviewsAsCc0?: boolean
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPreprintTitleEnv & FormStoreEnv & PublishPrereviewEnv & AddToSessionEnv,
+  GetContactEmailAddressEnv &
+    GetPreprintTitleEnv &
+    FormStoreEnv &
+    PublishPrereviewEnv &
+    AddToSessionEnv &
+    EffectToFpts.EffectEnv,
   Response
 > =>
   pipe(
@@ -141,26 +147,31 @@ const handlePublishForm = ({
 }) =>
   pipe(
     deleteForm(user.orcid, preprint.id),
-    RTE.map(() => ({
-      conduct: form.conduct,
-      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
-      language: match(form)
-        .returnType<Option.Option<LanguageCode>>()
-        .with({ reviewType: 'questions' }, () => localeToIso6391(locale))
-        .with({ reviewType: 'freeform' }, form => detectLanguage(form.review))
-        .exhaustive(),
-      license: match([aiReviewsAsCc0, form.generativeAiIdeas])
-        .with([true, 'yes'], () => 'CC0-1.0' as const)
-        .with([false, 'yes'], [P.boolean, 'no'], () => 'CC-BY-4.0' as const)
-        .exhaustive(),
-      locale,
-      persona: form.persona,
-      preprint,
-      review: renderReview(form, locale),
-      structured: form.reviewType === 'questions',
-      user,
-    })),
-    RTE.chain(
+    RTE.chainReaderTaskKW(() =>
+      pipe(
+        match(form)
+          .returnType<RT.ReaderTask<EffectToFpts.EffectEnv, Option.Option<LanguageCode>>>()
+          .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
+          .with({ reviewType: 'freeform' }, form => EffectToFpts.toReaderTask(detectLanguage(form.review)))
+          .exhaustive(),
+        RT.map(language => ({
+          conduct: form.conduct,
+          otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
+          language,
+          license: match([aiReviewsAsCc0, form.generativeAiIdeas])
+            .with([true, 'yes'], () => 'CC0-1.0' as const)
+            .with([false, 'yes'], [P.boolean, 'no'], () => 'CC-BY-4.0' as const)
+            .exhaustive(),
+          locale,
+          persona: form.persona,
+          preprint,
+          review: renderReview(form, locale),
+          structured: form.reviewType === 'questions',
+          user,
+        })),
+      ),
+    ),
+    RTE.chainW(
       flow(
         publishPrereview,
         RTE.orElseFirstW(error =>

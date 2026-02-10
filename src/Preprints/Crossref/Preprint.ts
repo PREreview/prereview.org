@@ -1,6 +1,6 @@
 import { Url } from '@effect/platform'
 import * as Doi from 'doi-ts'
-import { Array, Either, flow, Match, Option, pipe } from 'effect'
+import { Array, Effect, Either, flow, Match, type Option, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
@@ -58,8 +58,8 @@ const determineCrossrefPreprintId = (
 
 export const workToPreprint = (
   work: Crossref.Work,
-): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Effect.Effect<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
+  Effect.gen(function* () {
     yield* ensureIsAPreprint(work)
 
     const id = yield* determineCrossrefPreprintId(work)
@@ -117,14 +117,14 @@ const getAuthors = (
 const getTitle = (
   title: Crossref.Work['title'],
   id: CrossrefPreprintId,
-): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Array.match(title, {
-    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title } })),
+    onEmpty: () => new Preprint.PreprintIsUnavailable({ cause: { title } }),
     onNonEmpty: flow(
-      title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
-      Either.bind('language', ({ text }) =>
-        Either.fromOption(
-          detectLanguageForServer({ id, text }),
+      title => Effect.succeed({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
+      Effect.bind('language', ({ text }) =>
+        Effect.orElse(
+          Effect.flatten(detectLanguageForServer({ id, text })),
           () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
         ),
       ),
@@ -134,20 +134,20 @@ const getTitle = (
 const getAbstract = (
   abstract: Crossref.Work['abstract'],
   id: CrossrefPreprintId,
-): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
   abstract !== undefined
     ? pipe(
-        Either.right({
+        Effect.succeed({
           text: transformJatsToHtml(maybeDecode(abstract, id)),
         }),
-        Either.bind('language', ({ text }) =>
-          Either.fromOption(
-            detectLanguageForServer({ id, text }),
+        Effect.bind('language', ({ text }) =>
+          Effect.orElse(
+            Effect.flatten(detectLanguageForServer({ id, text })),
             () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
           ),
         ),
       )
-    : Either.right(undefined)
+    : Effect.succeed(undefined)
 
 const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
   preprintId._tag === 'PreprintsorgPreprintId'
@@ -156,29 +156,35 @@ const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
       : text
     : text
 
-const detectLanguageForServer = ({ id, text }: { id: CrossrefPreprintId; text: Html }): Option.Option<LanguageCode> =>
+const detectLanguageForServer = ({
+  id,
+  text,
+}: {
+  id: CrossrefPreprintId
+  text: Html
+}): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
-    AdvancePreprintId: () => Option.some('en' as const),
+    AdvancePreprintId: () => Effect.succeedSome('en' as const),
     AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AuthoreaPreprintId: () => detectLanguage(text),
-    BiorxivPreprintId: () => Option.some('en' as const),
-    ChemrxivPreprintId: () => Option.some('en' as const),
-    CurvenotePreprintId: () => Option.some('en' as const),
-    EartharxivPreprintId: () => Option.some('en' as const),
-    EcoevorxivPreprintId: () => Option.some('en' as const),
+    BiorxivPreprintId: () => Effect.succeedSome('en' as const),
+    ChemrxivPreprintId: () => Effect.succeedSome('en' as const),
+    CurvenotePreprintId: () => Effect.succeedSome('en' as const),
+    EartharxivPreprintId: () => Effect.succeedSome('en' as const),
+    EcoevorxivPreprintId: () => Effect.succeedSome('en' as const),
     EdarxivPreprintId: () => detectLanguage(text),
-    EngrxivPreprintId: () => Option.some('en' as const),
-    MedrxivPreprintId: () => Option.some('en' as const),
-    MetaarxivPreprintId: () => Option.some('en' as const),
-    NeurolibrePreprintId: () => Option.some('en' as const),
+    EngrxivPreprintId: () => Effect.succeedSome('en' as const),
+    MedrxivPreprintId: () => Effect.succeedSome('en' as const),
+    MetaarxivPreprintId: () => Effect.succeedSome('en' as const),
+    NeurolibrePreprintId: () => Effect.succeedSome('en' as const),
     OsfPreprintsPreprintId: () => detectLanguage(text),
-    PreprintsorgPreprintId: () => Option.some('en' as const),
+    PreprintsorgPreprintId: () => Effect.succeedSome('en' as const),
     PsyarxivPreprintId: () => detectLanguage(text),
-    ResearchSquarePreprintId: () => Option.some('en' as const),
+    ResearchSquarePreprintId: () => Effect.succeedSome('en' as const),
     ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text),
     ScienceOpenPreprintId: () => detectLanguage(text),
     SocarxivPreprintId: () => detectLanguage(text),
-    SsrnPreprintId: () => Option.some('en' as const),
-    TechrxivPreprintId: () => Option.some('en' as const),
-    VerixivPreprintId: () => Option.some('en' as const),
+    SsrnPreprintId: () => Effect.succeedSome('en' as const),
+    TechrxivPreprintId: () => Effect.succeedSome('en' as const),
+    VerixivPreprintId: () => Effect.succeedSome('en' as const),
   })

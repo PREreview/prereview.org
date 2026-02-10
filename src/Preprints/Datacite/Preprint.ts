@@ -1,6 +1,6 @@
 import { Url } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { Array, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
@@ -19,8 +19,8 @@ import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './Preprint
 
 export const recordToPreprint = (
   record: Datacite.Record,
-): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Effect.Effect<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
+  Effect.gen(function* () {
     const id = yield* determineDatacitePreprintId(record)
 
     yield* ensureIsAPreprint(record.types, id)
@@ -29,7 +29,7 @@ export const recordToPreprint = (
 
     const title = yield* getTitle(record.titles, id)
 
-    const abstract = getAbstract(record.descriptions, id)
+    const abstract = yield* getAbstract(record.descriptions, id)
 
     const posted = yield* getPostedDate(record.dates)
 
@@ -143,12 +143,12 @@ const getAuthors = (
 const getTitle = (
   titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
-): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
-  Either.gen(function* () {
+): Effect.Effect<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+  Effect.gen(function* () {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
-    const language = yield* Either.fromOption(
-      detectLanguageForServer({ id, text }),
+    const language = yield* Effect.orElse(
+      Effect.flatten(detectLanguageForServer({ id, text })),
       () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
     )
 
@@ -161,37 +161,44 @@ const getTitle = (
 const getAbstract = (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
-): Preprint.Preprint['abstract'] => {
-  const abstract = Option.getOrUndefined(
-    Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
-  )
+): Effect.Effect<Preprint.Preprint['abstract']> =>
+  Effect.gen(function* () {
+    const abstract = Option.getOrUndefined(
+      Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
+    )
 
-  if (!abstract) {
-    return undefined
-  }
+    if (!abstract) {
+      return
+    }
 
-  const text = pipe(
-    Match.value(id),
-    Match.tag('ZenodoPreprintId', () =>
-      sanitizeHtml(`<p>${encode(abstract.description).replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`),
-    ),
-    Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
-  )
+    const text = pipe(
+      Match.value(id),
+      Match.tag('ZenodoPreprintId', () =>
+        sanitizeHtml(`<p>${encode(abstract.description).replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`),
+      ),
+      Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
+    )
 
-  return Option.match(detectLanguageForServer({ id, text }), {
-    onSome: language => ({ language, text }),
-    onNone: () => undefined,
+    return yield* Effect.match(Effect.flatten(detectLanguageForServer({ id, text })), {
+      onSuccess: language => ({ language, text }),
+      onFailure: () => undefined,
+    })
   })
-}
 
-const detectLanguageForServer = ({ id, text }: { id: DatacitePreprintId; text: Html }): Option.Option<LanguageCode> =>
+const detectLanguageForServer = ({
+  id,
+  text,
+}: {
+  id: DatacitePreprintId
+  text: Html
+}): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
     AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text),
     AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
-    ArcadiaSciencePreprintId: () => Option.some('en' as const),
-    ArxivPreprintId: () => Option.some('en' as const),
-    LifecycleJournalPreprintId: () => Option.some('en' as const),
+    ArcadiaSciencePreprintId: () => Effect.succeedSome('en' as const),
+    ArxivPreprintId: () => Effect.succeedSome('en' as const),
+    LifecycleJournalPreprintId: () => Effect.succeedSome('en' as const),
     OsfPreprintId: () => detectLanguage(text),
     PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text),
     ZenodoPreprintId: () => detectLanguage(text),

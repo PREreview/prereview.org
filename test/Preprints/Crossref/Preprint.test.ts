@@ -1,9 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Either } from 'effect'
+import { Effect } from 'effect'
 import { Crossref } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/Preprints/Crossref/Preprint.ts'
 import { Doi } from '../../../src/types/Doi.ts'
+import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('workToPreprint', () => {
@@ -14,57 +15,62 @@ describe('workToPreprint', () => {
       ['posted-content', 'dissertation'],
       ['posted-content', 'other'],
     ],
-  })('not a preprint', (type, subtype) => {
-    const work = new Crossref.Work({
-      ...stubWork,
-      type,
-      subtype,
-    })
+  })('not a preprint', (type, subtype) =>
+    Effect.gen(function* () {
+      const work = new Crossref.Work({
+        ...stubWork,
+        type,
+        subtype,
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+      const actual = yield* Effect.flip(_.workToPreprint(work))
 
-    expect(actual._tag).toStrictEqual('NotAPreprint')
-    expect(actual.cause).toStrictEqual({ type, subtype })
-  })
+      expect(actual._tag).toStrictEqual('NotAPreprint')
+      expect(actual.cause).toStrictEqual({ type, subtype })
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
     'not a Crossref preprint ID',
-    doi => {
-      const work = new Crossref.Work({
-        ...stubWork,
-        DOI: doi,
-      })
+    doi =>
+      Effect.gen(function* () {
+        const work = new Crossref.Work({
+          ...stubWork,
+          DOI: doi,
+        })
 
-      const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+        const actual = yield* Effect.flip(_.workToPreprint(work))
 
-      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-      expect(actual.cause).toStrictEqual(doi)
-    },
+        expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+        expect(actual.cause).toStrictEqual(doi)
+      }).pipe(EffectTest.run),
   )
 
-  test('no authors', () => {
-    const work = new Crossref.Work({
-      ...stubWork,
-      author: [],
-    })
+  test('no authors', () =>
+    Effect.gen(function* () {
+      const work = new Crossref.Work({
+        ...stubWork,
+        author: [],
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+      const actual = yield* Effect.flip(_.workToPreprint(work))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual({ author: [] })
-  })
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+      expect(actual.cause).toStrictEqual({ author: [] })
+    }).pipe(EffectTest.run))
 
-  test('no title', () => {
-    const work = new Crossref.Work({
-      ...stubWork,
-      title: [],
-    })
+  test('no title', () =>
+    Effect.gen(function* () {
+      const work = new Crossref.Work({
+        ...stubWork,
+        title: [],
+      })
 
-    const actual = Either.getOrThrow(Either.flip(_.workToPreprint(work)))
+      const actual = yield* Effect.flip(_.workToPreprint(work))
 
-    expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-    expect(actual.cause).toStrictEqual({ title: [] })
-  })
+      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+      expect(actual.cause).toStrictEqual({ title: [] })
+    }).pipe(EffectTest.run))
 })
 
 const stubWork = {

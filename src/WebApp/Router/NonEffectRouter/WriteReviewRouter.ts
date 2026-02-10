@@ -491,6 +491,7 @@ export const WriteReviewRouter = pipe(
           zenodoUrl: env.zenodoApiConfig.origin,
           ...env.logger,
         }),
+        runtime: env.runtime,
         saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, {
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
