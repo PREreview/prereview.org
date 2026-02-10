@@ -88,13 +88,13 @@ const ensureIsAPreprint = (
   types: Datacite.Record['types'],
   id: DatacitePreprintId,
 ): Either.Either<void, Preprint.NotAPreprint> =>
-  types.resourceType?.toLowerCase() !== 'preprint' &&
-  types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
-  (id._tag !== 'LifecycleJournalPreprintId' ||
-    !['journalarticle', 'studyregistration'].includes(types.resourceTypeGeneral?.toLowerCase() as never)) &&
-  (id._tag !== 'AfricarxivUbuntunetPreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
-  (id._tag !== 'ArxivPreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
-  (id._tag !== 'ArcadiaSciencePreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'other')
+  types.resourceType?.toLowerCase() === 'preprint' ||
+  types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
+  (id._tag === 'LifecycleJournalPreprintId' &&
+    ['journalarticle', 'studyregistration'].includes(types.resourceTypeGeneral?.toLowerCase() as never)) ||
+  (id._tag === 'AfricarxivUbuntunetPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
+  (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
+  (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other')
     ? Either.void
     : Either.left(new Preprint.NotAPreprint({ cause: types }))
 
