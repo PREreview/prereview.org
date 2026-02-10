@@ -10,7 +10,7 @@ import type * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { withEnv } from '../Fpts.ts'
 
-export interface EffectEnv<R> {
+export interface EffectEnv<R = never> {
   readonly runtime: Runtime.Runtime<R>
 }
 
