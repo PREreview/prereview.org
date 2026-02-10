@@ -20,3 +20,19 @@ describe('detectLanguage', () => {
     }).pipe(EffectTest.run),
   )
 })
+
+describe('detectLanguageFrom', () => {
+  test.each([
+    ['The language matches', ['en'] as const, html`<p>This is the text that I want to check</p>`, Option.some('en')],
+    ['The language does not match', ['en'] as const, html`<p>Это текст, который я хочу проверить</p>`, Option.none()],
+    ['A language matches', ['en', 'ru'] as const, html`<p>Это текст, который я хочу проверить</p>`, Option.some('ru')],
+    ['No language matches', ['en', 'ru'] as const, html`<p>確認したいテキストです</p>`, Option.none()],
+    ['No letters', ['en', 'ja', 'ru'] as const, rawHtml(' <p>   \n  12345 </p>   '), Option.none()],
+  ])('%s', (_name, languages, input, expected) =>
+    Effect.gen(function* () {
+      const actual = yield* _.detectLanguageFrom(...languages)(input)
+
+      expect(actual).toStrictEqual(expected)
+    }).pipe(EffectTest.run),
+  )
+})
