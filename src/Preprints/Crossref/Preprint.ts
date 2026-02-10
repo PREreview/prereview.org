@@ -60,64 +60,15 @@ export const workToPreprint = (
   work: Crossref.Work,
 ): Either.Either<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
   Either.gen(function* () {
-    if (work.type !== 'posted-content' || work.subtype !== 'preprint') {
-      yield* Either.left(new Preprint.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
-    }
+    yield* ensureIsAPreprint(work)
 
     const id = yield* determineCrossrefPreprintId(work)
 
-    const authors = yield* Array.match(work.author, {
-      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author: work.author } })),
-      onNonEmpty: authors =>
-        Either.right(
-          Array.map(
-            authors,
-            flow(
-              Match.value,
-              Match.when({ given: Match.string }, author => ({
-                name: `${author.given} ${author.family}`,
-                orcid: author.ORCID,
-              })),
-              Match.when({ family: Match.string }, author => ({
-                name: author.family,
-                orcid: author.ORCID,
-              })),
-              Match.when({ name: Match.string }, author => ({
-                name: author.name,
-                orcid: undefined,
-              })),
-              Match.exhaustive,
-            ),
-          ),
-        ),
-    })
+    const authors = yield* getAuthors(work.author)
 
-    const title = yield* Array.match(work.title, {
-      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title: work.title } })),
-      onNonEmpty: flow(
-        title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
-        Either.bind('language', ({ text }) =>
-          Either.fromOption(
-            detectLanguageForServer({ id, text }),
-            () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
-          ),
-        ),
-      ),
-    })
+    const title = yield* getTitle(work.title, id)
 
-    const abstract = yield* work.abstract !== undefined
-      ? pipe(
-          Either.right({
-            text: transformJatsToHtml(maybeDecode(work.abstract, id)),
-          }),
-          Either.bind('language', ({ text }) =>
-            Either.fromOption(
-              detectLanguageForServer({ id, text }),
-              () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
-            ),
-          ),
-        )
-      : Either.right(undefined)
+    const abstract = yield* getAbstract(work.abstract, id)
 
     return Preprint.Preprint({
       authors,
@@ -128,6 +79,75 @@ export const workToPreprint = (
       url: Url.setProtocol(work.resource.primary.URL, 'https'),
     })
   })
+
+const ensureIsAPreprint = (work: Crossref.Work): Either.Either<void, Preprint.NotAPreprint> =>
+  work.type === 'posted-content' && work.subtype === 'preprint'
+    ? Either.void
+    : Either.left(new Preprint.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
+
+const getAuthors = (
+  author: Crossref.Work['author'],
+): Either.Either<Preprint.Preprint['authors'], Preprint.PreprintIsUnavailable> =>
+  Array.match(author, {
+    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author } })),
+    onNonEmpty: authors =>
+      Either.right(
+        Array.map(
+          authors,
+          flow(
+            Match.value,
+            Match.when({ given: Match.string }, author => ({
+              name: `${author.given} ${author.family}`,
+              orcid: author.ORCID,
+            })),
+            Match.when({ family: Match.string }, author => ({
+              name: author.family,
+              orcid: author.ORCID,
+            })),
+            Match.when({ name: Match.string }, author => ({
+              name: author.name,
+              orcid: undefined,
+            })),
+            Match.exhaustive,
+          ),
+        ),
+      ),
+  })
+
+const getTitle = (
+  title: Crossref.Work['title'],
+  id: CrossrefPreprintId,
+): Either.Either<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+  Array.match(title, {
+    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { title } })),
+    onNonEmpty: flow(
+      title => Either.right({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
+      Either.bind('language', ({ text }) =>
+        Either.fromOption(
+          detectLanguageForServer({ id, text }),
+          () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+        ),
+      ),
+    ),
+  })
+
+const getAbstract = (
+  abstract: Crossref.Work['abstract'],
+  id: CrossrefPreprintId,
+): Either.Either<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
+  abstract !== undefined
+    ? pipe(
+        Either.right({
+          text: transformJatsToHtml(maybeDecode(abstract, id)),
+        }),
+        Either.bind('language', ({ text }) =>
+          Either.fromOption(
+            detectLanguageForServer({ id, text }),
+            () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
+          ),
+        ),
+      )
+    : Either.right(undefined)
 
 const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
   preprintId._tag === 'PreprintsorgPreprintId'

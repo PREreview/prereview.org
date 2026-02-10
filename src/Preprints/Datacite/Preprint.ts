@@ -23,45 +23,15 @@ export const recordToPreprint = (
   Either.gen(function* () {
     const id = yield* determineDatacitePreprintId(record)
 
-    if (
-      record.types.resourceType?.toLowerCase() !== 'preprint' &&
-      record.types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
-      (id._tag !== 'LifecycleJournalPreprintId' ||
-        !['journalarticle', 'studyregistration'].includes(record.types.resourceTypeGeneral?.toLowerCase() as never)) &&
-      (id._tag !== 'AfricarxivUbuntunetPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
-      (id._tag !== 'ArxivPreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
-      (id._tag !== 'ArcadiaSciencePreprintId' || record.types.resourceTypeGeneral?.toLowerCase() !== 'other')
-    ) {
-      yield* Either.left(new Preprint.NotAPreprint({ cause: record.types }))
-    }
+    yield* ensureIsAPreprint(record.types, id)
 
-    const authors = yield* Array.match(record.creators, {
-      onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { creators: record.creators } })),
-      onNonEmpty: creators =>
-        Either.right(
-          Array.map(
-            creators,
-            flow(
-              Match.value,
-              Match.when({ name: Match.string }, creator => ({ name: creator.name, orcid: findOrcid(creator) })),
-              Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
-                name: `${creator.givenName} ${creator.familyName}`,
-                orcid: findOrcid(creator),
-              })),
-              Match.exhaustive,
-            ),
-          ),
-        ),
-    })
+    const authors = yield* getAuthors(record.creators)
 
     const title = yield* getTitle(record.titles, id)
 
     const abstract = getAbstract(record.descriptions, id)
 
-    const posted = yield* Either.fromOption(
-      findPublishedDate(record.dates),
-      () => new Preprint.PreprintIsUnavailable({ cause: { dates: record.dates } }),
-    )
+    const posted = yield* getPostedDate(record.dates)
 
     return Preprint.Preprint({
       abstract,
@@ -114,7 +84,23 @@ const determineDatacitePreprintId = (
     return indeterminateId
   })
 
-const findPublishedDate = (dates: Datacite.Record['dates']) =>
+const ensureIsAPreprint = (
+  types: Datacite.Record['types'],
+  id: DatacitePreprintId,
+): Either.Either<void, Preprint.NotAPreprint> =>
+  types.resourceType?.toLowerCase() !== 'preprint' &&
+  types.resourceTypeGeneral?.toLowerCase() !== 'preprint' &&
+  (id._tag !== 'LifecycleJournalPreprintId' ||
+    !['journalarticle', 'studyregistration'].includes(types.resourceTypeGeneral?.toLowerCase() as never)) &&
+  (id._tag !== 'AfricarxivUbuntunetPreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
+  (id._tag !== 'ArxivPreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'text') &&
+  (id._tag !== 'ArcadiaSciencePreprintId' || types.resourceTypeGeneral?.toLowerCase() !== 'other')
+    ? Either.void
+    : Either.left(new Preprint.NotAPreprint({ cause: types }))
+
+const getPostedDate = (
+  dates: Datacite.Record['dates'],
+): Either.Either<Preprint.Preprint['posted'], Preprint.PreprintIsUnavailable> =>
   pipe(
     Option.none(),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
@@ -122,6 +108,7 @@ const findPublishedDate = (dates: Datacite.Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
+    Either.fromOption(() => new Preprint.PreprintIsUnavailable({ cause: { dates } })),
   )
 
 const findOrcid = (creator: Datacite.Record['creators'][number]) =>
@@ -130,6 +117,28 @@ const findOrcid = (creator: Datacite.Record['creators'][number]) =>
     Option.andThen(({ nameIdentifier }) => OrcidId.parse(nameIdentifier)),
     Option.getOrUndefined,
   )
+
+const getAuthors = (
+  creators: Datacite.Record['creators'],
+): Either.Either<Preprint.Preprint['authors'], Preprint.PreprintIsUnavailable> =>
+  Array.match(creators, {
+    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { creators } })),
+    onNonEmpty: creators =>
+      Either.right(
+        Array.map(
+          creators,
+          flow(
+            Match.value,
+            Match.when({ name: Match.string }, creator => ({ name: creator.name, orcid: findOrcid(creator) })),
+            Match.when({ givenName: Match.string, familyName: Match.string }, creator => ({
+              name: `${creator.givenName} ${creator.familyName}`,
+              orcid: findOrcid(creator),
+            })),
+            Match.exhaustive,
+          ),
+        ),
+      ),
+  })
 
 const getTitle = (
   titles: Datacite.Record['titles'],
