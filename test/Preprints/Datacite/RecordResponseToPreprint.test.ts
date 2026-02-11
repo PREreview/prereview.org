@@ -313,6 +313,30 @@ test.each([
     }),
   },
   {
+    response: 'zenodo-iso6393-wrong-language',
+    expected: Preprint({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>This paper outlines a methodology for Knowledge Extraction from historical literary texts in Italian using a combination of Large Language Models and fine-tuned models for Relation Extraction. The research aims to offer a novel way to extract and represent entities and relations from literary manuscripts in RDF graphs which can be queried and explored.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Cristian Santini', orcid: OrcidId('0000-0001-7363-6737') },
+        { name: 'Gioele Marozzi', orcid: OrcidId('0000-0001-5718-1752') },
+        { name: 'Laura Melosi' },
+        { name: 'Emanuele Frontoni' },
+      ],
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.12806063') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 7, day: 24 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Leveraging Large Language Models to Generate a Knowledge Graph from Italian Literary Texts'),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.12806063'),
+    }),
+  },
+  {
     response: 'figshare-africarxiv',
     expected: Preprint({
       abstract: {

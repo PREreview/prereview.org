@@ -1,0 +1,136 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.12806063",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.12806063",
+      "prefix": "10.5281",
+      "suffix": "zenodo.12806063",
+      "identifiers": [{ "identifier": "oai:zenodo.org:12806063", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:12806063" }],
+      "creators": [
+        {
+          "name": "Santini, Cristian",
+          "nameType": "Personal",
+          "givenName": "Cristian",
+          "familyName": "Santini",
+          "affiliation": ["University of Macerata"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-7363-6737", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Marozzi, Gioele",
+          "nameType": "Personal",
+          "givenName": "Gioele",
+          "familyName": "Marozzi",
+          "affiliation": ["University of Macerata"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-5718-1752", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Melosi, Laura",
+          "nameType": "Personal",
+          "givenName": "Laura",
+          "familyName": "Melosi",
+          "affiliation": ["University of Macerata"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Frontoni, Emanuele",
+          "nameType": "Personal",
+          "givenName": "Emanuele",
+          "familyName": "Frontoni",
+          "affiliation": ["University of Macerata"],
+          "nameIdentifiers": []
+        }
+      ],
+      "titles": [
+        { "title": "Leveraging Large Language Models to Generate a Knowledge Graph from Italian Literary Texts" }
+      ],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        { "subject": "NLP" },
+        { "subject": "literature" },
+        { "subject": "Knowledge Extraction" },
+        { "subject": "LLMs" },
+        { "subject": "Relation Extraction" },
+        { "subject": "Semantic Web" },
+        { "subject": "TEI" }
+      ],
+      "contributors": [],
+      "dates": [{ "date": "2024-07-24", "dateType": "Issued" }],
+      "language": "enc",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.12806062",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "This paper outlines a methodology for Knowledge Extraction from historical literary texts in Italian using a combination of Large Language Models and fine-tuned models for Relation Extraction. The research aims to offer a novel way to extract and represent entities and relations from literary manuscripts in RDF graphs which can be queried and explored.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTI4MDYwNjM8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNhbnRpbmksIENyaXN0aWFuPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5DcmlzdGlhbjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5TYW50aW5pPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAxLTczNjMtNjczNzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMDAxZm15NzciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIE1hY2VyYXRhPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NYXJvenppLCBHaW9lbGU8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkdpb2VsZTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5NYXJvenppPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAxLTU3MTgtMTc1MjwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMDAxZm15NzciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIE1hY2VyYXRhPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5NZWxvc2ksIExhdXJhPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5MYXVyYTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5NZWxvc2k8L2ZhbWlseU5hbWU+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wMDAxZm15NzciIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaXR5IG9mIE1hY2VyYXRhPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Gcm9udG9uaSwgRW1hbnVlbGU8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkVtYW51ZWxlPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkZyb250b25pPC9mYW1pbHlOYW1lPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDAwMWZteTc3IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+VW5pdmVyc2l0eSBvZiBNYWNlcmF0YTwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPkxldmVyYWdpbmcgTGFyZ2UgTGFuZ3VhZ2UgTW9kZWxzIHRvIEdlbmVyYXRlIGEgS25vd2xlZGdlIEdyYXBoIGZyb20gSXRhbGlhbiBMaXRlcmFyeSBUZXh0czwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5aZW5vZG88L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjQ8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlByZXByaW50Ii8+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Q+TkxQPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+bGl0ZXJhdHVyZTwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pktub3dsZWRnZSBFeHRyYWN0aW9uPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+TExNczwvc3ViamVjdD4KICAgIDxzdWJqZWN0PlJlbGF0aW9uIEV4dHJhY3Rpb248L3N1YmplY3Q+CiAgICA8c3ViamVjdD5TZW1hbnRpYyBXZWI8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5URUk8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI0LTA3LTI0PC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPmVuYzwvbGFuZ3VhZ2U+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTI4MDYwNjM8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj4xMC41MjgxL3plbm9kby4xMjgwNjA2MjwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzLz4KICA8Zm9ybWF0cy8+CiAgPHZlcnNpb24vPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvbGVnYWxjb2RlIiByaWdodHNJZGVudGlmaWVyPSJjYy1ieS00LjAiIHJpZ2h0c0lkZW50aWZpZXJTY2hlbWU9InNwZHgiPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wIEludGVybmF0aW9uYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5UaGlzIHBhcGVyIG91dGxpbmVzIGEgbWV0aG9kb2xvZ3kgZm9yIEtub3dsZWRnZSBFeHRyYWN0aW9uIGZyb20gaGlzdG9yaWNhbCBsaXRlcmFyeSB0ZXh0cyBpbiBJdGFsaWFuIHVzaW5nIGEgY29tYmluYXRpb24gb2YgTGFyZ2UgTGFuZ3VhZ2UgTW9kZWxzIGFuZCBmaW5lLXR1bmVkIG1vZGVscyBmb3IgUmVsYXRpb24gRXh0cmFjdGlvbi4gVGhlIHJlc2VhcmNoIGFpbXMgdG8gb2ZmZXIgYSBub3ZlbCB3YXkgdG8gZXh0cmFjdCBhbmQgcmVwcmVzZW50IGVudGl0aWVzIGFuZCByZWxhdGlvbnMgZnJvbSBsaXRlcmFyeSBtYW51c2NyaXB0cyBpbiBSREYgZ3JhcGhzIHdoaWNoIGNhbiBiZSBxdWVyaWVkIGFuZCBleHBsb3JlZC48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.12806063",
+      "contentUrl": null,
+      "metadataVersion": 0,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2024-07-24T12:44:15.000Z",
+      "registered": "2024-07-24T12:44:15.000Z",
+      "published": "2024",
+      "updated": "2024-07-24T12:44:16.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.12806063", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.12806062", "type": "dois" }] }
+    }
+  }
+}
