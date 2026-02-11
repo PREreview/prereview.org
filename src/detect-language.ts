@@ -1,23 +1,42 @@
-import { Array, Effect, flow, Option, pipe } from 'effect'
+import cld from 'cld'
+import { Array, Effect, Option } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
-import { detect, detectAll } from 'tinyld/heavy'
-import { type Html, PlainText, plainText } from './html.ts'
+import { type Html, PlainText } from './html.ts'
 
-export function detectLanguage(text: Html | PlainText | string): Effect.Effect<Option.Option<LanguageCode>> {
-  return pipe(
-    detectAll(text instanceof PlainText ? text.toString() : plainText(text).toString()),
-    Array.findFirst(({ lang }) => Option.liftPredicate(lang, iso6391.validate)),
-    Effect.succeed,
+export const detectLanguage = Effect.fn(function* (
+  text: Html | PlainText | string,
+): Effect.fn.Return<Option.Option<LanguageCode>> {
+  const result = yield* Effect.option(
+    Effect.tryPromise(() =>
+      cld.detect(text.toString(), {
+        bestEffort: true,
+        isHTML: !(text instanceof PlainText),
+      }),
+    ),
   )
-}
+
+  return Option.andThen(result, result =>
+    Array.findFirst(result.languages, detected => Option.liftPredicate(detected.code, iso6391.validate)),
+  )
+})
 
 export function detectLanguageFrom<L extends LanguageCode>(
   ...languages: ReadonlyArray<L>
 ): (text: Html | PlainText | string) => Effect.Effect<Option.Option<L>> {
-  return flow(
-    text =>
-      detect(text instanceof PlainText ? text.toString() : plainText(text).toString(), { only: [...languages] }) as L,
-    Option.liftPredicate(detected => Array.contains(languages, detected)),
-    Effect.succeed,
-  )
+  return Effect.fn(function* (text: Html | PlainText | string): Effect.fn.Return<Option.Option<L>> {
+    const result = yield* Effect.option(
+      Effect.tryPromise(() =>
+        cld.detect(text.toString(), {
+          bestEffort: true,
+          isHTML: !(text instanceof PlainText),
+        }),
+      ),
+    )
+
+    return Option.andThen(result, result =>
+      Array.findFirst(result.languages, detected =>
+        Option.liftPredicate(detected.code as L, code => Array.contains(languages, code)),
+      ),
+    )
+  })
 }

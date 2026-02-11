@@ -12,6 +12,10 @@ node_modules: package.json package-lock.json
 	npm install --engine-strict --ignore-scripts
 	touch node_modules
 
+node_modules/cld: node_modules
+	npm rebuild cld
+	touch node_modules/cld
+
 check: format lint-ts lint-css typecheck test-fast
 
 update-incontext-locale:
@@ -26,7 +30,7 @@ src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -
 	npx webpack build --mode development
 	touch src/manifest.json
 
-start-app: .env node_modules start-services src/manifest.json
+start-app: .env node_modules node_modules/cld start-services src/manifest.json
 	POSTGRES_URL=postgres://postgres:password@$(shell docker compose port postgres 5432) \
 	REDIS_URI=redis://$(shell docker compose port redis 6379) \
 	HTTP_CACHE_REDIS_URI=redis://$(shell docker compose port redis 6379) \
@@ -70,10 +74,10 @@ typecheck-analyze: node_modules src/manifest.json
 	npx tsc --incremental false --noEmit --generateTrace ".cache/tsc-trace"
 	npx analyze-trace .cache/tsc-trace ${TEST}
 
-test: node_modules src/manifest.json
+test: node_modules node_modules/cld src/manifest.json
 	npx jest ${TEST}
 
-test-fast: node_modules src/manifest.json
+test-fast: node_modules node_modules/cld src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged --maxWorkers=50%
 
 test-integration: test-integration-image

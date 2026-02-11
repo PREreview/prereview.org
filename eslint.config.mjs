@@ -81,7 +81,6 @@ export default defineConfig([
             'logging-ts/lib/*',
             'nanohtml/*',
             'remixicon/**/*.svg',
-            'tinyld/heavy',
             'integration/base',
             'types/*',
             '*/index.ts',

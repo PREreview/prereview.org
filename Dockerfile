@@ -6,6 +6,10 @@ WORKDIR /app
 # Stage: NPM environment
 #
 FROM node AS npm
+RUN apt-get update && apt-get install --yes \
+  build-essential \
+  python3 \
+  && rm --recursive --force /var/lib/apt/lists/*
 COPY .npmrc \
   package.json \
   package-lock.json \
@@ -30,14 +34,18 @@ RUN chmod +x /usr/local/bin/intlc
 FROM npm AS npm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN npm ci --engine-strict --ignore-scripts
+RUN npm ci --engine-strict --ignore-scripts \
+  && npm rebuild cld \
+  && rm --recursive --force node_modules/cld/deps/*
 
 #
 # Stage: Production NPM install
 #
 FROM npm AS npm-prod
 
-RUN npm ci --engine-strict --ignore-scripts --production
+RUN npm ci --engine-strict --ignore-scripts --production \
+  && npm rebuild cld \
+  && rm --recursive --force node_modules/cld/deps/*
 
 #
 # Stage: Intlc build

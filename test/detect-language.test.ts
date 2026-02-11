@@ -12,9 +12,9 @@ describe('detectLanguage', () => {
     ['Japanese', html`<p>確認したいテキストです</p>`, Option.some('ja')],
     ['No language', rawHtml(' <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>'), Option.none()],
     ['No letters', rawHtml(' <p>   \n  12345 </p>   '), Option.none()],
-    // ['Greek character', 'I contain a β character', Option.some('en')],
-    // ['Initializm', 'The EOSC Interoperability Framework', Option.some('en')],
-    // ['Short sentence', 'Short sentence', Option.some('en')],
+    ['Greek character', 'I contain a β character', Option.some('en')],
+    ['Initializm', 'The EOSC Interoperability Framework', Option.some('en')],
+    ['Short sentence', 'Short sentence', Option.some('en')],
   ])('%s', (_name, input, expected) =>
     Effect.gen(function* () {
       const actual = yield* _.detectLanguage(input)
