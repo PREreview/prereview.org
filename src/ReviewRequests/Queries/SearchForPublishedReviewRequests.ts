@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, Equal, Match, Option, Record, Struct } from 'effect'
+import { Array, Boolean, Either, Equal, Match, Record, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
@@ -49,7 +49,7 @@ type State = Record<
     fields: ReadonlyArray<FieldId>
     subfields: ReadonlyArray<SubfieldId>
     language: LanguageCode | undefined
-    preprintId: Preprints.IndeterminatePreprintId | undefined
+    preprintId: Preprints.IndeterminatePreprintId
   }
 >
 
@@ -63,93 +63,48 @@ const updateStateWithEvent = (state: State, event: Events.Event): State => {
   return updateStateWithPertinentEvent(state, event)
 }
 
-const updateStateWithPertinentEvent = (map: State, event: PertinentEvent) =>
+const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
-      Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-        })),
-        () =>
-          Record.set(map, event.reviewRequestId, {
-            published: undefined,
-            topics: [],
-            fields: [],
-            subfields: [],
-            language: undefined,
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(map, event.reviewRequestId, {
+        published: undefined,
+        topics: [],
+        fields: [],
+        subfields: [],
+        language: undefined,
+        preprintId: event.preprintId,
+      }),
     ReviewRequestForAPreprintWasAccepted: event =>
-      Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
-          ...review,
-          published: event.acceptedAt,
-        })),
-        () =>
-          Record.set(map, event.reviewRequestId, {
-            published: event.acceptedAt,
-            topics: [],
-            fields: [],
-            subfields: [],
-            language: undefined,
-            preprintId: undefined,
-          }),
-      ),
+      Record.modify(map, event.reviewRequestId, review => ({
+        ...review,
+        published: event.acceptedAt,
+      })),
     ReviewRequestByAPrereviewerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-          published: event.publishedAt,
-        })),
-        () =>
-          Record.set(map, event.reviewRequestId, {
-            published: event.publishedAt,
-            topics: [],
-            fields: [],
-            subfields: [],
-            language: undefined,
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(map, event.reviewRequestId, {
+        published: event.publishedAt,
+        topics: [],
+        fields: [],
+        subfields: [],
+        language: undefined,
+        preprintId: event.preprintId,
+      }),
     ReviewRequestFromAPreprintServerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-          published: event.publishedAt,
-        })),
-        () =>
-          Record.set(map, event.reviewRequestId, {
-            published: event.publishedAt,
-            topics: [],
-            fields: [],
-            subfields: [],
-            language: undefined,
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(map, event.reviewRequestId, {
+        published: event.publishedAt,
+        topics: [],
+        fields: [],
+        subfields: [],
+        language: undefined,
+        preprintId: event.preprintId,
+      }),
     ReviewRequestForAPreprintWasCategorized: event =>
-      Option.getOrElse(
-        Record.modifyOption(map, event.reviewRequestId, review => ({
-          ...review,
-          topics: event.topics,
-          fields: Array.map(event.topics, getTopicField),
-          subfields: Array.map(event.topics, getTopicSubfield),
-          language: event.language,
-        })),
-        () =>
-          Record.set(map, event.reviewRequestId, {
-            published: undefined,
-            topics: event.topics,
-            fields: Array.map(event.topics, getTopicField),
-            subfields: Array.map(event.topics, getTopicSubfield),
-            language: event.language,
-            preprintId: undefined,
-          }),
-      ),
+      Record.modify(map, event.reviewRequestId, review => ({
+        ...review,
+        topics: event.topics,
+        fields: Array.map(event.topics, getTopicField),
+        subfields: Array.map(event.topics, getTopicSubfield),
+        language: event.language,
+      })),
   })
 
 const query = (state: State, input: Input): Result =>
@@ -157,7 +112,6 @@ const query = (state: State, input: Input): Result =>
     const filteredReviewRequests = Record.filter(state, reviewRequest =>
       Boolean.every([
         reviewRequest.published !== undefined,
-        reviewRequest.preprintId !== undefined,
         input.language === undefined || Equal.equals(reviewRequest.language, input.language),
         input.field === undefined || Array.contains(reviewRequest.fields, input.field),
       ]),

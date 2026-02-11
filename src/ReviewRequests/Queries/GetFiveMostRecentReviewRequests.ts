@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, flow, Match, Option, Record, Struct } from 'effect'
+import { Array, Either, flow, Match, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -31,7 +31,7 @@ type State = Record<
   {
     published: Temporal.Instant | undefined
     topics: ReadonlyArray<TopicId>
-    preprintId: Preprints.IndeterminatePreprintId | undefined
+    preprintId: Preprints.IndeterminatePreprintId
   }
 >
 
@@ -48,77 +48,39 @@ const updateStateWithEvent = (state: State, event: Events.Event): State => {
 const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-        })),
-        () =>
-          Record.set(state, event.reviewRequestId, {
-            published: undefined,
-            topics: [],
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(state, event.reviewRequestId, {
+        published: undefined,
+        topics: [],
+        preprintId: event.preprintId,
+      }),
     ReviewRequestForAPreprintWasAccepted: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({
-          ...review,
-          published: event.acceptedAt,
-        })),
-        () =>
-          Record.set(state, event.reviewRequestId, {
-            published: event.acceptedAt,
-            topics: [],
-            preprintId: undefined,
-          }),
-      ),
+      Record.modify(state, event.reviewRequestId, review => ({
+        ...review,
+        published: event.acceptedAt,
+      })),
     ReviewRequestByAPrereviewerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-          published: event.publishedAt,
-        })),
-        () =>
-          Record.set(state, event.reviewRequestId, {
-            published: event.publishedAt,
-            topics: [],
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(state, event.reviewRequestId, {
+        published: event.publishedAt,
+        topics: [],
+        preprintId: event.preprintId,
+      }),
     ReviewRequestFromAPreprintServerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({
-          ...review,
-          preprintId: event.preprintId,
-          published: event.publishedAt,
-        })),
-        () =>
-          Record.set(state, event.reviewRequestId, {
-            published: event.publishedAt,
-            topics: [],
-            preprintId: event.preprintId,
-          }),
-      ),
+      Record.set(state, event.reviewRequestId, {
+        published: event.publishedAt,
+        topics: [],
+        preprintId: event.preprintId,
+      }),
     ReviewRequestForAPreprintWasCategorized: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({
-          ...review,
-          topics: event.topics,
-        })),
-        () =>
-          Record.set(state, event.reviewRequestId, {
-            published: undefined,
-            topics: event.topics,
-            preprintId: undefined,
-          }),
-      ),
+      Record.modify(state, event.reviewRequestId, review => ({
+        ...review,
+        topics: event.topics,
+      })),
   })
 
 const query = (reviewRequests: State): Result => {
-  const filteredReviewRequests = Record.filter(reviewRequests, reviewRequest =>
-    Boolean.every([reviewRequest.published !== undefined, reviewRequest.preprintId !== undefined]),
+  const filteredReviewRequests = Record.filter(
+    reviewRequests,
+    reviewRequest => reviewRequest.published !== undefined,
   ) as Record<
     Uuid.Uuid,
     {

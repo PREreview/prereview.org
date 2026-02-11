@@ -1,4 +1,4 @@
-import { Either, Equal, flow, Match, Option, Record } from 'effect'
+import { Either, Equal, flow, Match, Record } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -21,7 +21,7 @@ type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
 const filter = Events.EventFilter({ types: eventTypes })
 
-type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId | undefined; accepted: boolean }>
+type State = Record<Uuid.Uuid, { preprintId: Preprints.IndeterminatePreprintId; accepted: boolean }>
 
 const initialState: State = Record.empty()
 
@@ -36,25 +36,13 @@ const updateStateWithEvent = (state: State, event: Events.Event): State => {
 const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
-      ),
+      Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: false }),
     ReviewRequestForAPreprintWasAccepted: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, accepted: true })),
-        () => Record.set(state, event.reviewRequestId, { preprintId: undefined, accepted: true }),
-      ),
+      Record.modify(state, event.reviewRequestId, review => ({ ...review, accepted: true })),
     ReviewRequestFromAPreprintServerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
-      ),
+      Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
     ReviewRequestByAPrereviewerWasImported: event =>
-      Option.getOrElse(
-        Record.modifyOption(state, event.reviewRequestId, review => ({ ...review, preprintId: event.preprintId })),
-        () => Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
-      ),
+      Record.set(state, event.reviewRequestId, { preprintId: event.preprintId, accepted: true }),
   })
 
 const query = (state: State, input: Input): Result => {

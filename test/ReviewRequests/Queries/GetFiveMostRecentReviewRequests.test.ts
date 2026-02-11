@@ -216,10 +216,10 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
     'more results',
     [
       request1Received1,
+      request1Received2,
       request1Accepted1,
       request1Categorized1,
       request1Categorized2,
-      request1Received2,
       request1Accepted2,
       request2Received,
       request2Accepted,
