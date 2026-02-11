@@ -8,7 +8,7 @@ import { ProcessCoarNotifyMessage } from './ProcessCoarNotifyMessage.ts'
 export const Inbox = Effect.gen(function* () {
   const message = yield* HttpServerRequest.schemaBodyJson(CoarNotify.RequestReviewSchema)
   const receivedAt = yield* Temporal.currentInstant
-  const messageId = yield* Uuid.v4()
+  const messageId = yield* Uuid.v5(`${message.origin.id.href} ${message.id}`, InboxUuidNamespace)
 
   yield* ProcessCoarNotifyMessage({ message, receivedAt, messageId })
 
@@ -21,3 +21,5 @@ export const Inbox = Effect.gen(function* () {
     FailedToProcessRequestReview: () => HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable }),
   }),
 )
+
+const InboxUuidNamespace = Uuid.Uuid('2931c749-586f-43e5-a01a-7d70555c1983')
