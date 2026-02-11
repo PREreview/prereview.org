@@ -1,11 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-internal-modules */
 import { HttpClient, HttpClientRequest } from '@effect/platform'
 import { NodeHttpClient, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
 import { capitalCase } from 'case-anything'
 import { Array, Config, Effect, flow, Layer, Logger, LogLevel, Option, pipe, Record, Schema, Struct } from 'effect'
-import { v5 as uuid5 } from 'uuid'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment, no-comments/disallowComments
 // @ts-ignore
 import pseudonyms from '../data/pseudonyms.json' with { type: 'json' } // eslint-disable-line import/no-unresolved
@@ -96,8 +94,8 @@ const ActorToPrereviewer = Effect.fn(function* (actor: CoarNotify.RequestReview[
   }
 })
 
-const TimestampToUuid = (timestamp: Temporal.Instant): Uuid.Uuid =>
-  Uuid.Uuid(uuid5(timestamp.epochMilliseconds.toString(), 'a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
+const TimestampToUuid = (timestamp: Temporal.Instant) =>
+  Uuid.v5(timestamp.epochMilliseconds.toString(), Uuid.Uuid('a4de3e41-9fe9-46f1-94d1-cd8884f01a77'))
 
 const PostgresClientLayer = Layer.mergeAll(
   PgClient.layerConfig({
@@ -118,7 +116,7 @@ const program = pipe(
           return yield* ReviewRequests.importReviewRequestFromPrereviewer({
             publishedAt: timestamp,
             preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
-            reviewRequestId: TimestampToUuid(timestamp),
+            reviewRequestId: yield* TimestampToUuid(timestamp),
             requester: yield* ActorToPrereviewer(notification.actor),
           })
         }
@@ -127,7 +125,7 @@ const program = pipe(
           publishedAt: timestamp,
           receivedFrom: notification.origin.id,
           preprintId: yield* Preprints.parsePreprintDoi(notification.object['ietf:cite-as']),
-          reviewRequestId: TimestampToUuid(timestamp),
+          reviewRequestId: yield* TimestampToUuid(timestamp),
           requester: ActorToRequester(notification.actor),
         })
       }),
@@ -184,7 +182,7 @@ pipe(
           OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
         ),
       ),
-      Layer.provide(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
+      Layer.provideMerge(Layer.mergeAll(PostgresClientLayer, Uuid.layer)),
     ),
   ),
   Effect.scoped,
