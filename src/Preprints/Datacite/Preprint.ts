@@ -6,7 +6,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
 import type { Datacite } from '../../ExternalApis/index.ts'
 import { type Html, sanitizeHtml } from '../../html.ts'
-import { OrcidId } from '../../types/index.ts'
+import { Iso639, OrcidId } from '../../types/index.ts'
 import * as Preprint from '../Preprint.ts'
 import {
   AfricarxivZenodoPreprintId,
@@ -25,11 +25,13 @@ export const recordToPreprint = (
 
     yield* ensureIsAPreprint(record.types, id)
 
+    const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
+
     const authors = yield* getAuthors(record.creators)
 
-    const title = yield* getTitle(record.titles, id)
+    const title = yield* getTitle(record.titles, id, recordLanguage)
 
-    const abstract = yield* getAbstract(record.descriptions, id)
+    const abstract = yield* getAbstract(record.descriptions, id, recordLanguage)
 
     const posted = yield* getPostedDate(record.dates)
 
@@ -143,12 +145,13 @@ const getAuthors = (
 const getTitle = (
   titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
+  recordLanguage?: LanguageCode,
 ): Effect.Effect<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
   Effect.gen(function* () {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
     const language = yield* Effect.orElse(
-      Effect.flatten(detectLanguageForServer({ id, text })),
+      Effect.flatten(detectLanguageForServer({ id, text, recordLanguage })),
       () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
     )
 
@@ -161,6 +164,7 @@ const getTitle = (
 const getAbstract = (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
+  recordLanguage?: LanguageCode,
 ): Effect.Effect<Preprint.Preprint['abstract']> =>
   Effect.gen(function* () {
     const abstract = Option.getOrUndefined(
@@ -179,7 +183,7 @@ const getAbstract = (
       Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
     )
 
-    return yield* Effect.match(Effect.flatten(detectLanguageForServer({ id, text })), {
+    return yield* Effect.match(Effect.flatten(detectLanguageForServer({ id, text, recordLanguage })), {
       onSuccess: language => ({ language, text }),
       onFailure: () => undefined,
     })
@@ -188,9 +192,11 @@ const getAbstract = (
 const detectLanguageForServer = ({
   id,
   text,
+  recordLanguage: recordLanguage,
 }: {
   id: DatacitePreprintId
   text: Html
+  recordLanguage?: LanguageCode
 }): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
     AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
@@ -199,7 +205,7 @@ const detectLanguageForServer = ({
     ArcadiaSciencePreprintId: () => Effect.succeedSome('en' as const),
     ArxivPreprintId: () => Effect.succeedSome('en' as const),
     LifecycleJournalPreprintId: () => Effect.succeedSome('en' as const),
-    OsfPreprintId: () => detectLanguage(text),
+    OsfPreprintId: () => detectLanguage(text, recordLanguage),
     PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text),
-    ZenodoPreprintId: () => detectLanguage(text),
+    ZenodoPreprintId: () => detectLanguage(text, recordLanguage),
   })

@@ -304,7 +304,7 @@ test.each([
       id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.17216902') }),
       posted: Temporal.PlainDate.from({ year: 2025, month: 9, day: 28 }),
       title: {
-        language: 'en',
+        language: 'es',
         text: rawHtml(
           'Pictocuentos: Estrategia de intervención psicoeducativa basada en el modelo TEACCH para estudiantes con Trastorno del Espectro Autista',
         ),

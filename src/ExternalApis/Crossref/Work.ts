@@ -48,6 +48,7 @@ export class Work extends Schema.Class<Work>('Work')({
   }),
   title: Schema.Union(Schema.Tuple(), Schema.Tuple(Schema.String)),
   abstract: Schema.optional(Schema.String),
+  language: Schema.optional(Schema.String),
   author: Schema.optionalWith(
     Schema.Array(
       Schema.Union(

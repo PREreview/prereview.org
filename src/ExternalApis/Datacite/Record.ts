@@ -69,6 +69,7 @@ export class Record extends Schema.Class<Record>('Record')({
       dateType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),
+  language: Schema.optionalWith(Schema.String, { nullable: true }),
   types: Schema.Struct({
     resourceType: Schema.optional(
       Schema.Union(Schema.compose(Schema.Trim, Schema.NonEmptyString), EmptyStringAsUndefinedSchema),

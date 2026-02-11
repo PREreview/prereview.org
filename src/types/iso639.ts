@@ -12,6 +12,8 @@ export const Iso6393Schema = pipe(Schema.String, Schema.filter(iso6393Validate))
 
 export const Iso6391Schema = pipe(Schema.String, Schema.filter(iso6391.validate))
 
+export const isIso6391: (value: unknown) => value is Iso6391Code = Schema.is(Iso6391Schema)
+
 export const iso6393To1 = (code: Iso6393Code): Iso6391Code => iso6393To1Mapping[code]
 
 export const iso6391To3 = (code: Iso6391Code): Iso6393Code => swapFn(iso6393To1Mapping)[code]
