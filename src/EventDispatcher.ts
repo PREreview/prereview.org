@@ -30,7 +30,12 @@ const dispatchNewEvents = Effect.gen(function* () {
 
   lastKnownPosition = Option.some(newLastKnownPosition)
 
-  Array.forEach(newEvents, event => Array.forEach(subscribers, subscriber => subscriber(event)))
+  yield* Effect.forEach(
+    Array.chunksOf(newEvents, 100),
+    events =>
+      Effect.sync(() => Array.forEach(events, event => Array.forEach(subscribers, subscriber => subscriber(event)))),
+    { discard: true },
+  )
 })
 
 export const worker = Layer.effectDiscard(
