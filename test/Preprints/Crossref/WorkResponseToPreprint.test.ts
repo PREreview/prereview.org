@@ -543,6 +543,25 @@ test.each([
     }),
   },
   {
+    response: 'osf-preprints-short-title.json',
+    expected: Preprint({
+      authors: [{ name: 'Zane Orin Whitcomb', orcid: OrcidId('0009-0003-0457-2276') }],
+      id: new OsfPreprintsPreprintId({ value: Doi('10.31219/osf.io/4k26r_v11') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 8, day: 11 }),
+      title: {
+        language: 'en',
+        text: rawHtml('Civil Propaganda'),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Abstract: This essay introduces the concept of “civil propaganda,” a propaganda machine that is fully citizen runned and funded. Citizens use social media to do the dirty work of governments and promote self defeating strategies to fight back fascism. Using social media posts as examples, I look into the growing calls to alienate “Trump supporting Latinos,” who may just be victims. How Trump may have won some Latino communities through false pretenses. Those pretenses are the foundation of an ever evolving oppressive system. Finally, how liberals contribute to these polarized ecosystems they wish to dismantle.</p>',
+        ),
+      },
+      url: new URL('https://osf.io/4k26r_v11'),
+    }),
+  },
+  {
     response: 'psyarxiv.json',
     expected: Preprint({
       authors: [{ name: 'JingHao MA' }],

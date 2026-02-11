@@ -1,0 +1,117 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.17216902",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.17216902",
+      "prefix": "10.5281",
+      "suffix": "zenodo.17216902",
+      "identifiers": [{ "identifier": "oai:zenodo.org:17216902", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:17216902" }],
+      "creators": [
+        {
+          "name": "Gaibor Sánchez, Delia Evelyn",
+          "nameType": "Personal",
+          "givenName": "Delia Evelyn",
+          "familyName": "Gaibor Sánchez",
+          "affiliation": ["Delia Inclusive Apps"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0001-5825-8344", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Pictocuentos: Estrategia de intervención psicoeducativa basada en el modelo TEACCH para estudiantes con Trastorno del Espectro Autista"
+        }
+      ],
+      "publisher": "Zenodo",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        { "subject": "Inclusive education", "subjectScheme": "EuroSciVoc" },
+        { "subject": "educacion inclusiva" },
+        { "subject": "neurodivergentes" },
+        { "subject": "trastorno espectro autista" },
+        { "subject": "repositorios digitales" },
+        { "subject": "pictocuentos" },
+        { "subject": "modelo teacch" },
+        { "subject": "democratizacion del conocimiento" },
+        { "subject": "buenas practicas pedagogicas" },
+        { "subject": "Social Inclusion", "subjectScheme": "MeSH" }
+      ],
+      "contributors": [],
+      "dates": [{ "date": "2025-09-28", "dateType": "Issued" }],
+      "language": "es",
+      "types": {
+        "ris": "GEN",
+        "bibtex": "misc",
+        "citeproc": "article",
+        "schemaOrg": "CreativeWork",
+        "resourceType": "",
+        "resourceTypeGeneral": "Preprint"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.17216901",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": null,
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "[271]\n\nEl Trastorno del Espectro Autista (TEA) es un Trastorno del Neurodesarrollo caracterizado por alteraciones persistentes en la comunicación social y la presencia de patrones de comportamiento repetitivos o actividades restringidas. Su prevalencia ha incrementado en los últimos años debido a mejoras en la detección y diagnóstico, lo que evidencia la necesidad de estrategias de intervención psicoeducativa que permitan la participación activa de los estudiantes con TEA en contextos escolares regulares. El presente estudio explora los pictocuentos como estrategia de intervención psicoeducativa articulada al modelo TEACCH (Treatment and Education of Autistic and Related Communication-Handicapped Children). El diseño y uso de esta herramienta pedagógica visual contribuye a la democratización del aprendizaje, al hacer accesible el conocimiento y las buenas prácticas pedagógicas para todos los actores educativos, promoviendo la apertura y la inclusión en el proceso de enseñanza. La investigación siguió un procedimiento descriptivo y documental, revisión sistemática de literatura académica y observación de prácticas en aulas inclusivas donde se aplican apoyos visuales y narrativos. Los hallazgos muestran que los pictocuentos fortalecen la comprensión lectora, aumentan los actos comunicativos funcionales, fomentan la autonomía y promueven la participación activa en dinámicas grupales. En conclusión, los pictocuentos representan una estrategia psicoeducativa innovadora, atractiva y colaborativa que contribuye al diseño y desarrollo de programas formativos accesibles para todos los actores educativos, facilitando la consolidación de una cultura abierta y democrática en el ámbito científico y académico, así como la divulgación eficaz de prácticas pedagógicas inclusivas.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTcyMTY5MDI8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkdhaWJvciBTw6FuY2hleiwgRGVsaWEgRXZlbHluPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5EZWxpYSBFdmVseW48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+R2FpYm9yIFPDoW5jaGV6PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAxLTU4MjUtODM0NDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5EZWxpYSBJbmNsdXNpdmUgQXBwczwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPlBpY3RvY3VlbnRvczogRXN0cmF0ZWdpYSBkZSBpbnRlcnZlbmNpw7NuIHBzaWNvZWR1Y2F0aXZhIGJhc2FkYSBlbiBlbCBtb2RlbG8gVEVBQ0NIIHBhcmEgZXN0dWRpYW50ZXMgY29uIFRyYXN0b3JubyBkZWwgRXNwZWN0cm8gQXV0aXN0YTwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5aZW5vZG88L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjU8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlByZXByaW50Ii8+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iRXVyb1NjaVZvYyI+SW5jbHVzaXZlIGVkdWNhdGlvbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmVkdWNhY2lvbiBpbmNsdXNpdmE8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5uZXVyb2RpdmVyZ2VudGVzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+dHJhc3Rvcm5vIGVzcGVjdHJvIGF1dGlzdGE8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5yZXBvc2l0b3Jpb3MgZGlnaXRhbGVzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cGljdG9jdWVudG9zPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+bW9kZWxvIHRlYWNjaDwvc3ViamVjdD4KICAgIDxzdWJqZWN0PmRlbW9jcmF0aXphY2lvbiBkZWwgY29ub2NpbWllbnRvPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+YnVlbmFzIHByYWN0aWNhcyBwZWRhZ29naWNhczwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9Ik1lU0giPlNvY2lhbCBJbmNsdXNpb248L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI1LTA5LTI4PC9kYXRlPgogIDwvZGF0ZXM+CiAgPGxhbmd1YWdlPnNwYTwvbGFuZ3VhZ2U+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTcyMTY5MDI8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIiByZWxhdGlvblR5cGU9IklzVmVyc2lvbk9mIj4xMC41MjgxL3plbm9kby4xNzIxNjkwMTwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzLz4KICA8Zm9ybWF0cy8+CiAgPHZlcnNpb24vPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvbGVnYWxjb2RlIiByaWdodHNJZGVudGlmaWVyPSJjYy1ieS00LjAiIHJpZ2h0c0lkZW50aWZpZXJTY2hlbWU9InNwZHgiPkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gNC4wIEludGVybmF0aW9uYWw8L3JpZ2h0cz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5bMjcxXQoKRWwgVHJhc3Rvcm5vIGRlbCBFc3BlY3RybyBBdXRpc3RhIChURUEpIGVzIHVuIFRyYXN0b3JubyBkZWwgTmV1cm9kZXNhcnJvbGxvIGNhcmFjdGVyaXphZG8gcG9yIGFsdGVyYWNpb25lcyBwZXJzaXN0ZW50ZXMgZW4gbGEgY29tdW5pY2FjacOzbiBzb2NpYWwgeSBsYSBwcmVzZW5jaWEgZGUgcGF0cm9uZXMgZGUgY29tcG9ydGFtaWVudG8gcmVwZXRpdGl2b3MgbyBhY3RpdmlkYWRlcyByZXN0cmluZ2lkYXMuIFN1IHByZXZhbGVuY2lhIGhhIGluY3JlbWVudGFkbyBlbiBsb3Mgw7psdGltb3MgYcOxb3MgZGViaWRvIGEgbWVqb3JhcyBlbiBsYSBkZXRlY2Npw7NuIHkgZGlhZ27Ds3N0aWNvLCBsbyBxdWUgZXZpZGVuY2lhIGxhIG5lY2VzaWRhZCBkZSBlc3RyYXRlZ2lhcyBkZSBpbnRlcnZlbmNpw7NuIHBzaWNvZWR1Y2F0aXZhIHF1ZSBwZXJtaXRhbiBsYSBwYXJ0aWNpcGFjacOzbiBhY3RpdmEgZGUgbG9zIGVzdHVkaWFudGVzIGNvbiBURUEgZW4gY29udGV4dG9zIGVzY29sYXJlcyByZWd1bGFyZXMuIEVsIHByZXNlbnRlIGVzdHVkaW8gZXhwbG9yYSBsb3MgcGljdG9jdWVudG9zIGNvbW8gZXN0cmF0ZWdpYSBkZSBpbnRlcnZlbmNpw7NuIHBzaWNvZWR1Y2F0aXZhIGFydGljdWxhZGEgYWwgbW9kZWxvIFRFQUNDSCAoVHJlYXRtZW50IGFuZCBFZHVjYXRpb24gb2YgQXV0aXN0aWMgYW5kIFJlbGF0ZWQgQ29tbXVuaWNhdGlvbi1IYW5kaWNhcHBlZCBDaGlsZHJlbikuIEVsIGRpc2XDsW8geSB1c28gZGUgZXN0YSBoZXJyYW1pZW50YSBwZWRhZ8OzZ2ljYSB2aXN1YWwgY29udHJpYnV5ZSBhIGxhIGRlbW9jcmF0aXphY2nDs24gZGVsIGFwcmVuZGl6YWplLCBhbCBoYWNlciBhY2Nlc2libGUgZWwgY29ub2NpbWllbnRvIHkgbGFzIGJ1ZW5hcyBwcsOhY3RpY2FzIHBlZGFnw7NnaWNhcyBwYXJhIHRvZG9zIGxvcyBhY3RvcmVzIGVkdWNhdGl2b3MsIHByb21vdmllbmRvIGxhIGFwZXJ0dXJhIHkgbGEgaW5jbHVzacOzbiBlbiBlbCBwcm9jZXNvIGRlIGVuc2XDsWFuemEuIExhIGludmVzdGlnYWNpw7NuIHNpZ3Vpw7MgdW4gcHJvY2VkaW1pZW50byBkZXNjcmlwdGl2byB5IGRvY3VtZW50YWwsIHJldmlzacOzbiBzaXN0ZW3DoXRpY2EgZGUgbGl0ZXJhdHVyYSBhY2Fkw6ltaWNhIHkgb2JzZXJ2YWNpw7NuIGRlIHByw6FjdGljYXMgZW4gYXVsYXMgaW5jbHVzaXZhcyBkb25kZSBzZSBhcGxpY2FuIGFwb3lvcyB2aXN1YWxlcyB5IG5hcnJhdGl2b3MuIExvcyBoYWxsYXpnb3MgbXVlc3RyYW4gcXVlIGxvcyBwaWN0b2N1ZW50b3MgZm9ydGFsZWNlbiBsYSBjb21wcmVuc2nDs24gbGVjdG9yYSwgYXVtZW50YW4gbG9zIGFjdG9zIGNvbXVuaWNhdGl2b3MgZnVuY2lvbmFsZXMsIGZvbWVudGFuIGxhIGF1dG9ub23DrWEgeSBwcm9tdWV2ZW4gbGEgcGFydGljaXBhY2nDs24gYWN0aXZhIGVuIGRpbsOhbWljYXMgZ3J1cGFsZXMuIEVuIGNvbmNsdXNpw7NuLCBsb3MgcGljdG9jdWVudG9zIHJlcHJlc2VudGFuIHVuYSBlc3RyYXRlZ2lhIHBzaWNvZWR1Y2F0aXZhIGlubm92YWRvcmEsIGF0cmFjdGl2YSB5IGNvbGFib3JhdGl2YSBxdWUgY29udHJpYnV5ZSBhbCBkaXNlw7FvIHkgZGVzYXJyb2xsbyBkZSBwcm9ncmFtYXMgZm9ybWF0aXZvcyBhY2Nlc2libGVzIHBhcmEgdG9kb3MgbG9zIGFjdG9yZXMgZWR1Y2F0aXZvcywgZmFjaWxpdGFuZG8gbGEgY29uc29saWRhY2nDs24gZGUgdW5hIGN1bHR1cmEgYWJpZXJ0YSB5IGRlbW9jcsOhdGljYSBlbiBlbCDDoW1iaXRvIGNpZW50w61maWNvIHkgYWNhZMOpbWljbywgYXPDrSBjb21vIGxhIGRpdnVsZ2FjacOzbiBlZmljYXogZGUgcHLDoWN0aWNhcyBwZWRhZ8OzZ2ljYXMgaW5jbHVzaXZhcy48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPgo=",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.17216902",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-09-29T02:31:10.000Z",
+      "registered": "2025-09-29T02:31:10.000Z",
+      "published": "2025",
+      "updated": "2025-10-23T02:05:27.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.17216902", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.17216901", "type": "dois" }] }
+    }
+  }
+}

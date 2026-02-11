@@ -292,6 +292,27 @@ test.each([
     }),
   },
   {
+    response: 'zenodo-spanish',
+    expected: Preprint({
+      abstract: {
+        language: 'es',
+        text: rawHtml(
+          '<p>[271]</p>\n\n<p>El Trastorno del Espectro Autista (TEA) es un Trastorno del Neurodesarrollo caracterizado por alteraciones persistentes en la comunicación social y la presencia de patrones de comportamiento repetitivos o actividades restringidas. Su prevalencia ha incrementado en los últimos años debido a mejoras en la detección y diagnóstico, lo que evidencia la necesidad de estrategias de intervención psicoeducativa que permitan la participación activa de los estudiantes con TEA en contextos escolares regulares. El presente estudio explora los pictocuentos como estrategia de intervención psicoeducativa articulada al modelo TEACCH (Treatment and Education of Autistic and Related Communication-Handicapped Children). El diseño y uso de esta herramienta pedagógica visual contribuye a la democratización del aprendizaje, al hacer accesible el conocimiento y las buenas prácticas pedagógicas para todos los actores educativos, promoviendo la apertura y la inclusión en el proceso de enseñanza. La investigación siguió un procedimiento descriptivo y documental, revisión sistemática de literatura académica y observación de prácticas en aulas inclusivas donde se aplican apoyos visuales y narrativos. Los hallazgos muestran que los pictocuentos fortalecen la comprensión lectora, aumentan los actos comunicativos funcionales, fomentan la autonomía y promueven la participación activa en dinámicas grupales. En conclusión, los pictocuentos representan una estrategia psicoeducativa innovadora, atractiva y colaborativa que contribuye al diseño y desarrollo de programas formativos accesibles para todos los actores educativos, facilitando la consolidación de una cultura abierta y democrática en el ámbito científico y académico, así como la divulgación eficaz de prácticas pedagógicas inclusivas.</p>',
+        ),
+      },
+      authors: [{ name: 'Delia Evelyn Gaibor Sánchez', orcid: OrcidId('0000-0001-5825-8344') }],
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.17216902') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 9, day: 28 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Pictocuentos: Estrategia de intervención psicoeducativa basada en el modelo TEACCH para estudiantes con Trastorno del Espectro Autista',
+        ),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.17216902'),
+    }),
+  },
+  {
     response: 'figshare-africarxiv',
     expected: Preprint({
       abstract: {

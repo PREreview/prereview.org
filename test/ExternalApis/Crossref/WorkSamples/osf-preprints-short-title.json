@@ -1,0 +1,72 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2025, 8, 15]],
+      "date-time": "2025-08-15T02:03:32Z",
+      "timestamp": 1755223412213,
+      "version": "3.43.0"
+    },
+    "posted": { "date-parts": [[2025, 8, 11]] },
+    "group-title": "Open Science Framework",
+    "reference-count": 0,
+    "publisher": "Center for Open Science",
+    "license": [
+      {
+        "start": { "date-parts": [[2025, 8, 11]], "date-time": "2025-08-11T00:00:00Z", "timestamp": 1754870400000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0\/legalcode"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<p>Abstract: This essay introduces the concept of \u201ccivil propaganda,\u201d a propaganda machine that is fully citizen runned and funded. Citizens use social media to do the dirty work of governments and promote self defeating strategies to fight back fascism. Using social media posts as examples, I look into the growing calls to alienate \u201cTrump supporting Latinos,\u201d who may just be victims. How Trump may have won some Latino communities through false pretenses. Those pretenses are the foundation of an ever evolving oppressive system. Finally, how liberals contribute to these polarized ecosystems they wish to dismantle.<\/p>",
+    "DOI": "10.31219\/osf.io\/4k26r_v11",
+    "type": "posted-content",
+    "created": { "date-parts": [[2025, 8, 11]], "date-time": "2025-08-11T20:15:42Z", "timestamp": 1754943342000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": ["Civil Propaganda"],
+    "prefix": "10.31219",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0009-0003-0457-2276",
+        "authenticated-orcid": true,
+        "given": "Zane Orin",
+        "family": "Whitcomb",
+        "sequence": "first",
+        "affiliation": []
+      }
+    ],
+    "member": "15934",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2025, 8, 11]], "date-time": "2025-08-11T20:15:42Z", "timestamp": 1754943342000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/osf.io\/4k26r_v11" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2025, 8, 11]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.31219\/osf.io\/4k26r_v11",
+    "relation": {
+      "is-version-of": [
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v10", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v9", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v8", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v6", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v5", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v4", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v3", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v2", "asserted-by": "subject" },
+        { "id-type": "doi", "id": "10.31219\/osf.io\/4k26r_v1", "asserted-by": "subject" }
+      ]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2025, 8, 11]] },
+    "subtype": "preprint"
+  }
+}
