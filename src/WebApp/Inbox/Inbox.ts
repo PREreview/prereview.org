@@ -8,7 +8,7 @@ import { ProcessCoarNotifyMessage } from './ProcessCoarNotifyMessage.ts'
 export const Inbox = Effect.gen(function* () {
   const message = yield* HttpServerRequest.schemaBodyJson(CoarNotify.RequestReviewSchema)
   const receivedAt = yield* Temporal.currentInstant
-  const messageId = yield* Uuid.generateUuid
+  const messageId = yield* Uuid.v4()
 
   yield* ProcessCoarNotifyMessage({ message, receivedAt, messageId })
 

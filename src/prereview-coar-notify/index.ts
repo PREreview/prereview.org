@@ -30,7 +30,7 @@ export const publishReviewRequest = Effect.fn(function* (
   user: User,
   persona: 'public' | 'pseudonym',
 ) {
-  const uuid = yield* Uuid.generateUuid
+  const uuid = yield* Uuid.v4()
   const coarNotifyConfig = yield* PrereviewCoarNotifyConfig
 
   return yield* pipe(

@@ -164,7 +164,7 @@ export const EnterEmailAddressSubmission = ({
           const saveContactEmailAddress = yield* ContactEmailAddress.SaveContactEmailAddress
           const verifyContactEmailAddressForComment = yield* ContactEmailAddress.VerifyContactEmailAddressForComment
 
-          const verificationToken = yield* Uuid.generateUuid
+          const verificationToken = yield* Uuid.v4()
           const contactEmailAddress = new ContactEmailAddress.UnverifiedContactEmailAddress({
             value: form.emailAddress,
             verificationToken,

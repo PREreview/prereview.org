@@ -32,7 +32,7 @@ export const make: Effect.Effect<
   )
 
   const sql = yield* SqlClient.SqlClient
-  const generateUuid = yield* Uuid.GenerateUuid
+  const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const eventsTable = EventsTable(Events.Event)
   const events = yield* Events.Events
 

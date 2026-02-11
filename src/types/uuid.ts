@@ -1,16 +1,23 @@
-import { Context, Effect, Layer, Schema, pipe } from 'effect'
+import { Context, Effect, Layer, pipe, Schema } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { isUuid, v4, type Uuid } from 'uuid-ts'
+import { v4 as _v4, isUuid, type Uuid } from 'uuid-ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { Uuid } from 'uuid-ts'
 
-export class GenerateUuid extends Context.Tag('GenerateUuid')<GenerateUuid, Effect.Effect<Uuid>>() {}
+export class GenerateUuid extends Context.Tag('GenerateUuid')<
+  GenerateUuid,
+  {
+    v4: () => Effect.Effect<Uuid>
+  }
+>() {}
 
-export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, FptsToEffect.io(v4()))
+export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, {
+  v4: () => FptsToEffect.io(_v4()),
+})
 
 export const UuidSchema: Schema.Schema<Uuid, string> = pipe(
   Schema.String,
@@ -21,7 +28,7 @@ export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>
 }
 
-export const generateUuid = Effect.flatten(GenerateUuid)
+export const { v4 } = Effect.serviceFunctions(GenerateUuid)
 
 export const generateUuidIO = pipe(
   RIO.ask<GenerateUuidEnv>(),

@@ -13,7 +13,7 @@ export const make: Effect.Effect<
   SqlError.SqlError,
   Uuid.GenerateUuid | SqlClient.SqlClient
 > = Effect.gen(function* () {
-  const generateUuid = yield* Uuid.GenerateUuid
+  const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const sql = yield* SqlClient.SqlClient
 
   yield* sql`CREATE TABLE IF NOT EXISTS sensitive_data (id UUID PRIMARY KEY, value TEXT NOT NULL)`

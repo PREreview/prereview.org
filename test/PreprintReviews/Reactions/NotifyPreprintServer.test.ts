@@ -11,7 +11,6 @@ import * as PublicUrl from '../../../src/public-url.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('NotifyPreprintServer', () => {
   describe('when the review can be loaded', () => {
@@ -52,7 +51,7 @@ describe('NotifyPreprintServer', () => {
                 FeatureFlags.layer({ sendCoarNotifyMessages: true }),
                 Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
                 Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-                Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
+                Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
               ),
             ),
             EffectTest.run,
@@ -99,7 +98,7 @@ describe('NotifyPreprintServer', () => {
                 FeatureFlags.layer({ sendCoarNotifyMessages: 'sandbox' }),
                 Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
                 Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-                Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
+                Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
               ),
             ),
             EffectTest.run,
@@ -121,7 +120,7 @@ describe('NotifyPreprintServer', () => {
               FeatureFlags.layer({ sendCoarNotifyMessages: true }),
               Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-              Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+              Layer.mock(Uuid.GenerateUuid, {}),
             ),
           ),
           EffectTest.run,
@@ -149,7 +148,7 @@ describe('NotifyPreprintServer', () => {
             FeatureFlags.layer({ sendCoarNotifyMessages }),
             Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
             Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-            Layer.succeed(Uuid.GenerateUuid, Effect.succeed(uuid)),
+            Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
           ),
         ),
         EffectTest.run,
@@ -178,7 +177,7 @@ describe('NotifyPreprintServer', () => {
           FeatureFlags.layer({ sendCoarNotifyMessages }),
           Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-          Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Layer.mock(Uuid.GenerateUuid, {}),
         ),
       ),
       EffectTest.run,
@@ -197,7 +196,7 @@ describe('NotifyPreprintServer', () => {
           FeatureFlags.layer({ sendCoarNotifyMessages: false }),
           Layer.mock(Prereviews.Prereviews, {}),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-          Layer.succeed(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Layer.mock(Uuid.GenerateUuid, {}),
         ),
       ),
       EffectTest.run,

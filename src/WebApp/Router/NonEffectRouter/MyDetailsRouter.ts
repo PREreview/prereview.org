@@ -340,7 +340,7 @@ export const MyDetailsRouter = pipe(
           },
         ),
         fetch: env.fetch,
-        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,

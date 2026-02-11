@@ -133,7 +133,7 @@ export const AuthorInviteFlowRouter = pipe(
             zenodoUrl: env.zenodoApiConfig.origin,
           },
         ),
-        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPrereview: EffectToFpts.toTaskEitherK(
           flow(
             Prereviews.getPrereview,

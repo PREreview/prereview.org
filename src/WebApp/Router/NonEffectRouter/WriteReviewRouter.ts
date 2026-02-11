@@ -435,7 +435,7 @@ export const WriteReviewRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         formStore: env.formStore,
-        generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
+        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, {
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
@@ -459,7 +459,7 @@ export const WriteReviewRouter = pipe(
               ),
             {
               authorInviteStore: env.authorInviteStore,
-              generateUuid: EffectToFpts.toIO(Uuid.generateUuid, env.runtime),
+              generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
               ...env.logger,
             },
           ),

@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, Equal } from 'effect'
+import { Effect, Either, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
 import { Locale } from '../../../src/Context.ts'
@@ -428,7 +428,7 @@ describe('EnterEmailAddressSubmission', () => {
           }).pipe(
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-            Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+            Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) })),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,
           ),
@@ -466,7 +466,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -494,7 +494,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -521,7 +521,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -548,7 +548,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -573,7 +573,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -603,7 +603,7 @@ describe('EnterEmailAddressSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
         Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -628,7 +628,7 @@ describe('EnterEmailAddressSubmission', () => {
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
           Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -648,7 +648,7 @@ describe('EnterEmailAddressSubmission', () => {
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, shouldNotBeCalled),
       Effect.provideService(ContactEmailAddress.VerifyContactEmailAddressForComment, shouldNotBeCalled),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       EffectTest.run,
     ),
   )

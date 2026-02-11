@@ -49,7 +49,7 @@ export const NotifyPreprintServer = Effect.fn(
     )
 
     yield* CoarNotify.sendMessage({
-      id: new URL(`urn:uuid:${yield* Uuid.generateUuid}`),
+      id: new URL(`urn:uuid:${yield* Uuid.v4()}`),
       '@context': ['https://www.w3.org/ns/activitystreams', 'https://coar-notify.net'],
       type: ['Announce', 'coar-notify:ReviewAction'],
       origin: {

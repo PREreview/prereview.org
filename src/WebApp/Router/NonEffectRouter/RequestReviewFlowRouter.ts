@@ -90,7 +90,7 @@ export const RequestReviewFlowRouter = pipe(
                   onTrue: () =>
                     Effect.gen(function* () {
                       const publishedAt = yield* Temporal.currentInstant
-                      const reviewRequestId = yield* Uuid.generateUuid
+                      const reviewRequestId = yield* Uuid.v4()
 
                       yield* ReviewRequests.importReviewRequestFromPrereviewer({
                         publishedAt,

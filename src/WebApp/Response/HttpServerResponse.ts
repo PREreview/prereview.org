@@ -108,7 +108,7 @@ export const toHttpServerResponse = (
 export const handleForceLogInResponse = Effect.fn(function* (response: ForceLogInResponse) {
   const { cookie, store } = yield* SessionStore
 
-  const sessionId = yield* Uuid.generateUuid
+  const sessionId = yield* Uuid.v4()
   const session = { user: response.user }
 
   const encodedSessionId = yield* Schema.encode(Uuid.UuidSchema)(sessionId)

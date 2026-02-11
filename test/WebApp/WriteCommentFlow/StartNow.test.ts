@@ -52,7 +52,7 @@ describe('StartNow', () => {
           expect(getNextExpectedCommandForUserOnAComment).toHaveBeenCalledWith(commentId)
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(commentId) })),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
             Effect.succeed(new Comments.ExpectedToStartAComment()),
           ),
@@ -83,7 +83,7 @@ describe('StartNow', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(commentId)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(commentId) })),
           Effect.provideService(Comments.HandleCommentCommand, () => error),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
             Effect.succeed(new Comments.ExpectedToStartAComment()),
@@ -114,7 +114,7 @@ describe('StartNow', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () =>
             Effect.succeed(new Comments.ExpectedToEnterAComment({ commentId })),
@@ -140,7 +140,7 @@ describe('StartNow', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
@@ -166,7 +166,7 @@ describe('StartNow', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
@@ -190,7 +190,7 @@ describe('StartNow', () => {
         })
       }).pipe(
         Effect.provideService(Locale, locale),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
@@ -216,7 +216,7 @@ describe('StartNow', () => {
           })
         }).pipe(
           Effect.provideService(Locale, locale),
-          Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
@@ -239,7 +239,7 @@ describe('StartNow', () => {
       })
     }).pipe(
       Effect.provideService(Locale, locale),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUser, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),

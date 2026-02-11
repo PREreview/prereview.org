@@ -13,7 +13,6 @@ import { RouteForCommand } from '../../../src/WebApp/ReviewADatasetFlow/RouteFor
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/StartNow/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('StartNow', () => {
   describe("a review hasn't been started", () => {
@@ -49,7 +48,7 @@ describe('StartNow', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) })),
           EffectTest.run,
         ),
       )
@@ -92,7 +91,7 @@ describe('StartNow', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) })),
           EffectTest.run,
         ),
       )
@@ -135,7 +134,7 @@ describe('StartNow', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Uuid.GenerateUuid, Effect.succeed(uuid)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) })),
         EffectTest.run,
       ),
     )
@@ -177,7 +176,7 @@ describe('StartNow', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         EffectTest.run,
       ),
     )
@@ -219,7 +218,7 @@ describe('StartNow', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         EffectTest.run,
       ),
     )
@@ -257,7 +256,7 @@ describe('StartNow', () => {
       ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       EffectTest.run,
     ),
   )
@@ -294,7 +293,7 @@ describe('StartNow', () => {
       ),
       Effect.provideService(Locale, locale),
       Effect.provideService(LoggedInUser, user),
-      Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       EffectTest.run,
     ),
   )
@@ -327,7 +326,7 @@ describe('StartNow', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         EffectTest.run,
       ),
   )

@@ -143,7 +143,7 @@ export const authenticate = Effect.fn(
 
     const pseudonym = yield* Effect.tapError(getPseudonym(user), () => Effect.logWarning('Unable to get pseudonym'))
 
-    const sessionId = yield* Uuid.generateUuid
+    const sessionId = yield* Uuid.v4()
 
     yield* pipe(
       {

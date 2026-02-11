@@ -35,7 +35,7 @@ export const StartNow: ({
     return yield* Option.match(reviewId, {
       onNone: Effect.fn(
         function* () {
-          const reviewId = yield* Uuid.generateUuid
+          const reviewId = yield* Uuid.v4()
 
           yield* DatasetReviews.startDatasetReview({ authorId: user.orcid, datasetId, datasetReviewId: reviewId })
 

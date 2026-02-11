@@ -11,7 +11,6 @@ import * as _ from '../src/SqlEventStore.ts'
 import { NonEmptyString, Uuid } from '../src/types/index.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 it.prop([
   fc.oneof(
@@ -42,7 +41,7 @@ it.prop([
     expect(actual).toStrictEqual(Option.none())
     expect(all).toStrictEqual(Option.none())
   }).pipe(
-    Effect.provideService(Uuid.GenerateUuid, Effect.sync(shouldNotBeCalled)),
+    Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
     Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),

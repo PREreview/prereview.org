@@ -156,7 +156,7 @@ describe('authenticate', () => {
           Effect.provideService(OrcidOauth, orcidOauth),
           Effect.provideService(PublicUrl, new URL('/', referer)),
           Effect.provideService(SessionSecret, Redacted.make(secret)),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(sessionId)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
           EffectTest.run,
         ),
     )
@@ -218,7 +218,7 @@ describe('authenticate', () => {
           Effect.provideService(OrcidOauth, orcidOauth),
           Effect.provideService(PublicUrl, new URL('/', referer)),
           Effect.provideService(SessionSecret, Redacted.make(secret)),
-          Effect.provideService(Uuid.GenerateUuid, Effect.succeed(sessionId)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
           EffectTest.run,
         ),
     )
@@ -400,7 +400,7 @@ describe('authenticate', () => {
         Effect.provideService(OrcidOauth, orcidOauth),
         Effect.provideService(PublicUrl, publicUrl),
         Effect.provideService(SessionSecret, Redacted.make(secret)),
-        Effect.provideService(Uuid.GenerateUuid, Effect.succeed(sessionId)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
         EffectTest.run,
       ),
   )
