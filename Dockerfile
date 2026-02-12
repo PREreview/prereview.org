@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install --yes \
   build-essential \
   python3 \
   && rm --recursive --force /var/lib/apt/lists/*
+COPY .npmrc ./
 RUN npm install --global pnpm@10
-COPY .npmrc \
-  package.json \
+COPY package.json \
   pnpm-lock.yaml \
   ./
 
