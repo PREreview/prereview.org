@@ -21,7 +21,7 @@
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.5.1",
     "@keyv/redis": "^3.0.1",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.211.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.212.0",
     "@opentelemetry/sdk-trace-base": "^2.5.0",
     "@opentelemetry/sdk-trace-node": "^2.5.0",
     "anonymus": "^2.1.3",
