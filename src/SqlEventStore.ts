@@ -41,7 +41,7 @@ export const make: Effect.Effect<
       CREATE TABLE IF NOT EXISTS events (
         id TEXT NOT NULL PRIMARY KEY,
         type TEXT NOT NULL,
-        timestamp TIMESTAMPTZ NOT NULL,
+        timestamp TIMESTAMPTZ DEFAULT (now() AT TIME ZONE 'utc'),
         payload JSONB NOT NULL,
         position SERIAL
       )
@@ -64,6 +64,14 @@ export const make: Effect.Effect<
       CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
 
       CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
+
+      ALTER TABLE events
+      ALTER COLUMN timestamp
+      SET DEFAULT (now() AT TIME ZONE 'utc');
+
+      ALTER TABLE events
+      ALTER COLUMN timestamp
+      DROP NOT NULL;
     `,
     orElse: () => Effect.void,
   })
