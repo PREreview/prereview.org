@@ -10,6 +10,7 @@ import {
   test as baseTest,
   expect,
   type Fixtures,
+  type Page,
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
 } from '@playwright/test'
@@ -21,7 +22,6 @@ import http from 'http'
 import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
-import type { Page } from 'playwright-core'
 import { URL } from 'url'
 import { Uuid, v4 } from 'uuid-ts'
 import {

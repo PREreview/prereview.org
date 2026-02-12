@@ -41,7 +41,6 @@ export default defineConfig([
   },
   {
     settings: {
-      'import/core-modules': ['@jest/globals'],
       'import/resolver': { typescript: true },
     },
   },
