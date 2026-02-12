@@ -2,7 +2,7 @@ app = 'http-cache-sandbox'
 primary_region = 'iad'
 
 [build]
-image = 'redis:8.4.0'
+image = 'redis:8.6.0'
 
 [[vm]]
 memory = '256mb'
