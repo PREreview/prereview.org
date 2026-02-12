@@ -3,7 +3,6 @@ import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { v5 as _v5 } from 'uuid'
 import { v4 as _v4, isUuid, Uuid } from 'uuid-ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
