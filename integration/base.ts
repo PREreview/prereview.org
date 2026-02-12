@@ -1,5 +1,4 @@
 import { LanguageModel } from '@effect/ai'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, PlatformLogger, Url } from '@effect/platform'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
