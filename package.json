@@ -137,6 +137,19 @@
       "@aws-sdk/client-sesv2": "npm:dry-uninstall"
     }
   },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@ibm/plex",
+      "@parcel/watcher",
+      "@swc/core",
+      "msgpackr-extract",
+      "protobufjs",
+      "unrs-resolver"
+    ],
+    "onlyBuiltDependencies": [
+      "cld"
+    ]
+  },
   "scripts": {
     "prebuild": "del assets/locales dist src/locales src/manifest.json",
     "build": "run-s build:translations build:assets build:app",
