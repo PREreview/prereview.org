@@ -306,12 +306,8 @@ const EventsTableInsert = Schema.transformOrFail(
   ),
   {
     strict: true,
-    decode: ({ type, payload, ...rest }) =>
-      Effect.gen(function* () {
-        const event = yield* ParseResult.decodeUnknown(Events.Event)({ _tag: type, ...payload })
-
-        return { ...rest, event }
-      }),
+    decode: (value, _, ast) =>
+      ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not allowed to decode when using Insert statements')),
     encode: ({ event, ...rest }) =>
       Effect.gen(function* () {
         const { _tag, ...payload } = yield* ParseResult.encodeUnknown(Events.Event)(event)
@@ -347,12 +343,8 @@ const EventsTableSelect = <A, I extends { readonly _tag: string }, R>(eventSchem
 
           return { ...rest, event }
         }),
-      encode: ({ event, ...rest }) =>
-        Effect.gen(function* () {
-          const { _tag, ...payload } = yield* ParseResult.encodeUnknown(eventSchema)(event)
-
-          return { ...rest, type: _tag, payload }
-        }),
+      encode: (value, _, ast) =>
+        ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not allowed to encode when using Select statements')),
     },
   )
 
