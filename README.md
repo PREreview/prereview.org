@@ -17,6 +17,7 @@ The source code for [prereview.org].
 - [mkcert]
 - [Mo]
 - [Node.js]
+- [pnpm]
 - [Git LFS]
 - Unix-like operating system
 
@@ -48,6 +49,7 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.org
 [mkcert]: https://github.com/FiloSottile/mkcert
 [mo]: https://github.com/tests-always-included/mo
 [node.js]: https://nodejs.org/
+[pnpm]: https://pnpm.io/
 [prereview.org]: https://prereview.org/
 [sandbox.prereview.org]: https://sandbox.prereview.org/
 [translate.prereview.org]: https://translate.prereview.org/
