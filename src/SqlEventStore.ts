@@ -209,7 +209,7 @@ export const make: Effect.Effect<
     function* (event, appendCondition) {
       const id = yield* generateUuid
 
-      const encoded = yield* Schema.encode(EventsTableInsert(Events.Event))({
+      const encoded = yield* Schema.encode(EventsTableInsert)({
         id,
         event,
       })
@@ -289,38 +289,37 @@ const hasTag =
   <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
     Array.contains(tags, tagged._tag)
 
-const EventsTableInsert = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
-  Schema.transformOrFail(
+const EventsTableInsert = Schema.transformOrFail(
+  Schema.Struct({
+    id: Uuid.UuidSchema,
+    type: Schema.String,
+    payload: Schema.Union(
+      Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+      Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+    ),
+  }),
+  Schema.typeSchema(
     Schema.Struct({
       id: Uuid.UuidSchema,
-      type: Schema.String,
-      payload: Schema.Union(
-        Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-        Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
-      ),
+      event: Events.Event,
     }),
-    Schema.typeSchema(
-      Schema.Struct({
-        id: Uuid.UuidSchema,
-        event: eventSchema,
+  ),
+  {
+    strict: true,
+    decode: ({ type, payload, ...rest }) =>
+      Effect.gen(function* () {
+        const event = yield* ParseResult.decodeUnknown(Events.Event)({ _tag: type, ...payload })
+
+        return { ...rest, event }
       }),
-    ),
-    {
-      strict: true,
-      decode: ({ type, payload, ...rest }) =>
-        Effect.gen(function* () {
-          const event = yield* ParseResult.decodeUnknown(eventSchema)({ _tag: type, ...payload })
+    encode: ({ event, ...rest }) =>
+      Effect.gen(function* () {
+        const { _tag, ...payload } = yield* ParseResult.encodeUnknown(Events.Event)(event)
 
-          return { ...rest, event }
-        }),
-      encode: ({ event, ...rest }) =>
-        Effect.gen(function* () {
-          const { _tag, ...payload } = yield* ParseResult.encodeUnknown(eventSchema)(event)
-
-          return { ...rest, type: _tag, payload }
-        }),
-    },
-  )
+        return { ...rest, type: _tag, payload }
+      }),
+  },
+)
 
 const EventsTableSelect = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
   Schema.transformOrFail(
