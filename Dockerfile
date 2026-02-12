@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install --yes \
 RUN npm install --global pnpm@10
 COPY .npmrc \
   package.json \
-  package-lock.json \
+  pnpm-lock.yaml \
   ./
 
 #
@@ -35,8 +35,7 @@ RUN chmod +x /usr/local/bin/intlc
 FROM npm AS npm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN npm ci --engine-strict --ignore-scripts \
-  && npm rebuild cld \
+RUN pnpm install --frozen-lockfile \
   && rm --recursive --force node_modules/cld/deps/*
 
 #
@@ -44,8 +43,7 @@ RUN npm ci --engine-strict --ignore-scripts \
 #
 FROM npm AS npm-prod
 
-RUN npm ci --engine-strict --ignore-scripts --production \
-  && npm rebuild cld \
+RUN pnpm install --frozen-lockfile --prod \
   && rm --recursive --force node_modules/cld/deps/*
 
 #
