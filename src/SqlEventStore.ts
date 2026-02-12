@@ -3,7 +3,6 @@ import { PgClient } from '@effect/sql-pg'
 import {
   Array,
   Context,
-  DateTime,
   Effect,
   Layer,
   Option,
@@ -221,12 +220,10 @@ export const make: Effect.Effect<
   const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
     function* (event, appendCondition) {
       const id = yield* generateUuid
-      const timestamp = yield* DateTime.now
       const positionThatShouldNeverReachTheDatabase = EventStore.Position.make(-1)
 
       const encoded = yield* Schema.encode(eventsTable)({
         id,
-        timestamp,
         event,
         position: positionThatShouldNeverReachTheDatabase,
       })
@@ -310,7 +307,6 @@ const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Sch
   Schema.transformOrFail(
     Schema.Struct({
       id: Uuid.UuidSchema,
-      timestamp: Schema.Union(Schema.DateTimeUtc, Schema.DateTimeUtcFromDate),
       position: EventStore.Position,
       type: Schema.String,
       payload: Schema.Union(
@@ -321,7 +317,6 @@ const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Sch
     Schema.typeSchema(
       Schema.Struct({
         id: Uuid.UuidSchema,
-        timestamp: Schema.DateTimeUtc,
         position: EventStore.Position,
         event: eventSchema,
       }),
