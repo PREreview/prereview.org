@@ -32,7 +32,6 @@ export const make: Effect.Effect<
 
   const sql = yield* SqlClient.SqlClient
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
-  const eventsTable = EventsTable(Events.Event)
   const events = yield* Events.Events
 
   yield* sql.onDialectOrElse({
@@ -105,7 +104,7 @@ export const make: Effect.Effect<
       Effect.andThen(
         Schema.decodeUnknown(
           Schema.Array(
-            EventsTable(
+            EventsTableSelect(
               Events.Event.pipe(Schema.filter(hasTag(...Array.flatMap(Array.ensure(filter), Struct.get('types'))))),
             ),
           ).annotations({ batching: true, concurrency: 'inherit' }),
@@ -129,7 +128,7 @@ export const make: Effect.Effect<
     `,
     Effect.andThen(
       Schema.decodeUnknown(
-        Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+        Schema.Array(EventsTableSelect(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
       ),
     ),
     Effect.andThen(
@@ -170,7 +169,7 @@ export const make: Effect.Effect<
         `,
         Effect.andThen(
           Schema.decodeUnknown(
-            Schema.Array(EventsTable(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
+            Schema.Array(EventsTableSelect(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
           ),
         ),
       )
@@ -209,12 +208,10 @@ export const make: Effect.Effect<
   const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
     function* (event, appendCondition) {
       const id = yield* generateUuid
-      const positionThatShouldNeverReachTheDatabase = EventStore.Position.make(-1)
 
-      const encoded = yield* Schema.encode(eventsTable)({
+      const encoded = yield* Schema.encode(EventsTableInsert(Events.Event))({
         id,
         event,
-        position: positionThatShouldNeverReachTheDatabase,
       })
 
       if (!appendCondition) {
@@ -292,7 +289,40 @@ const hasTag =
   <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
     Array.contains(tags, tagged._tag)
 
-const EventsTable = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
+const EventsTableInsert = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
+  Schema.transformOrFail(
+    Schema.Struct({
+      id: Uuid.UuidSchema,
+      type: Schema.String,
+      payload: Schema.Union(
+        Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+        Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+      ),
+    }),
+    Schema.typeSchema(
+      Schema.Struct({
+        id: Uuid.UuidSchema,
+        event: eventSchema,
+      }),
+    ),
+    {
+      strict: true,
+      decode: ({ type, payload, ...rest }) =>
+        Effect.gen(function* () {
+          const event = yield* ParseResult.decodeUnknown(eventSchema)({ _tag: type, ...payload })
+
+          return { ...rest, event }
+        }),
+      encode: ({ event, ...rest }) =>
+        Effect.gen(function* () {
+          const { _tag, ...payload } = yield* ParseResult.encodeUnknown(eventSchema)(event)
+
+          return { ...rest, type: _tag, payload }
+        }),
+    },
+  )
+
+const EventsTableSelect = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
   Schema.transformOrFail(
     Schema.Struct({
       id: Uuid.UuidSchema,
