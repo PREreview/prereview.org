@@ -37,10 +37,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Set up assets cache'
         uses: actions/cache@v5.0.3
@@ -154,10 +154,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Run formatter'
         run: npm run format
@@ -180,10 +180,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Run the linter'
         run: npm run lint:css
@@ -209,10 +209,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v7.0.0
@@ -260,13 +260,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
-
-      - name: 'Set up cld'
-        run: npm rebuild cld
+        run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v7.0.0
@@ -308,10 +305,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Download assets'
         uses: actions/download-artifact@v7.0.0
@@ -401,13 +398,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
-
-      - name: 'Set up cld'
-        run: npm rebuild cld
+        run: pnpm install --frozen-lockfile
 
       - name: 'Download assets'
         uses: actions/download-artifact@v7.0.0
@@ -461,10 +455,10 @@ jobs:
         uses: actions/setup-node@v6.2.0
         with:
           node-version-file: package.json
-          cache: ${{ !env.ACT && 'npm' || '' }}
+          cache: ${{ !env.ACT && 'pnpm' || '' }}
 
       - name: 'Install dependencies'
-        run: npm ci --engine-strict --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
         uses: actions/download-artifact@v7.0.0
