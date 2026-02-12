@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-version=$(npm list --depth=0 --json --package-lock-only | jq --raw-output '.dependencies."@playwright/test".version')
+version=$(pnpm list @playwright/test --json --lockfile-only | jq --raw-output '.[0].devDependencies."@playwright/test".version')
 
 echo "Found @playwright/test $version"
 
