@@ -123,7 +123,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: .
           outputs: type=docker,dest=/tmp/image.tar
