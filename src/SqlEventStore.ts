@@ -235,11 +235,10 @@ export const make: Effect.Effect<
         return yield* pipe(
           sql`
             INSERT INTO
-              events (id, type, timestamp, payload)
+              events (id, type, payload)
             SELECT
               ${encoded.id},
               ${encoded.type},
-              ${encoded.timestamp},
               ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
           `.raw,
           Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
@@ -276,11 +275,10 @@ export const make: Effect.Effect<
       const results = yield* pipe(
         sql`
           INSERT INTO
-            events (id, type, timestamp, payload)
+            events (id, type, payload)
           SELECT
             ${encoded.id},
             ${encoded.type},
-            ${encoded.timestamp},
             ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
           WHERE
             (${condition})
