@@ -93,7 +93,6 @@ export const make: Effect.Effect<
         SELECT
           id,
           type,
-          timestamp,
           payload,
           position
         FROM
@@ -121,7 +120,6 @@ export const make: Effect.Effect<
       SELECT
         id,
         type,
-        timestamp,
         payload,
         position
       FROM
@@ -161,7 +159,6 @@ export const make: Effect.Effect<
           SELECT
             id,
             type,
-            timestamp,
             payload,
             position
           FROM
