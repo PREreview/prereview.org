@@ -28,6 +28,11 @@ jobs:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
 
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
+
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
         with:
@@ -140,6 +145,11 @@ jobs:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
 
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
+
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
         with:
@@ -160,6 +170,11 @@ jobs:
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
+
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
@@ -184,6 +199,11 @@ jobs:
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
+
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
@@ -231,6 +251,11 @@ jobs:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
 
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
+
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
         with:
@@ -273,6 +298,11 @@ jobs:
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
+
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
@@ -362,6 +392,11 @@ jobs:
       - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.3
 
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
+
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
         with:
@@ -416,6 +451,11 @@ jobs:
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v6.0.2
+
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0

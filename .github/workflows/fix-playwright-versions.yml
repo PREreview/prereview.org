@@ -20,6 +20,11 @@ jobs:
         with:
           token: ${{ secrets.PREREVIEW_BOT_TOKEN }}
 
+      - name: 'Set up pnpm'
+        uses: pnpm/action-setup@v4.2.0
+        with:
+          version: 10
+
       - name: 'Set up Node.js'
         uses: actions/setup-node@v6.2.0
         with:
