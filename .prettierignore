@@ -4,6 +4,7 @@
 /data/
 /dist/
 /integration-results/
+/pnpm-lock.yaml
 /src/locales/
 /src/manifest.json
 /visual-regression/snapshots/
