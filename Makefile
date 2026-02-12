@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -85,3 +85,6 @@ update-snapshots: test-integration
 
 test-integration-image:
 	docker build --target test-integration --tag ${INTEGRATION_TEST_IMAGE_TAG} .
+
+status-prod:
+	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/print-status.js"
