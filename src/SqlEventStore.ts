@@ -50,7 +50,7 @@ export const make: Effect.Effect<
       CREATE TABLE IF NOT EXISTS events (
         id TEXT NOT NULL,
         type TEXT NOT NULL,
-        timestamp TIMESTAMPTZ NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         payload JSONB NOT NULL,
         position INTEGER PRIMARY KEY AUTOINCREMENT
       )
