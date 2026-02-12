@@ -63,14 +63,6 @@ export const make: Effect.Effect<
       CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp);
 
       CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload);
-
-      ALTER TABLE events
-      ALTER COLUMN timestamp
-      SET DEFAULT (now() AT TIME ZONE 'utc');
-
-      ALTER TABLE events
-      ALTER COLUMN timestamp
-      DROP NOT NULL;
     `,
     orElse: () => Effect.void,
   })
