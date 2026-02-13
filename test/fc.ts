@@ -2437,6 +2437,23 @@ export const reviewRequestForAPreprintWasCategorized = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasCategorized(data))
 
+export const reviewRequestForAPreprintWasRecategorized = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasRecategorized['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasRecategorized> =>
+  fc
+    .record(
+      {
+        reviewRequestId: reviewRequestId ?? uuid(),
+        language: languageCode(),
+        topics: fc.array(topicId()),
+        keywords: fc.array(keywordId()),
+      },
+      { requiredKeys: ['reviewRequestId'] },
+    )
+    .map(data => new Events.ReviewRequestForAPreprintWasRecategorized(data))
+
 export const failedToCategorizeAReviewRequestForAPreprint = ({
   reviewRequestId,
 }: {
@@ -2487,6 +2504,7 @@ export const reviewRequestEvent = (
     reviewRequestFromAPreprintServerWasImported(args),
     reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
+    reviewRequestForAPreprintWasRecategorized(args),
     failedToCategorizeAReviewRequestForAPreprint(args),
     emailToAcknowledgeAReviewRequestForAPreprintWasSent(args),
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),

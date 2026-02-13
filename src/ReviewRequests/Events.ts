@@ -84,6 +84,16 @@ export class ReviewRequestForAPreprintWasCategorized extends Schema.TaggedClass<
   },
 ) {}
 
+export class ReviewRequestForAPreprintWasRecategorized extends Schema.TaggedClass<ReviewRequestForAPreprintWasRecategorized>()(
+  'ReviewRequestForAPreprintWasRecategorized',
+  {
+    reviewRequestId: Uuid.UuidSchema,
+    language: Schema.optional(Iso639.Iso6391Schema),
+    keywords: Schema.optional(Schema.Array(KeywordIdSchema)),
+    topics: Schema.optional(Schema.Array(TopicIdSchema)),
+  },
+) {}
+
 export class FailedToCategorizeAReviewRequestForAPreprint extends Schema.TaggedClass<FailedToCategorizeAReviewRequestForAPreprint>()(
   'FailedToCategorizeAReviewRequestForAPreprint',
   {
@@ -117,6 +127,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestFromAPreprintServerWasImported,
   ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,
+  ReviewRequestForAPreprintWasRecategorized,
   FailedToCategorizeAReviewRequestForAPreprint,
   EmailToAcknowledgeAReviewRequestForAPreprintWasSent,
   ReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
