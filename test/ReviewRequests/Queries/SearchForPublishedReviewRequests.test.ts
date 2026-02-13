@@ -62,6 +62,10 @@ const request1Categorized2 = new ReviewRequests.ReviewRequestForAPreprintWasCate
   topics: ['13499'],
   reviewRequestId: request1Id,
 })
+const request1Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+  language: 'pt',
+  reviewRequestId: request1Id,
+})
 const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 72 }),
   receivedFrom: new URL('http://example.com'),
@@ -401,6 +405,25 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           published: request1Accepted2.acceptedAt,
           topics: request1Categorized2.topics,
           preprintId: request1Received2.preprintId,
+        },
+      ],
+    }),
+  ],
+  [
+    'matches on language that has changed',
+    { page: 1, language: 'pt' as const },
+    [request1Received1, request1Accepted1, request1Categorized1, request1Recategorized],
+    Either.right({
+      currentPage: 1,
+      totalPages: 1,
+      language: 'pt',
+      field: undefined,
+      reviewRequests: [
+        {
+          id: request1Id,
+          published: request1Accepted1.acceptedAt,
+          topics: request1Categorized1.topics,
+          preprintId: request1Received1.preprintId,
         },
       ],
     }),

@@ -35,6 +35,7 @@ const eventTypes = [
   'ReviewRequestByAPrereviewerWasImported',
   'ReviewRequestFromAPreprintServerWasImported',
   'ReviewRequestForAPreprintWasCategorized',
+  'ReviewRequestForAPreprintWasRecategorized',
 ] as const
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
@@ -106,6 +107,11 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         topics: event.topics,
         fields: Array.map(event.topics, getTopicField),
         language: event.language,
+      })),
+    ReviewRequestForAPreprintWasRecategorized: event =>
+      Record.modify(map, event.reviewRequestId, review => ({
+        ...review,
+        language: event.language ?? review.language,
       })),
   })
 
