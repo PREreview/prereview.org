@@ -20,6 +20,7 @@ const eventTypes = [
   'ReviewRequestByAPrereviewerWasImported',
   'ReviewRequestFromAPreprintServerWasImported',
   'ReviewRequestForAPreprintWasCategorized',
+  'ReviewRequestForAPreprintWasRecategorized',
 ] as const
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
@@ -74,6 +75,11 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
       Record.modify(state, event.reviewRequestId, review => ({
         ...review,
         topics: event.topics,
+      })),
+    ReviewRequestForAPreprintWasRecategorized: event =>
+      Record.modify(state, event.reviewRequestId, review => ({
+        ...review,
+        topics: event.topics ?? review.topics,
       })),
   })
 

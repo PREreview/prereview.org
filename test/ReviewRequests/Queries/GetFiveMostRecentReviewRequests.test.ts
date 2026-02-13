@@ -110,6 +110,10 @@ const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted
 const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   keywords: [],
+  topics: ['10014'],
+  reviewRequestId: request4Id,
+})
+const request4Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
   topics: [],
   reviewRequestId: request4Id,
 })
@@ -128,6 +132,10 @@ const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   language: 'en',
   keywords: [],
   topics: [],
+  reviewRequestId: request5Id,
+})
+const request5Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+  topics: ['10003'],
   reviewRequestId: request5Id,
 })
 const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
@@ -230,9 +238,11 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
       request4Received,
       request4Accepted,
       request4Categorized,
+      request4Recategorized,
       request5Received,
       request5Accepted,
       request5Categorized,
+      request5Recategorized,
       request6Received,
       request6Accepted,
       request6Categorized,
@@ -266,13 +276,13 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
       {
         id: request4Id,
         published: request4Accepted.acceptedAt,
-        topics: request4Categorized.topics,
+        topics: request4Recategorized.topics!,
         preprintId: request4Received.preprintId,
       },
       {
         id: request5Id,
         published: request5Accepted.acceptedAt,
-        topics: request5Categorized.topics,
+        topics: request5Recategorized.topics!,
         preprintId: request5Received.preprintId,
       },
     ],
