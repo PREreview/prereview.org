@@ -1133,6 +1133,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     socarxivPreprintId(),
     ssrnPreprintId(),
     techrxivPreprintId(),
+    umsidaPreprintId(),
     verixivPreprintId(),
   )
 

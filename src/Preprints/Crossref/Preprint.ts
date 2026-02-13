@@ -193,5 +193,6 @@ const detectLanguageForServer = ({
     SocarxivPreprintId: () => detectLanguage(text, workLanguage),
     SsrnPreprintId: () => Effect.succeedSome('en' as const),
     TechrxivPreprintId: () => Effect.succeedSome('en' as const),
+    UmsidaPreprintId: () => Effect.succeedSome('en' as const),
     VerixivPreprintId: () => Effect.succeedSome('en' as const),
   })

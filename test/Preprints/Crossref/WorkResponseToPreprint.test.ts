@@ -32,6 +32,7 @@ import {
   SocarxivPreprintId,
   SsrnPreprintId,
   TechrxivPreprintId,
+  UmsidaPreprintId,
   VerixivPreprintId,
 } from '../../../src/Preprints/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -826,6 +827,22 @@ test.each([
       url: new URL(
         'https://www.techrxiv.org/users/742533/articles/717019-maximum-likelihood-estimation-of-line-parameters-for-a-nonlinear-model-of-distribution-grids?commit=29e9663eee4360bed385b5b25c2106da4426a3aa',
       ),
+    }),
+  },
+  {
+    response: 'umsida.json',
+    expected: Preprint({
+      abstract: undefined,
+      authors: [{ name: "Rif'atul Ula" }, { name: 'Farikh Marzuqi Ammar', orcid: OrcidId('0000-0002-0833-0659') }],
+      id: new UmsidaPreprintId({ value: Doi('10.21070/ups.10182') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 2, day: 13 }),
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Analysis of Arabic Language Learning Through Arabic Camp Program at Intrnational Community Center (ICC) Al Anshar Bahau Negeri Sembilan, Malaysia',
+        ),
+      },
+      url: new URL('https://archive.umsida.ac.id/index.php/archive/preprint/view/10182/version/10175'),
     }),
   },
 ])('turns a Crossref work response into a preprint ($response)', ({ response, expected }) =>

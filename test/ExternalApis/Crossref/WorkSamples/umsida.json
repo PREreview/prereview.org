@@ -1,0 +1,65 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 2, 13]],
+      "date-time": "2026-02-13T08:04:37Z",
+      "timestamp": 1770969877063,
+      "version": "3.50.1"
+    },
+    "posted": { "date-parts": [[2026, 2, 13]] },
+    "reference-count": 0,
+    "publisher": "Universitas Muhammadiyah Sidoarjo",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 2, 13]], "date-time": "2026-02-13T00:00:00Z", "timestamp": 1770940800000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "https:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "DOI": "10.21070\/ups.10182",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 2, 13]], "date-time": "2026-02-13T07:08:43Z", "timestamp": 1770966523000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Analysis of Arabic Language Learning Through Arabic Camp Program at Intrnational Community Center (ICC) Al Anshar Bahau Negeri Sembilan, Malaysia"
+    ],
+    "prefix": "10.21070",
+    "author": [
+      { "given": "Rif'atul", "family": "Ula", "sequence": "first", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-0833-0659",
+        "authenticated-orcid": false,
+        "given": "Farikh Marzuqi",
+        "family": "Ammar",
+        "sequence": "additional",
+        "affiliation": []
+      }
+    ],
+    "member": "8674",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 2, 13]], "date-time": "2026-02-13T07:08:43Z", "timestamp": 1770966523000 },
+    "score": 1,
+    "resource": {
+      "primary": { "URL": "https:\/\/archive.umsida.ac.id\/index.php\/archive\/preprint\/view\/10182\/version\/10175" }
+    },
+    "subtitle": [
+      "Analisis Pembelajaran Bahasa Arab Melalui Program Arabic Camp di International Community Center (ICC) Al Anshar Bahau, Negeri Sembilan, Malaysia"
+    ],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 2, 13]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.21070\/ups.10182",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026, 2, 13]] },
+    "subtype": "preprint"
+  }
+}
