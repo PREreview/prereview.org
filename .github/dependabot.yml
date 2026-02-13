@@ -41,6 +41,9 @@ updates:
         patterns:
           - '@keyv/*'
           - 'keyv'
+      opentelemetry:
+        patterns:
+          - '@opentelemetry/*'
       stylelint:
         patterns:
           - 'stylelint'
