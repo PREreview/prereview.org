@@ -172,7 +172,7 @@ const detectLanguageForServer = ({
 }): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
     AdvancePreprintId: () => Effect.succeedSome('en' as const),
-    AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text),
+    AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text, workLanguage),
     AuthoreaPreprintId: () => detectLanguage(text, workLanguage),
     BiorxivPreprintId: () => Effect.succeedSome('en' as const),
     ChemrxivPreprintId: () => Effect.succeedSome('en' as const),
@@ -188,7 +188,7 @@ const detectLanguageForServer = ({
     PreprintsorgPreprintId: () => Effect.succeedSome('en' as const),
     PsyarxivPreprintId: () => detectLanguage(text, workLanguage),
     ResearchSquarePreprintId: () => Effect.succeedSome('en' as const),
-    ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text),
+    ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text, workLanguage),
     ScienceOpenPreprintId: () => detectLanguage(text, workLanguage),
     SocarxivPreprintId: () => detectLanguage(text, workLanguage),
     SsrnPreprintId: () => Effect.succeedSome('en' as const),

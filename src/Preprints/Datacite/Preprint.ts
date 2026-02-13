@@ -199,13 +199,13 @@ const detectLanguageForServer = ({
   recordLanguage?: LanguageCode
 }): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
-    AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text),
-    AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text),
-    AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text),
+    AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
     ArcadiaSciencePreprintId: () => Effect.succeedSome('en' as const),
     ArxivPreprintId: () => Effect.succeedSome('en' as const),
     LifecycleJournalPreprintId: () => Effect.succeedSome('en' as const),
     OsfPreprintId: () => detectLanguage(text, recordLanguage),
-    PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text),
+    PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text, recordLanguage),
     ZenodoPreprintId: () => detectLanguage(text, recordLanguage),
   })

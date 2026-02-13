@@ -27,7 +27,10 @@ export const detectLanguage = Effect.fn('detectLanguage')(function* (
 })
 
 export function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>) {
-  return Effect.fn(function* (text: Html | PlainText | string, hint?: L): Effect.fn.Return<Option.Option<L>> {
+  return Effect.fn(function* (
+    text: Html | PlainText | string,
+    hint?: LanguageCode,
+  ): Effect.fn.Return<Option.Option<L>> {
     const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
     const result = yield* Effect.option(
