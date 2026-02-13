@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Equal, Option, Tuple } from 'effect'
+import { Array, Data, Either, Equal, Option, Tuple } from 'effect'
 import * as _ from '../../../src/ReviewRequests/Commands/CategorizeReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -188,9 +188,16 @@ describe('decide', () => {
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
 
-    test.prop([
-      fc.tuple(command(), fc.languageCode()).filter(([command, language]) => !Equal.equals(command.language, language)),
-    ])('with a different language', ([command, language]) => {
+    test.prop(
+      [
+        fc
+          .tuple(command(), fc.languageCode())
+          .filter(([command, language]) => !Equal.equals(command.language, language)),
+      ],
+      {
+        examples: [[[{ language: 'en', keywords: [], topics: [], reviewRequestId }, 'de']]],
+      },
+    )('with a different language', ([command, language]) => {
       const result = _.decide(
         new _.HasBeenCategorized({ language, keywords: command.keywords, topics: command.topics }),
         command,
@@ -208,11 +215,23 @@ describe('decide', () => {
       )
     })
 
-    test.prop([
-      fc
-        .tuple(command(), fc.array(fc.keywordId()))
-        .filter(([command, keywords]) => !Equal.equals(command.keywords, keywords)),
-    ])('with different keywords', ([command, keywords]) => {
+    test.prop(
+      [
+        fc
+          .tuple(command(), fc.array(fc.keywordId()))
+          .filter(([command, keywords]) => !Equal.equals(Data.array(command.keywords), Data.array(keywords))),
+      ],
+      {
+        examples: [
+          [
+            [
+              { language: 'en', keywords: ['0002c27aea4747f32cb5'], topics: [], reviewRequestId },
+              ['051301983f5df5f40ef4'],
+            ],
+          ],
+        ],
+      },
+    )('with different keywords', ([command, keywords]) => {
       const result = _.decide(
         new _.HasBeenCategorized({ language: command.language, keywords, topics: command.topics }),
         command,
@@ -230,9 +249,16 @@ describe('decide', () => {
       )
     })
 
-    test.prop([
-      fc.tuple(command(), fc.array(fc.topicId())).filter(([command, topics]) => !Equal.equals(command.topics, topics)),
-    ])('with different topics', ([command, topics]) => {
+    test.prop(
+      [
+        fc
+          .tuple(command(), fc.array(fc.topicId()))
+          .filter(([command, topics]) => !Equal.equals(Data.array(command.topics), Data.array(topics))),
+      ],
+      {
+        examples: [[[{ language: 'en', keywords: [], topics: ['10001'], reviewRequestId }, ['10202']]]],
+      },
+    )('with different topics', ([command, topics]) => {
       const result = _.decide(
         new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics }),
         command,
@@ -250,16 +276,30 @@ describe('decide', () => {
       )
     })
 
-    test.prop([
-      fc
-        .tuple(command(), fc.languageCode(), fc.array(fc.keywordId()), fc.array(fc.topicId()))
-        .filter(
-          ([command, language, keywords, topics]) =>
-            !Equal.equals(command.language, language) &&
-            !Equal.equals(command.keywords, keywords) &&
-            !Equal.equals(command.topics, topics),
-        ),
-    ])('with all different', ([command, language, keywords, topics]) => {
+    test.prop(
+      [
+        fc
+          .tuple(command(), fc.languageCode(), fc.array(fc.keywordId()), fc.array(fc.topicId()))
+          .filter(
+            ([command, language, keywords, topics]) =>
+              !Equal.equals(command.language, language) &&
+              !Equal.equals(Data.array(command.keywords), Data.array(keywords)) &&
+              !Equal.equals(Data.array(command.topics), Data.array(topics)),
+          ),
+      ],
+      {
+        examples: [
+          [
+            [
+              { language: 'en', keywords: ['000093b5c386a313390a'], topics: ['10264'], reviewRequestId },
+              'de',
+              ['f61c4022cf9f517ca412'],
+              ['13152'],
+            ],
+          ],
+        ],
+      },
+    )('with all different', ([command, language, keywords, topics]) => {
       const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
 
       expect(result).toStrictEqual(

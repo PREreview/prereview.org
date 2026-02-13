@@ -86,8 +86,8 @@ export const decide: {
         Boolean.match(
           Boolean.every([
             Equal.equals(command.language, state.language),
-            Equal.equals(command.keywords, state.keywords),
-            Equal.equals(command.topics, state.topics),
+            Equal.equals(Data.array(command.keywords), Data.array(state.keywords)),
+            Equal.equals(Data.array(command.topics), Data.array(state.topics)),
           ]),
           {
             onTrue: () => Either.right(Option.none()),
@@ -102,8 +102,8 @@ const constructRecategorizationEvent = (
   command: Command,
 ): Events.ReviewRequestForAPreprintWasRecategorized => {
   const language = Equal.equals(command.language, state.language) ? undefined : command.language
-  const keywords = Equal.equals(command.keywords, state.keywords) ? undefined : command.keywords
-  const topics = Equal.equals(command.topics, state.topics) ? undefined : command.topics
+  const keywords = Equal.equals(Data.array(command.keywords), Data.array(state.keywords)) ? undefined : command.keywords
+  const topics = Equal.equals(Data.array(command.topics), Data.array(state.topics)) ? undefined : command.topics
 
   return new Events.ReviewRequestForAPreprintWasRecategorized({
     reviewRequestId: command.reviewRequestId,
