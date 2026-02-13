@@ -133,7 +133,16 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyCategorized({})))
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              reviewRequestId: command.reviewRequestId,
+              language: command.language,
+            }),
+          ),
+        ),
+      )
     })
 
     test.prop([
@@ -146,7 +155,16 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyCategorized({})))
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              reviewRequestId: command.reviewRequestId,
+              keywords: command.keywords,
+            }),
+          ),
+        ),
+      )
     })
 
     test.prop([
@@ -157,7 +175,42 @@ describe('decide', () => {
         command,
       )
 
-      expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyCategorized({})))
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              reviewRequestId: command.reviewRequestId,
+              topics: command.topics,
+            }),
+          ),
+        ),
+      )
+    })
+
+    test.prop([
+      fc
+        .tuple(command(), fc.languageCode(), fc.array(fc.keywordId()), fc.array(fc.topicId()))
+        .filter(
+          ([command, language, keywords, topics]) =>
+            !Equal.equals(command.language, language) &&
+            !Equal.equals(command.keywords, keywords) &&
+            !Equal.equals(command.topics, topics),
+        ),
+    ])('with all different', ([command, language, keywords, topics]) => {
+      const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
+
+      expect(result).toStrictEqual(
+        Either.right(
+          Option.some(
+            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              reviewRequestId: command.reviewRequestId,
+              language: command.language,
+              keywords: command.keywords,
+              topics: command.topics,
+            }),
+          ),
+        ),
+      )
     })
   })
 })

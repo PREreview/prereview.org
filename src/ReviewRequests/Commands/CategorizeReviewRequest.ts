@@ -4,7 +4,7 @@ import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
 import type { KeywordId } from '../../types/Keyword.ts'
 import type { TopicId } from '../../types/Topic.ts'
-import * as Errors from '../Errors.ts'
+import type * as Errors from '../Errors.ts'
 
 export interface Command {
   readonly language: LanguageCode
@@ -64,20 +64,36 @@ export const decide: {
             }),
           ),
         ),
-      HasBeenCategorized: ({ language, keywords, topics }) =>
+      HasBeenCategorized: state =>
         Boolean.match(
           Boolean.every([
-            Equal.equals(command.language, language),
-            Equal.equals(command.keywords, keywords),
-            Equal.equals(command.topics, topics),
+            Equal.equals(command.language, state.language),
+            Equal.equals(command.keywords, state.keywords),
+            Equal.equals(command.topics, state.topics),
           ]),
           {
             onTrue: () => Either.right(Option.none()),
-            onFalse: () => Either.left(new Errors.ReviewRequestWasAlreadyCategorized()),
+            onFalse: () => Either.right(Option.some(constructRecategorizationEvent(state, command))),
           },
         ),
     }),
 )
+
+const constructRecategorizationEvent = (
+  state: HasBeenCategorized,
+  command: Command,
+): Events.ReviewRequestForAPreprintWasRecategorized => {
+  const language = Equal.equals(command.language, state.language) ? undefined : command.language
+  const keywords = Equal.equals(command.keywords, state.keywords) ? undefined : command.keywords
+  const topics = Equal.equals(command.topics, state.topics) ? undefined : command.topics
+
+  return new Events.ReviewRequestForAPreprintWasRecategorized({
+    reviewRequestId: command.reviewRequestId,
+    language,
+    keywords,
+    topics,
+  })
+}
 
 function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
   return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
