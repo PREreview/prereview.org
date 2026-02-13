@@ -5,8 +5,7 @@ import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
-import type { SubfieldId } from '../../types/subfield.ts'
-import { getTopicField, getTopicSubfield, type TopicId } from '../../types/Topic.ts'
+import { getTopicField, type TopicId } from '../../types/Topic.ts'
 import * as Errors from '../Errors.ts'
 
 export interface PageOfReviewRequests {
@@ -47,7 +46,6 @@ type State = Record<
   {
     published: Temporal.Instant | undefined
     fields: ReadonlyArray<FieldId>
-    subfields: ReadonlyArray<SubfieldId>
     language: LanguageCode | undefined
     preprintId: Preprints.IndeterminatePreprintId
   }
@@ -70,7 +68,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         published: undefined,
         topics: [],
         fields: [],
-        subfields: [],
         language: undefined,
         preprintId: event.preprintId,
       }),
@@ -84,7 +81,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         published: event.publishedAt,
         topics: [],
         fields: [],
-        subfields: [],
         language: undefined,
         preprintId: event.preprintId,
       }),
@@ -93,7 +89,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         published: event.publishedAt,
         topics: [],
         fields: [],
-        subfields: [],
         language: undefined,
         preprintId: event.preprintId,
       }),
@@ -102,7 +97,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         ...review,
         topics: event.topics,
         fields: Array.map(event.topics, getTopicField),
-        subfields: Array.map(event.topics, getTopicSubfield),
         language: event.language,
       })),
   })
@@ -121,7 +115,6 @@ const query = (state: State, input: Input): Result =>
         published: Temporal.Instant
         topics: ReadonlyArray<TopicId>
         fields: ReadonlyArray<FieldId>
-        subfields: ReadonlyArray<SubfieldId>
         language: LanguageCode
         preprintId: Preprints.IndeterminatePreprintId
       }
