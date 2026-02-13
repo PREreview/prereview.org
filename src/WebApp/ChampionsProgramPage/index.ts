@@ -30,5 +30,6 @@ function createPage({ content, locale }: { content: GhostPage.GhostPage; locale:
       </div>
     `,
     canonical: Routes.ChampionsProgram,
+    current: 'champions-program',
   })
 }

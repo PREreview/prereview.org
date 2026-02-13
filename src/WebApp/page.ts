@@ -18,6 +18,7 @@ export interface Page {
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?:
     | 'about-us'
+    | 'champions-program'
     | 'choose-locale'
     | 'clubs'
     | 'code-of-conduct'
@@ -219,6 +220,14 @@ export const page = ({
                             >${translate(locale, 'header', 'menuTrainings')()}</a
                           >
                           <p>${translate(locale, 'header', 'menuTrainingsHint')()}</p>
+                        </li>
+                        <li>
+                          <a
+                            href="${Routes.ChampionsProgram}"
+                            ${current === 'champions-program' ? html`aria-current="page"` : ''}
+                            >Champions Program</a
+                          >
+                          <p>Find out about our annual program</p>
                         </li>
                       </ul>
                     </div>

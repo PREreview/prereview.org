@@ -17,6 +17,7 @@ describe('ChampionsProgramPage', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: Routes.ChampionsProgram,
+        current: 'champions-program',
         status: StatusCodes.OK,
         title: expect.anything(),
         main: expect.anything(),
