@@ -529,6 +529,24 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     ],
     contact: EmailAddress('lab239@exeter.ac.uk'),
   },
+  'mlc-research': {
+    name: 'MLC Research Review Club',
+    description: html`
+      <p>
+        MedLabConvo is a digital service organisation advancing medical laboratory science and healthcare through
+        knowledge platforms, professional tools, data-driven programs, and innovation-focused services.
+      </p>
+      <p>
+        The MLC Research is an arm of MedLabConvo that focus on promoting research culture and building research
+        prospects in advancing biomedical science, health system strengthening and public health.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-02-13'),
+    leads: [
+      { name: 'Tolulope Joseph Ogunniyi', orcid: OrcidId('0000-0003-2582-4420') },
+      { name: 'Gbenga Temitope Peter', orcid: OrcidId('0009-0008-7768-0127') },
+    ],
+  },
   neuroden: {
     name: 'Neuroden',
     description: html`

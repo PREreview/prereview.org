@@ -29,6 +29,7 @@ export const ClubIdSchema = Schema.Literal(
   'jmir-publications',
   'language-club',
   'marine-invertebrates',
+  'mlc-research',
   'neuroden',
   'nsa-utd',
   'open-box-science',
