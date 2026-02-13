@@ -177,6 +177,10 @@ export class TechrxivPreprintId extends Schema.TaggedClass<TechrxivPreprintId>()
   value: Doi.RegistrantDoiSchema('36227'),
 }) {}
 
+export class UmsidaPreprintId extends Schema.TaggedClass<UmsidaPreprintId>()('UmsidaPreprintId', {
+  value: Doi.RegistrantDoiSchema('21070'),
+}) {}
+
 export class VerixivPreprintId extends Schema.TaggedClass<VerixivPreprintId>()('VerixivPreprintId', {
   value: Doi.RegistrantDoiSchema('12688'),
 }) {}
@@ -229,6 +233,7 @@ export const PreprintIdWithDoi = Schema.Union(
   SocarxivPreprintId,
   SsrnPreprintId,
   TechrxivPreprintId,
+  UmsidaPreprintId,
   VerixivPreprintId,
   ZenodoPreprintId,
 )
@@ -269,6 +274,7 @@ export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintI
   '12688',
   '14293',
   '17605',
+  '21070',
   '21203',
   '26434',
   '20944',
@@ -369,6 +375,7 @@ export function fromPreprintDoi(doi: IndeterminatePreprintIdWithDoi['value']): I
     .when(Doi.hasRegistrant('23668'), doi => new PsychArchivesPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('26434'), doi => new ChemrxivPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('20944'), doi => new PreprintsorgPreprintId({ value: doi }))
+    .when(Doi.hasRegistrant('21070'), doi => new UmsidaPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('31124'), doi => new AdvancePreprintId({ value: doi }))
     .when(Doi.hasRegistrant('31219'), doi => new OsfPreprintsPreprintId({ value: doi }))
     .when(Doi.hasRegistrant('31222'), doi => new MetaarxivPreprintId({ value: doi }))

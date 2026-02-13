@@ -40,6 +40,7 @@ const ServerSchema = Schema.Literal(
   'socarxiv',
   'ssrn',
   'techrxiv',
+  'umsida',
   'verixiv',
   'zenodo',
 )
@@ -77,6 +78,7 @@ const preprintIdToServer = Match.typeTags<Preprints.PreprintId, Server>()({
   SocarxivPreprintId: () => 'socarxiv',
   SsrnPreprintId: () => 'ssrn',
   TechrxivPreprintId: () => 'techrxiv',
+  UmsidaPreprintId: () => 'umsida',
   VerixivPreprintId: () => 'verixiv',
   ZenodoPreprintId: () => 'zenodo',
 })

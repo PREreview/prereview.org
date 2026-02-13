@@ -82,6 +82,10 @@ export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: S
                   SocarxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSocarxiv'),
                   SsrnPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeSsrn'),
                   TechrxivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeTechrxiv'),
+                  UmsidaPreprintId:
+                    () =>
+                    ({ doi }: { doi: string }) =>
+                      `We think the DOI ${doi} could be an UMSIDA preprint, but we can’t find any details.`,
                   VerixivPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeVerixiv'),
                   ZenodoPreprintId: () => translate(locale, 'request-a-prereview-page', 'doiCouldBeZenodo'),
                   ZenodoOrAfricarxivPreprintId: () =>

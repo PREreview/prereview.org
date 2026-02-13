@@ -40,6 +40,9 @@ export const layer = Layer.effect(
 
     const getPreprintFromSource = pipe(
       Match.type<IndeterminatePreprintId>(),
+      Match.tag('UmsidaPreprintId', () =>
+        Effect.fail(new Preprint.PreprintIsUnavailable({ cause: 'not implemented' })),
+      ),
       Match.tag('PhilsciPreprintId', getPreprintFromPhilsci),
       Match.when(isCrossrefPreprintId, getPreprintFromCrossref),
       Match.when(isDatacitePreprintId, getPreprintFromDatacite),

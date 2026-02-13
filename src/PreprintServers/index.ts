@@ -35,6 +35,7 @@ export const getName = Match.typeTags<PreprintId, string>()({
   SocarxivPreprintId: () => 'SocArXiv',
   SsrnPreprintId: () => 'SSRN',
   TechrxivPreprintId: () => 'TechRxiv',
+  UmsidaPreprintId: () => 'UMSIDA Preprints',
   VerixivPreprintId: () => 'VeriXiv',
   ZenodoPreprintId: () => 'Zenodo',
 })

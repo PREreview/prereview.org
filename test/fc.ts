@@ -98,6 +98,7 @@ import {
   SocarxivPreprintId,
   SsrnPreprintId,
   TechrxivPreprintId,
+  UmsidaPreprintId,
   VerixivPreprintId,
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
@@ -1037,6 +1038,9 @@ export const techrxivPreprintId = (): fc.Arbitrary<TechrxivPreprintId> =>
 export const techrxivPreprintUrl = (): fc.Arbitrary<[URL, TechrxivPreprintId]> =>
   techrxivPreprintId().map(id => [new URL(`https://www.techrxiv.org/doi/full/${encodeURIComponent(id.value)}`), id])
 
+export const umsidaPreprintId = (): fc.Arbitrary<UmsidaPreprintId> =>
+  doi(constant('21070')).map(doi => new UmsidaPreprintId({ value: doi }))
+
 export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
   doi(constant('5281')).map(doi => new ZenodoPreprintId({ value: doi }))
 
@@ -1089,6 +1093,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<PreprintIdWithDoi> =>
     socarxivPreprintId(),
     ssrnPreprintId(),
     techrxivPreprintId(),
+    umsidaPreprintId(),
     verixivPreprintId(),
     zenodoPreprintId(),
   )
@@ -1198,6 +1203,7 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     psychArchivesPreprintId(),
     scienceOpenPreprintId(),
     ssrnPreprintId(),
+    umsidaPreprintId(),
     verixivPreprintId(),
   )
 
@@ -1237,6 +1243,7 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     scieloPreprintId(),
     socarxivPreprintId(),
     techrxivPreprintId(),
+    umsidaPreprintId(),
     zenodoPreprintId(),
   )
 

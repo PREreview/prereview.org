@@ -52,6 +52,10 @@ export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprint
             SocarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeSocarxiv'),
             SsrnPreprintId: () => t('review-a-preprint', 'doiCouldBeSsrn'),
             TechrxivPreprintId: () => t('review-a-preprint', 'doiCouldBeTechrxiv'),
+            UmsidaPreprintId:
+              () =>
+              ({ doi }: { doi: string }) =>
+                `We think the DOI ${doi} could be an UMSIDA preprint, but we can’t find any details.`,
             VerixivPreprintId: () => t('review-a-preprint', 'doiCouldBeVerixiv'),
             ZenodoPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodo'),
             ZenodoOrAfricarxivPreprintId: () => t('review-a-preprint', 'doiCouldBeZenodoAfricarxiv'),
