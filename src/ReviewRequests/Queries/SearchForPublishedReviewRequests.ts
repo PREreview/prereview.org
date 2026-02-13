@@ -41,15 +41,23 @@ type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
 const filter = Events.EventFilter({ types: eventTypes })
 
-type State = Record<
-  Uuid.Uuid,
-  {
-    published: Temporal.Instant | undefined
-    fields: ReadonlyArray<FieldId>
-    language: LanguageCode | undefined
-    preprintId: Preprints.IndeterminatePreprintId
-  }
->
+interface PublishedReviewRequest {
+  published: Temporal.Instant
+  fields: ReadonlyArray<FieldId>
+  language: LanguageCode | undefined
+  preprintId: Preprints.IndeterminatePreprintId
+  topics: ReadonlyArray<TopicId>
+}
+
+interface UnpublishedReviewRequest {
+  published: undefined
+  fields: ReadonlyArray<FieldId>
+  language: LanguageCode | undefined
+  preprintId: Preprints.IndeterminatePreprintId
+  topics: ReadonlyArray<TopicId>
+}
+
+type State = Record<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest>
 
 const initialState: State = Record.empty()
 
@@ -109,16 +117,7 @@ const query = (state: State, input: Input): Result =>
         input.language === undefined || Equal.equals(reviewRequest.language, input.language),
         input.field === undefined || Array.contains(reviewRequest.fields, input.field),
       ]),
-    ) as Record<
-      Uuid.Uuid,
-      {
-        published: Temporal.Instant
-        topics: ReadonlyArray<TopicId>
-        fields: ReadonlyArray<FieldId>
-        language: LanguageCode
-        preprintId: Preprints.IndeterminatePreprintId
-      }
-    >
+    ) as Record<Uuid.Uuid, PublishedReviewRequest>
 
     const sortedReviewRequests = Array.reverse(
       Array.sortWith(
