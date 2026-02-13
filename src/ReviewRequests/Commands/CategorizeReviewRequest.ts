@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Function, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Either, Equal, Function, Match, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -25,26 +25,44 @@ export class HasBeenCategorized extends Data.TaggedClass('HasBeenCategorized')<{
   topics: ReadonlyArray<TopicId>
 }> {}
 
-export const createFilter = (
-  reviewRequestId: Uuid.Uuid,
-): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
-  types: ['ReviewRequestForAPreprintWasCategorized'],
-  predicates: { reviewRequestId },
-})
+export const createFilter = (reviewRequestId: Uuid.Uuid) =>
+  Events.EventFilter({
+    types: ['ReviewRequestForAPreprintWasCategorized', 'ReviewRequestForAPreprintWasRecategorized'],
+    predicates: { reviewRequestId },
+  })
 
 export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, reviewRequestId: Uuid.Uuid): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(reviewRequestId)))
 
-  return Option.match(Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasCategorized')), {
-    onNone: () => new NotCategorized(),
-    onSome: categorized =>
-      new HasBeenCategorized({
-        language: categorized.language,
-        keywords: categorized.keywords,
-        topics: categorized.topics,
+  return Array.reduce(filteredEvents, new NotCategorized(), foldStateWithPertinentEvent)
+}
+
+const foldStateWithPertinentEvent = (
+  state: State,
+  event: Events.ReviewRequestForAPreprintWasCategorized | Events.ReviewRequestForAPreprintWasRecategorized,
+): State =>
+  Match.valueTags(event, {
+    ReviewRequestForAPreprintWasCategorized: event =>
+      Match.valueTags(state, {
+        NotCategorized: () =>
+          new HasBeenCategorized({
+            language: event.language,
+            keywords: event.keywords,
+            topics: event.topics,
+          }),
+        HasBeenCategorized: state => state,
+      }),
+    ReviewRequestForAPreprintWasRecategorized: event =>
+      Match.valueTags(state, {
+        NotCategorized: state => state,
+        HasBeenCategorized: state =>
+          new HasBeenCategorized({
+            language: event.language ?? state.language,
+            keywords: event.keywords ?? state.keywords,
+            topics: event.topics ?? state.topics,
+          }),
       }),
   })
-}
 
 export const decide: {
   (state: State, command: Command): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error>
@@ -93,8 +111,4 @@ const constructRecategorizationEvent = (
     keywords,
     topics,
   })
-}
-
-function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
 }

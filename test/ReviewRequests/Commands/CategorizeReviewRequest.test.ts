@@ -95,6 +95,69 @@ describe('foldState', () => {
       }),
     )
   })
+
+  describe('recategorized', () => {
+    const categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+      language: 'es',
+      keywords: ['00010eef0ca8e2970fbb', '76f6c5435743d1f766a5'],
+      topics: ['12520', '13393'],
+      reviewRequestId,
+    })
+    const recategorizedWithLanguage = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+      language: 'pt',
+      reviewRequestId,
+    })
+    const recategorizedWithKeywords = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+      keywords: ['8e37b00f1a9ba4ac51ef'],
+      reviewRequestId,
+    })
+    const recategorizedWithTopics = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+      topics: ['10010'],
+      reviewRequestId,
+    })
+
+    test('with language', () => {
+      const events = [categorized, recategorizedWithLanguage]
+
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(
+        new _.HasBeenCategorized({
+          language: recategorizedWithLanguage.language!,
+          keywords: categorized.keywords,
+          topics: categorized.topics,
+        }),
+      )
+    })
+
+    test('with keywords', () => {
+      const events = [categorized, recategorizedWithKeywords]
+
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(
+        new _.HasBeenCategorized({
+          language: categorized.language,
+          keywords: recategorizedWithKeywords.keywords!,
+          topics: categorized.topics,
+        }),
+      )
+    })
+
+    test('with topics', () => {
+      const events = [categorized, recategorizedWithTopics]
+
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(
+        new _.HasBeenCategorized({
+          language: categorized.language,
+          keywords: categorized.keywords,
+          topics: recategorizedWithTopics.topics!,
+        }),
+      )
+    })
+  })
 })
 
 describe('decide', () => {
