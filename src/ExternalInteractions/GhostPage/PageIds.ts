@@ -19,6 +19,11 @@ const pageIds = {
     'es-419': '687f7b7307fb34a92c7fb2cf',
     'pt-BR': '68753c7207fb34a92c7fb259',
   },
+  ChampionsProgram: {
+    'en-US': '6941ac7207fb34a92c7fbbae',
+    'es-419': '6978ccbe07fb34a92c7fbe36',
+    'pt-BR': '6978cb2c07fb34a92c7fbdf7',
+  },
   Clubs: {
     'en-US': '64637b4c07fb34a92c7f84ec',
     'es-419': '6881011607fb34a92c7fb34c',

@@ -7,6 +7,7 @@ import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
+import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
 import { ClubsPage } from '../ClubsPage.ts'
@@ -452,6 +453,7 @@ export const Router = pipe(
   HttpRouter.fromIterable([
     MakeStaticRoute('GET', Routes.HomePage, HomePage),
     MakeStaticRoute('GET', Routes.AboutUs, AboutUsPage),
+    MakeStaticRoute('GET', Routes.ChampionsProgram, ChampionsProgramPage),
     MakeStaticRoute('GET', Routes.ChooseLocale, ChooseLocalePage),
     MakeStaticRoute('GET', Routes.Clubs, ClubsPage),
     MakeStaticRoute('GET', Routes.CodeOfConduct, CodeOfConductPage),
