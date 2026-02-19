@@ -1,9 +1,9 @@
-import { Array, Either, flow, Match, Option, Record, Struct } from 'effect'
-import * as Events from '../../Events.ts'
+import { Array, Either, flow, Option, Record, Struct } from 'effect'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import type { TopicId } from '../../types/Topic.ts'
+import * as shared from './sharedLogic.ts'
 
 export interface RecentReviewRequest {
   readonly id: Uuid.Uuid
@@ -14,76 +14,7 @@ export interface RecentReviewRequest {
 
 export type Result = ReadonlyArray<RecentReviewRequest>
 
-const eventTypes = [
-  'ReviewRequestForAPreprintWasReceived',
-  'ReviewRequestForAPreprintWasAccepted',
-  'ReviewRequestByAPrereviewerWasImported',
-  'ReviewRequestFromAPreprintServerWasImported',
-  'ReviewRequestForAPreprintWasCategorized',
-  'ReviewRequestForAPreprintWasRecategorized',
-] as const
-
-type PertinentEvent = Events.EventSubset<typeof eventTypes>
-
-const filter = Events.EventFilter({ types: eventTypes })
-
-type State = Record<
-  Uuid.Uuid,
-  {
-    published: Temporal.Instant | undefined
-    topics: ReadonlyArray<TopicId>
-    preprintId: Preprints.IndeterminatePreprintId
-  }
->
-
-const initialState: State = Record.empty()
-
-const updateStateWithEvent = (state: State, event: Events.Event): State => {
-  if (!Events.matches(event, filter)) {
-    return state
-  }
-
-  return updateStateWithPertinentEvent(state, event)
-}
-
-const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
-  Match.valueTags(event, {
-    ReviewRequestForAPreprintWasReceived: event =>
-      Record.set(state, event.reviewRequestId, {
-        published: undefined,
-        topics: [],
-        preprintId: event.preprintId,
-      }),
-    ReviewRequestForAPreprintWasAccepted: event =>
-      Record.modify(state, event.reviewRequestId, review => ({
-        ...review,
-        published: event.acceptedAt,
-      })),
-    ReviewRequestByAPrereviewerWasImported: event =>
-      Record.set(state, event.reviewRequestId, {
-        published: event.publishedAt,
-        topics: [],
-        preprintId: event.preprintId,
-      }),
-    ReviewRequestFromAPreprintServerWasImported: event =>
-      Record.set(state, event.reviewRequestId, {
-        published: event.publishedAt,
-        topics: [],
-        preprintId: event.preprintId,
-      }),
-    ReviewRequestForAPreprintWasCategorized: event =>
-      Record.modify(state, event.reviewRequestId, review => ({
-        ...review,
-        topics: event.topics,
-      })),
-    ReviewRequestForAPreprintWasRecategorized: event =>
-      Record.modify(state, event.reviewRequestId, review => ({
-        ...review,
-        topics: event.topics ?? review.topics,
-      })),
-  })
-
-const query = (reviewRequests: State): Result => {
+const query = (reviewRequests: shared.State): Result => {
   const filteredReviewRequests = Record.filterMap(reviewRequests, reviewRequest =>
     reviewRequest.published !== undefined
       ? Option.some({
@@ -107,7 +38,7 @@ const query = (reviewRequests: State): Result => {
 
 export const GetFiveMostRecentReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
-  initialState,
-  updateStateWithEvent,
+  initialState: shared.initialState,
+  updateStateWithEvent: shared.updateStateWithEvent,
   query: flow(query, Either.right),
 })
