@@ -18,7 +18,7 @@ export const ProcessCoarNotifyMessage = Effect.fn(
   }) {
     const preprintId = yield* Either.fromOption(
       Preprints.parsePreprintDoi(message.object['ietf:cite-as']),
-      () => new Preprints.NotAPreprint({}),
+      () => new Preprints.NotAPreprint({ cause: `failed to parse as preprint Doi: ${message.object['ietf:cite-as']}` }),
     )
 
     yield* ReviewRequests.receiveReviewRequest({

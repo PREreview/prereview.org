@@ -14,6 +14,9 @@ export const Inbox = Effect.gen(function* () {
 
   return yield* HttpServerResponse.empty({ status: StatusCodes.Accepted })
 }).pipe(
+  Effect.tapError(error =>
+    Effect.logInfo('Failed to process COAR Notify message').pipe(Effect.annotateLogs({ error })),
+  ),
   Effect.catchTags({
     ParseError: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
     RequestError: () => HttpServerResponse.empty({ status: StatusCodes.BadRequest }),
