@@ -1,4 +1,4 @@
-import { Array, Either, flow, Match, Record, Struct } from 'effect'
+import { Array, Either, flow, Match, Option, Record, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
@@ -84,17 +84,15 @@ const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): Sta
   })
 
 const query = (reviewRequests: State): Result => {
-  const filteredReviewRequests = Record.filter(
-    reviewRequests,
-    reviewRequest => reviewRequest.published !== undefined,
-  ) as Record<
-    Uuid.Uuid,
-    {
-      published: Temporal.Instant
-      topics: ReadonlyArray<TopicId>
-      preprintId: Preprints.IndeterminatePreprintId
-    }
-  >
+  const filteredReviewRequests = Record.filterMap(reviewRequests, reviewRequest =>
+    reviewRequest.published !== undefined
+      ? Option.some({
+          published: reviewRequest.published,
+          topics: reviewRequest.topics,
+          preprintId: reviewRequest.preprintId,
+        })
+      : Option.none(),
+  )
 
   const sortedReviewRequests = Array.reverse(
     Array.sortWith(
