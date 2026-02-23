@@ -423,15 +423,15 @@ body > footer {
   }
 
   @media screen {
-    padding-left: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line plugin/use-logical-properties-and-values */
+    padding-left: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line logical-css/require-logical-properties */
     background-image: url('logos/orcid.svg');
     background-repeat: no-repeat;
     background-position: left 0.1ch bottom 40%;
     background-size: 1em;
 
     .byline & {
-      padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line plugin/use-logical-properties-and-values */
-      padding-left: 0; /* stylelint-disable-line plugin/use-logical-properties-and-values */
+      padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line logical-css/require-logical-properties */
+      padding-left: 0; /* stylelint-disable-line logical-css/require-logical-properties */
       background-position: right 0.1ch bottom 40%;
 
       @media (forced-colors: active) {

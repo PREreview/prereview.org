@@ -1,13 +1,15 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-property-sort-order-smacss"],
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-property-sort-order-smacss",
+    "stylelint-plugin-logical-css/configs/recommended"
+  ],
   "plugins": ["stylelint-plugin-logical-css"],
   "rules": {
     "custom-property-pattern": "^[a-z]{1,}(-[a-z0-9]+|-{1,2}[0-9][a-z0-9]*)*$",
     "declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["gap"] }],
     "import-notation": "url",
     "no-descending-specificity": null,
-    "plugin/use-logical-properties-and-values": true,
-    "plugin/use-logical-units": true,
     "selector-not-notation": "complex"
   },
   "overrides": [
