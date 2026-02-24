@@ -33,6 +33,10 @@ updates:
           - 'effect'
         exclude-patterns:
           - '@effect/language-service'
+      eslint:
+        patterns:
+          - '@eslint/*'
+          - 'eslint'
       fast-check:
         patterns:
           - '@fast-check/*'
