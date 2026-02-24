@@ -1,5 +1,5 @@
 import type { Doi } from 'doi-ts'
-import { Match, type Option, flow, pipe } from 'effect'
+import { Effect, Match, type Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -155,7 +155,7 @@ const handlePublishForm = ({
           >()
           .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
           .with({ reviewType: 'freeform' }, form =>
-            EffectToFpts.toReaderTask(LanguageDetection.detectLanguage(form.review)),
+            EffectToFpts.toReaderTask(Effect.option(LanguageDetection.detectLanguage(form.review))),
           )
           .exhaustive(),
         RT.map(language => ({

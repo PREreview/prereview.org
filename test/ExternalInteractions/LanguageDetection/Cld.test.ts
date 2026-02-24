@@ -21,7 +21,7 @@ describe('detectLanguage', () => {
     ['Short sentence', 'Short sentence', Option.some('en')],
   ])('%s', (_name, input, expected, hint = undefined) =>
     Effect.gen(function* () {
-      const actual = yield* _.detectLanguage(input, hint)
+      const actual = yield* Effect.option(_.detectLanguage(input, hint))
 
       expect(actual).toStrictEqual(expected)
     }).pipe(EffectTest.run),
@@ -53,7 +53,7 @@ describe('detectLanguageFrom', () => {
     ['No letters', ['en', 'ja', 'ru'], rawHtml(' <p>   \n  12345 </p>   '), Option.none()],
   ])('%s', (_name, languages, input, expected, hint = undefined) =>
     Effect.gen(function* () {
-      const actual = yield* _.detectLanguageFrom(...languages)(input, hint)
+      const actual = yield* Effect.option(_.detectLanguageFrom(...languages)(input, hint))
 
       expect(actual).toStrictEqual(expected)
     }).pipe(EffectTest.run),

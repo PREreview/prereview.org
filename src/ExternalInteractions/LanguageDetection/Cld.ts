@@ -2,35 +2,10 @@ import cld from 'cld'
 import { Array, Effect, Option, Record } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { type Html, PlainText } from '../../html.ts'
+import { UnableToDetectLanguage } from './Errors.ts'
 
-export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(function* (
-  text: Html | PlainText | string,
-  hint?: LanguageCode,
-): Effect.fn.Return<Option.Option<LanguageCode>> {
-  const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
-
-  const result = yield* Effect.option(
-    Effect.orElse(
-      Effect.tryPromise(() =>
-        cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText), languageHint }),
-      ),
-      () =>
-        Effect.tryPromise(() =>
-          cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText) }),
-        ),
-    ),
-  )
-
-  return Option.andThen(result, result =>
-    Array.findFirst(result.languages, detected => Option.liftPredicate(detected.code, iso6391.validate)),
-  )
-})
-
-export function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>) {
-  return Effect.fn('LanguageDetection.detectLanguageFrom')(function* (
-    text: Html | PlainText | string,
-    hint?: LanguageCode,
-  ): Effect.fn.Return<Option.Option<L>> {
+export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(
+  function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<LanguageCode>> {
     const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
     const result = yield* Effect.option(
@@ -46,11 +21,37 @@ export function detectLanguageFrom<L extends LanguageCode>(...languages: Readonl
     )
 
     return Option.andThen(result, result =>
-      Array.findFirst(result.languages, detected =>
-        Option.liftPredicate(detected.code as L, code => Array.contains(languages, code)),
-      ),
+      Array.findFirst(result.languages, detected => Option.liftPredicate(detected.code, iso6391.validate)),
     )
-  })
+  },
+  Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
+)
+
+export function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>) {
+  return Effect.fn('LanguageDetection.detectLanguageFrom')(
+    function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<L>> {
+      const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
+
+      const result = yield* Effect.option(
+        Effect.orElse(
+          Effect.tryPromise(() =>
+            cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText), languageHint }),
+          ),
+          () =>
+            Effect.tryPromise(() =>
+              cld.detect(text.toString(), { bestEffort: true, isHTML: !(text instanceof PlainText) }),
+            ),
+        ),
+      )
+
+      return Option.andThen(result, result =>
+        Array.findFirst(result.languages, detected =>
+          Option.liftPredicate(detected.code as L, code => Array.contains(languages, code)),
+        ),
+      )
+    },
+    Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
+  )
 }
 
 const iso6393ToHint = (code: LanguageCode): Option.Option<string> =>

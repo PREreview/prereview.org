@@ -73,7 +73,7 @@ describe('recordToPreprint', () => {
       const actual = yield* Effect.flip(_.recordToPreprint(record))
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-      expect(actual.cause).toStrictEqual('unknown title language')
+      expect(actual.cause).toStrictEqual(new LanguageDetection.UnableToDetectLanguage({}))
     }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
   test('abstract language unknown', () =>

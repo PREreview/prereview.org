@@ -154,9 +154,10 @@ const getTitle = (
   Effect.gen(function* () {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
-    const language = yield* Effect.orElse(
-      Effect.flatten(detectLanguageForServer({ id, text, recordLanguage })),
-      () => new Preprints.PreprintIsUnavailable({ cause: 'unknown title language' }),
+    const language = yield* Effect.catchTag(
+      detectLanguageForServer({ id, text, recordLanguage }),
+      'UnableToDetectLanguage',
+      error => new Preprints.PreprintIsUnavailable({ cause: error }),
     )
 
     return {
@@ -187,7 +188,7 @@ const getAbstract = (
       Match.orElse(() => sanitizeHtml(`<p>${abstract.description.replaceAll(/\s*\n\n\s*/g, '</p>\n\n<p>')}</p>`)),
     )
 
-    return yield* Effect.match(Effect.flatten(detectLanguageForServer({ id, text, recordLanguage })), {
+    return yield* Effect.match(detectLanguageForServer({ id, text, recordLanguage }), {
       onSuccess: language => ({ language, text }),
       onFailure: () => undefined,
     })
@@ -201,14 +202,14 @@ const detectLanguageForServer = ({
   id: DatacitePreprintId
   text: Html
   recordLanguage?: LanguageCode
-}): Effect.Effect<Option.Option<LanguageCode>, never, LanguageDetection.LanguageDetection> =>
+}): Effect.Effect<LanguageCode, LanguageDetection.UnableToDetectLanguage, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
     AfricarxivFigsharePreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
     AfricarxivUbuntunetPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
     AfricarxivZenodoPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
-    ArcadiaSciencePreprintId: () => Effect.succeedSome('en' as const),
-    ArxivPreprintId: () => Effect.succeedSome('en' as const),
-    LifecycleJournalPreprintId: () => Effect.succeedSome('en' as const),
+    ArcadiaSciencePreprintId: () => Effect.succeed('en' as const),
+    ArxivPreprintId: () => Effect.succeed('en' as const),
+    LifecycleJournalPreprintId: () => Effect.succeed('en' as const),
     OsfPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
     PsychArchivesPreprintId: () => LanguageDetection.detectLanguageFrom('de', 'en')(text, recordLanguage),
     ZenodoPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),

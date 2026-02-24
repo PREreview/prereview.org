@@ -1,15 +1,21 @@
-import { Context, Effect, Layer, type Option } from 'effect'
+import { Context, Effect, Layer } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html, PlainText } from '../../html.ts'
 import * as Cld from './Cld.ts'
+import type { UnableToDetectLanguage } from './Errors.ts'
+
+export * from './Errors.ts'
 
 export class LanguageDetection extends Context.Tag('LanguageDetection')<
   LanguageDetection,
   {
-    detectLanguage: (text: Html | PlainText | string, hint?: LanguageCode) => Effect.Effect<Option.Option<LanguageCode>>
+    detectLanguage: (
+      text: Html | PlainText | string,
+      hint?: LanguageCode,
+    ) => Effect.Effect<LanguageCode, UnableToDetectLanguage>
     detectLanguageFrom: <L extends LanguageCode>(
       ...languages: ReadonlyArray<L>
-    ) => (text: Html | PlainText | string, hint?: LanguageCode) => Effect.Effect<Option.Option<L>>
+    ) => (text: Html | PlainText | string, hint?: LanguageCode) => Effect.Effect<L, UnableToDetectLanguage>
   }
 >() {}
 
