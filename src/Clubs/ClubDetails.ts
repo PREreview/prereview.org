@@ -77,9 +77,9 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     description: html` <p>The ASAPbio Cell Biology Crowd reviews preprints about cell and molecular biology.</p> `,
     added: Temporal.PlainDate.from('2024-07-01'),
     leads: [
-      { name: 'Arpita Ghosh', orcid: OrcidId('0009-0003-2106-3270') },
-      { name: 'Anna Oliveras', orcid: OrcidId('0000-0002-5880-5245') },
       { name: 'Joseph Biggane', orcid: OrcidId('0000-0002-7857-2450') },
+      { name: 'Emmanuel Odame', orcid: OrcidId('0000-0002-8818-3221') },
+      { name: 'Debraj Manna', orcid: OrcidId('0000-0002-1074-9459') },
     ],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
@@ -105,8 +105,8 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2023-07-31'),
     leads: [
       { name: 'Jay Patel', orcid: OrcidId('0000-0003-1040-3607') },
-      { name: 'Stephen Gabrielson', orcid: OrcidId('0000-0001-9420-4466') },
-      { name: 'Martyn Rittman', orcid: OrcidId('0000-0001-9327-3734') },
+      { name: 'Fallon Mody', orcid: OrcidId('0000-0002-0596-7590') },
+      { name: 'Sandra Grinschgl', orcid: OrcidId('0000-0001-6666-9426') },
     ],
     joinLink: new URL('https://bit.ly/2024_Crowd_review_signup'),
   },
