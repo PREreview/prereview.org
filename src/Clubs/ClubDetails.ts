@@ -881,6 +881,22 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2024-11-13'),
     leads: [{ name: 'Kathleen Dunbar', orcid: OrcidId('0009-0009-5970-9296') }],
   },
+  'translate-science': {
+    name: 'Translate Science',
+    description: html`
+      <p>Translate Science is an all-volunteer community of interest focused on multilingual open science.</p>
+      <p>
+        This club will review preprints related to multilingual open science, exploring that idea broadly. We don’t plan
+        to have a fixed schedule–we’ll take opportunities to review compelling preprints as they arise.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-02-24'),
+    leads: [
+      { name: 'Jennifer Miller', orcid: OrcidId('0000-0001-5459-6733') },
+      { name: 'Danny Chan', orcid: OrcidId('0000-0002-8082-2316') },
+    ],
+    joinLink: new URL('https://nextcloud.translatescience.org/apps/forms/s/dqJYTY6HLYnKk6pDk6dpBi8g'),
+  },
   'tsl-preprint-club': {
     name: 'TSL Preprint Club',
     description: html`
