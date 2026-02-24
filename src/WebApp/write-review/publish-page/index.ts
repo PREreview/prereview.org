@@ -12,7 +12,7 @@ import {
   type GetContactEmailAddressEnv,
   maybeGetContactEmailAddress,
 } from '../../../contact-email-address.ts'
-import { detectLanguage } from '../../../detect-language.ts'
+import * as LanguageDetection from '../../../detect-language.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
@@ -152,7 +152,9 @@ const handlePublishForm = ({
         match(form)
           .returnType<RT.ReaderTask<EffectToFpts.EffectEnv, Option.Option<LanguageCode>>>()
           .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
-          .with({ reviewType: 'freeform' }, form => EffectToFpts.toReaderTask(detectLanguage(form.review)))
+          .with({ reviewType: 'freeform' }, form =>
+            EffectToFpts.toReaderTask(LanguageDetection.detectLanguage(form.review)),
+          )
           .exhaustive(),
         RT.map(language => ({
           conduct: form.conduct,

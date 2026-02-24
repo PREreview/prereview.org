@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../../../detect-language.ts'
+import * as LanguageDetection from '../../../detect-language.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { type Html, sanitizeHtml } from '../../../html.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -199,13 +199,13 @@ const detectLanguageForServer = ({
   recordLanguage?: LanguageCode
 }): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
-    AfricarxivFigsharePreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
-    AfricarxivUbuntunetPreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
-    AfricarxivZenodoPreprintId: () => detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivFigsharePreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivUbuntunetPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivZenodoPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
     ArcadiaSciencePreprintId: () => Effect.succeedSome('en' as const),
     ArxivPreprintId: () => Effect.succeedSome('en' as const),
     LifecycleJournalPreprintId: () => Effect.succeedSome('en' as const),
-    OsfPreprintId: () => detectLanguage(text, recordLanguage),
-    PsychArchivesPreprintId: () => detectLanguageFrom('de', 'en')(text, recordLanguage),
-    ZenodoPreprintId: () => detectLanguage(text, recordLanguage),
+    OsfPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
+    PsychArchivesPreprintId: () => LanguageDetection.detectLanguageFrom('de', 'en')(text, recordLanguage),
+    ZenodoPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
   })

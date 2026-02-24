@@ -3,7 +3,7 @@ import * as Doi from 'doi-ts'
 import { Array, Effect, Either, flow, Match, type Option, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../../../detect-language.ts'
+import * as LanguageDetection from '../../../detect-language.ts'
 import type { Crossref } from '../../../ExternalApis/index.ts'
 import { type Html, sanitizeHtml } from '../../../html.ts'
 import { transformJatsToHtml } from '../../../jats.ts'
@@ -179,25 +179,25 @@ const detectLanguageForServer = ({
 }): Effect.Effect<Option.Option<LanguageCode>> =>
   Match.valueTags(id, {
     AdvancePreprintId: () => Effect.succeedSome('en' as const),
-    AfricarxivOsfPreprintId: () => detectLanguageFrom('en', 'fr')(text, workLanguage),
-    AuthoreaPreprintId: () => detectLanguage(text, workLanguage),
+    AfricarxivOsfPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, workLanguage),
+    AuthoreaPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     BiorxivPreprintId: () => Effect.succeedSome('en' as const),
     ChemrxivPreprintId: () => Effect.succeedSome('en' as const),
     CurvenotePreprintId: () => Effect.succeedSome('en' as const),
     EartharxivPreprintId: () => Effect.succeedSome('en' as const),
     EcoevorxivPreprintId: () => Effect.succeedSome('en' as const),
-    EdarxivPreprintId: () => detectLanguage(text, workLanguage),
+    EdarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     EngrxivPreprintId: () => Effect.succeedSome('en' as const),
     MedrxivPreprintId: () => Effect.succeedSome('en' as const),
     MetaarxivPreprintId: () => Effect.succeedSome('en' as const),
     NeurolibrePreprintId: () => Effect.succeedSome('en' as const),
-    OsfPreprintsPreprintId: () => detectLanguage(text, workLanguage),
+    OsfPreprintsPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     PreprintsorgPreprintId: () => Effect.succeedSome('en' as const),
-    PsyarxivPreprintId: () => detectLanguage(text, workLanguage),
+    PsyarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     ResearchSquarePreprintId: () => Effect.succeedSome('en' as const),
-    ScieloPreprintId: () => detectLanguageFrom('en', 'es', 'pt')(text, workLanguage),
-    ScienceOpenPreprintId: () => detectLanguage(text, workLanguage),
-    SocarxivPreprintId: () => detectLanguage(text, workLanguage),
+    ScieloPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'es', 'pt')(text, workLanguage),
+    ScienceOpenPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
+    SocarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     SsrnPreprintId: () => Effect.succeedSome('en' as const),
     TechrxivPreprintId: () => Effect.succeedSome('en' as const),
     UmsidaPreprintId: () => Effect.succeedSome('en' as const),
