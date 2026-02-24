@@ -38,6 +38,7 @@ export const ClubIdSchema = Schema.Literal(
   'open-science-community-uruguay',
   'oxplants',
   'padua-biomedical-sciences',
+  'parasitology-infectious-diseases',
   'plant-biotechnology',
   'plant-pathology-genomics',
   'prosac',

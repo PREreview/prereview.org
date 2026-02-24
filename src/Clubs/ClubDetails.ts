@@ -706,6 +706,28 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2025-10-06'),
     leads: [{ name: 'Domenico Azarnia Tehran', orcid: OrcidId('0000-0001-8955-7240') }],
   },
+  'parasitology-infectious-diseases': {
+    name: 'Parasitology and Infectious Diseases',
+    description: html`
+      <p>
+        The club will primarily deal with preprints with major focus on various kinds of parasites (whether it's macro-
+        or micro-; ecto- or endo-, etc.) , their morphology, life cycle, mode of parasitism and host-parasite
+        interactions. In addition diseases caused by such parasites will also be reviewed by us involving parasites’
+        mechanism of actions within the host and cellular, biological, physiological and/or behavioural impacts on
+        hosts. Those preprints highlighting preventive measures, prognoses and/or diagnoses, prophylaxis, clinical signs
+        and symptoms, and novel/existing treatment of diseases will also be considered for revision.
+      </p>
+      <p>
+        Hence this club will become instrumental for interested personnels centered around fields like parasitology,
+        immunology, microbiology, cellular and molecular biology, vaccinology, pharmacology, and many more… As it's a
+        broad spectrum Interdisciplinary PREreview club.
+      </p>
+      <p>Welcome all in advance.</p>
+    `,
+    added: Temporal.PlainDate.from('2026-02-24'),
+    leads: [{ name: 'Diptarup Mallick', orcid: OrcidId('0009-0006-6065-9650') }],
+    contact: EmailAddress('diptarupmallick3@gmail.com'),
+  },
   'plant-biotechnology': {
     name: 'Plant Biotechnology Club',
     description: html`
