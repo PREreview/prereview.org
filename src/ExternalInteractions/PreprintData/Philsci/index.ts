@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
 import { Philsci } from '../../../ExternalApis/index.ts'
-import * as Preprints from '../../../Preprints/index.js'
+import * as Preprints from '../../../Preprints/index.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { EprintToPreprint } from './EprintToPreprint.ts'
 

@@ -37,7 +37,7 @@ import {
 import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'
-import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
+import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.ts'
 import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
 import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintData/Crossref/PreprintId.ts'
 import type { DatacitePreprintId } from '../src/ExternalInteractions/PreprintData/Datacite/PreprintId.ts'
@@ -114,7 +114,7 @@ import type {
   ReviewRequest,
   ReviewRequestPreprintId,
 } from '../src/review-request.ts'
-import * as ReviewRequests from '../src/ReviewRequests/index.js'
+import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'

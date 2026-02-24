@@ -3,7 +3,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Tuple } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Crossref/GetWork/CreateRequest.ts'
-import { Doi } from '../../../../src/types/index.js'
+import { Doi } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
