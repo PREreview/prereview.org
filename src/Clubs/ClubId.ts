@@ -27,6 +27,7 @@ export const ClubIdSchema = Schema.Literal(
   'iib-mar-del-plata',
   'intersectional-feminist',
   'jmir-publications',
+  'kone-consult',
   'language-club',
   'marine-invertebrates',
   'mlc-research',

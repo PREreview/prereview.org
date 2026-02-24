@@ -485,6 +485,25 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     ],
     contact: EmailAddress('ed-support@jmir.org'),
   },
+  'kone-consult': {
+    name: 'Kone Consult Journal Club',
+    description: html`
+      <p>
+        The Kone Consult Journal Club is a peer-led community of graduate students, early-career researchers, and
+        professionals. Our organization is dedicated to improving scientific literacy, mastering the scholarly
+        publishing process, and actively contributing to open peer review.
+      </p>
+      <p>
+        Our purpose is to elevate the quality of research in computational and engineering fields by fostering
+        peer-review literacy. We aim to help graduate students, early-career researchers, and professionals not just
+        read papers, but critically analyze them the right way so they can confidently publish high-quality work
+        themselves.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-02-24'),
+    leads: [{ name: 'Philip Hotor', orcid: OrcidId('0009-0001-8347-0512') }],
+    joinLink: new URL('https://forms.gle/VWGgEpYr6BEDLeYv9'),
+  },
   'language-club': {
     name: 'Language Club',
     description: html`

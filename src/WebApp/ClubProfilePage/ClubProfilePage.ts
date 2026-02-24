@@ -46,6 +46,10 @@ export function createPage({
             /></a>
           `,
         ),
+        Match.when(
+          'kone-consult',
+          () => html`<img src="${assets['kone-consult.svg']}" width="200" height="200" alt="" class="club-logo" />`,
+        ),
         Match.orElse(() => ''),
       )}
       ${club.description}
