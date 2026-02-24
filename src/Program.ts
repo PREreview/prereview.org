@@ -28,6 +28,7 @@ import {
   CommunitySlack,
   Email,
   GhostPage,
+  LanguageDetection,
   OpenAlexWorks,
   PreprintData,
   ZenodoRecords,
@@ -396,6 +397,7 @@ export const Program = pipe(
       ),
     ),
   ),
+  Layer.provide(LanguageDetection.layerCld),
   Layer.provide(
     Layer.mergeAll(
       CoarNotify.layer,

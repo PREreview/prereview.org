@@ -66,7 +66,11 @@ const determineCrossrefPreprintId = (
 
 export const workToPreprint = (
   work: Crossref.Work,
-): Effect.Effect<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
+): Effect.Effect<
+  Preprints.Preprint,
+  Preprints.NotAPreprint | Preprints.PreprintIsUnavailable,
+  LanguageDetection.LanguageDetection
+> =>
   Effect.gen(function* () {
     yield* ensureIsAPreprint(work)
 
@@ -128,7 +132,7 @@ const getTitle = (
   title: Crossref.Work['title'],
   id: CrossrefPreprintId,
   workLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable, LanguageDetection.LanguageDetection> =>
   Array.match(title, {
     onEmpty: () => new Preprints.PreprintIsUnavailable({ cause: { title } }),
     onNonEmpty: flow(
@@ -146,7 +150,11 @@ const getAbstract = (
   abstract: Crossref.Work['abstract'],
   id: CrossrefPreprintId,
   workLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['abstract'], Preprints.PreprintIsUnavailable> =>
+): Effect.Effect<
+  Preprints.Preprint['abstract'],
+  Preprints.PreprintIsUnavailable,
+  LanguageDetection.LanguageDetection
+> =>
   abstract !== undefined
     ? pipe(
         Effect.succeed({
@@ -176,7 +184,7 @@ const detectLanguageForServer = ({
   id: CrossrefPreprintId
   text: Html
   workLanguage?: LanguageCode
-}): Effect.Effect<Option.Option<LanguageCode>> =>
+}): Effect.Effect<Option.Option<LanguageCode>, never, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
     AdvancePreprintId: () => Effect.succeedSome('en' as const),
     AfricarxivOsfPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, workLanguage),

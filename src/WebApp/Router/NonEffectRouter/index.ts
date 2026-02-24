@@ -34,7 +34,7 @@ import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import { Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
 import { Cloudinary, Nodemailer, Slack, Zenodo } from '../../../ExternalApis/index.ts'
-import { CommunitySlack, type OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
+import { CommunitySlack, type LanguageDetection, type OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -218,6 +218,7 @@ export interface Env {
     | CommunitySlack.CommunitySlack
     | GenerateUuid
     | HttpClient.HttpClient
+    | LanguageDetection.LanguageDetection
     | LegacyPrereviewApi
     | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas

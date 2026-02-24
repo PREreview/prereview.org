@@ -1,6 +1,7 @@
 import { Effect, pipe } from 'effect'
 import { Datacite } from '../../../ExternalApis/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { recordToPreprint } from './Preprint.ts'
 import type { IndeterminateDatacitePreprintId } from './PreprintId.ts'
 
@@ -11,7 +12,7 @@ export const getPreprintFromDatacite = (
 ): Effect.Effect<
   Preprints.Preprint,
   Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
-  Datacite.Datacite
+  Datacite.Datacite | LanguageDetection.LanguageDetection
 > =>
   pipe(
     Datacite.getRecord(id.value),

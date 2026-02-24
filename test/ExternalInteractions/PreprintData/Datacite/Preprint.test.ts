@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import * as EffectTest from '../../../EffectTest.ts'
@@ -30,7 +31,7 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('NotAPreprint')
       expect(actual.cause).toStrictEqual({ ...stubRecord.types, resourceType, resourceTypeGeneral })
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
@@ -46,7 +47,7 @@ describe('recordToPreprint', () => {
 
         expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
         expect(actual.cause).toStrictEqual(doi)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test('no creators', () =>
@@ -60,7 +61,7 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ creators: [] })
-    }).pipe(EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
   test('title language unknown', () =>
     Effect.gen(function* () {
@@ -73,7 +74,7 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual('unknown title language')
-    }).pipe(EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
   test('abstract language unknown', () =>
     Effect.gen(function* () {
@@ -85,7 +86,7 @@ describe('recordToPreprint', () => {
       const actual = yield* _.recordToPreprint(record)
 
       expect(actual.abstract).toStrictEqual(undefined)
-    }).pipe(EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
   test.prop([
     fc.nonEmptyArray(
@@ -102,7 +103,7 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ dates })
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 })
 

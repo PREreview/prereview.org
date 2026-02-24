@@ -1,6 +1,7 @@
 import { Array, Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
 import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../../ExternalApis/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import type * as LanguageDetection from '../LanguageDetection/index.ts'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.ts'
 import { getPreprintFromDatacite, isDatacitePreprintId } from './Datacite/index.ts'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.ts'
@@ -10,7 +11,13 @@ export const layer = Layer.effect(
   Preprints.Preprints,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(
-      Effect.context<Crossref.Crossref | Datacite.Datacite | JapanLinkCenter.JapanLinkCenter | Philsci.Philsci>(),
+      Effect.context<
+        | Crossref.Crossref
+        | Datacite.Datacite
+        | JapanLinkCenter.JapanLinkCenter
+        | Philsci.Philsci
+        | LanguageDetection.LanguageDetection
+      >(),
       Context.omit(Scope.Scope),
     )
 

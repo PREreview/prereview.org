@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import * as EffectTest from '../../../EffectTest.ts'
@@ -27,7 +28,7 @@ describe('workToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('NotAPreprint')
       expect(actual.cause).toStrictEqual({ type, subtype })
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
@@ -43,7 +44,7 @@ describe('workToPreprint', () => {
 
         expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
         expect(actual.cause).toStrictEqual(doi)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test('no authors', () =>
@@ -57,7 +58,7 @@ describe('workToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ author: [] })
-    }).pipe(EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
   test('no title', () =>
     Effect.gen(function* () {
@@ -70,7 +71,7 @@ describe('workToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ title: [] })
-    }).pipe(EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 })
 
 const stubWork = {

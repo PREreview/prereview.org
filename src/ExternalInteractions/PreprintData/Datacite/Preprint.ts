@@ -19,7 +19,11 @@ import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './Preprint
 
 export const recordToPreprint = (
   record: Datacite.Record,
-): Effect.Effect<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
+): Effect.Effect<
+  Preprints.Preprint,
+  Preprints.NotAPreprint | Preprints.PreprintIsUnavailable,
+  LanguageDetection.LanguageDetection
+> =>
   Effect.gen(function* () {
     const id = yield* determineDatacitePreprintId(record)
 
@@ -146,7 +150,7 @@ const getTitle = (
   titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable, LanguageDetection.LanguageDetection> =>
   Effect.gen(function* () {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
@@ -165,7 +169,7 @@ const getAbstract = (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprints.Preprint['abstract']> =>
+): Effect.Effect<Preprints.Preprint['abstract'], never, LanguageDetection.LanguageDetection> =>
   Effect.gen(function* () {
     const abstract = Option.getOrUndefined(
       Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
@@ -197,7 +201,7 @@ const detectLanguageForServer = ({
   id: DatacitePreprintId
   text: Html
   recordLanguage?: LanguageCode
-}): Effect.Effect<Option.Option<LanguageCode>> =>
+}): Effect.Effect<Option.Option<LanguageCode>, never, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
     AfricarxivFigsharePreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
     AfricarxivUbuntunetPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),

@@ -5,6 +5,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
+import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -30,7 +31,7 @@ describe('writeReviewPublish', () => {
     'when the user needs to verify their email address',
     (preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
@@ -52,7 +53,7 @@ describe('writeReviewPublish', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([
@@ -64,7 +65,7 @@ describe('writeReviewPublish', () => {
     fc.supportedLocale(),
   ])('when the user needs to enter an email address', (preprintId, preprintTitle, method, newReview, user, locale) =>
     Effect.gen(function* () {
-      const runtime = yield* Effect.runtime()
+      const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
       const formStore = new Keyv()
       yield* Effect.promise(() =>
         formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
@@ -86,7 +87,7 @@ describe('writeReviewPublish', () => {
         status: StatusCodes.SeeOther,
         location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
       })
-    }).pipe(EffectTest.run),
+    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([
@@ -103,7 +104,7 @@ describe('writeReviewPublish', () => {
     'when the form is complete with a questions-based review',
     (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
         const formStore = new Keyv()
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
@@ -147,7 +148,7 @@ describe('writeReviewPublish', () => {
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([
@@ -164,7 +165,7 @@ describe('writeReviewPublish', () => {
     'when the form is complete with a freeform review',
     (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
         const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
@@ -206,7 +207,7 @@ describe('writeReviewPublish', () => {
           id: reviewId,
         })
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   describe('the form is complete and generative AI was used', () => {
@@ -224,7 +225,7 @@ describe('writeReviewPublish', () => {
       'when the feature flag is enabled',
       (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime()
+          const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
           const formStore = new Keyv()
           yield* Effect.promise(() =>
             formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
@@ -245,7 +246,7 @@ describe('writeReviewPublish', () => {
           )
 
           expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
-        }).pipe(EffectTest.run),
+        }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
     )
 
     test.prop([
@@ -262,7 +263,7 @@ describe('writeReviewPublish', () => {
       'when the feature flag is not enabled',
       (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
         Effect.gen(function* () {
-          const runtime = yield* Effect.runtime()
+          const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
           const formStore = new Keyv()
           yield* Effect.promise(() =>
             formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
@@ -283,7 +284,7 @@ describe('writeReviewPublish', () => {
           )
 
           expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
-        }).pipe(EffectTest.run),
+        }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
     )
   })
 
@@ -299,7 +300,7 @@ describe('writeReviewPublish', () => {
     'when the form is incomplete',
     (preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
 
@@ -319,14 +320,14 @@ describe('writeReviewPublish', () => {
           status: StatusCodes.SeeOther,
           location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when there is no form',
     (preprintId, preprintTitle, method, user, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -344,14 +345,14 @@ describe('writeReviewPublish', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be loaded',
     (preprintId, method, user, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -372,14 +373,14 @@ describe('writeReviewPublish', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be found',
     (preprintId, method, user, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user })({
@@ -400,14 +401,14 @@ describe('writeReviewPublish', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()])(
     "when there isn't a session",
     (preprintId, preprintTitle, method, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
@@ -425,7 +426,7 @@ describe('writeReviewPublish', () => {
           status: StatusCodes.SeeOther,
           location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 
   test.prop([
@@ -441,7 +442,7 @@ describe('writeReviewPublish', () => {
     'when the PREreview cannot be published',
     (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime()
+        const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
@@ -467,6 +468,6 @@ describe('writeReviewPublish', () => {
         expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toStrictEqual(
           FormC.encode(newReview),
         )
-      }).pipe(EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
 })

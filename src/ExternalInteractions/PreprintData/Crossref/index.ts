@@ -1,6 +1,7 @@
 import { Effect, pipe } from 'effect'
 import { Crossref } from '../../../ExternalApis/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { workToPreprint } from './Preprint.ts'
 import type { IndeterminateCrossrefPreprintId } from './PreprintId.ts'
 
@@ -11,7 +12,7 @@ export const getPreprintFromCrossref = (
 ): Effect.Effect<
   Preprints.Preprint,
   Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
-  Crossref.Crossref
+  Crossref.Crossref | LanguageDetection.LanguageDetection
 > =>
   pipe(
     Crossref.getWork(id.value),

@@ -4,8 +4,9 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, pipe, Schema } from 'effect'
+import { Effect, Layer, pipe, Schema } from 'effect'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import {
@@ -855,7 +856,7 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, LanguageDetection.layerCld)), EffectTest.run),
 )
 
 test.each([
@@ -875,5 +876,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, LanguageDetection.layerCld)), EffectTest.run),
 )

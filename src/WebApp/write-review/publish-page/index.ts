@@ -67,7 +67,7 @@ export const writeReviewPublish = ({
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv,
+    EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection>,
   Response
 > =>
   pipe(
@@ -150,7 +150,9 @@ const handlePublishForm = ({
     RTE.chainReaderTaskKW(() =>
       pipe(
         match(form)
-          .returnType<RT.ReaderTask<EffectToFpts.EffectEnv, Option.Option<LanguageCode>>>()
+          .returnType<
+            RT.ReaderTask<EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection>, Option.Option<LanguageCode>>
+          >()
           .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
           .with({ reviewType: 'freeform' }, form =>
             EffectToFpts.toReaderTask(LanguageDetection.detectLanguage(form.review)),
