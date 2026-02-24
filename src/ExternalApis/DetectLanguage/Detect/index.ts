@@ -4,6 +4,8 @@ import { DetectLanguageIsUnavailable } from '../DetectLanguageApi.ts'
 import { CreateRequest } from './CreateRequest.ts'
 import { HandleResponse } from './HandleResponse.ts'
 
+export { LanguageCandidates } from './LanguageCandidates.ts'
+
 export const Detect = (text: string) =>
   pipe(
     CreateRequest(text),

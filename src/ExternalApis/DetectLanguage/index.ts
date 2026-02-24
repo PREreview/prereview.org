@@ -3,6 +3,7 @@ import { Context, Effect, flow, Layer } from 'effect'
 import { Detect } from './Detect/index.ts'
 import { DetectLanguageApi } from './DetectLanguageApi.ts'
 
+export { LanguageCandidates } from './Detect/index.ts'
 export * from './DetectLanguageApi.ts'
 
 export class DetectLanguage extends Context.Tag('DetectLanguage')<
