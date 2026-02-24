@@ -24,7 +24,14 @@ import {
   Slack,
   Zenodo,
 } from './ExternalApis/index.ts'
-import { CommunitySlack, Email, GhostPage, OpenAlexWorks, ZenodoRecords } from './ExternalInteractions/index.ts'
+import {
+  CommunitySlack,
+  Email,
+  GhostPage,
+  OpenAlexWorks,
+  PreprintData,
+  ZenodoRecords,
+} from './ExternalInteractions/index.ts'
 import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
@@ -34,7 +41,6 @@ import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
-import * as Preprints from './Preprints/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
@@ -349,7 +355,7 @@ export const Program = pipe(
       Prereviewers.layer,
       Personas.layer,
       Datasets.layer,
-      Layer.provide(Preprints.layer, CachingHttpClient.layer('1 day')),
+      Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),
       OpenAlexWorks.layer,
       Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
       getPseudonym,

@@ -10,7 +10,7 @@ import pseudonyms from '../data/pseudonyms.json' with { type: 'json' } // eslint
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import { CoarNotify, Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../src/ExternalApis/index.ts'
-import { OpenAlexWorks } from '../src/ExternalInteractions/index.ts'
+import { OpenAlexWorks, PreprintData } from '../src/ExternalInteractions/index.ts'
 import * as Preprints from '../src/Preprints/index.ts'
 import * as Redis from '../src/Redis.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
@@ -161,7 +161,7 @@ pipe(
         ReviewRequests.queriesLayer,
         Redis.layerDataStoreConfig(Config.redacted(Config.url('REVIEW_REQUEST_REDIS_URI'))),
         OpenAlexWorks.layer,
-        Preprints.layer,
+        PreprintData.layer,
       ),
       Layer.provideMerge(
         Layer.mergeAll(

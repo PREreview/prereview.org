@@ -3,42 +3,49 @@ import * as Doi from 'doi-ts'
 import { Array, Effect, Either, flow, Match, type Option, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
-import type { Crossref } from '../../ExternalApis/index.ts'
-import { type Html, sanitizeHtml } from '../../html.ts'
-import { transformJatsToHtml } from '../../jats.ts'
-import { Iso639 } from '../../types/index.ts'
-import * as Preprint from '../Preprint.ts'
-import { BiorxivPreprintId, fromPreprintDoi, MedrxivPreprintId } from '../PreprintId.ts'
+import { detectLanguage, detectLanguageFrom } from '../../../detect-language.ts'
+import type { Crossref } from '../../../ExternalApis/index.ts'
+import { type Html, sanitizeHtml } from '../../../html.ts'
+import { transformJatsToHtml } from '../../../jats.ts'
+import * as Preprints from '../../../Preprints/index.ts'
+import { Iso639 } from '../../../types/index.ts'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
 const determineCrossrefPreprintId = (
   work: Crossref.Work,
-): Either.Either<CrossrefPreprintId, Preprint.PreprintIsUnavailable> =>
+): Either.Either<CrossrefPreprintId, Preprints.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const doi = work.DOI
 
     if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     if (Doi.hasRegistrant('12688')(doi) && work['group-title'] !== 'Gates Foundation') {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+      return yield* Either.left(
+        new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
+      )
     }
 
     if (Doi.hasRegistrant('31234')(doi) && work['group-title'] !== 'PsyArXiv') {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+      return yield* Either.left(
+        new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
+      )
     }
 
     if (Doi.hasRegistrant('31730')(doi) && work['group-title'] !== 'AfricArXiv') {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+      return yield* Either.left(
+        new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
+      )
     }
 
     if (Doi.hasRegistrant('35542')(doi) && work['group-title'] !== 'EdArXiv') {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }))
+      return yield* Either.left(
+        new Preprints.PreprintIsUnavailable({ cause: { doi, groupTitle: work['group-title'] } }),
+      )
     }
 
-    const indeterminateId = fromPreprintDoi(doi)
+    const indeterminateId = Preprints.fromPreprintDoi(doi)
 
     if (indeterminateId._tag !== 'BiorxivOrMedrxivPreprintId') {
       return indeterminateId
@@ -47,19 +54,19 @@ const determineCrossrefPreprintId = (
     const institutionName = work.institution?.[0].name
 
     if (institutionName === 'bioRxiv') {
-      return new BiorxivPreprintId({ value: indeterminateId.value })
+      return new Preprints.BiorxivPreprintId({ value: indeterminateId.value })
     }
 
     if (institutionName === 'medRxiv') {
-      return new MedrxivPreprintId({ value: indeterminateId.value })
+      return new Preprints.MedrxivPreprintId({ value: indeterminateId.value })
     }
 
-    return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+    return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
   })
 
 export const workToPreprint = (
   work: Crossref.Work,
-): Effect.Effect<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
   Effect.gen(function* () {
     yield* ensureIsAPreprint(work)
 
@@ -73,7 +80,7 @@ export const workToPreprint = (
 
     const abstract = yield* getAbstract(work.abstract, id, workLanguage)
 
-    return Preprint.Preprint({
+    return Preprints.Preprint({
       authors,
       id,
       posted: work.published,
@@ -83,16 +90,16 @@ export const workToPreprint = (
     })
   })
 
-const ensureIsAPreprint = (work: Crossref.Work): Either.Either<void, Preprint.NotAPreprint> =>
+const ensureIsAPreprint = (work: Crossref.Work): Either.Either<void, Preprints.NotAPreprint> =>
   work.type === 'posted-content' && work.subtype === 'preprint'
     ? Either.void
-    : Either.left(new Preprint.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
+    : Either.left(new Preprints.NotAPreprint({ cause: { type: work.type, subtype: work.subtype } }))
 
 const getAuthors = (
   author: Crossref.Work['author'],
-): Either.Either<Preprint.Preprint['authors'], Preprint.PreprintIsUnavailable> =>
+): Either.Either<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
   Array.match(author, {
-    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { author } })),
+    onEmpty: () => Either.left(new Preprints.PreprintIsUnavailable({ cause: { author } })),
     onNonEmpty: authors =>
       Either.right(
         Array.map(
@@ -121,15 +128,15 @@ const getTitle = (
   title: Crossref.Work['title'],
   id: CrossrefPreprintId,
   workLanguage?: LanguageCode,
-): Effect.Effect<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable> =>
   Array.match(title, {
-    onEmpty: () => new Preprint.PreprintIsUnavailable({ cause: { title } }),
+    onEmpty: () => new Preprints.PreprintIsUnavailable({ cause: { title } }),
     onNonEmpty: flow(
       title => Effect.succeed({ text: sanitizeHtml(maybeDecode(title[0], id), { allowBlockLevel: false }) }),
       Effect.bind('language', ({ text }) =>
         Effect.orElse(
           Effect.flatten(detectLanguageForServer({ id, text, workLanguage })),
-          () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+          () => new Preprints.PreprintIsUnavailable({ cause: 'unknown title language' }),
         ),
       ),
     ),
@@ -139,7 +146,7 @@ const getAbstract = (
   abstract: Crossref.Work['abstract'],
   id: CrossrefPreprintId,
   workLanguage?: LanguageCode,
-): Effect.Effect<Preprint.Preprint['abstract'], Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint['abstract'], Preprints.PreprintIsUnavailable> =>
   abstract !== undefined
     ? pipe(
         Effect.succeed({
@@ -148,7 +155,7 @@ const getAbstract = (
         Effect.bind('language', ({ text }) =>
           Effect.orElse(
             Effect.flatten(detectLanguageForServer({ id, text, workLanguage })),
-            () => new Preprint.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
+            () => new Preprints.PreprintIsUnavailable({ cause: 'unknown abstract language' }),
           ),
         ),
       )

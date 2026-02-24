@@ -3,23 +3,23 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
 import { encode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
-import { detectLanguage, detectLanguageFrom } from '../../detect-language.ts'
-import type { Datacite } from '../../ExternalApis/index.ts'
-import { type Html, sanitizeHtml } from '../../html.ts'
-import { Iso639, OrcidId } from '../../types/index.ts'
-import * as Preprint from '../Preprint.ts'
+import { detectLanguage, detectLanguageFrom } from '../../../detect-language.ts'
+import type { Datacite } from '../../../ExternalApis/index.ts'
+import { type Html, sanitizeHtml } from '../../../html.ts'
+import * as Preprints from '../../../Preprints/index.ts'
 import {
   AfricarxivZenodoPreprintId,
   fromPreprintDoi,
   LifecycleJournalPreprintId,
   OsfPreprintId,
   ZenodoPreprintId,
-} from '../PreprintId.ts'
+} from '../../../Preprints/index.ts'
+import { Iso639, OrcidId } from '../../../types/index.ts'
 import { type DatacitePreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
 export const recordToPreprint = (
   record: Datacite.Record,
-): Effect.Effect<Preprint.Preprint, Preprint.NotAPreprint | Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint, Preprints.NotAPreprint | Preprints.PreprintIsUnavailable> =>
   Effect.gen(function* () {
     const id = yield* determineDatacitePreprintId(record)
 
@@ -35,7 +35,7 @@ export const recordToPreprint = (
 
     const posted = yield* getPostedDate(record.dates)
 
-    return Preprint.Preprint({
+    return Preprints.Preprint({
       abstract,
       authors,
       id,
@@ -47,12 +47,12 @@ export const recordToPreprint = (
 
 const determineDatacitePreprintId = (
   record: Datacite.Record,
-): Either.Either<DatacitePreprintId, Preprint.PreprintIsUnavailable> =>
+): Either.Either<DatacitePreprintId, Preprints.PreprintIsUnavailable> =>
   Either.gen(function* () {
     const doi = record.doi
 
     if (!isDoiFromSupportedPublisher(doi)) {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     const indeterminateId = fromPreprintDoi(doi)
@@ -80,7 +80,7 @@ const determineDatacitePreprintId = (
     }
 
     if (indeterminateId._tag === 'AfricarxivFigsharePreprintId' && record.publisher !== 'AfricArXiv') {
-      return yield* Either.left(new Preprint.PreprintIsUnavailable({ cause: doi }))
+      return yield* Either.left(new Preprints.PreprintIsUnavailable({ cause: doi }))
     }
 
     return indeterminateId
@@ -89,7 +89,7 @@ const determineDatacitePreprintId = (
 const ensureIsAPreprint = (
   types: Datacite.Record['types'],
   id: DatacitePreprintId,
-): Either.Either<void, Preprint.NotAPreprint> =>
+): Either.Either<void, Preprints.NotAPreprint> =>
   types.resourceType?.toLowerCase() === 'preprint' ||
   types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
   (id._tag === 'LifecycleJournalPreprintId' &&
@@ -98,11 +98,11 @@ const ensureIsAPreprint = (
   (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() == 'other')
     ? Either.void
-    : Either.left(new Preprint.NotAPreprint({ cause: types }))
+    : Either.left(new Preprints.NotAPreprint({ cause: types }))
 
 const getPostedDate = (
   dates: Datacite.Record['dates'],
-): Either.Either<Preprint.Preprint['posted'], Preprint.PreprintIsUnavailable> =>
+): Either.Either<Preprints.Preprint['posted'], Preprints.PreprintIsUnavailable> =>
   pipe(
     Option.none(),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Submitted')),
@@ -110,7 +110,7 @@ const getPostedDate = (
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
-    Either.fromOption(() => new Preprint.PreprintIsUnavailable({ cause: { dates } })),
+    Either.fromOption(() => new Preprints.PreprintIsUnavailable({ cause: { dates } })),
   )
 
 const findOrcid = (creator: Datacite.Record['creators'][number]) =>
@@ -122,9 +122,9 @@ const findOrcid = (creator: Datacite.Record['creators'][number]) =>
 
 const getAuthors = (
   creators: Datacite.Record['creators'],
-): Either.Either<Preprint.Preprint['authors'], Preprint.PreprintIsUnavailable> =>
+): Either.Either<Preprints.Preprint['authors'], Preprints.PreprintIsUnavailable> =>
   Array.match(creators, {
-    onEmpty: () => Either.left(new Preprint.PreprintIsUnavailable({ cause: { creators } })),
+    onEmpty: () => Either.left(new Preprints.PreprintIsUnavailable({ cause: { creators } })),
     onNonEmpty: creators =>
       Either.right(
         Array.map(
@@ -146,13 +146,13 @@ const getTitle = (
   titles: Datacite.Record['titles'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprint.Preprint['title'], Preprint.PreprintIsUnavailable> =>
+): Effect.Effect<Preprints.Preprint['title'], Preprints.PreprintIsUnavailable> =>
   Effect.gen(function* () {
     const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
 
     const language = yield* Effect.orElse(
       Effect.flatten(detectLanguageForServer({ id, text, recordLanguage })),
-      () => new Preprint.PreprintIsUnavailable({ cause: 'unknown title language' }),
+      () => new Preprints.PreprintIsUnavailable({ cause: 'unknown title language' }),
     )
 
     return {
@@ -165,7 +165,7 @@ const getAbstract = (
   descriptions: Datacite.Record['descriptions'],
   id: DatacitePreprintId,
   recordLanguage?: LanguageCode,
-): Effect.Effect<Preprint.Preprint['abstract']> =>
+): Effect.Effect<Preprints.Preprint['abstract']> =>
   Effect.gen(function* () {
     const abstract = Option.getOrUndefined(
       Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),

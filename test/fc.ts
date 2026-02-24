@@ -39,6 +39,9 @@ import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'
 import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.js'
 import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
+import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintData/Crossref/PreprintId.ts'
+import type { DatacitePreprintId } from '../src/ExternalInteractions/PreprintData/Datacite/PreprintId.ts'
+import type { JapanLinkCenterPreprintId } from '../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
 import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.ts'
 import type { IsOpenForRequests } from '../src/is-open-for-requests.ts'
 import type { Languages } from '../src/languages.ts'
@@ -54,8 +57,6 @@ import type { Location } from '../src/location.ts'
 import assets from '../src/manifest.json' with { type: 'json' }
 import type { OrcidToken } from '../src/orcid-token.ts'
 import * as Personas from '../src/Personas/index.ts'
-import type { CrossrefPreprintId } from '../src/Preprints/Crossref/PreprintId.ts'
-import type { DatacitePreprintId } from '../src/Preprints/Datacite/PreprintId.ts'
 import {
   AdvancePreprintId,
   AfricarxivFigsharePreprintId,
@@ -104,7 +105,6 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
-import type { JapanLinkCenterPreprintId } from '../src/Preprints/JapanLinkCenter/PreprintId.ts'
 import type { CoarNotifyTargetPreprintId } from '../src/PreprintServers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'

@@ -1,15 +1,14 @@
 import { Effect, pipe } from 'effect'
-import { Philsci } from '../../ExternalApis/index.ts'
-import * as StatusCodes from '../../StatusCodes.ts'
-import * as Preprint from '../Preprint.ts'
-import type { PhilsciPreprintId } from '../PreprintId.ts'
+import { Philsci } from '../../../ExternalApis/index.ts'
+import * as Preprints from '../../../Preprints/index.js'
+import * as StatusCodes from '../../../StatusCodes.ts'
 import { EprintToPreprint } from './EprintToPreprint.ts'
 
 export const getPreprintFromPhilsci = (
-  id: PhilsciPreprintId,
+  id: Preprints.PhilsciPreprintId,
 ): Effect.Effect<
-  Preprint.Preprint,
-  Preprint.NotAPreprint | Preprint.PreprintIsNotFound | Preprint.PreprintIsUnavailable,
+  Preprints.Preprint,
+  Preprints.NotAPreprint | Preprints.PreprintIsNotFound | Preprints.PreprintIsUnavailable,
   Philsci.Philsci
 > =>
   pipe(
@@ -20,12 +19,12 @@ export const getPreprintFromPhilsci = (
         error._tag === 'ResponseError' &&
         error.reason === 'StatusCode' &&
         error.response.status === StatusCodes.NotFound,
-      error => new Preprint.PreprintIsNotFound({ cause: error }),
+      error => new Preprints.PreprintIsNotFound({ cause: error }),
     ),
     Effect.catchTag(
       'ParseError',
       'RequestError',
       'ResponseError',
-      error => new Preprint.PreprintIsUnavailable({ cause: error }),
+      error => new Preprints.PreprintIsUnavailable({ cause: error }),
     ),
   )

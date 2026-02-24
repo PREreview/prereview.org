@@ -1,11 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Effect } from 'effect'
-import { Crossref } from '../../../src/ExternalApis/index.ts'
-import * as _ from '../../../src/Preprints/Crossref/Preprint.ts'
-import { Doi } from '../../../src/types/Doi.ts'
-import * as EffectTest from '../../EffectTest.ts'
-import * as fc from '../../fc.ts'
+import { Crossref } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../../../fc.ts'
 
 describe('workToPreprint', () => {
   test.prop([fc.lorem(), fc.option(fc.lorem(), { nil: undefined })], {

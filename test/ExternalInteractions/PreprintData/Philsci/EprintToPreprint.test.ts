@@ -4,12 +4,12 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Schema } from 'effect'
-import { Philsci } from '../../../src/ExternalApis/index.ts'
-import { rawHtml } from '../../../src/html.ts'
-import { PhilsciPreprintId, Preprint } from '../../../src/Preprints/index.ts'
-import * as _ from '../../../src/Preprints/Philsci/EprintToPreprint.ts'
-import { OrcidId } from '../../../src/types/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
+import { Philsci } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/PreprintData/Philsci/EprintToPreprint.ts'
+import { rawHtml } from '../../../../src/html.ts'
+import { PhilsciPreprintId, Preprint } from '../../../../src/Preprints/index.ts'
+import { OrcidId } from '../../../../src/types/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
 
 test.each([
   {

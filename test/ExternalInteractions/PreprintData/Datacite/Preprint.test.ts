@@ -2,11 +2,11 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
-import { Datacite } from '../../../src/ExternalApis/index.ts'
-import * as _ from '../../../src/Preprints/Datacite/Preprint.ts'
-import { Doi } from '../../../src/types/Doi.ts'
-import * as EffectTest from '../../EffectTest.ts'
-import * as fc from '../../fc.ts'
+import { Datacite } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
+import { Doi } from '../../../../src/types/Doi.ts'
+import * as EffectTest from '../../../EffectTest.ts'
+import * as fc from '../../../fc.ts'
 
 describe('recordToPreprint', () => {
   test.prop([fc.option(fc.lorem(), { nil: undefined }), fc.option(fc.lorem(), { nil: undefined })], {

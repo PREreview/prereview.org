@@ -5,9 +5,9 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
-import { Crossref } from '../../../src/ExternalApis/index.ts'
-import { rawHtml } from '../../../src/html.ts'
-import { workToPreprint } from '../../../src/Preprints/Crossref/Preprint.ts'
+import { Crossref } from '../../../../src/ExternalApis/index.ts'
+import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
+import { rawHtml } from '../../../../src/html.ts'
 import {
   AdvancePreprintId,
   AfricarxivOsfPreprintId,
@@ -34,9 +34,9 @@ import {
   TechrxivPreprintId,
   UmsidaPreprintId,
   VerixivPreprintId,
-} from '../../../src/Preprints/index.ts'
-import { OrcidId } from '../../../src/types/OrcidId.ts'
-import * as EffectTest from '../../EffectTest.ts'
+} from '../../../../src/Preprints/index.ts'
+import { OrcidId } from '../../../../src/types/OrcidId.ts'
+import * as EffectTest from '../../../EffectTest.ts'
 
 test.each([
   {
