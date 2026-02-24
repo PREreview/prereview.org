@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Runtime } from 'effect'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
@@ -13,6 +13,7 @@ import type { AddToSessionEnv } from '../../../src/WebApp/session.ts'
 import { CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
+import * as EffectTest from '../../EffectTest.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
@@ -27,25 +28,31 @@ describe('writeReviewPublish', () => {
     fc.unverifiedContactEmailAddress(),
   ])(
     'when the user needs to verify their email address',
-    async (preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+    (preprintId, preprintTitle, method, newReview, user, locale, contactEmailAddress) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
+        const formStore = new Keyv()
+        yield* Effect.promise(() =>
+          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+        )
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        formStore,
-        getContactEmailAddress: () => TE.right(contactEmailAddress),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            formStore,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([
@@ -55,27 +62,31 @@ describe('writeReviewPublish', () => {
     fc.completedForm(),
     fc.user(),
     fc.supportedLocale(),
-  ])(
-    'when the user needs to enter an email address',
-    async (preprintId, preprintTitle, method, newReview, user, locale) => {
+  ])('when the user needs to enter an email address', (preprintId, preprintTitle, method, newReview, user, locale) =>
+    Effect.gen(function* () {
+      const runtime = yield* Effect.runtime()
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+      yield* Effect.promise(() =>
+        formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+      )
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        formStore,
-        getContactEmailAddress: () => TE.left('not-found'),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+      const actual = yield* Effect.promise(() =>
+        _.writeReviewPublish({ id: preprintId, locale, method, user })({
+          addToSession: shouldNotBeCalled,
+          formStore,
+          getContactEmailAddress: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.right(preprintTitle),
+          publishPrereview: shouldNotBeCalled,
+          runtime,
+        })(),
+      )
 
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
         status: StatusCodes.SeeOther,
         location: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
       })
-    },
+    }).pipe(EffectTest.run),
   )
 
   test.prop([
@@ -90,46 +101,55 @@ describe('writeReviewPublish', () => {
     fc.boolean(),
   ])(
     'when the form is complete with a questions-based review',
-    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
-      const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
-      const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+    (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
+        const formStore = new Keyv()
+        yield* Effect.promise(() =>
+          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+        )
+        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+          TE.right([reviewDoi, reviewId]),
+        )
+        const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
-        addToSession,
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-        publishPrereview,
-        getContactEmailAddress: () => TE.right(contactEmailAddress),
-        runtime: Runtime.defaultRuntime,
-      })()
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
+            addToSession,
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            publishPrereview,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            runtime,
+          })(),
+        )
 
-      expect(publishPrereview).toHaveBeenCalledWith({
-        conduct: 'yes',
-        otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
-        persona: newReview.persona,
-        preprint: preprintTitle,
-        review: expect.anything(),
-        language: localeToIso6391(locale),
-        license: 'CC-BY-4.0',
-        locale,
-        structured: true,
-        user,
-      })
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
-      })
-      expect(addToSession).toHaveBeenCalledWith('published-review', {
-        doi: reviewDoi,
-        form: CompletedFormC.encode(newReview) as never,
-        id: reviewId,
-      })
-      expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
-    },
+        expect(publishPrereview).toHaveBeenCalledWith({
+          conduct: 'yes',
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
+          persona: newReview.persona,
+          preprint: preprintTitle,
+          review: expect.anything(),
+          language: localeToIso6391(locale),
+          license: 'CC-BY-4.0',
+          locale,
+          structured: true,
+          user,
+        })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
+        })
+        expect(addToSession).toHaveBeenCalledWith('published-review', {
+          doi: reviewDoi,
+          form: CompletedFormC.encode(newReview) as never,
+          id: reviewId,
+        })
+        expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
+      }).pipe(EffectTest.run),
   )
+
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
@@ -142,45 +162,51 @@ describe('writeReviewPublish', () => {
     fc.boolean(),
   ])(
     'when the form is complete with a freeform review',
-    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
-      const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+    (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+          TE.right([reviewDoi, reviewId]),
+        )
+        const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
-        addToSession,
-        formStore,
-        getContactEmailAddress: () => TE.right(contactEmailAddress),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        publishPrereview,
-        runtime: Runtime.defaultRuntime,
-      })()
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
+            addToSession,
+            formStore,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            publishPrereview,
+            runtime,
+          })(),
+        )
 
-      expect(publishPrereview).toHaveBeenCalledWith({
-        conduct: 'yes',
-        otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
-        persona: newReview.persona,
-        preprint: preprintTitle,
-        review: expect.htmlContaining(newReview.review) as never,
-        language: expect.anything(),
-        license: 'CC-BY-4.0',
-        locale,
-        structured: false,
-        user,
-      })
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
-      })
-      expect(addToSession).toHaveBeenCalledWith('published-review', {
-        doi: reviewDoi,
-        form: FormC.encode(CompletedFormC.encode(newReview)),
-        id: reviewId,
-      })
-      expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
-    },
+        expect(publishPrereview).toHaveBeenCalledWith({
+          conduct: 'yes',
+          otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
+          persona: newReview.persona,
+          preprint: preprintTitle,
+          review: expect.htmlContaining(newReview.review) as never,
+          language: expect.anything(),
+          license: 'CC-BY-4.0',
+          locale,
+          structured: false,
+          user,
+        })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
+        })
+        expect(addToSession).toHaveBeenCalledWith('published-review', {
+          doi: reviewDoi,
+          form: FormC.encode(CompletedFormC.encode(newReview)),
+          id: reviewId,
+        })
+        expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
+      }).pipe(EffectTest.run),
   )
 
   describe('the form is complete and generative AI was used', () => {
@@ -196,24 +222,30 @@ describe('writeReviewPublish', () => {
       fc.boolean(),
     ])(
       'when the feature flag is enabled',
-      async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
-        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-          TE.right([reviewDoi, reviewId]),
-        )
+      (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
+        Effect.gen(function* () {
+          const runtime = yield* Effect.runtime()
+          const formStore = new Keyv()
+          yield* Effect.promise(() =>
+            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+          )
+          const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+            TE.right([reviewDoi, reviewId]),
+          )
 
-        await _.writeReviewPublish({ aiReviewsAsCc0: true, id: preprintId, locale, method: 'POST', user })({
-          addToSession: () => TE.of(undefined),
-          formStore,
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          publishPrereview,
-          runtime: Runtime.defaultRuntime,
-        })()
+          yield* Effect.promise(() =>
+            _.writeReviewPublish({ aiReviewsAsCc0: true, id: preprintId, locale, method: 'POST', user })({
+              addToSession: () => TE.of(undefined),
+              formStore,
+              getContactEmailAddress: () => TE.right(contactEmailAddress),
+              getPreprintTitle: () => TE.right(preprintTitle),
+              publishPrereview,
+              runtime,
+            })(),
+          )
 
-        expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
-      },
+          expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
+        }).pipe(EffectTest.run),
     )
 
     test.prop([
@@ -228,24 +260,30 @@ describe('writeReviewPublish', () => {
       fc.boolean(),
     ])(
       'when the feature flag is not enabled',
-      async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
-        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-          TE.right([reviewDoi, reviewId]),
-        )
+      (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
+        Effect.gen(function* () {
+          const runtime = yield* Effect.runtime()
+          const formStore = new Keyv()
+          yield* Effect.promise(() =>
+            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+          )
+          const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
+            TE.right([reviewDoi, reviewId]),
+          )
 
-        await _.writeReviewPublish({ aiReviewsAsCc0: false, id: preprintId, locale, method: 'POST', user })({
-          addToSession: () => TE.of(undefined),
-          formStore,
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPreprintTitle: () => TE.right(preprintTitle),
-          publishPrereview,
-          runtime: Runtime.defaultRuntime,
-        })()
+          yield* Effect.promise(() =>
+            _.writeReviewPublish({ aiReviewsAsCc0: false, id: preprintId, locale, method: 'POST', user })({
+              addToSession: () => TE.of(undefined),
+              formStore,
+              getContactEmailAddress: () => TE.right(contactEmailAddress),
+              getPreprintTitle: () => TE.right(preprintTitle),
+              publishPrereview,
+              runtime,
+            })(),
+          )
 
-        expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
-      },
+          expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
+        }).pipe(EffectTest.run),
     )
   })
 
@@ -259,111 +297,135 @@ describe('writeReviewPublish', () => {
     fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
   ])(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview))
+    (preprintId, preprintTitle, method, newPrereview, user, locale, contactEmailAddress) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview)))
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        formStore,
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            formStore,
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when there is no form',
-    async (preprintId, preprintTitle, method, user, locale) => {
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        getContactEmailAddress: shouldNotBeCalled,
-        getPreprintTitle: () => TE.right(preprintTitle),
-        formStore: new Keyv(),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+    (preprintId, preprintTitle, method, user, locale) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            getContactEmailAddress: shouldNotBeCalled,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            formStore: new Keyv(),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be loaded',
-    async (preprintId, method, user, locale) => {
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        formStore: new Keyv(),
-        getContactEmailAddress: shouldNotBeCalled,
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+    (preprintId, method, user, locale) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            formStore: new Keyv(),
+            getContactEmailAddress: shouldNotBeCalled,
+            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.supportedLocale()])(
     'when the preprint cannot be found',
-    async (preprintId, method, user, locale) => {
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user })({
-        addToSession: shouldNotBeCalled,
-        formStore: new Keyv(),
-        getContactEmailAddress: shouldNotBeCalled,
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+    (preprintId, method, user, locale) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user })({
+            addToSession: shouldNotBeCalled,
+            formStore: new Keyv(),
+            getContactEmailAddress: shouldNotBeCalled,
+            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.supportedLocale()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, method, locale) => {
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
-        addToSession: shouldNotBeCalled,
-        getContactEmailAddress: shouldNotBeCalled,
-        getPreprintTitle: () => TE.right(preprintTitle),
-        formStore: new Keyv(),
-        publishPrereview: shouldNotBeCalled,
-        runtime: Runtime.defaultRuntime,
-      })()
+    (preprintId, preprintTitle, method, locale) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method, user: undefined })({
+            addToSession: shouldNotBeCalled,
+            getContactEmailAddress: shouldNotBeCalled,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            formStore: new Keyv(),
+            publishPrereview: shouldNotBeCalled,
+            runtime,
+          })(),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }).pipe(EffectTest.run),
   )
 
   test.prop([
@@ -377,28 +439,34 @@ describe('writeReviewPublish', () => {
     fc.verifiedContactEmailAddress(),
   ])(
     'when the PREreview cannot be published',
-    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime()
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-      const actual = await _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
-        addToSession: shouldNotBeCalled,
-        getContactEmailAddress: () => TE.right(contactEmailAddress),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        formStore,
-        publishPrereview: () => TE.left('unavailable'),
-        runtime: Runtime.defaultRuntime,
-      })()
+        const actual = yield* Effect.promise(() =>
+          _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
+            addToSession: shouldNotBeCalled,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            formStore,
+            publishPrereview: () => TE.left('unavailable'),
+            runtime,
+          })(),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(FormC.encode(newReview))
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toStrictEqual(
+          FormC.encode(newReview),
+        )
+      }).pipe(EffectTest.run),
   )
 })
