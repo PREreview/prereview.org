@@ -14,21 +14,26 @@ export class LanguageDetection extends Context.Tag('LanguageDetection')<
       hint?: LanguageCode,
     ) => Effect.Effect<LanguageCode, UnableToDetectLanguage>
     detectLanguageFrom: <L extends LanguageCode>(
-      ...languages: ReadonlyArray<L>
-    ) => (text: Html | PlainText | string, hint?: LanguageCode) => Effect.Effect<L, UnableToDetectLanguage>
+      languages: ReadonlyArray<L>,
+      text: Html | PlainText | string,
+      hint?: LanguageCode,
+    ) => Effect.Effect<L, UnableToDetectLanguage>
   }
 >() {}
 
 export const { detectLanguage } = Effect.serviceFunctions(LanguageDetection)
 
-export const detectLanguageFrom = <L extends LanguageCode>(...languages: ReadonlyArray<L>) =>
-  Effect.fnUntraced(function* (text: Html | PlainText | string, hint?: LanguageCode) {
-    const languageDetection = yield* LanguageDetection
+export const detectLanguageFrom = Effect.fnUntraced(function* <L extends LanguageCode>(
+  languages: ReadonlyArray<L>,
+  text: Html | PlainText | string,
+  hint?: LanguageCode,
+) {
+  const languageDetection = yield* LanguageDetection
 
-    return yield* languageDetection.detectLanguageFrom(...languages)(text, hint)
-  })
+  return yield* languageDetection.detectLanguageFrom(languages, text, hint)
+})
 
 export const layerCld = Layer.succeed(LanguageDetection, {
   detectLanguage: Cld.detectLanguage,
-  detectLanguageFrom: Cld.detectLanguageFrom,
+  detectLanguageFrom: (languages, text, hint) => Cld.detectLanguageFrom(...languages)(text, hint),
 })

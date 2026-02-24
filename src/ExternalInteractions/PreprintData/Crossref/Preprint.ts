@@ -189,7 +189,7 @@ const detectLanguageForServer = ({
 }): Effect.Effect<LanguageCode, LanguageDetection.UnableToDetectLanguage, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
     AdvancePreprintId: () => Effect.succeed('en' as const),
-    AfricarxivOsfPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, workLanguage),
+    AfricarxivOsfPreprintId: () => LanguageDetection.detectLanguageFrom(['en', 'fr'], text, workLanguage),
     AuthoreaPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     BiorxivPreprintId: () => Effect.succeed('en' as const),
     ChemrxivPreprintId: () => Effect.succeed('en' as const),
@@ -205,7 +205,7 @@ const detectLanguageForServer = ({
     PreprintsorgPreprintId: () => Effect.succeed('en' as const),
     PsyarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     ResearchSquarePreprintId: () => Effect.succeed('en' as const),
-    ScieloPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'es', 'pt')(text, workLanguage),
+    ScieloPreprintId: () => LanguageDetection.detectLanguageFrom(['en', 'es', 'pt'], text, workLanguage),
     ScienceOpenPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     SocarxivPreprintId: () => LanguageDetection.detectLanguage(text, workLanguage),
     SsrnPreprintId: () => Effect.succeed('en' as const),

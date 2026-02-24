@@ -204,13 +204,13 @@ const detectLanguageForServer = ({
   recordLanguage?: LanguageCode
 }): Effect.Effect<LanguageCode, LanguageDetection.UnableToDetectLanguage, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
-    AfricarxivFigsharePreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
-    AfricarxivUbuntunetPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
-    AfricarxivZenodoPreprintId: () => LanguageDetection.detectLanguageFrom('en', 'fr')(text, recordLanguage),
+    AfricarxivFigsharePreprintId: () => LanguageDetection.detectLanguageFrom(['en', 'fr'], text, recordLanguage),
+    AfricarxivUbuntunetPreprintId: () => LanguageDetection.detectLanguageFrom(['en', 'fr'], text, recordLanguage),
+    AfricarxivZenodoPreprintId: () => LanguageDetection.detectLanguageFrom(['en', 'fr'], text, recordLanguage),
     ArcadiaSciencePreprintId: () => Effect.succeed('en' as const),
     ArxivPreprintId: () => Effect.succeed('en' as const),
     LifecycleJournalPreprintId: () => Effect.succeed('en' as const),
     OsfPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
-    PsychArchivesPreprintId: () => LanguageDetection.detectLanguageFrom('de', 'en')(text, recordLanguage),
+    PsychArchivesPreprintId: () => LanguageDetection.detectLanguageFrom(['de', 'en'], text, recordLanguage),
     ZenodoPreprintId: () => LanguageDetection.detectLanguage(text, recordLanguage),
   })
