@@ -26,7 +26,7 @@ describe('getClubByName', () => {
 
 describe('isLeadFor', () => {
   test.each([
-    ['Stephen Gabrielson', OrcidId('0000-0001-9420-4466'), ['asapbio-meta-research']],
+    ['Jay Patel', OrcidId('0000-0003-1040-3607'), ['asapbio-meta-research']],
     ['Jonathon Coates', OrcidId('0000-0001-9039-9219'), ['asapbio-metabolism']],
   ])('when a lead (%s)', (_name, orcid, expected) => {
     const actual = _.isLeadFor(orcid)
@@ -43,7 +43,7 @@ describe('isLeadFor', () => {
 
 describe('isAClubLead', () => {
   test.each([
-    ['Stephen Gabrielson', OrcidId('0000-0001-9420-4466')],
+    ['Jay Patel', OrcidId('0000-0003-1040-3607')],
     ['Jonathon Coates', OrcidId('0000-0001-9039-9219')],
   ])('when a lead (%s)', (_name, orcid) => {
     const actual = _.isAClubLead(orcid)
