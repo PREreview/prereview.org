@@ -1,6 +1,7 @@
 export * as CommunitySlack from './CommunitySlack/index.ts'
 export * as Email from './Email/index.ts'
 export * as GhostPage from './GhostPage/index.ts'
+export * as LanguageDetection from './LanguageDetection/index.ts'
 export * as OpenAlexWorks from './OpenAlexWorks/index.ts'
 export * as PreprintData from './PreprintData/index.ts'
 export * as ZenodoRecords from './ZenodoRecords/index.ts'

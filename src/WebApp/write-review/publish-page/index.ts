@@ -12,7 +12,7 @@ import {
   type GetContactEmailAddressEnv,
   maybeGetContactEmailAddress,
 } from '../../../contact-email-address.ts'
-import * as LanguageDetection from '../../../detect-language.ts'
+import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'

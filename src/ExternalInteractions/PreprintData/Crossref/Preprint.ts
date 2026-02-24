@@ -3,12 +3,12 @@ import * as Doi from 'doi-ts'
 import { Array, Effect, Either, flow, Match, type Option, pipe } from 'effect'
 import { decode } from 'html-entities'
 import type { LanguageCode } from 'iso-639-1'
-import * as LanguageDetection from '../../../detect-language.ts'
 import type { Crossref } from '../../../ExternalApis/index.ts'
 import { type Html, sanitizeHtml } from '../../../html.ts'
 import { transformJatsToHtml } from '../../../jats.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { Iso639 } from '../../../types/index.ts'
+import * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { type CrossrefPreprintId, isDoiFromSupportedPublisher } from './PreprintId.ts'
 
 const determineCrossrefPreprintId = (

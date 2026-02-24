@@ -1,9 +1,9 @@
 import cld from 'cld'
 import { Array, Effect, Option, Record } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
-import { type Html, PlainText } from './html.ts'
+import { type Html, PlainText } from '../../html.ts'
 
-export const detectLanguage = Effect.fn('detectLanguage')(function* (
+export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(function* (
   text: Html | PlainText | string,
   hint?: LanguageCode,
 ): Effect.fn.Return<Option.Option<LanguageCode>> {
@@ -27,7 +27,7 @@ export const detectLanguage = Effect.fn('detectLanguage')(function* (
 })
 
 export function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>) {
-  return Effect.fn(function* (
+  return Effect.fn('LanguageDetection.detectLanguageFrom')(function* (
     text: Html | PlainText | string,
     hint?: LanguageCode,
   ): Effect.fn.Return<Option.Option<L>> {

@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals'
 import { type Array, Effect, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import * as _ from '../src/detect-language.ts'
-import { type Html, html, type PlainText, rawHtml } from '../src/html.ts'
-import * as EffectTest from './EffectTest.ts'
+import * as _ from '../../../src/ExternalInteractions/LanguageDetection/Cld.ts'
+import { type Html, html, type PlainText, rawHtml } from '../../../src/html.ts'
+import * as EffectTest from '../../EffectTest.ts'
 
 describe('detectLanguage', () => {
   test.each<[string, Html | PlainText | string, Option.Option<LanguageCode>, LanguageCode?]>([
