@@ -378,7 +378,9 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
       </p>
     `,
     added: Temporal.PlainDate.from('2025-09-12'),
-    leads: [{ name: 'Jennifer Miller', orcid: OrcidId('0000-0001-5459-6733') }],
+    leads: [{ name: 'Jennifer Miller', orcid: OrcidId('0000-0001-5459-6733') },
+           { name: 'Akuma Ifeanyichukwu', orcid: OrcidId('0000-0002-7010-9322') },
+           ],
     joinLink: new URL(
       'https://docs.google.com/forms/d/e/1FAIpQLSfm0bn9zb5s-SGUbXtbtBvpivrXpz0mDEIESauypvl5h6cveA/viewform?usp=sharing&ouid=111181003877743877144',
     ),
