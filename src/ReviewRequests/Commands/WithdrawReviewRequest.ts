@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Either, type Option } from 'effect'
-import type * as Events from '../../Events.ts'
+import { Data, Either, Match, Option } from 'effect'
+import * as Events from '../../Events.js'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
@@ -12,15 +12,33 @@ export interface Command {
 
 export type Error = Errors.UnknownReviewRequest
 
-export type State = undefined
+export type State = NotAccepted | HasBeenPublished | HasBeenWithdrawn
+
+export class NotAccepted extends Data.TaggedClass('NotAccepted') {}
+
+export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+
+export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, command: Command): State => undefined
+export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, command: Command): State =>
+  new NotAccepted()
 
 export const decide = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   state: State,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   command: Command,
 ): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
-  Either.left(new Errors.UnknownReviewRequest({ cause: 'not implemented' }))
+  Match.valueTags(state, {
+    NotAccepted: () => Either.left(new Errors.UnknownReviewRequest({})),
+    HasBeenPublished: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasWithdrawn({
+            withdrawnAt: command.withdrawnAt,
+            reviewRequestId: command.reviewRequestId,
+            reason: command.reason,
+          }),
+        ),
+      ),
+    HasBeenWithdrawn: () => Either.right(Option.none()),
+  })
