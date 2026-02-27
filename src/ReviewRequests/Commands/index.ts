@@ -1,4 +1,5 @@
 import { Context, Data, Effect, Either, flow, Layer, Option, pipe, Scope, type Types } from 'effect'
+import * as Commands from '../../Commands.ts'
 import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -11,6 +12,7 @@ import * as RecordEmailSentToAcknowledgeReviewRequest from './RecordEmailSentToA
 import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
+import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
@@ -20,6 +22,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
     importReviewRequestFromPreprintServer: CommandHandler<ImportReviewRequestFromPreprintServer.Command>
     importReviewRequestFromPrereviewer: CommandHandler<ImportReviewRequestFromPrereviewer.Command>
+    withdrawReviewRequest: Commands.FromCommand<typeof WithdrawReviewRequest>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
       RecordReviewRequestSharedOnTheCommunitySlack.Command,
@@ -42,6 +45,7 @@ export const {
   rejectReviewRequest,
   importReviewRequestFromPreprintServer,
   importReviewRequestFromPrereviewer,
+  withdrawReviewRequest,
   categorizeReviewRequest,
   recordReviewRequestSharedOnTheCommunitySlack,
   recordFailureToCategorizeReviewRequest,
@@ -123,6 +127,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         ImportReviewRequestFromPrereviewer.foldState,
         ImportReviewRequestFromPrereviewer.decide,
       ),
+      withdrawReviewRequest: yield* Commands.makeCommand(WithdrawReviewRequest),
       categorizeReviewRequest: handleCommand(
         CategorizeReviewRequest.createFilter,
         CategorizeReviewRequest.foldState,
