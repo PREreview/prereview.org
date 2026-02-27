@@ -52,20 +52,20 @@ const withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
   reason: 'preprint-withdrawn-from-preprint-server',
 })
 
-const command = {
+const input = {
   withdrawnAt: Temporal.Now.instant(),
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
-} satisfies _.Command
+} satisfies _.Input
 
 describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['no events', []],
   ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
   it('rejects the command with an error', () => {
-    const state = _.foldState(events, command)
+    const state = _.foldState(events, input)
 
-    const actual = _.decide(state, command)
+    const actual = _.decide(state, input)
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
   })
@@ -77,17 +77,17 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['imported from a preprint server', [importedPreprintServer]],
 ])('review request has been published (%s)', (_case, events) => {
   it('withdraws the review request', () => {
-    const state = _.foldState(events, command)
+    const state = _.foldState(events, input)
 
-    const actual = _.decide(state, command)
+    const actual = _.decide(state, input)
 
     expect(actual).toStrictEqual(
       Either.right(
         Option.some(
           new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
-            withdrawnAt: command.withdrawnAt,
-            reviewRequestId: command.reviewRequestId,
-            reason: command.reason,
+            withdrawnAt: input.withdrawnAt,
+            reviewRequestId: input.reviewRequestId,
+            reason: input.reason,
           }),
         ),
       ),
@@ -101,9 +101,9 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['imported from a preprint server', [importedPreprintServer, withdrawn]],
 ])('review request has been withdrawn (%s)', (_case, events) => {
   it('does nothing', () => {
-    const state = _.foldState(events, command)
+    const state = _.foldState(events, input)
 
-    const actual = _.decide(state, command)
+    const actual = _.decide(state, input)
 
     expect(actual).toStrictEqual(Either.right(Option.none()))
   })

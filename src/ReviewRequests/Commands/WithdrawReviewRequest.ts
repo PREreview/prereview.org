@@ -4,7 +4,7 @@ import * as Events from '../../Events.js'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
-export interface Command {
+export interface Input {
   readonly withdrawnAt: Temporal.Instant
   readonly reviewRequestId: Uuid.Uuid
   readonly reason: 'preprint-withdrawn-from-preprint-server'
@@ -20,7 +20,7 @@ export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
 export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
 
-export const createFilter = (command: Command) =>
+export const createFilter = (input: Input) =>
   Events.EventFilter({
     types: [
       'ReviewRequestForAPreprintWasAccepted',
@@ -28,11 +28,11 @@ export const createFilter = (command: Command) =>
       'ReviewRequestFromAPreprintServerWasImported',
       'ReviewRequestForAPreprintWasWithdrawn',
     ],
-    predicates: { reviewRequestId: command.reviewRequestId },
+    predicates: { reviewRequestId: input.reviewRequestId },
   })
 
-export const foldState = (events: ReadonlyArray<Events.Event>, command: Command): State => {
-  const filteredEvents = Array.filter(events, Events.matches(createFilter(command)))
+export const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
   if (
     !Array.some(
@@ -54,16 +54,16 @@ export const foldState = (events: ReadonlyArray<Events.Event>, command: Command)
   return new HasBeenPublished()
 }
 
-export const decide = (state: State, command: Command): Either.Either<Option.Option<Events.Event>, Error> =>
+export const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
     NotAccepted: () => Either.left(new Errors.UnknownReviewRequest({})),
     HasBeenPublished: () =>
       Either.right(
         Option.some(
           new Events.ReviewRequestForAPreprintWasWithdrawn({
-            withdrawnAt: command.withdrawnAt,
-            reviewRequestId: command.reviewRequestId,
-            reason: command.reason,
+            withdrawnAt: input.withdrawnAt,
+            reviewRequestId: input.reviewRequestId,
+            reason: input.reason,
           }),
         ),
       ),
