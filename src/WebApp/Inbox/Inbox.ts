@@ -6,7 +6,7 @@ import { Temporal, Uuid } from '../../types/index.ts'
 import { ProcessCoarNotifyMessage } from './ProcessCoarNotifyMessage.ts'
 
 export const Inbox = Effect.gen(function* () {
-  const message = yield* HttpServerRequest.schemaBodyJson(CoarNotify.RequestReviewSchema)
+  const message = yield* HttpServerRequest.schemaBodyJson(CoarNotify.RequestReviewSchema, { errors: 'all' })
   const receivedAt = yield* Temporal.currentInstant
   const messageId = yield* Uuid.v5(`${message.origin.id.href} ${message.id}`, InboxUuidNamespace)
 
