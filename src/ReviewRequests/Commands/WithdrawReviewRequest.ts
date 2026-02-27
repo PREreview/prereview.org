@@ -31,7 +31,7 @@ export const createFilter = (command: Command) =>
     predicates: { reviewRequestId: command.reviewRequestId },
   })
 
-export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, command: Command): State => {
+export const foldState = (events: ReadonlyArray<Events.Event>, command: Command): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(command)))
 
   if (
@@ -54,10 +54,7 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, comm
   return new HasBeenPublished()
 }
 
-export const decide = (
-  state: State,
-  command: Command,
-): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
+export const decide = (state: State, command: Command): Either.Either<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
     NotAccepted: () => Either.left(new Errors.UnknownReviewRequest({})),
     HasBeenPublished: () =>

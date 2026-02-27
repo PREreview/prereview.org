@@ -2,6 +2,7 @@ import { it } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
+import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/WithdrawReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -57,7 +58,7 @@ const command = {
   reason: 'preprint-withdrawn-from-preprint-server',
 } satisfies _.Command
 
-describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
+describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['no events', []],
   ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
@@ -70,7 +71,7 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
   })
 })
 
-describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
+describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['received and accepted', [accepted, received]],
   ['imported from a PREreviewer', [importedPrereviewer]],
   ['imported from a preprint server', [importedPreprintServer]],
@@ -94,7 +95,7 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
   })
 })
 
-describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
+describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['received and accepted', [accepted, received, withdrawn]],
   ['imported from a PREreviewer', [importedPrereviewer, withdrawn]],
   ['imported from a preprint server', [importedPreprintServer, withdrawn]],
