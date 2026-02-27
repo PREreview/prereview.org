@@ -12,13 +12,13 @@ export interface Input {
 
 export type Error = Errors.UnknownReviewRequest
 
-export type State = NotAccepted | HasBeenPublished | HasBeenWithdrawn
+type State = NotAccepted | HasBeenPublished | HasBeenWithdrawn
 
-export class NotAccepted extends Data.TaggedClass('NotAccepted') {}
+class NotAccepted extends Data.TaggedClass('NotAccepted') {}
 
-export class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
-export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
+class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
 
 export const createFilter = (input: Input) =>
   Events.EventFilter({
