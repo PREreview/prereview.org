@@ -100,6 +100,7 @@ export const logRequest = HttpMiddleware.make(app =>
       'http.query': Object.fromEntries(url.searchParams),
       'http.referrer': Option.getOrUndefined(Headers.get(request.headers, 'Referer')),
       'http.userAgent': Option.getOrUndefined(Headers.get(request.headers, 'User-Agent')),
+      'http.flyClientIp': Option.getOrUndefined(Headers.get(request.headers, 'Fly-Client-IP')),
     })
 
     return yield* app
