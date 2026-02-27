@@ -11,6 +11,7 @@ import { getTopicDomain, getTopicField, getTopicSubfield, type TopicId } from '.
 const eventTypes = [
   'ReviewRequestForAPreprintWasReceived',
   'ReviewRequestForAPreprintWasAccepted',
+  'ReviewRequestForAPreprintWasWithdrawn',
   'ReviewRequestByAPrereviewerWasImported',
   'ReviewRequestFromAPreprintServerWasImported',
   'ReviewRequestForAPreprintWasCategorized',
@@ -54,6 +55,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         published: event.acceptedAt,
         accepted: true,
       })),
+    ReviewRequestForAPreprintWasWithdrawn: event => Record.remove(map, event.reviewRequestId),
     ReviewRequestByAPrereviewerWasImported: event =>
       Record.set(map, event.reviewRequestId, {
         published: event.publishedAt,
