@@ -1,7 +1,7 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Match, Option, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
-import * as Events from '../../Events.js'
+import * as Events from '../../Events.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
