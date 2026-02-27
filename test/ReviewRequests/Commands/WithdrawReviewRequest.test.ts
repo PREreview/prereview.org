@@ -81,7 +81,7 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
     reason: 'preprint-withdrawn-from-preprint-server',
   } satisfies _.Command
 
-  it.failing('withdraws the review request', () => {
+  it('withdraws the review request', () => {
     const state = _.foldState(events, command)
 
     const actual = _.decide(state, command)
@@ -111,7 +111,7 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
     reason: 'preprint-withdrawn-from-preprint-server',
   } satisfies _.Command
 
-  it.failing('does nothing', () => {
+  it('does nothing', () => {
     const state = _.foldState(events, command)
 
     const actual = _.decide(state, command)
