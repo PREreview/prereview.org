@@ -43,6 +43,15 @@ export class ReviewRequestForAPreprintWasRejected extends Schema.TaggedClass<Rev
   },
 ) {}
 
+export class ReviewRequestForAPreprintWasWithdrawn extends Schema.TaggedClass<ReviewRequestForAPreprintWasWithdrawn>()(
+  'ReviewRequestForAPreprintWasWithdrawn',
+  {
+    withdrawnAt: Temporal.InstantSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    reason: Schema.Literal('preprint-withdrawn-from-preprint-server'),
+  },
+) {}
+
 export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedClass<ReviewRequestFromAPreprintServerWasImported>()(
   'ReviewRequestFromAPreprintServerWasImported',
   {
@@ -124,6 +133,7 @@ export const ReviewRequestEvent = Schema.Union(
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
+  ReviewRequestForAPreprintWasWithdrawn,
   ReviewRequestFromAPreprintServerWasImported,
   ReviewRequestByAPrereviewerWasImported,
   ReviewRequestForAPreprintWasCategorized,

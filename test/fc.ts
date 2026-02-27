@@ -2392,6 +2392,19 @@ export const reviewRequestForAPreprintWasRejected = ({
     })
     .map(data => new Events.ReviewRequestForAPreprintWasRejected(data))
 
+export const reviewRequestForAPreprintWasWithdrawn = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasWithdrawn['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasWithdrawn> =>
+  fc
+    .record({
+      withdrawnAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      reason: constant('preprint-withdrawn-from-preprint-server'),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasWithdrawn(data))
+
 export const reviewRequestFromAPreprintServerWasImported = ({
   reviewRequestId,
 }: {
@@ -2509,6 +2522,7 @@ export const reviewRequestEvent = (
     reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasRejected(args),
+    reviewRequestForAPreprintWasWithdrawn(args),
     reviewRequestFromAPreprintServerWasImported(args),
     reviewRequestByAPrereviewerWasImported(args),
     reviewRequestForAPreprintWasCategorized(args),
