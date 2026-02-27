@@ -46,6 +46,11 @@ const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepte
   acceptedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
+const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request1Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
 const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
@@ -226,6 +231,12 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
         },
       ],
     }),
+  ],
+  [
+    'request was withdrawn',
+    { page: 1 },
+    [request1Received1, request1Accepted1, request1Withdrawn],
+    Either.left(new ReviewRequests.NoReviewRequestsFound({})),
   ],
   [
     'impossible page',
