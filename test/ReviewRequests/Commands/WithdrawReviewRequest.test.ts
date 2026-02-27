@@ -63,9 +63,11 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
   it('rejects the command with an error', () => {
-    const state = _.foldState(events, input)
+    const { foldState, decide } = _.WithdrawReviewRequest
 
-    const actual = _.decide(state, input)
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
   })
@@ -77,9 +79,11 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['imported from a preprint server', [importedPreprintServer]],
 ])('review request has been published (%s)', (_case, events) => {
   it('withdraws the review request', () => {
-    const state = _.foldState(events, input)
+    const { foldState, decide } = _.WithdrawReviewRequest
 
-    const actual = _.decide(state, input)
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
 
     expect(actual).toStrictEqual(
       Either.right(
@@ -101,9 +105,11 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['imported from a preprint server', [importedPreprintServer, withdrawn]],
 ])('review request has been withdrawn (%s)', (_case, events) => {
   it('does nothing', () => {
-    const state = _.foldState(events, input)
+    const { foldState, decide } = _.WithdrawReviewRequest
 
-    const actual = _.decide(state, input)
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
 
     expect(actual).toStrictEqual(Either.right(Option.none()))
   })
