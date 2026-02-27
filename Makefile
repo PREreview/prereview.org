@@ -88,3 +88,6 @@ test-integration-image:
 
 status-prod:
 	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/print-status.js"
+
+withdraw-review-requests:
+	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/withdraw-review-requests.js"
