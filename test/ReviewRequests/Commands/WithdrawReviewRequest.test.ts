@@ -51,16 +51,16 @@ const withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
   reason: 'preprint-withdrawn-from-preprint-server',
 })
 
+const command = {
+  withdrawnAt: Temporal.Now.instant(),
+  reviewRequestId: request1Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+} satisfies _.Command
+
 describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
   ['no events', []],
   ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
-  const command = {
-    withdrawnAt: Temporal.Now.instant(),
-    reviewRequestId: request1Id,
-    reason: 'preprint-withdrawn-from-preprint-server',
-  } satisfies _.Command
-
   it('rejects the command with an error', () => {
     const state = _.foldState(events, command)
 
@@ -75,12 +75,6 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
   ['imported from a PREreviewer', [importedPrereviewer]],
   ['imported from a preprint server', [importedPreprintServer]],
 ])('review request has been published (%s)', (_case, events) => {
-  const command = {
-    withdrawnAt: Temporal.Now.instant(),
-    reviewRequestId: request1Id,
-    reason: 'preprint-withdrawn-from-preprint-server',
-  } satisfies _.Command
-
   it('withdraws the review request', () => {
     const state = _.foldState(events, command)
 
@@ -105,12 +99,6 @@ describe.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>]>([
   ['imported from a PREreviewer', [importedPrereviewer, withdrawn]],
   ['imported from a preprint server', [importedPreprintServer, withdrawn]],
 ])('review request has been withdrawn (%s)', (_case, events) => {
-  const command = {
-    withdrawnAt: Temporal.Now.instant(),
-    reviewRequestId: request1Id,
-    reason: 'preprint-withdrawn-from-preprint-server',
-  } satisfies _.Command
-
   it('does nothing', () => {
     const state = _.foldState(events, command)
 
