@@ -50,6 +50,11 @@ const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepte
   acceptedAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
 })
+const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request1Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
 const request1Categorized1 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
   keywords: ['bc372b08bff50a48358e', 'd164de1eaf4ecfbd8833'],
@@ -202,6 +207,7 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
   ['no events', [], []],
   ['no received events', [request1Accepted1], []],
   ['no accepted events', [request1Received1, request1Categorized1], []],
+  ['was withdrawn', [request1Received1, request1Accepted1, request1Withdrawn], []],
   [
     'imported only',
     [request8Imported, request8Categorized, request9Imported, request9Categorized],
