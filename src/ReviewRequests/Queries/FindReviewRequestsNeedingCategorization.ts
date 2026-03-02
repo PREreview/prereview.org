@@ -10,6 +10,7 @@ const filter = Events.EventFilter({
     'ReviewRequestForAPreprintWasAccepted',
     'ReviewRequestFromAPreprintServerWasImported',
     'ReviewRequestByAPrereviewerWasImported',
+    'ReviewRequestForAPreprintWasWithdrawn',
     'ReviewRequestForAPreprintWasCategorized',
   ],
 })
@@ -24,6 +25,9 @@ const query = (events: ReadonlyArray<Events.Event>): Result => {
     }
     if (event._tag === 'ReviewRequestFromAPreprintServerWasImported') {
       return Record.set(state, event.reviewRequestId, event.publishedAt)
+    }
+    if (event._tag === 'ReviewRequestForAPreprintWasWithdrawn') {
+      return Record.remove(state, event.reviewRequestId)
     }
     if (event._tag === 'ReviewRequestForAPreprintWasCategorized') {
       return Record.remove(state, event.reviewRequestId)

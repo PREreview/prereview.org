@@ -33,12 +33,22 @@ const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })
+const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request1Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
 const request2Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 1 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId2,
   requester: Option.some(requester2),
   reviewRequestId: request2Id,
+})
+const request2Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: now.subtract({ minutes: 10 }),
+  reviewRequestId: request2Id,
+  reason: 'preprint-withdrawn-from-preprint-server',
 })
 const request3Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 1 }),
@@ -74,6 +84,7 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
     [request1Imported, request2Imported, request1Categorized],
     [{ id: request2Id, publishedAt: request2Imported.publishedAt }],
   ],
+  ['withdrawn', [request1Imported, request2Imported, request1Categorized, request1Withdrawn, request2Withdrawn], []],
 ])('FindReviewRequestsNeedingCategorization (%s)', (_name, events, expected) => {
   const actual = _.FindReviewRequestsNeedingCategorization.query(events)
 
