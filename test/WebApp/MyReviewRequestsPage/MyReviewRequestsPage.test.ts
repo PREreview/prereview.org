@@ -39,16 +39,14 @@ describe('MyReviewRequestsPage', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => Effect.succeed(results),
-          }),
-          Layer.succeed(Locale, locale),
-          Layer.succeed(LoggedInUser, user),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => Effect.succeed(results),
+        }),
+        Layer.succeed(Locale, locale),
+        Layer.succeed(LoggedInUser, user),
+      ]),
       EffectTest.run,
     ),
   )
@@ -82,16 +80,14 @@ describe('MyReviewRequestsPage', () => {
         js: [],
       })
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => Effect.succeed(results),
-          }),
-          Layer.succeed(Locale, locale),
-          Layer.succeed(LoggedInUser, user),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => Effect.succeed(results),
+        }),
+        Layer.succeed(Locale, locale),
+        Layer.succeed(LoggedInUser, user),
+      ]),
       EffectTest.run,
     ),
   )
@@ -111,16 +107,14 @@ describe('MyReviewRequestsPage', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(Preprints.Preprints, {}),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => error,
-            }),
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(Preprints.Preprints, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: () => error,
+          }),
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+        ]),
         EffectTest.run,
       ),
   )

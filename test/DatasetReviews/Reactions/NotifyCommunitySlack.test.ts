@@ -23,16 +23,14 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getPublishedReview: () => Effect.succeed(publishedReview),
-            }),
-            Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
     )
@@ -48,16 +46,14 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getPublishedReview: () => Effect.succeed(publishedReview),
-            }),
-            Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => Effect.void }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
     )
@@ -78,19 +74,17 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => error }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getPublishedReview: () => Effect.succeed(publishedReview),
-            }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { shareDatasetReview: () => error }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -103,19 +97,17 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, {}),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getPublishedReview: () => Effect.succeed(publishedReview),
-            }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-              getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-            }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getPublishedReview: () => Effect.succeed(publishedReview),
+          }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -138,16 +130,14 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToNotifyCommunitySlack({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getPublishedReview: () => error,
-          }),
-          Layer.mock(Personas.Personas, {}),
-          Layer.succeed(PublicUrl, publicUrl),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, {}),
+        Layer.mock(DatasetReviews.DatasetReviewQueries, {
+          getPublishedReview: () => error,
+        }),
+        Layer.mock(Personas.Personas, {}),
+        Layer.succeed(PublicUrl, publicUrl),
+      ]),
       EffectTest.run,
     ),
   )

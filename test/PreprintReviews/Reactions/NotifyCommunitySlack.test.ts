@@ -18,13 +18,11 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => Effect.void }),
-            Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => Effect.void }),
+          Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -40,13 +38,11 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyCommunitySlack({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => error }),
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) }),
-          Layer.succeed(PublicUrl, publicUrl),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReview: () => error }),
+        Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(prereview) }),
+        Layer.succeed(PublicUrl, publicUrl),
+      ]),
       EffectTest.run,
     ),
   )
@@ -65,13 +61,11 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyCommunitySlack({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
-          Layer.succeed(PublicUrl, publicUrl),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, {}),
+        Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
+        Layer.succeed(PublicUrl, publicUrl),
+      ]),
       EffectTest.run,
     ),
   )

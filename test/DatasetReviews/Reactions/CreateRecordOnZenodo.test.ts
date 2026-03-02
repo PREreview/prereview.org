@@ -28,20 +28,18 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
     )
@@ -61,20 +59,18 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+          Layer.mock(Personas.Personas, {
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
     )
@@ -102,21 +98,19 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => error }),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => error }),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -136,23 +130,21 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, {
-              createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
-            }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {
+            createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -174,21 +166,19 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => error }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, {}),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => error }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {}),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -201,23 +191,21 @@ describe('CreateRecordOnZenodo', () => {
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getDataForZenodoRecord: () => Effect.succeed(preview),
-            }),
-            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-              getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
-            }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, {
-              createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
-            }),
-            Layer.succeed(PublicUrl, publicUrl),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, {
+            getDataForZenodoRecord: () => Effect.succeed(preview),
+          }),
+          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+            getPseudonymPersona: () => new Personas.UnableToGetPersona({ cause: error }),
+          }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {
+            createRecordForDatasetReview: () => new ZenodoRecords.FailedToCreateRecordForDatasetReview({}),
+          }),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
         EffectTest.run,
       ),
   )
@@ -237,16 +225,14 @@ describe('CreateRecordOnZenodo', () => {
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-          Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
-          Layer.mock(Datasets.Datasets, {}),
-          Layer.mock(Personas.Personas, {}),
-          Layer.mock(ZenodoRecords.ZenodoRecords, {}),
-          Layer.succeed(PublicUrl, publicUrl),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+        Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
+        Layer.mock(Datasets.Datasets, {}),
+        Layer.mock(Personas.Personas, {}),
+        Layer.mock(ZenodoRecords.ZenodoRecords, {}),
+        Layer.succeed(PublicUrl, publicUrl),
+      ]),
       EffectTest.run,
     ),
   )

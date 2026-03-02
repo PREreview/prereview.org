@@ -16,12 +16,10 @@ describe('UseZenodoRecordDoi', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => Effect.void }),
-            Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => Effect.void }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
+        ]),
         EffectTest.run,
       ),
   )
@@ -42,12 +40,10 @@ describe('UseZenodoRecordDoi', () => {
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
-          Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
+        Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -58,14 +54,12 @@ describe('UseZenodoRecordDoi', () => {
 
       expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-          Layer.mock(ZenodoRecords.ZenodoRecords, {
-            getDoiForDatasetReviewRecord: () => new ZenodoRecords.FailedToGetRecordForDatasetReview({}),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+        Layer.mock(ZenodoRecords.ZenodoRecords, {
+          getDoiForDatasetReviewRecord: () => new ZenodoRecords.FailedToGetRecordForDatasetReview({}),
+        }),
+      ]),
       EffectTest.run,
     ),
   )

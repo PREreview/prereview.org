@@ -107,143 +107,137 @@ pipe(
       organizationId: Config.redacted('OPENAI_ORGANIZATION').pipe(Config.withDefault(undefined)),
     }),
   ),
-  Layer.provide(
-    Layer.mergeAll(
-      NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
-      NodeHttpClient.layer,
-      CachingHttpClient.layerPersistedToRedis,
-      Keyv.keyvStoresLayer,
-      ClusterWorkflowEngine.layer,
-    ),
-  ),
+  Layer.provide([
+    NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
+    NodeHttpClient.layer,
+    CachingHttpClient.layerPersistedToRedis,
+    Keyv.keyvStoresLayer,
+    ClusterWorkflowEngine.layer,
+  ]),
   Layer.provide(ClusterLayer),
-  Layer.provide(
-    Layer.mergeAll(
-      Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
-      CommunitySlack.layerChannelIdsConfig({
-        requestAReview: Schema.Config('SLACK_REQUEST_REVIEW_CHANNEL_ID', Slack.ChannelId),
-        shareAReview: Schema.Config('SLACK_SHARE_REVIEW_CHANNEL_ID', Slack.ChannelId),
+  Layer.provide([
+    Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.boolean('ALLOW_SITE_CRAWLERS'), false)),
+    CommunitySlack.layerChannelIdsConfig({
+      requestAReview: Schema.Config('SLACK_REQUEST_REVIEW_CHANNEL_ID', Slack.ChannelId),
+      shareAReview: Schema.Config('SLACK_SHARE_REVIEW_CHANNEL_ID', Slack.ChannelId),
+    }),
+    CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),
+    FeatureFlags.layerConfig({
+      aiReviewsAsCc0: pipe(
+        Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
+        Config.map(Function.constant),
+      ),
+      askAiReviewEarly: pipe(
+        Config.withDefault(Config.boolean('ASK_AI_REVIEW_EARLY'), false),
+        Config.map(Function.constant),
+      ),
+      canAddMultipleAuthors: pipe(
+        Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
+        Config.map(
+          canAddMultipleAuthors => user =>
+            canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
+        ),
+      ),
+      canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
+      canReviewDatasets: Config.withDefault(Config.boolean('CAN_REVIEW_DATASETS'), false),
+      canSubscribeToReviewRequests: Config.withDefault(Config.boolean('CAN_SUBSCRIBE_TO_REVIEW_REQUESTS'), false),
+      enableCoarNotifyInbox: Config.withDefault(Config.boolean('ENABLE_COAR_NOTIFY_INBOX'), false),
+      sendCoarNotifyMessages: Config.withDefault(
+        Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),
+        false,
+      ),
+      useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
+    }),
+    SqlClient,
+    Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
+    Layer.effect(
+      Slack.SlackApi,
+      Config.all({
+        apiToken: Config.redacted('SLACK_API_TOKEN'),
       }),
-      CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),
-      FeatureFlags.layerConfig({
-        aiReviewsAsCc0: pipe(
-          Config.withDefault(Config.boolean('AI_REVIEWS_AS_CC0'), false),
-          Config.map(Function.constant),
-        ),
-        askAiReviewEarly: pipe(
-          Config.withDefault(Config.boolean('ASK_AI_REVIEW_EARLY'), false),
-          Config.map(Function.constant),
-        ),
-        canAddMultipleAuthors: pipe(
-          Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
-          Config.map(
-            canAddMultipleAuthors => user =>
-              canAddMultipleAuthors && (user ? isPrereviewTeam(user) || isAClubLead(user.orcid) : false),
-          ),
-        ),
-        canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
-        canReviewDatasets: Config.withDefault(Config.boolean('CAN_REVIEW_DATASETS'), false),
-        canSubscribeToReviewRequests: Config.withDefault(Config.boolean('CAN_SUBSCRIBE_TO_REVIEW_REQUESTS'), false),
-        enableCoarNotifyInbox: Config.withDefault(Config.boolean('ENABLE_COAR_NOTIFY_INBOX'), false),
-        sendCoarNotifyMessages: Config.withDefault(
-          Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),
-          false,
-        ),
-        useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
-      }),
-      SqlClient,
-      Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
-      Layer.effect(
-        Slack.SlackApi,
-        Config.all({
-          apiToken: Config.redacted('SLACK_API_TOKEN'),
-        }),
-      ),
-      Layer.effect(
-        Cloudinary.CloudinaryApi,
-        Config.all({
-          cloudName: Config.succeed('prereview'),
-          key: Config.redacted('CLOUDINARY_API_KEY'),
-          secret: Config.redacted('CLOUDINARY_API_SECRET'),
-        }),
-      ),
-      Layer.effect(
-        PrereviewCoarNotify.PrereviewCoarNotifyConfig,
-        Config.all({
-          coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
-        }),
-      ),
-      Layer.effect(
-        LegacyPrereviewApi,
-        Config.all({
-          app: Config.string('LEGACY_PREREVIEW_API_APP'),
-          key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
-          origin: Config.url('LEGACY_PREREVIEW_URL'),
-          update: Config.withDefault(Config.boolean('LEGACY_PREREVIEW_UPDATE'), false),
-        }),
-      ),
-      Nodemailer.layerTransporterConfig(Config.redacted(Config.url('SMTP_URI'))),
-      Layer.effect(
-        Orcid.OrcidApi,
-        Config.all({
-          origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
-          token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
-        }),
-      ),
-      OrcidOauth.layerConfig({
-        url: Config.withDefault(Config.url('ORCID_URL'), new URL('https://orcid.org/')),
-        clientId: Config.string('ORCID_CLIENT_ID'),
-        clientSecret: Config.redacted('ORCID_CLIENT_SECRET'),
-      }),
-      SlackOauth.layerConfig({
-        clientId: Config.string('SLACK_CLIENT_ID'),
-        clientSecret: Config.redacted('SLACK_CLIENT_SECRET'),
-      }),
-      Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
-      Redis.layerHttpCacheConfig(
-        Config.all({
-          primaryUri: Config.redacted(Redis.httpCacheRedisUri),
-          readonlyFallbackUri: Config.redacted(
-            pipe(
-              Config.url('HTTP_CACHE_READONLY_FALLBACK_REDIS_URI'),
-              Config.orElse(() => Redis.httpCacheRedisUri),
-            ),
-          ),
-        }),
-      ),
-      WebApp.optionsLayerConfig({
-        fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
-        environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
-      }),
-      Layer.effect(
-        IsUserBlocked,
-        pipe(
-          Config.withDefault(Config.array(Schema.Config('BLOCKED_USERS', OrcidId.OrcidIdSchema)), []),
-          Config.map(blockedUsers => IsUserBlocked.of(user => Array.contains(blockedUsers, user))),
-        ),
-      ),
-      Layer.effect(
-        Prereviews.WasPrereviewRemoved,
-        pipe(
-          Config.withDefault(Config.array(Config.integer(), 'REMOVED_PREREVIEWS'), []),
-          Config.map(removedPrereviews =>
-            Prereviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id)),
-          ),
-        ),
-      ),
-      Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
-      Layer.effect(
-        ScietyListToken,
-        Config.redacted(Schema.Config('SCIETY_LIST_TOKEN', NonEmptyString.NonEmptyStringSchema)),
-      ),
-      Layer.effect(SessionSecret, Config.redacted('SECRET')),
-      Layer.effect(
-        Zenodo.ZenodoApi,
-        Config.all({ key: Config.redacted('ZENODO_API_KEY'), origin: Config.url('ZENODO_URL') }),
-      ),
-      OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
     ),
-  ),
+    Layer.effect(
+      Cloudinary.CloudinaryApi,
+      Config.all({
+        cloudName: Config.succeed('prereview'),
+        key: Config.redacted('CLOUDINARY_API_KEY'),
+        secret: Config.redacted('CLOUDINARY_API_SECRET'),
+      }),
+    ),
+    Layer.effect(
+      PrereviewCoarNotify.PrereviewCoarNotifyConfig,
+      Config.all({
+        coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
+      }),
+    ),
+    Layer.effect(
+      LegacyPrereviewApi,
+      Config.all({
+        app: Config.string('LEGACY_PREREVIEW_API_APP'),
+        key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
+        origin: Config.url('LEGACY_PREREVIEW_URL'),
+        update: Config.withDefault(Config.boolean('LEGACY_PREREVIEW_UPDATE'), false),
+      }),
+    ),
+    Nodemailer.layerTransporterConfig(Config.redacted(Config.url('SMTP_URI'))),
+    Layer.effect(
+      Orcid.OrcidApi,
+      Config.all({
+        origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
+        token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
+      }),
+    ),
+    OrcidOauth.layerConfig({
+      url: Config.withDefault(Config.url('ORCID_URL'), new URL('https://orcid.org/')),
+      clientId: Config.string('ORCID_CLIENT_ID'),
+      clientSecret: Config.redacted('ORCID_CLIENT_SECRET'),
+    }),
+    SlackOauth.layerConfig({
+      clientId: Config.string('SLACK_CLIENT_ID'),
+      clientSecret: Config.redacted('SLACK_CLIENT_SECRET'),
+    }),
+    Redis.layerDataStoreConfig(Config.redacted(Config.url('REDIS_URI'))),
+    Redis.layerHttpCacheConfig(
+      Config.all({
+        primaryUri: Config.redacted(Redis.httpCacheRedisUri),
+        readonlyFallbackUri: Config.redacted(
+          pipe(
+            Config.url('HTTP_CACHE_READONLY_FALLBACK_REDIS_URI'),
+            Config.orElse(() => Redis.httpCacheRedisUri),
+          ),
+        ),
+      }),
+    ),
+    WebApp.optionsLayerConfig({
+      fathomId: Config.option(Config.string('FATHOM_SITE_ID')),
+      environmentLabel: Config.option(Config.literal('dev', 'sandbox')('ENVIRONMENT_LABEL')),
+    }),
+    Layer.effect(
+      IsUserBlocked,
+      pipe(
+        Config.withDefault(Config.array(Schema.Config('BLOCKED_USERS', OrcidId.OrcidIdSchema)), []),
+        Config.map(blockedUsers => IsUserBlocked.of(user => Array.contains(blockedUsers, user))),
+      ),
+    ),
+    Layer.effect(
+      Prereviews.WasPrereviewRemoved,
+      pipe(
+        Config.withDefault(Config.array(Config.integer(), 'REMOVED_PREREVIEWS'), []),
+        Config.map(removedPrereviews => Prereviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id))),
+      ),
+    ),
+    Layer.effect(PublicUrl, Config.url('PUBLIC_URL')),
+    Layer.effect(
+      ScietyListToken,
+      Config.redacted(Schema.Config('SCIETY_LIST_TOKEN', NonEmptyString.NonEmptyStringSchema)),
+    ),
+    Layer.effect(SessionSecret, Config.redacted('SECRET')),
+    Layer.effect(
+      Zenodo.ZenodoApi,
+      Config.all({ key: Config.redacted('ZENODO_API_KEY'), origin: Config.url('ZENODO_URL') }),
+    ),
+    OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
+  ]),
   Layer.provide(OpenTelemetry),
   Layer.provide(
     Logger.replaceEffect(

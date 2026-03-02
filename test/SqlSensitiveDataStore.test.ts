@@ -16,7 +16,7 @@ it.prop([fc.uuid()])('might not find a value', id =>
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.none())
-  }).pipe(Effect.provide(Layer.mergeAll(Uuid.layer, TestLibsqlClient)), EffectTest.run),
+  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
 )
 
 it.prop([fc.string()])('can add and retrieve a value', input =>
@@ -28,7 +28,7 @@ it.prop([fc.string()])('can add and retrieve a value', input =>
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.some(input))
-  }).pipe(Effect.provide(Layer.mergeAll(Uuid.layer, TestLibsqlClient)), EffectTest.run),
+  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
 )
 
 it.prop([fc.string(), fc.string(), fc.string(), fc.uuid()])(
@@ -49,7 +49,7 @@ it.prop([fc.string(), fc.string(), fc.string(), fc.uuid()])(
         [id2]: input2,
         [id3]: input3,
       })
-    }).pipe(Effect.provide(Layer.mergeAll(Uuid.layer, TestLibsqlClient)), EffectTest.run),
+    }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(

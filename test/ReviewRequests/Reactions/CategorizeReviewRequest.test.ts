@@ -26,20 +26,18 @@ describe('CategorizeReviewRequest', () => {
 
         expect(actual).toStrictEqual(Either.void)
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(OpenAlexWorks.OpenAlexWorks, {
-              getCategoriesForAReviewRequest: () => Effect.succeed(categories),
-            }),
-            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {
-              categorizeReviewRequest: () => Effect.void,
-            }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {
+            getCategoriesForAReviewRequest: () => Effect.succeed(categories),
+          }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            categorizeReviewRequest: () => Effect.void,
+          }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -66,20 +64,18 @@ describe('CategorizeReviewRequest', () => {
 
         expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(OpenAlexWorks.OpenAlexWorks, {
-              getCategoriesForAReviewRequest: () => Effect.succeed(categories),
-            }),
-            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {
-              categorizeReviewRequest: () => error,
-            }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {
+            getCategoriesForAReviewRequest: () => Effect.succeed(categories),
+          }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            categorizeReviewRequest: () => error,
+          }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -104,16 +100,14 @@ describe('CategorizeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => Effect.succeed(categories) }),
-          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => Effect.succeed(categories) }),
+        Layer.mock(Preprints.Preprints, { getPreprintTitle: () => error }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -129,16 +123,14 @@ describe('CategorizeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({ cause: error })))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => error }),
-          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(OpenAlexWorks.OpenAlexWorks, { getCategoriesForAReviewRequest: () => error }),
+        Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -156,14 +148,12 @@ describe('CategorizeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToCategorizeReviewRequest({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
-          Layer.mock(Preprints.Preprints, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
+        Layer.mock(Preprints.Preprints, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),
+      ]),
       EffectTest.run,
     ),
   )

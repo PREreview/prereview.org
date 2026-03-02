@@ -19,17 +19,15 @@ describe('AcknowledgeReviewRequest', () => {
 
           expect(actual).toStrictEqual(Either.void)
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {
-                recordEmailSentToAcknowledgeReviewRequest: () => Effect.void,
-              }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {
+              recordEmailSentToAcknowledgeReviewRequest: () => Effect.void,
+            }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
           EffectTest.run,
         ),
     )
@@ -43,17 +41,15 @@ describe('AcknowledgeReviewRequest', () => {
 
         expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {
-              recordEmailSentToAcknowledgeReviewRequest: () => error,
-            }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(Email.Email, { acknowledgeReviewRequest: () => Effect.void }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            recordEmailSentToAcknowledgeReviewRequest: () => error,
+          }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -69,15 +65,13 @@ describe('AcknowledgeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({ cause: error })))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Email.Email, { acknowledgeReviewRequest: () => error }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Email.Email, { acknowledgeReviewRequest: () => error }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getReviewRequestToAcknowledge: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -98,13 +92,11 @@ describe('AcknowledgeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.void)
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Email.Email, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Email.Email, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -127,13 +119,11 @@ describe('AcknowledgeReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToAcknowledgeReviewRequest({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Email.Email, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Email.Email, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestToAcknowledge: () => error }),
+      ]),
       EffectTest.run,
     ),
   )

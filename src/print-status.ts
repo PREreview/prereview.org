@@ -36,15 +36,13 @@ pipe(
     pipe(
       ReviewRequest.queriesLayer,
       Layer.provide(SqlEventStore.layer),
-      Layer.provide(Layer.mergeAll(Events.layer, SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer)),
-      Layer.provide(
-        Layer.mergeAll(
-          Uuid.layer,
-          PgClient.layerConfig({
-            url: Config.redacted(Config.string('POSTGRES_URL')),
-          }),
-        ),
-      ),
+      Layer.provide([Events.layer, SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
+      Layer.provide([
+        Uuid.layer,
+        PgClient.layerConfig({
+          url: Config.redacted(Config.string('POSTGRES_URL')),
+        }),
+      ]),
     ),
   ),
   NodeRuntime.runMain,

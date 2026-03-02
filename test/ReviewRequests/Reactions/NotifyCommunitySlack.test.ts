@@ -26,21 +26,19 @@ describe('NotifyCommunitySlack', () => {
 
             expect(actual).toStrictEqual(Either.void)
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.mock(CommunitySlack.CommunitySlack, {
-                  sharePreprintReviewRequest: () => Effect.succeed(response),
-                }),
-                Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
-                Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-                Layer.mock(ReviewRequests.ReviewRequestCommands, {
-                  recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
-                }),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                  getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.mock(CommunitySlack.CommunitySlack, {
+                sharePreprintReviewRequest: () => Effect.succeed(response),
+              }),
+              Layer.mock(Personas.Personas, { getPublicPersona: () => Effect.succeed(publicPersona) }),
+              Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, {
+                recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
+              }),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+              }),
+            ]),
             EffectTest.run,
           ),
         )
@@ -57,21 +55,19 @@ describe('NotifyCommunitySlack', () => {
 
             expect(actual).toStrictEqual(Either.void)
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.mock(CommunitySlack.CommunitySlack, {
-                  sharePreprintReviewRequest: () => Effect.succeed(response),
-                }),
-                Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
-                Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-                Layer.mock(ReviewRequests.ReviewRequestCommands, {
-                  recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
-                }),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                  getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.mock(CommunitySlack.CommunitySlack, {
+                sharePreprintReviewRequest: () => Effect.succeed(response),
+              }),
+              Layer.mock(Personas.Personas, { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) }),
+              Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, {
+                recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
+              }),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+              }),
+            ]),
             EffectTest.run,
           ),
         )
@@ -88,19 +84,17 @@ describe('NotifyCommunitySlack', () => {
 
           expect(actual).toStrictEqual(Either.void)
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-              Layer.mock(Personas.Personas, {}),
-              Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {
-                recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
-              }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
+            Layer.mock(Personas.Personas, {}),
+            Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {
+              recordReviewRequestSharedOnTheCommunitySlack: () => Effect.void,
+            }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
           EffectTest.run,
         ),
       )
@@ -122,22 +116,20 @@ describe('NotifyCommunitySlack', () => {
 
           expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
-              Layer.mock(Personas.Personas, {
-                getPublicPersona: () => Effect.succeed(publicPersona),
-                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-              }),
-              Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {
-                recordReviewRequestSharedOnTheCommunitySlack: () => error,
-              }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => Effect.succeed(response) }),
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+            }),
+            Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {
+              recordReviewRequestSharedOnTheCommunitySlack: () => error,
+            }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
           EffectTest.run,
         ),
     )
@@ -158,20 +150,18 @@ describe('NotifyCommunitySlack', () => {
 
         expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => error }),
-            Layer.mock(Personas.Personas, {
-              getPublicPersona: () => Effect.succeed(publicPersona),
-              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-            }),
-            Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(CommunitySlack.CommunitySlack, { sharePreprintReviewRequest: () => error }),
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+          Layer.mock(Preprints.Preprints, { getPreprint: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
   )
@@ -192,20 +182,18 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => Effect.succeed(publicPersona),
-            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-          }),
-          Layer.mock(Preprints.Preprints, { getPreprint: () => error }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, {}),
+        Layer.mock(Personas.Personas, {
+          getPublicPersona: () => Effect.succeed(publicPersona),
+          getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+        }),
+        Layer.mock(Preprints.Preprints, { getPreprint: () => error }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -220,20 +208,18 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({ cause: error })))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => error,
-            getPseudonymPersona: () => error,
-          }),
-          Layer.mock(Preprints.Preprints, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, {}),
+        Layer.mock(Personas.Personas, {
+          getPublicPersona: () => error,
+          getPseudonymPersona: () => error,
+        }),
+        Layer.mock(Preprints.Preprints, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getPublishedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -251,15 +237,13 @@ describe('NotifyCommunitySlack', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToNotifyCommunitySlack({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(CommunitySlack.CommunitySlack, {}),
-          Layer.mock(Personas.Personas, {}),
-          Layer.mock(Preprints.Preprints, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(CommunitySlack.CommunitySlack, {}),
+        Layer.mock(Personas.Personas, {}),
+        Layer.mock(Preprints.Preprints, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequest: () => error }),
+      ]),
       EffectTest.run,
     ),
   )

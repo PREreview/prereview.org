@@ -347,82 +347,74 @@ export const Program = pipe(
     EventDispatcher.worker,
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
-  Layer.provide(Layer.mergeAll(PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment)),
-  Layer.provide(
-    Layer.mergeAll(Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))),
-  ),
-  Layer.provide(
-    Layer.mergeAll(
-      Prereviewers.layer,
-      Personas.layer,
-      Datasets.layer,
-      Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),
-      OpenAlexWorks.layer,
-      Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
-      getPseudonym,
-      doesUserHaveAVerifiedEmailAddress,
-      getContactEmailAddress,
-      saveContactEmailAddress,
-      verifyContactEmailAddressForComment,
-      Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
-      Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser),
-      Layer.effect(
-        Comments.GetNextExpectedCommandForUserOnAComment,
-        Comments.makeGetNextExpectedCommandForUserOnAComment,
-      ),
-      Layer.effect(Comments.GetComment, Comments.makeGetComment),
-      DatasetReviews.layer,
-      GhostPage.layer,
-      CommunitySlack.layer,
-      ZenodoRecords.layer,
-      Email.layer,
-      Layer.effect(
-        SessionStore,
-        Effect.gen(function* () {
-          const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
+  Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
+  Layer.provide([Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))]),
+  Layer.provide([
+    Prereviewers.layer,
+    Personas.layer,
+    Datasets.layer,
+    Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),
+    OpenAlexWorks.layer,
+    Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
+    getPseudonym,
+    doesUserHaveAVerifiedEmailAddress,
+    getContactEmailAddress,
+    saveContactEmailAddress,
+    verifyContactEmailAddressForComment,
+    Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
+    Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser),
+    Layer.effect(
+      Comments.GetNextExpectedCommandForUserOnAComment,
+      Comments.makeGetNextExpectedCommandForUserOnAComment,
+    ),
+    Layer.effect(Comments.GetComment, Comments.makeGetComment),
+    DatasetReviews.layer,
+    GhostPage.layer,
+    CommunitySlack.layer,
+    ZenodoRecords.layer,
+    Email.layer,
+    Layer.effect(
+      SessionStore,
+      Effect.gen(function* () {
+        const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
 
-          return {
-            cookie: 'session',
-            store: new Keyv.Keyv({
-              emitErrors: false,
-              namespace: 'sessions',
-              store: Option.match(maybeRedis, {
-                onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
-                onNone: () => new Map(),
-              }),
-              ttl: Duration.toMillis('30 days'),
+        return {
+          cookie: 'session',
+          store: new Keyv.Keyv({
+            emitErrors: false,
+            namespace: 'sessions',
+            store: Option.match(maybeRedis, {
+              onSome: redis => new KeyvRedis(redis).on('error', () => undefined),
+              onNone: () => new Map(),
             }),
-          }
-        }),
-      ),
+            ttl: Duration.toMillis('30 days'),
+          }),
+        }
+      }),
     ),
-  ),
+  ]),
   Layer.provide(LanguageDetection.layerCld),
-  Layer.provide(
-    Layer.mergeAll(
-      CoarNotify.layer,
-      Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
-      Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
-      Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
-      Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
-      Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
-      Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
-      Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
-      Slack.layer,
-      Zenodo.layer,
-      Nodemailer.layer,
-    ),
-  ),
-  Layer.provide(Layer.mergeAll(setUpFetch, RequestCollapsingHttpClient.layer)),
-  Layer.provide(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provide([
+    CoarNotify.layer,
+    Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
+    Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
+    Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
+    Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
+    Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
+    Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
+    Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
+    Slack.layer,
+    Zenodo.layer,
+    Nodemailer.layer,
+  ]),
+  Layer.provide([setUpFetch, RequestCollapsingHttpClient.layer]),
+  Layer.provide([SqlEventStore.layer, LoggingHttpClient.layer]),
   Layer.provide(SqlSensitiveDataStore.layer),
-  Layer.provide(
-    Layer.mergeAll(
-      Events.layer,
-      EventDispatcher.EventDispatcherLayer,
-      Uuid.layer,
-      CachingHttpClient.layerRevalidationQueue,
-      CookieSignature.layer,
-    ),
-  ),
+  Layer.provide([
+    Events.layer,
+    EventDispatcher.EventDispatcherLayer,
+    Uuid.layer,
+    CachingHttpClient.layerRevalidationQueue,
+    CookieSignature.layer,
+  ]),
 )

@@ -29,14 +29,12 @@ describe('ProcessReceivedReviewRequest', () => {
           expect(actual).toStrictEqual(Either.void)
           expect(acceptReviewRequest).toHaveBeenCalledWith({ acceptedAt, reviewRequestId: reviewRequest.id })
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
           EffectTest.run,
         ),
     )
@@ -54,17 +52,15 @@ describe('ProcessReceivedReviewRequest', () => {
           Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
         )
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {
-              acceptReviewRequest: () => error,
-            }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            acceptReviewRequest: () => error,
+          }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -97,14 +93,12 @@ describe('ProcessReceivedReviewRequest', () => {
           reason: 'not-a-preprint',
         })
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -122,17 +116,15 @@ describe('ProcessReceivedReviewRequest', () => {
           Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
         )
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {
-              rejectReviewRequest: () => error,
-            }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-            }),
-          ),
-        ),
+        Effect.provide([
+          Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {
+            rejectReviewRequest: () => error,
+          }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+          }),
+        ]),
         EffectTest.run,
       ),
     )
@@ -148,15 +140,13 @@ describe('ProcessReceivedReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(preprintError))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Preprints.Preprints, { resolvePreprintId: () => preprintError }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -173,15 +163,13 @@ describe('ProcessReceivedReviewRequest', () => {
         Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({ cause: error })),
       )
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Preprints.Preprints, { resolvePreprintId: () => error }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
-          }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Preprints.Preprints, { resolvePreprintId: () => error }),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, {
+          getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+        }),
+      ]),
       EffectTest.run,
     ),
   )
@@ -204,13 +192,11 @@ describe('ProcessReceivedReviewRequest', () => {
 
       expect(actual).toStrictEqual(Either.left(new ReviewRequests.FailedToProcessReceivedReviewRequest({})))
     }).pipe(
-      Effect.provide(
-        Layer.mergeAll(
-          Layer.mock(Preprints.Preprints, {}),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReceivedReviewRequest: () => error }),
-        ),
-      ),
+      Effect.provide([
+        Layer.mock(Preprints.Preprints, {}),
+        Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        Layer.mock(ReviewRequests.ReviewRequestQueries, { getReceivedReviewRequest: () => error }),
+      ]),
       EffectTest.run,
     ),
   )

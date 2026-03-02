@@ -4,7 +4,7 @@ import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
-import { Effect, Layer, pipe, Schema } from 'effect'
+import { Effect, pipe, Schema } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { recordToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
@@ -445,7 +445,7 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, LanguageDetection.layerCld)), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
 )
 
 test.each([
@@ -465,7 +465,7 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, LanguageDetection.layerCld)), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
 )
 
 test.each([
@@ -501,5 +501,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-  }).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, LanguageDetection.layerCld)), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
 )
