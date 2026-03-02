@@ -480,13 +480,7 @@ export const Router = pipe(
     ),
   ),
   HttpRouter.concat(DataRouter),
-  HttpRouter.post(
-    Routes.Inbox,
-    Effect.if(FeatureFlags.enableCoarNotifyInbox, {
-      onTrue: () => Inbox,
-      onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
-    }),
-  ),
+  HttpRouter.post(Routes.Inbox, Inbox),
   HttpRouter.get(
     '/health',
     Effect.gen(function* () {

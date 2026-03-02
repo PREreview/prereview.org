@@ -1,7 +1,6 @@
 import { Array, Context, Effect, Layer, Option, Schedule } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
-import * as FeatureFlags from './FeatureFlags.ts'
 
 type Subscriber = (event: Events.Event) => void
 
@@ -38,11 +37,6 @@ const dispatchNewEvents = Effect.gen(function* () {
   )
 })
 
-export const worker = Layer.effectDiscard(
-  Effect.if(FeatureFlags.enableCoarNotifyInbox, {
-    onTrue: () => Effect.repeat(dispatchNewEvents, Schedule.fixed('2 seconds')),
-    onFalse: () => Effect.void,
-  }),
-)
+export const worker = Layer.effectDiscard(Effect.repeat(dispatchNewEvents, Schedule.fixed('2 seconds')))
 
 export const replayExistingEvents = dispatchNewEvents

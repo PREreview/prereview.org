@@ -2288,7 +2288,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             canAddMultipleAuthors,
             canLogInAsDemoUser,
             canReviewDatasets,
-            enableCoarNotifyInbox: true,
           }),
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),

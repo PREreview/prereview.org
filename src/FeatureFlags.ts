@@ -10,7 +10,6 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canLogInAsDemoUser: boolean
     canReviewDatasets: boolean
     canSubscribeToReviewRequests: boolean
-    enableCoarNotifyInbox: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
   }
@@ -23,7 +22,6 @@ const defaults = {
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
   canSubscribeToReviewRequests: false,
-  enableCoarNotifyInbox: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
 } satisfies typeof FeatureFlags.Service
@@ -38,7 +36,6 @@ export const {
   canLogInAsDemoUser,
   canReviewDatasets,
   canSubscribeToReviewRequests,
-  enableCoarNotifyInbox,
   sendCoarNotifyMessages,
   useCrowdinInContext,
 } = Effect.serviceConstants(FeatureFlags)
