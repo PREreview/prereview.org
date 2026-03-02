@@ -44,7 +44,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
-import { PrereviewCoarNotifyConfig } from '../../../prereview-coar-notify/index.ts'
 import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { PublicUrl } from '../../../public-url.ts'
@@ -89,7 +88,6 @@ export const nonEffectRouter: Effect.Effect<
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
-  | PrereviewCoarNotifyConfig
   | Nodemailer.NodemailerTransporter
   | Runtime.Runtime.Context<Env['runtime']>
   | FileSystem.FileSystem
@@ -130,7 +128,6 @@ export const nonEffectRouter: Effect.Effect<
   const slackApiConfig = yield* Slack.SlackApi
   const shouldUpdateCommunitySlack = yield* CommunitySlack.shouldUpdateCommunitySlack
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
-  const prereviewCoarNotifyConfig = yield* PrereviewCoarNotifyConfig
   const legacyPrereviewApi = yield* LegacyPrereviewApi
   const orcidOauth = yield* OrcidOauth
   const slackOauth = yield* SlackOauth
@@ -189,7 +186,6 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    prereviewCoarNotifyConfig,
     legacyPrereviewApiConfig: legacyPrereviewApi,
     users,
     authorInviteStore: keyvStores.authorInviteStore,
@@ -223,7 +219,6 @@ export interface Env {
     | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas
     | Preprints.Preprints
-    | PrereviewCoarNotifyConfig
     | Prereviewers.PrereviewerQueries
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
@@ -256,7 +251,6 @@ export interface Env {
   slackApiConfig: typeof Slack.SlackApi.Service
   shouldUpdateCommunitySlack: typeof CommunitySlack.ShouldUpdateCommunitySlack.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
-  prereviewCoarNotifyConfig: typeof PrereviewCoarNotifyConfig.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service

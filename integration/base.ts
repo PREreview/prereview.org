@@ -60,7 +60,6 @@ import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
-import * as PrereviewCoarNotify from '../src/prereview-coar-notify/index.ts'
 import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
@@ -2315,9 +2314,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             clientSecret: Redacted.make('client-secret'),
             revokeUrl: new URL('http://orcid.test/revoke'),
             tokenUrl: new URL('http://orcid.test/token'),
-          }),
-          Layer.succeed(PrereviewCoarNotify.PrereviewCoarNotifyConfig, {
-            coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
           }),
           Layer.succeed(PublicUrl, new URL(`http://localhost:${port}`)),
           Layer.succeed(ScietyListToken, Redacted.make(NonEmptyString('secret'))),

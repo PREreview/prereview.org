@@ -32,7 +32,6 @@ import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
-import * as PrereviewCoarNotify from './prereview-coar-notify/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
 import { PublicUrl } from './public-url.ts'
@@ -161,12 +160,6 @@ pipe(
         cloudName: Config.succeed('prereview'),
         key: Config.redacted('CLOUDINARY_API_KEY'),
         secret: Config.redacted('CLOUDINARY_API_SECRET'),
-      }),
-    ),
-    Layer.effect(
-      PrereviewCoarNotify.PrereviewCoarNotifyConfig,
-      Config.all({
-        coarNotifyUrl: Config.url('COAR_NOTIFY_URL'),
       }),
     ),
     Layer.effect(
