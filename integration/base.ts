@@ -23,7 +23,7 @@ import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import { URL } from 'url'
-import { Uuid, v4 } from 'uuid-ts'
+import { v4 } from 'uuid-ts'
 import {
   EmptyDepositionC,
   InProgressDepositionC,
@@ -41,6 +41,9 @@ import {
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
+import * as EventDispatcher from '../src/EventDispatcher.ts'
+import * as Events from '../src/Events.js'
+import * as EventStore from '../src/EventStore.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
@@ -64,8 +67,11 @@ import * as Prereviews from '../src/Prereviews/index.ts'
 import { Program } from '../src/Program.ts'
 import { PublicUrl } from '../src/public-url.ts'
 import { SlackOauth } from '../src/SlackOauth.ts'
+import * as SqlEventStore from '../src/SqlEventStore.ts'
+import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
+import { Uuid } from '../src/types/index.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import * as WebApp from '../src/WebApp/index.ts'
@@ -99,6 +105,7 @@ interface AppFixtures {
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   emails: Array<nodemailer.SendMailOptions>
+  seedEvents: ReadonlyArray<Events.Event>
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -2144,29 +2151,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       body: { data: [] },
     })
 
-    fetch.get('http://coar-notify.prereview.test/requests?page=1', {
-      body: [
-        {
-          timestamp: '2024-04-26T08:25:54.526Z',
-          preprint: '10.1101/2023.02.28.529746',
-          language: 'es',
-          fields: ['13', '24'],
-          subfields: ['1312', '2403'],
-        },
-        {
-          timestamp: '2024-04-25T10:42:37.213Z',
-          preprint: '10.1101/2022.01.13.476201',
-          language: 'en',
-          fields: ['13', '28', '21'],
-          subfields: ['1312', '2804', '2105'],
-        },
-      ],
-    })
-
-    fetch.get('http://coar-notify.prereview.test/requests?page=2', {
-      body: [],
-    })
-
     await use(fetch)
   },
   formStore: async ({}, use) => {
@@ -2226,6 +2210,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   reviewRequestStore: async ({}, use) => {
     await use(new Keyv())
   },
+  seedEvents: async ({}, use) => {
+    await use([])
+  },
   server: [
     async (
       {
@@ -2251,6 +2238,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canLogInAsDemoUser,
         canReviewDatasets,
         sqlClientLayer,
+        seedEvents,
       },
       use,
       testInfo,
@@ -2346,6 +2334,20 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         Logger.withMinimumLogLevel(LogLevel.Debug),
         Effect.orDie,
       )
+
+      if (seedEvents.length > 0) {
+        await pipe(
+          Effect.forEach(seedEvents, event => EventStore.append(event)),
+          Effect.provide(
+            pipe(
+              SqlEventStore.layer,
+              Layer.provide([Events.layer, SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
+              Layer.provide([Uuid.layer, sqlClientLayer]),
+            ),
+          ),
+          Effect.runPromise,
+        )
+      }
 
       const fiber = Effect.runFork(server)
 
@@ -2661,7 +2663,6 @@ export const willPublishAReview: Fixtures<
         matcherFunction: ({ options }) => options.cache === 'reload',
         response: { status: StatusCodes.ServiceUnavailable },
       })
-      .postOnce('http://coar-notify.prereview.test/prereviews', { status: StatusCodes.Created })
 
     await use(fetch)
   },
@@ -3150,7 +3151,7 @@ export const hasAnUnverifiedEmailAddress: Fixtures<
       ContactEmailAddressC.encode(
         new UnverifiedContactEmailAddress({
           value: EmailAddress('jcarberry@example.com'),
-          verificationToken: Uuid('ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a'),
+          verificationToken: Uuid.Uuid('ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a'),
         }),
       ),
     )
@@ -3253,7 +3254,7 @@ export const invitedToBeAnAuthor: Fixtures<
         name: NonEmptyString('Josiah Carberry'),
         emailAddress: EmailAddress('jcarberry@example.com'),
       },
-      Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
+      Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
       {
         author: 'Josiah Carberry',
         preprint: {
@@ -3504,6 +3505,14 @@ export const canReviewDatasets: Fixtures<
     await use(fetch)
   },
 }
+
+export const seedEvents = (
+  ...events: ReadonlyArray<Events.Event>
+): Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'seedEvents'>, Record<never, never>> => ({
+  seedEvents: async ({}, use) => {
+    await use(events)
+  },
+})
 
 export const test = baseTest.extend(appFixtures)
 

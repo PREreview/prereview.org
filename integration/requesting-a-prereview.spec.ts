@@ -1,7 +1,18 @@
+import { Temporal } from '@js-temporal/polyfill'
+import { Doi } from 'doi-ts'
+import { Option } from 'effect'
+import { v4 } from 'uuid-ts'
+import { BiorxivPreprintId } from '../src/Preprints/index.ts'
+import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { areLoggedIn, canLogIn, expect, test } from './base.ts'
+import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { areLoggedIn, canLogIn, expect, seedEvents, test } from './base.ts'
 
-test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
+const reviewRequestId1 = v4()()
+const reviewRequestId2 = v4()()
+const now = Temporal.Now.instant()
+
+test.extend(canLogIn)('can request a PREreview', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Request a review' }).click()
   await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
@@ -17,8 +28,6 @@ test.extend(canLogIn)('can request a PREreview', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
   await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: StatusCodes.Created })
-
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
@@ -32,7 +41,7 @@ test('can choose a locale before starting', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Solicite uma avaliação')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseudonym', async ({ fetch, page }) => {
+test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseudonym', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Orange Panda').check()
@@ -40,8 +49,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can request a PREreview using a pseud
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
   await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-
-  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: StatusCodes.Created })
 
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
@@ -332,17 +339,51 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ page
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
 })
 
-test('can view a recent request', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'commit' })
-  await page
-    .getByRole('region', { name: 'Recent review requests' })
-    .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
-    .click()
+test.extend(
+  seedEvents(
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
+      reviewRequestId: reviewRequestId1,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId1,
+    }),
+  ),
+)('can view a recent request', async ({ page }) => {
+  await expect(async () => {
+    await page.goto('/', { waitUntil: 'commit' })
+    await page
+      .getByRole('region', { name: 'Recent review requests' })
+      .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
+      .click()
+  }).toPass()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
 
-test('can view an older request', async ({ javaScriptEnabled, page }) => {
+test.extend(
+  seedEvents(
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
+      reviewRequestId: reviewRequestId1,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId1,
+    }),
+  ),
+)('can view an older request', async ({ javaScriptEnabled, page }) => {
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
@@ -362,7 +403,42 @@ test('can view an older request', async ({ javaScriptEnabled, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
 
-test('can view an older request in a specific language', async ({ page }) => {
+test.extend(
+  seedEvents(
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
+      reviewRequestId: reviewRequestId1,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId1,
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+      reviewRequestId: reviewRequestId2,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId2,
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+      reviewRequestId: reviewRequestId2,
+      language: 'en',
+      keywords: [],
+      topics: [],
+    }),
+  ),
+)('can view an older request in a specific language', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
@@ -387,7 +463,42 @@ test('can view an older request in a specific language', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
 })
 
-test('can view an older request in a specific field', async ({ page }) => {
+test.extend(
+  seedEvents(
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
+      reviewRequestId: reviewRequestId1,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId1,
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+      reviewRequestId: reviewRequestId1,
+      language: 'en',
+      keywords: [],
+      topics: ['12104', '12763', '12387'],
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+      receivedAt: now,
+      receivedFrom: new URL('https://example.com/'),
+      preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+      reviewRequestId: reviewRequestId2,
+      requester: Option.some({
+        name: NonEmptyString('Some Requester'),
+      }),
+    }),
+    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+      acceptedAt: now,
+      reviewRequestId: reviewRequestId2,
+    }),
+  ),
+)('can view an older request in a specific field', async ({ page }) => {
   await page.goto('/', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'See all requests' }).click()
 
