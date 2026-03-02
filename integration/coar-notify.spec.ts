@@ -1,6 +1,6 @@
-import { test as baseTest, canLogIn, enableCoarNotifyInbox, expect, usePostgresDB } from './base.ts'
+import { test as baseTest, canLogIn, expect, usePostgresDB } from './base.ts'
 
-const test = baseTest.extend(usePostgresDB).extend(enableCoarNotifyInbox)
+const test = baseTest.extend(usePostgresDB)
 
 test.extend(canLogIn)('can request a review', async ({ baseURL, page, request }) => {
   await request.post('/inbox', {

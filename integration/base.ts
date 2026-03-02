@@ -98,7 +98,6 @@ interface AppFixtures {
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canReviewDatasets: (typeof FeatureFlags.FeatureFlags.Service)['canReviewDatasets']
-  enableCoarNotifyInbox: (typeof FeatureFlags.FeatureFlags.Service)['enableCoarNotifyInbox']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   emails: Array<nodemailer.SendMailOptions>
 }
@@ -124,9 +123,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   contactEmailAddressStore: async ({}, use) => {
     await use(new Keyv())
-  },
-  enableCoarNotifyInbox: async ({}, use) => {
-    await use(false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.createInstance()
@@ -2255,7 +2251,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canAddMultipleAuthors,
         canLogInAsDemoUser,
         canReviewDatasets,
-        enableCoarNotifyInbox,
         sqlClientLayer,
       },
       use,
@@ -2293,7 +2288,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             canAddMultipleAuthors,
             canLogInAsDemoUser,
             canReviewDatasets,
-            enableCoarNotifyInbox,
+            enableCoarNotifyInbox: true,
           }),
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),
@@ -3512,17 +3507,6 @@ export const canReviewDatasets: Fixtures<
     })
 
     await use(fetch)
-  },
-}
-
-export const enableCoarNotifyInbox: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'enableCoarNotifyInbox'>,
-  Record<never, never>
-> = {
-  enableCoarNotifyInbox: async ({}, use) => {
-    await use(true)
   },
 }
 
