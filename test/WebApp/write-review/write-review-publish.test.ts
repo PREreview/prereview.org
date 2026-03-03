@@ -132,7 +132,7 @@ describe('writeReviewPublish', () => {
           preprint: preprintTitle,
           review: expect.anything(),
           language: localeToIso6391(locale),
-          license: 'CC-BY-4.0',
+          license: newReview.generativeAiIdeas === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
           locale,
           structured: true,
           user,
@@ -191,7 +191,7 @@ describe('writeReviewPublish', () => {
           preprint: preprintTitle,
           review: expect.htmlContaining(newReview.review) as never,
           language: expect.anything(),
-          license: 'CC-BY-4.0',
+          license: newReview.generativeAiIdeas === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
           locale,
           structured: false,
           user,
@@ -209,84 +209,6 @@ describe('writeReviewPublish', () => {
         expect(yield* Effect.promise(() => formStore.has(formKey(user.orcid, preprintTitle.id)))).toBe(false)
       }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
   )
-
-  describe('the form is complete and generative AI was used', () => {
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.completedForm({ generativeAiIdeas: fc.constant('yes') }),
-      fc.user(),
-      fc.supportedLocale(),
-      fc.verifiedContactEmailAddress(),
-      fc.doi(),
-      fc.integer(),
-      fc.boolean(),
-    ])(
-      'when the feature flag is enabled',
-      (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
-          const formStore = new Keyv()
-          yield* Effect.promise(() =>
-            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-          )
-          const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-            TE.right([reviewDoi, reviewId]),
-          )
-
-          yield* Effect.promise(() =>
-            _.writeReviewPublish({ aiReviewsAsCc0: true, id: preprintId, locale, method: 'POST', user })({
-              addToSession: () => TE.of(undefined),
-              formStore,
-              getContactEmailAddress: () => TE.right(contactEmailAddress),
-              getPreprintTitle: () => TE.right(preprintTitle),
-              publishPrereview,
-              runtime,
-            })(),
-          )
-
-          expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC0-1.0' }))
-        }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
-    )
-
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.completedForm({ generativeAiIdeas: fc.constant('yes') }),
-      fc.user(),
-      fc.supportedLocale(),
-      fc.verifiedContactEmailAddress(),
-      fc.doi(),
-      fc.integer(),
-      fc.boolean(),
-    ])(
-      'when the feature flag is not enabled',
-      (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress, reviewDoi, reviewId) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection>()
-          const formStore = new Keyv()
-          yield* Effect.promise(() =>
-            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
-          )
-          const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-            TE.right([reviewDoi, reviewId]),
-          )
-
-          yield* Effect.promise(() =>
-            _.writeReviewPublish({ aiReviewsAsCc0: false, id: preprintId, locale, method: 'POST', user })({
-              addToSession: () => TE.of(undefined),
-              formStore,
-              getContactEmailAddress: () => TE.right(contactEmailAddress),
-              getPreprintTitle: () => TE.right(preprintTitle),
-              publishPrereview,
-              runtime,
-            })(),
-          )
-
-          expect(publishPrereview).toHaveBeenCalledWith(expect.objectContaining({ license: 'CC-BY-4.0' }))
-        }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
-    )
-  })
 
   test.prop([
     fc.indeterminatePreprintId(),

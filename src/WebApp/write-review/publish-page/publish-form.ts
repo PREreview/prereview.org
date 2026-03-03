@@ -33,13 +33,7 @@ import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { CompletedForm } from '../completed-form.ts'
 import { backNav } from '../shared-elements.ts'
 
-export function publishForm(
-  preprint: PreprintTitle,
-  review: CompletedForm,
-  user: User,
-  locale: SupportedLocale,
-  aiReviewsAsCc0 = false,
-) {
+export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User, locale: SupportedLocale) {
   const t = translate(locale, 'write-review')
 
   const visuallyHidden: { visuallyHidden: (x: string) => string } = {
@@ -340,16 +334,9 @@ export function publishForm(
           <p>
             ${rawHtml(
               t('weWillAssignLicense')({
-                licenseLink: match([aiReviewsAsCc0, review.generativeAiIdeas])
-                  .with(
-                    [true, 'yes'],
-                    () => '<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>',
-                  )
-                  .with(
-                    [false, 'yes'],
-                    [P.boolean, 'no'],
-                    () => '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>',
-                  )
+                licenseLink: match(review.generativeAiIdeas)
+                  .with('yes', () => '<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0&nbsp;1.0</a>')
+                  .with('no', () => '<a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>')
                   .exhaustive(),
               }),
             )}

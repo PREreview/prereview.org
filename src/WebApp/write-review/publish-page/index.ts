@@ -54,13 +54,11 @@ export const writeReviewPublish = ({
   locale,
   method,
   user,
-  aiReviewsAsCc0 = false,
 }: {
   id: IndeterminatePreprintId
   locale: SupportedLocale
   method: string
   user?: User
-  aiReviewsAsCc0?: boolean
 }): RT.ReaderTask<
   GetContactEmailAddressEnv &
     GetPreprintTitleEnv &
@@ -87,7 +85,6 @@ export const writeReviewPublish = ({
           RTE.let('form', ({ originalForm }) => CompletedFormC.decode(originalForm)),
           RTE.let('method', () => method),
           RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
-          RTE.let('aiReviewsAsCc0', () => aiReviewsAsCc0),
           RTE.matchEW(
             error =>
               RT.of(
@@ -111,7 +108,6 @@ const decideNextStep = (state: {
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
-  aiReviewsAsCc0: boolean
 }) =>
   match(state)
     .with(
@@ -136,14 +132,12 @@ const handlePublishForm = ({
   originalForm,
   preprint,
   user,
-  aiReviewsAsCc0,
 }: {
   form: CompletedForm
   locale: SupportedLocale
   originalForm: Form
   preprint: PreprintTitle
   user: User
-  aiReviewsAsCc0: boolean
 }) =>
   pipe(
     deleteForm(user.orcid, preprint.id),
@@ -162,9 +156,9 @@ const handlePublishForm = ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
           language,
-          license: match([aiReviewsAsCc0, form.generativeAiIdeas])
-            .with([true, 'yes'], () => 'CC0-1.0' as const)
-            .with([false, 'yes'], [P.boolean, 'no'], () => 'CC-BY-4.0' as const)
+          license: match(form.generativeAiIdeas)
+            .with('yes', () => 'CC0-1.0' as const)
+            .with('no', () => 'CC-BY-4.0' as const)
             .exhaustive(),
           locale,
           persona: form.persona,
@@ -197,14 +191,12 @@ const showPublishForm = ({
   preprint,
   user,
   locale,
-  aiReviewsAsCc0,
 }: {
   form: CompletedForm
   preprint: PreprintTitle
   user: User
   locale: SupportedLocale
-  aiReviewsAsCc0: boolean
-}) => publishForm(preprint, form, user, locale, aiReviewsAsCc0)
+}) => publishForm(preprint, form, user, locale)
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(

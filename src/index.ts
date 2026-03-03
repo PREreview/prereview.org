@@ -122,7 +122,6 @@ pipe(
     }),
     CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),
     FeatureFlags.layerConfig({
-      aiReviewsAsCc0: Config.succeed(() => true),
       askAiReviewEarly: pipe(
         Config.withDefault(Config.boolean('ASK_AI_REVIEW_EARLY'), false),
         Config.map(Function.constant),
