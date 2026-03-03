@@ -16,7 +16,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 const defaults = {
   canAddMultipleAuthors: () => false,
   canLogInAsDemoUser: false,
-  canReviewDatasets: false,
+  canReviewDatasets: true,
   canSubscribeToReviewRequests: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,

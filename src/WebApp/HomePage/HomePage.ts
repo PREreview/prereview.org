@@ -23,7 +23,7 @@ import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export const createPage = ({
-  canReviewDatasets = false,
+  canReviewDatasets = true,
   locale,
   recentPrereviews,
   recentReviewRequests,
