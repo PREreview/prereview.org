@@ -14,9 +14,6 @@
   "errorEnterPreprint": {
     "message": "crwdns5854:0crwdne5854:0"
   },
-  "unsupportedPreprintTitle": {
-    "message": "crwdns4508:0crwdne4508:0"
-  },
   "dontKnowPreprint": {
     "message": "crwdns5287:0crwdne5287:0"
   },
@@ -28,9 +25,6 @@
   },
   "unsupportedUrlTitle": {
     "message": "crwdns4496:0crwdne4496:0"
-  },
-  "unsupportedPreprintMessage": {
-    "message": "crwdns4510:0{server}crwdne4510:0"
   },
   "doiCouldBeAdvance": {
     "message": "crwdns5289:0{doi}crwdne5289:0"

@@ -14,9 +14,6 @@
   "errorEnterPreprint": {
     "message": "Insira o DOI ou URL do preprint"
   },
-  "unsupportedPreprintTitle": {
-    "message": "Desculpe, não aceitamos solicitações para este preprint"
-  },
   "dontKnowPreprint": {
     "message": "Desculpe, não reconhecemos este preprint"
   },
@@ -28,9 +25,6 @@
   },
   "unsupportedUrlTitle": {
     "message": "Desculpe, não aceitamos este URL"
-  },
-  "unsupportedPreprintMessage": {
-    "message": "Ainda não aceitamos solicitações para este preprint {server}."
   },
   "doiCouldBeAdvance": {
     "message": "Acreditamos que o DOI {doi} pode ser um preprint Advance, mas não conseguimos encontrar detalhes."
