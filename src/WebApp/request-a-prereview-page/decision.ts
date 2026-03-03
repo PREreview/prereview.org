@@ -1,5 +1,4 @@
 import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
-import type { ReviewRequestPreprintId } from '../../review-request.ts'
 import type * as Form from './form.ts'
 
 export type Decision =
@@ -7,7 +6,6 @@ export type Decision =
   | ShowError
   | ShowNotAPreprint
   | ShowUnknownPreprint
-  | ShowUnsupportedPreprint
   | ShowUnsupportedDoi
   | ShowUnsupportedUrl
   | ShowFormWithErrors
@@ -15,7 +13,7 @@ export type Decision =
 
 export interface BeginFlow {
   _tag: 'BeginFlow'
-  preprint: ReviewRequestPreprintId
+  preprint: PreprintId
 }
 
 export interface ShowError {
@@ -29,11 +27,6 @@ export interface ShowNotAPreprint {
 export interface ShowUnknownPreprint {
   _tag: 'ShowUnknownPreprint'
   preprint: IndeterminatePreprintId
-}
-
-export interface ShowUnsupportedPreprint {
-  _tag: 'ShowUnsupportedPreprint'
-  preprint: PreprintId
 }
 
 export interface ShowUnsupportedDoi {
@@ -53,7 +46,7 @@ export interface ShowEmptyForm {
   _tag: 'ShowEmptyForm'
 }
 
-export const BeginFlow = (preprint: ReviewRequestPreprintId): BeginFlow => ({ _tag: 'BeginFlow', preprint })
+export const BeginFlow = (preprint: PreprintId): BeginFlow => ({ _tag: 'BeginFlow', preprint })
 
 export const ShowError: ShowError = { _tag: 'ShowError' }
 
@@ -61,11 +54,6 @@ export const ShowNotAPreprint: ShowNotAPreprint = { _tag: 'ShowNotAPreprint' }
 
 export const ShowUnknownPreprint = (preprint: IndeterminatePreprintId): ShowUnknownPreprint => ({
   _tag: 'ShowUnknownPreprint',
-  preprint,
-})
-
-export const ShowUnsupportedPreprint = (preprint: PreprintId): ShowUnsupportedPreprint => ({
-  _tag: 'ShowUnsupportedPreprint',
   preprint,
 })
 

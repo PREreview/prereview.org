@@ -24,7 +24,7 @@ describe('requestReviewPersona', () => {
           fc.indeterminatePreprintId(),
           fc.user(),
           fc.incompleteReviewRequest(),
-          fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+          fc.preprintTitle({ id: fc.preprintId() }),
           fc.constantFrom('public', 'pseudonym'),
           fc.supportedLocale(),
         ])('when the persona is set', async (preprint, user, reviewRequest, preprintTitle, persona, locale) => {
@@ -55,7 +55,7 @@ describe('requestReviewPersona', () => {
           fc.indeterminatePreprintId(),
           fc.user(),
           fc.incompleteReviewRequest(),
-          fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+          fc.preprintTitle({ id: fc.preprintId() }),
           fc.constantFrom('public', 'pseudonym'),
           fc.supportedLocale(),
         ])("when the persona can't be set", async (preprint, user, reviewRequest, preprintTitle, persona, locale) => {
@@ -86,7 +86,7 @@ describe('requestReviewPersona', () => {
         fc.indeterminatePreprintId(),
         fc.user(),
         fc.incompleteReviewRequest(),
-        fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+        fc.preprintTitle({ id: fc.preprintId() }),
         fc.anything(),
         fc.supportedLocale(),
       ])('when the form is invalid', async (preprint, user, reviewRequest, preprintTitle, body, locale) => {
@@ -112,7 +112,7 @@ describe('requestReviewPersona', () => {
         fc.indeterminatePreprintId(),
         fc.user(),
         fc.incompleteReviewRequest(),
-        fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+        fc.preprintTitle({ id: fc.preprintId() }),
         fc.string().filter(method => method !== 'POST'),
         fc.anything(),
         fc.supportedLocale(),
@@ -147,7 +147,7 @@ describe('requestReviewPersona', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.completedReviewRequest(),
       fc.string(),
       fc.anything(),
@@ -172,7 +172,7 @@ describe('requestReviewPersona', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.string(),
       fc.anything(),
       fc.supportedLocale(),
@@ -197,7 +197,7 @@ describe('requestReviewPersona', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.user(),
-    fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+    fc.preprintTitle({ id: fc.preprintId() }),
     fc.string(),
     fc.anything(),
     fc.supportedLocale(),

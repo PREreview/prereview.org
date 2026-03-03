@@ -8,14 +8,12 @@ import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
-  type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   getReviewRequest,
-  isReviewRequestPreprintId,
   saveReviewRequest,
 } from '../../../review-request.ts'
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../../routes.ts'
@@ -53,7 +51,6 @@ export const requestReviewPersona = ({
       pipe(
         getPreprintTitle(preprint),
         RTE.map(preprint => preprint.id),
-        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
     ),
     RTE.bindW(
@@ -103,7 +100,7 @@ const handlePersonaForm = ({
 }: {
   body: unknown
   reviewRequest: IncompleteReviewRequest
-  preprint: ReviewRequestPreprintId
+  preprint: PreprintId
   user: User
   locale: SupportedLocale
 }) =>

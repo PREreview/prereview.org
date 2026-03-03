@@ -6,7 +6,6 @@ import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import type { ReviewRequestPreprintId } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
@@ -82,7 +81,7 @@ export const RequestReviewFlowRouter = pipe(
           ]),
         publishRequest: withEnv(
           EffectToFpts.toReaderTaskEitherK(
-            (preprint: ReviewRequestPreprintId, user: User, persona: 'public' | 'pseudonym') =>
+            (preprint: Preprints.PreprintId, user: User, persona: 'public' | 'pseudonym') =>
               pipe(
                 Effect.gen(function* () {
                   const publishedAt = yield* Temporal.currentInstant

@@ -7,14 +7,12 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
-import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
-  type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   getReviewRequest,
-  isReviewRequestPreprintId,
   saveReviewRequest,
 } from '../../../review-request.ts'
 import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
@@ -31,7 +29,7 @@ import { failureMessage } from './failure-message.ts'
 
 export interface PublishRequestEnv {
   publishRequest: (
-    preprint: ReviewRequestPreprintId,
+    preprint: PreprintId,
     user: User,
     persona: 'public' | 'pseudonym',
   ) => TE.TaskEither<'unavailable', void>
@@ -59,7 +57,6 @@ export const requestReviewCheck = ({
       pipe(
         getPreprintTitle(preprint),
         RTE.map(preprint => preprint.id),
-        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
     ),
     RTE.bindW(
@@ -102,7 +99,7 @@ export const requestReviewCheck = ({
   )
 
 const publishRequest = (
-  preprint: ReviewRequestPreprintId,
+  preprint: PreprintId,
   user: User,
   persona: 'public' | 'pseudonym',
 ): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
@@ -114,7 +111,7 @@ const handleForm = ({
   user,
   locale,
 }: {
-  preprint: ReviewRequestPreprintId
+  preprint: PreprintId
   reviewRequest: IncompleteReviewRequest
   user: User
   locale: SupportedLocale

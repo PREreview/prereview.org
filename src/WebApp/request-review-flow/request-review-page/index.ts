@@ -6,7 +6,7 @@ import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
-import { type GetReviewRequestEnv, isReviewRequestPreprintId, maybeGetReviewRequest } from '../../../review-request.ts'
+import { type GetReviewRequestEnv, maybeGetReviewRequest } from '../../../review-request.ts'
 import { requestReviewStartMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -27,16 +27,9 @@ export const requestReview = ({
     RTE.let('user', () => user),
     RTE.let('locale', () => locale),
     RTE.bindW('preprint', () => getPreprintTitle(preprint)),
-    RTE.bindW(
-      'preprintId',
-      flow(
-        ({ preprint }) => preprint.id,
-        RTE.fromPredicate(isReviewRequestPreprintId, () => 'not-found' as const),
-      ),
-    ),
     RTE.chainFirstW(
       flow(
-        ({ preprintId, user }) => (user ? maybeGetReviewRequest(user.orcid, preprintId) : RTE.right(undefined)),
+        ({ preprint, user }) => (user ? maybeGetReviewRequest(user.orcid, preprint.id) : RTE.right(undefined)),
         RTE.chainW(reviewRequest =>
           match(reviewRequest)
             .with({ status: P.string }, () => RTE.left('already-started' as const))

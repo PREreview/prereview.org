@@ -1,7 +1,6 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import type { ReviewRequestPreprintId } from '../../src/review-request.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
@@ -9,7 +8,7 @@ import { checkPage } from '../../src/WebApp/request-review-flow/check-page/check
 import { failureMessage } from '../../src/WebApp/request-review-flow/check-page/failure-message.ts'
 import { expect, test } from '../base.ts'
 
-const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }) satisfies ReviewRequestPreprintId
+const preprint = new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') })
 
 const locale = DefaultLocale
 

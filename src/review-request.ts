@@ -9,9 +9,6 @@ import type { OrcidId } from './types/OrcidId.ts'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
-/** @deprecated */
-export type ReviewRequestPreprintId = PreprintId
-
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
   readonly persona?: 'public' | 'pseudonym'
@@ -22,16 +19,13 @@ export interface CompletedReviewRequest {
 }
 
 export interface GetReviewRequestEnv {
-  getReviewRequest: (
-    orcid: OrcidId,
-    preprint: ReviewRequestPreprintId,
-  ) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequest>
+  getReviewRequest: (orcid: OrcidId, preprint: PreprintId) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequest>
 }
 
 export interface SaveReviewRequestEnv {
   saveReviewRequest: (
     orcid: OrcidId,
-    preprint: ReviewRequestPreprintId,
+    preprint: PreprintId,
     reviewRequest: ReviewRequest,
   ) => TE.TaskEither<'unavailable', void>
 }
@@ -63,7 +57,7 @@ export const ReviewRequestC = C.make(D.union(IncompleteReviewRequestC, Completed
 
 export const getReviewRequest = (
   orcid: OrcidId,
-  preprint: ReviewRequestPreprintId,
+  preprint: PreprintId,
 ): RTE.ReaderTaskEither<GetReviewRequestEnv, 'not-found' | 'unavailable', ReviewRequest> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getReviewRequest }) => getReviewRequest(orcid, preprint)))
 
@@ -79,13 +73,9 @@ export const maybeGetReviewRequest = flow(
 
 export const saveReviewRequest = (
   orcid: OrcidId,
-  preprint: ReviewRequestPreprintId,
+  preprint: PreprintId,
   reviewRequest: ReviewRequest,
 ): RTE.ReaderTaskEither<SaveReviewRequestEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ saveReviewRequest }) => saveReviewRequest(orcid, preprint, reviewRequest)),
   )
-
-export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
-  return true
-}

@@ -14,7 +14,7 @@ describe('requestReviewPublished', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.completedReviewRequest(),
       fc.supportedLocale(),
     ])('when the review has been completed', async (preprint, user, preprintTitle, reviewRequest, locale) => {
@@ -37,7 +37,7 @@ describe('requestReviewPublished', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.either(fc.constant('not-found'), fc.incompleteReviewRequest()),
       fc.supportedLocale(),
     ])("when the review hasn't be completed", async (preprint, user, preprintTitle, reviewRequest, locale) => {
@@ -59,7 +59,7 @@ describe('requestReviewPublished', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
     ])("when the review can't be loaded", async (preprint, user, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))

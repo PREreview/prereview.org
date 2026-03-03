@@ -3,7 +3,8 @@ import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../../review-request.ts'
+import type { PreprintId } from '../../../Preprints/index.ts'
+import type { IncompleteReviewRequest } from '../../../review-request.ts'
 import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
@@ -19,7 +20,7 @@ export function checkPage({
   user,
   locale,
 }: {
-  preprint: ReviewRequestPreprintId
+  preprint: PreprintId
   reviewRequest: Required<IncompleteReviewRequest>
   user: User
   locale: SupportedLocale

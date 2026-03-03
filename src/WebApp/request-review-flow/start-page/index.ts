@@ -9,7 +9,6 @@ import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import {
   type GetReviewRequestEnv,
   type SaveReviewRequestEnv,
-  isReviewRequestPreprintId,
   maybeGetReviewRequest,
   saveReviewRequest,
 } from '../../../review-request.ts'
@@ -39,7 +38,6 @@ export const requestReviewStart = ({
       pipe(
         getPreprintTitle(preprint),
         RTE.map(preprint => preprint.id),
-        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
     ),
     RTE.bindW('reviewRequest', ({ preprint, user }) => pipe(maybeGetReviewRequest(user.orcid, preprint))),

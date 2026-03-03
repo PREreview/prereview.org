@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
-import { type GetReviewRequestEnv, getReviewRequest, isReviewRequestPreprintId } from '../../../review-request.ts'
+import { type GetReviewRequestEnv, getReviewRequest } from '../../../review-request.ts'
 import { requestReviewMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -38,7 +38,6 @@ export const requestReviewPublished = ({
       pipe(
         getPreprintTitle(preprint),
         RTE.map(preprint => preprint.id),
-        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
     ),
     RTE.bindW(

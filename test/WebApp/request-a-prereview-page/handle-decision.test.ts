@@ -7,7 +7,7 @@ import { requestAPrereviewMatch, requestReviewMatch } from '../../../src/routes.
 import * as fc from './fc.ts'
 
 describe('handleDecision', () => {
-  test.prop([fc.reviewRequestPreprintId(), fc.supportedLocale()])('with a BeginFlow decision', (preprint, locale) => {
+  test.prop([fc.preprintId(), fc.supportedLocale()])('with a BeginFlow decision', (preprint, locale) => {
     const actual = _.handleDecision({ _tag: 'BeginFlow', preprint }, locale)
 
     expect(actual).toStrictEqual({
@@ -58,19 +58,6 @@ describe('handleDecision', () => {
       })
     },
   )
-
-  test.prop([fc.preprintId(), fc.supportedLocale()])('with a ShowUnsupportedPreprint decision', (preprint, locale) => {
-    const actual = _.handleDecision({ _tag: 'ShowUnsupportedPreprint', preprint }, locale)
-
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.BadRequest,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
 
   test.prop([fc.supportedLocale()])('with a ShowUnsupportedDoi decision', locale => {
     const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' }, locale)

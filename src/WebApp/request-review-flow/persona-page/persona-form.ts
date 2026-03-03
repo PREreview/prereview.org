@@ -5,7 +5,7 @@ import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { ReviewRequestPreprintId } from '../../../review-request.ts'
+import type { PreprintId } from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -25,7 +25,7 @@ export function personaForm({
   locale,
 }: {
   form: PersonaForm
-  preprint: ReviewRequestPreprintId
+  preprint: PreprintId
   user: User
   locale: SupportedLocale
 }) {

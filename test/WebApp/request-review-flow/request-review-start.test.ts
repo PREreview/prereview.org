@@ -14,7 +14,7 @@ describe('requestReviewStart', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.user(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
     ])("when a request hasn't been started", async (preprint, user, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
@@ -39,7 +39,7 @@ describe('requestReviewStart', () => {
       fc.indeterminatePreprintId(),
       fc.user(),
       fc.completedReviewRequest(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
     ])('when a request has already been completed', async (preprint, user, reviewRequest, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
@@ -62,7 +62,7 @@ describe('requestReviewStart', () => {
       fc.indeterminatePreprintId(),
       fc.user(),
       fc.incompleteReviewRequest(),
-      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
     ])('when a request has already been started', async (preprint, user, reviewRequest, preprintTitle, locale) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))

@@ -10,7 +10,6 @@ import { notAPreprintPage } from './not-a-preprint-page.ts'
 import { requestAPrereviewPage } from './request-a-prereview-page.ts'
 import { unknownPreprintPage } from './unknown-preprint-page.ts'
 import { unsupportedDoiPage } from './unsupported-doi-page.ts'
-import { unsupportedPreprintPage } from './unsupported-preprint-page.ts'
 import { unsupportedUrlPage } from './unsupported-url-page.ts'
 
 export const handleDecision = (decision: Decision.Decision, locale: SupportedLocale): Response.Response =>
@@ -22,7 +21,6 @@ export const handleDecision = (decision: Decision.Decision, locale: SupportedLoc
     ShowNotAPreprint: () => notAPreprintPage(locale),
     ShowUnknownPreprint: ({ preprint }) => unknownPreprintPage(preprint, locale),
     ShowUnsupportedDoi: () => unsupportedDoiPage(locale),
-    ShowUnsupportedPreprint: ({ preprint }) => unsupportedPreprintPage(preprint, locale),
     ShowUnsupportedUrl: () => unsupportedUrlPage(locale),
     ShowEmptyForm: () => requestAPrereviewPage(Form.EmptyForm, locale),
   })

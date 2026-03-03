@@ -6,7 +6,6 @@ import { P, match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
 import * as Preprint from '../../preprint.ts'
 import * as Preprints from '../../Preprints/index.ts'
-import * as ReviewRequest from '../../review-request.ts'
 import * as Decision from './decision.ts'
 import * as Form from './form.ts'
 
@@ -27,7 +26,6 @@ export const makeDecision = ({
     ),
     RTE.chainEitherKW(() => extractPreprintId(body)),
     RTE.chainW(resolvePreprintId),
-    RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
     RTE.matchW(identity, Decision.BeginFlow),
   )
 

@@ -14,9 +14,6 @@
   "errorEnterPreprint": {
     "message": "Enter the preprint DOI or URL"
   },
-  "unsupportedPreprintTitle": {
-    "message": "Sorry, we don’t support requests for this preprint"
-  },
   "dontKnowPreprint": {
     "message": "Sorry, we don’t know this preprint"
   },
@@ -28,9 +25,6 @@
   },
   "unsupportedUrlTitle": {
     "message": "Sorry, we don’t support this URL"
-  },
-  "unsupportedPreprintMessage": {
-    "message": "We don’t support requests for this {server} preprint yet."
   },
   "doiCouldBeAdvance": {
     "message": "We think the DOI {doi} could be an Advance preprint, but we can’t find any details."

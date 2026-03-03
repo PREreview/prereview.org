@@ -108,12 +108,7 @@ import {
 import type { CoarNotifyTargetPreprintId } from '../src/PreprintServers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
-import type {
-  CompletedReviewRequest,
-  IncompleteReviewRequest,
-  ReviewRequest,
-  ReviewRequestPreprintId,
-} from '../src/review-request.ts'
+import type { CompletedReviewRequest, IncompleteReviewRequest, ReviewRequest } from '../src/review-request.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
@@ -1164,9 +1159,6 @@ export const orcidId = (): fc.Arbitrary<OrcidId> =>
 
 export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
   fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
-
-/** @deprecated */
-export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> => preprintId()
 
 export const coarNotifyTargetPreprintId = (): fc.Arbitrary<CoarNotifyTargetPreprintId> => preprintsorgPreprintId()
 
