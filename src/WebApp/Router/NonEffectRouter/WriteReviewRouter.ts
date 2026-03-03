@@ -70,7 +70,6 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             writeReviewStart({
-              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
               id,
               locale: env.locale,
               user: env.loggedInUser,
@@ -83,7 +82,6 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             writeReviewReviewType({
-              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
               body: env.body,
               id,
               locale: env.locale,
@@ -324,7 +322,6 @@ export const WriteReviewRouter = pipe(
         ({ id }) =>
           (env: Env) =>
             (env.method === 'POST' ? writeReviewUseOfAiSubmission : writeReviewUseOfAi)({
-              askAiReviewEarly: env.featureFlags.askAiReviewEarly(env.loggedInUser),
               body: env.body,
               id,
               locale: env.locale,

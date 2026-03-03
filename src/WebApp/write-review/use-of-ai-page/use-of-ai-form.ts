@@ -27,12 +27,11 @@ export function useOfAiForm(
   locale: SupportedLocale,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
   alreadyWritten?: 'yes' | 'no',
-  askAiReviewEarly = false,
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
   const backMatch =
-    askAiReviewEarly && alreadyWritten === 'yes'
+    alreadyWritten === 'yes'
       ? writeReviewReviewTypeMatch
       : moreAuthors === 'yes'
         ? writeReviewAddAuthorsMatch

@@ -4,7 +4,6 @@ import type { User } from './user.ts'
 export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,
   {
-    askAiReviewEarly: (user?: User) => boolean
     canAddMultipleAuthors: (user?: User) => boolean
     canLogInAsDemoUser: boolean
     canReviewDatasets: boolean
@@ -15,7 +14,6 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 >() {}
 
 const defaults = {
-  askAiReviewEarly: () => true,
   canAddMultipleAuthors: () => false,
   canLogInAsDemoUser: false,
   canReviewDatasets: false,
@@ -23,8 +21,6 @@ const defaults = {
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
 } satisfies typeof FeatureFlags.Service
-
-export const askAiReviewEarly = Effect.serviceFunction(FeatureFlags, Struct.get('askAiReviewEarly'))
 
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 

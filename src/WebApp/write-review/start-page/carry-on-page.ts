@@ -10,7 +10,7 @@ import { nextFormMatch, type Form } from '../form.ts'
 const cite = (lang: PreprintTitle['language']) => (text: string) =>
   `<cite lang="${lang}" dir="${rtlDetect.getLangDir(lang)}">${text}</cite>`
 
-export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: SupportedLocale, askAiReviewEarly = false) => {
+export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: SupportedLocale) => {
   const t = translate(locale)
   return PageResponse({
     title: plainText`${t('write-review', 'writeAPrereview')()}`,
@@ -31,10 +31,7 @@ export const carryOnPage = (preprint: PreprintTitle, form: Form, locale: Support
         )}
       </p>
 
-      <a
-        href="${format(nextFormMatch(form, askAiReviewEarly).formatter, { id: preprint.id })}"
-        role="button"
-        draggable="false"
+      <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
         >${t('forms', 'continueButton')()}</a
       >
     `,

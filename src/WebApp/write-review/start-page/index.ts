@@ -16,12 +16,10 @@ import { ensureUserIsNotAnAuthor } from '../user-is-author.ts'
 import { carryOnPage } from './carry-on-page.ts'
 
 export const writeReviewStart = ({
-  askAiReviewEarly = false,
   id,
   locale,
   user,
 }: {
-  askAiReviewEarly?: boolean
   id: IndeterminatePreprintId
   locale: SupportedLocale
   user?: User
@@ -61,7 +59,6 @@ export const writeReviewStart = ({
                 { id: preprint.id, language: preprint.title.language, title: preprint.title.text },
                 form,
                 locale,
-                askAiReviewEarly,
               ),
           ),
         ),
