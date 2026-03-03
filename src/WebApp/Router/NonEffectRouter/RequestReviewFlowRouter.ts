@@ -1,7 +1,8 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Option, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -81,16 +82,22 @@ export const RequestReviewFlowRouter = pipe(
           ]),
         publishRequest: withEnv(
           EffectToFpts.toReaderTaskEitherK(
-            (preprint: Preprints.PreprintId, user: User, persona: 'public' | 'pseudonym') =>
+            (preprintId: Preprints.PreprintId, user: User, persona: 'public' | 'pseudonym') =>
               pipe(
                 Effect.gen(function* () {
                   const publishedAt = yield* Temporal.currentInstant
                   const reviewRequestId = yield* Uuid.v4()
 
+                  const author = Option.some(persona === 'public' ? user.name : user.pseudonym)
+
+                  const preprint = yield* Preprints.getPreprint(preprintId)
+
+                  yield* CommunitySlack.sharePreprintReviewRequest({ author, preprint })
+
                   yield* ReviewRequests.importReviewRequestFromPrereviewer({
                     publishedAt,
                     reviewRequestId,
-                    preprintId: preprint,
+                    preprintId,
                     requester: {
                       orcidId: user.orcid,
                       persona,
@@ -101,6 +108,7 @@ export const RequestReviewFlowRouter = pipe(
                   Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),
                 ),
                 Effect.mapError(() => 'unavailable' as const),
+                Effect.scoped,
               ),
           ),
           { runtime: env.runtime },
