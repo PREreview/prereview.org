@@ -26,15 +26,17 @@ export function useOfAiForm(
   form: UseOfAiForm,
   locale: SupportedLocale,
   moreAuthors?: 'yes' | 'yes-private' | 'no',
+  alreadyWritten?: 'yes' | 'no',
   askAiReviewEarly = false,
 ) {
   const error = hasAnError(form)
   const otherAuthors = moreAuthors !== 'no'
-  const backMatch = askAiReviewEarly
-    ? writeReviewReviewTypeMatch
-    : moreAuthors === 'yes'
-      ? writeReviewAddAuthorsMatch
-      : writeReviewAuthorsMatch
+  const backMatch =
+    askAiReviewEarly && alreadyWritten === 'yes'
+      ? writeReviewReviewTypeMatch
+      : moreAuthors === 'yes'
+        ? writeReviewAddAuthorsMatch
+        : writeReviewAuthorsMatch
   const t = translate(locale)
 
   return StreamlinePageResponse({

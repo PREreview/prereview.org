@@ -117,13 +117,20 @@ const showUseOfAiForm = ({
     { generativeAiIdeas: E.right(form.generativeAiIdeas) },
     locale,
     form.moreAuthors,
+    form.alreadyWritten,
     askAiReviewEarly,
   )
 
 const showUseOfAiErrorForm =
-  (preprint: PreprintTitle, moreAuthors: Form['moreAuthors'], locale: SupportedLocale, askAiReviewEarly: boolean) =>
+  (
+    preprint: PreprintTitle,
+    moreAuthors: Form['moreAuthors'],
+    locale: SupportedLocale,
+    alreadyWritten: 'yes' | 'no' | undefined,
+    askAiReviewEarly: boolean,
+  ) =>
   (form: UseOfAiForm) =>
-    useOfAiForm(preprint, form, locale, moreAuthors, askAiReviewEarly)
+    useOfAiForm(preprint, form, locale, moreAuthors, alreadyWritten, askAiReviewEarly)
 
 const handleUseOfAiForm = ({
   askAiReviewEarly,
@@ -158,7 +165,7 @@ const handleUseOfAiForm = ({
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with(
             { generativeAiIdeas: P.any },
-            showUseOfAiErrorForm(preprint, form.moreAuthors, locale, askAiReviewEarly),
+            showUseOfAiErrorForm(preprint, form.moreAuthors, locale, form.alreadyWritten, askAiReviewEarly),
           )
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
