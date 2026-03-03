@@ -16,7 +16,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 >() {}
 
 const defaults = {
-  aiReviewsAsCc0: () => false,
+  aiReviewsAsCc0: () => true,
   askAiReviewEarly: () => false,
   canAddMultipleAuthors: () => false,
   canLogInAsDemoUser: false,

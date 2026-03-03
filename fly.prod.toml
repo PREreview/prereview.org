@@ -9,7 +9,6 @@ memory = "2gb"
 strategy = "bluegreen"
 
 [env]
-AI_REVIEWS_AS_CC0 = "true"
 ALLOW_SITE_CRAWLERS = "true"
 ASK_AI_REVIEW_EARLY = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"

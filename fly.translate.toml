@@ -9,7 +9,6 @@ memory = "1gb"
 strategy = "bluegreen"
 
 [env]
-AI_REVIEWS_AS_CC0 = "true"
 ASK_AI_REVIEW_EARLY = "true"
 CAN_REVIEW_DATASETS = "true"
 ENVIRONMENT_LABEL = "sandbox"
