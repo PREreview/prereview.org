@@ -10,7 +10,6 @@ strategy = "bluegreen"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
-ASK_AI_REVIEW_EARLY = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
 CAN_REVIEW_DATASETS = "true"
 FATHOM_SITE_ID = "FEAJEBBA"

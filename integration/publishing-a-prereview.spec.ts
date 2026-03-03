@@ -292,6 +292,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and Continue' }).click()
     await waitForNotBusy(page)
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
@@ -1942,6 +1944,8 @@ test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ jav
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('I’ve already written the review').check()
   await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and Continue' }).click()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2609,6 +2613,37 @@ test.extend(canLogIn).extend(areLoggedIn)('have to declare the use of AI', async
 
   await expect(page.getByLabel('No')).toBeFocused()
 })
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to declare the use of AI when already written',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('I’ve already written the review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Did you, or any of the other authors, use AI to generate ideas for this review?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page
+      .getByRole('link', {
+        name: 'Select yes if you, or any of the other authors, used AI to generate ideas for this review',
+      })
+      .click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare the use of AI by any author',

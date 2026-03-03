@@ -9,7 +9,6 @@ memory = "1gb"
 strategy = "bluegreen"
 
 [env]
-ASK_AI_REVIEW_EARLY = "true"
 CAN_REVIEW_DATASETS = "true"
 ENVIRONMENT_LABEL = "sandbox"
 HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache-sandbox.internal?family=6"

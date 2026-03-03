@@ -9,7 +9,6 @@ memory = "1gb"
 strategy = "bluegreen"
 
 [env]
-ASK_AI_REVIEW_EARLY = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
 CAN_LOG_IN_AS_DEMO_USER = "true"
 CAN_REVIEW_DATASETS = "true"

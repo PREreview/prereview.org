@@ -12,7 +12,6 @@ import {
   Config,
   Effect,
   flow,
-  Function,
   Inspectable,
   Layer,
   Logger,
@@ -122,10 +121,7 @@ pipe(
     }),
     CommunitySlack.layerShouldUpdateCommunitySlackConfig(Config.withDefault(Config.boolean('SLACK_UPDATE'), false)),
     FeatureFlags.layerConfig({
-      askAiReviewEarly: pipe(
-        Config.withDefault(Config.boolean('ASK_AI_REVIEW_EARLY'), false),
-        Config.map(Function.constant),
-      ),
+      askAiReviewEarly: Config.succeed(() => true),
       canAddMultipleAuthors: pipe(
         Config.withDefault(Config.boolean('CAN_ADD_MULTIPLE_AUTHORS'), false),
         Config.map(
