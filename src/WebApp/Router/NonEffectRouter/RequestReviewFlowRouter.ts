@@ -92,7 +92,7 @@ export const RequestReviewFlowRouter = pipe(
 
                   const preprint = yield* Preprints.getPreprint(preprintId)
 
-                  yield* CommunitySlack.sharePreprintReviewRequest({ author, preprint })
+                  yield* Effect.ignoreLogged(CommunitySlack.sharePreprintReviewRequest({ author, preprint }))
 
                   yield* ReviewRequests.importReviewRequestFromPrereviewer({
                     publishedAt,
