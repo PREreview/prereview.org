@@ -1165,48 +1165,8 @@ export const orcidId = (): fc.Arbitrary<OrcidId> =>
 export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
   fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
 
-export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
-  fc.oneof(
-    advancePreprintId(),
-    africarxivUbuntunetPreprintId(),
-    arxivPreprintId(),
-    biorxivPreprintId(),
-    chemrxivPreprintId(),
-    eartharxivPreprintId(),
-    ecoevorxivPreprintId(),
-    edarxivPreprintId(),
-    engrxivPreprintId(),
-    lifecycleJournalPreprintId(),
-    medrxivPreprintId(),
-    metaarxivPreprintId(),
-    neurolibrePreprintId(),
-    osfPreprintId(),
-    osfPreprintsPreprintId(),
-    preprintsorgPreprintId(),
-    psyarxivPreprintId(),
-    researchSquarePreprintId(),
-    scieloPreprintId(),
-    socarxivPreprintId(),
-    techrxivPreprintId(),
-    zenodoPreprintId(),
-  )
-
-export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
-  fc.oneof(
-    africarxivFigsharePreprintId(),
-    africarxivOsfPreprintId(),
-    africarxivZenodoPreprintId(),
-    arcadiaSciencePreprintId(),
-    authoreaPreprintId(),
-    curvenotePreprintId(),
-    jxivPreprintId(),
-    philsciPreprintId(),
-    psychArchivesPreprintId(),
-    scienceOpenPreprintId(),
-    ssrnPreprintId(),
-    umsidaPreprintId(),
-    verixivPreprintId(),
-  )
+/** @deprecated */
+export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> => preprintId()
 
 export const coarNotifyTargetPreprintId = (): fc.Arbitrary<CoarNotifyTargetPreprintId> => preprintsorgPreprintId()
 

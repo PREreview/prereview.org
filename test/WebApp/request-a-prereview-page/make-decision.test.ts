@@ -36,7 +36,7 @@ describe('makeDecision', () => {
             ),
           fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
         ),
-        fc.reviewRequestPreprintId(),
+        fc.preprintId(),
       ],
       {
         examples: [
@@ -87,20 +87,6 @@ describe('makeDecision', () => {
 
       expect(actual).toStrictEqual({ _tag: 'BeginFlow', preprint: preprintId })
       expect(resolvePreprintId).toHaveBeenCalledWith(...expected)
-    })
-
-    test.prop([
-      fc.oneof(
-        fc.preprintDoi(),
-        fc.supportedPreprintUrl().map(([url]) => url.href),
-      ),
-      fc.notAReviewRequestPreprintId(),
-    ])('when the preprint is not supported', async (value, preprintId) => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
-        resolvePreprintId: () => TE.of(preprintId),
-      })()
-
-      expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedPreprint', preprint: preprintId })
     })
 
     test.prop([

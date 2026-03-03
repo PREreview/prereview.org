@@ -3,59 +3,14 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { match, P } from 'ts-pattern'
-import type {
-  AdvancePreprintId,
-  AfricarxivUbuntunetPreprintId,
-  ArxivPreprintId,
-  BiorxivPreprintId,
-  ChemrxivPreprintId,
-  EartharxivPreprintId,
-  EcoevorxivPreprintId,
-  EdarxivPreprintId,
-  EngrxivPreprintId,
-  LifecycleJournalPreprintId,
-  MedrxivPreprintId,
-  MetaarxivPreprintId,
-  NeurolibrePreprintId,
-  OsfPreprintId,
-  OsfPreprintsPreprintId,
-  PreprintId,
-  PreprintsorgPreprintId,
-  PsyarxivPreprintId,
-  ResearchSquarePreprintId,
-  ScieloPreprintId,
-  SocarxivPreprintId,
-  TechrxivPreprintId,
-  ZenodoPreprintId,
-} from './Preprints/index.ts'
+import { match } from 'ts-pattern'
+import type { PreprintId } from './Preprints/index.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
-export type ReviewRequestPreprintId =
-  | AdvancePreprintId
-  | AfricarxivUbuntunetPreprintId
-  | ArxivPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | LifecycleJournalPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | NeurolibrePreprintId
-  | OsfPreprintId
-  | OsfPreprintsPreprintId
-  | PreprintsorgPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | SocarxivPreprintId
-  | TechrxivPreprintId
-  | ZenodoPreprintId
+/** @deprecated */
+export type ReviewRequestPreprintId = PreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -132,35 +87,5 @@ export const saveReviewRequest = (
   )
 
 export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
-  return match(preprint)
-    .with(
-      {
-        _tag: P.union(
-          'AdvancePreprintId',
-          'AfricarxivUbuntunetPreprintId',
-          'ArxivPreprintId',
-          'BiorxivPreprintId',
-          'ChemrxivPreprintId',
-          'EartharxivPreprintId',
-          'EcoevorxivPreprintId',
-          'EdarxivPreprintId',
-          'EngrxivPreprintId',
-          'LifecycleJournalPreprintId',
-          'MedrxivPreprintId',
-          'MetaarxivPreprintId',
-          'NeurolibrePreprintId',
-          'OsfPreprintId',
-          'OsfPreprintsPreprintId',
-          'PreprintsorgPreprintId',
-          'PsyarxivPreprintId',
-          'ResearchSquarePreprintId',
-          'ScieloPreprintId',
-          'SocarxivPreprintId',
-          'TechrxivPreprintId',
-          'ZenodoPreprintId',
-        ),
-      },
-      () => true,
-    )
-    .otherwise(() => false)
+  return true
 }

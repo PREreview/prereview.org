@@ -43,30 +43,6 @@ describe('requestReview', () => {
         expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
       })
 
-      test.prop([
-        fc.indeterminatePreprintId(),
-        fc.option(fc.user(), { nil: undefined }),
-        fc.preprintTitle({ id: fc.notAReviewRequestPreprintId() }),
-        fc.supportedLocale(),
-      ])("when the preprint isn't supported", async (preprint, user, preprintTitle, locale) => {
-        const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
-
-        const actual = await _.requestReview({ preprint, user, locale })({
-          getReviewRequest: shouldNotBeCalled,
-          getPreprintTitle,
-        })()
-
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.NotFound,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
-      })
-
       test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()])(
         "when the preprint doesn't exist",
         async (preprint, user, locale) => {
