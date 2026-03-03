@@ -1,6 +1,5 @@
 import { Effect, pipe } from 'effect'
 import { Locale } from '../../Context.ts'
-import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import type { PageResponse } from '../Response/index.ts'
@@ -9,7 +8,7 @@ import { createPage } from './HomePage.ts'
 export const HomePage: Effect.Effect<
   PageResponse,
   never,
-  Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale | FeatureFlags.FeatureFlags
+  Prereviews.Prereviews | ReviewRequests.ReviewRequests | Locale
 > = pipe(
   Effect.Do,
   Effect.bindAll(
@@ -17,7 +16,6 @@ export const HomePage: Effect.Effect<
       locale: Locale,
       recentPrereviews: Prereviews.getFiveMostRecent,
       recentReviewRequests: ReviewRequests.getFiveMostRecent,
-      canReviewDatasets: FeatureFlags.canReviewDatasets,
     }),
     { concurrency: 'inherit' },
   ),

@@ -23,13 +23,11 @@ import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export const createPage = ({
-  canReviewDatasets = true,
   locale,
   recentPrereviews,
   recentReviewRequests,
   statistics,
 }: {
-  canReviewDatasets?: boolean
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   recentReviewRequests: ReadonlyArray<ReviewRequests.ReviewRequest>
@@ -50,7 +48,7 @@ export const createPage = ({
             <a href="${format(requestAPrereviewMatch.formatter, {})}"
               >${translate(locale, 'home-page', 'requestReviewButton')()}</a
             >
-            ${canReviewDatasets ? html`<a href="${Routes.ReviewADataset}">Review a dataset</a>` : ''}
+            <a href="${Routes.ReviewADataset}">Review a dataset</a>
           </div>
         </div>
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />

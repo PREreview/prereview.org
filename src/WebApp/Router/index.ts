@@ -250,14 +250,6 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
     ),
   ),
   HttpRouter.append(MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
-      pipe(
-        Effect.andThen(FeatureFlags.EnsureCanReviewDatasets, app),
-        Effect.catchTag('CannotReviewDatasets', () => Effect.andThen(PageNotFound, Response.toHttpServerResponse)),
-      ),
-    ),
-  ),
 )
 
 const SubscribeToKeywords = HttpRouter.fromIterable([
@@ -289,21 +281,7 @@ const SubscribeToKeywords = HttpRouter.fromIterable([
 const DatasetReviewPages = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
-]).pipe(
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
-      pipe(
-        Effect.andThen(FeatureFlags.EnsureCanReviewDatasets, app),
-        Effect.catchTag('CannotReviewDatasets', () =>
-          Effect.andThen(
-            HttpServerRequest.HttpServerRequest,
-            request => new HttpServerError.RouteNotFound({ request }),
-          ),
-        ),
-      ),
-    ),
-  ),
-)
+])
 
 const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteComment, WriteCommentFlow.WriteCommentPage),
