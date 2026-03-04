@@ -25,6 +25,9 @@ const request9Id = Uuid.Uuid('f8d3deca-594e-4902-a831-53add29edfcc')
 const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67890') })
 const preprintId3 = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const preprintId4 = new Preprints.AdvancePreprintId({ value: Doi.Doi('10.31124/12345') })
+const preprintId5 = new Preprints.AdvancePreprintId({ value: Doi.Doi('10.31124/67890') })
+const preprintId6 = new Preprints.PreprintsorgPreprintId({ value: Doi.Doi('10.20944/12345') })
 
 const now = Temporal.Now.instant()
 
@@ -104,7 +107,7 @@ const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
-  preprintId: preprintId1,
+  preprintId: preprintId4,
   requester: Option.some(requester1),
   reviewRequestId: request4Id,
 })
@@ -125,7 +128,7 @@ const request4Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRec
 const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
-  preprintId: preprintId1,
+  preprintId: preprintId5,
   requester: Option.some(requester1),
   reviewRequestId: request5Id,
 })
@@ -146,7 +149,7 @@ const request5Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRec
 const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
-  preprintId: preprintId2,
+  preprintId: preprintId6,
   requester: Option.some(requester2),
   reviewRequestId: request6Id,
 })
@@ -223,6 +226,18 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
         published: request9Imported.publishedAt,
         topics: request9Categorized.topics,
         preprintId: request9Imported.preprintId,
+      },
+    ],
+  ],
+  [
+    'multiple requests for same preprint',
+    [request1Received1, request1Accepted1, request1Categorized1, request8Imported, request8Categorized],
+    [
+      {
+        id: request1Id,
+        published: request1Accepted1.acceptedAt,
+        topics: request1Categorized1.topics,
+        preprintId: request1Received1.preprintId,
       },
     ],
   ],
