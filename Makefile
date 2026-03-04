@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -98,3 +98,6 @@ status-prod:
 
 withdraw-review-request:
 	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js withdraw-review-request --wizard"
+
+categorize-review-request:
+	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js categorize-review-request --wizard"
