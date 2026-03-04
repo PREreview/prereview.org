@@ -1,7 +1,7 @@
-import { Array, Boolean, Either, Equal, Match, Record, Struct } from 'effect'
+import { Array, Boolean, Either, Equal, Equivalence, Match, Record, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
-import type * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { FieldId } from '../../types/field.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -135,19 +135,24 @@ const query = (state: State, input: Input): Result =>
       ),
     )
 
-    const pagesOfSortedReviewRequests = Array.chunksOf(sortedReviewRequests, 5)
+    const latestReviewRequestForEachPreprint = Array.dedupeWith(
+      sortedReviewRequests,
+      Equivalence.mapInput(Preprints.PreprintIdEquivalence, Struct.get('preprintId')),
+    )
 
-    const pageOfSortedReviewRequests = yield* Either.fromOption(
-      Array.get(pagesOfSortedReviewRequests, input.page - 1),
+    const pagesOfLatestReviewRequestForEachPreprint = Array.chunksOf(latestReviewRequestForEachPreprint, 5)
+
+    const pageOfLatestReviewRequestForEachPreprint = yield* Either.fromOption(
+      Array.get(pagesOfLatestReviewRequestForEachPreprint, input.page - 1),
       () => new Errors.NoReviewRequestsFound({}),
     )
 
     return {
       currentPage: input.page,
-      totalPages: pagesOfSortedReviewRequests.length,
+      totalPages: pagesOfLatestReviewRequestForEachPreprint.length,
       field: input.field,
       language: input.language,
-      reviewRequests: Array.map(pageOfSortedReviewRequests, reviewRequest => ({
+      reviewRequests: Array.map(pageOfLatestReviewRequestForEachPreprint, reviewRequest => ({
         id: reviewRequest.id,
         published: reviewRequest.published,
         topics: reviewRequest.topics,
