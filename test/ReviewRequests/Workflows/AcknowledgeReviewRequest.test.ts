@@ -5,7 +5,7 @@ import { Nodemailer } from '../../../src/ExternalApis/index.ts'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import * as _ from '../../../src/ReviewRequests/Reactions/AcknowledgeReviewRequest.ts'
+import * as _ from '../../../src/ReviewRequests/Workflows/AcknowledgeReviewRequest.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 

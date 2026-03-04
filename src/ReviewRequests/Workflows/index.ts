@@ -1,6 +1,5 @@
-import { Activity, DurableClock, Workflow, type WorkflowEngine } from '@effect/workflow'
-import { Duration, Effect, Inspectable, Layer, Match, pipe, PubSub, Queue, Schema, Struct, type Scope } from 'effect'
-import * as Events from '../../Events.ts'
+import { Activity, DurableClock, Workflow } from '@effect/workflow'
+import { Duration, Effect, Inspectable, Layer, pipe, Schema, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import { Temporal, Uuid } from '../../types/index.ts'
 import * as Commands from '../Commands/index.ts'
@@ -10,7 +9,7 @@ import { CategorizeReviewRequest as executeCategorizeReviewRequest } from './Cat
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfReviewRequest } from './NotifyCommunitySlack.ts'
 import { ProcessReceivedReviewRequest as executeProcessReceivedReviewRequest } from './ProcessReceivedReviewRequest.ts'
 
-const AcknowledgeReviewRequest = Workflow.make({
+export const AcknowledgeReviewRequest = Workflow.make({
   name: 'AcknowledgeReviewRequest',
   error: Errors.FailedToAcknowledgeReviewRequest,
   payload: {
@@ -19,7 +18,7 @@ const AcknowledgeReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-const CategorizeReviewRequest = Workflow.make({
+export const CategorizeReviewRequest = Workflow.make({
   name: 'CategorizeReviewRequest',
   error: Errors.FailedToCategorizeReviewRequest,
   payload: {
@@ -28,7 +27,7 @@ const CategorizeReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-const NotifyCommunitySlackOfReviewRequest = Workflow.make({
+export const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   name: 'NotifyCommunitySlackOfReviewRequest',
   error: Errors.FailedToNotifyCommunitySlack,
   payload: {
@@ -37,7 +36,7 @@ const NotifyCommunitySlackOfReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-const ProcessReceivedReviewRequest = Workflow.make({
+export const ProcessReceivedReviewRequest = Workflow.make({
   name: 'ProcessReceivedReviewRequest',
   error: Errors.FailedToProcessReceivedReviewRequest,
   payload: {
@@ -46,43 +45,7 @@ const ProcessReceivedReviewRequest = Workflow.make({
   idempotencyKey: Struct.get('reviewRequestId'),
 })
 
-const makeReviewRequestReactions: Effect.Effect<
-  never,
-  never,
-  Events.Events | Scope.Scope | WorkflowEngine.WorkflowEngine
-> = Effect.gen(function* () {
-  const events = yield* Events.Events
-  const dequeue = yield* PubSub.subscribe(events)
-
-  return yield* pipe(
-    Queue.take(dequeue),
-    Effect.andThen(
-      pipe(
-        Match.type<Events.Event>(),
-        Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
-          Effect.all(
-            [
-              AcknowledgeReviewRequest.execute(event, { discard: true }),
-              CategorizeReviewRequest.execute(event, { discard: true }),
-              NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
-            ],
-            { concurrency: 'inherit' },
-          ),
-        ),
-        Match.tag('ReviewRequestByAPrereviewerWasImported', 'ReviewRequestFromAPreprintServerWasImported', event =>
-          CategorizeReviewRequest.execute(event, { discard: true }),
-        ),
-        Match.tag('ReviewRequestForAPreprintWasReceived', event =>
-          ProcessReceivedReviewRequest.execute(event, { discard: true }),
-        ),
-        Match.orElse(() => Effect.void),
-      ),
-    ),
-    Effect.forever,
-  )
-})
-
-const workflowsLayer = Layer.mergeAll(
+export const workflowsLayer = Layer.mergeAll(
   AcknowledgeReviewRequest.toLayer(({ reviewRequestId }) =>
     Activity.make({
       name: AcknowledgeReviewRequest.name,
@@ -171,10 +134,3 @@ const workflowsLayer = Layer.mergeAll(
     ),
   ),
 )
-
-export const reactionsWorker = Layer.scopedDiscard(
-  Effect.acquireReleaseInterruptible(
-    pipe(Effect.logDebug('ReviewRequests worker started'), Effect.andThen(makeReviewRequestReactions)),
-    () => Effect.logDebug('ReviewRequests worker stopped'),
-  ),
-).pipe(Layer.provide(workflowsLayer))

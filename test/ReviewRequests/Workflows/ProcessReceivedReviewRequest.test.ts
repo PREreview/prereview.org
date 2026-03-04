@@ -4,7 +4,7 @@ import { Effect, Either, Layer, pipe, TestClock } from 'effect'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import * as _ from '../../../src/ReviewRequests/Reactions/ProcessReceivedReviewRequest.ts'
+import * as _ from '../../../src/ReviewRequests/Workflows/ProcessReceivedReviewRequest.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 

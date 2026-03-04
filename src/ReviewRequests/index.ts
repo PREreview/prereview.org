@@ -15,12 +15,14 @@ import {
 } from '../WebApp/review-requests-page/index.ts' // eslint-disable-line import/no-internal-modules
 import * as Commands from './Commands/index.ts'
 import * as Queries from './Queries/index.ts'
+import * as Workflows from './Workflows/index.ts'
 
 export * from './Commands/index.ts'
 export * from './Errors.ts'
 export * from './Events.ts'
 export * from './Queries/index.ts'
-export * from './Reactions/index.ts'
+export * from './Reactions.ts'
+export * from './Workflows/index.ts'
 
 export interface ReviewRequest {
   readonly published: Temporal.PlainDate
@@ -50,7 +52,7 @@ export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 
 export const { isReviewRequested, search } = Effect.serviceFunctions(ReviewRequests)
 
-export const layer = Layer.provideMerge(
+export const layer = pipe(
   Layer.effect(
     ReviewRequests,
     Effect.gen(function* () {
@@ -123,5 +125,6 @@ export const layer = Layer.provideMerge(
       }
     }),
   ),
-  Layer.mergeAll(Commands.commandsLayer, Queries.queriesLayer),
+  Layer.provideMerge(Workflows.workflowsLayer),
+  Layer.provideMerge(Layer.mergeAll(Commands.commandsLayer, Queries.queriesLayer)),
 )

@@ -6,7 +6,7 @@ import * as Personas from '../../../src/Personas/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
-import * as _ from '../../../src/ReviewRequests/Reactions/NotifyCommunitySlack.ts'
+import * as _ from '../../../src/ReviewRequests/Workflows/NotifyCommunitySlack.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
