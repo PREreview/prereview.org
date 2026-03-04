@@ -59,6 +59,9 @@
   "contactMastodon": {
     "message": "{handle} on Mastodon"
   },
+  "contactYouTube": {
+    "message": "{handle} on YouTube"
+  },
   "contactLinkedIn": {
     "message": "{handle} on LinkedIn"
   },

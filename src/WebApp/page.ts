@@ -510,7 +510,10 @@ export const page = ({
                     >
                   </li>
                   <li>
-                    <a href="https://www.youtube.com/@Prereview" class="youtube" aria-label="@Prereview on YouTube"
+                    <a
+                      href="https://www.youtube.com/@Prereview"
+                      class="youtube"
+                      aria-label="${translate(locale, 'footer', 'contactYouTube')({ handle: '@Prereview' })}"
                       ><span translate="no">@Prereview</span></a
                     >
                   </li>
