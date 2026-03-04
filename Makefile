@@ -97,4 +97,4 @@ status-prod:
 	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/cli.js status"
 
 withdraw-review-requests:
-	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/withdraw-review-requests.js"
+	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/cli.js withdraw-review-requests"

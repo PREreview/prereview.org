@@ -13,7 +13,7 @@ pipe(
   Cli(process.argv),
   Effect.provide(
     pipe(
-      ReviewRequest.queriesLayer,
+      Layer.mergeAll(ReviewRequest.queriesLayer, ReviewRequest.commandsLayer),
       Layer.provide(SqlEventStore.layer),
       Layer.provide([Events.layer, SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
       Layer.provide([
