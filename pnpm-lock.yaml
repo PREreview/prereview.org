@@ -301,8 +301,8 @@ importers:
         specifier: ^12.6.0
         version: 12.6.0
       image-minimizer-webpack-plugin:
-        specifier: ^4.1.4
-        version: 4.1.4(imagemin@9.0.1)(webpack@5.105.3)
+        specifier: ^5.0.0
+        version: 5.0.0(imagemin@9.0.1)(webpack@5.105.3)
       imagemin:
         specifier: ^9.0.1
         version: 9.0.1
@@ -4037,9 +4037,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  image-minimizer-webpack-plugin@4.1.4:
-    resolution: {integrity: sha512-A2DLYuCyu7icbGdv8OMGFQKPXvsztWAueBkT3yQ7KVW1YGnAJKtgLYELkN7/aUday05DzEdKRaLE5Bnh/9S2UQ==}
-    engines: {node: '>= 18.12.0'}
+  image-minimizer-webpack-plugin@5.0.0:
+    resolution: {integrity: sha512-TSeES2mTBY1smDnQRIaTGR9EdS1xGvWsaMu+XJRlh6z7VAWHmyYR6P5AynvVHMcmK4NdvmSlRJTNWgvpeNSPuA==}
+    engines: {node: '>= 20.9.0'}
     peerDependencies:
       '@squoosh/lib': '*'
       imagemin: '*'
@@ -10805,10 +10805,10 @@ snapshots:
 
   image-dimensions@2.3.0: {}
 
-  image-minimizer-webpack-plugin@4.1.4(imagemin@9.0.1)(webpack@5.105.3):
+  image-minimizer-webpack-plugin@5.0.0(imagemin@9.0.1)(webpack@5.105.3):
     dependencies:
       schema-utils: 4.3.3
-      serialize-javascript: 6.0.2
+      serialize-javascript: 7.0.4
       webpack: 5.105.3(@swc/core@1.15.18)(webpack-cli@6.0.1)
     optionalDependencies:
       imagemin: 9.0.1
