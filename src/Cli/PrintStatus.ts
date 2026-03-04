@@ -1,8 +1,9 @@
+import { Command } from '@effect/cli'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Console, Effect, flow, pipe } from 'effect'
 import * as ReviewRequests from '../ReviewRequests/index.ts'
 
-export const PrintStatus = pipe(
+const program = pipe(
   Console.log('Review requests needing categorization'),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
   Effect.tapBoth({
@@ -22,3 +23,5 @@ export const PrintStatus = pipe(
     onFailure: Console.log,
   }),
 )
+
+export const PrintStatus = Command.make('status', {}, () => program)
