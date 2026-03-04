@@ -86,6 +86,10 @@ update-snapshots: test-integration
 test-integration-image:
 	docker build --target test-integration --tag ${INTEGRATION_TEST_IMAGE_TAG} .
 
+cli-local: .env node_modules start-services
+	POSTGRES_URL=postgres://postgres:password@$(shell docker compose port postgres 5432) \
+	node --env-file .env src/cli.ts --wizard
+
 status-prod:
 	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/print-status.js"
 
