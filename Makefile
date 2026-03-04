@@ -94,7 +94,7 @@ cli-prod: .env node_modules start-services
 	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js --wizard"
 
 status-prod:
-	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/print-status.js"
+	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/cli.js status"
 
 withdraw-review-requests:
 	flyctl --config fly.prod.toml ssh console --region iad --command "node dist/withdraw-review-requests.js"
