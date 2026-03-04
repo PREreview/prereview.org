@@ -1,13 +1,16 @@
-import { Command } from '@effect/cli'
+import { Args, Command } from '@effect/cli'
 import { pipe } from 'effect'
+import { Uuid } from '../types/index.ts'
 import { PrintStatus } from './PrintStatus.ts'
-import { WithdrawReviewRequests } from './WithdrawReviewRequests.ts'
+import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
-const withdrawReviewRequests = Command.make('withdraw-review-requests', {}, () => WithdrawReviewRequests)
+const reviewRequestId = pipe(Args.text({ name: 'reviewRequestId' }), Args.withSchema(Uuid.UuidSchema))
+
+const withdrawReviewRequest = Command.make('withdraw-review-request', { reviewRequestId }, WithdrawReviewRequest)
 
 const status = Command.make('status', {}, () => PrintStatus)
 
-const app = pipe(Command.make('prereview', {}), Command.withSubcommands([status, withdrawReviewRequests]))
+const app = pipe(Command.make('prereview', {}), Command.withSubcommands([status, withdrawReviewRequest]))
 
 export const Cli = Command.run(app, {
   name: 'PREreview',
