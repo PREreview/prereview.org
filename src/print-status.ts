@@ -1,7 +1,7 @@
-import { NodeRuntime } from '@effect/platform-node'
+import { NodeContext, NodeRuntime } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Temporal } from '@js-temporal/polyfill'
-import { Array, Config, Console, Effect, flow, Layer, pipe } from 'effect'
+import { Config, Effect, Layer, pipe } from 'effect'
+import { Cli } from './Cli/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
@@ -9,29 +9,8 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 
-const program = pipe(
-  Console.log('Review requests needing categorization'),
-  Effect.andThen(ReviewRequest.findReviewRequestsNeedingCategorization),
-  Effect.tapBoth({
-    onSuccess: flow(
-      Array.map(result => ({
-        ID: result.id,
-        Published: result.publishedAt
-          .toZonedDateTimeISO('UTC')
-          .until(Temporal.Now.zonedDateTimeISO('UTC'), {
-            largestUnit: 'day',
-            smallestUnit: 'hour',
-          })
-          .toLocaleString('en-US'),
-      })),
-      Console.table,
-    ),
-    onFailure: Console.log,
-  }),
-)
-
 pipe(
-  program,
+  Cli([...process.argv, 'status']),
   Effect.provide(
     pipe(
       ReviewRequest.queriesLayer,
@@ -43,6 +22,7 @@ pipe(
           url: Config.redacted(Config.string('POSTGRES_URL')),
         }),
       ]),
+      Layer.provideMerge(NodeContext.layer),
     ),
   ),
   NodeRuntime.runMain,
