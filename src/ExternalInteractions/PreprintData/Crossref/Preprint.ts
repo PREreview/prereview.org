@@ -172,7 +172,7 @@ const getAbstract = (
     : Effect.succeed(undefined)
 
 const maybeDecode = (text: string, preprintId: CrossrefPreprintId): string =>
-  preprintId._tag === 'PreprintsorgPreprintId'
+  preprintId._tag === 'PreprintsorgPreprintId' || preprintId._tag === 'ScieloPreprintId'
     ? text.startsWith('&lt;') || /&lt;[a-z]+&gt;|&amp;[a-z]+;/i.test(text)
       ? decode(text)
       : text

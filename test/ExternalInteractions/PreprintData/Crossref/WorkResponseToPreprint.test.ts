@@ -217,6 +217,27 @@ test.each([
     }),
   },
   {
+    response: 'scielo-preprints-title-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Helder Ferreira do Vale', orcid: OrcidId('0000-0002-4993-7932') }],
+      id: new ScieloPreprintId({ value: Doi('10.1590/scielopreprints.15155') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 2, day: 20 }),
+      title: {
+        text: rawHtml(
+          'Análise de Rede da “Confederação do Equador”: Origens do Federalismo no Brasil a partir de <i>O Typhis</i> de Frei Caneca',
+        ),
+        language: 'pt',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Este artigo analisa a rede federalista que culminou na Confederação do Equador (1824) mediante Análise de Rede Social (ARS) aplicada à revista O Typhis Pernambucano, editada por Frei Caneca (1823-1824). O artigo reconstrói o movimento com métricas que revelam uma rede bipolar — comunidade federalista versus imperial — com alta coesão interna no bloco nordestino, mas baixa capacidade de construir pontes externas. A triangulação com publicações da época, O Spectador Brasileiro e Diário Fluminense, confirma que o colapso do núcleo federalista decorreu das vulnerabilidades estruturais da rede. A pesquisa consagra O Typhis como registro e infraestrutura da mobilização federalista, revelando a imprensa como um mecanismo de criação de redes de resistência e difusão de novas ideologias.</p>',
+        ),
+        language: 'pt',
+      },
+      url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/15155/version/15914'),
+    }),
+  },
+  {
     response: 'preprintsorg.json',
     expected: Preprint({
       authors: [
