@@ -43,3 +43,6 @@ method = "get"
 path = "/health"
 protocol = "http"
 timeout = "1s"
+
+[[restart]]
+policy = "always"
