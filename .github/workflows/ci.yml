@@ -34,7 +34,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -152,7 +152,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -178,7 +178,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -207,7 +207,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -258,7 +258,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -303,7 +303,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -399,7 +399,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
@@ -456,7 +456,7 @@ jobs:
           version: 10
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v6.2.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: package.json
           cache: ${{ !env.ACT && 'pnpm' || '' }}
