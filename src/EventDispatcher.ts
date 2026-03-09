@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Option, Schedule } from 'effect'
+import { Array, Context, Effect, Layer, Option, pipe, Schedule } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -37,6 +37,12 @@ const dispatchNewEvents = Effect.gen(function* () {
   )
 })
 
-export const worker = Layer.effectDiscard(Effect.repeat(dispatchNewEvents, Schedule.fixed('2 seconds')))
+export const worker = Layer.effectDiscard(
+  pipe(
+    dispatchNewEvents,
+    Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+    Effect.repeat(Schedule.fixed('2 seconds')),
+  ),
+)
 
 export const replayExistingEvents = dispatchNewEvents
