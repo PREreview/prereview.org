@@ -190,8 +190,8 @@ importers:
         specifier: ^9.39.2
         version: 9.39.2
       '@fast-check/jest':
-        specifier: ^2.1.1
-        version: 2.1.1(@jest/expect@30.2.0)(@jest/globals@30.2.0)
+        specifier: ^2.2.0
+        version: 2.2.0(@jest/expect@30.2.0)(@jest/globals@30.2.0)
       '@ibm/plex':
         specifier: ^6.4.1
         version: 6.4.1
@@ -1521,10 +1521,10 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@fast-check/jest@2.1.1':
-    resolution: {integrity: sha512-t9m3u3tikj/+Ph+gRLGb7fFS/aqnIafsAc6qhXIFJytkqOFRSF70Y5yUUyTtR0idcb6Ald7AnC0AChLCLxv2Tg==}
+  '@fast-check/jest@2.2.0':
+    resolution: {integrity: sha512-DXDqX3wOZjuQulN+fOB6Z2I/7ib+ypxyAn1fQdQ2wSiTzAPKYdqaaBQ9lPk2/Zg0wh8sABt40nwW3ZtNhFe9rQ==}
     peerDependencies:
-      '@fast-check/worker': '>=0.0.7 <0.6.0'
+      '@fast-check/worker': '>=0.0.7 <0.7.0'
       '@jest/expect': '>=28.0.0'
       '@jest/globals': '>=25.5.2'
     peerDependenciesMeta:
@@ -8108,7 +8108,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@fast-check/jest@2.1.1(@jest/expect@30.2.0)(@jest/globals@30.2.0)':
+  '@fast-check/jest@2.2.0(@jest/expect@30.2.0)(@jest/globals@30.2.0)':
     dependencies:
       '@jest/globals': 30.2.0
       fast-check: 3.23.2
