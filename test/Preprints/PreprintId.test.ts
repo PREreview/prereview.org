@@ -13,6 +13,18 @@ describe('PreprintIdEquivalence', () => {
           new _.BiorxivPreprintId({ value: Doi('10.1101/abc123') }),
         ],
       ],
+      [
+        [
+          new _.BiorxivPreprintId({ value: Doi('10.1101/abc123') }),
+          new _.BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abc123') }),
+        ],
+      ],
+      [
+        [
+          new _.BiorxivPreprintId({ value: Doi('10.1101/abc123') }),
+          new _.MedrxivPreprintId({ value: Doi('10.1101/abc123') }),
+        ],
+      ],
       [[new _.PhilsciPreprintId({ value: 1 }), new _.PhilsciPreprintId({ value: 1 })]],
       [
         [
@@ -29,7 +41,7 @@ describe('PreprintIdEquivalence', () => {
     [
       fc
         .tuple(fc.indeterminatePreprintId(), fc.indeterminatePreprintId())
-        .filter(([id1, id2]) => id1._tag !== id2._tag),
+        .filter(([id1, id2]) => id1._tag !== id2._tag && id1.value !== id2.value),
     ],
     {
       examples: [
@@ -40,12 +52,6 @@ describe('PreprintIdEquivalence', () => {
           ],
         ],
         [[new _.PhilsciPreprintId({ value: 1 }), new _.PhilsciPreprintId({ value: 2 })]],
-        [
-          [
-            new _.BiorxivPreprintId({ value: Doi('10.1101/abc123') }),
-            new _.BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/abc123') }),
-          ],
-        ],
       ],
     },
   )('with different preprint IDs', ([id1, id2]) => {

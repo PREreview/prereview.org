@@ -289,12 +289,6 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
         preprintId: request1Received2.preprintId,
       },
       {
-        id: request3Id,
-        published: request3Accepted.acceptedAt,
-        topics: request3Categorized.topics,
-        preprintId: request3Received.preprintId,
-      },
-      {
         id: request4Id,
         published: request4Accepted.acceptedAt,
         topics: request4Recategorized.topics!,
@@ -305,6 +299,12 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
         published: request5Accepted.acceptedAt,
         topics: request5Recategorized.topics!,
         preprintId: request5Received.preprintId,
+      },
+      {
+        id: request6Id,
+        published: request6Accepted.acceptedAt,
+        topics: request6Categorized.topics,
+        preprintId: request6Received.preprintId,
       },
     ],
   ],

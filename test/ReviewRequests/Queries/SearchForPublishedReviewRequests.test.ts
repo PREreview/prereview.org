@@ -321,12 +321,6 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           preprintId: request1Received2.preprintId,
         },
         {
-          id: request3Id,
-          published: request3Accepted.acceptedAt,
-          topics: request3Categorized.topics,
-          preprintId: request3Received.preprintId,
-        },
-        {
           id: request4Id,
           published: request4Accepted.acceptedAt,
           topics: request4Categorized.topics,
@@ -337,6 +331,12 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
           published: request5Accepted.acceptedAt,
           topics: request5Categorized.topics,
           preprintId: request5Received.preprintId,
+        },
+        {
+          id: request6Id,
+          published: request6Accepted.acceptedAt,
+          topics: request6Categorized.topics,
+          preprintId: request6Received.preprintId,
         },
       ],
     }),
@@ -378,12 +378,6 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
       language: undefined,
       field: undefined,
       reviewRequests: [
-        {
-          id: request6Id,
-          published: request6Accepted.acceptedAt,
-          topics: request6Categorized.topics,
-          preprintId: request6Received.preprintId,
-        },
         {
           id: request7Id,
           published: request7Accepted.acceptedAt,

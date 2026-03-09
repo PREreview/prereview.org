@@ -254,15 +254,11 @@ export class MultipleIndeterminatePreprintIds extends Data.TaggedClass('Multiple
 }> {}
 
 export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprintId> = (a, b) => {
-  if (a._tag !== b._tag) {
-    return false
-  }
-
-  if (a._tag === 'PhilsciPreprintId') {
+  if (a._tag === 'PhilsciPreprintId' || b._tag === 'PhilsciPreprintId') {
     return a.value === b.value
   }
 
-  return Doi.DoiEquivalence(a.value, b.value as typeof a.value)
+  return Doi.DoiEquivalence(a.value, b.value)
 }
 
 export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintIdWithDoi['value']> = Doi.hasRegistrant(
