@@ -1,5 +1,5 @@
-import { Either, Equal, flow, Record } from 'effect'
-import type * as Preprints from '../../Preprints/index.ts'
+import { Either, flow, Record } from 'effect'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import * as shared from './sharedLogic.ts'
 
@@ -12,7 +12,8 @@ export type Result = boolean
 const query = (state: shared.State, input: Input): Result => {
   return Record.some(
     state,
-    reviewRequest => Equal.equals(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
+    reviewRequest =>
+      Preprints.PreprintIdEquivalence(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
   )
 }
 

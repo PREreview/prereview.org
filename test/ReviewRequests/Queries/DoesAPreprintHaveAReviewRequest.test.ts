@@ -25,6 +25,7 @@ const request9Id = Uuid.Uuid('f8d3deca-594e-4902-a831-53add29edfcc')
 const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67890') })
 const preprintId3 = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const preprintId4 = new Preprints.AdvancePreprintId({ value: Doi.Doi('10.31124/12345') })
 
 const now = Temporal.Now.instant()
 
@@ -157,12 +158,13 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
     true,
   ],
+  ['with an indeterminate preprint ID', { preprintId: preprintId1 }, [request3Received, request3Accepted], true],
   ['has been withdrawn', { preprintId: preprintId1 }, [request1Received1, request1Accepted1, request1Withdrawn], false],
   ['has been imported from a PREreviewer', { preprintId: preprintId1 }, [request8Imported], true],
   ['has been imported from a preprint server', { preprintId: preprintId2 }, [request9Imported], true],
   [
     'others have been accepted',
-    { preprintId: preprintId3 },
+    { preprintId: preprintId4 },
     [request1Received1, request1Accepted1, request1Received2, request1Accepted2, request8Imported, request9Imported],
     false,
   ],
