@@ -10,6 +10,7 @@ import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
@@ -82,7 +83,7 @@ export interface GetPreprintSubjectsEnv {
 }
 
 export interface IsReviewRequestedEnv {
-  isReviewRequested: (preprint: PreprintId) => T.Task<boolean>
+  isReviewRequested: (preprint: PreprintId) => TE.TaskEither<'unavailable', boolean>
 }
 
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
@@ -93,7 +94,7 @@ const getPreprintSubjects = (
 ): RT.ReaderTask<GetPreprintSubjectsEnv, ReadonlyArray<{ id: URL; name: string }>> =>
   R.asks(({ getPreprintSubjects }) => getPreprintSubjects(preprint))
 
-const isReviewRequested = (preprint: PreprintId): RT.ReaderTask<IsReviewRequestedEnv, boolean> =>
+const isReviewRequested = (preprint: PreprintId): RTE.ReaderTaskEither<IsReviewRequestedEnv, 'unavailable', boolean> =>
   R.asks(({ isReviewRequested }) => isReviewRequested(preprint))
 
 const getPrereviewsPageForSciety = flow(
@@ -587,7 +588,7 @@ export const createRecordOnZenodo: (
     createEmptyDeposition(),
     RTE.bindTo('deposition'),
     RTE.apSW('subjects', RTE.rightReaderTask(getPreprintSubjects(newPrereview.preprint.id))),
-    RTE.apSW('requested', RTE.rightReaderTask(isReviewRequested(newPrereview.preprint.id))),
+    RTE.apSW('requested', isReviewRequested(newPrereview.preprint.id)),
     RTE.bindW(
       'metadata',
       RTE.fromReaderK(({ subjects, deposition, requested }) =>
@@ -610,6 +611,7 @@ export const createRecordOnZenodo: (
               .with(P.instanceOf(Error), error => error.message)
               .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
               .with({ _tag: P.string }, D.draw)
+              .with(P.string, identity)
               .exhaustive(),
           }),
           L.errorP('Unable to create record on Zenodo'),

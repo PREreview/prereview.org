@@ -223,6 +223,7 @@ export interface Env {
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
     | ReviewRequests.ReviewRequestCommands
+    | ReviewRequests.ReviewRequestQueries
     | WorkflowEngine.WorkflowEngine
     | Zenodo.ZenodoApi
     | FeatureFlags.FeatureFlags

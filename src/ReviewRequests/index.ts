@@ -39,7 +39,6 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
-    isReviewRequested: (id: PreprintId) => Effect.Effect<boolean>
     search: (query: {
       field?: FieldId
       language?: LanguageCode
@@ -50,7 +49,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 
-export const { isReviewRequested, search } = Effect.serviceFunctions(ReviewRequests)
+export const { search } = Effect.serviceFunctions(ReviewRequests)
 
 export const layer = pipe(
   Layer.effect(
@@ -83,12 +82,6 @@ export const layer = pipe(
           Effect.orElseSucceed(Array.empty),
           Effect.provide(context),
           Effect.withSpan('ReviewRequests.getFiveMostRecent'),
-        ),
-        isReviewRequested: flow(
-          (preprintId: Preprints.IndeterminatePreprintId) => Queries.doesAPreprintHaveAReviewRequest({ preprintId }),
-          Effect.orElseSucceed(() => false),
-          Effect.provide(context),
-          Effect.withSpan('ReviewRequests.isReviewRequested'),
         ),
         search: flow(
           Queries.searchForPublishedReviewRequests,

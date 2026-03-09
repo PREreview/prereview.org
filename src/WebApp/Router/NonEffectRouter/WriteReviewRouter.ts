@@ -473,7 +473,14 @@ export const WriteReviewRouter = pipe(
               ),
             { runtime: env.runtime },
           ),
-          isReviewRequested: EffectToFpts.toTaskK(ReviewRequests.isReviewRequested, env.runtime),
+          isReviewRequested: EffectToFpts.toTaskEitherK(
+            flow(
+              (preprintId: Preprints.IndeterminatePreprintId) =>
+                ReviewRequests.doesAPreprintHaveAReviewRequest({ preprintId }),
+              Effect.mapError(() => 'unavailable' as const),
+            ),
+            env.runtime,
+          ),
           legacyPrereviewApi: {
             app: env.legacyPrereviewApiConfig.app,
             key: Redacted.value(env.legacyPrereviewApiConfig.key),
