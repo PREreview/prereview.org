@@ -242,7 +242,6 @@ pipe(
     ),
   ),
   Layer.launch,
-  Effect.scoped,
   Logger.withMinimumLogLevel(LogLevel.Debug),
   NodeRuntime.runMain({ disablePrettyLogger: true }),
 )
