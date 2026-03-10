@@ -1,4 +1,4 @@
-import { Array, Either, Equivalence, flow, Option, Record, Struct } from 'effect'
+import { Array, Either, Equivalence, flow, Option, pipe, Record, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -33,12 +33,22 @@ const query = (reviewRequests: shared.State): Result => {
     ),
   )
 
-  const latestReviewRequestForEachPreprint = Array.dedupeWith(
-    sortedReviewRequests,
-    Equivalence.mapInput(Preprints.PreprintIdEquivalence, Struct.get('preprintId')),
-  )
+  const seenPreprintIds = Array.empty<Preprints.IndeterminatePreprintId>()
 
-  return Array.take(latestReviewRequestForEachPreprint, 5)
+  return pipe(
+    Array.takeWhile(sortedReviewRequests, reviewRequest => {
+      if (Array.length(seenPreprintIds) >= 5) {
+        return false
+      }
+
+      if (!Array.containsWith(Preprints.PreprintIdEquivalence)(seenPreprintIds, reviewRequest.preprintId)) {
+        seenPreprintIds.push(reviewRequest.preprintId)
+      }
+
+      return true
+    }),
+    Array.dedupeWith(Equivalence.mapInput(Preprints.PreprintIdEquivalence, Struct.get('preprintId'))),
+  )
 }
 
 export const GetFiveMostRecentReviewRequests = Queries.StatefulQuery({
