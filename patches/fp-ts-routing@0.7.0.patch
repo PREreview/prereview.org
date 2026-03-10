@@ -1,0 +1,494 @@
+diff --git a/es6/formatter.d.ts b/es6/formatter.d.ts
+index 2e76bd49a23f3081a6d1dce21babc72cc5d91405..798c8ccd1b70e9f7f18f36f75eff1693dbe66a44 100644
+--- a/es6/formatter.d.ts
++++ b/es6/formatter.d.ts
+@@ -22,7 +22,7 @@ export declare class Formatter<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Formatter<B> & Formatter<RowLacks<B, keyof A>>): Formatter<A & B>;
++    andThen<B>(that: Formatter<B> & Formatter<RowLacks<B, keyof A>>): Formatter<A & B>;
+ }
+ declare module 'fp-ts/es6/HKT' {
+     interface URItoKind<A> {
+@@ -45,7 +45,7 @@ export declare const contramap: <A, B>(f: (b: B) => A) => (fa: Formatter<A>) =>
+  * @category formatters
+  * @since 0.6.0
+  */
+-export declare const then: <B>(fb: Formatter<B>) => <A>(fa: Formatter<A> & Formatter<RowLacks<A, keyof B>>) => Formatter<A & B>;
++export declare const andThen: <B>(fb: Formatter<B>) => <A>(fa: Formatter<A> & Formatter<RowLacks<A, keyof B>>) => Formatter<A & B>;
+ /**
+  * @category formatters
+  * @since 0.4.0
+diff --git a/es6/formatter.js b/es6/formatter.js
+index 2d31e367947566a12dcedba46743e5602a0ebd97..2c5682437ad0ec4909d562c639bc79413e06307e 100644
+--- a/es6/formatter.js
++++ b/es6/formatter.js
+@@ -17,7 +17,7 @@ var Formatter = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Formatter.prototype.then = function (that) {
++    Formatter.prototype.andThen = function (that) {
+         var _this = this;
+         return new Formatter(function (r, ab) { return that.run(_this.run(r, ab), ab); });
+     };
+@@ -46,9 +46,9 @@ export var contramap = function (f) {
+  * @category formatters
+  * @since 0.6.0
+  */
+-export var then = function (fb) {
++export var andThen = function (fb) {
+     return function (fa) {
+-        return fa.then(fb);
++        return fa.andThen(fb);
+     };
+ };
+ /**
+diff --git a/es6/index.d.ts b/es6/index.d.ts
+index 692f8d88540250d49bdb282720fae65f0551062d..f46854f2c255378a4508848a29502fdc71a72dc1 100644
+--- a/es6/index.d.ts
++++ b/es6/index.d.ts
+@@ -3,7 +3,7 @@
+  */
+ import { contramap, format, Formatter, formatter } from './formatter';
+ import { RowLacks } from './helpers';
+-import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, then, type } from './matcher';
++import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, andThen, type } from './matcher';
+ import { alt, ap, apFirst, apSecond, chain, chainFirst, flatten, getParserMonoid, map, parse, Parser, parser, zero } from './parser';
+ export * from './route';
+ export { 
+@@ -111,7 +111,7 @@ imap,
+  * @category matchers
+  * @since 0.5.1
+  */
+-then, 
++andThen, 
+ /**
+  * @category matchers
+  * @since 0.4.0
+diff --git a/es6/index.js b/es6/index.js
+index 3afd0afd293ca2bf6e02d3edd10b97279c7bd364..c3542dffc5c83f4c783e81b7a33c122c64a1bd2f 100644
+--- a/es6/index.js
++++ b/es6/index.js
+@@ -4,7 +4,7 @@
+ /* istanbul ignore file */
+ // Istanbul has some issues with re-exported symbols, so we temporarly ignore coverage only for this file
+ import { contramap, format, Formatter, formatter } from './formatter';
+-import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, then, type } from './matcher';
++import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, andThen, type } from './matcher';
+ import { alt, ap, apFirst, apSecond, chain, chainFirst, flatten, getParserMonoid, map, parse, Parser, parser, zero } from './parser';
+ // --- Re-exports
+ export * from './route';
+@@ -108,7 +108,7 @@ imap,
+  * @category matchers
+  * @since 0.5.1
+  */
+-then, 
++andThen, 
+ /**
+  * @category matchers
+  * @since 0.4.0
+diff --git a/es6/matcher.d.ts b/es6/matcher.d.ts
+index b5923b3474ecdc9b7d9c7513415fbfc6381d7e13..412a3873ab0cf62a607b951524e44398ea35ce3b 100644
+--- a/es6/matcher.d.ts
++++ b/es6/matcher.d.ts
+@@ -22,7 +22,7 @@ export declare class Match<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Match<B> & Match<RowLacks<B, keyof A>>): Match<A & B>;
++    andThen<B>(that: Match<B> & Match<RowLacks<B, keyof A>>): Match<A & B>;
+ }
+ /**
+  * @category matchers
+@@ -33,7 +33,7 @@ export declare const imap: <A, B>(f: (a: A) => B, g: (b: B) => A) => (ma: Match<
+  * @category matchers
+  * @since 0.5.1
+  */
+-export declare const then: <B>(mb: Match<B>) => <A>(ma: Match<A> & Match<RowLacks<A, keyof B>>) => Match<A & B>;
++export declare const andThen: <B>(mb: Match<B>) => <A>(ma: Match<A> & Match<RowLacks<A, keyof B>>) => Match<A & B>;
+ /**
+  * `succeed` matches everything but consumes nothing
+  *
+@@ -61,7 +61,7 @@ export declare const end: Match<{}>;
+  *   b: null
+  * })
+  *
+- * const match = lit('search').then(type('topic', T))
++ * const match = lit('search').andThen(type('topic', T))
+  *
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/a')), some([{ topic: 'a' }, Route.empty]))
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/b')), some([{ topic: 'b' }, Route.empty]))
+@@ -129,9 +129,9 @@ export declare const lit: (literal: string) => Match<{}>;
+  * import { lit, str, query, Route } from 'fp-ts-routing'
+  *
+  * const route = lit('accounts')
+- *   .then(str('accountId'))
+- *   .then(lit('files'))
+- *   .then(query(t.strict({ pathparam: t.string })))
++ *   .andThen(str('accountId'))
++ *   .andThen(lit('files'))
++ *   .andThen(query(t.strict({ pathparam: t.string })))
+  *   .formatter.run(Route.empty, { accountId: 'testId', pathparam: '123' })
+  *   .toString()
+  *
+diff --git a/es6/matcher.js b/es6/matcher.js
+index a54c5cb337b551cbf43cb155dbab8fa4040e9a9e..6dfdec0eb3cd340a649e4de9267228a57cacb443 100644
+--- a/es6/matcher.js
++++ b/es6/matcher.js
+@@ -28,8 +28,8 @@ var Match = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Match.prototype.then = function (that) {
+-        return new Match(this.parser.then(that.parser), this.formatter.then(that.formatter));
++    Match.prototype.andThen = function (that) {
++        return new Match(this.parser.andThen(that.parser), this.formatter.andThen(that.formatter));
+     };
+     return Match;
+ }());
+@@ -47,9 +47,9 @@ export var imap = function (f, g) {
+  * @category matchers
+  * @since 0.5.1
+  */
+-export var then = function (mb) {
++export var andThen = function (mb) {
+     return function (ma) {
+-        return ma.then(mb);
++        return ma.andThen(mb);
+     };
+ };
+ var singleton = function (k, v) {
+@@ -83,7 +83,7 @@ export var end = new Match(new Parser(function (r) { return (Route.isEmpty(r) ?
+  *   b: null
+  * })
+  *
+- * const match = lit('search').then(type('topic', T))
++ * const match = lit('search').andThen(type('topic', T))
+  *
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/a')), some([{ topic: 'a' }, Route.empty]))
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/b')), some([{ topic: 'b' }, Route.empty]))
+@@ -170,9 +170,9 @@ export var lit = function (literal) {
+  * import { lit, str, query, Route } from 'fp-ts-routing'
+  *
+  * const route = lit('accounts')
+- *   .then(str('accountId'))
+- *   .then(lit('files'))
+- *   .then(query(t.strict({ pathparam: t.string })))
++ *   .andThen(str('accountId'))
++ *   .andThen(lit('files'))
++ *   .andThen(query(t.strict({ pathparam: t.string })))
+  *   .formatter.run(Route.empty, { accountId: 'testId', pathparam: '123' })
+  *   .toString()
+  *
+diff --git a/es6/parser.d.ts b/es6/parser.d.ts
+index 3a098e1595eea353eef25d34078a4331e76105ec..5fd0dd8beec68bd9deff5105b1b8e94a13c47f69 100644
+--- a/es6/parser.d.ts
++++ b/es6/parser.d.ts
+@@ -49,7 +49,7 @@ export declare class Parser<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Parser<RowLacks<B, keyof A>>): Parser<A & B>;
++    andThen<B>(that: Parser<RowLacks<B, keyof A>>): Parser<A & B>;
+ }
+ /**
+  * @category parsers
+@@ -115,5 +115,5 @@ export declare const map: <A, B>(f: (a: A) => B) => (fa: Parser<A>) => Parser<B>
+  * @category parsers
+  * @since 0.6.0
+  */
+-export declare const then: <B>(fb: Parser<B>) => <A>(fa: Parser<A> & Parser<RowLacks<A, keyof B>>) => Parser<A & B>;
++export declare const andThen: <B>(fb: Parser<B>) => <A>(fa: Parser<A> & Parser<RowLacks<A, keyof B>>) => Parser<A & B>;
+ export {};
+diff --git a/es6/parser.js b/es6/parser.js
+index 88fd0fc9315f5beaf512ba718d9f13bb0c13a254..67af3bce12cb1a7c1f38c53a86fc6d72dc7b2d22 100644
+--- a/es6/parser.js
++++ b/es6/parser.js
+@@ -54,7 +54,7 @@ var Parser = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Parser.prototype.then = function (that) {
++    Parser.prototype.andThen = function (that) {
+         return that.ap(this.map(assign));
+     };
+     return Parser;
+@@ -174,9 +174,9 @@ export var map = function (f) {
+  * @category parsers
+  * @since 0.6.0
+  */
+-export var then = function (fb) {
++export var andThen = function (fb) {
+     return function (fa) {
+-        return fa.then(fb);
++        return fa.andThen(fb);
+     };
+ };
+ // --- Helpers
+diff --git a/lib/formatter.d.ts b/lib/formatter.d.ts
+index 3c5687662e60afd1713c45e99f6d865b1f8b1062..c7c72ad6e528927f6997fe243bd65c0842579d11 100644
+--- a/lib/formatter.d.ts
++++ b/lib/formatter.d.ts
+@@ -22,7 +22,7 @@ export declare class Formatter<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Formatter<B> & Formatter<RowLacks<B, keyof A>>): Formatter<A & B>;
++    andThen<B>(that: Formatter<B> & Formatter<RowLacks<B, keyof A>>): Formatter<A & B>;
+ }
+ declare module 'fp-ts/lib/HKT' {
+     interface URItoKind<A> {
+@@ -45,7 +45,7 @@ export declare const contramap: <A, B>(f: (b: B) => A) => (fa: Formatter<A>) =>
+  * @category formatters
+  * @since 0.6.0
+  */
+-export declare const then: <B>(fb: Formatter<B>) => <A>(fa: Formatter<A> & Formatter<RowLacks<A, keyof B>>) => Formatter<A & B>;
++export declare const andThen: <B>(fb: Formatter<B>) => <A>(fa: Formatter<A> & Formatter<RowLacks<A, keyof B>>) => Formatter<A & B>;
+ /**
+  * @category formatters
+  * @since 0.4.0
+diff --git a/lib/formatter.js b/lib/formatter.js
+index 388aca4459344d4bb4bc0f10b6e3c294ea68bb7c..8411d765b69c4b573781f80467186ca486b1509b 100644
+--- a/lib/formatter.js
++++ b/lib/formatter.js
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.format = exports.then = exports.contramap = exports.formatter = exports.Formatter = void 0;
++exports.format = exports.andThen = exports.contramap = exports.formatter = exports.Formatter = void 0;
+ var route_1 = require("./route");
+ /**
+  * @category formatters
+@@ -20,7 +20,7 @@ var Formatter = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Formatter.prototype.then = function (that) {
++    Formatter.prototype.andThen = function (that) {
+         var _this = this;
+         return new Formatter(function (r, ab) { return that.run(_this.run(r, ab), ab); });
+     };
+@@ -50,12 +50,12 @@ exports.contramap = contramap;
+  * @category formatters
+  * @since 0.6.0
+  */
+-var then = function (fb) {
++var andThen = function (fb) {
+     return function (fa) {
+-        return fa.then(fb);
++        return fa.andThen(fb);
+     };
+ };
+-exports.then = then;
++exports.andThen = andThen;
+ /**
+  * @category formatters
+  * @since 0.4.0
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index 692f8d88540250d49bdb282720fae65f0551062d..f46854f2c255378a4508848a29502fdc71a72dc1 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -3,7 +3,7 @@
+  */
+ import { contramap, format, Formatter, formatter } from './formatter';
+ import { RowLacks } from './helpers';
+-import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, then, type } from './matcher';
++import { end, imap, int, IntegerFromString, lit, Match, query, str, succeed, andThen, type } from './matcher';
+ import { alt, ap, apFirst, apSecond, chain, chainFirst, flatten, getParserMonoid, map, parse, Parser, parser, zero } from './parser';
+ export * from './route';
+ export { 
+@@ -111,7 +111,7 @@ imap,
+  * @category matchers
+  * @since 0.5.1
+  */
+-then, 
++andThen, 
+ /**
+  * @category matchers
+  * @since 0.4.0
+diff --git a/lib/index.js b/lib/index.js
+index 1fab524f5474b364d6785e47240af4beaa6d16ed..987e25be93cc2a0fcb827e77ce6a153a4068947c 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -17,7 +17,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.query = exports.lit = exports.int = exports.IntegerFromString = exports.str = exports.type = exports.end = exports.succeed = exports.then = exports.imap = exports.Match = exports.contramap = exports.formatter = exports.format = exports.Formatter = exports.map = exports.flatten = exports.chainFirst = exports.chain = exports.apSecond = exports.apFirst = exports.ap = exports.alt = exports.parser = exports.getParserMonoid = exports.parse = exports.zero = exports.Parser = void 0;
++exports.query = exports.lit = exports.int = exports.IntegerFromString = exports.str = exports.type = exports.end = exports.succeed = exports.andThen = exports.imap = exports.Match = exports.contramap = exports.formatter = exports.format = exports.Formatter = exports.map = exports.flatten = exports.chainFirst = exports.chain = exports.apSecond = exports.apFirst = exports.ap = exports.alt = exports.parser = exports.getParserMonoid = exports.parse = exports.zero = exports.Parser = void 0;
+ /* istanbul ignore file */
+ // Istanbul has some issues with re-exported symbols, so we temporarly ignore coverage only for this file
+ var formatter_1 = require("./formatter");
+@@ -35,7 +35,7 @@ Object.defineProperty(exports, "Match", { enumerable: true, get: function () { r
+ Object.defineProperty(exports, "query", { enumerable: true, get: function () { return matcher_1.query; } });
+ Object.defineProperty(exports, "str", { enumerable: true, get: function () { return matcher_1.str; } });
+ Object.defineProperty(exports, "succeed", { enumerable: true, get: function () { return matcher_1.succeed; } });
+-Object.defineProperty(exports, "then", { enumerable: true, get: function () { return matcher_1.then; } });
++Object.defineProperty(exports, "andThen", { enumerable: true, get: function () { return matcher_1.andThen; } });
+ Object.defineProperty(exports, "type", { enumerable: true, get: function () { return matcher_1.type; } });
+ var parser_1 = require("./parser");
+ Object.defineProperty(exports, "alt", { enumerable: true, get: function () { return parser_1.alt; } });
+diff --git a/lib/matcher.d.ts b/lib/matcher.d.ts
+index 2e6ad935bb29bd6aa2d6850eb620d2302db2c8db..e973619e491be069a19a6822e674dd72990fd9c5 100644
+--- a/lib/matcher.d.ts
++++ b/lib/matcher.d.ts
+@@ -22,7 +22,7 @@ export declare class Match<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Match<B> & Match<RowLacks<B, keyof A>>): Match<A & B>;
++    andThen<B>(that: Match<B> & Match<RowLacks<B, keyof A>>): Match<A & B>;
+ }
+ /**
+  * @category matchers
+@@ -33,7 +33,7 @@ export declare const imap: <A, B>(f: (a: A) => B, g: (b: B) => A) => (ma: Match<
+  * @category matchers
+  * @since 0.5.1
+  */
+-export declare const then: <B>(mb: Match<B>) => <A>(ma: Match<A> & Match<RowLacks<A, keyof B>>) => Match<A & B>;
++export declare const andThen: <B>(mb: Match<B>) => <A>(ma: Match<A> & Match<RowLacks<A, keyof B>>) => Match<A & B>;
+ /**
+  * `succeed` matches everything but consumes nothing
+  *
+@@ -61,7 +61,7 @@ export declare const end: Match<{}>;
+  *   b: null
+  * })
+  *
+- * const match = lit('search').then(type('topic', T))
++ * const match = lit('search').andThen(type('topic', T))
+  *
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/a')), some([{ topic: 'a' }, Route.empty]))
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/b')), some([{ topic: 'b' }, Route.empty]))
+@@ -129,9 +129,9 @@ export declare const lit: (literal: string) => Match<{}>;
+  * import { lit, str, query, Route } from 'fp-ts-routing'
+  *
+  * const route = lit('accounts')
+- *   .then(str('accountId'))
+- *   .then(lit('files'))
+- *   .then(query(t.strict({ pathparam: t.string })))
++ *   .andThen(str('accountId'))
++ *   .andThen(lit('files'))
++ *   .andThen(query(t.strict({ pathparam: t.string })))
+  *   .formatter.run(Route.empty, { accountId: 'testId', pathparam: '123' })
+  *   .toString()
+  *
+diff --git a/lib/matcher.js b/lib/matcher.js
+index fc23b15470421dd73c918230989f0021f119dba6..66c5b7864d14463c4724abfa6c7e8a80ca7eea7d 100644
+--- a/lib/matcher.js
++++ b/lib/matcher.js
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.query = exports.lit = exports.int = exports.IntegerFromString = exports.str = exports.type = exports.end = exports.succeed = exports.then = exports.imap = exports.Match = void 0;
++exports.query = exports.lit = exports.int = exports.IntegerFromString = exports.str = exports.type = exports.end = exports.succeed = exports.andThen = exports.imap = exports.Match = void 0;
+ /**
+  * @since 0.6.0
+  */
+@@ -31,8 +31,8 @@ var Match = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Match.prototype.then = function (that) {
+-        return new Match(this.parser.then(that.parser), this.formatter.then(that.formatter));
++    Match.prototype.andThen = function (that) {
++        return new Match(this.parser.andThen(that.parser), this.formatter.andThen(that.formatter));
+     };
+     return Match;
+ }());
+@@ -51,12 +51,12 @@ exports.imap = imap;
+  * @category matchers
+  * @since 0.5.1
+  */
+-var then = function (mb) {
++var andThen = function (mb) {
+     return function (ma) {
+-        return ma.then(mb);
++        return ma.andThen(mb);
+     };
+ };
+-exports.then = then;
++exports.andThen = andThen;
+ var singleton = function (k, v) {
+     var _a;
+     return (_a = {}, _a[k] = v, _a);
+@@ -89,7 +89,7 @@ exports.end = new Match(new parser_1.Parser(function (r) { return (route_1.Route
+  *   b: null
+  * })
+  *
+- * const match = lit('search').then(type('topic', T))
++ * const match = lit('search').andThen(type('topic', T))
+  *
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/a')), some([{ topic: 'a' }, Route.empty]))
+  * assert.deepStrictEqual(match.parser.run(Route.parse('/search/b')), some([{ topic: 'b' }, Route.empty]))
+@@ -180,9 +180,9 @@ exports.lit = lit;
+  * import { lit, str, query, Route } from 'fp-ts-routing'
+  *
+  * const route = lit('accounts')
+- *   .then(str('accountId'))
+- *   .then(lit('files'))
+- *   .then(query(t.strict({ pathparam: t.string })))
++ *   .andThen(str('accountId'))
++ *   .andThen(lit('files'))
++ *   .andThen(query(t.strict({ pathparam: t.string })))
+  *   .formatter.run(Route.empty, { accountId: 'testId', pathparam: '123' })
+  *   .toString()
+  *
+diff --git a/lib/parser.d.ts b/lib/parser.d.ts
+index 19bf00cf1abe2eba4afe423e932012c95f719d34..e66a971dd168842582877ad966cc82af2f735f85 100644
+--- a/lib/parser.d.ts
++++ b/lib/parser.d.ts
+@@ -49,7 +49,7 @@ export declare class Parser<A> {
+     /**
+      * @since 0.4.0
+      */
+-    then<B>(that: Parser<RowLacks<B, keyof A>>): Parser<A & B>;
++    andThen<B>(that: Parser<RowLacks<B, keyof A>>): Parser<A & B>;
+ }
+ /**
+  * @category parsers
+@@ -115,5 +115,5 @@ export declare const map: <A, B>(f: (a: A) => B) => (fa: Parser<A>) => Parser<B>
+  * @category parsers
+  * @since 0.6.0
+  */
+-export declare const then: <B>(fb: Parser<B>) => <A>(fa: Parser<A> & Parser<RowLacks<A, keyof B>>) => Parser<A & B>;
++export declare const andThen: <B>(fb: Parser<B>) => <A>(fa: Parser<A> & Parser<RowLacks<A, keyof B>>) => Parser<A & B>;
+ export {};
+diff --git a/lib/parser.js b/lib/parser.js
+index cf99180888750ac90f3d681c84e932f678e60bd4..79a146e074754b5b535875394a477bec76584e51 100644
+--- a/lib/parser.js
++++ b/lib/parser.js
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.then = exports.map = exports.flatten = exports.chainFirst = exports.chain = exports.apSecond = exports.apFirst = exports.ap = exports.alt = exports.parser = exports.getParserMonoid = exports.parse = exports.zero = exports.Parser = void 0;
++exports.andThen = exports.map = exports.flatten = exports.chainFirst = exports.chain = exports.apSecond = exports.apFirst = exports.ap = exports.alt = exports.parser = exports.getParserMonoid = exports.parse = exports.zero = exports.Parser = void 0;
+ var function_1 = require("fp-ts/lib/function");
+ var O = require("fp-ts/lib/Option");
+ // This `pipe` version is deprecated, but provided by `fp-ts` v2.0.1 and higher.
+@@ -57,7 +57,7 @@ var Parser = /** @class */ (function () {
+     /**
+      * @since 0.4.0
+      */
+-    Parser.prototype.then = function (that) {
++    Parser.prototype.andThen = function (that) {
+         return that.ap(this.map(assign));
+     };
+     return Parser;
+@@ -188,12 +188,12 @@ exports.map = map;
+  * @category parsers
+  * @since 0.6.0
+  */
+-var then = function (fb) {
++var andThen = function (fb) {
+     return function (fa) {
+-        return fa.then(fb);
++        return fa.andThen(fb);
+     };
+ };
+-exports.then = then;
++exports.andThen = andThen;
+ // --- Helpers
+ var assign = function (a) {
+     return function (b) {

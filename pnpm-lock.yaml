@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  fp-ts-routing@0.7.0:
+    hash: e1f4ee2afb1efe0e0b8515c8aebb91540305f95bd04017acae33caac5401b197
+    path: patches/fp-ts-routing@0.7.0.patch
+
 importers:
 
   .:
@@ -97,7 +102,7 @@ importers:
         version: 2.16.11
       fp-ts-routing:
         specifier: ^0.7.0
-        version: 0.7.0(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))
+        version: 0.7.0(patch_hash=e1f4ee2afb1efe0e0b8515c8aebb91540305f95bd04017acae33caac5401b197)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))
       html-entities:
         specifier: ^2.6.0
         version: 2.6.0
@@ -10436,7 +10441,7 @@ snapshots:
 
   forwarded@0.2.0: {}
 
-  fp-ts-routing@0.7.0(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11)):
+  fp-ts-routing@0.7.0(patch_hash=e1f4ee2afb1efe0e0b8515c8aebb91540305f95bd04017acae33caac5401b197)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11)):
     dependencies:
       fp-ts: 2.16.11
       io-ts: 2.2.22(fp-ts@2.16.11)

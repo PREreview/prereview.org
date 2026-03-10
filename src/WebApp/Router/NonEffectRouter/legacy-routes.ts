@@ -40,25 +40,25 @@ const getProfileIdFromUuid = (uuid: Uuid) =>
 export const legacyRouter: P.Parser<RT.ReaderTask<LegacyEnv, PageResponse | RedirectResponse>> = pipe(
   [
     pipe(
-      pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
+      pipe(P.lit('about'), P.andThen(type('personaUuid', UuidC)), P.andThen(P.end)).parser,
       P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
     pipe(
-      pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end)).parser,
+      pipe(P.lit('preprints'), P.andThen(type('uuid', UuidC)), P.andThen(P.end)).parser,
       P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
     ),
     pipe(
       pipe(
         P.lit('preprints'),
-        P.then(type('preprintUuid', UuidC)),
-        P.then(P.lit('full-reviews')),
-        P.then(P.str('reviewUuid')),
-        P.then(P.end),
+        P.andThen(type('preprintUuid', UuidC)),
+        P.andThen(P.lit('full-reviews')),
+        P.andThen(P.str('reviewUuid')),
+        P.andThen(P.end),
       ).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
     pipe(
-      pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
+      pipe(P.lit('validate'), P.andThen(type('preprintUuid', UuidC)), P.andThen(P.end)).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
   ],

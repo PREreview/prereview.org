@@ -153,7 +153,10 @@
     ],
     "onlyBuiltDependencies": [
       "cld"
-    ]
+    ],
+    "patchedDependencies": {
+      "fp-ts-routing@0.7.0": "patches/fp-ts-routing@0.7.0.patch"
+    }
   },
   "scripts": {
     "prebuild": "del assets/locales dist src/locales src/manifest.json",

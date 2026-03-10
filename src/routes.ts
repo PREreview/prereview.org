@@ -380,122 +380,126 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
 
 export const orcidCodeMatch = pipe(
   P.lit('orcid'),
-  P.then(query(C.struct({ code: C.string, state: C.string }))),
-  P.then(P.end),
+  P.andThen(query(C.struct({ code: C.string, state: C.string }))),
+  P.andThen(P.end),
 )
 
-export const connectOrcidMatch = pipe(P.lit('connect-orcid'), P.then(P.end))
+export const connectOrcidMatch = pipe(P.lit('connect-orcid'), P.andThen(P.end))
 
-export const connectOrcidStartMatch = pipe(P.lit('connect-orcid'), P.then(P.lit('start-now')), P.then(P.end))
+export const connectOrcidStartMatch = pipe(P.lit('connect-orcid'), P.andThen(P.lit('start-now')), P.andThen(P.end))
 
 export const connectOrcidCodeMatch = pipe(
   P.lit('connect-orcid'),
-  P.then(query(C.struct({ code: C.string }))),
-  P.then(P.end),
+  P.andThen(query(C.struct({ code: C.string }))),
+  P.andThen(P.end),
 )
 
 export const connectOrcidErrorMatch = pipe(
   P.lit('connect-orcid'),
-  P.then(query(C.struct({ error: C.string }))),
-  P.then(P.end),
+  P.andThen(query(C.struct({ error: C.string }))),
+  P.andThen(P.end),
 )
 
-export const disconnectOrcidMatch = pipe(P.lit('disconnect-orcid'), P.then(P.end))
+export const disconnectOrcidMatch = pipe(P.lit('disconnect-orcid'), P.andThen(P.end))
 
-export const connectSlackMatch = pipe(P.lit('connect-slack'), P.then(P.end))
+export const connectSlackMatch = pipe(P.lit('connect-slack'), P.andThen(P.end))
 
-export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.then(P.lit('start-now')), P.then(P.end))
+export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.andThen(P.lit('start-now')), P.andThen(P.end))
 
 export const connectSlackCodeMatch = pipe(
   P.lit('connect-slack'),
-  P.then(query(C.struct({ code: C.string, state: C.string }))),
-  P.then(P.end),
+  P.andThen(query(C.struct({ code: C.string, state: C.string }))),
+  P.andThen(P.end),
 )
 
 export const connectSlackErrorMatch = pipe(
   P.lit('connect-slack'),
-  P.then(query(C.struct({ error: C.string }))),
-  P.then(P.end),
+  P.andThen(query(C.struct({ error: C.string }))),
+  P.andThen(P.end),
 )
 
-export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.then(P.end))
+export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.andThen(P.end))
 
-export const myPrereviewsMatch = pipe(P.lit('my-prereviews'), P.then(P.end))
+export const myPrereviewsMatch = pipe(P.lit('my-prereviews'), P.andThen(P.end))
 
-export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
+export const myDetailsMatch = pipe(P.lit('my-details'), P.andThen(P.end))
 
-export const changeAvatarMatch = pipe(P.lit('my-details'), P.then(P.lit('change-avatar')), P.then(P.end))
+export const changeAvatarMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-avatar')), P.andThen(P.end))
 
-export const removeAvatarMatch = pipe(P.lit('my-details'), P.then(P.lit('remove-avatar')), P.then(P.end))
+export const removeAvatarMatch = pipe(P.lit('my-details'), P.andThen(P.lit('remove-avatar')), P.andThen(P.end))
 
-export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
+export const changeCareerStageMatch = pipe(
+  P.lit('my-details'),
+  P.andThen(P.lit('change-career-stage')),
+  P.andThen(P.end),
+)
 
 export const changeCareerStageVisibilityMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-career-stage-visibility')),
-  P.then(P.end),
+  P.andThen(P.lit('change-career-stage-visibility')),
+  P.andThen(P.end),
 )
 
 export const changeOpenForRequestsMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-open-for-requests')),
-  P.then(P.end),
+  P.andThen(P.lit('change-open-for-requests')),
+  P.andThen(P.end),
 )
 
 export const changeOpenForRequestsVisibilityMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-open-for-requests-visibility')),
-  P.then(P.end),
+  P.andThen(P.lit('change-open-for-requests-visibility')),
+  P.andThen(P.end),
 )
 
 export const changeResearchInterestsMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-research-interests')),
-  P.then(P.end),
+  P.andThen(P.lit('change-research-interests')),
+  P.andThen(P.end),
 )
 
 export const changeResearchInterestsVisibilityMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-research-interests-visibility')),
-  P.then(P.end),
+  P.andThen(P.lit('change-research-interests-visibility')),
+  P.andThen(P.end),
 )
 
-export const changeLocationMatch = pipe(P.lit('my-details'), P.then(P.lit('change-location')), P.then(P.end))
+export const changeLocationMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-location')), P.andThen(P.end))
 
 export const changeLocationVisibilityMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-location-visibility')),
-  P.then(P.end),
+  P.andThen(P.lit('change-location-visibility')),
+  P.andThen(P.end),
 )
 
-export const changeLanguagesMatch = pipe(P.lit('my-details'), P.then(P.lit('change-languages')), P.then(P.end))
+export const changeLanguagesMatch = pipe(P.lit('my-details'), P.andThen(P.lit('change-languages')), P.andThen(P.end))
 
 export const changeLanguagesVisibilityMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-languages-visibility')),
-  P.then(P.end),
+  P.andThen(P.lit('change-languages-visibility')),
+  P.andThen(P.end),
 )
 
 export const changeContactEmailAddressMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-email-address')),
-  P.then(P.end),
+  P.andThen(P.lit('change-email-address')),
+  P.andThen(P.end),
 )
 
 export const verifyContactEmailAddressMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('change-email-address')),
-  P.then(query(C.struct({ verify: UuidC }))),
-  P.then(P.end),
+  P.andThen(P.lit('change-email-address')),
+  P.andThen(query(C.struct({ verify: UuidC }))),
+  P.andThen(P.end),
 )
 
-export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
+export const profileMatch = pipe(P.lit('profiles'), P.andThen(type('profile', ProfileIdC)), P.andThen(P.end))
 
-export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
+export const preprintReviewsMatch = pipe(P.lit('preprints'), P.andThen(type('id', PreprintIdC)), P.andThen(P.end))
 
 export const reviewsMatch = pipe(
   P.lit('reviews'),
-  P.then(
+  P.andThen(
     query(
       C.partial({
         field: EmptyAsUndefinedC(FieldIdC),
@@ -505,136 +509,152 @@ export const reviewsMatch = pipe(
       }),
     ),
   ),
-  P.then(P.end),
+  P.andThen(P.end),
 )
 
 export const reviewMatch = pipe(
   P.lit('reviews'),
-  P.then(type('id', IntegerFromStringC)),
-  P.then(query(C.partial({}))),
-  P.then(P.end),
+  P.andThen(type('id', IntegerFromStringC)),
+  P.andThen(query(C.partial({}))),
+  P.andThen(P.end),
 )
 
 const writeReviewBaseMatch = pipe(
   P.lit('preprints'),
-  P.then(type('id', PreprintIdC)),
-  P.then(P.lit('write-a-prereview')),
+  P.andThen(type('id', PreprintIdC)),
+  P.andThen(P.lit('write-a-prereview')),
 )
 
-export const reviewAPreprintMatch = pipe(P.lit('review-a-preprint'), P.then(P.end))
+export const reviewAPreprintMatch = pipe(P.lit('review-a-preprint'), P.andThen(P.end))
 
-export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
+export const writeReviewMatch = pipe(writeReviewBaseMatch, P.andThen(P.end))
 
-export const writeReviewStartMatch = pipe(writeReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
+export const writeReviewStartMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('start-now')), P.andThen(P.end))
 
-export const writeReviewReviewTypeMatch = pipe(writeReviewBaseMatch, P.then(P.lit('review-type')), P.then(P.end))
+export const writeReviewReviewTypeMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('review-type')), P.andThen(P.end))
 
-export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, P.then(P.lit('write-your-prereview')), P.then(P.end))
+export const writeReviewReviewMatch = pipe(
+  writeReviewBaseMatch,
+  P.andThen(P.lit('write-your-prereview')),
+  P.andThen(P.end),
+)
 
 export const writeReviewIntroductionMatchesMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('introduction-matches')),
-  P.then(P.end),
+  P.andThen(P.lit('introduction-matches')),
+  P.andThen(P.end),
 )
 
 export const writeReviewMethodsAppropriateMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('methods-appropriate')),
-  P.then(P.end),
+  P.andThen(P.lit('methods-appropriate')),
+  P.andThen(P.end),
 )
 
 export const writeReviewResultsSupportedMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('results-supported')),
-  P.then(P.end),
+  P.andThen(P.lit('results-supported')),
+  P.andThen(P.end),
 )
 
 export const writeReviewDataPresentationMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('data-presentation')),
-  P.then(P.end),
+  P.andThen(P.lit('data-presentation')),
+  P.andThen(P.end),
 )
 
 export const writeReviewFindingsNextStepsMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('findings-next-steps')),
-  P.then(P.end),
+  P.andThen(P.lit('findings-next-steps')),
+  P.andThen(P.end),
 )
 
-export const writeReviewNovelMatch = pipe(writeReviewBaseMatch, P.then(P.lit('novel')), P.then(P.end))
+export const writeReviewNovelMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('novel')), P.andThen(P.end))
 
 export const writeReviewLanguageEditingMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('language-editing')),
-  P.then(P.end),
+  P.andThen(P.lit('language-editing')),
+  P.andThen(P.end),
 )
 
-export const writeReviewShouldReadMatch = pipe(writeReviewBaseMatch, P.then(P.lit('should-read')), P.then(P.end))
+export const writeReviewShouldReadMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('should-read')), P.andThen(P.end))
 
 export const writeReviewReadyFullReviewMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('ready-full-review')),
-  P.then(P.end),
+  P.andThen(P.lit('ready-full-review')),
+  P.andThen(P.end),
 )
 
-export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
+export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('choose-name')), P.andThen(P.end))
 
-export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('more-authors')), P.then(P.end))
+export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('more-authors')), P.andThen(P.end))
 
-export const writeReviewAddAuthorMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-author')), P.then(P.end))
+export const writeReviewAddAuthorMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('add-author')), P.andThen(P.end))
 
 export const writeReviewChangeAuthorMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('change-author')),
-  P.then(query(C.struct({ number: IntegerFromStringC }))),
-  P.then(P.end),
+  P.andThen(P.lit('change-author')),
+  P.andThen(query(C.struct({ number: IntegerFromStringC }))),
+  P.andThen(P.end),
 )
 
 export const writeReviewRemoveAuthorMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('remove-author')),
-  P.then(query(C.struct({ number: IntegerFromStringC }))),
-  P.then(P.end),
+  P.andThen(P.lit('remove-author')),
+  P.andThen(query(C.struct({ number: IntegerFromStringC }))),
+  P.andThen(P.end),
 )
 
-export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-more-authors')), P.then(P.end))
+export const writeReviewAddAuthorsMatch = pipe(
+  writeReviewBaseMatch,
+  P.andThen(P.lit('add-more-authors')),
+  P.andThen(P.end),
+)
 
-export const writeReviewUseOfAiMatch = pipe(writeReviewBaseMatch, P.then(P.lit('use-of-ai')), P.then(P.end))
+export const writeReviewUseOfAiMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('use-of-ai')), P.andThen(P.end))
 
 export const writeReviewCompetingInterestsMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('competing-interests')),
-  P.then(P.end),
+  P.andThen(P.lit('competing-interests')),
+  P.andThen(P.end),
 )
 
-export const writeReviewConductMatch = pipe(writeReviewBaseMatch, P.then(P.lit('code-of-conduct')), P.then(P.end))
+export const writeReviewConductMatch = pipe(writeReviewBaseMatch, P.andThen(P.lit('code-of-conduct')), P.andThen(P.end))
 
 export const writeReviewEnterEmailAddressMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('enter-email-address')),
-  P.then(P.end),
+  P.andThen(P.lit('enter-email-address')),
+  P.andThen(P.end),
 )
 
 export const writeReviewNeedToVerifyEmailAddressMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('verify-email-address')),
-  P.then(P.end),
+  P.andThen(P.lit('verify-email-address')),
+  P.andThen(P.end),
 )
 
 export const writeReviewVerifyEmailAddressMatch = pipe(
   writeReviewBaseMatch,
-  P.then(P.lit('verify-email-address')),
-  P.then(query(C.struct({ verify: UuidC }))),
-  P.then(P.end),
+  P.andThen(P.lit('verify-email-address')),
+  P.andThen(query(C.struct({ verify: UuidC }))),
+  P.andThen(P.end),
 )
 
-export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('check-your-prereview')), P.then(P.end))
+export const writeReviewPublishMatch = pipe(
+  writeReviewBaseMatch,
+  P.andThen(P.lit('check-your-prereview')),
+  P.andThen(P.end),
+)
 
-export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))
+export const writeReviewPublishedMatch = pipe(
+  writeReviewBaseMatch,
+  P.andThen(P.lit('prereview-published')),
+  P.andThen(P.end),
+)
 
 export const reviewRequestsMatch = pipe(
   P.lit('review-requests'),
-  P.then(
+  P.andThen(
     query(
       C.partial({
         field: EmptyAsUndefinedC(FieldIdC),
@@ -643,97 +663,101 @@ export const reviewRequestsMatch = pipe(
       }),
     ),
   ),
-  P.then(P.end),
+  P.andThen(P.end),
 )
 
-export const requestAPrereviewMatch = pipe(P.lit('request-a-prereview'), P.then(P.end))
+export const requestAPrereviewMatch = pipe(P.lit('request-a-prereview'), P.andThen(P.end))
 
 const requestReviewBaseMatch = pipe(
   P.lit('preprints'),
-  P.then(type('id', PreprintIdC)),
-  P.then(P.lit('request-a-prereview')),
+  P.andThen(type('id', PreprintIdC)),
+  P.andThen(P.lit('request-a-prereview')),
 )
 
-export const requestReviewMatch = pipe(requestReviewBaseMatch, P.then(P.end))
+export const requestReviewMatch = pipe(requestReviewBaseMatch, P.andThen(P.end))
 
-export const requestReviewStartMatch = pipe(requestReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
+export const requestReviewStartMatch = pipe(requestReviewBaseMatch, P.andThen(P.lit('start-now')), P.andThen(P.end))
 
-export const requestReviewPersonaMatch = pipe(requestReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
+export const requestReviewPersonaMatch = pipe(requestReviewBaseMatch, P.andThen(P.lit('choose-name')), P.andThen(P.end))
 
-export const requestReviewCheckMatch = pipe(requestReviewBaseMatch, P.then(P.lit('check-your-request')), P.then(P.end))
+export const requestReviewCheckMatch = pipe(
+  requestReviewBaseMatch,
+  P.andThen(P.lit('check-your-request')),
+  P.andThen(P.end),
+)
 
 export const requestReviewPublishedMatch = pipe(
   requestReviewBaseMatch,
-  P.then(P.lit('request-published')),
-  P.then(P.end),
+  P.andThen(P.lit('request-published')),
+  P.andThen(P.end),
 )
 
-export const authorInviteMatch = pipe(P.lit('author-invite'), P.then(type('id', UuidC)), P.then(P.end))
+export const authorInviteMatch = pipe(P.lit('author-invite'), P.andThen(type('id', UuidC)), P.andThen(P.end))
 
 export const authorInviteDeclineMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('decline')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('decline')),
+  P.andThen(P.end),
 )
 
 export const authorInviteStartMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('start-now')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('start-now')),
+  P.andThen(P.end),
 )
 
 export const authorInvitePersonaMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('choose-name')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('choose-name')),
+  P.andThen(P.end),
 )
 
 export const authorInviteEnterEmailAddressMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('enter-email-address')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('enter-email-address')),
+  P.andThen(P.end),
 )
 
 export const authorInviteNeedToVerifyEmailAddressMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('verify-email-address')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('verify-email-address')),
+  P.andThen(P.end),
 )
 
 export const authorInviteVerifyEmailAddressMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('verify-email-address')),
-  P.then(query(C.struct({ verify: UuidC }))),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('verify-email-address')),
+  P.andThen(query(C.struct({ verify: UuidC }))),
+  P.andThen(P.end),
 )
 
 export const authorInviteCheckMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('check-your-prereview')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('check-your-prereview')),
+  P.andThen(P.end),
 )
 
 export const authorInvitePublishedMatch = pipe(
   P.lit('author-invite'),
-  P.then(type('id', UuidC)),
-  P.then(P.lit('name-published')),
-  P.then(P.end),
+  P.andThen(type('id', UuidC)),
+  P.andThen(P.lit('name-published')),
+  P.andThen(P.end),
 )
 
-export const usersDataMatch = pipe(P.lit('users-data'), P.then(P.end))
+export const usersDataMatch = pipe(P.lit('users-data'), P.andThen(P.end))
 
-export const clubsDataMatch = pipe(P.lit('clubs-data'), P.then(P.end))
+export const clubsDataMatch = pipe(P.lit('clubs-data'), P.andThen(P.end))
 
-export const reviewsDataMatch = pipe(P.lit('reviews-data'), P.then(P.end))
+export const reviewsDataMatch = pipe(P.lit('reviews-data'), P.andThen(P.end))
 
-export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
+export const scietyListMatch = pipe(P.lit('sciety-list'), P.andThen(P.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
