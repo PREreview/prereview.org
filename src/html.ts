@@ -25,17 +25,16 @@ export class PlainText extends Data.TaggedClass('PlainText')<{
   }
 }
 
+type Placeholder = ReadonlyArray<Html | PlainText> | Html | PlainText | string | number
+
 const nanohtmlPlaceholder = pipe(
-  Match.type<Html | PlainText | string | number>(),
+  Match.type<Exclude<Placeholder, ReadonlyArray<unknown>>>(),
   Match.tag('Html', html => raw(html.value)),
   Match.tag('PlainText', plainText => plainText.value),
   Match.orElse(value => value),
 )
 
-export function html(
-  literals: TemplateStringsArray,
-  ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
-): Html {
+export function html(literals: TemplateStringsArray, ...placeholders: ReadonlyArray<Placeholder>): Html {
   const value = ensureString(
     nanohtml(
       literals,
@@ -189,14 +188,11 @@ export function fixHeadingLevels(currentLevel: 1 | 2 | 3, input: Html): Html {
   )
 }
 
-export function plainText(
-  literals: TemplateStringsArray,
-  ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
-): PlainText
+export function plainText(literals: TemplateStringsArray, ...placeholders: ReadonlyArray<Placeholder>): PlainText
 export function plainText(string: Html | string): PlainText
 export function plainText(
   input: TemplateStringsArray | Html | string,
-  ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
+  ...placeholders: ReadonlyArray<Placeholder>
 ): PlainText {
   const isTemplateStringsArray: Predicate.Refinement<unknown, TemplateStringsArray> = Array.isArray
 
