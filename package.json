@@ -49,7 +49,6 @@
     "logging-ts": "^0.3.4",
     "markdown-it": "^14.1.1",
     "mjml": "^4.18.0",
-    "nanohtml": "^1.10.0",
     "nodemailer": "^8.0.1",
     "normalize-url": "^9.0.0",
     "orcid-id-ts": "^0.1.3",

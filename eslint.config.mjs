@@ -78,7 +78,6 @@ export default defineConfig([
             'io-ts/lib/*',
             'iso-639-3/to-*.json',
             'logging-ts/lib/*',
-            'nanohtml/*',
             'remixicon/**/*.svg',
             'integration/base',
             'types/*',
