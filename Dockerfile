@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install --yes \
   && rm --recursive --force /var/lib/apt/lists/*
 COPY .npmrc ./
 RUN npm install --global pnpm@10
+COPY patches/ patches/
 COPY package.json \
   pnpm-lock.yaml \
   ./
