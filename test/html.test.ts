@@ -11,6 +11,12 @@ test.each([
   ['array variable ', _.html`${[_.rawHtml('<p>a</p>'), _.rawHtml('<p>b</p>')]}`, '<p>a</p><p>b</p>'],
   ['string variable', _.html`${'<p>a</p>'}`, '&lt;p&gt;a&lt;/p&gt;'],
   ['number variable ', _.html`${1}`, '1'],
+  ['attribute without quotes', _.html`<span title=${'<3'}>Text</span>`, '<span title="&lt;3">Text</span>'],
+  [
+    'query parameters',
+    _.html`<a href="/path?query1=${'param1'}&query2=${'param2'}">Link</a>`,
+    '<a href="/path?query1=param1&query2=param2">Link</a>',
+  ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
 })
@@ -315,7 +321,7 @@ describe('sanitizeHtml', () => {
     ['<ul> with attributes', '<ul lang="en" dir="ltr" id="ul" foo>ul</ul>', '<ul lang="en" dir="ltr">ul</ul>'],
     ['<ul> with no text', '<ul> &nbsp;\n</ul>', ''],
     ['<var>', '<var>var</var>', 'var'],
-    ['<var> with attributes', '<var lang="en" dir="ltr" id="var" foo>var</var>', 'var'],
+    ['<var> with attributes', '<const lang="en" dir="ltr" id="var" foo>var</var>', 'var'],
     ['<video>', '<video>video</video>', 'video'],
     ['<video> with attributes', '<video lang="en" dir="ltr" id="video" foo>video</video>', 'video'],
     ['<wbr>', '<wbr>', ''],
@@ -858,7 +864,7 @@ describe('sanitizeHtml', () => {
     ['<ul> with attributes', '<ul lang="en" dir="ltr" id="ul" foo>ul</ul>', 'ul'],
     ['<ul> with no text', ' &nbsp;\n', ' '],
     ['<var>', '<var>var</var>', 'var'],
-    ['<var> with attributes', '<var lang="en" dir="ltr" id="var" foo>var</var>', 'var'],
+    ['<var> with attributes', '<const lang="en" dir="ltr" id="var" foo>var</var>', 'var'],
     ['<video>', '<video>video</video>', 'video'],
     ['<video> with attributes', '<video lang="en" dir="ltr" id="video" foo>video</video>', 'video'],
     ['<wbr>', '<wbr>', ''],
