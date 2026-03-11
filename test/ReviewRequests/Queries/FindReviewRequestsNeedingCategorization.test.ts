@@ -51,7 +51,7 @@ const request2Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdra
   reason: 'preprint-withdrawn-from-preprint-server',
 })
 const request3Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
-  publishedAt: now.subtract({ hours: 1 }),
+  publishedAt: now.subtract({ minutes: 30 }),
   preprintId: preprintId2,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request3Id,
