@@ -41,6 +41,11 @@ updates:
         patterns:
           - '@fast-check/*'
           - 'fast-check'
+      jest:
+        patterns:
+          - '@jest/*'
+          - 'jest'
+          - 'expect'
       keyv:
         patterns:
           - '@keyv/*'
