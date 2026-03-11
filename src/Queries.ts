@@ -1,4 +1,4 @@
-import { Array, Data, Effect, Option, pipe, Struct, type Either, type Types } from 'effect'
+import { Array, Data, Effect, Option, pipe, Ref, Struct, type Either, type Types } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
@@ -110,14 +110,14 @@ export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, R
   Effect.gen(function* () {
     const eventDispatcher = yield* EventDispatcher.EventDispatcher
 
-    let state = initialState
+    const state = yield* Ref.make(initialState)
 
-    yield* eventDispatcher.addSubscriber(event => {
-      state = updateStateWithEvent(state, event)
-    })
+    yield* eventDispatcher.addSubscriber(event => Ref.update(state, state => updateStateWithEvent(state, event)))
 
     return Effect.fn(name)(function* (...input: Input) {
-      return yield* query(state, ...input)
+      const currentState = yield* Ref.get(state)
+
+      return yield* query(currentState, ...input)
     })
   })
 

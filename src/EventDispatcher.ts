@@ -2,7 +2,7 @@ import { Array, Context, Effect, Layer, Option, pipe, Ref, Schedule } from 'effe
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
-type Subscriber = (event: Events.Event) => void
+type Subscriber = (event: Events.Event) => Effect.Effect<void>
 
 class LastKnownPosition extends Context.Tag('EventDispatcher/LastKnownPosition')<
   LastKnownPosition,
@@ -62,8 +62,11 @@ const dispatchNewEvents = Effect.gen(function* () {
 
   yield* Effect.forEach(
     Array.chunksOf(newEvents, 100),
-    events =>
-      Effect.sync(() => Array.forEach(events, event => Array.forEach(allSubscribers, subscriber => subscriber(event)))),
+    Effect.forEach(
+      event =>
+        Effect.forEach(allSubscribers, subscriber => subscriber(event), { discard: true, concurrency: 'inherit' }),
+      { discard: true, concurrency: 'inherit' },
+    ),
     { discard: true },
   )
 })
