@@ -54,6 +54,6 @@ const query = (reviewRequests: shared.State): Result => {
 export const GetFiveMostRecentReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.getFiveMostRecentReviewRequests',
   initialState: shared.initialState,
-  updateStateWithEvent: shared.updateStateWithEvent,
+  updateStateWithEvents: shared.updateStateWithEvents,
   query: flow(query, Either.right),
 })

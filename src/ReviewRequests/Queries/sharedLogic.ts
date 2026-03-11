@@ -97,10 +97,12 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
 
 export const initialState: State = Record.empty()
 
-export const updateStateWithEvent = (state: State, event: Events.Event): State => {
-  if (!Events.matches(event, filter)) {
-    return state
-  }
+export const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
+  return Array.reduce(events, state, (currentState, event) => {
+    if (!Events.matches(event, filter)) {
+      return state
+    }
 
-  return updateStateWithPertinentEvent(state, event)
+    return updateStateWithPertinentEvent(currentState, event)
+  })
 }

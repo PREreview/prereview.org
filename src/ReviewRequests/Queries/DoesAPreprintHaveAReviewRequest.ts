@@ -20,6 +20,6 @@ const query = (state: shared.State, input: Input): Result => {
 export const DoesAPreprintHaveAReviewRequest = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.doesAPreprintHaveAReviewRequest',
   initialState: shared.initialState,
-  updateStateWithEvent: shared.updateStateWithEvent,
+  updateStateWithEvents: shared.updateStateWithEvents,
   query: flow(query, Either.right),
 })

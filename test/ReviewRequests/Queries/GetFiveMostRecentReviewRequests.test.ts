@@ -309,9 +309,12 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
     ],
   ],
 ])('%s', (_name, events, expected) => {
-  const { initialState, updateStateWithEvent, query } = _.GetFiveMostRecentReviewRequests
+  const { initialState, updateStateWithEvents, query } = _.GetFiveMostRecentReviewRequests
 
-  const state = Array.reduce(events, initialState, updateStateWithEvent)
+  const state = Array.match(events, {
+    onNonEmpty: events => updateStateWithEvents(initialState, events),
+    onEmpty: () => initialState,
+  })
 
   const actual = query(state)
 

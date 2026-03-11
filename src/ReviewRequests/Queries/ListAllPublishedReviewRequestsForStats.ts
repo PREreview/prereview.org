@@ -37,6 +37,6 @@ const query = (state: shared.State): Result => {
 export const ListAllPublishedReviewRequestsForStats = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.listAllPublishedReviewRequests',
   initialState: shared.initialState,
-  updateStateWithEvent: shared.updateStateWithEvent,
+  updateStateWithEvents: shared.updateStateWithEvents,
   query: flow(query, Either.right),
 })

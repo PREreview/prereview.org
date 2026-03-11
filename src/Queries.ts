@@ -45,7 +45,7 @@ export interface OnDemandQuery<
 export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
   name: string
   initialState: State
-  updateStateWithEvent: (state: State, event: Events.Event) => State
+  updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
   query: (state: State, ...input: Input) => Either.Either<Result, Error>
 }
 
@@ -100,7 +100,7 @@ export const makeOnDemandQuery = <
 export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
   name,
   initialState,
-  updateStateWithEvent,
+  updateStateWithEvents,
   query,
 }: StatefulQuery<State, Input, Result, Error>): Effect.Effect<
   (...input: Input) => Effect.Effect<Result, Error>,
@@ -115,7 +115,7 @@ export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, R
     yield* eventDispatcher.addSubscriber(events =>
       Effect.forEach(
         Array.chunksOf(events, 100),
-        events => Ref.update(state, currentState => Array.reduce(events, currentState, updateStateWithEvent)),
+        events => Ref.update(state, currentState => updateStateWithEvents(currentState, events)),
         { discard: true },
       ),
     )

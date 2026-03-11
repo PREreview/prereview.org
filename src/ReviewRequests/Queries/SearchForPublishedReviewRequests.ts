@@ -63,12 +63,14 @@ type State = Record<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest
 
 const initialState: State = Record.empty()
 
-const updateStateWithEvent = (state: State, event: Events.Event): State => {
-  if (!Events.matches(event, filter)) {
-    return state
-  }
+const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
+  return Array.reduce(events, state, (currentState, event) => {
+    if (!Events.matches(event, filter)) {
+      return state
+    }
 
-  return updateStateWithPertinentEvent(state, event)
+    return updateStateWithPertinentEvent(currentState, event)
+  })
 }
 
 const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
@@ -164,6 +166,6 @@ const query = (state: State, input: Input): Result =>
 export const SearchForPublishedReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.searchForPublishedReviewRequests',
   initialState,
-  updateStateWithEvent,
+  updateStateWithEvents,
   query,
 })

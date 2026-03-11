@@ -488,9 +488,12 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     }),
   ],
 ])('%s', (_name, input, events, expected) => {
-  const { initialState, updateStateWithEvent, query } = _.SearchForPublishedReviewRequests
+  const { initialState, updateStateWithEvents, query } = _.SearchForPublishedReviewRequests
 
-  const state = Array.reduce(events, initialState, updateStateWithEvent)
+  const state = Array.match(events, {
+    onNonEmpty: events => updateStateWithEvents(initialState, events),
+    onEmpty: () => initialState,
+  })
 
   const actual = query(state, input)
 
