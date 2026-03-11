@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, Equal, Equivalence, HashMap, Match, Struct } from 'effect'
+import { Array, Boolean, Either, Equal, HashMap, Match, Option, Order, Schema, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -59,22 +59,82 @@ interface UnpublishedReviewRequest {
   topics: ReadonlyArray<TopicId>
 }
 
-type State = HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest>
+interface State {
+  readonly reviewRequests: HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest>
+  readonly mostRecentReviewRequestsByPreprint: HashMap.HashMap<string, PublishedReviewRequest & { id: Uuid.Uuid }>
+}
 
-const initialState: State = HashMap.empty()
+const initialState: State = { reviewRequests: HashMap.empty(), mostRecentReviewRequestsByPreprint: HashMap.empty() }
 
-const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
-  HashMap.mutate(state, mutableState =>
-    Array.reduce(events, mutableState, (currentState, event) => {
+const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
+  const reviewRequestsToRebuild = new Set<Uuid.Uuid>()
+
+  const reviewRequests = HashMap.mutate(state.reviewRequests, mutableReviewRequests =>
+    Array.reduce(events, mutableReviewRequests, (currentReviewRequests, event) => {
       if (!Events.matches(event, filter)) {
-        return currentState
+        return currentReviewRequests
       }
 
-      return updateStateWithPertinentEvent(currentState, event)
+      reviewRequestsToRebuild.add(event.reviewRequestId)
+
+      return updateReviewRequestStateWithPertinentEvent(currentReviewRequests, event)
     }),
   )
 
-const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
+  const mostRecentReviewRequestsByPreprint = HashMap.mutate(
+    state.mostRecentReviewRequestsByPreprint,
+    mutableMostRecentReviewRequestsByPreprint =>
+      Array.reduce(
+        reviewRequestsToRebuild,
+        mutableMostRecentReviewRequestsByPreprint,
+        (currentMostRecentReviewRequestsByPreprint, reviewRequestId) => {
+          const reviewRequest = Option.getOrUndefined(HashMap.get(reviewRequests, reviewRequestId))
+
+          if (!reviewRequest?.published) {
+            return currentMostRecentReviewRequestsByPreprint
+          }
+
+          const preprintId = preprintIdToString(reviewRequest.preprintId)
+
+          const currentMostRecentReviewRequest = HashMap.get(currentMostRecentReviewRequestsByPreprint, preprintId)
+
+          return Option.match(currentMostRecentReviewRequest, {
+            onNone: () =>
+              HashMap.set(currentMostRecentReviewRequestsByPreprint, preprintId, {
+                ...reviewRequest,
+                id: reviewRequestId,
+              }),
+            onSome: currentMostRecentReviewRequest => {
+              if (
+                Order.greaterThan(Temporal.OrderInstant)(
+                  currentMostRecentReviewRequest.published,
+                  reviewRequest.published,
+                )
+              ) {
+                return currentMostRecentReviewRequestsByPreprint
+              }
+
+              return HashMap.set(currentMostRecentReviewRequestsByPreprint, preprintId, {
+                ...reviewRequest,
+                id: reviewRequestId,
+              })
+            },
+          })
+        },
+      ),
+  )
+
+  return { reviewRequests, mostRecentReviewRequestsByPreprint }
+}
+
+const preprintIdToString: (preprintId: Preprints.IndeterminatePreprintId) => string = Schema.encodeSync(
+  Preprints.IndeterminatePreprintIdFromStringSchema,
+)
+
+const updateReviewRequestStateWithPertinentEvent = (
+  map: State['reviewRequests'],
+  event: PertinentEvent,
+): State['reviewRequests'] =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
       HashMap.set(map, event.reviewRequestId, {
@@ -122,28 +182,24 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
 
 const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
-    const filteredReviewRequests = HashMap.filter(state, reviewRequest =>
-      Boolean.every([
-        reviewRequest.published !== undefined,
-        input.language === undefined || Equal.equals(reviewRequest.language, input.language),
-        input.field === undefined || Array.contains(reviewRequest.fields, input.field),
-      ]),
-    ) as HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest>
+    const fiteredMostRecentReviewRequestsByPreprint = HashMap.filter(
+      state.mostRecentReviewRequestsByPreprint,
+      reviewRequest =>
+        Boolean.every([
+          input.language === undefined || Equal.equals(reviewRequest.language, input.language),
+          input.field === undefined || Array.contains(reviewRequest.fields, input.field),
+        ]),
+    )
 
-    const sortedReviewRequests = Array.reverse(
+    const sortedLatestReviewRequestForEachPreprint = Array.reverse(
       Array.sortWith(
-        Array.map(Array.fromIterable(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
+        HashMap.values(fiteredMostRecentReviewRequestsByPreprint),
         Struct.get('published'),
         Temporal.OrderInstant,
       ),
     )
 
-    const latestReviewRequestForEachPreprint = Array.dedupeWith(
-      sortedReviewRequests,
-      Equivalence.mapInput(Preprints.PreprintIdEquivalence, Struct.get('preprintId')),
-    )
-
-    const pagesOfLatestReviewRequestForEachPreprint = Array.chunksOf(latestReviewRequestForEachPreprint, 5)
+    const pagesOfLatestReviewRequestForEachPreprint = Array.chunksOf(sortedLatestReviewRequestForEachPreprint, 5)
 
     const pageOfLatestReviewRequestForEachPreprint = yield* Either.fromOption(
       Array.get(pagesOfLatestReviewRequestForEachPreprint, input.page - 1),
