@@ -97,12 +97,13 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
 
 export const initialState: State = HashMap.empty()
 
-export const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
-  return Array.reduce(events, state, (currentState, event) => {
-    if (!Events.matches(event, filter)) {
-      return currentState
-    }
+export const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
+  HashMap.mutate(state, mutableState =>
+    Array.reduce(events, mutableState, (currentState, event) => {
+      if (!Events.matches(event, filter)) {
+        return currentState
+      }
 
-    return updateStateWithPertinentEvent(currentState, event)
-  })
-}
+      return updateStateWithPertinentEvent(currentState, event)
+    }),
+  )

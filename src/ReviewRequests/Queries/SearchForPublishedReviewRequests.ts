@@ -63,15 +63,16 @@ type State = HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest | UnpublishedRevi
 
 const initialState: State = HashMap.empty()
 
-const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
-  return Array.reduce(events, state, (currentState, event) => {
-    if (!Events.matches(event, filter)) {
-      return currentState
-    }
+const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
+  HashMap.mutate(state, mutableState =>
+    Array.reduce(events, mutableState, (currentState, event) => {
+      if (!Events.matches(event, filter)) {
+        return currentState
+      }
 
-    return updateStateWithPertinentEvent(currentState, event)
-  })
-}
+      return updateStateWithPertinentEvent(currentState, event)
+    }),
+  )
 
 const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
