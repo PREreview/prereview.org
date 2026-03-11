@@ -11,7 +11,6 @@ import { Cloudinary, Nodemailer } from '../../../ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
@@ -26,7 +25,6 @@ import {
 } from '../../connect-orcid/index.ts'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from '../../connect-slack-page/index.ts'
 import { disconnectSlack } from '../../disconnect-slack-page/index.ts'
-import { havingProblemsPage } from '../../http-error.ts'
 import {
   changeAvatar,
   changeCareerStage,
@@ -51,25 +49,7 @@ export const MyDetailsRouter = pipe(
   [
     pipe(
       Routes.myDetailsMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          pipe(
-            EffectToFpts.toReaderTaskEither(
-              env.featureFlags.canSubscribeToReviewRequests && env.loggedInUser
-                ? Prereviewers.getSubscribedKeywords({ prereviewerId: env.loggedInUser.orcid })
-                : Effect.succeed(undefined),
-            ),
-            RTE.matchEW(
-              () => RT.of(havingProblemsPage(env.locale)),
-              subscribedKeywords =>
-                myDetails({
-                  subscribedKeywords,
-                  locale: env.locale,
-                  user: env.loggedInUser,
-                }),
-            ),
-          ),
-      ),
+      P.map(() => (env: Env) => myDetails({ locale: env.locale, user: env.loggedInUser })),
     ),
     pipe(
       Routes.changeCareerStageMatch.parser,
@@ -424,7 +404,6 @@ export const MyDetailsRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         publicUrl: env.publicUrl,
-        runtime: env.runtime,
         saveAvatar: withEnv(Cloudinary.saveAvatarOnCloudinary, {
           cloudinaryApi: {
             cloudName: env.cloudinaryApiConfig.cloudName,

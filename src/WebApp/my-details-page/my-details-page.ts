@@ -1,4 +1,4 @@
-import { Array, Match, Option, pipe } from 'effect'
+import { Match, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import type { CareerStage } from '../../career-stage.ts'
@@ -10,7 +10,6 @@ import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Location } from '../../location.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
-import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,
@@ -34,7 +33,6 @@ import {
 } from '../../routes.ts'
 import type { SlackUser } from '../../slack-user.ts'
 import { ProfileId } from '../../types/index.ts'
-import { getKeywordName, type KeywordId } from '../../types/Keyword.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import type { User } from '../../user.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -52,7 +50,6 @@ export function createPage({
   researchInterests,
   location,
   languages,
-  subscribedKeywords = Option.none(),
 }: {
   user: User
   locale: SupportedLocale
@@ -66,7 +63,6 @@ export function createPage({
   researchInterests: Option.Option<ResearchInterests>
   location: Option.Option<Location>
   languages: Option.Option<Languages>
-  subscribedKeywords?: Option.Option<ReadonlyArray<KeywordId>>
 }) {
   const t = translate(locale)
 
@@ -404,28 +400,6 @@ export function createPage({
             .exhaustive()}
         </div>
 
-        ${Option.match(subscribedKeywords, {
-          onNone: () => '',
-          onSome: subscribedKeywords => html`
-            <div>
-              <dt><span>Subscribed keywords</span></dt>
-              ${Array.match(subscribedKeywords, {
-                onEmpty: () => html`
-                  <dd>
-                    <a href="${Routes.SubscribeToKeywords}">Subscribe to keywords</a>
-                  </dd>
-                `,
-                onNonEmpty: currentKeywords => html`
-                  <dd>${pipe(Array.map(currentKeywords, getKeywordName), formatList(locale))}.</dd>
-                  <dd>
-                    <a href="${Routes.SubscribeToKeywords}">Subscribe to keywords</a>
-                  </dd>
-                `,
-              })}
-            </div>
-          `,
-        })}
-
         <div>
           <dt><span>${t('my-details', 'location')()}</span></dt>
           ${match(location)
@@ -514,14 +488,6 @@ export function createPage({
     current: 'my-details',
     canonical: format(myDetailsMatch.formatter, {}),
   })
-}
-
-function formatList(
-  ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: Array.NonEmptyReadonlyArray<string>) => string {
-  const formatter = new Intl.ListFormat(...args)
-
-  return list => formatter.format(list)
 }
 
 const visuallyHidden = {

@@ -1,7 +1,6 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import { AllowSiteCrawlers, Locale } from '../../Context.ts'
-import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
@@ -24,7 +23,6 @@ import { LiveReviewsPage } from '../LiveReviewsPage.ts'
 import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
-import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
@@ -33,7 +31,6 @@ import { RequestsData } from '../RequestsData.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
-import { SubscribeToKeywordsPage, SubscribeToKeywordsSubmission } from '../SubscribeToKeywordsPage/index.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -252,32 +249,6 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   HttpRouter.append(MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
 )
 
-const SubscribeToKeywords = HttpRouter.fromIterable([
-  MakeStaticRoute('GET', Routes.SubscribeToKeywords, SubscribeToKeywordsPage),
-  MakeStaticRoute(
-    'POST',
-    Routes.SubscribeToKeywords,
-    pipe(
-      Effect.Do,
-      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
-      Effect.andThen(SubscribeToKeywordsSubmission),
-    ),
-  ),
-  MakeStaticRoute('GET', Routes.MyReviewRequests, MyReviewRequestsPage),
-]).pipe(
-  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
-  HttpRouter.use(
-    HttpMiddleware.make(app =>
-      pipe(
-        Effect.andThen(FeatureFlags.EnsureCanSubscribeToReviewRequests, app),
-        Effect.catchTag('CannotSubscribeToReviewRequests', () =>
-          Effect.andThen(PageNotFound, Response.toHttpServerResponse),
-        ),
-      ),
-    ),
-  ),
-)
-
 const DatasetReviewPages = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
@@ -448,7 +419,6 @@ export const Router = pipe(
     MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
   ]),
   HttpRouter.concat(AuthRouter),
-  HttpRouter.concat(SubscribeToKeywords),
   HttpRouter.concat(DatasetReviewPages),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
