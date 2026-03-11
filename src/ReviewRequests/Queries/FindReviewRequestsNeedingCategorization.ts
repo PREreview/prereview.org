@@ -1,4 +1,4 @@
-import { Array, Either, flow, pipe, Record, Struct } from 'effect'
+import { Array, Either, flow, HashMap, pipe, Struct } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -16,27 +16,29 @@ const filter = Events.EventFilter({
 })
 
 const query = (events: ReadonlyArray<Events.Event>): Result => {
-  const state = Array.reduce(events, Record.empty<Uuid.Uuid, Temporal.Instant>(), (state, event) => {
-    if (event._tag === 'ReviewRequestForAPreprintWasAccepted') {
-      return Record.set(state, event.reviewRequestId, event.acceptedAt)
-    }
-    if (event._tag === 'ReviewRequestByAPrereviewerWasImported') {
-      return Record.set(state, event.reviewRequestId, event.publishedAt)
-    }
-    if (event._tag === 'ReviewRequestFromAPreprintServerWasImported') {
-      return Record.set(state, event.reviewRequestId, event.publishedAt)
-    }
-    if (event._tag === 'ReviewRequestForAPreprintWasWithdrawn') {
-      return Record.remove(state, event.reviewRequestId)
-    }
-    if (event._tag === 'ReviewRequestForAPreprintWasCategorized') {
-      return Record.remove(state, event.reviewRequestId)
-    }
-    return state
-  })
+  const state = HashMap.mutate(HashMap.empty<Uuid.Uuid, Temporal.Instant>(), initialState =>
+    Array.reduce(events, initialState, (state, event) => {
+      if (event._tag === 'ReviewRequestForAPreprintWasAccepted') {
+        return HashMap.set(state, event.reviewRequestId, event.acceptedAt)
+      }
+      if (event._tag === 'ReviewRequestByAPrereviewerWasImported') {
+        return HashMap.set(state, event.reviewRequestId, event.publishedAt)
+      }
+      if (event._tag === 'ReviewRequestFromAPreprintServerWasImported') {
+        return HashMap.set(state, event.reviewRequestId, event.publishedAt)
+      }
+      if (event._tag === 'ReviewRequestForAPreprintWasWithdrawn') {
+        return HashMap.remove(state, event.reviewRequestId)
+      }
+      if (event._tag === 'ReviewRequestForAPreprintWasCategorized') {
+        return HashMap.remove(state, event.reviewRequestId)
+      }
+      return state
+    }),
+  )
 
   return pipe(
-    Record.toEntries(state),
+    Array.fromIterable(state),
     Array.map(([id, publishedAt]) => ({ id, publishedAt })),
     Array.sortWith(Struct.get('publishedAt'), Temporal.OrderInstant),
   )
