@@ -100,7 +100,7 @@ export const initialState: State = HashMap.empty()
 export const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
   return Array.reduce(events, state, (currentState, event) => {
     if (!Events.matches(event, filter)) {
-      return state
+      return currentState
     }
 
     return updateStateWithPertinentEvent(currentState, event)
