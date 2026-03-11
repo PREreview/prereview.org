@@ -19,6 +19,6 @@ export const HomePage: Effect.Effect<
     }),
     { concurrency: 'inherit' },
   ),
-  Effect.let('statistics', () => ({ prereviews: 1713, servers: 31, users: 4077 })),
+  Effect.let('statistics', () => ({ prereviews: 1826, servers: 31, users: 4207 })),
   Effect.andThen(createPage),
 )
