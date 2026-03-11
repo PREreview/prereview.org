@@ -44,8 +44,6 @@ export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
-export const SubscribeToKeywords = '/subscribe-to-keywords'
-export const MyReviewRequests = '/my-review-requests'
 export const RequestsData = '/requests-data'
 
 const DatasetIdSchema = Schema.transform(

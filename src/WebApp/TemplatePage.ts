@@ -19,7 +19,6 @@ export class TemplatePageOptions extends Context.Tag('TemplatePageOptions')<
 export const make = Effect.gen(function* () {
   const publicUrl = yield* PublicUrl
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
-  const canSubscribeToReviewRequests = yield* FeatureFlags.canSubscribeToReviewRequests
   const useCrowdinInContext = yield* FeatureFlags.useCrowdinInContext
   const { fathomId, environmentLabel } = yield* TemplatePageOptions
 
@@ -27,7 +26,6 @@ export const make = Effect.gen(function* () {
     templatePage({
       page,
       canLogInAsDemoUser,
-      canSubscribeToReviewRequests,
       useCrowdinInContext,
       environmentLabel: Option.getOrUndefined(environmentLabel),
       fathomId: Option.getOrUndefined(fathomId),

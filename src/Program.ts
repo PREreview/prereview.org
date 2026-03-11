@@ -42,7 +42,6 @@ import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
-import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Queries from './Queries.ts'
@@ -350,7 +349,6 @@ export const Program = pipe(
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
   Layer.provide([Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))]),
   Layer.provide([
-    Prereviewers.layer,
     Personas.layer,
     Datasets.layer,
     Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),

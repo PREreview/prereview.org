@@ -5,7 +5,6 @@ import * as Queries from '../../Queries.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
-import { GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 import { GetReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
@@ -19,9 +18,6 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<typeof GetFiveMostRecentReviewRequests>
     getReceivedReviewRequest: Queries.FromOnDemandQuery<typeof GetReceivedReviewRequest>
     getPublishedReviewRequest: Queries.FromOnDemandQuery<typeof GetPublishedReviewRequest>
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: Queries.FromOnDemandQuery<
-      typeof GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer
-    >
     searchForPublishedReviewRequests: Queries.FromStatefulQuery<typeof SearchForPublishedReviewRequests>
     findReviewRequestsNeedingCategorization: Queries.FromOnDemandQuery<typeof FindReviewRequestsNeedingCategorization>
     getReviewRequestToAcknowledge: Queries.FromOnDemandQuery<typeof GetReviewRequestToAcknowledge>
@@ -34,7 +30,6 @@ export const {
   getFiveMostRecentReviewRequests,
   getReceivedReviewRequest,
   getPublishedReviewRequest,
-  getPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
   searchForPublishedReviewRequests,
   findReviewRequestsNeedingCategorization,
   getReviewRequestToAcknowledge,
@@ -42,7 +37,6 @@ export const {
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
-export type { RecentReviewRequestMatchingAPrereviewer } from './GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer.ts'
 export {
   PublishedPrereviewerReviewRequest,
   PublishedReceivedReviewRequest,
@@ -62,9 +56,6 @@ const makeReviewRequestQueries: Effect.Effect<
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
     getReceivedReviewRequest: yield* Queries.makeOnDemandQuery(GetReceivedReviewRequest),
     getPublishedReviewRequest: yield* Queries.makeOnDemandQuery(GetPublishedReviewRequest),
-    getPreprintsWithARecentReviewRequestsMatchingAPrereviewer: yield* Queries.makeOnDemandQuery(
-      GetPreprintsWithARecentReviewRequestsMatchingAPrereviewer,
-    ),
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(SearchForPublishedReviewRequests),
     findReviewRequestsNeedingCategorization: yield* Queries.makeOnDemandQuery(FindReviewRequestsNeedingCategorization),
     getReviewRequestToAcknowledge: yield* Queries.makeOnDemandQuery(GetReviewRequestToAcknowledge),

@@ -14,7 +14,6 @@ import { maybeGetOrcidToken } from '../../orcid-token.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'
-import type { KeywordId } from '../../types/Keyword.ts'
 import { getUserOnboarding, saveUserOnboarding } from '../../user-onboarding.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
@@ -23,15 +22,7 @@ import { createPage } from './my-details-page.ts'
 
 export type Env = EnvFor<typeof myDetails>
 
-export const myDetails = ({
-  subscribedKeywords,
-  locale,
-  user,
-}: {
-  subscribedKeywords?: ReadonlyArray<KeywordId>
-  locale: SupportedLocale
-  user?: User
-}) =>
+export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: User }) =>
   pipe(
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainW(user =>
@@ -49,7 +40,6 @@ export const myDetails = ({
         RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullable))),
-        RTE.let('subscribedKeywords', () => Option.fromNullable(subscribedKeywords)),
       ),
     ),
     RTE.chainFirstW(({ user, userOnboarding }) =>

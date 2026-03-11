@@ -44,7 +44,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
-import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { PublicUrl } from '../../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
@@ -219,7 +218,6 @@ export interface Env {
     | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas
     | Preprints.Preprints
-    | Prereviewers.PrereviewerQueries
     | Prereviews.Prereviews
     | ReviewRequests.ReviewRequests
     | ReviewRequests.ReviewRequestCommands

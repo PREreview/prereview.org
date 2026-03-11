@@ -49,7 +49,6 @@ export const page = ({
   fathomId,
   publicUrl,
   canLogInAsDemoUser = false,
-  canSubscribeToReviewRequests = false,
   useCrowdinInContext,
 }: {
   page: Page
@@ -57,7 +56,6 @@ export const page = ({
   fathomId?: string
   publicUrl: URL
   canLogInAsDemoUser?: boolean
-  canSubscribeToReviewRequests?: boolean
   useCrowdinInContext: boolean
 }): Html => {
   const scripts = pipe(
@@ -296,14 +294,6 @@ export const page = ({
                                   >${translate(locale, 'header', 'menuMyPrereviews')()}</a
                                 >
                               </li>
-                              ${Boolean.match(canSubscribeToReviewRequests, {
-                                onFalse: () => '',
-                                onTrue: () => html`
-                                  <li>
-                                    <a href="${Routes.MyReviewRequests}">My review requests</a>
-                                  </li>
-                                `,
-                              })}
                               <li>
                                 <a href="${Routes.LogOut}">${translate(locale, 'header', 'menuLogOut')()}</a>
                               </li>
