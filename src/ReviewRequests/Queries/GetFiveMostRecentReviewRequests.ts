@@ -1,4 +1,4 @@
-import { Array, Either, Equivalence, flow, Option, pipe, Record, Struct } from 'effect'
+import { Array, Either, Equivalence, flow, HashMap, Option, pipe, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
@@ -15,7 +15,7 @@ export interface RecentReviewRequest {
 export type Result = ReadonlyArray<RecentReviewRequest>
 
 const query = (reviewRequests: shared.State): Result => {
-  const filteredReviewRequests = Record.filterMap(reviewRequests, reviewRequest =>
+  const filteredReviewRequests = HashMap.filterMap(reviewRequests, reviewRequest =>
     reviewRequest.published !== undefined
       ? Option.some({
           published: reviewRequest.published,
@@ -27,7 +27,7 @@ const query = (reviewRequests: shared.State): Result => {
 
   const sortedReviewRequests = Array.reverse(
     Array.sortWith(
-      Array.map(Array.fromRecord(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
+      Array.map(Array.fromIterable(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
       Struct.get('published'),
       Temporal.OrderInstant,
     ),

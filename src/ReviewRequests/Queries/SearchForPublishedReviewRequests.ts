@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, Equal, Equivalence, Match, Record, Struct } from 'effect'
+import { Array, Boolean, Either, Equal, Equivalence, HashMap, Match, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../Events.ts'
 import * as Preprints from '../../Preprints/index.ts'
@@ -59,9 +59,9 @@ interface UnpublishedReviewRequest {
   topics: ReadonlyArray<TopicId>
 }
 
-type State = Record<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest>
+type State = HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest | UnpublishedReviewRequest>
 
-const initialState: State = Record.empty()
+const initialState: State = HashMap.empty()
 
 const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
   return Array.reduce(events, state, (currentState, event) => {
@@ -76,7 +76,7 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
 const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasReceived: event =>
-      Record.set(map, event.reviewRequestId, {
+      HashMap.set(map, event.reviewRequestId, {
         published: undefined,
         topics: [],
         fields: [],
@@ -84,13 +84,13 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         preprintId: event.preprintId,
       }),
     ReviewRequestForAPreprintWasAccepted: event =>
-      Record.modify(map, event.reviewRequestId, review => ({
+      HashMap.modify(map, event.reviewRequestId, review => ({
         ...review,
         published: event.acceptedAt,
       })),
-    ReviewRequestForAPreprintWasWithdrawn: event => Record.remove(map, event.reviewRequestId),
+    ReviewRequestForAPreprintWasWithdrawn: event => HashMap.remove(map, event.reviewRequestId),
     ReviewRequestByAPrereviewerWasImported: event =>
-      Record.set(map, event.reviewRequestId, {
+      HashMap.set(map, event.reviewRequestId, {
         published: event.publishedAt,
         topics: [],
         fields: [],
@@ -98,7 +98,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         preprintId: event.preprintId,
       }),
     ReviewRequestFromAPreprintServerWasImported: event =>
-      Record.set(map, event.reviewRequestId, {
+      HashMap.set(map, event.reviewRequestId, {
         published: event.publishedAt,
         topics: [],
         fields: [],
@@ -106,14 +106,14 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         preprintId: event.preprintId,
       }),
     ReviewRequestForAPreprintWasCategorized: event =>
-      Record.modify(map, event.reviewRequestId, review => ({
+      HashMap.modify(map, event.reviewRequestId, review => ({
         ...review,
         topics: event.topics,
         fields: Array.map(event.topics, getTopicField),
         language: event.language,
       })),
     ReviewRequestForAPreprintWasRecategorized: event =>
-      Record.modify(map, event.reviewRequestId, review => ({
+      HashMap.modify(map, event.reviewRequestId, review => ({
         ...review,
         language: event.language ?? review.language,
       })),
@@ -121,17 +121,17 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
 
 const query = (state: State, input: Input): Result =>
   Either.gen(function* () {
-    const filteredReviewRequests = Record.filter(state, reviewRequest =>
+    const filteredReviewRequests = HashMap.filter(state, reviewRequest =>
       Boolean.every([
         reviewRequest.published !== undefined,
         input.language === undefined || Equal.equals(reviewRequest.language, input.language),
         input.field === undefined || Array.contains(reviewRequest.fields, input.field),
       ]),
-    ) as Record<Uuid.Uuid, PublishedReviewRequest>
+    ) as HashMap.HashMap<Uuid.Uuid, PublishedReviewRequest>
 
     const sortedReviewRequests = Array.reverse(
       Array.sortWith(
-        Array.map(Array.fromRecord(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
+        Array.map(Array.fromIterable(filteredReviewRequests), ([id, properties]) => ({ ...properties, id })),
         Struct.get('published'),
         Temporal.OrderInstant,
       ),

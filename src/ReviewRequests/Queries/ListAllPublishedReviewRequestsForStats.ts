@@ -1,4 +1,4 @@
-import { Array, Boolean, Either, flow, Record, Schema, Struct } from 'effect'
+import { Array, Boolean, Either, flow, HashMap, Schema, Struct } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import { DomainIdSchema } from '../../types/domain.ts'
@@ -21,12 +21,12 @@ export const ReviewRequestForStats = Schema.Struct({
 export type Result = ReadonlyArray<ReviewRequestForStats>
 
 const query = (state: shared.State): Result => {
-  const filteredReviewRequests = Record.filter(state, reviewRequest =>
+  const filteredReviewRequests = HashMap.filter(state, reviewRequest =>
     Boolean.every([reviewRequest.published !== undefined]),
-  ) as Record<Uuid.Uuid, ReviewRequestForStats>
+  ) as HashMap.HashMap<Uuid.Uuid, ReviewRequestForStats>
 
   const sortedReviewRequests = Array.sortWith(
-    Record.values(filteredReviewRequests),
+    HashMap.values(filteredReviewRequests),
     Struct.get('published'),
     Temporal.OrderInstant,
   )
