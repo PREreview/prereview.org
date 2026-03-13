@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
+import { Uuid } from '../../src/types/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
@@ -18,6 +19,7 @@ test('content looks right', async ({ showPage }) => {
     reviewRequest: {
       status: 'incomplete',
       persona: 'public',
+      id: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
     },
     user: {
       name: NonEmptyString('Josiah Carberry'),
@@ -38,6 +40,7 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
     reviewRequest: {
       status: 'incomplete',
       persona: 'pseudonym',
+      id: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
     },
     user: {
       name: NonEmptyString('Josiah Carberry'),

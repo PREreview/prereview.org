@@ -16,6 +16,7 @@ import {
   saveReviewRequest,
 } from '../../../review-request.ts'
 import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import type { Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -32,6 +33,7 @@ export interface PublishRequestEnv {
     preprint: PreprintId,
     user: User,
     persona: 'public' | 'pseudonym',
+    reviewRequestId: Uuid.Uuid,
   ) => TE.TaskEither<'unavailable', void>
 }
 
@@ -102,8 +104,9 @@ const publishRequest = (
   preprint: PreprintId,
   user: User,
   persona: 'public' | 'pseudonym',
+  reviewRequestId: Uuid.Uuid,
 ): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
-  R.asks(({ publishRequest }) => publishRequest(preprint, user, persona))
+  R.asks(({ publishRequest }) => publishRequest(preprint, user, persona, reviewRequestId))
 
 const handleForm = ({
   preprint,
@@ -117,7 +120,7 @@ const handleForm = ({
   locale: SupportedLocale
 }) =>
   pipe(
-    publishRequest(preprint, user, reviewRequest.persona ?? 'public'),
+    publishRequest(preprint, user, reviewRequest.persona ?? 'public', reviewRequest.id),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage(locale),

@@ -13,6 +13,7 @@ import {
   saveReviewRequest,
 } from '../../../review-request.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../../routes.ts'
+import { Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../../Response/index.ts'
@@ -27,7 +28,7 @@ export const requestReviewStart = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
+  GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv & Uuid.GenerateUuidEnv,
   LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
@@ -44,7 +45,12 @@ export const requestReviewStart = ({
     RTE.chainFirstW(({ preprint, reviewRequest, user }) =>
       match(reviewRequest)
         .with({ status: P.union('incomplete', 'completed') }, () => RTE.of(undefined))
-        .with(undefined, () => pipe(saveReviewRequest(user.orcid, preprint, { status: 'incomplete' })))
+        .with(undefined, () =>
+          pipe(
+            RTE.rightReaderIO(Uuid.generateUuidIO),
+            RTE.chainW(id => saveReviewRequest(user.orcid, preprint, { status: 'incomplete', id })),
+          ),
+        )
         .exhaustive(),
     ),
     RTE.matchW(

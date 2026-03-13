@@ -1235,8 +1235,9 @@ export const incompleteReviewRequest = ({
     {
       status: constant('incomplete'),
       persona: persona ?? constantFrom('public', 'pseudonym'),
+      id: uuid(),
     },
-    !persona ? { requiredKeys: ['status'] } : {},
+    !persona ? { requiredKeys: ['status', 'id'] } : {},
   )
 
 export const completedReviewRequest = (): fc.Arbitrary<CompletedReviewRequest> =>

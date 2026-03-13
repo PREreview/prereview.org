@@ -16,11 +16,13 @@ describe('requestReviewStart', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a request hasn't been started", async (preprint, user, preprintTitle, locale) => {
+      fc.uuid(),
+    ])("when a request hasn't been started", async (preprint, user, preprintTitle, locale, uuid) => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
       const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
 
       const actual = await _.requestReviewStart({ preprint, user, locale })({
+        generateUuid: () => uuid,
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
         saveReviewRequest,
@@ -32,7 +34,10 @@ describe('requestReviewStart', () => {
         location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
       })
       expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
-      expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'incomplete' })
+      expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
+        status: 'incomplete',
+        id: uuid,
+      })
     })
 
     test.prop([
@@ -45,6 +50,7 @@ describe('requestReviewStart', () => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
 
       const actual = await _.requestReviewStart({ preprint, user, locale })({
+        generateUuid: shouldNotBeCalled,
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
         saveReviewRequest: shouldNotBeCalled,
@@ -68,6 +74,7 @@ describe('requestReviewStart', () => {
       const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
 
       const actual = await _.requestReviewStart({ preprint, user, locale })({
+        generateUuid: shouldNotBeCalled,
         getPreprintTitle: () => TE.right(preprintTitle),
         getReviewRequest,
         saveReviewRequest: shouldNotBeCalled,
@@ -91,6 +98,7 @@ describe('requestReviewStart', () => {
     'when the user is not logged in',
     async (preprint, locale) => {
       const actual = await _.requestReviewStart({ preprint, locale })({
+        generateUuid: shouldNotBeCalled,
         getPreprintTitle: shouldNotBeCalled,
         getReviewRequest: shouldNotBeCalled,
         saveReviewRequest: shouldNotBeCalled,

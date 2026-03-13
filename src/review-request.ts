@@ -6,12 +6,14 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import type { PreprintId } from './Preprints/index.ts'
 import type { OrcidId } from './types/OrcidId.ts'
+import { Uuid } from './types/index.ts'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
   readonly persona?: 'public' | 'pseudonym'
+  readonly id: Uuid.Uuid
 }
 
 export interface CompletedReviewRequest {
@@ -33,6 +35,7 @@ export interface SaveReviewRequestEnv {
 const IncompleteReviewRequestC = pipe(
   C.struct({
     status: C.literal('incomplete'),
+    id: Uuid.UuidC,
   }),
   C.intersect(
     C.partial({

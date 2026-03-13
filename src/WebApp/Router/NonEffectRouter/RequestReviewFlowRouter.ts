@@ -74,6 +74,7 @@ export const RequestReviewFlowRouter = pipe(
   P.map(
     handler => (env: Env) =>
       handler(env)({
+        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         getReviewRequest: (orcid, preprint) =>
           withEnv(Keyv.getReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })([
@@ -82,11 +83,15 @@ export const RequestReviewFlowRouter = pipe(
           ]),
         publishRequest: withEnv(
           EffectToFpts.toReaderTaskEitherK(
-            (preprintId: Preprints.PreprintId, user: User, persona: 'public' | 'pseudonym') =>
+            (
+              preprintId: Preprints.PreprintId,
+              user: User,
+              persona: 'public' | 'pseudonym',
+              reviewRequestId: Uuid.Uuid,
+            ) =>
               pipe(
                 Effect.gen(function* () {
                   const publishedAt = yield* Temporal.currentInstant
-                  const reviewRequestId = yield* Uuid.v4()
 
                   const author = Option.some(persona === 'public' ? user.name : user.pseudonym)
 
