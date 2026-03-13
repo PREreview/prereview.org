@@ -12,7 +12,7 @@ import * as RecordEmailSentToAcknowledgeReviewRequest from './RecordEmailSentToA
 import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
-import { StartReviewRequest } from './StartReviewRequest.js'
+import { StartReviewRequest } from './StartReviewRequest.ts'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
