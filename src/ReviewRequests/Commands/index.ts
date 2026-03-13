@@ -5,6 +5,7 @@ import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
+import { ChoosePersona } from './ChoosePersona.ts'
 import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
 import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
@@ -19,6 +20,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
     startReviewRequest: Commands.FromCommand<typeof StartReviewRequest>
+    choosePersona: Commands.FromCommand<typeof ChoosePersona>
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
@@ -43,6 +45,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 
 export const {
   startReviewRequest,
+  choosePersona,
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
@@ -106,6 +109,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
 
     return {
       startReviewRequest: yield* Commands.makeCommand(StartReviewRequest),
+      choosePersona: yield* Commands.makeCommand(ChoosePersona),
       receiveReviewRequest: handleCommand(
         ReceiveReviewRequest.createFilter,
         ReceiveReviewRequest.foldState,
