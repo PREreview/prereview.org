@@ -133,7 +133,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['imported by prereviewer event with matching id', [importedByPrereviewer3]],
   ['imported from preprint server event with matching id', [importedFromPreprintServer]],
 ])('review request id already exists (%s)', (_case, events) => {
-  it('starts the review request', () => {
+  it('rejects the command with an error', () => {
     const { foldState, decide } = _.StartReviewRequest
 
     const state = foldState(events, input)
