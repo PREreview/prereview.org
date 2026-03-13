@@ -8,6 +8,7 @@ import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
 import { ChoosePersona } from './ChoosePersona.ts'
 import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
 import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
+import { PublishReviewRequest } from './PublishReviewRequest.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordEmailSentToAcknowledgeReviewRequest from './RecordEmailSentToAcknowledgeReviewRequest.ts'
 import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
@@ -21,6 +22,7 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   {
     startReviewRequest: Commands.FromCommand<typeof StartReviewRequest>
     choosePersona: Commands.FromCommand<typeof ChoosePersona>
+    publishReviewRequest: Commands.FromCommand<typeof PublishReviewRequest>
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
@@ -46,6 +48,7 @@ export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleComma
 export const {
   startReviewRequest,
   choosePersona,
+  publishReviewRequest,
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
@@ -110,6 +113,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
     return {
       startReviewRequest: yield* Commands.makeCommand(StartReviewRequest),
       choosePersona: yield* Commands.makeCommand(ChoosePersona),
+      publishReviewRequest: yield* Commands.makeCommand(PublishReviewRequest),
       receiveReviewRequest: handleCommand(
         ReceiveReviewRequest.createFilter,
         ReceiveReviewRequest.foldState,
