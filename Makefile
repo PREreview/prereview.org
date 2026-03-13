@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -78,6 +78,9 @@ test: node_modules src/manifest.json
 
 test-fast: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged --maxWorkers=50%
+
+test-watch: node_modules src/manifest.json
+	FAST_CHECK_NUM_RUNS=10 npx jest --watch
 
 test-integration: test-integration-image
 	docker compose up postgres --wait
