@@ -28,6 +28,7 @@ export const createFilter = (
 ): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
     'ReviewRequestForAPreprintWasReceived',
+    'ReviewRequestForAPreprintWasStarted',
     'ReviewRequestFromAPreprintServerWasImported',
     'ReviewRequestByAPrereviewerWasImported',
   ],

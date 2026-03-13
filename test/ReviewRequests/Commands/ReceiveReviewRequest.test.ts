@@ -26,6 +26,12 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasStarted = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  reviewRequestId,
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+})
 const otherReviewRequestByAPrereviewerWasImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   preprintId,
@@ -109,6 +115,7 @@ describe('foldState', () => {
     {
       examples: [
         [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was received
+        [[[reviewRequestForAPreprintWasStarted], reviewRequestId]], // was started
         [[[reviewRequestByAPrereviewerWasImported], reviewRequestId]], // was imported from request by PREreviewer
         [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
         [

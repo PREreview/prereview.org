@@ -52,6 +52,12 @@ const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewReque
   requester: Option.some({ name: NonEmptyString.NonEmptyString('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
+const reviewRequestForAPreprintWasStarted = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  preprintId,
+  reviewRequestId,
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+})
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
@@ -111,6 +117,7 @@ describe('foldState', () => {
         [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
         [[[reviewRequestByAPrereviewerWasImported], reviewRequestId]], // was imported from request by PREreviewer
         [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was recevied
+        [[[reviewRequestForAPreprintWasStarted], reviewRequestId]], // was started
         [
           [
             [
