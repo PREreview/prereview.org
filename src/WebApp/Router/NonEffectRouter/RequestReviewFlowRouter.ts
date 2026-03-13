@@ -118,6 +118,7 @@ export const RequestReviewFlowRouter = pipe(
           ),
           { runtime: env.runtime },
         ),
+        runtime: env.runtime,
         saveReviewRequest: (orcid, preprint, request) =>
           withEnv(Keyv.saveReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })(
             [orcid, preprint],

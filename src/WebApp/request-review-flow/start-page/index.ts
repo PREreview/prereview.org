@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,14 +6,16 @@ import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   type GetReviewRequestEnv,
   type SaveReviewRequestEnv,
   maybeGetReviewRequest,
   saveReviewRequest,
 } from '../../../review-request.ts'
+import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../../routes.ts'
-import { Uuid } from '../../../types/index.ts'
+import { Temporal, Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../../Response/index.ts'
@@ -28,7 +30,11 @@ export const requestReviewStart = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv & Uuid.GenerateUuidEnv,
+  GetPreprintTitleEnv &
+    GetReviewRequestEnv &
+    SaveReviewRequestEnv &
+    Uuid.GenerateUuidEnv &
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
   LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
@@ -48,7 +54,19 @@ export const requestReviewStart = ({
         .with(undefined, () =>
           pipe(
             RTE.rightReaderIO(Uuid.generateUuidIO),
-            RTE.chainW(id => saveReviewRequest(user.orcid, preprint, { status: 'incomplete', id })),
+            RTE.chainFirstW(id => saveReviewRequest(user.orcid, preprint, { status: 'incomplete', id })),
+            RTE.chainFirstW(id =>
+              EffectToFpts.toReaderTaskEither(
+                Effect.andThen(Temporal.currentInstant, startedAt =>
+                  ReviewRequests.startReviewRequest({
+                    startedAt,
+                    preprintId: preprint,
+                    reviewRequestId: id,
+                    requesterId: user.orcid,
+                  }),
+                ),
+              ),
+            ),
           ),
         )
         .exhaustive(),
@@ -60,7 +78,11 @@ export const requestReviewStart = ({
             LogInResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
+          .with(
+            { _tag: P.union('PreprintIsUnavailable', 'ReviewRequestWasAlreadyStarted', 'UnableToHandleCommand') },
+            'unavailable',
+            () => havingProblemsPage(locale),
+          )
           .exhaustive(),
       state =>
         match(state)
