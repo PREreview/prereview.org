@@ -79,7 +79,7 @@ const importedFromPreprintServer = new ReviewRequests.ReviewRequestFromAPreprint
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(importedRequester1),
-  reviewRequestId: requestId1,
+  reviewRequestId: commandRequestId,
 })
 
 const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
