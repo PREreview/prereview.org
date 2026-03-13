@@ -9,6 +9,7 @@ import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
@@ -16,6 +17,7 @@ import {
   getReviewRequest,
   saveReviewRequest,
 } from '../../../review-request.ts'
+import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -40,7 +42,10 @@ export const requestReviewPersona = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
+  GetPreprintTitleEnv &
+    GetReviewRequestEnv &
+    SaveReviewRequestEnv &
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -115,10 +120,16 @@ const handlePersonaForm = ({
       ),
     ),
     RTE.chainFirstW(fields => saveReviewRequest(user.orcid, preprint, { ...reviewRequest, persona: fields.persona })),
+    RTE.chainFirstW(fields =>
+      EffectToFpts.toReaderTaskEither(
+        ReviewRequests.choosePersona({ persona: fields.persona, reviewRequestId: reviewRequest.id }),
+      ),
+    ),
     RTE.matchW(
       error =>
         match(error)
           .with('unavailable', () => havingProblemsPage(locale))
+          .with({ _tag: P.union('UnknownReviewRequest', 'UnableToHandleCommand') }, () => havingProblemsPage(locale))
           .with({ persona: P.any }, form => personaForm({ form, preprint, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),
