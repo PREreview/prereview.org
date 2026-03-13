@@ -12,11 +12,13 @@ import * as RecordEmailSentToAcknowledgeReviewRequest from './RecordEmailSentToA
 import * as RecordFailureToCategorizeReviewRequest from './RecordFailureToCategorizeReviewRequest.ts'
 import * as RecordReviewRequestSharedOnTheCommunitySlack from './RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as RejectReviewRequest from './RejectReviewRequest.ts'
+import { StartReviewRequest } from './StartReviewRequest.js'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
 export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
   ReviewRequestCommands,
   {
+    startReviewRequest: Commands.FromCommand<typeof StartReviewRequest>
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
@@ -40,6 +42,7 @@ type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = neve
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export const {
+  startReviewRequest,
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
@@ -102,6 +105,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       )
 
     return {
+      startReviewRequest: yield* Commands.makeCommand(StartReviewRequest),
       receiveReviewRequest: handleCommand(
         ReceiveReviewRequest.createFilter,
         ReceiveReviewRequest.foldState,
