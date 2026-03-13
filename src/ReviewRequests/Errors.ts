@@ -20,6 +20,10 @@ export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNot
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
 
+export class ReviewRequestWasAlreadyStarted extends Data.TaggedError('ReviewRequestWasAlreadyStarted')<{
+  cause?: unknown
+}> {}
+
 export class ReviewRequestWasAlreadyCategorized extends Schema.TaggedError<ReviewRequestWasAlreadyCategorized>()(
   'ReviewRequestWasAlreadyCategorized',
   { cause: Schema.optional(Schema.Unknown) },

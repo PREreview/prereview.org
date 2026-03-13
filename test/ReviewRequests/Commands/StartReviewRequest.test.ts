@@ -1,9 +1,10 @@
 import { it } from '@fast-check/jest'
-import { describe } from '@jest/globals'
+import { describe, expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Option } from 'effect'
+import { Either, Option } from 'effect'
 import type * as Events from '../../../src/Events.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
+import * as _ from '../../../src/ReviewRequests/Commands/StartReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 
@@ -90,15 +91,40 @@ const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   reviewRequestId: commandRequestId,
 })
 
+const input = {
+  startedAt: now,
+  preprintId: commandPreprintId,
+  reviewRequestId: commandRequestId,
+  requesterId: commandRequester,
+} satisfies _.Input
+
 describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['no events', []],
   ['same requester different preprint ID', [started1]],
   ['different requester same preprint ID', [started2]],
   ['same requester different preprint ID (imported)', [importedByPrereviewer1]],
   ['different requester same preprint ID (imported)', [importedByPrereviewer2]],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ])('review request has never been started (%s)', (_case, events) => {
-  it.todo('starts the review request')
+  it('starts the review request', () => {
+    const { foldState, decide } = _.StartReviewRequest
+
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
+
+    expect(actual).toStrictEqual(
+      Either.right(
+        Option.some(
+          new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+            startedAt: now,
+            preprintId: commandPreprintId,
+            reviewRequestId: commandRequestId,
+            requesterId: commandRequester,
+          }),
+        ),
+      ),
+    )
+  })
 })
 
 describe.each<[string, ReadonlyArray<Events.Event>]>([
@@ -106,7 +132,14 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['received event with matching id', [received]],
   ['imported by prereviewer event with matching id', [importedByPrereviewer3]],
   ['imported from preprint server event with matching id', [importedFromPreprintServer]],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 ])('review request id already exists (%s)', (_case, events) => {
-  it.todo('rejects the command with an error')
+  it('starts the review request', () => {
+    const { foldState, decide } = _.StartReviewRequest
+
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
+
+    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyStarted({})))
+  })
 })
