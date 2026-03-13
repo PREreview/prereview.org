@@ -4,6 +4,7 @@
     "allowJs": true,
     "erasableSyntaxOnly": true,
     "lib": ["dom", "dom.iterable", "es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
+    "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "plugins": [{ "name": "@effect/language-service" }],

@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -64,10 +64,13 @@ smoketest:
 	docker compose down
 
 typecheck: node_modules src/manifest.json
-	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
+	npx tsc --incremental --tsBuildInfoFile ".cache/tsc"
+
+typecheck-watch: node_modules src/manifest.json
+	npx tsc --watch --incremental --tsBuildInfoFile ".cache/tsc"
 
 typecheck-analyze: node_modules src/manifest.json
-	npx tsc --incremental false --noEmit --generateTrace ".cache/tsc-trace"
+	npx tsc --incremental false --generateTrace ".cache/tsc-trace"
 	npx analyze-trace .cache/tsc-trace ${TEST}
 
 test: node_modules src/manifest.json
