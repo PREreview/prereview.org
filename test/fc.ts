@@ -2302,6 +2302,18 @@ export const personaForAReviewRequestForAPreprintWasChosen = ({
     })
     .map(data => new Events.PersonaForAReviewRequestForAPreprintWasChosen(data))
 
+export const reviewRequestForAPreprintWasPublished = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasPublished['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasPublished> =>
+  fc
+    .record({
+      publishedAt: instant(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasPublished(data))
+
 export const reviewRequestForAPreprintWasReceived = ({
   reviewRequestId,
   requester,
