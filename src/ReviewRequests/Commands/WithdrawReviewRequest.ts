@@ -24,6 +24,7 @@ class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
 const createFilter = (input: Input) =>
   Events.EventFilter({
     types: [
+      'ReviewRequestForAPreprintWasPublished',
       'ReviewRequestForAPreprintWasAccepted',
       'ReviewRequestByAPrereviewerWasImported',
       'ReviewRequestFromAPreprintServerWasImported',
@@ -39,6 +40,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     !Array.some(
       filteredEvents,
       hasTag(
+        'ReviewRequestForAPreprintWasPublished',
         'ReviewRequestForAPreprintWasAccepted',
         'ReviewRequestByAPrereviewerWasImported',
         'ReviewRequestFromAPreprintServerWasImported',

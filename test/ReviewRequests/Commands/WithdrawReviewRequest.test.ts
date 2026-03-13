@@ -18,6 +18,18 @@ const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12
 
 const now = Temporal.Now.instant()
 
+const started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: now.subtract({ hours: 2 }),
+  preprintId: preprintId1,
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  reviewRequestId: request1Id,
+})
+
+const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ hours: 1 }),
+  reviewRequestId: request1Id,
+})
+
 const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
@@ -60,6 +72,7 @@ const input = {
 
 describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['no events', []],
+  ['started but not published', [started]],
   ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
   it('rejects the command with an error', () => {
@@ -74,6 +87,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
 })
 
 describe.each<[string, ReadonlyArray<Events.Event>]>([
+  ['started and published', [started, published]],
   ['received and accepted', [accepted, received]],
   ['imported from a PREreviewer', [importedPrereviewer]],
   ['imported from a preprint server', [importedPreprintServer]],
@@ -100,6 +114,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
 })
 
 describe.each<[string, ReadonlyArray<Events.Event>]>([
+  ['started and published', [started, published, withdrawn]],
   ['received and accepted', [accepted, received, withdrawn]],
   ['imported from a PREreviewer', [importedPrereviewer, withdrawn]],
   ['imported from a preprint server', [importedPreprintServer, withdrawn]],
