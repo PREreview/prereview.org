@@ -2276,6 +2276,20 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'PublishDatasetReview',
   )
 
+export const reviewRequestForAPreprintWasStarted = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.ReviewRequestForAPreprintWasStarted['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.ReviewRequestForAPreprintWasStarted> =>
+  fc
+    .record({
+      startedAt: instant(),
+      preprintId: indeterminatePreprintId(),
+      reviewRequestId: reviewRequestId ?? uuid(),
+      requesterId: orcidId(),
+    })
+    .map(data => new Events.ReviewRequestForAPreprintWasStarted(data))
+
 export const reviewRequestForAPreprintWasReceived = ({
   reviewRequestId,
   requester,
@@ -2454,6 +2468,7 @@ export const reviewRequestEvent = (
   } = {},
 ): fc.Arbitrary<Events.ReviewRequestEvent> =>
   fc.oneof(
+    reviewRequestForAPreprintWasStarted(args),
     reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasRejected(args),

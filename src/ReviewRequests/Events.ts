@@ -8,6 +8,16 @@ import { TopicIdSchema } from '../types/Topic.ts'
 
 export type ReviewRequestEvent = typeof ReviewRequestEvent.Type
 
+export class ReviewRequestForAPreprintWasStarted extends Schema.TaggedClass<ReviewRequestForAPreprintWasStarted>()(
+  'ReviewRequestForAPreprintWasStarted',
+  {
+    startedAt: Temporal.InstantSchema,
+    preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
+    reviewRequestId: Uuid.UuidSchema,
+    requesterId: OrcidId.OrcidIdSchema,
+  },
+) {}
+
 export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<ReviewRequestForAPreprintWasReceived>()(
   'ReviewRequestForAPreprintWasReceived',
   {
@@ -130,6 +140,7 @@ export class ReviewRequestForAPreprintWasSharedOnTheCommunitySlack extends Schem
 ) {}
 
 export const ReviewRequestEvent = Schema.Union(
+  ReviewRequestForAPreprintWasStarted,
   ReviewRequestForAPreprintWasReceived,
   ReviewRequestForAPreprintWasAccepted,
   ReviewRequestForAPreprintWasRejected,
