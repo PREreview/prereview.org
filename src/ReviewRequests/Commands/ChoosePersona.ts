@@ -9,9 +9,9 @@ export interface Input {
   readonly reviewRequestId: Uuid.Uuid
 }
 
-export type Error = Errors.UnknownReviewRequest
+export type Error = Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenPublished
 
-type State = NotStarted | NotChosen | HasBeenChosen
+type State = NotStarted | NotChosen | HasBeenChosen | HasBeenPublished
 
 class NotStarted extends Data.TaggedClass('NotStarted') {}
 
@@ -21,9 +21,15 @@ class HasBeenChosen extends Data.TaggedClass('HasBeenChosen')<{
   persona: 'public' | 'pseudonym'
 }> {}
 
+class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
+
 const createFilter = (input: Input) =>
   Events.EventFilter({
-    types: ['ReviewRequestForAPreprintWasStarted', 'PersonaForAReviewRequestForAPreprintWasChosen'],
+    types: [
+      'ReviewRequestForAPreprintWasStarted',
+      'PersonaForAReviewRequestForAPreprintWasChosen',
+      'ReviewRequestForAPreprintWasPublished',
+    ],
     predicates: { reviewRequestId: input.reviewRequestId },
   })
 
@@ -32,6 +38,10 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
   if (!Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasStarted'))) {
     return new NotStarted()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasPublished'))) {
+    return new HasBeenPublished()
   }
 
   return Option.match(Array.findLast(filteredEvents, hasTag('PersonaForAReviewRequestForAPreprintWasChosen')), {
@@ -65,6 +75,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
             ),
           ),
       }),
+    HasBeenPublished: () => Either.left(new Errors.ReviewRequestHasBeenPublished({})),
   })
 
 export const ChoosePersona = Commands.Command({

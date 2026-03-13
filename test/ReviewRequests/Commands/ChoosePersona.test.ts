@@ -82,6 +82,11 @@ const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   reviewRequestId: commandRequestId,
 })
 
+const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now,
+  reviewRequestId: commandRequestId,
+})
+
 const input = {
   persona: commandPersona,
   reviewRequestId: commandRequestId,
@@ -167,5 +172,20 @@ describe('persona has been chosen', () => {
 
       expect(actual).toStrictEqual(Either.right(Option.none()))
     })
+  })
+})
+
+describe.each<[string, ReadonlyArray<Events.Event>]>([
+  ['with persona', [started2, chosen1, published]],
+  ['without persona', [started2, published]],
+])('review request has been published (%s)', (_case, events) => {
+  it('rejects the command with an error', () => {
+    const { foldState, decide } = _.ChoosePersona
+
+    const state = foldState(events, input)
+
+    const actual = decide(state, input)
+
+    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})))
   })
 })

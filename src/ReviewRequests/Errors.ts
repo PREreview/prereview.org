@@ -44,6 +44,10 @@ export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.Tag
 
 export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}
 
+export class ReviewRequestHasBeenPublished extends Data.TaggedError('ReviewRequestHasBeenPublished')<{
+  cause?: unknown
+}> {}
+
 export class ReviewRequestHasBeenAccepted extends Data.TaggedError('ReviewRequestHasBeenAccepted')<{
   cause?: unknown
 }> {}

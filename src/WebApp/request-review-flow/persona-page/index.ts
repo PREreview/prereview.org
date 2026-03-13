@@ -129,7 +129,10 @@ const handlePersonaForm = ({
       error =>
         match(error)
           .with('unavailable', () => havingProblemsPage(locale))
-          .with({ _tag: P.union('UnknownReviewRequest', 'UnableToHandleCommand') }, () => havingProblemsPage(locale))
+          .with(
+            { _tag: P.union('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', 'UnableToHandleCommand') },
+            () => havingProblemsPage(locale),
+          )
           .with({ persona: P.any }, form => personaForm({ form, preprint, user, locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),
