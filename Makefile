@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -85,6 +85,9 @@ test-watch: node_modules src/manifest.json
 test-integration: test-integration-image
 	docker compose up postgres --wait
 	docker run --rm --env "POSTGRES_URL=postgres://postgres:password@host.docker.internal:5432" --add-host="host.docker.internal:host-gateway" --volume "$$(pwd)"/integration-results:/app/integration-results --volume "$$(pwd)"/visual-regression/snapshots:/app/visual-regression/snapshots ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}
+
+test-integration-chrome: ARGS=--project 'Desktop Chrome'
+test-integration-chrome: test-integration
 
 update-snapshots: ARGS=--update-snapshots
 update-snapshots: test-integration
