@@ -51,7 +51,7 @@ jobs:
           restore-keys: webpack-
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales-assets
           path: assets/locales
@@ -216,19 +216,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales-assets
           path: assets/locales
@@ -267,13 +267,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales
           path: src/locales
@@ -312,19 +312,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales
           path: src/locales
@@ -366,7 +366,7 @@ jobs:
         uses: docker/setup-docker-action@v5.0.0
 
       - name: 'Download image'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: image
           path: /tmp
@@ -408,19 +408,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Download assets'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: assets
           path: dist/assets
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales
           path: src/locales
@@ -465,19 +465,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 'Download assets manifest'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: manifest
           path: src
 
       - name: 'Download locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales
           path: src/locales
 
       - name: 'Download assets locales'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: locales-assets
           path: assets/locales
@@ -516,7 +516,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 'Download image'
-        uses: actions/download-artifact@v8.0.0
+        uses: actions/download-artifact@v8.0.1
         with:
           name: image
           path: /tmp
