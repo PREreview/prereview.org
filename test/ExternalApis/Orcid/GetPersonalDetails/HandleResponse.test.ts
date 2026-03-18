@@ -1,7 +1,7 @@
 import type { HttpClientError } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect, Either } from 'effect'
+import { Effect, Either, Predicate } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'
@@ -27,7 +27,7 @@ describe('HandleResponse', () => {
     describe('with an unknown JSON body', () => {
       test.prop([
         fc.httpClientResponse({
-          json: fc.json(),
+          json: fc.json().filter(Predicate.not(Predicate.hasProperty('name'))),
           status: fc.constant(StatusCodes.OK),
         }),
       ])('returns an error', response =>
