@@ -8,7 +8,6 @@ import * as _ from '../../../src/ReviewRequests/Queries/FindReviewRequestsNeedin
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 
 const requester1 = { name: NonEmptyString.NonEmptyString('Josiah Carberry') }
-const requester2 = { name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul') }
 
 const request1Id = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const request2Id = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
@@ -38,11 +37,8 @@ const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdra
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
 })
-const request2Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const request2Published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ hours: 1 }),
-  receivedFrom: new URL('http://example.com'),
-  preprintId: preprintId2,
-  requester: Option.some(requester2),
   reviewRequestId: request2Id,
 })
 const request2Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
@@ -71,20 +67,20 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
   ['single not categorized', [request1Imported], [{ id: request1Id, publishedAt: request1Imported.publishedAt }]],
   [
     'four not categorized',
-    [request1Imported, request2Imported, request3Imported, request4Accepted],
+    [request1Imported, request2Published, request3Imported, request4Accepted],
     [
       { id: request4Id, publishedAt: request4Accepted.acceptedAt },
       { id: request1Id, publishedAt: request1Imported.publishedAt },
-      { id: request2Id, publishedAt: request2Imported.publishedAt },
+      { id: request2Id, publishedAt: request2Published.publishedAt },
       { id: request3Id, publishedAt: request3Imported.publishedAt },
     ],
   ],
   [
     'partially categorized',
-    [request1Imported, request2Imported, request1Categorized],
-    [{ id: request2Id, publishedAt: request2Imported.publishedAt }],
+    [request1Imported, request2Published, request1Categorized],
+    [{ id: request2Id, publishedAt: request2Published.publishedAt }],
   ],
-  ['withdrawn', [request1Imported, request2Imported, request1Categorized, request1Withdrawn, request2Withdrawn], []],
+  ['withdrawn', [request1Imported, request2Published, request1Categorized, request1Withdrawn, request2Withdrawn], []],
 ])('FindReviewRequestsNeedingCategorization (%s)', (_name, events, expected) => {
   const actual = _.FindReviewRequestsNeedingCategorization.query(events)
 

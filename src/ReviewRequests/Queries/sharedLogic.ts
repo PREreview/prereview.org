@@ -9,6 +9,8 @@ import type { SubfieldId } from '../../types/subfield.ts'
 import { getTopicDomain, getTopicField, getTopicSubfield, type TopicId } from '../../types/Topic.ts'
 
 const eventTypes = [
+  'ReviewRequestForAPreprintWasStarted',
+  'ReviewRequestForAPreprintWasPublished',
   'ReviewRequestForAPreprintWasReceived',
   'ReviewRequestForAPreprintWasAccepted',
   'ReviewRequestForAPreprintWasWithdrawn',
@@ -38,6 +40,23 @@ export type State = HashMap.HashMap<
 
 const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
+    ReviewRequestForAPreprintWasStarted: event =>
+      HashMap.set(map, event.reviewRequestId, {
+        published: undefined,
+        fields: [],
+        subfields: [],
+        domains: [],
+        topics: [],
+        language: undefined,
+        preprintId: event.preprintId,
+        accepted: false,
+      }),
+    ReviewRequestForAPreprintWasPublished: event =>
+      HashMap.modify(map, event.reviewRequestId, review => ({
+        ...review,
+        published: event.publishedAt,
+        accepted: true,
+      })),
     ReviewRequestForAPreprintWasReceived: event =>
       HashMap.set(map, event.reviewRequestId, {
         published: undefined,

@@ -31,26 +31,24 @@ const preprintId6 = new Preprints.PreprintsorgPreprintId({ value: Doi.Doi('10.20
 
 const now = Temporal.Now.instant()
 
-const request1Received1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 2 }),
-  receivedFrom: new URL('http://example.com'),
+const request1Started1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
-  requester: Option.some(requester1),
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: request1Id,
 })
-const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ minutes: 20 }),
-  receivedFrom: new URL('http://example.com'),
+const request1Started2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: now.subtract({ minutes: 20 }),
   preprintId: preprintId2,
-  requester: Option.some(requester2),
+  requesterId: OrcidId.OrcidId('0000-0002-6109-0367'),
   reviewRequestId: request1Id,
 })
-const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 1 }),
+const request1Published1 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
-const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ minutes: 10 }),
+const request1Published2 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
 })
 const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
@@ -208,9 +206,9 @@ const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCateg
 
 test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   ['no events', [], []],
-  ['no received events', [request1Accepted1], []],
-  ['no accepted events', [request1Received1, request1Categorized1], []],
-  ['was withdrawn', [request1Received1, request1Accepted1, request1Withdrawn], []],
+  ['no received events', [request1Published1], []],
+  ['no accepted events', [request1Started1, request1Categorized1], []],
+  ['was withdrawn', [request1Started1, request1Published1, request1Withdrawn], []],
   [
     'imported only',
     [request8Imported, request8Categorized, request9Imported, request9Categorized],
@@ -231,25 +229,25 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
   ],
   [
     'multiple requests for same preprint',
-    [request1Received1, request1Accepted1, request1Categorized1, request8Imported, request8Categorized],
+    [request1Started1, request1Published1, request1Categorized1, request8Imported, request8Categorized],
     [
       {
         id: request1Id,
-        published: request1Accepted1.acceptedAt,
+        published: request1Published1.publishedAt,
         topics: request1Categorized1.topics,
-        preprintId: request1Received1.preprintId,
+        preprintId: request1Started1.preprintId,
       },
     ],
   ],
   [
     'more results',
     [
-      request1Received1,
-      request1Received2,
-      request1Accepted1,
+      request1Started1,
+      request1Started2,
+      request1Published1,
       request1Categorized1,
       request1Categorized2,
-      request1Accepted2,
+      request1Published2,
       request2Received,
       request2Accepted,
       request2Categorized,
@@ -284,9 +282,9 @@ test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>(
       },
       {
         id: request1Id,
-        published: request1Accepted2.acceptedAt,
+        published: request1Published2.publishedAt,
         topics: request1Categorized2.topics,
-        preprintId: request1Received2.preprintId,
+        preprintId: request1Started2.preprintId,
       },
       {
         id: request4Id,

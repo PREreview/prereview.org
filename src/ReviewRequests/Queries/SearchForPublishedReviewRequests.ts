@@ -30,6 +30,8 @@ export interface Input {
 export type Result = Either.Either<PageOfReviewRequests, Errors.NoReviewRequestsFound>
 
 const eventTypes = [
+  'ReviewRequestForAPreprintWasStarted',
+  'ReviewRequestForAPreprintWasPublished',
   'ReviewRequestForAPreprintWasReceived',
   'ReviewRequestForAPreprintWasAccepted',
   'ReviewRequestForAPreprintWasWithdrawn',
@@ -136,6 +138,19 @@ const updateReviewRequestStateWithPertinentEvent = (
   event: PertinentEvent,
 ): State['reviewRequests'] =>
   Match.valueTags(event, {
+    ReviewRequestForAPreprintWasStarted: event =>
+      HashMap.set(map, event.reviewRequestId, {
+        published: undefined,
+        topics: [],
+        fields: [],
+        language: undefined,
+        preprintId: event.preprintId,
+      }),
+    ReviewRequestForAPreprintWasPublished: event =>
+      HashMap.modify(map, event.reviewRequestId, review => ({
+        ...review,
+        published: event.publishedAt,
+      })),
     ReviewRequestForAPreprintWasReceived: event =>
       HashMap.set(map, event.reviewRequestId, {
         published: undefined,

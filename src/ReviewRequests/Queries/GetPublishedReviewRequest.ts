@@ -31,6 +31,9 @@ export type Result = Either.Either<PublishedReviewRequest, Errors.UnknownReviewR
 
 const createFilter = ({ reviewRequestId }: Input): EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
   types: [
+    'ReviewRequestForAPreprintWasStarted',
+    'PersonaForAReviewRequestForAPreprintWasChosen',
+    'ReviewRequestForAPreprintWasPublished',
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
     'ReviewRequestByAPrereviewerWasImported',
@@ -44,6 +47,27 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     const filter = createFilter(input)
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
+
+    const persona = Array.findLast(filteredEvents, hasTag('PersonaForAReviewRequestForAPreprintWasChosen'))
+
+    if (Option.isSome(persona)) {
+      const started = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasStarted'))
+
+      const published = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasPublished'))
+
+      return yield* Option.match(Option.all([started, published]), {
+        onNone: () => Either.left(new Errors.UnknownReviewRequest({})),
+        onSome: ([started, published]) =>
+          Either.right(
+            new PublishedPrereviewerReviewRequest({
+              author: { orcidId: started.requesterId, persona: persona.value.persona },
+              preprintId: started.preprintId,
+              id: started.reviewRequestId,
+              published: published.publishedAt,
+            }),
+          ),
+      })
+    }
 
     const received = Array.findLast(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))
 

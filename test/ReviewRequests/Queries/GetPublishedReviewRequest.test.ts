@@ -12,6 +12,42 @@ import * as fc from '../../fc.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const reviewRequestForAPreprintWasStarted1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasStarted2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
+  preprintId,
+  requesterId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasStarted = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  preprintId,
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  reviewRequestId: otherReviewRequestId,
+})
+const personaForAReviewRequestForAPreprintWasChosen1 = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen(
+  { persona: 'public', reviewRequestId },
+)
+const personaForAReviewRequestForAPreprintWasChosen2 = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen(
+  { persona: 'pseudonym', reviewRequestId },
+)
+const reviewRequestForAPreprintWasPublished1 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasPublished2 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
+  reviewRequestId,
+})
+const otherReviewRequestForAPreprintWasPublished = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId: otherReviewRequestId,
+})
 const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
@@ -97,21 +133,31 @@ describe('GetPublishedReviewRequest', () => {
   test.prop(
     [
       fc.array(
-        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasReceived'))),
+        fc
+          .reviewRequestEvent()
+          .filter(
+            Predicate.not(
+              Predicate.or(
+                Predicate.isTagged('ReviewRequestForAPreprintWasStarted'),
+                Predicate.isTagged('ReviewRequestForAPreprintWasReceived'),
+              ),
+            ),
+          ),
       ),
       fc.uuid(),
     ],
     {
       examples: [
         [[], reviewRequestId], // no events
+        [[reviewRequestForAPreprintWasPublished1], reviewRequestId], // with published events
         [
           [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
           reviewRequestId,
-        ], // with events
-        [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
+        ], // with accepted events
+        [[otherReviewRequestForAPreprintWasStarted, otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
       ],
     },
-  )('not received', (events, reviewRequestId) => {
+  )('not started nor received', (events, reviewRequestId) => {
     const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
@@ -120,18 +166,30 @@ describe('GetPublishedReviewRequest', () => {
   test.prop(
     [
       fc.array(
-        fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'))),
+        fc
+          .reviewRequestEvent()
+          .filter(
+            Predicate.not(
+              Predicate.or(
+                Predicate.isTagged('ReviewRequestForAPreprintWasPublished'),
+                Predicate.isTagged('ReviewRequestForAPreprintWasAccepted'),
+              ),
+            ),
+          ),
       ),
       fc.uuid(),
     ],
     {
       examples: [
+        [[reviewRequestForAPreprintWasStarted1], reviewRequestId], // was started
         [
           [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
           reviewRequestId,
-        ], // with events
+        ], // was received
         [
           [
+            otherReviewRequestForAPreprintWasStarted,
+            otherReviewRequestForAPreprintWasPublished,
             otherReviewRequestForAPreprintWasReceived,
             otherReviewRequestForAPreprintWasAccepted,
             otherReviewRequestFromAPreprintServerWasImported,
@@ -140,10 +198,112 @@ describe('GetPublishedReviewRequest', () => {
         ], // with events for other dataset review
       ],
     },
-  )('not accepted', (events, reviewRequestId) => {
+  )('not published nor accepted', (events, reviewRequestId) => {
     const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+  })
+
+  test.prop(
+    [
+      fc
+        .tuple(
+          fc.reviewRequestForAPreprintWasStarted({ reviewRequestId: fc.constant(reviewRequestId) }),
+          fc.personaForAReviewRequestForAPreprintWasChosen({ reviewRequestId: fc.constant(reviewRequestId) }),
+          fc.reviewRequestForAPreprintWasPublished({ reviewRequestId: fc.constant(reviewRequestId) }),
+        )
+        .map(([started, persona, published]) =>
+          Tuple.make(
+            Array.make(started, persona, published as ReviewRequests.ReviewRequestEvent),
+            reviewRequestId,
+            Tuple.make(started, persona, published),
+          ),
+        ),
+    ],
+    {
+      examples: [
+        [
+          [
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              reviewRequestForAPreprintWasPublished1,
+            ],
+            reviewRequestId,
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              reviewRequestForAPreprintWasPublished1,
+            ],
+          ],
+        ], // published
+        [
+          [
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              personaForAReviewRequestForAPreprintWasChosen2,
+              reviewRequestForAPreprintWasPublished1,
+              reviewRequestFromAPreprintServerWasImported1,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+            reviewRequestId,
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen2,
+              reviewRequestForAPreprintWasPublished1,
+            ],
+          ],
+        ], // withOtherEvents
+        [
+          [
+            [
+              reviewRequestForAPreprintWasPublished1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              reviewRequestForAPreprintWasStarted1,
+              reviewRequestForAPreprintWasPublished2,
+              personaForAReviewRequestForAPreprintWasChosen2,
+              reviewRequestForAPreprintWasStarted2,
+            ],
+            reviewRequestId,
+            [
+              reviewRequestForAPreprintWasStarted2,
+              personaForAReviewRequestForAPreprintWasChosen2,
+              reviewRequestForAPreprintWasPublished2,
+            ],
+          ],
+        ], // multiple times
+        [
+          [
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              reviewRequestForAPreprintWasPublished1,
+              otherReviewRequestForAPreprintWasPublished,
+            ],
+            reviewRequestId,
+            [
+              reviewRequestForAPreprintWasStarted1,
+              personaForAReviewRequestForAPreprintWasChosen1,
+              reviewRequestForAPreprintWasPublished1,
+            ],
+          ],
+        ], // other requests
+      ],
+    },
+  )('has been published', ([events, reviewRequestId, expected]) => {
+    const actual = _.GetPublishedReviewRequest.query(events, { reviewRequestId })
+
+    expect(actual).toStrictEqual(
+      Either.right(
+        new _.PublishedPrereviewerReviewRequest({
+          author: { orcidId: expected[0].requesterId, persona: expected[1].persona },
+          preprintId: expected[0].preprintId,
+          id: expected[0].reviewRequestId,
+          published: expected[2].publishedAt,
+        }),
+      ),
+    )
   })
 
   test.prop(

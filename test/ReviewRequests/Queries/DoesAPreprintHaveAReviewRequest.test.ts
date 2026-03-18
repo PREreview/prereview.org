@@ -29,22 +29,20 @@ const preprintId4 = new Preprints.AdvancePreprintId({ value: Doi.Doi('10.31124/1
 
 const now = Temporal.Now.instant()
 
-const request1Received1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ hours: 2 }),
-  receivedFrom: new URL('http://example.com'),
+const request1Started1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
-  requester: Option.some(requester1),
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: request1Id,
 })
-const request1Received2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
-  receivedAt: now.subtract({ minutes: 20 }),
-  receivedFrom: new URL('http://example.com'),
+const request1Started2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+  startedAt: now.subtract({ minutes: 20 }),
   preprintId: preprintId2,
-  requester: Option.some(requester2),
+  requesterId: OrcidId.OrcidId('0000-0002-6109-0367'),
   reviewRequestId: request1Id,
 })
-const request1Accepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ hours: 1 }),
+const request1Published1 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
 const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
@@ -52,8 +50,8 @@ const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdra
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
 })
-const request1Accepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: now.subtract({ minutes: 10 }),
+const request1Published2 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  publishedAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
 })
 const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -144,38 +142,38 @@ const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasI
 
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   ['no events', { preprintId: preprintId1 }, [], false],
-  ['no received events', { preprintId: preprintId1 }, [request1Accepted1, request1Categorized], false],
-  ['no accepted events', { preprintId: preprintId1 }, [request1Received1, request1Categorized], false],
+  ['no received events', { preprintId: preprintId1 }, [request1Published1, request1Categorized], false],
+  ['no accepted events', { preprintId: preprintId1 }, [request1Started1, request1Categorized], false],
   [
     'has not been accepted',
     { preprintId: preprintId1 },
-    [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
+    [request1Started1, request1Published1, request1Started2, request1Published2],
     false,
   ],
   [
     'has been accepted',
     { preprintId: preprintId2 },
-    [request1Received1, request1Accepted1, request1Received2, request1Accepted2],
+    [request1Started1, request1Published1, request1Started2, request1Published2],
     true,
   ],
   ['with an indeterminate preprint ID', { preprintId: preprintId1 }, [request3Received, request3Accepted], true],
-  ['has been withdrawn', { preprintId: preprintId1 }, [request1Received1, request1Accepted1, request1Withdrawn], false],
+  ['has been withdrawn', { preprintId: preprintId1 }, [request1Started1, request1Published1, request1Withdrawn], false],
   ['has been imported from a PREreviewer', { preprintId: preprintId1 }, [request8Imported], true],
   ['has been imported from a preprint server', { preprintId: preprintId2 }, [request9Imported], true],
   [
     'others have been accepted',
     { preprintId: preprintId4 },
-    [request1Received1, request1Accepted1, request1Received2, request1Accepted2, request8Imported, request9Imported],
+    [request1Started1, request1Published1, request1Started2, request1Published2, request8Imported, request9Imported],
     false,
   ],
   [
     'accepted multiple times',
     { preprintId: preprintId1 },
     [
-      request1Received1,
-      request1Received2,
-      request1Accepted1,
-      request1Accepted2,
+      request1Started1,
+      request1Started2,
+      request1Published1,
+      request1Published2,
       request2Received,
       request2Accepted,
       request3Received,
