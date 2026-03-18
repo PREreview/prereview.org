@@ -1,5 +1,5 @@
 import { type Array, Context, Data, Effect, type Option, Schema, type Types, pipe } from 'effect'
-import type { Event, EventFilter } from './Events.ts'
+import type { Event, EventFilter, EventSubset } from './Events.ts'
 
 export const EventStore = Context.GenericTag<EventStore>('EventStore')
 
@@ -30,7 +30,7 @@ export interface EventStore {
     filter: EventFilter<Tag>,
   ) => Effect.Effect<
     Option.Option<{
-      readonly events: Array.NonEmptyReadonlyArray<Types.ExtractTag<Event, Tag>>
+      readonly events: Array.NonEmptyReadonlyArray<EventSubset<Tag>>
       readonly lastKnownPosition: Position
     }>,
     FailedToGetEvents

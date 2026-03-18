@@ -3,6 +3,7 @@ import { PgClient } from '@effect/sql-pg'
 import {
   Array,
   Context,
+  Data,
   Effect,
   Layer,
   Option,
@@ -19,6 +20,8 @@ import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
 import type * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
+
+class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
 
 export const make: Effect.Effect<
   EventStore.EventStore,
@@ -102,13 +105,19 @@ export const make: Effect.Effect<
           position ASC
       `,
       Effect.andThen(
-        Schema.decodeUnknown(
-          Schema.Array(
-            EventsTableSelect(
-              Events.Event.pipe(Schema.filter(hasTag(...Array.flatMap(Array.ensure(filter), Struct.get('types'))))),
-            ),
-          ).annotations({ batching: true, concurrency: 'inherit' }),
+        Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
+      ),
+      Effect.filterOrElse(
+        Array.every(
+          (
+            result,
+          ): result is {
+            readonly id: Uuid.Uuid
+            readonly position: EventStore.Position
+            readonly event: Events.EventSubset<T>
+          } => Events.matches(result.event, filter),
         ),
+        () => new UnexpectedEventFound(),
       ),
       Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to filter events'), { error, filter })),
       Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
@@ -127,9 +136,7 @@ export const make: Effect.Effect<
         position ASC
     `,
     Effect.andThen(
-      Schema.decodeUnknown(
-        Schema.Array(EventsTableSelect(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
-      ),
+      Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
     ),
     Effect.andThen(
       Array.match({
@@ -168,9 +175,7 @@ export const make: Effect.Effect<
             position ASC
         `,
         Effect.andThen(
-          Schema.decodeUnknown(
-            Schema.Array(EventsTableSelect(Events.Event)).annotations({ batching: true, concurrency: 'inherit' }),
-          ),
+          Schema.decodeUnknown(Schema.Array(EventsTableSelect).annotations({ batching: true, concurrency: 'inherit' })),
         ),
       )
 
@@ -284,11 +289,6 @@ export const make: Effect.Effect<
 
 export const layer = Layer.effect(EventStore.EventStore, make)
 
-const hasTag =
-  <Tag extends string>(...tags: ReadonlyArray<Tag>) =>
-  <T extends { _tag: string }>(tagged: T): tagged is Extract<T, { _tag: Tag }> =>
-    Array.contains(tags, tagged._tag)
-
 const EventsTableInsert = Schema.transformOrFail(
   Schema.Struct({
     id: Uuid.UuidSchema,
@@ -317,36 +317,35 @@ const EventsTableInsert = Schema.transformOrFail(
   },
 )
 
-const EventsTableSelect = <A, I extends { readonly _tag: string }, R>(eventSchema: Schema.Schema<A, I, R>) =>
-  Schema.transformOrFail(
+const EventsTableSelect = Schema.transformOrFail(
+  Schema.Struct({
+    id: Uuid.UuidSchema,
+    position: EventStore.Position,
+    type: Schema.String,
+    payload: Schema.Union(
+      Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+      Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+    ),
+  }),
+  Schema.typeSchema(
     Schema.Struct({
       id: Uuid.UuidSchema,
       position: EventStore.Position,
-      type: Schema.String,
-      payload: Schema.Union(
-        Schema.Record({ key: Schema.String, value: Schema.Unknown }),
-        Schema.parseJson(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
-      ),
+      event: Events.Event,
     }),
-    Schema.typeSchema(
-      Schema.Struct({
-        id: Uuid.UuidSchema,
-        position: EventStore.Position,
-        event: eventSchema,
-      }),
-    ),
-    {
-      strict: true,
-      decode: ({ type, payload, ...rest }) =>
-        Effect.gen(function* () {
-          const event = yield* ParseResult.decodeUnknown(eventSchema)({ _tag: type, ...payload })
+  ),
+  {
+    strict: true,
+    decode: ({ type, payload, ...rest }) =>
+      Effect.gen(function* () {
+        const event = yield* ParseResult.decodeUnknown(Events.Event)({ _tag: type, ...payload })
 
-          return { ...rest, event }
-        }),
-      encode: (value, _, ast) =>
-        ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not allowed to encode when using Select statements')),
-    },
-  )
+        return { ...rest, event }
+      }),
+    encode: (value, _, ast) =>
+      ParseResult.fail(new ParseResult.Forbidden(ast, value, 'Not allowed to encode when using Select statements')),
+  },
+)
 
 const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient => PgClient.TypeId in sql
 

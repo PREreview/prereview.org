@@ -131,7 +131,7 @@ export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, R
 export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result, Error>(
   name: string,
   createFilter: (input: Input) => Events.EventFilter<Event>,
-  query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, input: Input) => Either.Either<Result, Error>,
+  query: (events: ReadonlyArray<Events.EventSubset<Event>>, input: Input) => Either.Either<Result, Error>,
 ): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
@@ -158,7 +158,7 @@ export const makeQuery = <Event extends Types.Tags<Events.Event>, Input, Result,
 export const makeSimpleQuery = <Event extends Types.Tags<Events.ReviewRequestEvent>, Result>(
   name: string,
   filter: Events.EventFilter<Event>,
-  query: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>) => Result,
+  query: (events: ReadonlyArray<Events.EventSubset<Event>>) => Result,
 ): Effect.Effect<() => Effect.Effect<Result, UnableToQuery>, never, EventStore.EventStore> =>
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore

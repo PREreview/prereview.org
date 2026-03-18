@@ -72,7 +72,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
       Error,
     >(
       createFilter: (reviewRequestId: Uuid.Uuid) => Events.EventFilter<Event>,
-      foldState: (events: ReadonlyArray<Types.ExtractTag<Events.Event, Event>>, reviewRequestId: Uuid.Uuid) => State,
+      foldState: (events: ReadonlyArray<Events.EventSubset<Event>>, reviewRequestId: Uuid.Uuid) => State,
       decide: (
         command: Command,
       ) => (
