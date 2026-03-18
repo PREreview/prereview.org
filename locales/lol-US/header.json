@@ -62,6 +62,12 @@
   "menuTrainingsHint": {
     "message": "crwdns5932:0crwdne5932:0"
   },
+  "menuChampions": {
+    "message": "crwdns5990:0crwdne5990:0"
+  },
+  "menuChampionsHint": {
+    "message": "crwdns5992:0crwdne5992:0"
+  },
   "menuLiveReviews": {
     "message": "crwdns1834:0crwdne1834:0"
   },

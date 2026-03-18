@@ -56,6 +56,9 @@
   "contactMastodon": {
     "message": "crwdns1800:0{handle}crwdne1800:0"
   },
+  "contactYouTube": {
+    "message": "crwdns5988:0{handle}crwdne5988:0"
+  },
   "contactLinkedIn": {
     "message": "crwdns1802:0{handle}crwdne1802:0"
   },
