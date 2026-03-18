@@ -3,6 +3,7 @@ import type * as EventDispatcher from '../../EventDispatcher.ts'
 import type * as EventStore from '../../EventStore.ts'
 import * as Queries from '../../Queries.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
+import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
 import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
@@ -15,6 +16,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   ReviewRequestQueries,
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
+    findReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof FindReviewRequestByAPrereviewer>
     getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<typeof GetFiveMostRecentReviewRequests>
     getReceivedReviewRequest: Queries.FromOnDemandQuery<typeof GetReceivedReviewRequest>
     getPublishedReviewRequest: Queries.FromOnDemandQuery<typeof GetPublishedReviewRequest>
@@ -27,6 +29,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
 
 export const {
   doesAPreprintHaveAReviewRequest,
+  findReviewRequestByAPrereviewer,
   getFiveMostRecentReviewRequests,
   getReceivedReviewRequest,
   getPublishedReviewRequest,
@@ -53,6 +56,7 @@ const makeReviewRequestQueries: Effect.Effect<
 > = Effect.gen(function* () {
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
+    findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
     getReceivedReviewRequest: yield* Queries.makeOnDemandQuery(GetReceivedReviewRequest),
     getPublishedReviewRequest: yield* Queries.makeOnDemandQuery(GetPublishedReviewRequest),

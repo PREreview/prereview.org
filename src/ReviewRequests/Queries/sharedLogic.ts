@@ -4,7 +4,7 @@ import * as Events from '../../Events.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import type { DomainId } from '../../types/domain.ts'
 import type { FieldId } from '../../types/field.ts'
-import type { Temporal, Uuid } from '../../types/index.ts'
+import type { OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
 import { getTopicDomain, getTopicField, getTopicSubfield, type TopicId } from '../../types/Topic.ts'
 
@@ -35,6 +35,7 @@ export type State = HashMap.HashMap<
     language: LanguageCode | undefined
     preprintId: Preprints.IndeterminatePreprintId
     accepted: boolean
+    requesterId: OrcidId.OrcidId | undefined
   }
 >
 
@@ -50,6 +51,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         language: undefined,
         preprintId: event.preprintId,
         accepted: false,
+        requesterId: event.requesterId,
       }),
     ReviewRequestForAPreprintWasPublished: event =>
       HashMap.modify(map, event.reviewRequestId, review => ({
@@ -67,6 +69,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         language: undefined,
         preprintId: event.preprintId,
         accepted: false,
+        requesterId: undefined,
       }),
     ReviewRequestForAPreprintWasAccepted: event =>
       HashMap.modify(map, event.reviewRequestId, review => ({
@@ -85,6 +88,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         language: undefined,
         preprintId: event.preprintId,
         accepted: true,
+        requesterId: event.requester.orcidId,
       }),
     ReviewRequestFromAPreprintServerWasImported: event =>
       HashMap.set(map, event.reviewRequestId, {
@@ -96,6 +100,7 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         language: undefined,
         preprintId: event.preprintId,
         accepted: true,
+        requesterId: undefined,
       }),
     ReviewRequestForAPreprintWasCategorized: event =>
       HashMap.modify(map, event.reviewRequestId, review => ({
