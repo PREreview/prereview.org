@@ -31,6 +31,16 @@ test.extend(canLogIn)('can request a PREreview', async ({ page }) => {
   await page.getByRole('button', { name: 'Request PREreview' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
+
+  await page.getByRole('link', { name: 'list of requests' }).click()
+
+  await expect(async () => {
+    await page.reload({ waitUntil: 'commit' })
+
+    await expect(page.getByRole('main')).toContainText(
+      'A review was requested for Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory',
+    )
+  }).toPass()
 })
 
 test('can choose a locale before starting', async ({ page }) => {
