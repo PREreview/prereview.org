@@ -63,6 +63,14 @@
   "menuTrainingsHint": {
     "message": "Learn about ethical and constructive peer review."
   },
+  "menuChampions": {
+    "message": "Champions Program",
+    "description": "Link in the menu to the Champions Program page."
+  },
+  "menuChampionsHint": {
+    "message": "Find out about our annual program.",
+    "description": "Text that accompanies the link in the menu to the Champions Program page."
+  },
   "menuLiveReviews": {
     "message": "Live Reviews"
   },

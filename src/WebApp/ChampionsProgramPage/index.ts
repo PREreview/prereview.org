@@ -20,9 +20,9 @@ function createPage({ content, locale }: { content: GhostPage.GhostPage; locale:
   const t = translate(locale)
 
   return PageResponse({
-    title: plainText('Champions Program'),
+    title: plainText(t('champions-program', 'title')()),
     main: html`
-      <h1>Champions Program</h1>
+      <h1>${t('champions-program', 'title')()}</h1>
 
       ${content.locale !== locale ? html`<div class="inset"><p>${t('header', 'onlyEnglish')()}</p></div>` : ''}
       <div lang="${content.locale}" dir="${rtlDetect.getLangDir(content.locale)}">

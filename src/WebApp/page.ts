@@ -223,9 +223,9 @@ export const page = ({
                           <a
                             href="${Routes.ChampionsProgram}"
                             ${current === 'champions-program' ? html`aria-current="page"` : ''}
-                            >Champions Program</a
+                            >${translate(locale, 'header', 'menuChampions')()}</a
                           >
-                          <p>Find out about our annual program.</p>
+                          <p>${translate(locale, 'header', 'menuChampionsHint')()}</p>
                         </li>
                       </ul>
                     </div>

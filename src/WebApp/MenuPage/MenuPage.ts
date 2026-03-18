@@ -46,8 +46,8 @@ export const createMenuPage = ({
               <p>${t('menuTrainingsHint')()}</p>
             </li>
             <li>
-              <a href="${Routes.ChampionsProgram}">Champions Program</a>
-              <p>Find out about our annual program.</p>
+              <a href="${Routes.ChampionsProgram}">${t('menuChampions')()}</a>
+              <p>${t('menuChampionsHint')()}</p>
             </li>
           </ul>
         </div>
