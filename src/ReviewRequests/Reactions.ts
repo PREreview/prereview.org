@@ -16,6 +16,15 @@ const makeReviewRequestReactions: Effect.Effect<
     Effect.andThen(
       pipe(
         Match.type<Events.Event>(),
+        Match.tag('ReviewRequestForAPreprintWasPublished', event =>
+          Effect.all(
+            [
+              Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
+              Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
+            ],
+            { concurrency: 'inherit' },
+          ),
+        ),
         Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
           Effect.all(
             [
