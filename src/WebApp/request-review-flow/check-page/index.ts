@@ -29,12 +29,7 @@ import { checkPage } from './check-page.ts'
 import { failureMessage } from './failure-message.ts'
 
 export interface PublishRequestEnv {
-  publishRequest: (
-    preprint: PreprintId,
-    user: User,
-    persona: 'public' | 'pseudonym',
-    reviewRequestId: Uuid.Uuid,
-  ) => TE.TaskEither<'unavailable', void>
+  publishRequest: (reviewRequestId: Uuid.Uuid) => TE.TaskEither<'unavailable', void>
 }
 
 export const requestReviewCheck = ({
@@ -100,13 +95,8 @@ export const requestReviewCheck = ({
     ),
   )
 
-const publishRequest = (
-  preprint: PreprintId,
-  user: User,
-  persona: 'public' | 'pseudonym',
-  reviewRequestId: Uuid.Uuid,
-): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
-  R.asks(({ publishRequest }) => publishRequest(preprint, user, persona, reviewRequestId))
+const publishRequest = (reviewRequestId: Uuid.Uuid): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
+  R.asks(({ publishRequest }) => publishRequest(reviewRequestId))
 
 const handleForm = ({
   preprint,
@@ -120,7 +110,7 @@ const handleForm = ({
   locale: SupportedLocale
 }) =>
   pipe(
-    publishRequest(preprint, user, reviewRequest.persona ?? 'public', reviewRequest.id),
+    publishRequest(reviewRequest.id),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage(locale),

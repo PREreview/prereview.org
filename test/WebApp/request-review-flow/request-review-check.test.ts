@@ -45,12 +45,7 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual(
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }) }),
           )
-          expect(publishRequest).toHaveBeenCalledWith(
-            preprintTitle.id as never,
-            user,
-            reviewRequest.persona as never,
-            reviewRequest.id,
-          )
+          expect(publishRequest).toHaveBeenCalledWith(reviewRequest.id)
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'completed' })
         })
 
@@ -84,12 +79,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(
-            preprintTitle.id as never,
-            user,
-            reviewRequest.persona as never,
-            reviewRequest.id,
-          )
+          expect(publishRequest).toHaveBeenCalledWith(reviewRequest.id)
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, { status: 'completed' })
         })
 
@@ -122,12 +112,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(
-            preprintTitle.id as never,
-            user,
-            reviewRequest.persona as never,
-            reviewRequest.id,
-          )
+          expect(publishRequest).toHaveBeenCalledWith(reviewRequest.id)
         })
       })
 

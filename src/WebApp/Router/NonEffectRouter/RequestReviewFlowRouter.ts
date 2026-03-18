@@ -1,8 +1,7 @@
-import { Effect, Option, pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -10,7 +9,6 @@ import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
-import type { User } from '../../../user.ts'
 import {
   requestReview,
   requestReviewCheck,
@@ -82,39 +80,22 @@ export const RequestReviewFlowRouter = pipe(
             preprint,
           ]),
         publishRequest: withEnv(
-          EffectToFpts.toReaderTaskEitherK(
-            (
-              preprintId: Preprints.PreprintId,
-              user: User,
-              persona: 'public' | 'pseudonym',
-              reviewRequestId: Uuid.Uuid,
-            ) =>
-              pipe(
-                Effect.gen(function* () {
-                  const publishedAt = yield* Temporal.currentInstant
+          EffectToFpts.toReaderTaskEitherK((reviewRequestId: Uuid.Uuid) =>
+            pipe(
+              Effect.gen(function* () {
+                const publishedAt = yield* Temporal.currentInstant
 
-                  const author = Option.some(persona === 'public' ? user.name : user.pseudonym)
-
-                  const preprint = yield* Preprints.getPreprint(preprintId)
-
-                  yield* Effect.ignoreLogged(CommunitySlack.sharePreprintReviewRequest({ author, preprint }))
-
-                  yield* ReviewRequests.importReviewRequestFromPrereviewer({
-                    publishedAt,
-                    reviewRequestId,
-                    preprintId,
-                    requester: {
-                      orcidId: user.orcid,
-                      persona,
-                    },
-                  })
-                }),
-                Effect.tapError(error =>
-                  Effect.logError('Failed to publishRequest (COAR)').pipe(Effect.annotateLogs({ error })),
-                ),
-                Effect.mapError(() => 'unavailable' as const),
-                Effect.scoped,
+                yield* ReviewRequests.publishReviewRequest({
+                  publishedAt,
+                  reviewRequestId,
+                })
+              }),
+              Effect.tapError(error =>
+                Effect.logError('Failed to publishRequest').pipe(Effect.annotateLogs({ error })),
               ),
+              Effect.mapError(() => 'unavailable' as const),
+              Effect.scoped,
+            ),
           ),
           { runtime: env.runtime },
         ),
