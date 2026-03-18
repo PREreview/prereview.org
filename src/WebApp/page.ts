@@ -225,7 +225,7 @@ export const page = ({
                             ${current === 'champions-program' ? html`aria-current="page"` : ''}
                             >Champions Program</a
                           >
-                          <p>Find out about our annual program</p>
+                          <p>Find out about our annual program.</p>
                         </li>
                       </ul>
                     </div>
