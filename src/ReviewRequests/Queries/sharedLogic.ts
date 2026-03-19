@@ -24,20 +24,19 @@ type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
 const filter = Events.EventFilter({ types: eventTypes })
 
-export type State = HashMap.HashMap<
-  Uuid.Uuid,
-  {
-    published: Temporal.Instant | undefined
-    fields: ReadonlyArray<FieldId>
-    topics: ReadonlyArray<TopicId>
-    subfields: ReadonlyArray<SubfieldId>
-    domains: ReadonlyArray<DomainId>
-    language: LanguageCode | undefined
-    preprintId: Preprints.IndeterminatePreprintId
-    accepted: boolean
-    requesterId: OrcidId.OrcidId | undefined
-  }
->
+interface ReviewRequest {
+  published: Temporal.Instant | undefined
+  fields: ReadonlyArray<FieldId>
+  topics: ReadonlyArray<TopicId>
+  subfields: ReadonlyArray<SubfieldId>
+  domains: ReadonlyArray<DomainId>
+  language: LanguageCode | undefined
+  preprintId: Preprints.IndeterminatePreprintId
+  accepted: boolean
+  requesterId: OrcidId.OrcidId | undefined
+}
+
+export type State = HashMap.HashMap<Uuid.Uuid, ReviewRequest>
 
 const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
