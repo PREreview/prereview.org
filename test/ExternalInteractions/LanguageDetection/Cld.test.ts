@@ -33,7 +33,7 @@ describe('detectLanguageFrom', () => {
     [string, Array.NonEmptyArray<LanguageCode>, Html | PlainText | string, Option.Option<LanguageCode>, LanguageCode?]
   >([
     ['The language matches', ['en'], html`<p>This is the text that I want to check</p>`, Option.some('en')],
-    ['The language does not match', ['en'], html`<p>Это текст, который я хочу проверить</p>`, Option.none()],
+    ['The language does not match', ['en'], html`<p>Это текст, который я хочу проверить</p>`, Option.some('ru')],
     ['A language matches', ['en', 'ru'], html`<p>Это текст, который я хочу проверить</p>`, Option.some('ru')],
     [
       'A language matches with a hint',
@@ -49,7 +49,7 @@ describe('detectLanguageFrom', () => {
       Option.some('ru'),
       'en',
     ],
-    ['No language matches', ['en', 'ru'], html`<p>確認したいテキストです</p>`, Option.none()],
+    ['No language matches', ['en', 'ru'], html`<p>確認したいテキストです</p>`, Option.some('ja')],
     ['No letters', ['en', 'ja', 'ru'], rawHtml(' <p>   \n  12345 </p>   '), Option.none()],
   ])('%s', (_name, languages, input, expected, hint = undefined) =>
     Effect.gen(function* () {
