@@ -25,6 +25,7 @@ type PertinentEvent = Events.EventSubset<typeof eventTypes>
 const filter = Events.EventFilter({ types: eventTypes })
 
 interface PublishedReviewRequest {
+  _tag: 'PublishedReviewRequest'
   published: Temporal.Instant
   fields: ReadonlyArray<FieldId>
   topics: ReadonlyArray<TopicId>
@@ -32,18 +33,17 @@ interface PublishedReviewRequest {
   domains: ReadonlyArray<DomainId>
   language: LanguageCode | undefined
   preprintId: Preprints.IndeterminatePreprintId
-  accepted: true
   requesterId: OrcidId.OrcidId | undefined
 }
 
 interface ReviewRequestPendingPublication {
+  _tag: 'ReviewRequestPendingPublication'
   fields: ReadonlyArray<FieldId>
   topics: ReadonlyArray<TopicId>
   subfields: ReadonlyArray<SubfieldId>
   domains: ReadonlyArray<DomainId>
   language: LanguageCode | undefined
   preprintId: Preprints.IndeterminatePreprintId
-  accepted: false
   requesterId: OrcidId.OrcidId | undefined
 }
 
@@ -55,41 +55,52 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasStarted: event =>
       HashMap.set(map, event.reviewRequestId, {
+        _tag: 'ReviewRequestPendingPublication',
         fields: [],
         subfields: [],
         domains: [],
         topics: [],
         language: undefined,
         preprintId: event.preprintId,
-        accepted: false,
         requesterId: event.requesterId,
       }),
     ReviewRequestForAPreprintWasPublished: event =>
-      HashMap.modify(map, event.reviewRequestId, review => ({
-        ...review,
-        published: event.publishedAt,
-        accepted: true,
-      })),
+      HashMap.modify(
+        map,
+        event.reviewRequestId,
+        review =>
+          ({
+            ...review,
+            _tag: 'PublishedReviewRequest',
+            published: event.publishedAt,
+          }) satisfies PublishedReviewRequest,
+      ),
     ReviewRequestForAPreprintWasReceived: event =>
       HashMap.set(map, event.reviewRequestId, {
+        _tag: 'ReviewRequestPendingPublication',
         fields: [],
         subfields: [],
         domains: [],
         topics: [],
         language: undefined,
         preprintId: event.preprintId,
-        accepted: false,
         requesterId: undefined,
       }),
     ReviewRequestForAPreprintWasAccepted: event =>
-      HashMap.modify(map, event.reviewRequestId, review => ({
-        ...review,
-        published: event.acceptedAt,
-        accepted: true,
-      })),
+      HashMap.modify(
+        map,
+        event.reviewRequestId,
+        review =>
+          ({
+            ...review,
+            _tag: 'PublishedReviewRequest',
+            published: event.acceptedAt,
+          }) satisfies PublishedReviewRequest,
+      ),
     ReviewRequestForAPreprintWasWithdrawn: event => HashMap.remove(map, event.reviewRequestId),
     ReviewRequestByAPrereviewerWasImported: event =>
       HashMap.set(map, event.reviewRequestId, {
+        _tag: 'PublishedReviewRequest',
         published: event.publishedAt,
         fields: [],
         subfields: [],
@@ -97,11 +108,11 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         topics: [],
         language: undefined,
         preprintId: event.preprintId,
-        accepted: true,
         requesterId: event.requester.orcidId,
       }),
     ReviewRequestFromAPreprintServerWasImported: event =>
       HashMap.set(map, event.reviewRequestId, {
+        _tag: 'PublishedReviewRequest',
         published: event.publishedAt,
         fields: [],
         subfields: [],
@@ -109,7 +120,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
         topics: [],
         language: undefined,
         preprintId: event.preprintId,
-        accepted: true,
         requesterId: undefined,
       }),
     ReviewRequestForAPreprintWasCategorized: event =>

@@ -16,7 +16,7 @@ export type Result = ReadonlyArray<RecentReviewRequest>
 
 const query = (reviewRequests: shared.State): Result => {
   const filteredReviewRequests = HashMap.filterMap(reviewRequests, reviewRequest =>
-    reviewRequest.accepted
+    reviewRequest._tag === 'PublishedReviewRequest'
       ? Option.some({
           published: reviewRequest.published,
           topics: reviewRequest.topics,

@@ -13,7 +13,8 @@ const query = (state: shared.State, input: Input): Result => {
   return HashMap.some(
     state,
     reviewRequest =>
-      Preprints.PreprintIdEquivalence(reviewRequest.preprintId, input.preprintId) && reviewRequest.accepted,
+      Preprints.PreprintIdEquivalence(reviewRequest.preprintId, input.preprintId) &&
+      reviewRequest._tag === 'PublishedReviewRequest',
   )
 }
 

@@ -21,10 +21,10 @@ export const ReviewRequestForStats = Schema.Struct({
 export type Result = ReadonlyArray<ReviewRequestForStats>
 
 const query = (state: shared.State): Result => {
-  const filteredReviewRequests = HashMap.filter(state, reviewRequest => reviewRequest.accepted) as HashMap.HashMap<
-    Uuid.Uuid,
-    ReviewRequestForStats
-  >
+  const filteredReviewRequests = HashMap.filter(
+    state,
+    reviewRequest => reviewRequest._tag === 'PublishedReviewRequest',
+  ) as HashMap.HashMap<Uuid.Uuid, ReviewRequestForStats>
 
   const sortedReviewRequests = Array.sortWith(
     HashMap.values(filteredReviewRequests),
