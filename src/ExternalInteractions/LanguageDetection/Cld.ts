@@ -27,9 +27,9 @@ export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(
   Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
 )
 
-export function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>) {
+export function detectLanguageFrom(...languages: ReadonlyArray<LanguageCode>) {
   return Effect.fn('LanguageDetection.detectLanguageFrom')(
-    function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<L>> {
+    function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<LanguageCode>> {
       const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
       const result = yield* Effect.option(
@@ -44,11 +44,21 @@ export function detectLanguageFrom<L extends LanguageCode>(...languages: Readonl
         ),
       )
 
-      return Option.andThen(result, result =>
-        Array.findFirst(result.languages, detected =>
-          Option.liftPredicate(detected.code as L, code => Array.contains(languages, code)),
-        ),
+      const detectedLanguage = Option.andThen(result, result =>
+        Array.findFirst(result.languages, detected => Option.liftPredicate(detected.code, iso6391.validate)),
       )
+
+      if (Option.isNone(detectedLanguage)) {
+        return Option.none()
+      }
+
+      if (!Array.contains(languages, detectedLanguage.value)) {
+        yield* Effect.logWarning('Unexpected language detected').pipe(
+          Effect.annotateLogs({ expectedLanguages: languages, detectedLanguage: detectedLanguage.value }),
+        )
+      }
+
+      return detectedLanguage
     },
     Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
   )

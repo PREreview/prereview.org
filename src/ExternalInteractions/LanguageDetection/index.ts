@@ -15,25 +15,15 @@ export class LanguageDetection extends Context.Tag('LanguageDetection')<
       text: Html | PlainText | string,
       hint?: LanguageCode,
     ) => Effect.Effect<LanguageCode, UnableToDetectLanguage>
-    detectLanguageFrom: <L extends LanguageCode>(
-      languages: ReadonlyArray<L>,
+    detectLanguageFrom: (
+      languages: ReadonlyArray<LanguageCode>,
       text: Html | PlainText | string,
       hint?: LanguageCode,
-    ) => Effect.Effect<L, UnableToDetectLanguage>
+    ) => Effect.Effect<LanguageCode, UnableToDetectLanguage>
   }
 >() {}
 
-export const { detectLanguage } = Effect.serviceFunctions(LanguageDetection)
-
-export const detectLanguageFrom = Effect.fnUntraced(function* <L extends LanguageCode>(
-  languages: ReadonlyArray<L>,
-  text: Html | PlainText | string,
-  hint?: LanguageCode,
-) {
-  const languageDetection = yield* LanguageDetection
-
-  return yield* languageDetection.detectLanguageFrom(languages, text, hint)
-})
+export const { detectLanguage, detectLanguageFrom } = Effect.serviceFunctions(LanguageDetection)
 
 export const layerDetectLanguage = Layer.effect(
   LanguageDetection,
