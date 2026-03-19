@@ -24,17 +24,30 @@ type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
 const filter = Events.EventFilter({ types: eventTypes })
 
-interface ReviewRequest {
-  published: Temporal.Instant | undefined
+interface PublishedReviewRequest {
+  published: Temporal.Instant
   fields: ReadonlyArray<FieldId>
   topics: ReadonlyArray<TopicId>
   subfields: ReadonlyArray<SubfieldId>
   domains: ReadonlyArray<DomainId>
   language: LanguageCode | undefined
   preprintId: Preprints.IndeterminatePreprintId
-  accepted: boolean
+  accepted: true
   requesterId: OrcidId.OrcidId | undefined
 }
+
+interface ReviewRequestPendingPublication {
+  fields: ReadonlyArray<FieldId>
+  topics: ReadonlyArray<TopicId>
+  subfields: ReadonlyArray<SubfieldId>
+  domains: ReadonlyArray<DomainId>
+  language: LanguageCode | undefined
+  preprintId: Preprints.IndeterminatePreprintId
+  accepted: false
+  requesterId: OrcidId.OrcidId | undefined
+}
+
+type ReviewRequest = PublishedReviewRequest | ReviewRequestPendingPublication
 
 export type State = HashMap.HashMap<Uuid.Uuid, ReviewRequest>
 
@@ -42,7 +55,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
   Match.valueTags(event, {
     ReviewRequestForAPreprintWasStarted: event =>
       HashMap.set(map, event.reviewRequestId, {
-        published: undefined,
         fields: [],
         subfields: [],
         domains: [],
@@ -60,7 +72,6 @@ const updateStateWithPertinentEvent = (map: State, event: PertinentEvent): State
       })),
     ReviewRequestForAPreprintWasReceived: event =>
       HashMap.set(map, event.reviewRequestId, {
-        published: undefined,
         fields: [],
         subfields: [],
         domains: [],
