@@ -5,7 +5,7 @@ import * as ReviewRequests from '../ReviewRequests/index.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { DomainIdSchema } from '../types/domain.ts'
 import { FieldIdSchema } from '../types/field.ts'
-import { Iso639, Temporal } from '../types/index.ts'
+import { Iso639, Temporal, Uuid } from '../types/index.ts'
 import { SubfieldIdSchema } from '../types/subfield.ts'
 
 type Server = typeof ServerSchema.Type
@@ -84,6 +84,7 @@ const preprintIdToServer = Match.typeTags<Preprints.PreprintId, Server>()({
 })
 
 const RequestSchema = Schema.Struct({
+  requestId: Uuid.UuidSchema,
   timestamp: Temporal.InstantSchema,
   preprint: Preprints.IndeterminatePreprintIdFromStringSchema,
   server: Schema.Union(ServerSchema, Schema.Literal('unable to determine server')),
@@ -109,6 +110,7 @@ const DataToRequestSchema = Schema.transformOrFail(
         )
 
         return {
+          requestId: data.requestId,
           timestamp: data.published,
           preprint: data.preprintId,
           server,
