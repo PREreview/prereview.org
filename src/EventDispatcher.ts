@@ -64,29 +64,35 @@ const dispatchNewEvents = Effect.gen(function* () {
 })
 
 export const worker = Layer.scopedDiscard(
-  Effect.gen(function* () {
-    const events = yield* Events.Events
-    const dequeue = yield* PubSub.subscribe(events)
+  Effect.acquireReleaseInterruptible(
+    Effect.gen(function* () {
+      const events = yield* Events.Events
+      const dequeue = yield* PubSub.subscribe(events)
 
-    const mutex = yield* Effect.makeSemaphore(1)
+      const mutex = yield* Effect.makeSemaphore(1)
 
-    const safelyDispatchNewEvents = mutex.withPermits(1)(dispatchNewEvents)
+      const safelyDispatchNewEvents = mutex.withPermits(1)(dispatchNewEvents)
 
-    yield* pipe(
-      safelyDispatchNewEvents,
-      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
-      Effect.repeat(Schedule.fixed('2 seconds')),
-      Effect.fork,
-    )
+      yield* pipe(
+        safelyDispatchNewEvents,
+        Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
+        Effect.repeat(Schedule.fixed('2 seconds')),
+        Effect.fork,
+      )
 
-    return yield* pipe(
-      Queue.take(dequeue),
-      Effect.andThen(safelyDispatchNewEvents),
-      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
-      Effect.scoped,
-      Effect.forever,
-    )
-  }),
+      yield* pipe(
+        Queue.take(dequeue),
+        Effect.andThen(safelyDispatchNewEvents),
+        Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+        Effect.scoped,
+        Effect.forever,
+        Effect.fork,
+      )
+
+      yield* Effect.logDebug('EventDispatcher worker started')
+    }),
+    () => Effect.logDebug('EventDispatcher worker stopped'),
+  ),
 )
 
 export const replayExistingEvents = dispatchNewEvents
