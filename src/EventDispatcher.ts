@@ -80,7 +80,7 @@ export const worker = Layer.scopedDiscard(
     )
 
     return yield* pipe(
-      Queue.takeAll(dequeue),
+      Queue.take(dequeue),
       Effect.andThen(safelyDispatchNewEvents),
       Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
       Effect.scoped,
