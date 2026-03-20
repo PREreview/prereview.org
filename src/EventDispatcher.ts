@@ -1,5 +1,5 @@
-import { Array, Context, Effect, Layer, Option, pipe, Ref, Schedule } from 'effect'
-import type * as Events from './Events.ts'
+import { Array, Context, Effect, Layer, Option, pipe, PubSub, Queue, Ref, Schedule } from 'effect'
+import * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>
@@ -63,12 +63,30 @@ const dispatchNewEvents = Effect.gen(function* () {
   yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), { discard: true, concurrency: 'inherit' })
 })
 
-export const worker = Layer.effectDiscard(
-  pipe(
-    dispatchNewEvents,
-    Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
-    Effect.repeat(Schedule.fixed('2 seconds')),
-  ),
+export const worker = Layer.scopedDiscard(
+  Effect.gen(function* () {
+    const events = yield* Events.Events
+    const dequeue = yield* PubSub.subscribe(events)
+
+    const mutex = yield* Effect.makeSemaphore(1)
+
+    const safelyDispatchNewEvents = mutex.withPermits(1)(dispatchNewEvents)
+
+    yield* pipe(
+      safelyDispatchNewEvents,
+      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
+      Effect.repeat(Schedule.fixed('2 seconds')),
+      Effect.fork,
+    )
+
+    return yield* pipe(
+      Queue.takeAll(dequeue),
+      Effect.andThen(safelyDispatchNewEvents),
+      Effect.catchAll(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+      Effect.scoped,
+      Effect.forever,
+    )
+  }),
 )
 
 export const replayExistingEvents = dispatchNewEvents
