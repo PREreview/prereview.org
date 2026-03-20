@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -24,6 +24,7 @@ export const ChooseYourPersonaPage = ({
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const currentPersona = yield* DatasetReviews.checkIfUserCanChoosePersona({
       datasetReviewId,
@@ -35,7 +36,7 @@ export const ChooseYourPersonaPage = ({
     const publicPersona = yield* Personas.getPublicPersona(user.orcid)
     const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
-    return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
+    return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
@@ -66,6 +67,7 @@ export const ChooseYourPersonaSubmission = ({
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const form = yield* ChooseYourPersonaForm.fromBody(body)
 
@@ -93,7 +95,7 @@ export const ChooseYourPersonaSubmission = ({
           const publicPersona = yield* Personas.getPublicPersona(user.orcid)
           const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
-          return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona })
+          return MakeResponse({ datasetReviewId, form, publicPersona, pseudonymPersona, locale })
         },
         Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
       ),

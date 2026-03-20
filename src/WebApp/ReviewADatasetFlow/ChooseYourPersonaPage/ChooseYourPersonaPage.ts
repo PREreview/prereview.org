@@ -1,5 +1,6 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import type { SupportedLocale } from '../../../locales/index.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -12,11 +13,14 @@ export const ChooseYourPersonaPage = ({
   form,
   publicPersona,
   pseudonymPersona,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
 }: {
   datasetReviewId: Uuid.Uuid
   form: ChooseYourPersonaForm.ChooseYourPersonaForm
   publicPersona: Personas.PublicPersona
   pseudonymPersona: Personas.PseudonymPersona
+  locale: SupportedLocale
 }) => {
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,

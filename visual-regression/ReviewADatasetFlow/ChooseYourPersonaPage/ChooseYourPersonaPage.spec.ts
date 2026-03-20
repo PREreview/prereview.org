@@ -2,6 +2,7 @@ import { Either } from 'effect'
 import * as Personas from '../../../src/Personas/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
@@ -11,6 +12,7 @@ test('content looks right', async ({ showPage }) => {
     form: new ChooseYourPersonaForm.EmptyForm(),
     publicPersona,
     pseudonymPersona,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -24,6 +26,7 @@ test('content looks right when there is a choice', async ({ showPage }) => {
     form: new ChooseYourPersonaForm.CompletedForm({ chooseYourPersona: 'public' }),
     publicPersona,
     pseudonymPersona,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -39,6 +42,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
     }),
     publicPersona,
     pseudonymPersona,
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
