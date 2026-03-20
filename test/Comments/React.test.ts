@@ -15,7 +15,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       Effect.gen(function* () {
         const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
-        Effect.provideService(
+        yield* Effect.provideService(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
           Comments.HandleCommentCommand,
           handleCommentCommand,
