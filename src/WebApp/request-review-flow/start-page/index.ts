@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -7,12 +7,7 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import {
-  type GetReviewRequestEnv,
-  type SaveReviewRequestEnv,
-  maybeGetReviewRequest,
-  saveReviewRequest,
-} from '../../../review-request.ts'
+import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
@@ -31,10 +26,9 @@ export const requestReviewStart = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    GetReviewRequestEnv &
     SaveReviewRequestEnv &
     Uuid.GenerateUuidEnv &
-    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
@@ -47,11 +41,15 @@ export const requestReviewStart = ({
         RTE.map(preprint => preprint.id),
       ),
     ),
-    RTE.bindW('reviewRequest', ({ preprint, user }) => pipe(maybeGetReviewRequest(user.orcid, preprint))),
+    RTE.bindW('reviewRequest', ({ preprint, user }) =>
+      EffectToFpts.toReaderTaskEither(
+        ReviewRequests.findReviewRequestByAPrereviewer({ requesterId: user.orcid, preprintId: preprint }),
+      ),
+    ),
     RTE.chainFirstW(({ preprint, reviewRequest, user }) =>
-      match(reviewRequest)
-        .with({ status: P.union('incomplete', 'completed') }, () => RTE.of(undefined))
-        .with(undefined, () =>
+      Option.match(reviewRequest, {
+        onSome: () => RTE.of(undefined),
+        onNone: () =>
           pipe(
             RTE.rightReaderIO(Uuid.generateUuidIO),
             RTE.chainFirstW(id => saveReviewRequest(user.orcid, preprint, { status: 'incomplete', id })),
@@ -68,8 +66,7 @@ export const requestReviewStart = ({
               ),
             ),
           ),
-        )
-        .exhaustive(),
+      }),
     ),
     RTE.matchW(
       error =>
@@ -79,18 +76,27 @@ export const requestReviewStart = ({
           )
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
           .with(
-            { _tag: P.union('PreprintIsUnavailable', 'ReviewRequestWasAlreadyStarted', 'UnableToHandleCommand') },
+            {
+              _tag: P.union(
+                'PreprintIsUnavailable',
+                'ReviewRequestWasAlreadyStarted',
+                'UnableToHandleCommand',
+                'UnableToQuery',
+              ),
+            },
             'unavailable',
             () => havingProblemsPage(locale),
           )
           .exhaustive(),
       state =>
         match(state)
-          .with({ reviewRequest: undefined }, state =>
+          .with({ reviewRequest: { _tag: 'None' } }, state =>
             RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: state.preprint }) }),
           )
-          .with({ reviewRequest: { status: 'incomplete' } }, state => carryOnPage(state.locale, state.preprint))
-          .with({ reviewRequest: { status: 'completed' } }, () =>
+          .with({ reviewRequest: { _tag: 'Some', value: { _tag: 'ReviewRequestPendingPublication' } } }, state =>
+            carryOnPage(state.locale, state.preprint),
+          )
+          .with({ reviewRequest: { _tag: 'Some', value: { _tag: 'PublishedReviewRequest' } } }, () =>
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: state.preprint }) }),
           )
           .exhaustive(),
