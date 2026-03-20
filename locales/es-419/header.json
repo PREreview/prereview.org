@@ -62,11 +62,20 @@
   "menuTrainingsHint": {
     "message": "Infórmate sobre la revisión por pares ética y constructiva."
   },
+  "menuChampions": {
+    "message": "Programa de Champions"
+  },
+  "menuChampionsHint": {
+    "message": "Conozca nuestro programa anual."
+  },
   "menuLiveReviews": {
     "message": "Revisiones en vivo"
   },
   "menuResources": {
     "message": "Recursos"
+  },
+  "menuStatistics": {
+    "message": "Estadísticas"
   },
   "menuClubs": {
     "message": "Clubs"

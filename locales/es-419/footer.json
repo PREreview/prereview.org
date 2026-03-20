@@ -14,6 +14,9 @@
   "slackLink": {
     "message": "Únete a nuestra Comunidad de Slack"
   },
+  "feedbackLink": {
+    "message": "¡Comparte tu opinión con PREreview!"
+  },
   "menuHeading": {
     "message": "Enlaces de soporte"
   },
@@ -52,6 +55,9 @@
   },
   "contactMastodon": {
     "message": "{handle} en Mastodon"
+  },
+  "contactYouTube": {
+    "message": "{handle} en YouTube"
   },
   "contactLinkedIn": {
     "message": "{handle} en LinkedIn"

@@ -1,0 +1,179 @@
+{
+  "checkYourPrereview": {
+    "message": "crwdns5994:0crwdne5994:0"
+  },
+  "back": {
+    "message": "crwdns5996:0crwdne5996:0"
+  },
+  "datasetDetails": {
+    "message": "crwdns5998:0crwdne5998:0"
+  },
+  "title": {
+    "message": "crwdns6000:0crwdne6000:0"
+  },
+  "repository": {
+    "message": "crwdns6002:0crwdne6002:0"
+  },
+  "dryad": {
+    "message": "crwdns6004:0crwdne6004:0"
+  },
+  "yourDetails": {
+    "message": "crwdns6006:0crwdne6006:0"
+  },
+  "publishedName": {
+    "message": "crwdns6008:0crwdne6008:0"
+  },
+  "changePublishedName": {
+    "message": "crwdns6010:0crwdne6010:0"
+  },
+  "competingInterests": {
+    "message": "crwdns6012:0crwdne6012:0"
+  },
+  "noneDeclared": {
+    "message": "crwdns6014:0crwdne6014:0"
+  },
+  "changeCompetingInterests": {
+    "message": "crwdns6016:0crwdne6016:0"
+  },
+  "yourReview": {
+    "message": "crwdns6018:0crwdne6018:0"
+  },
+  "rateQuality": {
+    "message": "crwdns6020:0crwdne6020:0"
+  },
+  "excellent": {
+    "message": "crwdns6022:0crwdne6022:0"
+  },
+  "fair": {
+    "message": "crwdns6024:0crwdne6024:0"
+  },
+  "poor": {
+    "message": "crwdns6026:0crwdne6026:0"
+  },
+  "dontKnow": {
+    "message": "crwdns6028:0crwdne6028:0"
+  },
+  "changeQualityRating": {
+    "message": "crwdns6030:0crwdne6030:0"
+  },
+  "followFairAndCare": {
+    "message": "crwdns6032:0crwdne6032:0"
+  },
+  "yes": {
+    "message": "crwdns6034:0crwdne6034:0"
+  },
+  "no": {
+    "message": "crwdns6036:0crwdne6036:0"
+  },
+  "partly": {
+    "message": "crwdns6038:0crwdne6038:0"
+  },
+  "changeFairAndCare": {
+    "message": "crwdns6040:0crwdne6040:0"
+  },
+  "enoughMetadata": {
+    "message": "crwdns6042:0crwdne6042:0"
+  },
+  "changeEnoughMetadata": {
+    "message": "crwdns6044:0crwdne6044:0"
+  },
+  "trackChanges": {
+    "message": "crwdns6046:0crwdne6046:0"
+  },
+  "changeTrackChanges": {
+    "message": "crwdns6048:0crwdne6048:0"
+  },
+  "signsOfAlteration": {
+    "message": "crwdns6050:0crwdne6050:0"
+  },
+  "changeSignsOfAlteration": {
+    "message": "crwdns6052:0crwdne6052:0"
+  },
+  "suitedForPurpose": {
+    "message": "crwdns6054:0crwdne6054:0"
+  },
+  "changeSuitedForPurpose": {
+    "message": "crwdns6056:0crwdne6056:0"
+  },
+  "supportsConclusion": {
+    "message": "crwdns6058:0crwdne6058:0"
+  },
+  "changeSupportsConclusion": {
+    "message": "crwdns6060:0crwdne6060:0"
+  },
+  "granularEnough": {
+    "message": "crwdns6062:0crwdne6062:0"
+  },
+  "changeGranularEnough": {
+    "message": "crwdns6064:0crwdne6064:0"
+  },
+  "relativelyErrorFree": {
+    "message": "crwdns6066:0crwdne6066:0"
+  },
+  "changeRelativelyErrorFree": {
+    "message": "crwdns6068:0crwdne6068:0"
+  },
+  "howConsequential": {
+    "message": "crwdns6070:0crwdne6070:0"
+  },
+  "veryConsequential": {
+    "message": "crwdns6072:0crwdne6072:0"
+  },
+  "somewhatConsequential": {
+    "message": "crwdns6074:0crwdne6074:0"
+  },
+  "notConsequential": {
+    "message": "crwdns6076:0crwdne6076:0"
+  },
+  "changeHowConsequential": {
+    "message": "crwdns6078:0crwdne6078:0"
+  },
+  "readyToBeShared": {
+    "message": "crwdns6080:0crwdne6080:0"
+  },
+  "changeReadyToBeShared": {
+    "message": "crwdns6082:0crwdne6082:0"
+  },
+  "anythingMissing": {
+    "message": "crwdns6084:0crwdne6084:0"
+  },
+  "noAnswer": {
+    "message": "crwdns6086:0crwdne6086:0"
+  },
+  "changeAnythingMissing": {
+    "message": "crwdns6088:0crwdne6088:0"
+  },
+  "nowPublish": {
+    "message": "crwdns6090:0crwdne6090:0"
+  },
+  "publishPrereview": {
+    "message": "crwdns6092:0crwdne6092:0"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "crwdns6094:0crwdne6094:0"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "crwdns6096:0crwdne6096:0"
+  },
+  "youCanChooseOrcidOrPseudonym": {
+    "message": "crwdns6098:0crwdne6098:0"
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "crwdns6100:0crwdne6100:0"
+  },
+  "prereviewPseudonymnExplainer": {
+    "message": "crwdns6102:0{pseudonym}crwdne6102:0"
+  },
+  "whyUseAPseudonym": {
+    "message": "crwdns6104:0crwdne6104:0"
+  },
+  "error": {
+    "message": "crwdns6106:0crwdne6106:0"
+  },
+  "weWillLinkToYourOrcid": {
+    "message": "crwdns6108:0crwdne6108:0"
+  },
+  "weWillOnlyLinkToYourPseudonym": {
+    "message": "crwdns6110:0crwdne6110:0"
+  }
+}

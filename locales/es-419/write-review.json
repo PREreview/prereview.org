@@ -218,6 +218,12 @@
   "shareYourReview": {
     "message": "Compartir tu revisión"
   },
+  "letAuthorsKnow": {
+    "message": "Por favor, informa a los autores que publicaste tu revisión. Es posible que sus datos de contacto se encuentren en el preprint."
+  },
+  "letCommunityKnow": {
+    "message": "Además, puedes comunicárselo a toda la comunidad:"
+  },
   "shareOnBluesky": {
     "message": "Compártelo en Bluesky"
   },
@@ -232,6 +238,9 @@
   },
   "scheduleAnInterview": {
     "message": "<link>Programa una entrevista</link> con nuestro equipo de producto para charlar de tu experiencia en PREreview. ¡Les ofrecemos a los entrevistados una compensación en agradecimiento por su ayuda!"
+  },
+  "feedbackSurvey": {
+    "message": "También puedes compartir tus comentarios sobre PREreview.org con nosotros completando una <link>breve encuesta anónima</link>."
   },
   "backToPreprint": {
     "message": "Regresar al preprint"
@@ -442,6 +451,12 @@
   },
   "aiIdeasAuthorsStatement": {
     "message": "Los/las autores/as declaran que utilizaron IA generativa para concebir nuevas ideas para su revisión."
+  },
+  "noAiIdeasStatement": {
+    "message": "El/la autor/a declara que no utilizó IA generativa para concebir nuevas ideas para su revisión."
+  },
+  "noAiIdeasAuthorsStatement": {
+    "message": "Los/las autores/as declaran que no utilizaron IA generativa para concebir nuevas ideas para su revisión."
   },
   "changeUseOfAi": {
     "message": "Cambiar <visuallyHidden>uso de IA</visuallyHidden>"
