@@ -1,5 +1,5 @@
 import { Array, Effect, Equal, Option, pipe } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import * as Personas from '../../../Personas/index.ts'
@@ -23,6 +23,7 @@ export const CheckYourReviewPage = ({
   Effect.gen(function* () {
     const user = yield* LoggedInUser
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
+    const locale = yield* Locale
 
     if (!Equal.equals(user.orcid, author)) {
       return yield* PageNotFound
@@ -37,7 +38,7 @@ export const CheckYourReviewPage = ({
       dataset: Datasets.getDatasetTitle(review.dataset),
     })
 
-    return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset } })
+    return MakeResponse({ datasetReviewId, review: { ...review, author: authorPersona, dataset }, locale })
   }).pipe(
     Effect.catchTags({
       DatasetIsNotFound: () => HavingProblemsPage,

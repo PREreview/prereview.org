@@ -4,6 +4,7 @@ import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText } from '../../../html.ts'
+import type { SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
@@ -18,9 +19,12 @@ export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'au
 export const CheckYourReviewPage = ({
   datasetReviewId,
   review,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  locale,
 }: {
   datasetReviewId: Uuid
   review: DatasetReviewPreview
+  locale: SupportedLocale
 }) => {
   return StreamlinePageResponse({
     title: plainText('Check your PREreview'),
