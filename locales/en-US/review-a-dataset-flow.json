@@ -20,7 +20,7 @@
   "excellent": { "message": "Excellent" },
   "fair": { "message": "Fair" },
   "poor": { "message": "Poor" },
-  "dontKnow": { "message": "I don't know" },
+  "dontKnow": { "message": "I don’t know" },
   "changeQualityRating": {
     "message": "Change <visuallyHidden>how you rate the quality</visuallyHidden>"
   },
