@@ -1,0 +1,88 @@
+{
+  "checkYourPrereview": { "message": "Check your PREreview" },
+  "back": { "message": "Back" },
+  "datasetDetails": { "message": "Dataset details" },
+  "title": { "message": "Title" },
+  "repository": { "message": "Repository" },
+  "dryad": { "message": "Dryad" },
+  "yourDetails": { "message": "Your details" },
+  "publishedName": { "message": "Published name" },
+  "changePublishedName": {
+    "message": "Change <visuallyHidden>your published name</visuallyHidden>"
+  },
+  "competingInterests": { "message": "Competing interests" },
+  "noneDeclared": { "message": "None declared" },
+  "changeCompetingInterests": {
+    "message": "Change <visuallyHidden>your competing interests</visuallyHidden>"
+  },
+  "yourReview": { "message": "Your review" },
+  "rateQuality": { "message": "How would you rate the quality of this data set?" },
+  "excellent": { "message": "Excellent" },
+  "fair": { "message": "Fair" },
+  "poor": { "message": "Poor" },
+  "dontKnow": { "message": "I don't know" },
+  "changeQualityRating": {
+    "message": "Change <visuallyHidden>how you rate the quality</visuallyHidden>"
+  },
+  "followFairAndCare": { "message": "Does this dataset follow FAIR and CARE principles?" },
+  "yes": { "message": "Yes" },
+  "no": { "message": "No" },
+  "partly": { "message": "Partly" },
+  "changeFairAndCare": {
+    "message": "Change <visuallyHidden>if the dataset follows FAIR and CARE principles</visuallyHidden>"
+  },
+  "enoughMetadata": { "message": "Does the dataset have enough metadata?" },
+  "changeEnoughMetadata": {
+    "message": "Change <visuallyHidden>if the dataset has enough metadata</visuallyHidden>"
+  },
+  "trackChanges": {
+    "message": "Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?"
+  },
+  "changeTrackChanges": {
+    "message": "Change <visuallyHidden>if the dataset includes a way to list or track changes or versions</visuallyHidden>"
+  },
+  "signsOfAlteration": {
+    "message": "Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?"
+  },
+  "changeSignsOfAlteration": {
+    "message": "Change <visuallyHidden>if the dataset shows signs of alteration</visuallyHidden>"
+  },
+  "suitedForPurpose": { "message": "Is the dataset well-suited to support its stated research purpose?" },
+  "changeSuitedForPurpose": {
+    "message": "Change <visuallyHidden>if the dataset is well-suited</visuallyHidden>"
+  },
+  "supportsConclusion": { "message": "Does this dataset support the researcher’s stated conclusions?" },
+  "changeSupportsConclusion": {
+    "message": "Change <visuallyHidden>if the dataset supports the conclusions</visuallyHidden>"
+  },
+  "granularEnough": { "message": "Is the dataset granular enough to be a reliable standard of measurement?" },
+  "changeGranularEnough": {
+    "message": "Change <visuallyHidden>if the dataset is granular enough</visuallyHidden>"
+  },
+  "relativelyErrorFree": { "message": "Is the dataset relatively error-free?" },
+  "changeRelativelyErrorFree": {
+    "message": "Change <visuallyHidden>if the dataset is relatively error-free</visuallyHidden>"
+  },
+  "howConsequential": {
+    "message": "Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?"
+  },
+  "veryConsequential": { "message": "Very consequential" },
+  "somewhatConsequential": { "message": "Somewhat consequential" },
+  "notConsequential": { "message": "Not consequential" },
+  "changeHowConsequential": {
+    "message": "Change <visuallyHidden>how consequential the dataset is likely to seem</visuallyHidden>"
+  },
+  "readyToBeShared": { "message": "Is this dataset ready to be shared?" },
+  "changeReadyToBeShared": {
+    "message": "Change <visuallyHidden>if the dataset is ready to be shared</visuallyHidden>"
+  },
+  "anythingMissing": {
+    "message": "What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?"
+  },
+  "noAnswer": { "message": "No answer" },
+  "changeAnythingMissing": {
+    "message": "Change <visuallyHidden>if the dataset is missing anything</visuallyHidden>"
+  },
+  "nowPublish": { "message": "Now publish your PREreview" },
+  "publishPrereview": { "message": "Publish PREreview" }
+}

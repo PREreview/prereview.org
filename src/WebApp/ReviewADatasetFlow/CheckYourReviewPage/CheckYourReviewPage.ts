@@ -3,8 +3,8 @@ import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import type * as Datasets from '../../../Datasets/index.ts'
-import { html, plainText } from '../../../html.ts'
-import type { SupportedLocale } from '../../../locales/index.ts'
+import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
@@ -16,36 +16,38 @@ export type DatasetReviewPreview = Omit<DatasetReviews.DatasetReviewPreview, 'au
   readonly dataset: Datasets.DatasetTitle
 }
 
+const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
+
 export const CheckYourReviewPage = ({
   datasetReviewId,
   review,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   locale,
 }: {
   datasetReviewId: Uuid
   review: DatasetReviewPreview
   locale: SupportedLocale
 }) => {
+  const t = translate(locale, 'review-a-dataset-flow')
   return StreamlinePageResponse({
-    title: plainText('Check your PREreview'),
+    title: pipe(t('checkYourPrereview')(), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId })}" class="back"
-        ><span>Back</span></a
+        ><span>${t('back')()}</span></a
       >
     `,
     main: html`
       <single-use-form>
         <form method="post" action="${Routes.ReviewADatasetCheckYourReview.href({ datasetReviewId })}" novalidate>
-          <h1>Check your PREreview</h1>
+          <h1>${t('checkYourPrereview')()}</h1>
 
           <div class="summary-card">
             <div>
-              <h2>Dataset details</h2>
+              <h2>${t('datasetDetails')()}</h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt><span>Title</span></dt>
+                <dt><span>${t('title')()}</span></dt>
                 <dd>
                   <cite lang="${review.dataset.language}" dir="${rtlDetect.getLangDir(review.dataset.language)}"
                     >${review.dataset.title}</cite
@@ -53,8 +55,8 @@ export const CheckYourReviewPage = ({
                 </dd>
               </div>
               <div>
-                <dt><span>Repository</span></dt>
-                <dd>Dryad</dd>
+                <dt><span>${t('repository')()}</span></dt>
+                <dd>${t('dryad')()}</dd>
               </div>
             </dl>
           </div>
@@ -64,27 +66,27 @@ export const CheckYourReviewPage = ({
             onSome: author =>
               html` <div class="summary-card">
                 <div>
-                  <h2 id="details-label">Your details</h2>
+                  <h2 id="details-label">${t('yourDetails')()}</h2>
                 </div>
 
                 <div aria-labelledby="details-label" role="region">
                   <dl class="summary-list">
                     <div>
-                      <dt><span>Published name</span></dt>
+                      <dt><span>${t('publishedName')()}</span></dt>
                       <dd>${displayAuthor(author)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">your published name</span>
+                          ${rawHtml(t('changePublishedName')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
 
                     <div>
-                      <dt><span>Competing interests</span></dt>
-                      <dd>${Option.getOrElse(review.competingInterests, () => html`<i>None declared</i>`)}</dd>
+                      <dt><span>${t('competingInterests')()}</span></dt>
+                      <dd>${Option.getOrElse(review.competingInterests, () => html`<i>${t('noneDeclared')()}</i>`)}</dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">your competing interests</span>
+                          ${rawHtml(t('changeCompetingInterests')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -95,7 +97,7 @@ export const CheckYourReviewPage = ({
 
           <div class="summary-card">
             <div>
-              <h2 id="review-label">Your review</h2>
+              <h2 id="review-label">${t('yourReview')()}</h2>
             </div>
 
             <div aria-labelledby="review-label" role="region">
@@ -104,14 +106,14 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ rating, detail }) => html`
                     <div>
-                      <dt><span>How would you rate the quality of this data set?</span></dt>
+                      <dt><span>${t('rateQuality')()}</span></dt>
                       <dd>
                         ${pipe(
                           Match.value(rating),
-                          Match.when('excellent', () => 'Excellent'),
-                          Match.when('fair', () => 'Fair'),
-                          Match.when('poor', () => 'Poor'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('excellent', t('excellent')),
+                          Match.when('fair', t('fair')),
+                          Match.when('poor', t('poor')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -121,21 +123,21 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">how you rate the quality</span>
+                          ${rawHtml(t('changeQualityRating')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
                   `,
                 })}
                 <div>
-                  <dt><span>Does this dataset follow FAIR and CARE principles?</span></dt>
+                  <dt><span>${t('followFairAndCare')()}</span></dt>
                   <dd>
                     ${pipe(
                       Match.value(review.answerToIfTheDatasetFollowsFairAndCarePrinciples.answer),
-                      Match.when('yes', () => 'Yes'),
-                      Match.when('partly', () => 'Partly'),
-                      Match.when('no', () => 'No'),
-                      Match.when('unsure', () => 'I don’t know'),
+                      Match.when('yes', t('yes')),
+                      Match.when('partly', t('partly')),
+                      Match.when('no', t('no')),
+                      Match.when('unsure', t('dontKnow')),
                       Match.exhaustive,
                     )}
                   </dd>
@@ -145,7 +147,7 @@ export const CheckYourReviewPage = ({
                   })}
                   <dd>
                     <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}">
-                      Change <span class="visually-hidden">if the dataset follows FAIR and CARE principles</span>
+                      ${rawHtml(t('changeFairAndCare')({ visuallyHidden }))}
                     </a>
                   </dd>
                 </div>
@@ -153,14 +155,14 @@ export const CheckYourReviewPage = ({
                   onNone: () => '',
                   onSome: ({ answer, detail }) => html`
                     <div>
-                      <dt><span>Does the dataset have enough metadata?</span></dt>
+                      <dt><span>${t('enoughMetadata')()}</span></dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -170,7 +172,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset has enough metadata</span>
+                          ${rawHtml(t('changeEnoughMetadata')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -181,18 +183,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span
-                          >Does this dataset include a way to list or track changes or versions? If so, does it seem
-                          accurate?</span
-                        >
+                        <span>${t('trackChanges')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -202,10 +201,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}">
-                          Change
-                          <span class="visually-hidden"
-                            >if the dataset includes a way to list or track changes or versions</span
-                          >
+                          ${rawHtml(t('changeTrackChanges')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -216,18 +212,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span
-                          >Does this dataset show signs of alteration beyond instances of likely human error, such as
-                          censorship, deletion, or redaction, that are not accounted for otherwise?</span
-                        >
+                        <span>${t('signsOfAlteration')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -237,7 +230,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset shows signs of alteration</span>
+                          ${rawHtml(t('changeSignsOfAlteration')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -248,15 +241,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span>Is the dataset well-suited to support its stated research purpose?</span>
+                        <span>${t('suitedForPurpose')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -266,7 +259,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset is well-suited</span>
+                          ${rawHtml(t('changeSuitedForPurpose')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -277,15 +270,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span>Does this dataset support the researcher’s stated conclusions?</span>
+                        <span>${t('supportsConclusion')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -295,7 +288,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset supports the conclusions</span>
+                          ${rawHtml(t('changeSupportsConclusion')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -306,15 +299,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span>Is the dataset granular enough to be a reliable standard of measurement?</span>
+                        <span>${t('granularEnough')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -324,7 +317,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset is granular enough</span>
+                          ${rawHtml(t('changeGranularEnough')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -335,15 +328,15 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span>Is the dataset relatively error-free?</span>
+                        <span>${t('relativelyErrorFree')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('partly', () => 'Partly'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('partly', t('partly')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -353,7 +346,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset is relatively error-free</span>
+                          ${rawHtml(t('changeRelativelyErrorFree')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -364,18 +357,14 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span
-                          >Is this dataset likely to be of interest to researchers in its corresponding field of study,
-                          to most researchers, or to the general public? How consequential is it likely to seem to that
-                          audience or those audiences?</span
-                        >
+                        <span>${t('howConsequential')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('very-consequential', () => 'Very consequential'),
-                          Match.when('somewhat-consequential', () => 'Somewhat consequential'),
-                          Match.when('not-consequential', () => 'Not consequential'),
+                          Match.when('very-consequential', t('veryConsequential')),
+                          Match.when('somewhat-consequential', t('somewhatConsequential')),
+                          Match.when('not-consequential', t('notConsequential')),
                           Match.when('unsure', () => 'I don’t know'),
                           Match.exhaustive,
                         )}
@@ -386,7 +375,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">how consequential the dataset is likely to seem</span>
+                          ${rawHtml(t('changeHowConsequential')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -397,14 +386,14 @@ export const CheckYourReviewPage = ({
                   onSome: ({ answer, detail }) => html`
                     <div>
                       <dt>
-                        <span>Is this dataset ready to be shared?</span>
+                        <span>${t('readyToBeShared')()}</span>
                       </dt>
                       <dd>
                         ${pipe(
                           Match.value(answer),
-                          Match.when('yes', () => 'Yes'),
-                          Match.when('no', () => 'No'),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('yes', t('yes')),
+                          Match.when('no', t('no')),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -414,7 +403,7 @@ export const CheckYourReviewPage = ({
                       })}
                       <dd>
                         <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset is ready to be shared</span>
+                          ${rawHtml(t('changeReadyToBeShared')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -425,15 +414,17 @@ export const CheckYourReviewPage = ({
                   onSome: answerToIfTheDatasetIsMissingAnything => html`
                     <div>
                       <dt>
-                        <span
-                          >What else, if anything, would it be helpful for the researcher to include with this dataset
-                          to make it easier to find, understand and reuse in ethical and responsible ways?
-                        </span>
+                        <span>${t('anythingMissing')()} </span>
                       </dt>
-                      <dd>${Option.getOrElse(answerToIfTheDatasetIsMissingAnything, () => html`<i>No answer</i>`)}</dd>
+                      <dd>
+                        ${Option.getOrElse(
+                          answerToIfTheDatasetIsMissingAnything,
+                          () => html`<i>${t('noAnswer')()}</i>`,
+                        )}
+                      </dd>
                       <dd>
                         <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}">
-                          Change <span class="visually-hidden">if the dataset is missing anything</span>
+                          ${rawHtml(t('changeAnythingMissing')({ visuallyHidden }))}
                         </a>
                       </dd>
                     </div>
@@ -443,9 +434,9 @@ export const CheckYourReviewPage = ({
             </div>
           </div>
 
-          <h2>Now publish your PREreview</h2>
+          <h2>${t('nowPublish')()}</h2>
 
-          <button>Publish PREreview</button>
+          <button>${t('publishPrereview')()}</button>
         </form>
       </single-use-form>
     `,
