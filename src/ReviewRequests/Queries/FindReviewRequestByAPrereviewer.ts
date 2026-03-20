@@ -1,4 +1,4 @@
-import { Either, Equal, flow, HashMap, Option, Tuple } from 'effect'
+import { Either, Equal, flow, HashMap, Option } from 'effect'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
@@ -9,7 +9,19 @@ export interface Input {
   preprintId: Preprints.IndeterminatePreprintId
 }
 
-export type Result = Option.Option<Uuid.Uuid>
+type ReviewRequest = PublishedReviewRequest | ReviewRequestPendingPublication
+
+interface PublishedReviewRequest {
+  _tag: 'PublishedReviewRequest'
+  id: Uuid.Uuid
+}
+
+interface ReviewRequestPendingPublication {
+  _tag: 'ReviewRequestPendingPublication'
+  id: Uuid.Uuid
+}
+
+export type Result = Option.Option<ReviewRequest>
 
 const query = (state: shared.State, input: Input): Result =>
   Option.map(
@@ -19,7 +31,7 @@ const query = (state: shared.State, input: Input): Result =>
         Preprints.PreprintIdEquivalence(reviewRequest.preprintId, input.preprintId) &&
         Equal.equals(reviewRequest.requesterId, input.requesterId),
     ),
-    Tuple.getFirst,
+    ([id, reviewRequest]) => ({ _tag: reviewRequest._tag, id }),
   )
 
 export const FindReviewRequestByAPrereviewer = Queries.StatefulQuery({

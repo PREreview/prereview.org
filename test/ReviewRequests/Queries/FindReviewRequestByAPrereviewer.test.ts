@@ -41,13 +41,13 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'has been started',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [request1Started],
-    Option.some(request1Id),
+    Option.some({ _tag: 'ReviewRequestPendingPublication', id: request1Id }),
   ],
   [
     'has been imported',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [request2Imported],
-    Option.some(request2Id),
+    Option.some({ _tag: 'PublishedReviewRequest', id: request2Id }),
   ],
   [
     'different preprint (started)',
@@ -77,13 +77,13 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     'is ready to be published',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [request1Started],
-    Option.some(request1Id),
+    Option.some({ _tag: 'ReviewRequestPendingPublication', id: request1Id }),
   ],
   [
     'has been published',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [request1Started, request1Published],
-    Option.some(request1Id),
+    Option.some({ _tag: 'PublishedReviewRequest', id: request1Id }),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.FindReviewRequestByAPrereviewer

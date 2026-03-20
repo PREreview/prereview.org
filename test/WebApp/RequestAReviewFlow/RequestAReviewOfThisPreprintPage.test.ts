@@ -126,30 +126,34 @@ describe('requestReview', () => {
       )
     })
 
-    test.prop([fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle(), fc.uuid(), fc.supportedLocale()])(
-      'when a review has been started',
-      (preprintId, user, preprint, reviewRequest, locale) =>
-        Effect.gen(function* () {
-          const actual = yield* _.RequestAReviewOfThisPreprintPage({ preprintId })
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.user(),
+      fc.preprintTitle(),
+      fc.record({ _tag: fc.constantFrom('PublishedReviewRequest', 'ReviewRequestPendingPublication'), id: fc.uuid() }),
+      fc.supportedLocale(),
+    ])('when a review has been started', (preprintId, user, preprint, reviewRequest, locale) =>
+      Effect.gen(function* () {
+        const actual = yield* _.RequestAReviewOfThisPreprintPage({ preprintId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: format(Routes.requestReviewStartMatch.formatter, { id: preprint.id }),
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.succeed(LoggedInUser, user),
-              Layer.succeed(Locale, locale),
-              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
-              }),
-            ),
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(Routes.requestReviewStartMatch.formatter, { id: preprint.id }),
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mergeAll(
+            Layer.succeed(LoggedInUser, user),
+            Layer.succeed(Locale, locale),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
+            }),
           ),
-          EffectTest.run,
         ),
+        EffectTest.run,
+      ),
     )
 
     test.prop([
