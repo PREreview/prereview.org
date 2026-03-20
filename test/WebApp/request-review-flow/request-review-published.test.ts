@@ -5,7 +5,8 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/index.ts'
 import type { GetReviewRequestEnv } from '../../../src/review-request.ts'
-import { requestReviewMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
+import * as Routes from '../../../src/routes.ts'
+import { requestReviewPublishedMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
@@ -91,7 +92,7 @@ describe('requestReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: format(requestReviewMatch.formatter, { id: preprint }),
+        location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
       })
     },
   )

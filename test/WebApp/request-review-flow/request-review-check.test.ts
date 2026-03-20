@@ -4,12 +4,8 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../../src/review-request.ts'
-import {
-  requestReviewCheckMatch,
-  requestReviewMatch,
-  requestReviewPersonaMatch,
-  requestReviewPublishedMatch,
-} from '../../../src/routes.ts'
+import * as Routes from '../../../src/routes.ts'
+import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/check-page/index.ts'
 import { RedirectResponse } from '../../../src/WebApp/Response/index.ts'
@@ -283,7 +279,7 @@ describe('requestReviewCheck', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'LogInResponse',
-        location: format(requestReviewMatch.formatter, { id: preprint }),
+        location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
       })
     },
   )

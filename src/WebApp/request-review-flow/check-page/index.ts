@@ -15,7 +15,8 @@ import {
   getReviewRequest,
   saveReviewRequest,
 } from '../../../review-request.ts'
-import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -81,7 +82,7 @@ export const requestReviewCheck = ({
               RedirectResponse({ location: format(requestReviewPersonaMatch.formatter, { id: preprint }) }),
             )
             .with('no-session', () =>
-              LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
+              LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
             )
             .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
             .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))

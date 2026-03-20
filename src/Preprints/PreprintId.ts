@@ -317,7 +317,7 @@ const PhilsciPreprintIdFromNumberSchema = Schema.transform(
   },
 )
 
-const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.transform(
+export const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.transform(
   Schema.TemplateLiteralParser('doi:', IndeterminatePreprintIdFromDoiSchema),
   Schema.typeSchema(IndeterminatePreprintIdWithDoi),
   {
@@ -327,7 +327,7 @@ const IndeterminatePreprintIdWithDoiFromStringSchema = Schema.transform(
   },
 )
 
-const PhilsciPreprintIdFromStringSchema = Schema.transform(
+export const PhilsciPreprintIdFromStringSchema = Schema.transform(
   Schema.TemplateLiteralParser('https://philsci-archive.pitt.edu/', PhilsciPreprintIdFromNumberSchema, '/'),
   Schema.typeSchema(PhilsciPreprintId),
   {

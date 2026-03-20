@@ -10,7 +10,8 @@ import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Preprint } from '../../Preprints/index.ts'
 import * as PreprintServers from '../../PreprintServers/index.ts'
 import type { PreprintPrereview, RapidPrereview } from '../../Prereviews/index.ts'
-import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
+import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
@@ -140,7 +141,7 @@ export const createPage = ({
           >${translate(locale, 'preprint-reviews', 'writeAPrereview')()}</a
         >
 
-        <a href="${format(requestReviewMatch.formatter, { id: preprint.id })}"
+        <a href="${Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint.id })}"
           >${translate(locale, 'preprint-reviews', 'requestAPrereview')()}</a
         >
       </div>

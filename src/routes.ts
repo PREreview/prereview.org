@@ -1,6 +1,6 @@
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Data, Option, Schema, Tuple, identity, pipe } from 'effect'
+import { Data, Match, Option, Schema, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -8,6 +8,7 @@ import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdSchema } from './Clubs/index.ts'
 import * as Datasets from './Datasets/index.ts'
+import * as Preprints from './Preprints/index.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import { isFieldId } from './types/field.ts'
@@ -48,6 +49,44 @@ export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
 export const RequestsData = '/requests-data'
 
+const stringStartsWith =
+  <P extends string>(prefix: P) =>
+  (s: string): s is `${P}${string}` =>
+    s.startsWith(prefix)
+
+const PreprintIdSchema = Schema.transform(
+  Schema.compose(
+    Schema.String,
+    Schema.Union(
+      Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased())),
+      Schema.TemplateLiteralParser('philsci-', Schema.NonNegativeInt),
+    ),
+  ),
+  Preprints.IndeterminatePreprintIdFromStringSchema,
+  {
+    strict: true,
+    decode: flow(
+      Match.value,
+      Match.when(
+        ['doi-', Match.string],
+        ([, match]) => `doi:${match.replaceAll('-', '/').replaceAll('+', '-')}` as const,
+      ),
+      Match.when(['philsci-', Match.number], ([, match]) => `https://philsci-archive.pitt.edu/${match}/` as const),
+      Match.exhaustive,
+    ),
+    encode: flow(
+      Match.value,
+      Match.when(stringStartsWith('doi:'), id =>
+        Tuple.make('doi-' as const, id.substring(4).toLowerCase().replaceAll('-', '+').replaceAll('/', '-')),
+      ),
+      Match.when(stringStartsWith('https://philsci-archive.pitt.edu/'), id =>
+        Tuple.make('philsci-' as const, Number.parseInt(id.slice(33, -1))),
+      ),
+      Match.exhaustive,
+    ),
+  },
+)
+
 const DatasetIdSchema = Schema.transform(
   Schema.compose(Schema.String, Schema.TemplateLiteralParser('doi-', pipe(Schema.NonEmptyString, Schema.lowercased()))),
   Datasets.DatasetIdFromString,
@@ -75,6 +114,12 @@ export const DatasetReview = Route({
   path: '/reviews/:datasetReviewId',
   href: params => `/reviews/${params.datasetReviewId}`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+})
+
+export const RequestAReviewOfThisPreprint = Route({
+  path: '/preprints/:preprintId/request-a-prereview',
+  href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview`,
+  schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
 export const ReviewADataset = '/review-a-dataset'
@@ -280,7 +325,7 @@ const IntegerFromStringC = C.make(
     }),
   ),
   {
-    encode: String,
+    encode: value => value.toString(),
   },
 )
 
@@ -673,8 +718,6 @@ const requestReviewBaseMatch = pipe(
   P.andThen(type('id', PreprintIdC)),
   P.andThen(P.lit('request-a-prereview')),
 )
-
-export const requestReviewMatch = pipe(requestReviewBaseMatch, P.andThen(P.end))
 
 export const requestReviewStartMatch = pipe(requestReviewBaseMatch, P.andThen(P.lit('start-now')), P.andThen(P.end))
 

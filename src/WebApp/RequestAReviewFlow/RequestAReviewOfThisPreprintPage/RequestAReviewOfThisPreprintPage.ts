@@ -4,13 +4,13 @@ import rtlDetect from 'rtl-detect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 const orcidLinkAsDefinition = (text: string) => `<a href="https://orcid.org/"><dfn>${text}</dfn></a>`
 
-export const requestReviewPage = ({
+export const RequestAReviewOfThisPreprintPage = ({
   preprint,
   user,
   locale,
@@ -25,7 +25,7 @@ export const requestReviewPage = ({
   return PageResponse({
     title: pipe(t('requestAPrereview')(), plainText),
     nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
+      <a href="${format(Routes.preprintReviewsMatch.formatter, { id: preprint.id })}" class="back"
         ><span>${t('backToPreprint')()}</span></a
       >
     `,
@@ -50,11 +50,11 @@ export const requestReviewPage = ({
             </details>
           `}
 
-      <a href="${format(requestReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
+      <a href="${format(Routes.requestReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
-    canonical: format(requestReviewMatch.formatter, { id: preprint.id }),
+    canonical: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint.id }),
     allowRobots: false,
   })
 }

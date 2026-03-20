@@ -1,13 +1,13 @@
 import { Doi } from 'doi-ts'
-import { html } from '../../src/html.ts'
-import { DefaultLocale } from '../../src/locales/index.ts'
-import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../src/types/Pseudonym.ts'
-import type { User } from '../../src/user.ts'
-import { requestReviewPage } from '../../src/WebApp/request-review-flow/request-review-page/request-review-page.ts'
-import { expect, test } from '../base.ts'
+import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { type PreprintTitle, BiorxivPreprintId } from '../../../src/Preprints/index.ts'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
+import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import type { User } from '../../../src/user.ts'
+import * as _ from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewOfThisPreprintPage/RequestAReviewOfThisPreprintPage.ts'
+import { expect, test } from '../../base.ts'
 
 const preprint = {
   id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
@@ -24,7 +24,7 @@ const user = {
 const locale = DefaultLocale
 
 test('content looks right', async ({ showPage }) => {
-  const response = requestReviewPage({ preprint, locale })
+  const response = _.RequestAReviewOfThisPreprintPage({ preprint, locale })
 
   const content = await showPage(response)
 
@@ -32,7 +32,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when a user is logged in', async ({ showPage }) => {
-  const response = requestReviewPage({ preprint, user, locale })
+  const response = _.RequestAReviewOfThisPreprintPage({ preprint, user, locale })
 
   const content = await showPage(response)
 

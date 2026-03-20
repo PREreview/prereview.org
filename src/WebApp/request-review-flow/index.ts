@@ -1,5 +1,4 @@
 export { requestReviewCheck } from './check-page/index.ts'
 export { requestReviewPersona } from './persona-page/index.ts'
 export { requestReviewPublished } from './published-page/index.ts'
-export { requestReview } from './request-review-page/index.ts'
 export { requestReviewStart } from './start-page/index.ts'

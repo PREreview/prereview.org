@@ -1,7 +1,6 @@
 import { Match } from 'effect'
-import { format } from 'fp-ts-routing'
 import type { SupportedLocale } from '../../locales/index.ts'
-import { requestReviewMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import * as Response from '../Response/index.ts'
 import type * as Decision from './decision.ts'
@@ -15,7 +14,7 @@ import { unsupportedUrlPage } from './unsupported-url-page.ts'
 export const handleDecision = (decision: Decision.Decision, locale: SupportedLocale): Response.Response =>
   Match.valueTags(decision, {
     BeginFlow: ({ preprint }) =>
-      Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
+      Response.RedirectResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
     ShowError: () => havingProblemsPage(locale),
     ShowFormWithErrors: ({ form }) => requestAPrereviewPage(form, locale),
     ShowNotAPreprint: () => notAPreprintPage(locale),

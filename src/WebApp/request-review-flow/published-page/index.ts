@@ -1,5 +1,4 @@
 import { flow, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
@@ -7,7 +6,7 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import { type GetReviewRequestEnv, getReviewRequest } from '../../../review-request.ts'
-import { requestReviewMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -56,7 +55,9 @@ export const requestReviewPublished = ({
       error =>
         match(error)
           .with('incomplete', () => pageNotFound(locale))
-          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }))
+          .with('no-session', () =>
+            LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
+          )
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
           .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
           .exhaustive(),

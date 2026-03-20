@@ -10,7 +10,6 @@ import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
 import {
-  requestReview,
   requestReviewCheck,
   requestReviewPersona,
   requestReviewPublished,
@@ -21,14 +20,6 @@ import type { Env } from './index.ts'
 
 export const RequestReviewFlowRouter = pipe(
   [
-    pipe(
-      Routes.requestReviewMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            requestReview({ locale: env.locale, preprint: id, user: env.loggedInUser }),
-      ),
-    ),
     pipe(
       Routes.requestReviewStartMatch.parser,
       P.map(

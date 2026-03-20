@@ -3,7 +3,8 @@ import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-a-prereview-page/handle-decision.ts'
-import { requestAPrereviewMatch, requestReviewMatch } from '../../../src/routes.ts'
+import * as Routes from '../../../src/routes.ts'
+import { requestAPrereviewMatch } from '../../../src/routes.ts'
 import * as fc from './fc.ts'
 
 describe('handleDecision', () => {
@@ -13,7 +14,7 @@ describe('handleDecision', () => {
     expect(actual).toStrictEqual({
       _tag: 'RedirectResponse',
       status: StatusCodes.SeeOther,
-      location: format(requestReviewMatch.formatter, { id: preprint }),
+      location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
     })
   })
 

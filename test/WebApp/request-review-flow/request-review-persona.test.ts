@@ -10,12 +10,8 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/persona-page/index.ts'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../../src/review-request.ts'
-import {
-  requestReviewCheckMatch,
-  requestReviewMatch,
-  requestReviewPersonaMatch,
-  requestReviewPublishedMatch,
-} from '../../../src/routes.ts'
+import * as Routes from '../../../src/routes.ts'
+import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
@@ -354,7 +350,7 @@ describe('requestReviewPersona', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'LogInResponse',
-          location: format(requestReviewMatch.formatter, { id: preprint }),
+          location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
         })
       }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
   )

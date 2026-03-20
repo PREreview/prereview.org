@@ -27,6 +27,7 @@ import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
 import { PeoplePage } from '../PeoplePage.ts'
 import { PrivacyPolicyPage } from '../PrivacyPolicyPage.ts'
+import * as RequestAReviewFlow from '../RequestAReviewFlow/index.ts'
 import { RequestsData } from '../RequestsData.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
@@ -59,6 +60,10 @@ const MakeStaticRoute = <E, R>(
   path: `/${string}`,
   handler: Effect.Effect<Response.Response, E, R>,
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
+
+const RequestAReviewFlowRouter = HttpRouter.fromIterable([
+  MakeRoute('GET', Routes.RequestAReviewOfThisPreprint, RequestAReviewFlow.RequestAReviewOfThisPreprintPage),
+])
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.ReviewThisDatasetStartNow, ReviewADatasetFlow.StartNow),
@@ -420,6 +425,7 @@ export const Router = pipe(
   ]),
   HttpRouter.concat(AuthRouter),
   HttpRouter.concat(DatasetReviewPages),
+  HttpRouter.concat(RequestAReviewFlowRouter),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
