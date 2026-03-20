@@ -59,7 +59,9 @@ export function personaForm({
 
               <div>
                 <p>
-                  ${t('prereviewPseudonymnExplainer')({ definition, pseudonym: user.pseudonym.replace(' ', '&nbsp;') })}
+                  ${rawHtml(
+                    t('prereviewPseudonymnExplainer')({ definition, pseudonym: user.pseudonym.replace(' ', '&nbsp;') }),
+                  )}
                 </p>
 
                 <p>${t('whyUseAPseudonym')()}</p>
