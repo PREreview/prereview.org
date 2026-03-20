@@ -1,12 +1,12 @@
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Option, Schema, Tuple, identity, pipe } from 'effect'
+import { Data, Option, Schema, Tuple, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import iso6391 from 'iso-639-1'
 import { match, P as p } from 'ts-pattern'
-import { ClubIdSchema, type ClubId } from './Clubs/index.ts'
+import { ClubIdSchema } from './Clubs/index.ts'
 import * as Datasets from './Datasets/index.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
@@ -22,6 +22,8 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   href: (a: A) => `/${string}`
   schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
 }
+
+const Route: <A extends { readonly [K in keyof A]: unknown }>(route: Route<A>) => Route<A> = Data.struct
 
 export const HomePage = '/'
 export const Inbox = '/inbox'
@@ -57,217 +59,217 @@ const DatasetIdSchema = Schema.transform(
   },
 )
 
-export const ClubProfile: Route<{ id: ClubId }> = {
+export const ClubProfile = Route({
   path: '/clubs/:id',
   href: params => `/clubs/${Schema.encodeSync(ClubIdSchema)(params.id)}`,
   schema: Schema.Struct({ id: Schema.compose(Schema.String, ClubIdSchema) }),
-}
+})
 
-export const DatasetReviews: Route<{ datasetId: Datasets.DatasetId }> = {
+export const DatasetReviews = Route({
   path: '/datasets/:datasetId',
   href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}`,
   schema: Schema.Struct({ datasetId: DatasetIdSchema }),
-}
+})
 
-export const DatasetReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const DatasetReview = Route({
   path: '/reviews/:datasetReviewId',
   href: params => `/reviews/${params.datasetReviewId}`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
 export const ReviewADataset = '/review-a-dataset'
 
-export const ReviewThisDataset: Route<{ datasetId: Datasets.DatasetId }> = {
+export const ReviewThisDataset = Route({
   path: '/datasets/:datasetId/review-this-dataset',
   href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}/review-this-dataset`,
   schema: Schema.Struct({ datasetId: DatasetIdSchema }),
-}
+})
 
-export const ReviewThisDatasetStartNow: Route<{ datasetId: Datasets.DatasetId }> = {
+export const ReviewThisDatasetStartNow = Route({
   path: '/datasets/:datasetId/start-now',
   href: params => `/datasets/${Schema.encodeSync(DatasetIdSchema)(params.datasetId)}/start-now`,
   schema: Schema.Struct({ datasetId: DatasetIdSchema }),
-}
+})
 
-export const ReviewADatasetRateTheQuality: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetRateTheQuality = Route({
   path: '/review-a-dataset/:datasetReviewId/rate-the-quality',
   href: params => `/review-a-dataset/${params.datasetReviewId}/rate-the-quality`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetFollowsFairAndCarePrinciples: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetFollowsFairAndCarePrinciples = Route({
   path: '/review-a-dataset/:datasetReviewId/follows-fair-and-care-principles',
   href: params => `/review-a-dataset/${params.datasetReviewId}/follows-fair-and-care-principles`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetHasEnoughMetadata: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetHasEnoughMetadata = Route({
   path: '/review-a-dataset/:datasetReviewId/has-enough-metadata',
   href: params => `/review-a-dataset/${params.datasetReviewId}/has-enough-metadata`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetHasTrackedChanges: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetHasTrackedChanges = Route({
   path: '/review-a-dataset/:datasetReviewId/has-tracked-changes',
   href: params => `/review-a-dataset/${params.datasetReviewId}/has-tracked-changes`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetHasDataCensoredOrDeleted: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetHasDataCensoredOrDeleted = Route({
   path: '/review-a-dataset/:datasetReviewId/has-data-censored-or-deleted',
   href: params => `/review-a-dataset/${params.datasetReviewId}/has-data-censored-or-deleted`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetIsAppropriateForThisKindOfResearch: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetIsAppropriateForThisKindOfResearch = Route({
   path: '/review-a-dataset/:datasetReviewId/is-appropriate-for-this-kind-of-research',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-appropriate-for-this-kind-of-research`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetSupportsRelatedConclusions: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetSupportsRelatedConclusions = Route({
   path: '/review-a-dataset/:datasetReviewId/supports-related-conclusions',
   href: params => `/review-a-dataset/${params.datasetReviewId}/supports-related-conclusions`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetIsDetailedEnough: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetIsDetailedEnough = Route({
   path: '/review-a-dataset/:datasetReviewId/is-detailed-enough',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-detailed-enough`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetIsErrorFree: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetIsErrorFree = Route({
   path: '/review-a-dataset/:datasetReviewId/is-error-free',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-error-free`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetMattersToItsAudience: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetMattersToItsAudience = Route({
   path: '/review-a-dataset/:datasetReviewId/matters-to-its-audience',
   href: params => `/review-a-dataset/${params.datasetReviewId}/matters-to-its-audience`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetIsReadyToBeShared: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetIsReadyToBeShared = Route({
   path: '/review-a-dataset/:datasetReviewId/is-ready-to-be-shared',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-ready-to-be-shared`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetIsMissingAnything: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetIsMissingAnything = Route({
   path: '/review-a-dataset/:datasetReviewId/is-missing-anything',
   href: params => `/review-a-dataset/${params.datasetReviewId}/is-missing-anything`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetChooseYourPersona: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetChooseYourPersona = Route({
   path: '/review-a-dataset/:datasetReviewId/choose-name',
   href: params => `/review-a-dataset/${params.datasetReviewId}/choose-name`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetDeclareCompetingInterests: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetDeclareCompetingInterests = Route({
   path: '/review-a-dataset/:datasetReviewId/declare-competing-interests',
   href: params => `/review-a-dataset/${params.datasetReviewId}/declare-competing-interests`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetDeclareFollowingCodeOfConduct: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetDeclareFollowingCodeOfConduct = Route({
   path: '/review-a-dataset/:datasetReviewId/declare-following-code-of-conduct',
   href: params => `/review-a-dataset/${params.datasetReviewId}/declare-following-code-of-conduct`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetCheckYourReview: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetCheckYourReview = Route({
   path: '/review-a-dataset/:datasetReviewId/check-your-review',
   href: params => `/review-a-dataset/${params.datasetReviewId}/check-your-review`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetReviewBeingPublished: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetReviewBeingPublished = Route({
   path: '/review-a-dataset/:datasetReviewId/review-being-published',
   href: params => `/review-a-dataset/${params.datasetReviewId}/review-being-published`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const ReviewADatasetReviewPublished: Route<{ datasetReviewId: Uuid.Uuid }> = {
+export const ReviewADatasetReviewPublished = Route({
   path: '/review-a-dataset/:datasetReviewId/review-published',
   href: params => `/review-a-dataset/${params.datasetReviewId}/review-published`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteComment: Route<{ id: number }> = {
+export const WriteComment = Route({
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
-}
+})
 
-export const WriteCommentStartNow: Route<{ id: number }> = {
+export const WriteCommentStartNow = Route({
   path: '/reviews/:id/write-a-comment/start-now',
   href: params => `/reviews/${params.id}/write-a-comment/start-now`,
   schema: Schema.Struct({ id: Schema.NumberFromString }),
-}
+})
 
-export const WriteCommentEnterComment: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentEnterComment = Route({
   path: '/write-a-comment/:commentId/write-your-comment',
   href: params => `/write-a-comment/${params.commentId}/write-your-comment`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentChoosePersona: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentChoosePersona = Route({
   path: '/write-a-comment/:commentId/choose-name',
   href: params => `/write-a-comment/${params.commentId}/choose-name`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentCompetingInterests: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentCompetingInterests = Route({
   path: '/write-a-comment/:commentId/competing-interests',
   href: params => `/write-a-comment/${params.commentId}/competing-interests`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentCodeOfConduct: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentCodeOfConduct = Route({
   path: '/write-a-comment/:commentId/code-of-conduct',
   href: params => `/write-a-comment/${params.commentId}/code-of-conduct`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentEnterEmailAddress: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentEnterEmailAddress = Route({
   path: '/write-a-comment/:commentId/enter-email-address',
   href: params => `/write-a-comment/${params.commentId}/enter-email-address`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentNeedToVerifyEmailAddress: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentNeedToVerifyEmailAddress = Route({
   path: '/write-a-comment/:commentId/need-to-verify-email-address',
   href: params => `/write-a-comment/${params.commentId}/need-to-verify-email-address`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentVerifyEmailAddress: Route<{ commentId: Uuid.Uuid; token: Uuid.Uuid }> = {
+export const WriteCommentVerifyEmailAddress = Route({
   path: '/write-a-comment/:commentId/verify-email-address',
   href: params => `/write-a-comment/${params.commentId}/verify-email-address?token=${params.token}`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema, token: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentCheck: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentCheck = Route({
   path: '/write-a-comment/:commentId/check-your-comment',
   href: params => `/write-a-comment/${params.commentId}/check-your-comment`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentPublishing: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentPublishing = Route({
   path: '/write-a-comment/:commentId/comment-being-published',
   href: params => `/write-a-comment/${params.commentId}/comment-being-published`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
-export const WriteCommentPublished: Route<{ commentId: Uuid.Uuid }> = {
+export const WriteCommentPublished = Route({
   path: '/write-a-comment/:commentId/comment-published',
   href: params => `/write-a-comment/${params.commentId}/comment-published`,
   schema: Schema.Struct({ commentId: Uuid.UuidSchema }),
-}
+})
 
 const IntegerFromStringC = C.make(
   pipe(
