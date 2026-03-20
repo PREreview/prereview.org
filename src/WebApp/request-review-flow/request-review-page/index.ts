@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { Option, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -6,7 +6,8 @@ import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
-import { type GetReviewRequestEnv, maybeGetReviewRequest } from '../../../review-request.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
+import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { requestReviewStartMatch } from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -21,7 +22,10 @@ export const requestReview = ({
   preprint: IndeterminatePreprintId
   user?: User
   locale: SupportedLocale
-}): RT.ReaderTask<GetPreprintTitleEnv & GetReviewRequestEnv, LogInResponse | PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<
+  GetPreprintTitleEnv & EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestQueries>,
+  LogInResponse | PageResponse | RedirectResponse
+> =>
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
@@ -29,12 +33,17 @@ export const requestReview = ({
     RTE.bindW('preprint', () => getPreprintTitle(preprint)),
     RTE.chainFirstW(
       flow(
-        ({ preprint, user }) => (user ? maybeGetReviewRequest(user.orcid, preprint.id) : RTE.right(undefined)),
-        RTE.chainW(reviewRequest =>
-          match(reviewRequest)
-            .with({ status: P.string }, () => RTE.left('already-started' as const))
-            .with(undefined, RTE.right)
-            .exhaustive(),
+        ({ preprint, user }) =>
+          user
+            ? EffectToFpts.toReaderTaskEither(
+                ReviewRequests.findReviewRequestByAPrereviewer({ requesterId: user.orcid, preprintId: preprint.id }),
+              )
+            : RTE.right(Option.none()),
+        RTE.chainW(
+          Option.match({
+            onSome: () => RTE.left('already-started' as const),
+            onNone: () => RTE.right(undefined),
+          }),
         ),
       ),
     ),
@@ -45,7 +54,9 @@ export const requestReview = ({
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
           .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
+          .with({ _tag: P.union('PreprintIsUnavailable', 'UnableToQuery') }, 'unavailable', () =>
+            havingProblemsPage(locale),
+          )
           .exhaustive(),
       requestReviewPage,
     ),
