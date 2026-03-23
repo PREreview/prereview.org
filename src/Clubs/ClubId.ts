@@ -45,6 +45,7 @@ export const ClubIdSchema = Schema.Literal(
   'review-curate-network',
   'reviewing-dental-articles-club',
   'rr-id-student-reviewer-club',
+  'sfb1638',
   'sg-biofilms-microbiome',
   'snl-semantics',
   'sun-bioinformatics',

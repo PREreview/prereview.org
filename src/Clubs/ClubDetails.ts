@@ -837,6 +837,24 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Hildy Fong Baker', orcid: OrcidId('0000-0002-3836-1966') }],
     contact: EmailAddress('rrid@berkeley.edu'),
   },
+  sfb1638: {
+    name: 'SFB1638 Membrane Remodelling',
+    description: html`
+      <p>
+        The SFB2638 is a research consortium that is interested in understanding the dynamics of cellular membranes and
+        how membrane remodeling events are coupled to generate physiological processes.
+      </p>
+      <p>
+        This preprint review club brings together early career researchers of the SFB1638 to discuss the latest research
+        in the field and develop their ability to constructively review research data.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-03-23'),
+    leads: [
+      { name: 'Barbora Turpin Knotkova', orcid: OrcidId('0000-0002-9838-0501') },
+      { name: 'Natalie Friemel', orcid: OrcidId('0009-0002-4348-1396') },
+    ],
+  },
   'sg-biofilms-microbiome': {
     name: 'SG Biofilms and Microbiome Club',
     description: html`
