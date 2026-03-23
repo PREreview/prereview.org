@@ -32,7 +32,7 @@ export const CheckYourReviewPage = ({
     title: pipe(t('checkYourPrereview')(), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId })}" class="back"
-        ><span>${t('back')()}</span></a
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
       >
     `,
     main: html`

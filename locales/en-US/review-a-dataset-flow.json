@@ -1,6 +1,5 @@
 {
   "checkYourPrereview": { "message": "Check your PREreview" },
-  "back": { "message": "Back" },
   "datasetDetails": { "message": "Dataset details" },
   "title": { "message": "Title" },
   "repository": { "message": "Repository" },
@@ -96,7 +95,6 @@
   "whyUseAPseudonym": {
     "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability."
   },
-  "error": { "message": "Error" },
   "weWillLinkToYourOrcid": { "message": "We’ll link your PREreview to your ORCID iD." },
   "weWillOnlyLinkToYourPseudonym": {
     "message": "We’ll only link your PREreview to others that also use your pseudonym."

@@ -32,7 +32,7 @@ export const ChooseYourPersonaPage = ({
     title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" class="back"
-        ><span>${t('back')()}</span></a
+        ><span>${translate(locale, 'forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -75,7 +75,7 @@ export const ChooseYourPersonaPage = ({
             ${form._tag === 'InvalidForm' && Either.isLeft(form.chooseYourPersona)
               ? html`
                   <div class="error-message" id="choose-your-persona-error">
-                    <span class="visually-hidden">${t('error')()}:</span>
+                    <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                     ${pipe(
                       Match.value(form.chooseYourPersona.left),
                       Match.tag('Missing', t('selectNameYouWouldLikeToUse')),
