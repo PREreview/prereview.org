@@ -27,6 +27,8 @@ compile_module() {
   target="$1"
   module="$2"
 
+  echo "Compiling locale module $module in target $target"
+
   for locale in "${locales[@]}"; do
     localeFile="locales/$locale/$module.json"
     directory="${target}/locales/$module"
@@ -69,6 +71,8 @@ done
 compile_target() {
   target="$1"
   modules="$2"
+
+  echo "Compiling locale target $target"
 
   mkdir -p "$target/locales"
 
