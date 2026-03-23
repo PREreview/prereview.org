@@ -391,7 +391,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: nschloe/action-cached-lfs-checkout@v1.2.3
+        uses: nschloe/action-cached-lfs-checkout@v1.2.4
 
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v4.4.0
