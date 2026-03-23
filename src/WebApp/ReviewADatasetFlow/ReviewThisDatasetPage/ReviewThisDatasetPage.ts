@@ -1,5 +1,6 @@
 import { Array, flow, Option, pipe, Struct } from 'effect'
 import rtlDetect from 'rtl-detect'
+import * as DatasetRepositories from '../../../DatasetRepositories/index.ts'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
@@ -35,7 +36,7 @@ export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dat
             </div>
             <div>
               <dt>Repository</dt>
-              <dd>Dryad</dd>
+              <dd>${DatasetRepositories.getName(dataset.id)}</dd>
             </div>
             <div>
               <dt>DOI</dt>

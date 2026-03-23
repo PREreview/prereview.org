@@ -2,6 +2,7 @@ import { Array, flow, identity, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../Clubs/index.ts'
+import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
@@ -225,7 +226,7 @@ export const createPage = ({
                           <dt>Review published</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
                           <dt>Repository</dt>
-                          <dd>Dryad</dd>
+                          <dd>${DatasetRepositories.getName(prereview.dataset.id)}</dd>
                         </dl>
                       </article>
                     </li>

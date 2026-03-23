@@ -1,6 +1,7 @@
 import { Array, flow, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
+import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
@@ -58,7 +59,7 @@ export const createDatasetReviewsPage = ({
             </div>
             <div>
               <dt>Repository</dt>
-              <dd>Dryad</dd>
+              <dd>${DatasetRepositories.getName(dataset.id)}</dd>
             </div>
 
             <div>

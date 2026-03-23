@@ -4,7 +4,6 @@
   "datasetDetails": { "message": "Dataset details" },
   "title": { "message": "Title" },
   "repository": { "message": "Repository" },
-  "dryad": { "message": "Dryad" },
   "yourDetails": { "message": "Your details" },
   "publishedName": { "message": "Published name" },
   "changePublishedName": {

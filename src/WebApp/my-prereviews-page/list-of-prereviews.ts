@@ -1,6 +1,7 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
+import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
@@ -121,7 +122,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                     <dt>Review published</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>Repository</dt>
-                    <dd>Dryad</dd>
+                    <dd>${DatasetRepositories.getName(prereview.dataset.id)}</dd>
                   </dl>
                 </article>
               </li>

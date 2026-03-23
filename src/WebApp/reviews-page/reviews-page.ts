@@ -3,6 +3,7 @@ import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../Clubs/index.ts'
+import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
@@ -129,7 +130,7 @@ export const createPage = (
                     <dt>Review published</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>Repository</dt>
-                    <dd>Dryad</dd>
+                    <dd>${DatasetRepositories.getName(prereview.dataset.id)}</dd>
                   </dl>
                 </article>
               </li>

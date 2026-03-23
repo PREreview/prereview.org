@@ -1,6 +1,7 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
+import * as DatasetRepositories from '../../../DatasetRepositories/index.ts'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
@@ -56,7 +57,7 @@ export const CheckYourReviewPage = ({
               </div>
               <div>
                 <dt><span>${t('repository')()}</span></dt>
-                <dd>${t('dryad')()}</dd>
+                <dd>${DatasetRepositories.getName(review.dataset.id)}</dd>
               </div>
             </dl>
           </div>
