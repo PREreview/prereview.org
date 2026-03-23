@@ -841,7 +841,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     name: 'SFB1638 Membrane Remodelling',
     description: html`
       <p>
-        The SFB2638 is a research consortium that is interested in understanding the dynamics of cellular membranes and
+        The SFB1638 is a research consortium that is interested in understanding the dynamics of cellular membranes and
         how membrane remodeling events are coupled to generate physiological processes.
       </p>
       <p>
