@@ -2,9 +2,6 @@
   "checkYourPrereview": {
     "message": "crwdns5994:0crwdne5994:0"
   },
-  "back": {
-    "message": "crwdns5996:0crwdne5996:0"
-  },
   "datasetDetails": {
     "message": "crwdns5998:0crwdne5998:0"
   },
@@ -163,9 +160,6 @@
   },
   "whyUseAPseudonym": {
     "message": "crwdns6104:0crwdne6104:0"
-  },
-  "error": {
-    "message": "crwdns6106:0crwdne6106:0"
   },
   "weWillLinkToYourOrcid": {
     "message": "crwdns6108:0crwdne6108:0"
