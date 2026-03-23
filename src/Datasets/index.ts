@@ -6,6 +6,7 @@ import { ResolveDatasetId } from './ResolveDatasetId.ts'
 
 export * from './Dataset.ts'
 export * from './DatasetId.ts'
+export * from './DatasetRepositories.ts'
 
 export class Datasets extends Context.Tag('Datasets')<
   Datasets,

@@ -4,7 +4,7 @@ import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import { reviewRequestsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { fieldIds, getFieldName } from '../../types/field.ts'
@@ -82,7 +82,7 @@ export const createPage = ({
                   <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                   <dd>${renderDate(locale)(request.published)}</dd>
                   <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
-                  <dd>${PreprintServers.getName(request.preprint.id)}</dd>
+                  <dd>${Preprints.getServerName(request.preprint.id)}</dd>
                 </dl>
               </article>
             </li>

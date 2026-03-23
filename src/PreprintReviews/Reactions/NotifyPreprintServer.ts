@@ -1,7 +1,7 @@
 import { Effect, Match, Option, pipe } from 'effect'
 import { CoarNotify } from '../../ExternalApis/index.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Prereviews from '../../Prereviews/index.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -28,7 +28,7 @@ export const NotifyPreprintServer = Effect.fn(
           type: 'Service',
         }),
       ),
-      Match.when(true, () => PreprintServers.getCoarNotifyTarget(prereview.preprint.id)),
+      Match.when(true, () => Preprints.getCoarNotifyTarget(prereview.preprint.id)),
       Match.exhaustive,
     )
 

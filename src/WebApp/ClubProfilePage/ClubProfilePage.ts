@@ -5,7 +5,7 @@ import type { Club, ClubId } from '../../Clubs/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { profileMatch, reviewMatch } from '../../routes.ts'
@@ -154,7 +154,7 @@ export function createPage({
                       <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                       <dd>${renderDate(locale)(prereview.published)}</dd>
                       <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                      <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
+                      <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
                     </dl>
                   </article>
                 </li>

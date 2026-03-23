@@ -4,6 +4,7 @@ import type { IndeterminatePreprintId, PreprintId } from './PreprintId.ts'
 
 export * from './Preprint.ts'
 export * from './PreprintId.ts'
+export * from './PreprintServers.ts'
 
 export class Preprints extends Context.Tag('Preprints')<
   Preprints,

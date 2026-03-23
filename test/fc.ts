@@ -70,6 +70,7 @@ import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
+  type CoarNotifyTargetPreprintId,
   CurvenotePreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
@@ -105,7 +106,6 @@ import {
   ZenodoPreprintId,
   isPreprintDoi,
 } from '../src/Preprints/index.ts'
-import type { CoarNotifyTargetPreprintId } from '../src/PreprintServers/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
 import type { CompletedReviewRequest, IncompleteReviewRequest, ReviewRequest } from '../src/review-request.ts'

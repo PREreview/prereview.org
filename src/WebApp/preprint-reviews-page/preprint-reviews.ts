@@ -7,8 +7,7 @@ import { match, P, P as p } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type { Preprint } from '../../Preprints/index.ts'
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import type { PreprintPrereview, RapidPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
@@ -25,7 +24,7 @@ export const createPage = ({
   rapidPrereviews,
 }: {
   locale: SupportedLocale
-  preprint: Preprint
+  preprint: Preprints.Preprint
   reviews: ReadonlyArray<PreprintPrereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) =>
@@ -90,7 +89,7 @@ export const createPage = ({
             </div>
             <div>
               <dt>${translate(locale, 'preprint-reviews', 'server')()}</dt>
-              <dd>${PreprintServers.getName(preprint.id)}</dd>
+              <dd>${Preprints.getServerName(preprint.id)}</dd>
             </div>
             ${match(preprint.id)
               .with(
@@ -241,7 +240,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
 
 function showRapidPrereviews(
   rapidPrereviews: Array.NonEmptyReadonlyArray<RapidPrereview>,
-  preprint: Preprint,
+  preprint: Preprints.Preprint,
   locale: SupportedLocale,
 ): Html {
   const t = translate(locale, 'preprint-reviews')

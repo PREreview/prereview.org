@@ -2,7 +2,7 @@ import { Match, Record, type Types } from 'effect'
 import type { CoarNotify } from '../ExternalApis/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 
-export const getName = Match.typeTags<PreprintId, string>()({
+export const getServerName = Match.typeTags<PreprintId, string>()({
   AdvancePreprintId: () => 'Advance',
   AfricarxivFigsharePreprintId: () => 'AfricArXiv Preprints',
   AfricarxivOsfPreprintId: () => 'AfricArXiv Preprints',

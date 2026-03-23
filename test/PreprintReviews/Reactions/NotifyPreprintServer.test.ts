@@ -5,7 +5,7 @@ import { CoarNotify } from '../../../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
 import * as _ from '../../../src/PreprintReviews/Reactions/NotifyPreprintServer.ts'
-import * as PreprintServers from '../../../src/PreprintServers/index.ts'
+import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as PublicUrl from '../../../src/public-url.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -37,7 +37,7 @@ describe('NotifyPreprintServer', () => {
                 inbox: new URL(`${publicUrl.origin}/inbox`),
                 type: 'Service',
               },
-              target: Option.getOrThrow(PreprintServers.getCoarNotifyTarget(review.preprint.id)),
+              target: Option.getOrThrow(Preprints.getCoarNotifyTarget(review.preprint.id)),
               context: expect.anything(),
               object: {
                 id: new URL(`${publicUrl.origin}/reviews/${review.id}`),

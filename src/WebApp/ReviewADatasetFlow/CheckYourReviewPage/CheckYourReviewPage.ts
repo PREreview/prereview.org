@@ -1,9 +1,8 @@
 import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import * as DatasetRepositories from '../../../DatasetRepositories/index.ts'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
-import type * as Datasets from '../../../Datasets/index.ts'
+import * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
@@ -57,7 +56,7 @@ export const CheckYourReviewPage = ({
               </div>
               <div>
                 <dt><span>${t('repository')()}</span></dt>
-                <dd>${DatasetRepositories.getName(review.dataset.id)}</dd>
+                <dd>${Datasets.getRepositoryName(review.dataset.id)}</dd>
               </div>
             </dl>
           </div>

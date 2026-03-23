@@ -1,7 +1,6 @@
 import { LanguageModel } from '@effect/ai'
 import { Array, Boolean, Data, Effect, Match, Option, pipe, Schema, Struct } from 'effect'
-import type * as Preprints from '../../../Preprints/index.ts'
-import * as PreprintServers from '../../../PreprintServers/index.ts'
+import * as Preprints from '../../../Preprints/index.ts'
 import { renderDateString } from '../../../time.ts'
 
 import { Doi, type NonEmptyString } from '../../../types/index.ts'
@@ -93,7 +92,7 @@ ${Array.match(preprint.authors, {
   onNonEmpty: authors => `Authors: """${formatList(Array.map(authors, Struct.get('name')))}"""`,
 })}
 
-Preprint server: """${PreprintServers.getName(preprint.id)}"""
+Preprint server: """${Preprints.getServerName(preprint.id)}"""
 
 ${pipe(
   Match.value(preprint.id),

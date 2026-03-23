@@ -5,7 +5,7 @@ import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
-import * as PreprintServers from '../../../PreprintServers/index.ts'
+import * as Preprints from '../../../Preprints/index.ts'
 import {
   profileMatch,
   writeReviewAddAuthorsMatch,
@@ -64,7 +64,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
               </div>
               <div>
                 <dt><span>${t('preprintServer')()}</span></dt>
-                <dd>${PreprintServers.getName(preprint.id)}</dd>
+                <dd>${Preprints.getServerName(preprint.id)}</dd>
               </div>
             </dl>
           </div>

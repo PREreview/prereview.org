@@ -1,11 +1,11 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
+import * as Datasets from '../../Datasets/index.ts'
 import { html, plainText, rawHtml, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Routes from '../../routes.ts'
 import { myPrereviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
@@ -103,7 +103,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                     <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                    <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
+                    <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
                   </dl>
                 </article>
               </li>
@@ -122,7 +122,7 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
                     <dt>Review published</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
                     <dt>Repository</dt>
-                    <dd>${DatasetRepositories.getName(prereview.dataset.id)}</dd>
+                    <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
                   </dl>
                 </article>
               </li>

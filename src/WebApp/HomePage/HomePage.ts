@@ -2,12 +2,12 @@ import { Array, flow, identity, Match, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../Clubs/index.ts'
-import * as DatasetRepositories from '../../DatasetRepositories/index.ts'
+import * as Datasets from '../../Datasets/index.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import assets from '../../manifest.json' with { type: 'json' }
 import * as Personas from '../../Personas/index.ts'
-import * as PreprintServers from '../../PreprintServers/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
@@ -196,7 +196,7 @@ export const createPage = ({
                           <dt>${translate(locale, 'reviews-list', 'reviewPublished')()}</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
                           <dt>${translate(locale, 'reviews-list', 'reviewServer')()}</dt>
-                          <dd>${PreprintServers.getName(prereview.preprint.id)}</dd>
+                          <dd>${Preprints.getServerName(prereview.preprint.id)}</dd>
                         </dl>
                       </article>
                     </li>
@@ -226,7 +226,7 @@ export const createPage = ({
                           <dt>Review published</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
                           <dt>Repository</dt>
-                          <dd>${DatasetRepositories.getName(prereview.dataset.id)}</dd>
+                          <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
                         </dl>
                       </article>
                     </li>
@@ -305,7 +305,7 @@ export const createPage = ({
                         <dt>${translate(locale, 'requests-list', 'requestPublished')()}</dt>
                         <dd>${renderDate(locale)(request.published)}</dd>
                         <dt>${translate(locale, 'requests-list', 'requestServer')()}</dt>
-                        <dd>${PreprintServers.getName(request.preprint.id)}</dd>
+                        <dd>${Preprints.getServerName(request.preprint.id)}</dd>
                       </dl>
                     </article>
                   </li>

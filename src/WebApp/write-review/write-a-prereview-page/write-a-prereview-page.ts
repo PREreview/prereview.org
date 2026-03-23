@@ -6,7 +6,7 @@ import { P, match } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Preprint } from '../../../Preprints/index.ts'
-import * as PreprintServers from '../../../PreprintServers/index.ts'
+import * as Preprints from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
 import type { User } from '../../../user.ts'
@@ -57,7 +57,7 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
             </div>
             <div>
               <dt>${translate(locale, 'write-review', 'server')()}</dt>
-              <dd>${PreprintServers.getName(preprint.id)}</dd>
+              <dd>${Preprints.getServerName(preprint.id)}</dd>
             </div>
             ${match(preprint.id)
               .with(
