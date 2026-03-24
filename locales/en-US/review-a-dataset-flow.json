@@ -47,13 +47,25 @@
     "message": "Sorry, we don’t support this DOI",
     "description": "Title of the page following the form “Which dataset are you reviewing?” when we recognize the DOI format but don’t support the repository it’s from."
   },
+  "unsupportedUrl": {
+    "message": "Sorry, we don’t support this URL",
+    "description": "Title of the page following the form “Which dataset are you reviewing?” when we can’t workout the dataset DOI from the URL."
+  },
   "supportDatasetsFrom": {
     "message": "We support datasets from Dryad.",
-    "description": "Message shown alongside the title “Sorry, we don’t support this DOI”."
+    "description": "Message shown alongside the titles “Sorry, we don’t support this DOI” and “Sorry, we don’t support this URL”."
   },
   "doiIsForDataset": {
     "message": "If this DOI is for a dataset on a repository we don’t support, please <contact>get in touch</contact>.",
     "description": "Message shown alongside the title “Sorry, we don’t support this DOI”."
+  },
+  "urlIsForDataset": {
+    "message": "If this URL is for a dataset on a repository we don’t support, please <contact>get in touch</contact>.",
+    "description": "Message shown alongside the title “Sorry, we don’t support this URL”."
+  },
+  "tryDoi": {
+    "message": "Otherwise, if the dataset has a DOI, please try using that instead.",
+    "description": "Message shown alongside the titles “Sorry, we don’t support this URL”."
   },
   "checkYourPrereview": {
     "message": "Check your PREreview",
