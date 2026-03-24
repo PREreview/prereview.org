@@ -7,6 +7,10 @@
     "message": "Error",
     "description": "Prefix to give assistive-technology users context for an error message. For example, a screen-reader user would hear 'Error: Enter your name'."
   },
+  "optionalSuffix": {
+    "message": "(optional)",
+    "description": "Suffix to indicate that a field is optional. For example, “What is your name? (optional)”."
+  },
   "errorSummaryTitle": {
     "message": "There is a problem",
     "description": "Title of the section summarising any errors a user has made."

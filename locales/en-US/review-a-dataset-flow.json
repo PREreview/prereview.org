@@ -163,17 +163,45 @@
     "message": "How would you rate the quality of this data set?",
     "description": "Label for the question about rating the quality of the dataset."
   },
+  "selectRateQuality": {
+    "message": "Select how you rate the quality",
+    "description": "Error message shown when the user tries to complete the form “How would you rate the quality of this dataset?” without selecting a value."
+  },
   "excellent": {
     "message": "Excellent",
     "description": "Option for the question “How would you rate the quality of this dataset?”"
+  },
+  "excellentTip": {
+    "message": "There are few, if any, noticeable errors, inconsistencies, missing values, or other issues in this dataset.",
+    "description": "Tip shown alongside the option “Excellent” for the question “How would you rate the quality of this dataset?”"
+  },
+  "excellentWhy": {
+    "message": "Why is it excellent quality?",
+    "description": "Label for the text field to provide context for the “Excellent” rating for the question “How would you rate the quality of this dataset?”."
   },
   "fair": {
     "message": "Fair",
     "description": "Option for the question “How would you rate the quality of this dataset?”"
   },
+  "fairTip": {
+    "message": "There are some noticeable errors, inconsistencies, missing values, or other issues in this dataset, but it is still intact enough to trust.",
+    "description": "Tip shown alongside the option “Fair” for the question “How would you rate the quality of this dataset?”"
+  },
+  "fairWhy": {
+    "message": "Why is it fair quality?",
+    "description": "Label for the text field to provide context for the “Fair” rating for the question “How would you rate the quality of this dataset?”."
+  },
   "poor": {
     "message": "Poor",
     "description": "Option for the question “How would you rate the quality of this dataset?”"
+  },
+  "poorTip": {
+    "message": "There are many noticeable errors, inconsistencies, missing values, or other issues in the dataset that make it too difficult to trust.",
+    "description": "Tip shown alongside the option “Poor” for the question “How would you rate the quality of this dataset?”"
+  },
+  "poorWhy": {
+    "message": "Why is it poor quality?",
+    "description": "Label for the text field to provide context for the “Poor” rating for the question “How would you rate the quality of this dataset?”."
   },
   "dontKnow": {
     "message": "I don’t know",

@@ -2,7 +2,7 @@ import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
-import { errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -18,12 +18,11 @@ export const RateTheQualityQuestion = ({
   locale: SupportedLocale
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = translate(locale, 'review-a-dataset-flow')
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${hasAnError ? 'Error: ' : ''}How would you rate the quality of this data set?`,
+    title: pipe(t('rateQuality')(), errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
@@ -39,7 +38,7 @@ export const RateTheQualityQuestion = ({
               )}
             >
               <legend>
-                <h1>How would you rate the quality of this data set?</h1>
+                <h1>${t('rateQuality')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.qualityRating)
@@ -47,7 +46,7 @@ export const RateTheQualityQuestion = ({
                     <div class="error-message" id="rate-the-quality-error">
                       <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.qualityRating.left, {
-                        Missing: () => 'Select how you rate the quality',
+                        Missing: () => t('selectRateQuality')(),
                       })}
                     </div>
                   `
@@ -69,16 +68,13 @@ export const RateTheQualityQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Excellent</span>
+                    <span>${t('excellent')()}</span>
                   </label>
-                  <p id="rate-the-quality-tip-excellent" role="note">
-                    There are few, if any, noticeable errors, inconsistencies, missing values, or other issues in this
-                    dataset.
-                  </p>
+                  <p id="rate-the-quality-tip-excellent" role="note">${t('excellentTip')()}</p>
                   <div class="conditional" id="rate-the-quality-excellent-control">
                     <div>
                       <label for="rate-the-quality-excellent-detail" class="textarea"
-                        >Why is it excellent quality? (optional)</label
+                        >${t('excellentWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="qualityRatingExcellentDetail" id="rate-the-quality-excellent-detail" rows="5">
 ${Match.valueTags(form, {
@@ -109,16 +105,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Fair</span>
+                    <span>${t('fair')()}</span>
                   </label>
-                  <p id="rate-the-quality-tip-fair" role="note">
-                    There are some noticeable errors, inconsistencies, missing values, or other issues in this dataset,
-                    but it is still intact enough to trust.
-                  </p>
+                  <p id="rate-the-quality-tip-fair" role="note">${t('fairTip')()}</p>
                   <div class="conditional" id="rate-the-quality-fair-control">
                     <div>
                       <label for="rate-the-quality-fair-detail" class="textarea"
-                        >Why is it fair quality? (optional)</label
+                        >${t('fairWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="qualityRatingFairDetail" id="rate-the-quality-fair-detail" rows="5">
 ${Match.valueTags(form, {
@@ -149,16 +142,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Poor</span>
+                    <span>${t('poor')()}</span>
                   </label>
-                  <p id="rate-the-quality-tip-poor" role="note">
-                    There are many noticeable errors, inconsistencies, missing values, or other issues in the dataset
-                    that make it too difficult to trust.
-                  </p>
+                  <p id="rate-the-quality-tip-poor" role="note">${t('poorTip')()}</p>
                   <div class="conditional" id="rate-the-quality-poor-control">
                     <div>
                       <label for="rate-the-quality-poor-detail" class="textarea"
-                        >Why is it poor quality? (optional)</label
+                        >${t('poorWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="qualityRatingPoorDetail" id="rate-the-quality-poor-detail" rows="5">
 ${Match.valueTags(form, {
@@ -175,7 +165,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="qualityRating"
@@ -189,7 +179,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -206,7 +196,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   html` ${Either.isLeft(form.qualityRating)
     ? html`
@@ -214,7 +203,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#rate-the-quality-excellent">
             ${pipe(
               Match.value(form.qualityRating.left),
-              Match.tag('Missing', () => 'Select how you rate the quality'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRateQuality')()),
               Match.exhaustive,
             )}
           </a>
