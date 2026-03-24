@@ -1,9 +1,13 @@
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const UnsupportedUrlPage = () => {
+export const UnsupportedUrlPage = ({ locale }: { locale: SupportedLocale }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return PageResponse({
     status: StatusCodes.BadRequest,
     title: plainText('Sorry, we don’t support this URL'),
@@ -19,7 +23,7 @@ export const UnsupportedUrlPage = () => {
 
       <p>Otherwise, if the dataset has a DOI, please try using that instead.</p>
 
-      <a href="${Routes.ReviewADataset}" class="button">Back</a>
+      <a href="${Routes.ReviewADataset}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
     `,
   })
 }

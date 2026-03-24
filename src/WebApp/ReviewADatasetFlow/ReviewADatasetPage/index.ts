@@ -43,7 +43,7 @@ export const ReviewADatasetSubmission = ({
           DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId, locale })),
           DatasetIsUnavailable: () => HavingProblemsPage,
           UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage({ locale })),
-          UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage()),
+          UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage({ locale })),
           NotADataset: () => Effect.succeed(NotADatasetPage()),
         }),
       ),
