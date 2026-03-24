@@ -44,7 +44,7 @@ export const ReviewADatasetSubmission = ({
           DatasetIsUnavailable: () => HavingProblemsPage,
           UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage({ locale })),
           UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage({ locale })),
-          NotADataset: () => Effect.succeed(NotADatasetPage()),
+          NotADataset: () => Effect.succeed(NotADatasetPage({ locale })),
         }),
       ),
       InvalidForm: form => Effect.succeed(MakeResponse({ form, locale })),
