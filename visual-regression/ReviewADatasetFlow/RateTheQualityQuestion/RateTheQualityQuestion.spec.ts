@@ -3,12 +3,14 @@ import * as RateTheQualityForm from '../../../src/WebApp/ReviewADatasetFlow/Rate
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/RateTheQualityQuestion/RateTheQualityQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.RateTheQualityQuestion({
     datasetReviewId,
     form: new RateTheQualityForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +27,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       qualityRatingFairDetail: NonEmptyString.fromString('Detail about the fair rating.'),
       qualityRatingPoorDetail: NonEmptyString.fromString('Detail about the poor rating.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +44,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       qualityRatingFairDetail: Either.right(NonEmptyString.fromString('Detail about the fair rating.')),
       qualityRatingPoorDetail: Either.right(NonEmptyString.fromString('Detail about the poor rating.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

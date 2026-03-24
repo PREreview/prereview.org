@@ -1,52 +1,39 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { RateTheQualityForm } from './RateTheQualityForm.ts'
+import type { InvalidForm, RateTheQualityForm } from './RateTheQualityForm.ts'
 
 export const RateTheQualityQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: RateTheQualityForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}How would you rate the quality of this data set?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: plainText`${hasAnError ? 'Error: ' : ''}How would you rate the quality of this data set?`,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.qualityRating)
-                    ? html`
-                        <li>
-                          <a href="#rate-the-quality-excellent">
-                            ${pipe(
-                              Match.value(form.qualityRating.left),
-                              Match.tag('Missing', () => 'Select how you rate the quality'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.qualityRating)
+                hasAnError && Either.isLeft(form.qualityRating)
                   ? 'aria-invalid="true" aria-errormessage="rate-the-quality-error"'
                   : '',
               )}
@@ -55,10 +42,10 @@ export const RateTheQualityQuestion = ({
                 <h1>How would you rate the quality of this data set?</h1>
               </legend>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.qualityRating)
+              ${hasAnError && Either.isLeft(form.qualityRating)
                 ? html`
                     <div class="error-message" id="rate-the-quality-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.qualityRating.left, {
                         Missing: () => 'Select how you rate the quality',
                       })}
@@ -210,11 +197,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  html` ${Either.isLeft(form.qualityRating)
+    ? html`
+        <li>
+          <a href="#rate-the-quality-excellent">
+            ${pipe(
+              Match.value(form.qualityRating.left),
+              Match.tag('Missing', () => 'Select how you rate the quality'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : ''}`
