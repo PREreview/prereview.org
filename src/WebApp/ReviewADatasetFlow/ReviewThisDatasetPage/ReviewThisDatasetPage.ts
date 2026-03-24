@@ -2,7 +2,7 @@ import { Array, flow, Option, pipe, Struct } from 'effect'
 import rtlDetect from 'rtl-detect'
 import * as Datasets from '../../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
-import { DefaultLocale, translate, type SupportedLocale } from '../../../locales/index.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
 import type { User } from '../../../user.ts'
@@ -17,13 +17,17 @@ export const ReviewThisDatasetPage = ({
   locale: SupportedLocale
   user: Option.Option<User>
 }) => {
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return PageResponse({
-    title: plainText`Review a dataset`,
+    title: plainText(t('reviewADataset')()),
     nav: html`
-      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back"><span>Back to dataset</span></a>
+      <a href="${Routes.DatasetReviews.href({ datasetId: dataset.id })}" class="back"
+        ><span>${t('backToDataset')()}</span></a
+      >
     `,
     main: html`
-      <h1>Review a dataset</h1>
+      <h1>${t('reviewADataset')()}</h1>
 
       <article class="preview" tabindex="0" aria-labelledby="dataset-title">
         <header>
@@ -32,17 +36,21 @@ export const ReviewThisDatasetPage = ({
           </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(dataset.authors, Array.map(Struct.get('name')), formatList(DefaultLocale))}
+            ${rawHtml(
+              t('authoredBy')({
+                authors: pipe(dataset.authors, Array.map(Struct.get('name')), formatList(locale)).toString(),
+                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+              }),
+            )}
           </div>
 
           <dl>
             <div>
-              <dt>Posted</dt>
-              <dd>${renderDate(DefaultLocale)(dataset.posted)}</dd>
+              <dt>${t('posted')()}</dt>
+              <dd>${renderDate(locale)(dataset.posted)}</dd>
             </div>
             <div>
-              <dt>Repository</dt>
+              <dt>${t('repository')()}</dt>
               <dd>${Datasets.getRepositoryName(dataset.id)}</dd>
             </div>
             <div>
@@ -62,26 +70,32 @@ export const ReviewThisDatasetPage = ({
       </article>
 
       <p>
-        You can write a PREreview of
-        <cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
-          >${dataset.title.text}</cite
-        >. We’ll ask questions about the dataset to create a structured review.
+        ${rawHtml(
+          t('youCanWriteAPrereview')({
+            dataset: html`<cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
+              >${dataset.title.text}</cite
+            >`.toString(),
+          }),
+        )}
       </p>
 
       ${Option.match(user, {
         onSome: () => '',
         onNone: () => html`
-          <h2>Before you start</h2>
+          <h2>${t('beforeStart')()}</h2>
 
-          <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+          <p>${t('orcidIdLogIn')()}</p>
 
           <details>
-            <summary><span>What is an ORCID&nbsp;iD?</span></summary>
+            <summary><span>${t('whatIsOrcidIdHeading')()}</span></summary>
 
             <div>
               <p>
-                An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that distinguishes
-                you from everyone with the same or similar name.
+                ${rawHtml(
+                  t('whatIsOrcidId')({
+                    link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString(),
+                  }),
+                )}
               </p>
             </div>
           </details>

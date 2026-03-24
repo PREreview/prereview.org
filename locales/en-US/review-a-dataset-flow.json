@@ -79,9 +79,37 @@
     "message": "Review a dataset",
     "description": "Title of the page where the user can continue the process of reviewing a dataset."
   },
+  "backToDataset": {
+    "message": "Back to dataset",
+    "description": "Link that takes the user back to the dataset page."
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}",
+    "description": "Byline that shows the authors of the dataset being reviewed."
+  },
+  "youCanWriteAPrereview": {
+    "message": "You can write a PREreview of {dataset}. We’ll ask questions about the dataset to create a structured review.",
+    "description": "Message shown alongside the title “Review a dataset” when the user hasn’t already started a PREreview of the dataset."
+  },
   "asYouHaveAlreadyStarted": {
     "message": "As you’ve already started a PREreview of {dataset}, we’ll take you to the next step so you can carry on.",
     "description": "Message shown alongside the title “Review a dataset” when the user has already started a PREreview of the dataset."
+  },
+  "beforeStart": {
+    "message": "Before you start",
+    "description": "Heading for the section that contains information about what the user needs to know before starting a PREreview of the dataset."
+  },
+  "orcidIdLogIn": {
+    "message": "We will ask you to log in with your ORCID iD. If you don’t have an iD, you can create one.",
+    "description": "Text shown alongside the heading “Before you start”."
+  },
+  "whatIsOrcidIdHeading": {
+    "message": "What is an ORCID iD?",
+    "description": "Heading for the explanation of what an ORCID iD is."
+  },
+  "whatIsOrcidId": {
+    "message": "An <link>ORCID iD</link> is a unique identifier that distinguishes you from everyone with the same or similar name.",
+    "description": "Text following the heading “What is an ORCID iD?” explaining what an ORCID iD is."
   },
   "checkYourPrereview": {
     "message": "Check your PREreview",
@@ -94,6 +122,10 @@
   "title": {
     "message": "Title",
     "description": "Label for the title of the dataset being reviewed."
+  },
+  "posted": {
+    "message": "Posted",
+    "description": "Label for the date that the dataset being reviewed was posted."
   },
   "repository": {
     "message": "Repository",
