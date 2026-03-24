@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import * as Routes from '../../../routes.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -12,8 +12,9 @@ import { UnknownDatasetPage } from './UnknownDatasetPage.ts'
 import { UnsupportedDoiPage } from './UnsupportedDoiPage.ts'
 import { UnsupportedUrlPage } from './UnsupportedUrlPage.ts'
 
-export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.succeed(
-  MakeResponse({ form: new ReviewADatasetForm.EmptyForm() }),
+export const ReviewADatasetPage: Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> = Effect.andThen(
+  Locale,
+  locale => MakeResponse({ form: new ReviewADatasetForm.EmptyForm(), locale }),
 )
 
 export const ReviewADatasetSubmission = ({
@@ -22,6 +23,8 @@ export const ReviewADatasetSubmission = ({
   body: UrlParams.UrlParams
 }): Effect.Effect<Response.Response, never, Datasets.Datasets | Locale> =>
   Effect.gen(function* () {
+    const locale = yield* Locale
+
     const form = yield* ReviewADatasetForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
@@ -44,6 +47,6 @@ export const ReviewADatasetSubmission = ({
           NotADataset: () => Effect.succeed(NotADatasetPage()),
         }),
       ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ form })),
+      InvalidForm: form => Effect.succeed(MakeResponse({ form, locale })),
     })
   })

@@ -1,39 +1,31 @@
-import { Either, Match } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 import type * as ReviewADatasetForm from './ReviewADatasetForm.ts'
 
-export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.IncompleteForm }) => {
+export const ReviewADatasetPage = ({
+  form,
+  locale,
+}: {
+  form: ReviewADatasetForm.IncompleteForm
+  locale: SupportedLocale
+}) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return PageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText(`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Which dataset are you reviewing?`),
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Which dataset are you reviewing?', errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewADataset}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.whichDataset)
-                    ? html`
-                        <li>
-                          <a href="#which-dataset">
-                            ${Match.valueTags(form.whichDataset.left, {
-                              Invalid: () => 'Enter a dataset DOI or URL',
-                              Missing: () => 'Enter the dataset DOI or URL',
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <h1>
             <label id="which-dataset-label" for="which-dataset">Which dataset are you reviewing?</label>
           </h1>
@@ -52,10 +44,10 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
             </div>
           </details>
 
-          ${form._tag === 'InvalidForm' && Either.isLeft(form.whichDataset)
+          ${hasAnError && Either.isLeft(form.whichDataset)
             ? html`
                 <div class="error-message" id="which-dataset-error">
-                  <span class="visually-hidden">Error:</span>
+                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${Match.valueTags(form.whichDataset.left, {
                     Invalid: () => 'Enter a dataset DOI or URL',
                     Missing: () => 'Enter the dataset DOI or URL',
@@ -71,7 +63,7 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
             size="60"
             spellcheck="false"
             aria-describedby="which-dataset-tip"
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.whichDataset)
+            ${hasAnError && Either.isLeft(form.whichDataset)
               ? html`aria-invalid="true" aria-errormessage="dataset-error"
                 ${Match.valueTags(form.whichDataset.left, {
                   Invalid: ({ value }) => html`value="${value}"`,
@@ -85,7 +77,23 @@ export const ReviewADatasetPage = ({ form }: { form: ReviewADatasetForm.Incomple
       </form>
     `,
     canonical: Routes.ReviewADataset,
-    js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
+    js: hasAnError ? ['error-summary.js'] : [],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: ReviewADatasetForm.InvalidForm) => html`
+  ${Either.isLeft(form.whichDataset)
+    ? html`
+        <li>
+          <a href="#which-dataset">
+            ${Match.valueTags(form.whichDataset.left, {
+              Invalid: () => 'Enter a dataset DOI or URL',
+              Missing: () => 'Enter the dataset DOI or URL',
+            })}
+          </a>
+        </li>
+      `
+    : ''}
+`
