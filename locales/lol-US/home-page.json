@@ -11,6 +11,9 @@
   "requestReviewButton": {
     "message": "crwdns1846:0crwdne1846:0"
   },
+  "reviewDatasetLink": {
+    "message": "crwdns6112:0crwdne6112:0"
+  },
   "trainingTitle": {
     "message": "crwdns5942:0crwdne5942:0"
   },
