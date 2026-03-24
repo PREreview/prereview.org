@@ -59,7 +59,7 @@ lint-css: node_modules
 smoketest:
 	docker build --tag prereview-smoketest --target prod .
 	docker compose down
-	docker compose up redis --wait
+	docker compose up postgres redis --wait
 	scripts/smoke-test.sh prereview-smoketest
 	docker compose down
 

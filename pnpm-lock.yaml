@@ -40,9 +40,6 @@ importers:
       '@effect/sql':
         specifier: ^0.50.0
         version: 0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)
-      '@effect/sql-libsql':
-        specifier: ^0.40.0
-        version: 0.40.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0)
       '@effect/sql-pg':
         specifier: ^0.51.0
         version: 0.51.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0)
@@ -185,6 +182,9 @@ importers:
       '@effect/language-service':
         specifier: ^0.82.0
         version: 0.82.0
+      '@effect/sql-libsql':
+        specifier: ^0.40.0
+        version: 0.40.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0)(ioredis@5.10.1))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0)
       '@eslint/js':
         specifier: ^9.39.2
         version: 9.39.2

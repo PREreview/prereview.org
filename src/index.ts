@@ -2,7 +2,6 @@ import { OpenAiClient, OpenAiLanguageModel } from '@effect/ai-openai'
 import { ClusterWorkflowEngine, RunnerAddress } from '@effect/cluster'
 import { NodeSdk } from '@effect/opentelemetry'
 import { NodeClusterSocket, NodeHttpClient, NodeHttpServer, NodeRuntime } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
 import { PgClient } from '@effect/sql-pg'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
@@ -47,23 +46,6 @@ const PostgresClientLayer = Layer.mergeAll(
   }),
   Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
   Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
-)
-
-const LibsqlClientLayer = Layer.mergeAll(
-  LibsqlClient.layerConfig({
-    url: Schema.Config(
-      'LIBSQL_URL',
-      Schema.Union(Schema.TemplateLiteral('file:', Schema.String), Schema.Literal(':memory:'), Schema.URL),
-    ),
-    authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
-  }),
-  Layer.effectDiscard(Effect.logDebug('Libsql Database connected')),
-  Layer.scopedDiscard(Effect.addFinalizer(() => Effect.logDebug('Libsql Database disconnected'))),
-)
-
-const SqlClient = pipe(
-  PostgresClientLayer,
-  Layer.orElse(() => LibsqlClientLayer),
 )
 
 const ClusterLayer = Layer.unwrapEffect(
@@ -135,7 +117,7 @@ pipe(
       ),
       useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
     }),
-    SqlClient,
+    PostgresClientLayer,
     Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
     Layer.effect(
       Slack.SlackApi,
