@@ -59,8 +59,29 @@
   "reviewADataset": {
     "message": "crwdns6154:0crwdne6154:0"
   },
+  "backToDataset": {
+    "message": "crwdns6158:0crwdne6158:0"
+  },
+  "authoredBy": {
+    "message": "crwdns6160:0{authors}crwdne6160:0"
+  },
+  "youCanWriteAPrereview": {
+    "message": "crwdns6162:0{dataset}crwdne6162:0"
+  },
   "asYouHaveAlreadyStarted": {
     "message": "crwdns6156:0{dataset}crwdne6156:0"
+  },
+  "beforeStart": {
+    "message": "crwdns6164:0crwdne6164:0"
+  },
+  "orcidIdLogIn": {
+    "message": "crwdns6166:0crwdne6166:0"
+  },
+  "whatIsOrcidIdHeading": {
+    "message": "crwdns6168:0crwdne6168:0"
+  },
+  "whatIsOrcidId": {
+    "message": "crwdns6170:0crwdne6170:0"
   },
   "checkYourPrereview": {
     "message": "crwdns5994:0crwdne5994:0"
@@ -70,6 +91,9 @@
   },
   "title": {
     "message": "crwdns6000:0crwdne6000:0"
+  },
+  "posted": {
+    "message": "crwdns6172:0crwdne6172:0"
   },
   "repository": {
     "message": "crwdns6002:0crwdne6002:0"
@@ -98,14 +122,35 @@
   "rateQuality": {
     "message": "crwdns6020:0crwdne6020:0"
   },
+  "selectRateQuality": {
+    "message": "crwdns6174:0crwdne6174:0"
+  },
   "excellent": {
     "message": "crwdns6022:0crwdne6022:0"
+  },
+  "excellentTip": {
+    "message": "crwdns6176:0crwdne6176:0"
+  },
+  "excellentWhy": {
+    "message": "crwdns6178:0crwdne6178:0"
   },
   "fair": {
     "message": "crwdns6024:0crwdne6024:0"
   },
+  "fairTip": {
+    "message": "crwdns6180:0crwdne6180:0"
+  },
+  "fairWhy": {
+    "message": "crwdns6182:0crwdne6182:0"
+  },
   "poor": {
     "message": "crwdns6026:0crwdne6026:0"
+  },
+  "poorTip": {
+    "message": "crwdns6184:0crwdne6184:0"
+  },
+  "poorWhy": {
+    "message": "crwdns6186:0crwdne6186:0"
   },
   "dontKnow": {
     "message": "crwdns6028:0crwdne6028:0"
@@ -115,6 +160,27 @@
   },
   "followFairAndCare": {
     "message": "crwdns6032:0crwdne6032:0"
+  },
+  "selectFollowFairAndCare": {
+    "message": "crwdns6190:0crwdne6190:0"
+  },
+  "followFairAndCareYesTip": {
+    "message": "crwdns6192:0crwdne6192:0"
+  },
+  "followFairAndCareYesWhy": {
+    "message": "crwdns6194:0crwdne6194:0"
+  },
+  "followFairAndCarePartlyTip": {
+    "message": "crwdns6196:0crwdne6196:0"
+  },
+  "followFairAndCarePartlyWhy": {
+    "message": "crwdns6198:0crwdne6198:0"
+  },
+  "followFairAndCareNoTip": {
+    "message": "crwdns6200:0crwdne6200:0"
+  },
+  "followFairAndCareNoWhy": {
+    "message": "crwdns6202:0crwdne6202:0"
   },
   "yes": {
     "message": "crwdns6034:0crwdne6034:0"
