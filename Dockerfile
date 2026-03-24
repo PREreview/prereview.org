@@ -20,15 +20,22 @@ COPY package.json \
 #
 # Stage: intlc environment
 #
-FROM --platform=linux/amd64 debian:13.4-slim AS intlc
+FROM --platform=linux/amd64 debian:13.4-slim AS intlc-amd64
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-x86_64 /usr/local/bin/intlc
+RUN chmod +x /usr/local/bin/intlc
+
+FROM --platform=linux/arm64 debian:13.4-slim AS intlc-arm64
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-aarch64 /usr/local/bin/intlc
+RUN chmod +x /usr/local/bin/intlc
+
+FROM intlc-$BUILDARCH AS intlc
 WORKDIR /app
 
-ADD https://github.com/unsplash/intlc/releases/download/v0.8.3/intlc-v0.8.3-linux-x86_64 /usr/local/bin/intlc
 COPY --from=ghcr.io/tests-always-included/mo:3.0.5 /usr/local/bin/mo /usr/local/bin/mo
-
-RUN chmod +x /usr/local/bin/intlc
 
 #
 # Stage: Development NPM install
