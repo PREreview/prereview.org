@@ -17,11 +17,11 @@
   },
   "errorEnterADataset": {
     "message": "Enter a dataset DOI or URL",
-    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” without entering a value."
+    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” with an invalid value."
   },
   "errorEnterTheDataset": {
     "message": "Enter the dataset DOI or URL",
-    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” with an invalid value."
+    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” without entering a value."
   },
   "checkYourPrereview": {
     "message": "Check your PREreview",

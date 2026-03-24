@@ -54,8 +54,8 @@ export const ReviewADatasetPage = ({
                 <div class="error-message" id="which-dataset-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${Match.valueTags(form.whichDataset.left, {
-                    Invalid: () => t('errorEnterTheDataset')(),
-                    Missing: () => t('errorEnterADataset')(),
+                    Invalid: () => t('errorEnterADataset')(),
+                    Missing: () => t('errorEnterTheDataset')(),
                   })}
                 </div>
               `
@@ -93,8 +93,8 @@ const toErrorItems = (locale: SupportedLocale) => (form: ReviewADatasetForm.Inva
         <li>
           <a href="#which-dataset">
             ${Match.valueTags(form.whichDataset.left, {
-              Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
-              Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
+              Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
             })}
           </a>
         </li>
