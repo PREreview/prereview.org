@@ -42,7 +42,7 @@ export const ReviewADatasetSubmission = ({
         Effect.catchTags({
           DatasetIsNotFound: error => Effect.succeed(UnknownDatasetPage({ dataset: error.datasetId, locale })),
           DatasetIsUnavailable: () => HavingProblemsPage,
-          UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage()),
+          UnsupportedDoi: () => Effect.succeed(UnsupportedDoiPage({ locale })),
           UnsupportedUrl: () => Effect.succeed(UnsupportedUrlPage()),
           NotADataset: () => Effect.succeed(NotADatasetPage()),
         }),
