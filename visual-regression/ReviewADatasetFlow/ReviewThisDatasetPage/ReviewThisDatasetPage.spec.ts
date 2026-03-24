@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Doi } from '../../../src/types/index.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -11,7 +12,7 @@ import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewThisDatasetPage
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.ReviewThisDatasetPage({ dataset, user: Option.none() })
+  const response = _.ReviewThisDatasetPage({ dataset, locale: DefaultLocale, user: Option.none() })
 
   const content = await showPage(response)
 
@@ -19,7 +20,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when logged in', async ({ showPage }) => {
-  const response = _.ReviewThisDatasetPage({ dataset, user: Option.some(user) })
+  const response = _.ReviewThisDatasetPage({ dataset, locale: DefaultLocale, user: Option.some(user) })
 
   const content = await showPage(response)
 

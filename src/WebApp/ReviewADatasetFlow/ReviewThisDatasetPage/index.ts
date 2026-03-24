@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -17,6 +17,7 @@ export const ReviewThisDatasetPage: ({
   Effect.fn(
     function* ({ datasetId }) {
       const user = yield* Effect.serviceOption(LoggedInUser)
+      const locale = yield* Locale
 
       const { dataset, reviewId } = yield* Effect.all({
         dataset: Datasets.getDataset(datasetId),
@@ -27,7 +28,7 @@ export const ReviewThisDatasetPage: ({
       })
 
       return Option.match(reviewId, {
-        onNone: () => MakeResponse({ dataset, user }),
+        onNone: () => MakeResponse({ dataset, locale, user }),
         onSome: () =>
           Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }) }),
       })

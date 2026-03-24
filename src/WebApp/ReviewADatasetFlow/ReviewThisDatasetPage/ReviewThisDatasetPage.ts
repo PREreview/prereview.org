@@ -1,14 +1,22 @@
 import { Array, flow, Option, pipe, Struct } from 'effect'
 import rtlDetect from 'rtl-detect'
 import * as Datasets from '../../../Datasets/index.ts'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
-import { DefaultLocale } from '../../../locales/index.ts'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { DefaultLocale, translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
 import type { User } from '../../../user.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dataset; user: Option.Option<User> }) => {
+export const ReviewThisDatasetPage = ({
+  dataset,
+  locale,
+  user,
+}: {
+  dataset: Datasets.Dataset
+  locale: SupportedLocale
+  user: Option.Option<User>
+}) => {
   return PageResponse({
     title: plainText`Review a dataset`,
     nav: html`
@@ -81,7 +89,7 @@ export const ReviewThisDatasetPage = ({ dataset, user }: { dataset: Datasets.Dat
       })}
 
       <a href="${Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id })}" role="button" draggable="false"
-        >Start now</a
+        >${translate(locale, 'forms', 'startButton')()}</a
       >
     `,
     canonical: Routes.ReviewThisDataset.href({ datasetId: dataset.id }),
