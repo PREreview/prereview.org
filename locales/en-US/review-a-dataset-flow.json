@@ -212,7 +212,7 @@
     "description": "Explanation of what a PREreview pseudonym is."
   },
   "whyUseAPseudonym": {
-    "message": "Using your pseudonym, you can contribute to open preprint review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability.",
+    "message": "Using your pseudonym, you can contribute to open dataset review without fearing retribution or judgment that may occur when using your real name. However, using a pseudonym retains an element of accountability.",
     "description": "Explanation of why one might want to use a pseudonym."
   },
   "weWillLinkToYourOrcid": {
