@@ -12,6 +12,10 @@
   "requestReviewButton": {
     "message": "Request a review"
   },
+  "reviewDatasetLink": {
+    "message": "Review a dataset",
+    "description": "Text of the link that takes the user to the flow for reviewing a dataset."
+  },
   "trainingTitle": {
     "message": "Peer review training",
     "description": "Title of the section about the peer review training services that PREreview offers."

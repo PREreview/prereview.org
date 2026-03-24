@@ -49,7 +49,7 @@ export const createPage = ({
             <a href="${format(requestAPrereviewMatch.formatter, {})}"
               >${translate(locale, 'home-page', 'requestReviewButton')()}</a
             >
-            <a href="${Routes.ReviewADataset}">Review a dataset</a>
+            <a href="${Routes.ReviewADataset}">${translate(locale, 'home-page', 'reviewDatasetLink')()}</a>
           </div>
         </div>
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
