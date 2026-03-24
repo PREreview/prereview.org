@@ -53,7 +53,7 @@
   },
   "supportDatasetsFrom": {
     "message": "We support datasets from Dryad.",
-    "description": "Message shown alongside the titles “Sorry, we don’t support this DOI” and “Sorry, we don’t support this URL”."
+    "description": "Message shown alongside the titles “Sorry, we don’t support this DOI”, “Sorry, we don’t support this URL” and “Sorry, we only support datasets”."
   },
   "doiIsForDataset": {
     "message": "If this DOI is for a dataset on a repository we don’t support, please <contact>get in touch</contact>.",
@@ -66,6 +66,14 @@
   "tryDoi": {
     "message": "Otherwise, if the dataset has a DOI, please try using that instead.",
     "description": "Message shown alongside the titles “Sorry, we don’t support this URL”."
+  },
+  "notADataset": {
+    "message": "Sorry, we only support datasets",
+    "description": "Title of the page following the form “Which dataset are you reviewing?” when the DOI or URL entered is not for a dataset."
+  },
+  "isADataset": {
+    "message": "If this is a dataset, please <contact>get in touch</contact>.",
+    "description": "Message shown alongside the title “Sorry, we only support datasets”."
   },
   "checkYourPrereview": {
     "message": "Check your PREreview",
