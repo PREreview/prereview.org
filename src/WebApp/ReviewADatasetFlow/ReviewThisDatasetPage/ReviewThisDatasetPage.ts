@@ -103,7 +103,7 @@ export const ReviewThisDatasetPage = ({
       })}
 
       <a href="${Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id })}" role="button" draggable="false"
-        >${translate(locale, 'forms', 'startButton')()}</a
+        >${t('forms', 'startButton')()}</a
       >
     `,
     canonical: Routes.ReviewThisDataset.href({ datasetId: dataset.id }),

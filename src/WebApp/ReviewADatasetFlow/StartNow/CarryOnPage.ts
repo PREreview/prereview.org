@@ -35,7 +35,7 @@ export const CarryOnPage = ({
       </p>
 
       <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false"
-        >${translate(locale, 'forms', 'continueButton')()}</a
+        >${t('forms', 'continueButton')()}</a
       >
     `,
     canonical: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }),

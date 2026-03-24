@@ -23,7 +23,7 @@ export const UnsupportedUrlPage = ({ locale }: { locale: SupportedLocale }) => {
 
       <p>${t('tryDoi')()}</p>
 
-      <a href="${Routes.ReviewADataset}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
+      <a href="${Routes.ReviewADataset}" class="button">${t('forms', 'backLink')()}</a>
     `,
   })
 }

@@ -52,7 +52,7 @@ export const ReviewADatasetPage = ({
           ${hasAnError && Either.isLeft(form.whichDataset)
             ? html`
                 <div class="error-message" id="which-dataset-error">
-                  <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                  <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                   ${Match.valueTags(form.whichDataset.left, {
                     Invalid: () => t('errorEnterADataset')(),
                     Missing: () => t('errorEnterTheDataset')(),
@@ -78,7 +78,7 @@ export const ReviewADatasetPage = ({
           />
         </div>
 
-        <button>${translate(locale, 'forms', 'continueButton')()}</button>
+        <button>${t('forms', 'continueButton')()}</button>
       </form>
     `,
     canonical: Routes.ReviewADataset,

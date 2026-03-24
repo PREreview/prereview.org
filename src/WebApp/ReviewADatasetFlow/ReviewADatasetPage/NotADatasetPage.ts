@@ -21,7 +21,7 @@ export const NotADatasetPage = ({ locale }: { locale: SupportedLocale }) => {
         )}
       </p>
 
-      <a href="${Routes.ReviewADataset}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
+      <a href="${Routes.ReviewADataset}" class="button">${t('forms', 'backLink')()}</a>
     `,
   })
 }
