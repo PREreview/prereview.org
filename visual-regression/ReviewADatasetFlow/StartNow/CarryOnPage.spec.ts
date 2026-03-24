@@ -1,5 +1,6 @@
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { html } from '../../../src/html.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Doi, Uuid } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/StartNow/CarryOnPage.ts'
@@ -9,6 +10,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.CarryOnPage({
     dataset,
     datasetReviewId: Uuid.Uuid('2f65bef9-36b4-4cd9-9958-8ee740519b2f'),
+    locale: DefaultLocale,
     nextRoute: Routes.ReviewADatasetCheckYourReview,
   })
 

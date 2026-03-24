@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
 import { Uuid } from '../../../types/index.ts'
@@ -26,6 +26,7 @@ export const StartNow: ({
 > = Effect.fn(
   function* ({ datasetId }) {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const { dataset, reviewId } = yield* Effect.all({
       dataset: Datasets.getDatasetTitle(datasetId),
@@ -55,7 +56,7 @@ export const StartNow: ({
             DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
           )
 
-          return CarryOnPage({ dataset, datasetReviewId, nextRoute: RouteForCommand(nextExpectedCommand) })
+          return CarryOnPage({ dataset, datasetReviewId, locale, nextRoute: RouteForCommand(nextExpectedCommand) })
         },
         Effect.catchTag('UnknownDatasetReview', 'NoSuchElementException', () => HavingProblemsPage),
       ),

@@ -1,6 +1,7 @@
 import rtlDetect from 'rtl-detect'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { PageResponse } from '../../Response/index.ts'
@@ -8,13 +9,18 @@ import { PageResponse } from '../../Response/index.ts'
 export const CarryOnPage = ({
   dataset,
   datasetReviewId,
+  locale,
   nextRoute,
 }: {
   dataset: Datasets.DatasetTitle
   datasetReviewId: Uuid.Uuid
+  locale: SupportedLocale
   nextRoute: Routes.Route<{ datasetReviewId: Uuid.Uuid }>
-}) =>
-  PageResponse({
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
+  return PageResponse({
     title: plainText`Review a dataset`,
     main: html`
       <h1>Review a dataset</h1>
@@ -25,7 +31,10 @@ export const CarryOnPage = ({
         take you to the next step so you can carry&nbsp;on.
       </p>
 
-      <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false">Continue</a>
+      <a href="${nextRoute.href({ datasetReviewId })}" role="button" draggable="false"
+        >${translate(locale, 'forms', 'continueButton')()}</a
+      >
     `,
     canonical: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }),
   })
+}
