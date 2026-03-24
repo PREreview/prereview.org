@@ -143,7 +143,7 @@ export const CodeOfConductPage = ({
                   Match.orElse(() => ''),
                 )}
               />
-              <span>${translate(locale, 'write-comment-flow', 'followingCodeOfConduct')()} </span>
+              <span>${translate(locale, 'write-comment-flow', 'followingCodeOfConduct')()}</span>
             </label>
           </fieldset>
         </div>

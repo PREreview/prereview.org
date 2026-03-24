@@ -414,7 +414,7 @@ export const CheckYourReviewPage = ({
                   onSome: answerToIfTheDatasetIsMissingAnything => html`
                     <div>
                       <dt>
-                        <span>${t('anythingMissing')()} </span>
+                        <span>${t('anythingMissing')()}</span>
                       </dt>
                       <dd>
                         ${Option.getOrElse(
