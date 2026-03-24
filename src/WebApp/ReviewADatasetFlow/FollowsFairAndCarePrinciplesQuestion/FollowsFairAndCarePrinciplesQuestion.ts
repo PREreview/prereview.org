@@ -22,7 +22,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
 
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Does this dataset follow FAIR and CARE principles?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('followFairAndCare')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" class="back">
         <span>${t('forms', 'backLink')()}</span>
@@ -47,7 +47,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
               )}
             >
               <legend>
-                <h1>Does this dataset follow FAIR and CARE principles?</h1>
+                <h1>${t('followFairAndCare')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
@@ -55,7 +55,7 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                     <div class="error-message" id="findings-next-steps-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
-                        Missing: () => 'Select if the dataset follows FAIR and CARE principles',
+                        Missing: () => t('selectFollowFairAndCare')(),
                       })}
                     </div>
                   `
@@ -77,15 +77,13 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="follows-fair-and-care-principles-tip-yes" role="note">
-                    The dataset has enough metadata and follows the FAIR and CARE principles.
-                  </p>
+                  <p id="follows-fair-and-care-principles-tip-yes" role="note">${t('followFairAndCareYesTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-yes-control">
                     <div>
                       <label for="follows-fair-and-care-principles-yes-detail" class="textarea"
-                        >How does it follow the principles? (optional)</label
+                        >${t('followFairAndCareYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="followsFairAndCarePrinciplesYesDetail"
@@ -120,15 +118,15 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
                   <p id="follows-fair-and-care-principles-tip-partly" role="note">
-                    The dataset has some metadata and follows some FAIR and CARE principles, but minor problems exist.
+                    ${t('followFairAndCarePartlyTip')()}
                   </p>
                   <div class="conditional" id="follows-fair-and-care-principles-partly-control">
                     <div>
                       <label for="follows-fair-and-care-principles-partly-detail" class="textarea"
-                        >How does it partly follow the principles? (optional)</label
+                        >${t('followFairAndCarePartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="followsFairAndCarePrinciplesPartlyDetail"
@@ -163,15 +161,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="follows-fair-and-care-principles-tip-no" role="note">
-                    The dataset lacks enough metadata and does not follow the FAIR and CARE principles.
-                  </p>
+                  <p id="follows-fair-and-care-principles-tip-no" role="note">${t('followFairAndCareNoTip')()}</p>
                   <div class="conditional" id="follows-fair-and-care-principles-no-control">
                     <div>
                       <label for="follows-fair-and-care-principles-no-detail" class="textarea"
-                        >How does it not follow the principles? (optional)</label
+                        >${t('followFairAndCareNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="followsFairAndCarePrinciplesNoDetail"
@@ -206,7 +202,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -223,7 +219,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.followsFairAndCarePrinciples)
     ? html`
@@ -231,7 +226,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#follows-fair-and-care-principles-yes">
             ${pipe(
               Match.value(form.followsFairAndCarePrinciples.left),
-              Match.tag('Missing', () => 'Select if the dataset follows FAIR and CARE principles'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectFollowFairAndCare')()),
               Match.exhaustive,
             )}
           </a>

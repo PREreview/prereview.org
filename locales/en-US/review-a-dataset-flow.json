@@ -215,6 +215,34 @@
     "message": "Does this dataset follow FAIR and CARE principles?",
     "description": "Label for the question about whether the dataset follows FAIR and CARE principles."
   },
+  "selectFollowFairAndCare": {
+    "message": "Select if the dataset follows FAIR and CARE principles",
+    "description": "Error message shown when the user tries to complete the form “Does this dataset follow FAIR and CARE principles?” without selecting an option."
+  },
+  "followFairAndCareYesTip": {
+    "message": "The dataset has enough metadata and follows the FAIR and CARE principles.",
+    "description": "Tip shown alongside the “Yes” option for the question “Does this dataset follow FAIR and CARE principles?”."
+  },
+  "followFairAndCareYesWhy": {
+    "message": "How does it follow the principles?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Does this dataset follow FAIR and CARE principles?”."
+  },
+  "followFairAndCarePartlyTip": {
+    "message": "The dataset has some metadata and follows some FAIR and CARE principles, but minor problems exist.",
+    "description": "Tip shown alongside the “Partly” option for the question “Does this dataset follow FAIR and CARE principles?”."
+  },
+  "followFairAndCarePartlyWhy": {
+    "message": "How does it partly follow the principles?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Does this dataset follow FAIR and CARE principles?”."
+  },
+  "followFairAndCareNoTip": {
+    "message": "The dataset lacks enough metadata and does not follow the FAIR and CARE principles.",
+    "description": "Tip shown alongside the “No” option for the question “Does this dataset follow FAIR and CARE principles?”."
+  },
+  "followFairAndCareNoWhy": {
+    "message": "How does it not follow the principles?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Does this dataset follow FAIR and CARE principles?”."
+  },
   "yes": {
     "message": "Yes",
     "description": "Option for indicating that the user agrees with the statement."
