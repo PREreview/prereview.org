@@ -75,6 +75,14 @@
     "message": "If this is a dataset, please <contact>get in touch</contact>.",
     "description": "Message shown alongside the title “Sorry, we only support datasets”."
   },
+  "reviewADataset": {
+    "message": "Review a dataset",
+    "description": "Title of the page where the user can continue the process of reviewing a dataset."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "As you’ve already started a PREreview of {dataset}, we’ll take you to the next step so you can carry on.",
+    "description": "Message shown alongside the title “Review a dataset” when the user has already started a PREreview of the dataset."
+  },
   "checkYourPrereview": {
     "message": "Check your PREreview",
     "description": "Title of the page where the user can check their PREreview before publishing it."
