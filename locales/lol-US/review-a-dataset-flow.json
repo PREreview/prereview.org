@@ -17,6 +17,51 @@
   "errorEnterTheDataset": {
     "message": "crwdns6126:0crwdne6126:0"
   },
+  "dontKnowDataset": {
+    "message": "crwdns6128:0crwdne6128:0"
+  },
+  "doiCouldBeDryad": {
+    "message": "crwdns6130:0{doi}crwdne6130:0"
+  },
+  "checkCorrectDoi": {
+    "message": "crwdns6132:0crwdne6132:0"
+  },
+  "checkPastedDoi": {
+    "message": "crwdns6134:0crwdne6134:0"
+  },
+  "doiIsCorrect": {
+    "message": "crwdns6136:0crwdne6136:0"
+  },
+  "unsupportedDoi": {
+    "message": "crwdns6138:0crwdne6138:0"
+  },
+  "unsupportedUrl": {
+    "message": "crwdns6144:0crwdne6144:0"
+  },
+  "supportDatasetsFrom": {
+    "message": "crwdns6140:0crwdne6140:0"
+  },
+  "doiIsForDataset": {
+    "message": "crwdns6142:0crwdne6142:0"
+  },
+  "urlIsForDataset": {
+    "message": "crwdns6146:0crwdne6146:0"
+  },
+  "tryDoi": {
+    "message": "crwdns6148:0crwdne6148:0"
+  },
+  "notADataset": {
+    "message": "crwdns6150:0crwdne6150:0"
+  },
+  "isADataset": {
+    "message": "crwdns6152:0crwdne6152:0"
+  },
+  "reviewADataset": {
+    "message": "crwdns6154:0crwdne6154:0"
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "crwdns6156:0{dataset}crwdne6156:0"
+  },
   "checkYourPrereview": {
     "message": "crwdns5994:0crwdne5994:0"
   },
