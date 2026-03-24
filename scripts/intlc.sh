@@ -48,14 +48,25 @@ compile_module() {
 #############################
 # Compile modules in parallel
 declare -a pids
+max_jobs=$(nproc)
+
+queue_compile_module() {
+  local target="$1"
+  local module="$2"
+
+  while [ "$(jobs -pr | wc -l)" -ge "$max_jobs" ]; do
+    sleep 0.1
+  done
+
+  compile_module "$target" "$module" &
+  pids+=($!)
+}
 
 for module in "${assetsModules[@]}"; do
-  compile_module "assets" "$module" &
-  pids+=($!)
+  queue_compile_module "assets" "$module"
 done
 for module in "${srcModules[@]}"; do
-  compile_module "src" "$module" &
-  pids+=($!)
+  queue_compile_module "src" "$module"
 done
 
 for pid in "${pids[@]}"; do
