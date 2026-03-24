@@ -3,12 +3,14 @@ import * as FollowsFairAndCarePrinciplesForm from '../../../src/WebApp/ReviewADa
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/FollowsFairAndCarePrinciplesQuestion/FollowsFairAndCarePrinciplesQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.FollowsFairAndCarePrinciplesQuestion({
     datasetReviewId,
     form: new FollowsFairAndCarePrinciplesForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +27,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       followsFairAndCarePrinciplesPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       followsFairAndCarePrinciplesNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +44,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       followsFairAndCarePrinciplesPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
       followsFairAndCarePrinciplesNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

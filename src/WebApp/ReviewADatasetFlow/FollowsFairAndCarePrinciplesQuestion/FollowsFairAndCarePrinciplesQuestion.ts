@@ -1,24 +1,31 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { FollowsFairAndCarePrinciplesForm } from './FollowsFairAndCarePrinciplesForm.ts'
+import type { FollowsFairAndCarePrinciplesForm, InvalidForm } from './FollowsFairAndCarePrinciplesForm.ts'
 
 export const FollowsFairAndCarePrinciplesQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: FollowsFairAndCarePrinciplesForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does this dataset follow FAIR and CARE principles?`,
+    title: pipe('Does this dataset follow FAIR and CARE principles?', errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetRateTheQuality.href({ datasetReviewId })}" class="back">
-        <span>Back</span>
+        <span>${t('forms', 'backLink')()}</span>
       </a>
     `,
     main: html`
@@ -27,35 +34,14 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
         action="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}"
         novalidate
       >
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.followsFairAndCarePrinciples)
-                    ? html`
-                        <li>
-                          <a href="#follows-fair-and-care-principles-yes">
-                            ${pipe(
-                              Match.value(form.followsFairAndCarePrinciples.left),
-                              Match.tag('Missing', () => 'Select if the dataset follows FAIR and CARE principles'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
+                hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
                   ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
                   : '',
               )}
@@ -64,10 +50,10 @@ export const FollowsFairAndCarePrinciplesQuestion = ({
                 <h1>Does this dataset follow FAIR and CARE principles?</h1>
               </legend>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.followsFairAndCarePrinciples)
+              ${hasAnError && Either.isLeft(form.followsFairAndCarePrinciples)
                 ? html`
                     <div class="error-message" id="findings-next-steps-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.followsFairAndCarePrinciples.left, {
                         Missing: () => 'Select if the dataset follows FAIR and CARE principles',
                       })}
@@ -207,7 +193,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="followsFairAndCarePrinciples"
@@ -228,11 +214,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  Either.isLeft(form.followsFairAndCarePrinciples)
+    ? html`
+        <li>
+          <a href="#follows-fair-and-care-principles-yes">
+            ${pipe(
+              Match.value(form.followsFairAndCarePrinciples.left),
+              Match.tag('Missing', () => 'Select if the dataset follows FAIR and CARE principles'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : html``
