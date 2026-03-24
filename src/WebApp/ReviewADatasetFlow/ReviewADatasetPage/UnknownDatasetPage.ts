@@ -1,11 +1,15 @@
 import { Match } from 'effect'
 import type * as Datasets from '../../../Datasets/index.ts'
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const UnknownDatasetPage = ({ dataset }: { dataset: Datasets.DatasetId }) => {
+export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.DatasetId; locale: SupportedLocale }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return PageResponse({
     status: StatusCodes.BadRequest,
     title: plainText('Sorry, we don’t know this dataset'),
@@ -26,7 +30,7 @@ export const UnknownDatasetPage = ({ dataset }: { dataset: Datasets.DatasetId })
 
       <p>If the DOI is correct, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
 
-      <a href="${Routes.ReviewADataset}" class="button">Back</a>
+      <a href="${Routes.ReviewADataset}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
     `,
   })
 }
