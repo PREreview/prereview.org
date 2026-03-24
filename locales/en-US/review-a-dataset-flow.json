@@ -1,4 +1,28 @@
 {
+  "whichDataset": {
+    "message": "Which dataset are you reviewing?",
+    "description": "Heading for the question about which dataset the user is reviewing."
+  },
+  "useDoiUrl": {
+    "message": "Use the dataset DOI or URL.",
+    "description": "Instruction alongside the question “Which dataset are you reviewing?”."
+  },
+  "whatIsDoi": {
+    "message": "What is a DOI?",
+    "description": "Heading for the explanation of what a DOI is."
+  },
+  "whatIsDoiText": {
+    "message": "A <doi>DOI</doi> is a unique identifier that you can find on many datasets. For example, {example} or {exampleUrl}.",
+    "description": "Text following the heading “What is a DOI?” that explains what a DOI is and gives examples of what a DOI looks like."
+  },
+  "errorEnterADataset": {
+    "message": "Enter a dataset DOI or URL",
+    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” without entering a value."
+  },
+  "errorEnterTheDataset": {
+    "message": "Enter the dataset DOI or URL",
+    "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” with an invalid value."
+  },
   "checkYourPrereview": {
     "message": "Check your PREreview",
     "description": "Title of the page where the user can check their PREreview before publishing it."

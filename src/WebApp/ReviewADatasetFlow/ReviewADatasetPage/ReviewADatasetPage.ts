@@ -1,5 +1,5 @@
 import { Either, Match, pipe } from 'effect'
-import { html, plainText } from '../../../html.ts'
+import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix, errorSummary } from '../../../shared-translation-elements.ts'
@@ -15,31 +15,36 @@ export const ReviewADatasetPage = ({
   locale: SupportedLocale
 }) => {
   const hasAnError = form._tag === 'InvalidForm'
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = translate(locale, 'review-a-dataset-flow')
 
   return PageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Which dataset are you reviewing?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('whichDataset')(), errorPrefix(locale, hasAnError), plainText),
     main: html`
       <form method="post" action="${Routes.ReviewADataset}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${hasAnError ? 'class="error"' : ''}>
           <h1>
-            <label id="which-dataset-label" for="which-dataset">Which dataset are you reviewing?</label>
+            <label id="which-dataset-label" for="which-dataset">${t('whichDataset')()}</label>
           </h1>
 
-          <p id="which-dataset-tip" role="note">Use the dataset DOI or URL.</p>
+          <p id="which-dataset-tip" role="note">${t('useDoiUrl')()}</p>
 
           <details>
-            <summary><span>What is a DOI?</span></summary>
+            <summary><span>${t('whatIsDoi')()}</span></summary>
 
             <div>
               <p>
-                A <a href="https://www.doi.org/"><dfn>DOI</dfn></a> is a unique identifier that you can find on many
-                datasets. For example, <q class="select-all" translate="no">10.5061/dryad.wstqjq2n3</q> or
-                <q class="select-all" translate="no">https://doi.org/10.5061/dryad.wstqjq2n3</q>.
+                ${rawHtml(
+                  t('whatIsDoiText')({
+                    doi: text => html`<a href="https://www.doi.org/"><dfn>${text}</dfn></a>`.toString(),
+                    example: html`<q class="select-all" translate="no">10.5061/dryad.wstqjq2n3</q>`.toString(),
+                    exampleUrl: html`<q class="select-all" translate="no"
+                      >https://doi.org/10.5061/dryad.wstqjq2n3</q
+                    >`.toString(),
+                  }),
+                )}
               </p>
             </div>
           </details>
@@ -49,8 +54,8 @@ export const ReviewADatasetPage = ({
                 <div class="error-message" id="which-dataset-error">
                   <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                   ${Match.valueTags(form.whichDataset.left, {
-                    Invalid: () => 'Enter a dataset DOI or URL',
-                    Missing: () => 'Enter the dataset DOI or URL',
+                    Invalid: () => t('errorEnterTheDataset')(),
+                    Missing: () => t('errorEnterADataset')(),
                   })}
                 </div>
               `
@@ -73,7 +78,7 @@ export const ReviewADatasetPage = ({
           />
         </div>
 
-        <button>Continue</button>
+        <button>${translate(locale, 'forms', 'continueButton')()}</button>
       </form>
     `,
     canonical: Routes.ReviewADataset,
@@ -82,15 +87,14 @@ export const ReviewADatasetPage = ({
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: ReviewADatasetForm.InvalidForm) => html`
   ${Either.isLeft(form.whichDataset)
     ? html`
         <li>
           <a href="#which-dataset">
             ${Match.valueTags(form.whichDataset.left, {
-              Invalid: () => 'Enter a dataset DOI or URL',
-              Missing: () => 'Enter the dataset DOI or URL',
+              Invalid: () => translate(locale, 'review-a-dataset-flow', 'errorEnterTheDataset')(),
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'errorEnterADataset')(),
             })}
           </a>
         </li>
