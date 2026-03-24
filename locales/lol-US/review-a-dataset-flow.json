@@ -1,4 +1,22 @@
 {
+  "whichDataset": {
+    "message": "crwdns6116:0crwdne6116:0"
+  },
+  "useDoiUrl": {
+    "message": "crwdns6118:0crwdne6118:0"
+  },
+  "whatIsDoi": {
+    "message": "crwdns6120:0crwdne6120:0"
+  },
+  "whatIsDoiText": {
+    "message": "crwdns6122:0{example}crwdnd6122:0{exampleUrl}crwdne6122:0"
+  },
+  "errorEnterADataset": {
+    "message": "crwdns6124:0crwdne6124:0"
+  },
+  "errorEnterTheDataset": {
+    "message": "crwdns6126:0crwdne6126:0"
+  },
   "checkYourPrereview": {
     "message": "crwdns5994:0crwdne5994:0"
   },
