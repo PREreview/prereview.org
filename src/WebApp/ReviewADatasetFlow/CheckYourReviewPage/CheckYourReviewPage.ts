@@ -365,7 +365,7 @@ export const CheckYourReviewPage = ({
                           Match.when('very-consequential', t('veryConsequential')),
                           Match.when('somewhat-consequential', t('somewhatConsequential')),
                           Match.when('not-consequential', t('notConsequential')),
-                          Match.when('unsure', () => 'I don’t know'),
+                          Match.when('unsure', t('dontKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
