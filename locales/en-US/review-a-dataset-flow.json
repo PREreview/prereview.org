@@ -56,7 +56,7 @@
     "description": "Title of the page following the form “Which dataset are you reviewing?” when we can’t workout the dataset DOI from the URL."
   },
   "supportDatasetsFrom": {
-    "message": "We support datasets from Dryad.",
+    "message": "We support datasets from Dryad and SciELO.",
     "description": "Message shown alongside the titles “Sorry, we don’t support this DOI”, “Sorry, we don’t support this URL” and “Sorry, we only support datasets”."
   },
   "doiIsForDataset": {
