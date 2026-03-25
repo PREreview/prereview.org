@@ -3,12 +3,14 @@ import * as IsAppropriateForThisKindOfResearchForm from '../../../src/WebApp/Rev
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsAppropriateForThisKindOfResearchQuestion/IsAppropriateForThisKindOfResearchQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsAppropriateForThisKindOfResearchQuestion({
     datasetReviewId,
     form: new IsAppropriateForThisKindOfResearchForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +27,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       isAppropriateForThisKindOfResearchPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       isAppropriateForThisKindOfResearchNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -43,6 +46,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       ),
       isAppropriateForThisKindOfResearchNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

@@ -1,24 +1,35 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { IsAppropriateForThisKindOfResearchForm } from './IsAppropriateForThisKindOfResearchForm.ts'
+import type { InvalidForm, IsAppropriateForThisKindOfResearchForm } from './IsAppropriateForThisKindOfResearchForm.ts'
 
 export const IsAppropriateForThisKindOfResearchQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: IsAppropriateForThisKindOfResearchForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is the dataset well-suited to support its stated research purpose?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe(
+      'Is the dataset well-suited to support its stated research purpose?',
+      errorPrefix(locale, hasAnError),
+      plainText,
+    ),
     nav: html`
       <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}" class="back"
-        ><span>Back</span></a
+        ><span>${t('forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -27,35 +38,14 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
         action="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}"
         novalidate
       >
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.isAppropriateForThisKindOfResearch)
-                    ? html`
-                        <li>
-                          <a href="#is-appropriate-for-this-kind-of-research-question-yes">
-                            ${pipe(
-                              Match.value(form.isAppropriateForThisKindOfResearch.left),
-                              Match.tag('Missing', () => 'Select if the dataset is well-suited'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.isAppropriateForThisKindOfResearch)
+                hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
                   ? 'aria-invalid="true" aria-errormessage="is-appropriate-for-this-kind-of-research-question-error"'
                   : '',
               )}
@@ -64,10 +54,10 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                 <h1>Is the dataset well-suited to support its stated research purpose?</h1>
               </legend>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.isAppropriateForThisKindOfResearch)
+              ${hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
                 ? html`
                     <div class="error-message" id="is-appropriate-for-this-kind-of-research-question-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isAppropriateForThisKindOfResearch.left, {
                         Missing: () => 'Select if the dataset is well-suited',
                       })}
@@ -244,11 +234,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  Either.isLeft(form.isAppropriateForThisKindOfResearch)
+    ? html`
+        <li>
+          <a href="#is-appropriate-for-this-kind-of-research-question-yes">
+            ${pipe(
+              Match.value(form.isAppropriateForThisKindOfResearch.left),
+              Match.tag('Missing', () => 'Select if the dataset is well-suited'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : html``
