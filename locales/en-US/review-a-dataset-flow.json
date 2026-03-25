@@ -443,6 +443,34 @@
     "message": "Is the dataset granular enough to be a reliable standard of measurement?",
     "description": "Label for the question about whether the data is detailed enough."
   },
+  "selectGranularEnough": {
+    "message": "Select if the dataset is granular enough",
+    "description": "Error message shown when the user tries to complete the form “Is the dataset granular enough to be a reliable standard of measurement?” without selecting an option."
+  },
+  "granularEnoughYesTip": {
+    "message": "The dataset provides data at a detailed or granular enough level to seem trustworthy as a standard of measurement or truth.",
+    "description": "Tip shown alongside the “Yes” option for the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
+  "granularEnoughYesWhy": {
+    "message": "How is it detailed enough?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
+  "granularEnoughPartlyTip": {
+    "message": "Some of the data in the dataset provides data at a detailed or granular enough level to seem trustworthy as a standard of measurement or truth, but not all of it.",
+    "description": "Tip shown alongside the “Partly” option for the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
+  "granularEnoughPartlyWhy": {
+    "message": "How is it only partly granular enough? Which parts need to be more detailed?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
+  "granularEnoughNoTip": {
+    "message": "The dataset doesn’t provide data at a detailed or granular enough level to seem trustworthy as a standard of measurement or truth.",
+    "description": "Tip shown alongside the “No” option for the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
+  "granularEnoughNoWhy": {
+    "message": "How is it not detailed enough?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Is the dataset granular enough to be a reliable standard of measurement?”."
+  },
   "changeGranularEnough": {
     "message": "Change <visuallyHidden>if the dataset is granular enough</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Is the dataset granular enough to be a reliable standard of measurement?”."

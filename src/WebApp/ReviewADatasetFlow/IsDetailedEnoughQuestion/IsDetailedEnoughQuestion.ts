@@ -22,11 +22,7 @@ export const IsDetailedEnoughQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Is the dataset granular enough to be a reliable standard of measurement?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('granularEnough')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetSupportsRelatedConclusions.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -47,7 +43,7 @@ export const IsDetailedEnoughQuestion = ({
               )}
             >
               <legend>
-                <h1>Is the dataset granular enough to be a reliable standard of measurement?</h1>
+                <h1>${t('granularEnough')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.isDetailedEnough)
@@ -55,7 +51,7 @@ export const IsDetailedEnoughQuestion = ({
                     <div class="error-message" id="is-detailed-enough-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isDetailedEnough.left, {
-                        Missing: () => 'Select if the dataset is granular enough',
+                        Missing: () => t('selectGranularEnough')(),
                       })}
                     </div>
                   `
@@ -77,16 +73,13 @@ export const IsDetailedEnoughQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="is-detailed-enough-tip-yes" role="note">
-                    The dataset provides data at a detailed or granular enough level to seem trustworthy as a standard
-                    of measurement or truth.
-                  </p>
+                  <p id="is-detailed-enough-tip-yes" role="note">${t('granularEnoughYesTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-yes-control">
                     <div>
                       <label for="is-detailed-enough-yes-detail" class="textarea"
-                        >How is it detailed enough? (optional)</label
+                        >${t('granularEnoughYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isDetailedEnoughYesDetail" id="is-detailed-enough-yes-detail" rows="5">
 ${Match.valueTags(form, {
@@ -116,16 +109,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="is-detailed-enough-tip-partly" role="note">
-                    Some of the data in the dataset provides data at a detailed or granular enough level to seem
-                    trustworthy as a standard of measurement or truth, but not all of it.
-                  </p>
+                  <p id="is-detailed-enough-tip-partly" role="note">${t('granularEnoughPartlyTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-partly-control">
                     <div>
                       <label for="is-detailed-enough-partly-detail" class="textarea"
-                        >How is it only partly granular enough? Which parts need to be more detailed? (optional)</label
+                        >${t('granularEnoughPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isDetailedEnoughPartlyDetail" id="is-detailed-enough-partly-detail" rows="5">
 ${Match.valueTags(form, {
@@ -156,16 +146,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="is-detailed-enough-tip-no" role="note">
-                    The dataset doesn’t provide data at a detailed or granular enough level to seem trustworthy as a
-                    standard of measurement or truth.
-                  </p>
+                  <p id="is-detailed-enough-tip-no" role="note">${t('granularEnoughNoTip')()}</p>
                   <div class="conditional" id="is-detailed-enough-no-control">
                     <div>
                       <label for="is-detailed-enough-no-detail" class="textarea"
-                        >How is it not detailed enough? (optional)</label
+                        >${t('granularEnoughNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isDetailedEnoughNoDetail" id="is-detailed-enough-no-detail" rows="5">
 ${Match.valueTags(form, {
@@ -182,7 +169,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="isDetailedEnough"
@@ -195,7 +182,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -212,7 +199,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.isDetailedEnough)
     ? html`
@@ -220,7 +206,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#is-detailed-enough-yes">
             ${pipe(
               Match.value(form.isDetailedEnough.left),
-              Match.tag('Missing', () => 'Select if the dataset is granular enough'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectGranularEnough')()),
               Match.exhaustive,
             )}
           </a>
