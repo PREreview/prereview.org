@@ -22,11 +22,7 @@ export const SupportsRelatedConclusionsQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Does this dataset support the researcher’s stated conclusions?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('supportsConclusion')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsAppropriateForThisKindOfResearch.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -51,15 +47,15 @@ export const SupportsRelatedConclusionsQuestion = ({
               )}
             >
               <legend>
-                <h1>Does this dataset support the researcher’s stated conclusions?</h1>
+                <h1>${t('supportsConclusion')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.supportsRelatedConclusions)
                 ? html`
                     <div class="error-message" id="supports-related-conclusions-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
                       ${Match.valueTags(form.supportsRelatedConclusions.left, {
-                        Missing: () => 'Select if the dataset supports the conclusions',
+                        Missing: () => t('selectSupportsConclusion')(),
                       })}
                     </div>
                   `
@@ -81,16 +77,13 @@ export const SupportsRelatedConclusionsQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="supports-related-conclusions-tip-yes" role="note">
-                    This dataset clearly supports the researcher’s conclusions about it—or is likely to support clear
-                    conclusions—and does not require creative interpretation or overreach to do so.
-                  </p>
+                  <p id="supports-related-conclusions-tip-yes" role="note">${t('supportsConclusionYesTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-yes-control">
                     <div>
                       <label for="supports-related-conclusions-yes-detail" class="textarea"
-                        >How does it support the conclusions? (optional)</label
+                        >${t('supportsConclusionYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="supportsRelatedConclusionsYesDetail"
@@ -125,17 +118,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="supports-related-conclusions-tip-partly" role="note">
-                    This dataset supports some of the researcher’s conclusions about it—or is likely to support some
-                    clear conclusions—but does not clearly support some of the researcher’s conclusions or is unlikely
-                    to do so because of minor issues.
-                  </p>
+                  <p id="supports-related-conclusions-tip-partly" role="note">${t('supportsConclusionPartlyTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-partly-control">
                     <div>
                       <label for="supports-related-conclusions-partly-detail" class="textarea"
-                        >How does it partly support the conclusions? (optional)</label
+                        >${t('supportsConclusionPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="supportsRelatedConclusionsPartlyDetail"
@@ -170,16 +159,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="supports-related-conclusions-tip-no" role="note">
-                    This dataset does not support the researcher’s conclusions about it—or it is unlikely to support any
-                    clear conclusions—without flawed analysis or overreach.
-                  </p>
+                  <p id="supports-related-conclusions-tip-no" role="note">${t('supportsConclusionNoTip')()}</p>
                   <div class="conditional" id="supports-related-conclusions-no-control">
                     <div>
                       <label for="supports-related-conclusions-no-detail" class="textarea"
-                        >How does it not support the conclusions? (optional)</label
+                        >${t('supportsConclusionNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="supportsRelatedConclusionsNoDetail"
@@ -201,7 +187,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="supportsRelatedConclusions"
@@ -214,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -231,7 +217,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.supportsRelatedConclusions)
     ? html`
@@ -239,7 +224,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#supports-related-conclusions-yes">
             ${pipe(
               Match.value(form.supportsRelatedConclusions.left),
-              Match.tag('Missing', () => 'Select if the dataset supports the conclusions'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSupportsConclusion')()),
               Match.exhaustive,
             )}
           </a>

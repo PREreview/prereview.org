@@ -407,6 +407,34 @@
     "message": "Does this dataset support the researcher’s stated conclusions?",
     "description": "Label for the question about whether the dataset supports supports related conclusions."
   },
+  "selectSupportsConclusion": {
+    "message": "Select if the dataset supports the conclusions",
+    "description": "Error message shown when the user tries to complete the form “Does this dataset support the researcher’s stated conclusions?” without selecting an option."
+  },
+  "supportsConclusionYesTip": {
+    "message": "This dataset clearly supports the researcher’s conclusions about it—or is likely to support clear conclusions—and does not require creative interpretation or overreach to do so.",
+    "description": "Tip shown alongside the “Yes” option for the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
+  "supportsConclusionYesWhy": {
+    "message": "How does it support the conclusions?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
+  "supportsConclusionPartlyTip": {
+    "message": "This dataset supports some of the researcher’s conclusions about it—or is likely to support some clear conclusions—but does not clearly support some of the researcher’s conclusions or is unlikely to do so because of minor issues.",
+    "description": "Tip shown alongside the “Partly” option for the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
+  "supportsConclusionPartlyWhy": {
+    "message": "How does it partly support the conclusions?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
+  "supportsConclusionNoTip": {
+    "message": "This dataset does not support the researcher’s conclusions about it—or it is unlikely to support any clear conclusions—without flawed analysis or overreach.",
+    "description": "Tip shown alongside the “No” option for the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
+  "supportsConclusionNoWhy": {
+    "message": "How does it not support the conclusions?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Does this dataset support the researcher’s stated conclusions?”."
+  },
   "changeSupportsConclusion": {
     "message": "Change <visuallyHidden>if the dataset supports the conclusions</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Does this dataset support the researcher’s stated conclusions?”."
