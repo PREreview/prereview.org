@@ -267,6 +267,34 @@
     "message": "Does the dataset have enough metadata?",
     "description": "Label for the question about whether the dataset has enough metadata."
   },
+  "selectEnoughMetadata": {
+    "message": "Select if the dataset has enough metadata",
+    "description": "Error message shown when the user tries to complete the form “Does the dataset have enough metadata?” without selecting an option."
+  },
+  "enoughMetadataYesTip": {
+    "message": "The dataset includes enough metadata such as its datatype, tools and methods used to gather and analyze the data, ethical considerations used during data collection and analysis, and support documentation such as a glossary, README, or software recommendations.",
+    "description": "Tip shown alongside the “Yes” option for the question “Does the dataset have enough metadata?”."
+  },
+  "enoughMetadataYesWhy": {
+    "message": "What metadata does it have?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Does the dataset have enough metadata?”."
+  },
+  "enoughMetadataPartlyTip": {
+    "message": "The dataset includes some of the information listed above, but more is needed to fully understand how the data were gathered, analyzed, and otherwise used.",
+    "description": "Tip shown alongside the “Partly” option for the question “Does the dataset have enough metadata?”."
+  },
+  "enoughMetadataPartlyWhy": {
+    "message": "What metadata does it have, and what is missing?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Does the dataset have enough metadata?”."
+  },
+  "enoughMetadataNoTip": {
+    "message": "The dataset does not include enough metadata to help understand how the data were gathered, analyzed, and otherwise used.",
+    "description": "Tip shown alongside the “No” option for the question “Does the dataset have enough metadata?”."
+  },
+  "enoughMetadataNoWhy": {
+    "message": "What metadata is missing?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Does the dataset have enough metadata?”."
+  },
   "changeEnoughMetadata": {
     "message": "Change <visuallyHidden>if the dataset has enough metadata</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Does the dataset have enough metadata?”."

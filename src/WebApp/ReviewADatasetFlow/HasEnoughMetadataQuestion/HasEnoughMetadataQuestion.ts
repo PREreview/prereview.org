@@ -22,7 +22,7 @@ export const HasEnoughMetadataQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Does the dataset have enough metadata?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('enoughMetadata')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}" class="back">
         <span>${t('forms', 'backLink')()}</span>
@@ -43,15 +43,15 @@ export const HasEnoughMetadataQuestion = ({
               )}
             >
               <legend>
-                <h1>Does the dataset have enough metadata?</h1>
+                <h1>${t('enoughMetadata')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.hasEnoughMetadata)
                 ? html`
                     <div class="error-message" id="has-enough-metadata-error">
-                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.hasEnoughMetadata.left, {
-                        Missing: () => 'Select if the dataset has enough metadata',
+                        Missing: () => t('selectEnoughMetadata')(),
                       })}
                     </div>
                   `
@@ -73,17 +73,13 @@ export const HasEnoughMetadataQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="has-enough-metadata-tip-yes" role="note">
-                    The dataset includes enough metadata such as its datatype, tools and methods used to gather and
-                    analyze the data, ethical considerations used during data collection and analysis, and support
-                    documentation such as a glossary, README, or software recommendations.
-                  </p>
+                  <p id="has-enough-metadata-tip-yes" role="note">${t('enoughMetadataYesTip')()}</p>
                   <div class="conditional" id="has-enough-metadata-yes-control">
                     <div>
                       <label for="has-enough-metadata-yes-detail" class="textarea"
-                        >What metadata does it have? (optional)</label
+                        >${t('enoughMetadataYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasEnoughMetadataYesDetail" id="has-enough-metadata-yes-detail" rows="5">
 ${Match.valueTags(form, {
@@ -113,16 +109,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="has-enough-metadata-tip-partly" role="note">
-                    The dataset includes some of the information listed above, but more is needed to fully understand
-                    how the data were gathered, analyzed, and otherwise used.
-                  </p>
+                  <p id="has-enough-metadata-tip-partly" role="note">${t('enoughMetadataPartlyTip')()}</p>
                   <div class="conditional" id="has-enough-metadata-partly-control">
                     <div>
                       <label for="has-enough-metadata-partly-detail" class="textarea"
-                        >What metadata does it have, and what is missing? (optional)</label
+                        >${t('enoughMetadataPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasEnoughMetadataPartlyDetail" id="has-enough-metadata-partly-detail" rows="5">
 ${Match.valueTags(form, {
@@ -153,16 +146,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="has-enough-metadata-tip-no" role="note">
-                    The dataset does not include enough metadata to help understand how the data were gathered,
-                    analyzed, and otherwise used.
-                  </p>
+                  <p id="has-enough-metadata-tip-no" role="note">${t('enoughMetadataNoTip')()}</p>
                   <div class="conditional" id="has-enough-metadata-no-control">
                     <div>
                       <label for="has-enough-metadata-no-detail" class="textarea"
-                        >What metadata is missing? (optional)</label
+                        >${t('enoughMetadataNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasEnoughMetadataNoDetail" id="has-enough-metadata-no-detail" rows="5">
 ${Match.valueTags(form, {
@@ -179,7 +169,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="hasEnoughMetadata"
@@ -192,7 +182,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -209,7 +199,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.hasEnoughMetadata)
     ? html`
@@ -217,7 +206,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#has-enough-metadata-yes">
             ${pipe(
               Match.value(form.hasEnoughMetadata.left),
-              Match.tag('Missing', () => 'Select if the dataset has enough metadata'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectEnoughMetadata')()),
               Match.exhaustive,
             )}
           </a>
