@@ -1200,7 +1200,7 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     zenodoPreprintId(),
   )
 
-export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId())
+export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId(), scieloDatasetId())
 
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
@@ -1216,6 +1216,9 @@ export const dryadDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DryadDatasetId]> 
   dryadDatasetId()
     .filter(id => !id.value.endsWith('/'))
     .map(id => [new URL(`https://datadryad.org/dataset/doi:${encodeURIComponent(id.value)}`), id])
+
+export const scieloDatasetId = (): fc.Arbitrary<Datasets.ScieloDatasetId> =>
+  doi(constantFrom('48331')).map(doi => new Datasets.ScieloDatasetId({ value: doi }))
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 

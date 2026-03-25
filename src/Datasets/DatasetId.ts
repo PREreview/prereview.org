@@ -1,5 +1,5 @@
 import { Url } from '@effect/platform'
-import { Data, Either, flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
+import { Array, Data, Either, flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.ts'
 
 export type DatasetId = typeof DatasetId.Type
@@ -20,13 +20,18 @@ export class DryadDatasetId extends Schema.TaggedClass<DryadDatasetId>()('DryadD
   ),
 }) {}
 
-export const DatasetId = Schema.Union(DryadDatasetId)
+export class ScieloDatasetId extends Schema.TaggedClass<ScieloDatasetId>()('ScieloDatasetId', {
+  value: Doi.RegistrantDoiSchema('48331'),
+}) {}
 
-const DatasetDoiSchema = DryadDatasetId.fields.value
+export const DatasetId = Schema.Union(DryadDatasetId, ScieloDatasetId)
+
+const DatasetDoiSchema = Schema.Union(...Array.map(DatasetId.members, id => id.fields.value))
 
 export const DatasetIdFromDoi = Schema.transform(DatasetDoiSchema, Schema.typeSchema(DatasetId), {
   strict: true,
-  decode: doi => new DryadDatasetId({ value: doi }),
+  decode: doi =>
+    Doi.hasRegistrant('48331')(doi) ? new ScieloDatasetId({ value: doi }) : new DryadDatasetId({ value: doi }),
   encode: datasetId => datasetId.value,
 })
 

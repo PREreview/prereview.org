@@ -19,6 +19,10 @@ export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.Data
         ${rawHtml(
           Match.valueTags(dataset, {
             DryadDatasetId: () => t('doiCouldBeDryad'),
+            ScieloDatasetId:
+              () =>
+              ({ doi }: { doi: string }) =>
+                `We think the DOI ${doi} could be a SciELO dataset, but we can’t find any details.`,
           })({ doi: html`<q class="select-all" translate="no">${dataset.value}</q>`.toString() }),
         )}
       </p>
