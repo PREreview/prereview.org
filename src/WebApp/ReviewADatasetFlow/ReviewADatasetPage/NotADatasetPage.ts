@@ -13,7 +13,7 @@ export const NotADatasetPage = ({ locale }: { locale: SupportedLocale }) => {
     main: html`
       <h1>${t('notADataset')()}</h1>
 
-      <p>${t('supportDatasetsFrom')()}}</p>
+      <p>${t('supportDatasetsFrom')()}</p>
 
       <p>
         ${rawHtml(
