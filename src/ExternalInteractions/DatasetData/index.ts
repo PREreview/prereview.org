@@ -1,17 +1,23 @@
-import { Context, Effect, Layer, pipe, Scope, Struct } from 'effect'
+import { Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
 import * as Datasets from '../../Datasets/index.ts'
 import type { Datacite } from '../../ExternalApis/index.ts'
-import { GetDatasetFromDatacite } from './Datacite/index.ts'
+import { GetDatasetFromDatacite, IsDataciteDatasetId } from './Datacite/index.ts'
 
 export const layer = Layer.effect(
   Datasets.Datasets,
   Effect.gen(function* () {
     const context = yield* Effect.andThen(Effect.context<Datacite.Datacite>(), Context.omit(Scope.Scope))
 
+    const GetDatasetFromSource = pipe(
+      Match.type<Datasets.DatasetId>(),
+      Match.when(IsDataciteDatasetId, GetDatasetFromDatacite),
+      Match.exhaustive,
+    )
+
     return {
       getDataset: id =>
         pipe(
-          GetDatasetFromDatacite(id),
+          GetDatasetFromSource(id),
           Effect.catchTag('NotADataset', error => new Datasets.DatasetIsNotFound({ cause: error, datasetId: id })),
           Effect.tapErrorTag('DatasetIsUnavailable', error =>
             Effect.annotateLogs(Effect.logError('Unable to get dataset'), { error }),
@@ -21,7 +27,7 @@ export const layer = Layer.effect(
         ),
       getDatasetTitle: id =>
         pipe(
-          GetDatasetFromDatacite(id),
+          GetDatasetFromSource(id),
           Effect.map(
             dataset =>
               new Datasets.DatasetTitle({
@@ -36,7 +42,7 @@ export const layer = Layer.effect(
         ),
       resolveDatasetId: (id: Datasets.DatasetId) =>
         pipe(
-          GetDatasetFromDatacite(id),
+          GetDatasetFromSource(id),
           Effect.andThen(Struct.get('id')),
           Effect.tapErrorTag('DatasetIsUnavailable', error =>
             Effect.annotateLogs(Effect.logError('Unable to resolve dataset ID'), { error }),

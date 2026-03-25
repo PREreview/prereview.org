@@ -1,10 +1,13 @@
 import { Effect, pipe } from 'effect'
 import * as Datasets from '../../../Datasets/index.ts'
 import { Datacite } from '../../../ExternalApis/index.ts'
+import type { DataciteDatasetId } from './DatasetId.ts'
 import { RecordToDataset } from './RecordToDataset.ts'
 
+export { IsDataciteDatasetId } from './DatasetId.ts'
+
 export const GetDatasetFromDatacite = (
-  id: Datasets.DatasetId,
+  id: DataciteDatasetId,
 ): Effect.Effect<
   Datasets.Dataset,
   Datasets.NotADataset | Datasets.DatasetIsNotFound | Datasets.DatasetIsUnavailable,

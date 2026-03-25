@@ -22,3 +22,5 @@ export const DoiFromUrlSchema: Schema.Schema<Doi.Doi, string> = Schema.transform
 export const parse = FptsToEffect.optionK(Doi.parse)
 
 export const DoiEquivalence: Equivalence.Equivalence<Doi.Doi> = FptsToEffect.eq(Doi.Eq)
+
+export type Registrant<D extends Doi.Doi> = D extends Doi.Doi<infer R> ? R : never
