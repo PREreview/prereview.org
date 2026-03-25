@@ -23,6 +23,9 @@
   "doiCouldBeDryad": {
     "message": "crwdns6130:0{doi}crwdne6130:0"
   },
+  "doiCouldBeScielo": {
+    "message": "crwdns6204:0{doi}crwdne6204:0"
+  },
   "checkCorrectDoi": {
     "message": "crwdns6132:0crwdne6132:0"
   },
