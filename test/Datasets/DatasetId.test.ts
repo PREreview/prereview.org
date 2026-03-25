@@ -165,6 +165,37 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(Option.some(id))
   })
 
+  test.prop([fc.scieloDatasetUrl()], {
+    examples: [
+      [
+        [
+          new URL('https://data.scielo.org/dataset.xhtml?persistentId=doi:10.48331/SCIELODATA.QHC4EB'),
+          new _.ScieloDatasetId({ value: Doi.Doi('10.48331/SCIELODATA.QHC4EB') }),
+        ],
+      ],
+      [
+        [
+          new URL('http://data.scielo.org/dataset.xhtml?persistentId=doi:10.48331/SCIELODATA.QHC4EB'), // http
+          new _.ScieloDatasetId({ value: Doi.Doi('10.48331/SCIELODATA.QHC4EB') }),
+        ],
+      ],
+      [
+        [
+          new URL('https://data.scielo.org/dataset.xhtml?persistentId=doi:10.48331/SCIELODATA.QHC4EB&version=1.0'), // version
+          new _.ScieloDatasetId({ value: Doi.Doi('10.48331/SCIELODATA.QHC4EB') }),
+        ],
+      ],
+      [
+        [
+          new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.QHC4EB'), // citation
+          new _.ScieloDatasetId({ value: Doi.Doi('10.48331/SCIELODATA.QHC4EB') }),
+        ],
+      ],
+    ],
+  })('with a SciELO URL', ([url, id]) => {
+    expect(_.fromUrl(url)).toStrictEqual(Option.some(id))
+  })
+
   test.prop([fc.nonDatasetUrl()], {
     examples: [
       [new URL('https://foo.doi.org/10.5061/dryad.wstqjq2n3')], // unknown subdomain

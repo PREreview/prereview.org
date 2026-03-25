@@ -1205,7 +1205,8 @@ export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadD
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
 
-export const supportedDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DatasetId]> => fc.oneof(dryadDatasetUrl())
+export const supportedDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DatasetId]> =>
+  fc.oneof(dryadDatasetUrl(), scieloDatasetUrl())
 
 export const dryadDatasetId = (): fc.Arbitrary<Datasets.DryadDatasetId> =>
   doi(constantFrom('5061', '5068', '6071', '6078', '6086', '7272', '7280', '7291', '15146', '25338', '25349')).map(
@@ -1219,6 +1220,12 @@ export const dryadDatasetUrl = (): fc.Arbitrary<[URL, Datasets.DryadDatasetId]> 
 
 export const scieloDatasetId = (): fc.Arbitrary<Datasets.ScieloDatasetId> =>
   doi(constantFrom('48331')).map(doi => new Datasets.ScieloDatasetId({ value: doi }))
+
+export const scieloDatasetUrl = (): fc.Arbitrary<[URL, Datasets.ScieloDatasetId]> =>
+  scieloDatasetId().map(id => [
+    new URL(`https://data.scielo.org/dataset.xhtml?persistentId=doi:${encodeURIComponent(id.value)}`),
+    id,
+  ])
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 

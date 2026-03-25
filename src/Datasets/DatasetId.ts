@@ -1,4 +1,4 @@
-import { Url } from '@effect/platform'
+import { Url, UrlParams } from '@effect/platform'
 import { Array, Data, Either, flow, Match, Option, pipe, type Predicate, Schema, Tuple } from 'effect'
 import { Doi } from '../types/index.ts'
 
@@ -63,6 +63,10 @@ export const fromUrl = (url: URL): Option.Option<DatasetId> =>
       url => url.hostname === 'datadryad.org',
       url => extractFromDryadPath(url.pathname.slice(1)),
     ),
+    Match.when(
+      url => url.hostname === 'data.scielo.org',
+      url => extractFromScieloParams(UrlParams.fromInput(url.searchParams)),
+    ),
     Match.orElse(Option.none<DatasetId>),
   )
 
@@ -86,3 +90,11 @@ const extractFromDryadPath = flow(
   Option.filter(Schema.is(DryadDatasetId.fields.value)),
   Option.andThen(doi => new DryadDatasetId({ value: doi })),
 )
+
+const extractFromScieloParams = (searchParams: UrlParams.UrlParams) =>
+  pipe(
+    UrlParams.getFirst(searchParams, 'persistentId'),
+    Option.andThen(Option.liftNullable(s => /^doi:(.+?)\/?$/i.exec(s)?.[1])),
+    Option.filter(Schema.is(ScieloDatasetId.fields.value)),
+    Option.andThen(doi => new ScieloDatasetId({ value: doi })),
+  )
