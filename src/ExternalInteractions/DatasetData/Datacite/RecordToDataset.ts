@@ -86,6 +86,9 @@ const findPublishedDate = (dates: Datacite.Record['dates']) =>
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Available')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
+    Option.filter(
+      date => date instanceof Temporal.PlainDate || date instanceof Temporal.PlainYearMonth || typeof date === 'number',
+    ),
   )
 
 const findOrcid = (creator: Datacite.Record['creators'][number]) =>

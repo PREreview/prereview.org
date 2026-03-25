@@ -18,6 +18,19 @@ const DataIdSchema = Schema.pluck(
   'data',
 )
 
+const DateSchema = Schema.Union(
+  Temporal.InstantSchema,
+  Temporal.PlainDateSchema,
+  Temporal.PlainYearMonthSchema,
+  Schema.NumberFromString,
+)
+
+const DateRangeSchema = Schema.Union(
+  Schema.TemplateLiteralParser(DateSchema, '/', DateSchema),
+  Schema.TemplateLiteralParser(DateSchema, '/'),
+  Schema.TemplateLiteralParser('/', DateSchema),
+)
+
 export class Record extends Schema.Class<Record>('Record')({
   doi: Doi.DoiSchema,
   creators: Schema.optionalWith(
@@ -60,12 +73,7 @@ export class Record extends Schema.Class<Record>('Record')({
   publisher: Schema.compose(Schema.Trim, Schema.NonEmptyString),
   dates: Schema.NonEmptyArray(
     Schema.Struct({
-      date: Schema.Union(
-        Temporal.InstantSchema,
-        Temporal.PlainDateSchema,
-        Temporal.PlainYearMonthSchema,
-        Schema.NumberFromString,
-      ),
+      date: Schema.Union(DateSchema, DateRangeSchema),
       dateType: Schema.compose(Schema.Trim, Schema.NonEmptyString),
     }),
   ),

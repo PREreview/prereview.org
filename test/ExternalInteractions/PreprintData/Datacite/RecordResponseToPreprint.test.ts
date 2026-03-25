@@ -453,6 +453,7 @@ test.each([
   'figshare-africarxiv-journal-article',
   'osf-file',
   'osf-registration',
+  'scielo-data-english',
   'zenodo-journal-article',
 ])('returns a specific error for non-Preprint record (%s)', response =>
   Effect.gen(function* () {

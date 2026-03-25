@@ -1,0 +1,162 @@
+{
+  "data": {
+    "id": "10.48331/scielodata.vffsop",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.48331/scielodata.vffsop",
+      "prefix": "10.48331",
+      "suffix": "scielodata.vffsop",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Campolina, Cynthia",
+          "nameType": "Personal",
+          "givenName": "Cynthia",
+          "familyName": "Campolina",
+          "affiliation": ["Universidade Estadual de Santa Cruz, Brasil"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-8440-2458",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Data for: Predation effect by cats and rodents on the reproductive success of seabirds: a systematic review and meta-analysis"
+        }
+      ],
+      "publisher": "SciELO Data",
+      "container": {},
+      "publicationYear": 2024,
+      "subjects": [
+        { "subject": "Earth and Environmental Sciences" },
+        { "subject": "Medicine, Health and Life Sciences" }
+      ],
+      "contributors": [
+        {
+          "name": "Campolina, Cynthia",
+          "nameType": "Personal",
+          "givenName": "Cynthia",
+          "familyName": "Campolina",
+          "affiliation": ["Universidade Estadual de Santa Cruz, Brasil"],
+          "contributorType": "ContactPerson",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2023-04-10", "dateType": "Submitted" },
+        { "date": "2024-11-04", "dateType": "Available" },
+        { "date": "2024-11-04", "dateType": "Updated" },
+        { "date": "2022-03-01/2022-03-31", "dateType": "Collected" },
+        { "date": "2024", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.vffsop/ac8zst",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.vffsop/wb6u68",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.vffsop/pf3pkz",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.vffsop/97aodh",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.vffsop/xvcxsc",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["1230", "4969", "4785", "5483", "22077"],
+      "formats": ["text/tab-separated-values", "text/plain", "text/plain", "type/x-r-syntax", "text/plain"],
+      "version": "1.0",
+      "rightsList": [
+        { "rightsUri": "info:eu-repo/semantics/openAccess" },
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "This dataset includes the raw data and the script used for the stastical analysis of the paper \"Predation effect by cats and rodents on the reproductive success of seabirds: a systematic review and meta-analysis\".\n\nIt includes a README file and the following four files:\n\n\"list_of_articles_for_review_cynthia_campolina\"\nList of articles available in the literature used in the systematic review about the predation effect by cats and rodents on the reproducitve success of seabirds. \nFormat: .txt\n\n\"data_for_meta-analysis_cynthia_campolina\"\nList of papers, among the reviewd articles, used for the meta-analysis and their respective data. \nFormat: .txt\n\n\"CM20023-EST03-1BD03-E\"\nOriginal excel file that was used for the meta-analysis in the R program. We chose to keep the original name of the file once it is the one in the script (see \"R_script_for_meta-analysis_cynthia_campolina\" file). This excel file and the \"data_for_meta-analysis_cynthia_campolina\" file have the same data, but in different formats.\nFormat: .xlsx\n\n\"R_script_for_meta-analysis_cynthia_campolina\"\nR script with the commands used to run the meta-analysis on the predation effect by cats and rodents on the reproducitve success of seabirds, using the data available on the \"CM20023-EST03-1BD03-E\" file.\nFormat: .r\n\nThe literature review followed the “Guidelines for systematic review in conservation and environmental management”, proposed by: Pullin AS, Stewart GB (2006) Guidelines for Systematic Review in Conservation And Environmental Management. Conservation Biology 20(6):1647–1656. https://doi.org/10.1111/j.1523-1739.2006.00485.x\nDatabases used were ISI Web of Knowledge (ISI 2022), SCOPUS Preview (SCOPUS 2022) and Scholar Google (Scholar 2022).\n\nFor the systematic review: Only papers whose predators were cats and rodents (rats and mice) were chosen for the review. After the search, it was excluded from the review the papers that did not meet the five exclusion criteria: (1) duplicate studies; (2) articles where the prey was not a seabird; (3) studies whose predators were not cats, rats and mice; (4) studies that did not analyze or discuss the effects of predator management or control on reproductive success; and (5) review papers. \n\nFor the meta-analysis: Only articles containing quantitative data on the reproductive success (percentage of nests with reproductive success in relation to the total number of evaluated nests), both in the absence and in the presence of predator control, were chosen. When the reproductive success metric was not available in the text, we contacted the authors requesting information on the mean and standard deviation of nest success.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [
+        { "geoLocationPlace": "Brazil, Bahia,, Ilhéus," },
+        { "geoLocationPoint": { "pointLatitude": "30", "pointLongitude": "180" } }
+      ],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLlZGRlNPUDwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+Q2FtcG9saW5hLCBDeW50aGlhPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5DeW50aGlhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkNhbXBvbGluYTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTg0NDAtMjQ1ODwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5Vbml2ZXJzaWRhZGUgRXN0YWR1YWwgZGUgU2FudGEgQ3J1eiwgQnJhc2lsPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+RGF0YSBmb3I6IFByZWRhdGlvbiBlZmZlY3QgYnkgY2F0cyBhbmQgcm9kZW50cyBvbiB0aGUgcmVwcm9kdWN0aXZlIHN1Y2Nlc3Mgb2Ygc2VhYmlyZHM6IGEgc3lzdGVtYXRpYyByZXZpZXcgYW5kIG1ldGEtYW5hbHlzaXM8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+U2NpRUxPIERhdGE8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjQ8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5FYXJ0aCBhbmQgRW52aXJvbm1lbnRhbCBTY2llbmNlczwvc3ViamVjdD4KICAgIDxzdWJqZWN0Pk1lZGljaW5lLCBIZWFsdGggYW5kIExpZmUgU2NpZW5jZXM8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8Y29udHJpYnV0b3JzPgogICAgPGNvbnRyaWJ1dG9yIGNvbnRyaWJ1dG9yVHlwZT0iQ29udGFjdFBlcnNvbiI+CiAgICAgIDxjb250cmlidXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5DYW1wb2xpbmEsIEN5bnRoaWE8L2NvbnRyaWJ1dG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5DeW50aGlhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkNhbXBvbGluYTwvZmFtaWx5TmFtZT4KICAgICAgPGFmZmlsaWF0aW9uPlVuaXZlcnNpZGFkZSBFc3RhZHVhbCBkZSBTYW50YSBDcnV6LCBCcmFzaWw8L2FmZmlsaWF0aW9uPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDIzLTA0LTEwPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyNC0xMS0wNDwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDI0LTExLTA0PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkNvbGxlY3RlZCI+MjAyMi0wMy0wMS8yMDIyLTAzLTMxPC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ii8+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9Ikhhc1BhcnQiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLlZGRlNPUC9BQzhaU1Q8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPjEwLjQ4MzMxL1NDSUVMT0RBVEEuVkZGU09QL1dCNlU2ODwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNDgzMzEvU0NJRUxPREFUQS5WRkZTT1AvUEYzUEtaPC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9Ikhhc1BhcnQiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLlZGRlNPUC85N0FPREg8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPjEwLjQ4MzMxL1NDSUVMT0RBVEEuVkZGU09QL1hWQ1hTQzwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzPgogICAgPHNpemU+MTIzMDwvc2l6ZT4KICAgIDxzaXplPjQ5Njk8L3NpemU+CiAgICA8c2l6ZT40Nzg1PC9zaXplPgogICAgPHNpemU+NTQ4Mzwvc2l6ZT4KICAgIDxzaXplPjIyMDc3PC9zaXplPgogIDwvc2l6ZXM+CiAgPGZvcm1hdHM+CiAgICA8Zm9ybWF0PnRleHQvdGFiLXNlcGFyYXRlZC12YWx1ZXM8L2Zvcm1hdD4KICAgIDxmb3JtYXQ+dGV4dC9wbGFpbjwvZm9ybWF0PgogICAgPGZvcm1hdD50ZXh0L3BsYWluPC9mb3JtYXQ+CiAgICA8Zm9ybWF0PnR5cGUveC1yLXN5bnRheDwvZm9ybWF0PgogICAgPGZvcm1hdD50ZXh0L3BsYWluPC9mb3JtYXQ+CiAgPC9mb3JtYXRzPgogIDx2ZXJzaW9uPjEuMDwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJpbmZvOmV1LXJlcG8vc2VtYW50aWNzL29wZW5BY2Nlc3MiLz4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAiPkNDIEJZIDQuMDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPlRoaXMgZGF0YXNldCBpbmNsdWRlcyB0aGUgcmF3IGRhdGEgYW5kIHRoZSBzY3JpcHQgdXNlZCBmb3IgdGhlIHN0YXN0aWNhbCBhbmFseXNpcyBvZiB0aGUgcGFwZXIgJmFtcDtxdW90O1ByZWRhdGlvbiBlZmZlY3QgYnkgY2F0cyBhbmQgcm9kZW50cyBvbiB0aGUgcmVwcm9kdWN0aXZlIHN1Y2Nlc3Mgb2Ygc2VhYmlyZHM6IGEgc3lzdGVtYXRpYyByZXZpZXcgYW5kIG1ldGEtYW5hbHlzaXMmYW1wO3F1b3Q7LgoKSXQgaW5jbHVkZXMgYSBSRUFETUUgZmlsZSBhbmQgdGhlIGZvbGxvd2luZyBmb3VyIGZpbGVzOgoKJmFtcDtxdW90O2xpc3Rfb2ZfYXJ0aWNsZXNfZm9yX3Jldmlld19jeW50aGlhX2NhbXBvbGluYSZhbXA7cXVvdDsKTGlzdCBvZiBhcnRpY2xlcyBhdmFpbGFibGUgaW4gdGhlIGxpdGVyYXR1cmUgdXNlZCBpbiB0aGUgc3lzdGVtYXRpYyByZXZpZXcgYWJvdXQgdGhlIHByZWRhdGlvbiBlZmZlY3QgYnkgY2F0cyBhbmQgcm9kZW50cyBvbiB0aGUgcmVwcm9kdWNpdHZlIHN1Y2Nlc3Mgb2Ygc2VhYmlyZHMuIApGb3JtYXQ6IC50eHQKCiZhbXA7cXVvdDtkYXRhX2Zvcl9tZXRhLWFuYWx5c2lzX2N5bnRoaWFfY2FtcG9saW5hJmFtcDtxdW90OwpMaXN0IG9mIHBhcGVycywgYW1vbmcgdGhlIHJldmlld2QgYXJ0aWNsZXMsIHVzZWQgZm9yIHRoZSBtZXRhLWFuYWx5c2lzIGFuZCB0aGVpciByZXNwZWN0aXZlIGRhdGEuIApGb3JtYXQ6IC50eHQKCiZhbXA7cXVvdDtDTTIwMDIzLUVTVDAzLTFCRDAzLUUmYW1wO3F1b3Q7Ck9yaWdpbmFsIGV4Y2VsIGZpbGUgdGhhdCB3YXMgdXNlZCBmb3IgdGhlIG1ldGEtYW5hbHlzaXMgaW4gdGhlIFIgcHJvZ3JhbS4gV2UgY2hvc2UgdG8ga2VlcCB0aGUgb3JpZ2luYWwgbmFtZSBvZiB0aGUgZmlsZSBvbmNlIGl0IGlzIHRoZSBvbmUgaW4gdGhlIHNjcmlwdCAoc2VlICZhbXA7cXVvdDtSX3NjcmlwdF9mb3JfbWV0YS1hbmFseXNpc19jeW50aGlhX2NhbXBvbGluYSZhbXA7cXVvdDsgZmlsZSkuIFRoaXMgZXhjZWwgZmlsZSBhbmQgdGhlICZhbXA7cXVvdDtkYXRhX2Zvcl9tZXRhLWFuYWx5c2lzX2N5bnRoaWFfY2FtcG9saW5hJmFtcDtxdW90OyBmaWxlIGhhdmUgdGhlIHNhbWUgZGF0YSwgYnV0IGluIGRpZmZlcmVudCBmb3JtYXRzLgpGb3JtYXQ6IC54bHN4CgomYW1wO3F1b3Q7Ul9zY3JpcHRfZm9yX21ldGEtYW5hbHlzaXNfY3ludGhpYV9jYW1wb2xpbmEmYW1wO3F1b3Q7ClIgc2NyaXB0IHdpdGggdGhlIGNvbW1hbmRzIHVzZWQgdG8gcnVuIHRoZSBtZXRhLWFuYWx5c2lzIG9uIHRoZSBwcmVkYXRpb24gZWZmZWN0IGJ5IGNhdHMgYW5kIHJvZGVudHMgb24gdGhlIHJlcHJvZHVjaXR2ZSBzdWNjZXNzIG9mIHNlYWJpcmRzLCB1c2luZyB0aGUgZGF0YSBhdmFpbGFibGUgb24gdGhlICZhbXA7cXVvdDtDTTIwMDIzLUVTVDAzLTFCRDAzLUUmYW1wO3F1b3Q7IGZpbGUuCkZvcm1hdDogLnIKClRoZSBsaXRlcmF0dXJlIHJldmlldyBmb2xsb3dlZCB0aGUg4oCcR3VpZGVsaW5lcyBmb3Igc3lzdGVtYXRpYyByZXZpZXcgaW4gY29uc2VydmF0aW9uIGFuZCBlbnZpcm9ubWVudGFsIG1hbmFnZW1lbnTigJ0sIHByb3Bvc2VkIGJ5OiBQdWxsaW4gQVMsIFN0ZXdhcnQgR0IgKDIwMDYpIEd1aWRlbGluZXMgZm9yIFN5c3RlbWF0aWMgUmV2aWV3IGluIENvbnNlcnZhdGlvbiBBbmQgRW52aXJvbm1lbnRhbCBNYW5hZ2VtZW50LiBDb25zZXJ2YXRpb24gQmlvbG9neSAyMCg2KToxNjQ34oCTMTY1Ni4gaHR0cHM6Ly9kb2kub3JnLzEwLjExMTEvai4xNTIzLTE3MzkuMjAwNi4wMDQ4NS54CkRhdGFiYXNlcyB1c2VkIHdlcmUgSVNJIFdlYiBvZiBLbm93bGVkZ2UgKElTSSAyMDIyKSwgU0NPUFVTIFByZXZpZXcgKFNDT1BVUyAyMDIyKSBhbmQgU2Nob2xhciBHb29nbGUgKFNjaG9sYXIgMjAyMikuCgpGb3IgdGhlIHN5c3RlbWF0aWMgcmV2aWV3OiBPbmx5IHBhcGVycyB3aG9zZSBwcmVkYXRvcnMgd2VyZSBjYXRzIGFuZCByb2RlbnRzIChyYXRzIGFuZCBtaWNlKSB3ZXJlIGNob3NlbiBmb3IgdGhlIHJldmlldy4gQWZ0ZXIgdGhlIHNlYXJjaCwgaXQgd2FzIGV4Y2x1ZGVkIGZyb20gdGhlIHJldmlldyB0aGUgcGFwZXJzIHRoYXQgZGlkIG5vdCBtZWV0IHRoZSBmaXZlIGV4Y2x1c2lvbiBjcml0ZXJpYTogKDEpIGR1cGxpY2F0ZSBzdHVkaWVzOyAoMikgYXJ0aWNsZXMgd2hlcmUgdGhlIHByZXkgd2FzIG5vdCBhIHNlYWJpcmQ7ICgzKSBzdHVkaWVzIHdob3NlIHByZWRhdG9ycyB3ZXJlIG5vdCBjYXRzLCByYXRzIGFuZCBtaWNlOyAoNCkgc3R1ZGllcyB0aGF0IGRpZCBub3QgYW5hbHl6ZSBvciBkaXNjdXNzIHRoZSBlZmZlY3RzIG9mIHByZWRhdG9yIG1hbmFnZW1lbnQgb3IgY29udHJvbCBvbiByZXByb2R1Y3RpdmUgc3VjY2VzczsgYW5kICg1KSByZXZpZXcgcGFwZXJzLiAKCkZvciB0aGUgbWV0YS1hbmFseXNpczogT25seSBhcnRpY2xlcyBjb250YWluaW5nIHF1YW50aXRhdGl2ZSBkYXRhIG9uIHRoZSByZXByb2R1Y3RpdmUgc3VjY2VzcyAocGVyY2VudGFnZSBvZiBuZXN0cyB3aXRoIHJlcHJvZHVjdGl2ZSBzdWNjZXNzIGluIHJlbGF0aW9uIHRvIHRoZSB0b3RhbCBudW1iZXIgb2YgZXZhbHVhdGVkIG5lc3RzKSwgYm90aCBpbiB0aGUgYWJzZW5jZSBhbmQgaW4gdGhlIHByZXNlbmNlIG9mIHByZWRhdG9yIGNvbnRyb2wsIHdlcmUgY2hvc2VuLiBXaGVuIHRoZSByZXByb2R1Y3RpdmUgc3VjY2VzcyBtZXRyaWMgd2FzIG5vdCBhdmFpbGFibGUgaW4gdGhlIHRleHQsIHdlIGNvbnRhY3RlZCB0aGUgYXV0aG9ycyByZXF1ZXN0aW5nIGluZm9ybWF0aW9uIG9uIHRoZSBtZWFuIGFuZCBzdGFuZGFyZCBkZXZpYXRpb24gb2YgbmVzdCBzdWNjZXNzLjwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CiAgPGdlb0xvY2F0aW9ucz4KICAgIDxnZW9Mb2NhdGlvbj4KICAgICAgPGdlb0xvY2F0aW9uUGxhY2U+QnJhemlsLCBCYWhpYSwsIElsaMOpdXMsPC9nZW9Mb2NhdGlvblBsYWNlPgogICAgPC9nZW9Mb2NhdGlvbj4KICAgIDxnZW9Mb2NhdGlvbj4KICAgICAgPGdlb0xvY2F0aW9uUG9pbnQ+CiAgICAgICAgPHBvaW50TG9uZ2l0dWRlPjE4MDwvcG9pbnRMb25naXR1ZGU+CiAgICAgICAgPHBvaW50TGF0aXR1ZGU+MzA8L3BvaW50TGF0aXR1ZGU+CiAgICAgIDwvZ2VvTG9jYXRpb25Qb2ludD4KICAgIDwvZ2VvTG9jYXRpb24+CiAgPC9nZW9Mb2NhdGlvbnM+CjwvcmVzb3VyY2U+",
+      "url": "https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.VFFSOP",
+      "contentUrl": null,
+      "metadataVersion": 3,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 5,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2023-04-10T21:02:03.000Z",
+      "registered": "2024-11-04T15:49:09.000Z",
+      "published": "2024",
+      "updated": "2025-07-10T21:01:08.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "unifesp.scielo", "type": "clients" } },
+      "provider": { "data": { "id": "unifesp", "type": "providers" } },
+      "media": { "data": { "id": "10.48331/scielodata.vffsop", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": {
+        "data": [
+          { "id": "10.48331/scielodata.vffsop/ac8zst", "type": "dois" },
+          { "id": "10.48331/scielodata.vffsop/wb6u68", "type": "dois" },
+          { "id": "10.48331/scielodata.vffsop/97aodh", "type": "dois" },
+          { "id": "10.48331/scielodata.vffsop/xvcxsc", "type": "dois" },
+          { "id": "10.48331/scielodata.vffsop/pf3pkz", "type": "dois" }
+        ]
+      },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

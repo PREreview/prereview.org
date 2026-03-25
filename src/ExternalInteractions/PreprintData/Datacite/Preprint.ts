@@ -114,6 +114,9 @@ const getPostedDate = (
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
+    Option.filter(
+      date => date instanceof Temporal.PlainDate || date instanceof Temporal.PlainYearMonth || typeof date === 'number',
+    ),
     Either.fromOption(() => new Preprints.PreprintIsUnavailable({ cause: { dates } })),
   )
 
