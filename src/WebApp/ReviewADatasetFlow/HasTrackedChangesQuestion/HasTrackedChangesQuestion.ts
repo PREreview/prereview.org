@@ -22,11 +22,7 @@ export const HasTrackedChangesQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('trackChanges')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" class="back">
         <span>${t('forms', 'backLink')()}</span>
@@ -47,9 +43,7 @@ export const HasTrackedChangesQuestion = ({
               )}
             >
               <legend>
-                <h1>
-                  Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?
-                </h1>
+                <h1>${t('trackChanges')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.hasTrackedChanges)
@@ -57,7 +51,7 @@ export const HasTrackedChangesQuestion = ({
                     <div class="error-message" id="has-tracked-changes-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}</span>
                       ${Match.valueTags(form.hasTrackedChanges.left, {
-                        Missing: () => 'Select if the dataset has a way to list or track changes or versions',
+                        Missing: () => t('selectTrackChanges')(),
                       })}
                     </div>
                   `
@@ -79,15 +73,13 @@ export const HasTrackedChangesQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="has-tracked-changes-tip-yes" role="note">
-                    The dataset has a clear version history that appears to be accurate and up-to-date.
-                  </p>
+                  <p id="has-tracked-changes-tip-yes" role="note">${t('trackChangesYesTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-yes-control">
                     <div>
                       <label for="has-tracked-changes-yes-detail" class="textarea"
-                        >How does the dataset share its metadata? (optional)</label
+                        >${t('trackChangesYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasTrackedChangesYesDetail" id="has-tracked-changes-yes-detail" rows="5">
 ${Match.valueTags(form, {
@@ -117,16 +109,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="has-tracked-changes-tip-partly" role="note">
-                    The dataset includes a way to list or track changes or versions, but it doesn’t seem to be accurate
-                    or current.
-                  </p>
+                  <p id="has-tracked-changes-tip-partly" role="note">${t('trackChangesPartlyTip')()}</p>
                   <div class="conditional" id="has-tracked-changes-partly-control">
                     <div>
                       <label for="has-tracked-changes-partly-detail" class="textarea"
-                        >How does the dataset share its metadata? What’s missing? (optional)</label
+                        >${t('trackChangesPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasTrackedChangesPartlyDetail" id="has-tracked-changes-partly-detail" rows="5">
 ${Match.valueTags(form, {
@@ -157,12 +146,12 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
                   <div class="conditional" id="has-tracked-changes-no-control">
                     <div>
                       <label for="has-tracked-changes-no-detail" class="textarea"
-                        >How should the dataset present its missing metadata? (optional)</label
+                        >${t('trackChangesNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="hasTrackedChangesNoDetail" id="has-tracked-changes-no-detail" rows="5">
 ${Match.valueTags(form, {
@@ -179,7 +168,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="hasTrackedChanges"
@@ -192,7 +181,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -209,7 +198,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.hasTrackedChanges)
     ? html`
@@ -217,7 +205,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#has-tracked-changes-yes">
             ${pipe(
               Match.value(form.hasTrackedChanges.left),
-              Match.tag('Missing', () => 'Select if the dataset has a way to list or track changes or versions'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectTrackChanges')()),
               Match.exhaustive,
             )}
           </a>

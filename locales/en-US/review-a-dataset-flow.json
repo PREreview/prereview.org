@@ -303,6 +303,30 @@
     "message": "Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?",
     "description": "Label for the question about whether the dataset tracks changes."
   },
+  "selectTrackChanges": {
+    "message": "Select if the dataset has a way to list or track changes or versions",
+    "description": "Error message shown when the user tries to complete the form “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?” without selecting an option."
+  },
+  "trackChangesYesTip": {
+    "message": "The dataset has a clear version history that appears to be accurate and up-to-date.",
+    "description": "Tip shown alongside the “Yes” option for the question “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?”."
+  },
+  "trackChangesYesWhy": {
+    "message": "How does the dataset share its metadata?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?”."
+  },
+  "trackChangesPartlyTip": {
+    "message": "The dataset includes a way to list or track changes or versions, but it doesn’t seem to be accurate or current.",
+    "description": "Tip shown alongside the “Partly” option for the question “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?”."
+  },
+  "trackChangesPartlyWhy": {
+    "message": "How does the dataset share its metadata? What’s missing?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?”."
+  },
+  "trackChangesNoWhy": {
+    "message": "How should the dataset present its missing metadata?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Does this dataset include a way to list or track changes or versions? If so, does it seem accurate?”."
+  },
   "changeTrackChanges": {
     "message": "Change <visuallyHidden>if the dataset includes a way to list or track changes or versions</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Does this dataset include a way to list or track changes or versions?”."
