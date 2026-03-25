@@ -7,7 +7,6 @@ import * as ContactEmailAddress from './contact-email-address.ts'
 import { Locale, SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
-import * as Datasets from './Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
@@ -26,6 +25,7 @@ import {
 } from './ExternalApis/index.ts'
 import {
   CommunitySlack,
+  DatasetData,
   Email,
   GhostPage,
   LanguageDetection,
@@ -350,7 +350,7 @@ export const Program = pipe(
   Layer.provide([Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))]),
   Layer.provide([
     Personas.layer,
-    Datasets.layer,
+    DatasetData.layer,
     Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),
     OpenAlexWorks.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),

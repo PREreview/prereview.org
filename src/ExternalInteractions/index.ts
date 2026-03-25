@@ -1,4 +1,5 @@
 export * as CommunitySlack from './CommunitySlack/index.ts'
+export * as DatasetData from './DatasetData/index.ts'
 export * as Email from './Email/index.ts'
 export * as GhostPage from './GhostPage/index.ts'
 export * as LanguageDetection from './LanguageDetection/index.ts'

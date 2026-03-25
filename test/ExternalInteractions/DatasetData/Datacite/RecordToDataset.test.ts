@@ -5,12 +5,12 @@ import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Schema } from 'effect'
 import { URL } from 'url'
-import * as _ from '../../../src/Datasets/Datacite/RecordToDataset.ts'
-import * as Datasets from '../../../src/Datasets/index.ts'
-import { Datacite } from '../../../src/ExternalApis/index.ts'
-import { rawHtml } from '../../../src/html.ts'
-import { Doi, OrcidId } from '../../../src/types/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
+import * as Datasets from '../../../../src/Datasets/index.ts'
+import { Datacite } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/DatasetData/Datacite/RecordToDataset.ts'
+import { rawHtml } from '../../../../src/html.ts'
+import { Doi, OrcidId } from '../../../../src/types/index.ts'
+import * as EffectTest from '../../../EffectTest.ts'
 
 test.each([
   {

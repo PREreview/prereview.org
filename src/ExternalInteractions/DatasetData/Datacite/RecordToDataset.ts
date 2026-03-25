@@ -1,10 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, flow, Match, Option, pipe, Struct } from 'effect'
-import type { Datacite } from '../../ExternalApis/index.ts'
-import { sanitizeHtml } from '../../html.ts'
-import { OrcidId } from '../../types/index.ts'
-import * as Dataset from '../Dataset.ts'
-import * as DatasetId from '../DatasetId.ts'
+import * as Datasets from '../../../Datasets/index.ts'
+import type { Datacite } from '../../../ExternalApis/index.ts'
+import { sanitizeHtml } from '../../../html.ts'
+import { OrcidId } from '../../../types/index.ts'
 
 export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported')<{
   cause?: unknown
@@ -12,10 +11,10 @@ export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported
 
 export const RecordToDataset = (
   record: Datacite.Record,
-): Either.Either<Dataset.Dataset, Dataset.NotADataset | Dataset.DatasetIsUnavailable | RecordIsNotSupported> =>
+): Either.Either<Datasets.Dataset, Datasets.NotADataset | Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
   Either.gen(function* () {
     const datasetId = yield* Either.fromOption(
-      DatasetId.parseDatasetDoi(record.doi),
+      Datasets.parseDatasetDoi(record.doi),
       () => new RecordIsNotSupported({ cause: record.doi }),
     )
 
@@ -24,11 +23,12 @@ export const RecordToDataset = (
     }
 
     if (record.types.resourceType?.toLowerCase() !== 'dataset') {
-      return yield* Either.left(new Dataset.NotADataset({ cause: record.types, datasetId }))
+      return yield* Either.left(new Datasets.NotADataset({ cause: record.types, datasetId }))
     }
 
     const authors = yield* Array.match(record.creators, {
-      onEmpty: () => Either.left(new Dataset.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
+      onEmpty: () =>
+        Either.left(new Datasets.DatasetIsUnavailable({ cause: { creators: record.creators }, datasetId })),
       onNonEmpty: creators =>
         Either.right(
           Array.map(
@@ -50,10 +50,10 @@ export const RecordToDataset = (
 
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
-      () => new Dataset.DatasetIsUnavailable({ cause: { dates: record.dates }, datasetId }),
+      () => new Datasets.DatasetIsUnavailable({ cause: { dates: record.dates }, datasetId }),
     )
 
-    return new Dataset.Dataset({
+    return new Datasets.Dataset({
       abstract,
       authors,
       id: datasetId,
@@ -81,7 +81,7 @@ const findOrcid = (creator: Datacite.Record['creators'][number]) =>
     Option.getOrUndefined,
   )
 
-const getAbstract = (descriptions: Datacite.Record['descriptions']): Dataset.Dataset['abstract'] => {
+const getAbstract = (descriptions: Datacite.Record['descriptions']): Datasets.Dataset['abstract'] => {
   const abstract = Option.getOrUndefined(
     Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
   )
