@@ -1,5 +1,5 @@
 import { Duration } from 'effect'
-import { expect, test } from './base.js'
+import { expect, test } from './base.ts'
 
 test('can read the privacy policy', async ({ fetch, page }) => {
   await page.goto('/', { waitUntil: 'commit' })

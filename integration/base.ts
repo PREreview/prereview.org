@@ -42,7 +42,7 @@ import {
 } from '../src/contact-email-address.ts'
 import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
-import * as Events from '../src/Events.js'
+import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'

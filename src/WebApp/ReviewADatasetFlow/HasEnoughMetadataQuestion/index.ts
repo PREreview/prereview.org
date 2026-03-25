@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match, Option, pipe } from 'effect'
-import { Locale } from '../../../Context.js'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { NonEmptyString, Uuid } from '../../../types/index.ts'
