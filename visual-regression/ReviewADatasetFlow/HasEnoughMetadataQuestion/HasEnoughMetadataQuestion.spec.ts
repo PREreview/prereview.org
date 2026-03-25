@@ -3,12 +3,14 @@ import * as HasEnoughMetadataForm from '../../../src/WebApp/ReviewADatasetFlow/H
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasEnoughMetadataQuestion/HasEnoughMetadataQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasEnoughMetadataQuestion({
     datasetReviewId,
     form: new HasEnoughMetadataForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +27,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       hasEnoughMetadataPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       hasEnoughMetadataNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +44,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       hasEnoughMetadataPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
       hasEnoughMetadataNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

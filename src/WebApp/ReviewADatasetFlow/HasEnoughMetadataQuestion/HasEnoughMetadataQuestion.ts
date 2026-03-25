@@ -1,57 +1,43 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { HasEnoughMetadataForm } from './HasEnoughMetadataForm.ts'
+import type { HasEnoughMetadataForm, InvalidForm } from './HasEnoughMetadataForm.ts'
 
 export const HasEnoughMetadataQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: HasEnoughMetadataForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Does the dataset have enough metadata?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Does the dataset have enough metadata?', errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetFollowsFairAndCarePrinciples.href({ datasetReviewId })}" class="back">
-        <span>Back</span>
+        <span>${t('forms', 'backLink')()}</span>
       </a>
     `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.hasEnoughMetadata)
-                    ? html`
-                        <li>
-                          <a href="#has-enough-metadata-yes">
-                            ${pipe(
-                              Match.value(form.hasEnoughMetadata.left),
-                              Match.tag('Missing', () => 'Select if the dataset has enough metadata'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.hasEnoughMetadata)
+                hasAnError && Either.isLeft(form.hasEnoughMetadata)
                   ? 'aria-invalid="true" aria-errormessage="has-enough-metadata-error"'
                   : '',
               )}
@@ -60,10 +46,10 @@ export const HasEnoughMetadataQuestion = ({
                 <h1>Does the dataset have enough metadata?</h1>
               </legend>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.hasEnoughMetadata)
+              ${hasAnError && Either.isLeft(form.hasEnoughMetadata)
                 ? html`
                     <div class="error-message" id="has-enough-metadata-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.hasEnoughMetadata.left, {
                         Missing: () => 'Select if the dataset has enough metadata',
                       })}
@@ -214,11 +200,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetHasEnoughMetadata.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  Either.isLeft(form.hasEnoughMetadata)
+    ? html`
+        <li>
+          <a href="#has-enough-metadata-yes">
+            ${pipe(
+              Match.value(form.hasEnoughMetadata.left),
+              Match.tag('Missing', () => 'Select if the dataset has enough metadata'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : html``
