@@ -94,7 +94,7 @@ const extractFromDryadPath = flow(
 const extractFromScieloParams = (searchParams: UrlParams.UrlParams) =>
   pipe(
     UrlParams.getFirst(searchParams, 'persistentId'),
-    Option.andThen(Option.liftNullable(s => /^doi:(.+?)\/?$/i.exec(s)?.[1])),
+    Option.andThen(Option.liftNullable(s => /^doi:(.+)$/i.exec(s)?.[1])),
     Option.filter(Schema.is(ScieloDatasetId.fields.value)),
     Option.andThen(doi => new ScieloDatasetId({ value: doi })),
   )
