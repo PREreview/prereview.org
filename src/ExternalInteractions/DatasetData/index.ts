@@ -28,14 +28,7 @@ export const layer = Layer.effect(
       getDatasetTitle: id =>
         pipe(
           GetDatasetFromSource(id),
-          Effect.map(
-            dataset =>
-              new Datasets.DatasetTitle({
-                id: dataset.id,
-                language: dataset.title.language,
-                title: dataset.title.text,
-              }),
-          ),
+          Effect.map(Datasets.DatasetTitle.fromDataset),
           Effect.catchTag('NotADataset', error => new Datasets.DatasetIsNotFound({ cause: error, datasetId: id })),
           Effect.provide(context),
           Effect.withSpan('Datasets.getDatasetTitle', { attributes: { id } }),

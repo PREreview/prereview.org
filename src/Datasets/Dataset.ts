@@ -27,7 +27,14 @@ export class DatasetTitle extends Data.Class<{
   id: DatasetId
   language: LanguageCode
   title: Html
-}> {}
+}> {
+  static fromDataset = (dataset: Dataset) =>
+    new DatasetTitle({
+      id: dataset.id,
+      language: dataset.title.language,
+      title: dataset.title.text,
+    })
+}
 
 export class NotADataset extends Data.TaggedError('NotADataset')<{ cause?: unknown; datasetId: DatasetId }> {}
 
