@@ -214,7 +214,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.hasTrackedChanges)
     ? html`
         <li>
-          <a href="#rate-the-quality-excellent">
+          <a href="#has-tracked-changes-yes">
             ${pipe(
               Match.value(form.hasTrackedChanges.left),
               Match.tag('Missing', () => 'Select if the dataset has a way to list or track changes or versions'),
