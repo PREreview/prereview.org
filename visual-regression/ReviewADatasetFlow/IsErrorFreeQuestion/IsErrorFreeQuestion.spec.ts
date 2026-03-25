@@ -1,14 +1,15 @@
 import { Either } from 'effect'
 import * as IsErrorFreeForm from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsErrorFreeQuestion/IsErrorFreeQuestion.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
-
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsErrorFreeQuestion({
     datasetReviewId,
     form: new IsErrorFreeForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +26,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       isErrorFreePartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       isErrorFreeNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +43,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       isErrorFreePartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
       isErrorFreeNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

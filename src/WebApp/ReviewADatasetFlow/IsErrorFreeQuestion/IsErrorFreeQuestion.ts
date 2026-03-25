@@ -1,50 +1,44 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { IsErrorFreeForm } from './IsErrorFreeForm.ts'
+import type { InvalidForm, IsErrorFreeForm } from './IsErrorFreeForm.ts'
 
-export const IsErrorFreeQuestion = ({ datasetReviewId, form }: { datasetReviewId: Uuid; form: IsErrorFreeForm }) => {
+export const IsErrorFreeQuestion = ({
+  datasetReviewId,
+  form,
+  locale,
+}: {
+  datasetReviewId: Uuid
+  form: IsErrorFreeForm
+  locale: SupportedLocale
+}) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is the dataset relatively error-free?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Is the dataset relatively error-free?', errorPrefix(locale, hasAnError), plainText),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
     `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.isErrorFree)
-                    ? html`
-                        <li>
-                          <a href="#is-error-free-yes">
-                            ${pipe(
-                              Match.value(form.isErrorFree.left),
-                              Match.tag('Missing', () => 'Select if the dataset is relatively error-free'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               aria-describedby="is-error-free-tip"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.isErrorFree)
+                hasAnError && Either.isLeft(form.isErrorFree)
                   ? 'aria-invalid="true" aria-errormessage="is-error-free-error"'
                   : '',
               )}
@@ -59,10 +53,10 @@ export const IsErrorFreeQuestion = ({ datasetReviewId, form }: { datasetReviewId
                 dataset.
               </p>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.isErrorFree)
+              ${hasAnError && Either.isLeft(form.isErrorFree)
                 ? html`
                     <div class="error-message" id="is-error-free-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isErrorFree.left, {
                         Missing: () => 'Select if the dataset is relatively error-free',
                       })}
@@ -204,11 +198,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  Either.isLeft(form.isErrorFree)
+    ? html`
+        <li>
+          <a href="#is-error-free-yes">
+            ${pipe(
+              Match.value(form.isErrorFree.left),
+              Match.tag('Missing', () => 'Select if the dataset is relatively error-free'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : html``
