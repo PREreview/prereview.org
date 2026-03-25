@@ -4,6 +4,7 @@ import * as Datasets from '../../../Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml } from '../../../html.ts'
 import { OrcidId } from '../../../types/index.ts'
+import { IsDoiFromSupportedPublisher, type DataciteDatasetId } from './DatasetId.ts'
 
 export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported')<{
   cause?: unknown
@@ -13,14 +14,7 @@ export const RecordToDataset = (
   record: Datacite.Record,
 ): Either.Either<Datasets.Dataset, Datasets.NotADataset | Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
   Either.gen(function* () {
-    const datasetId = yield* Either.fromOption(
-      Datasets.parseDatasetDoi(record.doi),
-      () => new RecordIsNotSupported({ cause: record.doi }),
-    )
-
-    if (record.relationships.provider.toLowerCase() !== 'dryad') {
-      return yield* Either.left(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, 'provider') }))
-    }
+    const datasetId = yield* determineDataciteDatasetId(record)
 
     if (record.types.resourceType?.toLowerCase() !== 'dataset') {
       return yield* Either.left(new Datasets.NotADataset({ cause: record.types, datasetId }))
@@ -64,6 +58,19 @@ export const RecordToDataset = (
       },
       url: record.url,
     })
+  })
+
+const determineDataciteDatasetId = (
+  record: Datacite.Record,
+): Either.Either<DataciteDatasetId, Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
+  Either.gen(function* () {
+    const doi = record.doi
+
+    if (!IsDoiFromSupportedPublisher(doi)) {
+      return yield* Either.left(new RecordIsNotSupported({ cause: doi }))
+    }
+
+    return Datasets.fromDatasetDoi(doi)
   })
 
 const findPublishedDate = (dates: Datacite.Record['dates']) =>

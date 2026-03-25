@@ -21,4 +21,6 @@ type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]
 export type DataciteDatasetId = Extract<Datasets.DatasetId, { value: Doi.Doi<DataciteDoiPrefix> }>
 
 export const IsDataciteDatasetId = (id: Datasets.DatasetId): id is DataciteDatasetId =>
-  Doi.hasRegistrant(...dataciteDoiPrefixes)(id.value)
+  IsDoiFromSupportedPublisher(id.value)
+
+export const IsDoiFromSupportedPublisher = Doi.hasRegistrant(...dataciteDoiPrefixes)

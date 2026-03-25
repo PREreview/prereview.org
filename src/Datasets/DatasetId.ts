@@ -49,6 +49,9 @@ export const isDatasetDoi: Predicate.Refinement<Doi.Doi, DatasetId['value']> = S
 
 export const parseDatasetDoi: (input: string) => Option.Option<DatasetId> = Schema.decodeOption(DatasetIdFromDoi)
 
+export const fromDatasetDoi = <D extends DatasetId['value']>(doi: D): Extract<DatasetId, { value: D }> =>
+  Schema.decodeSync(DatasetIdFromDoi)(doi) as never
+
 export const fromUrl = (url: URL): Option.Option<DatasetId> =>
   pipe(
     Match.value(Url.mutate(url, url => (url.hostname = url.hostname.replace('www.', '')))),
