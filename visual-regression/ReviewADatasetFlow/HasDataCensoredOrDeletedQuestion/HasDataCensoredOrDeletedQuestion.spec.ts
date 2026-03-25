@@ -1,14 +1,15 @@
 import { Either } from 'effect'
 import * as HasDataCensoredOrDeletedForm from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasDataCensoredOrDeletedQuestion/HasDataCensoredOrDeletedQuestion.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
-
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasDataCensoredOrDeletedQuestion({
     datasetReviewId,
     form: new HasDataCensoredOrDeletedForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +26,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       hasDataCensoredOrDeletedPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       hasDataCensoredOrDeletedNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +43,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       hasDataCensoredOrDeletedPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
       hasDataCensoredOrDeletedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
