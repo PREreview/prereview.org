@@ -1,6 +1,7 @@
 import { Effect, pipe } from 'effect'
 import * as Datasets from '../../../Datasets/index.ts'
 import { Datacite } from '../../../ExternalApis/index.ts'
+import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import type { DataciteDatasetId } from './DatasetId.ts'
 import { RecordToDataset } from './RecordToDataset.ts'
 
@@ -11,7 +12,7 @@ export const GetDatasetFromDatacite = (
 ): Effect.Effect<
   Datasets.Dataset,
   Datasets.NotADataset | Datasets.DatasetIsNotFound | Datasets.DatasetIsUnavailable,
-  Datacite.Datacite
+  Datacite.Datacite | LanguageDetection.LanguageDetection
 > =>
   pipe(
     Datacite.getRecord(id.value),

@@ -1,12 +1,16 @@
 import { Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
 import * as Datasets from '../../Datasets/index.ts'
 import type { Datacite } from '../../ExternalApis/index.ts'
+import type * as LanguageDetection from '../LanguageDetection/index.ts'
 import { GetDatasetFromDatacite, IsDataciteDatasetId } from './Datacite/index.ts'
 
 export const layer = Layer.effect(
   Datasets.Datasets,
   Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<Datacite.Datacite>(), Context.omit(Scope.Scope))
+    const context = yield* Effect.andThen(
+      Effect.context<Datacite.Datacite | LanguageDetection.LanguageDetection>(),
+      Context.omit(Scope.Scope),
+    )
 
     const GetDatasetFromSource = pipe(
       Match.type<Datasets.DatasetId>(),

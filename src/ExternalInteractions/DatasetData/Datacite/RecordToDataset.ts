@@ -1,9 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Data, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import { Array, Data, Effect, Either, flow, Match, Option, pipe, Struct } from 'effect'
+import type { LanguageCode } from 'iso-639-1'
 import * as Datasets from '../../../Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
-import { sanitizeHtml } from '../../../html.ts'
-import { OrcidId } from '../../../types/index.ts'
+import { sanitizeHtml, type Html } from '../../../html.ts'
+import { Iso639, OrcidId } from '../../../types/index.ts'
+import type * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { IsDoiFromSupportedPublisher, type DataciteDatasetId } from './DatasetId.ts'
 
 export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported')<{
@@ -12,13 +14,19 @@ export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported
 
 export const RecordToDataset = (
   record: Datacite.Record,
-): Either.Either<Datasets.Dataset, Datasets.NotADataset | Datasets.DatasetIsUnavailable | RecordIsNotSupported> =>
-  Either.gen(function* () {
+): Effect.Effect<
+  Datasets.Dataset,
+  Datasets.NotADataset | Datasets.DatasetIsUnavailable | RecordIsNotSupported,
+  LanguageDetection.LanguageDetection
+> =>
+  Effect.gen(function* () {
     const datasetId = yield* determineDataciteDatasetId(record)
 
     if (record.types.resourceType?.toLowerCase() !== 'dataset') {
       return yield* Either.left(new Datasets.NotADataset({ cause: record.types, datasetId }))
     }
+
+    const recordLanguage = Iso639.isIso6391(record.language) ? record.language : undefined
 
     const authors = yield* Array.match(record.creators, {
       onEmpty: () =>
@@ -40,7 +48,9 @@ export const RecordToDataset = (
         ),
     })
 
-    const abstract = getAbstract(record.descriptions)
+    const title = yield* getTitle(record.titles, datasetId, recordLanguage)
+
+    const abstract = yield* getAbstract(record.descriptions, datasetId, recordLanguage)
 
     const posted = yield* Either.fromOption(
       findPublishedDate(record.dates),
@@ -52,10 +62,7 @@ export const RecordToDataset = (
       authors,
       id: datasetId,
       posted,
-      title: {
-        text: sanitizeHtml(record.titles[0].title, { allowBlockLevel: false }),
-        language: 'en',
-      },
+      title,
       url: record.url,
     })
   })
@@ -98,7 +105,30 @@ const findOrcid = (creator: Datacite.Record['creators'][number]) =>
     Option.getOrUndefined,
   )
 
-const getAbstract = (descriptions: Datacite.Record['descriptions']): Datasets.Dataset['abstract'] => {
+const getTitle = Effect.fnUntraced(function* (
+  titles: Datacite.Record['titles'],
+  id: DataciteDatasetId,
+  recordLanguage?: LanguageCode,
+): Effect.fn.Return<Datasets.Dataset['title'], Datasets.DatasetIsUnavailable, LanguageDetection.LanguageDetection> {
+  const text = sanitizeHtml(titles[0].title, { allowBlockLevel: false })
+
+  const language = yield* Effect.catchTag(
+    detectLanguageForRepository({ id, text, recordLanguage }),
+    'UnableToDetectLanguage',
+    error => new Datasets.DatasetIsUnavailable({ cause: error, datasetId: id }),
+  )
+
+  return {
+    language,
+    text,
+  }
+})
+
+const getAbstract = Effect.fnUntraced(function* (
+  descriptions: Datacite.Record['descriptions'],
+  id: DataciteDatasetId,
+  recordLanguage?: LanguageCode,
+): Effect.fn.Return<Datasets.Dataset['abstract'], never, LanguageDetection.LanguageDetection> {
   const abstract = Option.getOrUndefined(
     Array.findFirst(descriptions, ({ descriptionType }) => descriptionType === 'Abstract'),
   )
@@ -109,8 +139,23 @@ const getAbstract = (descriptions: Datacite.Record['descriptions']): Datasets.Da
 
   const text = sanitizeHtml(`<p>${abstract.description}</p>`)
 
-  return {
-    language: 'en',
-    text,
-  }
-}
+  return yield* Effect.match(detectLanguageForRepository({ id, text, recordLanguage }), {
+    onSuccess: language => ({ language, text }),
+    onFailure: () => undefined,
+  })
+})
+
+const detectLanguageForRepository = ({
+  id,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  text,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  recordLanguage,
+}: {
+  id: DataciteDatasetId
+  text: Html
+  recordLanguage?: LanguageCode
+}): Effect.Effect<LanguageCode, LanguageDetection.UnableToDetectLanguage, LanguageDetection.LanguageDetection> =>
+  Match.valueTags(id, {
+    DryadDatasetId: () => Effect.succeed('en' as const),
+  })

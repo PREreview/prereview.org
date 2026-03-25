@@ -3,11 +3,12 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Effect, pipe, Schema } from 'effect'
+import { Effect, Layer, pipe, Schema } from 'effect'
 import { URL } from 'url'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/DatasetData/Datacite/RecordToDataset.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import { Doi, OrcidId } from '../../../../src/types/index.ts'
 import * as EffectTest from '../../../EffectTest.ts'
@@ -329,7 +330,7 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
 )
 
 test.each(['dryad-collection'])('returns a specific error for a non-dataset record (%s)', response =>
@@ -343,7 +344,7 @@ test.each(['dryad-collection'])('returns a specific error for a non-dataset reco
     )
 
     expect(actual._tag).toStrictEqual('NotADataset')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
 )
 
 test.each([
@@ -377,5 +378,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('RecordIsNotSupported')
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
 )
