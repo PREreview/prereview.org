@@ -479,6 +479,38 @@
     "message": "Is the dataset relatively error-free?",
     "description": "Label for the question about whether the dataset is error-free."
   },
+  "relativelyErrorFreeTip": {
+    "message": "Errors might include things like using inappropriate data collection or analysis methods, using inappropriate metrics with the data, or manipulating the data in other ways that result in errors in the dataset.",
+    "description": "Tip shown alongside the question “Is the dataset relatively error-free?”."
+  },
+  "selectRelativelyErrorFree": {
+    "message": "Select if the dataset is relatively error-free",
+    "description": "Error message shown when the user tries to complete the form “Is the dataset relatively error-free?” without selecting an option."
+  },
+  "relativelyErrorFreeYesTip": {
+    "message": "Few, if any errors, are in the dataset, and any errors are minor.",
+    "description": "Tip shown alongside the “Yes” option for the question “Is the dataset relatively error-free?”."
+  },
+  "relativelyErrorFreeYesWhy": {
+    "message": "Are there any errors?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Is the dataset relatively error-free?”."
+  },
+  "relativelyErrorFreePartlyTip": {
+    "message": "Several minor errors or even one major error are in the dataset.",
+    "description": "Tip shown alongside the “Partly” option for the question “Is the dataset relatively error-free?”."
+  },
+  "relativelyErrorFreePartlyWhy": {
+    "message": "What errors are there?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Is the dataset relatively error-free?”."
+  },
+  "relativelyErrorFreeNoTip": {
+    "message": "Many minor and major errors are in the dataset.",
+    "description": "Tip shown alongside the “No” option for the question “Is the dataset relatively error-free?”."
+  },
+  "relativelyErrorFreeNoWhy": {
+    "message": "What major errors are there?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Is the dataset relatively error-free?”."
+  },
   "changeRelativelyErrorFree": {
     "message": "Change <visuallyHidden>if the dataset is relatively error-free</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question about whether the dataset is error-free."

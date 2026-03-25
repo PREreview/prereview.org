@@ -22,7 +22,7 @@ export const IsErrorFreeQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Is the dataset relatively error-free?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('relativelyErrorFree')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -44,21 +44,17 @@ export const IsErrorFreeQuestion = ({
               )}
             >
               <legend>
-                <h1>Is the dataset relatively error-free?</h1>
+                <h1>${t('relativelyErrorFree')()}</h1>
               </legend>
 
-              <p id="is-error-free-tip" role="note">
-                Errors might include things like using inappropriate data collection or analysis methods, using
-                inappropriate metrics with the data, or manipulating the data in other ways that result in errors in the
-                dataset.
-              </p>
+              <p id="is-error-free-tip" role="note">${t('relativelyErrorFreeTip')()}</p>
 
               ${hasAnError && Either.isLeft(form.isErrorFree)
                 ? html`
                     <div class="error-message" id="is-error-free-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isErrorFree.left, {
-                        Missing: () => 'Select if the dataset is relatively error-free',
+                        Missing: () => t('selectRelativelyErrorFree')(),
                       })}
                     </div>
                   `
@@ -80,14 +76,14 @@ export const IsErrorFreeQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="is-error-free-tip-yes" role="note">
-                    Few, if any errors, are in the dataset, and any errors are minor.
-                  </p>
+                  <p id="is-error-free-tip-yes" role="note">${t('relativelyErrorFreeYesTip')()}</p>
                   <div class="conditional" id="is-error-free-yes-control">
                     <div>
-                      <label for="is-error-free-yes-detail" class="textarea">Are there any errors? (optional)</label>
+                      <label for="is-error-free-yes-detail" class="textarea"
+                        >${t('relativelyErrorFreeYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
+                      >
                       <textarea name="isErrorFreeYesDetail" id="is-error-free-yes-detail" rows="5">
 ${Match.valueTags(form, {
                           EmptyForm: () => '',
@@ -116,15 +112,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="is-error-free-tip-partly" role="note">
-                    Several minor errors or even one major error are in the dataset.
-                  </p>
+                  <p id="is-error-free-tip-partly" role="note">${t('relativelyErrorFreePartlyTip')()}</p>
                   <div class="conditional" id="is-error-free-partly-control">
                     <div>
                       <label for="is-error-free-partly-detail" class="textarea"
-                        >What errors are there? (optional)</label
+                        >${t('relativelyErrorFreePartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isErrorFreePartlyDetail" id="is-error-free-partly-detail" rows="5">
 ${Match.valueTags(form, {
@@ -154,13 +148,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="is-error-free-tip-no" role="note">Many minor and major errors are in the dataset.</p>
+                  <p id="is-error-free-tip-no" role="note">${t('relativelyErrorFreeNoTip')()}</p>
                   <div class="conditional" id="is-error-free-no-control">
                     <div>
                       <label for="is-error-free-no-detail" class="textarea"
-                        >What major errors are there? (optional)</label
+                        >${t('relativelyErrorFreeNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isErrorFreeNoDetail" id="is-error-free-no-detail" rows="5">
 ${Match.valueTags(form, {
@@ -177,7 +171,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="isErrorFree"
@@ -190,7 +184,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -207,7 +201,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.isErrorFree)
     ? html`
@@ -215,7 +208,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#is-error-free-yes">
             ${pipe(
               Match.value(form.isErrorFree.left),
-              Match.tag('Missing', () => 'Select if the dataset is relatively error-free'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectRelativelyErrorFree')()),
               Match.exhaustive,
             )}
           </a>
