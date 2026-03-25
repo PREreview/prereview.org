@@ -453,7 +453,6 @@ test.each([
   'figshare-africarxiv-journal-article',
   'osf-file',
   'osf-registration',
-  'scielo-data-english',
   'zenodo-journal-article',
 ])('returns a specific error for non-Preprint record (%s)', response =>
   Effect.gen(function* () {
@@ -491,6 +490,7 @@ test.each([
   'dryad-collection',
   'dryad-html',
   'figshare',
+  'scielo-data-english',
 ])('returns a specific error for an unsupported DOI record (%s)', response =>
   Effect.gen(function* () {
     const actual = yield* pipe(
