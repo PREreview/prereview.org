@@ -14,6 +14,7 @@ const dataciteDoiPrefixes = [
   '15146',
   '25338',
   '25349',
+  '48331',
 ] satisfies Array.NonEmptyReadonlyArray<Doi.Registrant<Datasets.DatasetId['value']>>
 
 type DataciteDoiPrefix = (typeof dataciteDoiPrefixes)[number]

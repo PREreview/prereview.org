@@ -1,0 +1,209 @@
+{
+  "data": {
+    "id": "10.48331/scielodata.v2hjje",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.48331/scielodata.v2hjje",
+      "prefix": "10.48331",
+      "suffix": "scielodata.v2hjje",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Rodríguez, Daniel",
+          "nameType": "Personal",
+          "givenName": "Daniel",
+          "familyName": "Rodríguez",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-2370-6543",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Fuentes-Ugarte, Lisette",
+          "nameType": "Personal",
+          "givenName": "Lisette",
+          "familyName": "Fuentes-Ugarte",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-7555-3019",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Cuevas-Zepeda, Leonardo",
+          "nameType": "Personal",
+          "givenName": "Leonardo",
+          "familyName": "Cuevas-Zepeda",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-1310-1850",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Hunter-Echeverría, Karina",
+          "nameType": "Personal",
+          "givenName": "Karina",
+          "familyName": "Hunter-Echeverría",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0003-0681-6257",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Figueroa Burdiles, Noelia",
+          "nameType": "Personal",
+          "givenName": "Noelia",
+          "familyName": "Figueroa Burdiles",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-7874-004X",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Datos de replicación para: Percepción de los usuarios y sus terapeutas sobre los factores que interfieren en la adherencia terapéutica en el hogar"
+        }
+      ],
+      "publisher": "SciELO Data",
+      "container": {},
+      "publicationYear": 2026,
+      "subjects": [
+        { "subject": "Medicine, Health and Life Sciences" },
+        { "subject": "adherencia al tratamiento" },
+        { "subject": "perspectiva del paciente" },
+        { "subject": "rehabilitación" }
+      ],
+      "contributors": [
+        {
+          "name": "LISETTE SOLANGE, FUENTES UGARTE",
+          "nameType": "Personal",
+          "givenName": "FUENTES UGARTE",
+          "familyName": "LISETTE SOLANGE",
+          "affiliation": ["Universidad Católica de Temuco"],
+          "contributorType": "ContactPerson",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2026-02-11", "dateType": "Submitted" },
+        { "date": "2026-02-27", "dateType": "Available" },
+        { "date": "2026-02-27", "dateType": "Updated" },
+        { "date": "2026", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "IsSupplementedBy",
+          "relatedIdentifier": "10.1590/interface.20250353",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.v2hjje/wudd49",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.v2hjje/fzazsc",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.v2hjje/k9cuy3",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["52885", "52141", "9758"],
+      "formats": ["application/pdf", "application/pdf", "text/plain"],
+      "version": "1.0",
+      "rightsList": [
+        { "rightsUri": "info:eu-repo/semantics/openAccess" },
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "El propósito de este estudio fue identificar y analizar los factores que influyen en la adherencia a la rehabilitación en el hogar, desde la percepción de usuarios y sus terapeutas en un centro comunitario de rehabilitación del sur de Chile. Se desarrolló bajo un paradigma cualitativo interpretativo, con diseño fenomenológico empírico, orientado a comprender las experiencias y significados atribuidos al proceso terapéutico y a la ejecución de indicaciones domiciliarias.\n\nLa muestra fue intencionada e incluyó 7 usuarios (en dos casos participaron cuidadores) y 7 profesionales del equipo de neurorrehabilitación (fonoaudiología, kinesiología y terapia ocupacional), quienes generaron un total de 19 entrevistas. Los criterios de selección de usuarios consideraron un tiempo mínimo de permanencia de seis meses en el centro y atención por al menos dos terapeutas. La recolección de datos se efectuó entre enero y mayo de 2023 mediante entrevistas semiestructuradas validadas por jueces expertos, compuestas por 15 preguntas abiertas. Las entrevistas, realizadas en modalidad presencial y en línea, fueron grabadas, transcritas literalmente y codificadas para resguardar el anonimato, previa firma de consentimiento informado y aprobación por comité de ética.\n\nEl análisis se realizó mediante análisis de contenido, apoyado en una matriz temática construida a partir de los objetivos del estudio. Se efectuó una lectura comprensiva, identificación de unidades de sentido y generación progresiva de categorías y subcategorías. El proceso permitió organizar los hallazgos en cuatro dimensiones analíticas: comunicación y seguimiento, factores personales, contextuales y materiales.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLlYySEpKRTwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+RGFuaWVsIFJvZHLDrWd1ZXo8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkRhbmllbDwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5Sb2Ryw61ndWV6PC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDMtMjM3MC02NTQzPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPlVuaXZlcnNpZGFkIENhdMOzbGljYSBkZSBUZW11Y288L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkxpc2V0dGUgRnVlbnRlcy1VZ2FydGU8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkxpc2V0dGU8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RnVlbnRlcy1VZ2FydGU8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDAtMDAwMi03NTU1LTMwMTk8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+VW5pdmVyc2lkYWQgQ2F0w7NsaWNhIGRlIFRlbXVjbzwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TGVvbmFyZG8gQ3VldmFzLVplcGVkYTwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+TGVvbmFyZG88L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+Q3VldmFzLVplcGVkYTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSJodHRwczovL29yY2lkLm9yZyI+aHR0cHM6Ly9vcmNpZC5vcmcvMDAwMC0wMDAyLTEzMTAtMTg1MDwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5Vbml2ZXJzaWRhZCBDYXTDs2xpY2EgZGUgVGVtdWNvPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5LYXJpbmEgSHVudGVyLUVjaGV2ZXJyw61hPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5LYXJpbmE8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+SHVudGVyLUVjaGV2ZXJyw61hPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDMtMDY4MS02MjU3PC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPlVuaXZlcnNpZGFkIENhdMOzbGljYSBkZSBUZW11Y288L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPk5vZWxpYSBGaWd1ZXJvYSBCdXJkaWxlczwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+Tm9lbGlhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkZpZ3Vlcm9hIEJ1cmRpbGVzPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDEtNzg3NC0wMDRYPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPlVuaXZlcnNpZGFkIENhdMOzbGljYSBkZSBUZW11Y288L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5EYXRvcyBkZSByZXBsaWNhY2nDs24gcGFyYTogUGVyY2VwY2nDs24gZGUgbG9zIHVzdWFyaW9zIHkgc3VzIHRlcmFwZXV0YXMgc29icmUgbG9zIGZhY3RvcmVzIHF1ZSBpbnRlcmZpZXJlbiBlbiBsYSBhZGhlcmVuY2lhIHRlcmFww6l1dGljYSBlbiBlbCBob2dhcjwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5TY2lFTE8gRGF0YTwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyNjwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0Pk1lZGljaW5lLCBIZWFsdGggYW5kIExpZmUgU2NpZW5jZXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5hZGhlcmVuY2lhIGFsIHRyYXRhbWllbnRvPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cGVyc3BlY3RpdmEgZGVsIHBhY2llbnRlPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+cmVoYWJpbGl0YWNpw7NuPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGNvbnRyaWJ1dG9ycz4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9IkNvbnRhY3RQZXJzb24iPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TElTRVRURSBTT0xBTkdFLCBGVUVOVEVTIFVHQVJURTwvY29udHJpYnV0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkZVRU5URVMgVUdBUlRFPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkxJU0VUVEUgU09MQU5HRTwvZmFtaWx5TmFtZT4KICAgICAgPGFmZmlsaWF0aW9uPlVuaXZlcnNpZGFkIENhdMOzbGljYSBkZSBUZW11Y288L2FmZmlsaWF0aW9uPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIj4yMDI2LTAyLTExPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyNi0wMi0yNzwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIj4yMDI2LTAyLTI3PC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJEYXRhc2V0Ii8+CiAgPHJlbGF0ZWRJZGVudGlmaWVycz4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9IklzU3VwcGxlbWVudGVkQnkiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj4xMC4xNTkwL0lOVEVSRkFDRS4yMDI1MDM1MzwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNDgzMzEvU0NJRUxPREFUQS5WMkhKSkUvV1VERDQ5PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGlvblR5cGU9Ikhhc1BhcnQiIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLlYySEpKRS9GWkFaU0M8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPjEwLjQ4MzMxL1NDSUVMT0RBVEEuVjJISkpFL0s5Q1VZMzwvcmVsYXRlZElkZW50aWZpZXI+CiAgPC9yZWxhdGVkSWRlbnRpZmllcnM+CiAgPHNpemVzPgogICAgPHNpemU+NTI4ODU8L3NpemU+CiAgICA8c2l6ZT41MjE0MTwvc2l6ZT4KICAgIDxzaXplPjk3NTg8L3NpemU+CiAgPC9zaXplcz4KICA8Zm9ybWF0cz4KICAgIDxmb3JtYXQ+YXBwbGljYXRpb24vcGRmPC9mb3JtYXQ+CiAgICA8Zm9ybWF0PmFwcGxpY2F0aW9uL3BkZjwvZm9ybWF0PgogICAgPGZvcm1hdD50ZXh0L3BsYWluPC9mb3JtYXQ+CiAgPC9mb3JtYXRzPgogIDx2ZXJzaW9uPjEuMDwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJpbmZvOmV1LXJlcG8vc2VtYW50aWNzL29wZW5BY2Nlc3MiLz4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAiPkNDIEJZIDQuMDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPkVsIHByb3DDs3NpdG8gZGUgZXN0ZSBlc3R1ZGlvIGZ1ZSBpZGVudGlmaWNhciB5IGFuYWxpemFyIGxvcyBmYWN0b3JlcyBxdWUgaW5mbHV5ZW4gZW4gbGEgYWRoZXJlbmNpYSBhIGxhIHJlaGFiaWxpdGFjacOzbiBlbiBlbCBob2dhciwgZGVzZGUgbGEgcGVyY2VwY2nDs24gZGUgdXN1YXJpb3MgeSBzdXMgdGVyYXBldXRhcyBlbiB1biBjZW50cm8gY29tdW5pdGFyaW8gZGUgcmVoYWJpbGl0YWNpw7NuIGRlbCBzdXIgZGUgQ2hpbGUuIFNlIGRlc2Fycm9sbMOzIGJham8gdW4gcGFyYWRpZ21hIGN1YWxpdGF0aXZvIGludGVycHJldGF0aXZvLCBjb24gZGlzZcOxbyBmZW5vbWVub2zDs2dpY28gZW1ww61yaWNvLCBvcmllbnRhZG8gYSBjb21wcmVuZGVyIGxhcyBleHBlcmllbmNpYXMgeSBzaWduaWZpY2Fkb3MgYXRyaWJ1aWRvcyBhbCBwcm9jZXNvIHRlcmFww6l1dGljbyB5IGEgbGEgZWplY3VjacOzbiBkZSBpbmRpY2FjaW9uZXMgZG9taWNpbGlhcmlhcy4KCkxhIG11ZXN0cmEgZnVlIGludGVuY2lvbmFkYSBlIGluY2x1ecOzIDcgdXN1YXJpb3MgKGVuIGRvcyBjYXNvcyBwYXJ0aWNpcGFyb24gY3VpZGFkb3JlcykgeSA3IHByb2Zlc2lvbmFsZXMgZGVsIGVxdWlwbyBkZSBuZXVyb3JyZWhhYmlsaXRhY2nDs24gKGZvbm9hdWRpb2xvZ8OtYSwga2luZXNpb2xvZ8OtYSB5IHRlcmFwaWEgb2N1cGFjaW9uYWwpLCBxdWllbmVzIGdlbmVyYXJvbiB1biB0b3RhbCBkZSAxOSBlbnRyZXZpc3Rhcy4gTG9zIGNyaXRlcmlvcyBkZSBzZWxlY2Npw7NuIGRlIHVzdWFyaW9zIGNvbnNpZGVyYXJvbiB1biB0aWVtcG8gbcOtbmltbyBkZSBwZXJtYW5lbmNpYSBkZSBzZWlzIG1lc2VzIGVuIGVsIGNlbnRybyB5IGF0ZW5jacOzbiBwb3IgYWwgbWVub3MgZG9zIHRlcmFwZXV0YXMuIExhIHJlY29sZWNjacOzbiBkZSBkYXRvcyBzZSBlZmVjdHXDsyBlbnRyZSBlbmVybyB5IG1heW8gZGUgMjAyMyBtZWRpYW50ZSBlbnRyZXZpc3RhcyBzZW1pZXN0cnVjdHVyYWRhcyB2YWxpZGFkYXMgcG9yIGp1ZWNlcyBleHBlcnRvcywgY29tcHVlc3RhcyBwb3IgMTUgcHJlZ3VudGFzIGFiaWVydGFzLiBMYXMgZW50cmV2aXN0YXMsIHJlYWxpemFkYXMgZW4gbW9kYWxpZGFkIHByZXNlbmNpYWwgeSBlbiBsw61uZWEsIGZ1ZXJvbiBncmFiYWRhcywgdHJhbnNjcml0YXMgbGl0ZXJhbG1lbnRlIHkgY29kaWZpY2FkYXMgcGFyYSByZXNndWFyZGFyIGVsIGFub25pbWF0bywgcHJldmlhIGZpcm1hIGRlIGNvbnNlbnRpbWllbnRvIGluZm9ybWFkbyB5IGFwcm9iYWNpw7NuIHBvciBjb21pdMOpIGRlIMOpdGljYS4KCkVsIGFuw6FsaXNpcyBzZSByZWFsaXrDsyBtZWRpYW50ZSBhbsOhbGlzaXMgZGUgY29udGVuaWRvLCBhcG95YWRvIGVuIHVuYSBtYXRyaXogdGVtw6F0aWNhIGNvbnN0cnVpZGEgYSBwYXJ0aXIgZGUgbG9zIG9iamV0aXZvcyBkZWwgZXN0dWRpby4gU2UgZWZlY3R1w7MgdW5hIGxlY3R1cmEgY29tcHJlbnNpdmEsIGlkZW50aWZpY2FjacOzbiBkZSB1bmlkYWRlcyBkZSBzZW50aWRvIHkgZ2VuZXJhY2nDs24gcHJvZ3Jlc2l2YSBkZSBjYXRlZ29yw61hcyB5IHN1YmNhdGVnb3LDrWFzLiBFbCBwcm9jZXNvIHBlcm1pdGnDsyBvcmdhbml6YXIgbG9zIGhhbGxhemdvcyBlbiBjdWF0cm8gZGltZW5zaW9uZXMgYW5hbMOtdGljYXM6IGNvbXVuaWNhY2nDs24geSBzZWd1aW1pZW50bywgZmFjdG9yZXMgcGVyc29uYWxlcywgY29udGV4dHVhbGVzIHkgbWF0ZXJpYWxlcy48L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+      "url": "https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.V2HJJE",
+      "contentUrl": null,
+      "metadataVersion": 1,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 1,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 3,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2026-02-11T18:34:04.000Z",
+      "registered": "2026-02-27T20:58:52.000Z",
+      "published": "2026",
+      "updated": "2026-02-27T20:58:52.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "unifesp.scielo", "type": "clients" } },
+      "provider": { "data": { "id": "unifesp", "type": "providers" } },
+      "media": { "data": { "id": "10.48331/scielodata.v2hjje", "type": "media" } },
+      "references": { "data": [{ "id": "10.1590/interface.20250353", "type": "dois" }] },
+      "citations": { "data": [] },
+      "parts": {
+        "data": [
+          { "id": "10.48331/scielodata.v2hjje/fzazsc", "type": "dois" },
+          { "id": "10.48331/scielodata.v2hjje/wudd49", "type": "dois" },
+          { "id": "10.48331/scielodata.v2hjje/k9cuy3", "type": "dois" }
+        ]
+      },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

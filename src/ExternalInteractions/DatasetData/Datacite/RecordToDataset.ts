@@ -5,7 +5,7 @@ import * as Datasets from '../../../Datasets/index.ts'
 import type { Datacite } from '../../../ExternalApis/index.ts'
 import { sanitizeHtml, type Html } from '../../../html.ts'
 import { Iso639, OrcidId } from '../../../types/index.ts'
-import type * as LanguageDetection from '../../LanguageDetection/index.ts'
+import * as LanguageDetection from '../../LanguageDetection/index.ts'
 import { IsDoiFromSupportedPublisher, type DataciteDatasetId } from './DatasetId.ts'
 
 export class RecordIsNotSupported extends Data.TaggedError('RecordIsNotSupported')<{
@@ -22,7 +22,10 @@ export const RecordToDataset = (
   Effect.gen(function* () {
     const datasetId = yield* determineDataciteDatasetId(record)
 
-    if (record.types.resourceType?.toLowerCase() !== 'dataset') {
+    if (
+      record.types.resourceType?.toLowerCase() !== 'dataset' &&
+      record.types.resourceTypeGeneral?.toLowerCase() !== 'dataset'
+    ) {
       return yield* Either.left(new Datasets.NotADataset({ cause: record.types, datasetId }))
     }
 
@@ -79,7 +82,6 @@ const determineDataciteDatasetId = (
 
     const datasetId = Datasets.fromDatasetDoi(doi)
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (datasetId._tag === 'DryadDatasetId' && record.relationships.provider.toLowerCase() !== 'dryad') {
       return yield* Either.left(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, 'provider') }))
     }
@@ -147,9 +149,7 @@ const getAbstract = Effect.fnUntraced(function* (
 
 const detectLanguageForRepository = ({
   id,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   text,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   recordLanguage,
 }: {
   id: DataciteDatasetId
@@ -158,4 +158,5 @@ const detectLanguageForRepository = ({
 }): Effect.Effect<LanguageCode, LanguageDetection.UnableToDetectLanguage, LanguageDetection.LanguageDetection> =>
   Match.valueTags(id, {
     DryadDatasetId: () => Effect.succeed('en' as const),
+    ScieloDatasetId: () => LanguageDetection.detectLanguageFrom(['en', 'es', 'pt'], text, recordLanguage),
   })

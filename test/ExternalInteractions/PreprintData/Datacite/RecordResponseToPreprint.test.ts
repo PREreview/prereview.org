@@ -491,6 +491,8 @@ test.each([
   'dryad-html',
   'figshare',
   'scielo-data-english',
+  'scielo-data-portuguese',
+  'scielo-data-spanish',
 ])('returns a specific error for an unsupported DOI record (%s)', response =>
   Effect.gen(function* () {
     const actual = yield* pipe(

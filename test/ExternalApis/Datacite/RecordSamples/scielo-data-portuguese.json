@@ -1,0 +1,159 @@
+{
+  "data": {
+    "id": "10.48331/scielodata.4sp3xa",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.48331/scielodata.4sp3xa",
+      "prefix": "10.48331",
+      "suffix": "scielodata.4sp3xa",
+      "identifiers": [],
+      "alternateIdentifiers": [],
+      "creators": [
+        {
+          "name": "Mendes da Silva, Rondineli",
+          "nameType": "Personal",
+          "givenName": "Rondineli",
+          "familyName": "Mendes da Silva",
+          "affiliation": ["Fiocruz"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0002-6243-5179",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        },
+        {
+          "name": "Gomes Pitta Lopes, Sarah",
+          "nameType": "Personal",
+          "givenName": "Sarah",
+          "familyName": "Gomes Pitta Lopes",
+          "affiliation": ["Fiocruz"],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Luiza, Vera Lúcia",
+          "nameType": "Personal",
+          "givenName": "Vera Lúcia",
+          "familyName": "Luiza",
+          "affiliation": ["Fiocruz"],
+          "nameIdentifiers": [
+            {
+              "schemeUri": "https://orcid.org",
+              "nameIdentifier": "https://orcid.org/0000-0001-6245-7522",
+              "nameIdentifierScheme": "ORCID"
+            }
+          ]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Data for: Reversão das recomendações emitidas pela Comissão Nacional de Incorporação de Tecnologias no SUS após Consultas Públicas"
+        }
+      ],
+      "publisher": "SciELO Data",
+      "container": {},
+      "publicationYear": 2022,
+      "subjects": [{ "subject": "Medicine, Health and Life Sciences" }, { "subject": "Medicamentos" }],
+      "contributors": [
+        {
+          "name": "Mendes da Silva, Rondineli",
+          "nameType": "Personal",
+          "givenName": "Rondineli",
+          "familyName": "Mendes da Silva",
+          "affiliation": ["Fiocruz"],
+          "contributorType": "ContactPerson",
+          "nameIdentifiers": []
+        }
+      ],
+      "dates": [
+        { "date": "2022-09-29", "dateType": "Submitted" },
+        { "date": "2022-10-07", "dateType": "Available" },
+        { "date": "2022-10-07", "dateType": "Updated" },
+        { "date": "2022", "dateType": "Issued" }
+      ],
+      "language": null,
+      "types": {
+        "ris": "DATA",
+        "bibtex": "misc",
+        "citeproc": "dataset",
+        "schemaOrg": "Dataset",
+        "resourceTypeGeneral": "Dataset"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.4sp3xa/oiswsd",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "HasPart",
+          "relatedIdentifier": "10.48331/scielodata.4sp3xa/ribfhl",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": ["72321", "3470"],
+      "formats": ["text/tab-separated-values", "text/plain"],
+      "version": "1.0",
+      "rightsList": [
+        { "rightsUri": "info:eu-repo/semantics/restrictedAccess" },
+        {
+          "rights": "Creative Commons Attribution 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "O trabalho analisou o efeito das Consultas Públicas (CP) e suas contribuições nas recomendações da Comissão Nacional de Incorporação de Tecnologias (CONITEC). Trata-se de estudo descritivo e retrospectivo, com abordagem qualiquantitativa, com fonte de dados secundárias de acesso público, entre 2012 e 2017. Elaborou-se banco de dados para caracterizar as CP de medicamentos e suas contribuições, o que permitiu identificar casos de reversões entre a recomendação preliminar e final da CONITEC.",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjUvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODMzMS9TQ0lFTE9EQVRBLjRTUDNYQTwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TWVuZGVzIGRhIFNpbHZhLCBSb25kaW5lbGk8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlJvbmRpbmVsaTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5NZW5kZXMgZGEgU2lsdmE8L2ZhbWlseU5hbWU+CiAgICAgIDxuYW1lSWRlbnRpZmllciBuYW1lSWRlbnRpZmllclNjaGVtZT0iT1JDSUQiIHNjaGVtZVVSST0iaHR0cHM6Ly9vcmNpZC5vcmciPmh0dHBzOi8vb3JjaWQub3JnLzAwMDAtMDAwMi02MjQzLTUxNzk8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24+RmlvY3J1ejwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+U2FyYWggR29tZXMgUGl0dGEgTG9wZXM8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlNhcmFoPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkdvbWVzIFBpdHRhIExvcGVzPC9mYW1pbHlOYW1lPgogICAgICA8YWZmaWxpYXRpb24+RmlvY3J1ejwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+VmVyYSBMw7pjaWEgTHVpemE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPlZlcmEgTMO6Y2lhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkx1aXphPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9Imh0dHBzOi8vb3JjaWQub3JnIj5odHRwczovL29yY2lkLm9yZy8wMDAwLTAwMDEtNjI0NS03NTIyPC9uYW1lSWRlbnRpZmllcj4KICAgICAgPGFmZmlsaWF0aW9uPkZpb2NydXo8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5EYXRhIGZvcjogUmV2ZXJzw6NvIGRhcyByZWNvbWVuZGHDp8O1ZXMgZW1pdGlkYXMgcGVsYSBDb21pc3PDo28gTmFjaW9uYWwgZGUgSW5jb3Jwb3Jhw6fDo28gZGUgVGVjbm9sb2dpYXMgbm8gU1VTIGFww7NzIENvbnN1bHRhcyBQw7pibGljYXM8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+U2NpRUxPIERhdGE8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjI8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5NZWRpY2luZSwgSGVhbHRoIGFuZCBMaWZlIFNjaWVuY2VzPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+TWVkaWNhbWVudG9zPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGNvbnRyaWJ1dG9ycz4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9IkNvbnRhY3RQZXJzb24iPgogICAgICA8Y29udHJpYnV0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TWVuZGVzIGRhIFNpbHZhLCBSb25kaW5lbGk8L2NvbnRyaWJ1dG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Sb25kaW5lbGk8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TWVuZGVzIGRhIFNpbHZhPC9mYW1pbHlOYW1lPgogICAgICA8YWZmaWxpYXRpb24+RmlvY3J1ejwvYWZmaWxpYXRpb24+CiAgICA8L2NvbnRyaWJ1dG9yPgogIDwvY29udHJpYnV0b3JzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiPjIwMjItMDktMjk8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQXZhaWxhYmxlIj4yMDIyLTEwLTA3PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiPjIwMjItMTAtMDc8L2RhdGU+CiAgPC9kYXRlcz4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkRhdGFzZXQiLz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0aW9uVHlwZT0iSGFzUGFydCIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiPjEwLjQ4MzMxL1NDSUVMT0RBVEEuNFNQM1hBL09JU1dTRDwvcmVsYXRlZElkZW50aWZpZXI+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRpb25UeXBlPSJIYXNQYXJ0IiByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNDgzMzEvU0NJRUxPREFUQS40U1AzWEEvUklCRkhMPC9yZWxhdGVkSWRlbnRpZmllcj4KICA8L3JlbGF0ZWRJZGVudGlmaWVycz4KICA8c2l6ZXM+CiAgICA8c2l6ZT43MjMyMTwvc2l6ZT4KICAgIDxzaXplPjM0NzA8L3NpemU+CiAgPC9zaXplcz4KICA8Zm9ybWF0cz4KICAgIDxmb3JtYXQ+dGV4dC90YWItc2VwYXJhdGVkLXZhbHVlczwvZm9ybWF0PgogICAgPGZvcm1hdD50ZXh0L3BsYWluPC9mb3JtYXQ+CiAgPC9mb3JtYXRzPgogIDx2ZXJzaW9uPjEuMDwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJpbmZvOmV1LXJlcG8vc2VtYW50aWNzL3Jlc3RyaWN0ZWRBY2Nlc3MiLz4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAiPkNDIEJZIDQuMDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPk8gdHJhYmFsaG8gYW5hbGlzb3UgbyBlZmVpdG8gZGFzIENvbnN1bHRhcyBQw7pibGljYXMgKENQKSBlIHN1YXMgY29udHJpYnVpw6fDtWVzIG5hcyByZWNvbWVuZGHDp8O1ZXMgZGEgQ29taXNzw6NvIE5hY2lvbmFsIGRlIEluY29ycG9yYcOnw6NvIGRlIFRlY25vbG9naWFzIChDT05JVEVDKS4gVHJhdGEtc2UgZGUgZXN0dWRvIGRlc2NyaXRpdm8gZSByZXRyb3NwZWN0aXZvLCBjb20gYWJvcmRhZ2VtIHF1YWxpcXVhbnRpdGF0aXZhLCBjb20gZm9udGUgZGUgZGFkb3Mgc2VjdW5kw6FyaWFzIGRlIGFjZXNzbyBww7pibGljbywgZW50cmUgMjAxMiBlIDIwMTcuIEVsYWJvcm91LXNlIGJhbmNvIGRlIGRhZG9zIHBhcmEgY2FyYWN0ZXJpemFyIGFzIENQIGRlIG1lZGljYW1lbnRvcyBlIHN1YXMgY29udHJpYnVpw6fDtWVzLCBvIHF1ZSBwZXJtaXRpdSBpZGVudGlmaWNhciBjYXNvcyBkZSByZXZlcnPDtWVzIGVudHJlIGEgcmVjb21lbmRhw6fDo28gcHJlbGltaW5hciBlIGZpbmFsIGRhIENPTklURUMuPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+      "url": "https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.4SP3XA",
+      "contentUrl": null,
+      "metadataVersion": 3,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "mds",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 0,
+      "citationsOverTime": [],
+      "partCount": 2,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 0,
+      "created": "2022-09-29T21:31:54.000Z",
+      "registered": "2022-10-07T19:43:36.000Z",
+      "published": "2022",
+      "updated": "2025-07-10T20:32:23.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "unifesp.scielo", "type": "clients" } },
+      "provider": { "data": { "id": "unifesp", "type": "providers" } },
+      "media": { "data": { "id": "10.48331/scielodata.4sp3xa", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [] },
+      "parts": {
+        "data": [
+          { "id": "10.48331/scielodata.4sp3xa/oiswsd", "type": "dois" },
+          { "id": "10.48331/scielodata.4sp3xa/ribfhl", "type": "dois" }
+        ]
+      },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [] }
+    }
+  }
+}

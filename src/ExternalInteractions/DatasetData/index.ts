@@ -14,9 +14,6 @@ export const layer = Layer.effect(
 
     const GetDatasetFromSource = pipe(
       Match.type<Datasets.DatasetId>(),
-      Match.tag('ScieloDatasetId', id =>
-        Effect.fail(new Datasets.DatasetIsUnavailable({ cause: 'not implemented', datasetId: id })),
-      ),
       Match.when(IsDataciteDatasetId, GetDatasetFromDatacite),
       Match.exhaustive,
     )

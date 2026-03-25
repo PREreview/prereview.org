@@ -320,6 +320,79 @@ test.each([
       url: new URL('https://datadryad.org/dataset/doi:10.6086/D11974'),
     }),
   },
+  {
+    response: 'scielo-data-english',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>This dataset includes the raw data and the script used for the stastical analysis of the paper "Predation effect by cats and rodents on the reproductive success of seabirds: a systematic review and meta-analysis". It includes a README file and the following four files: "list_of_articles_for_review_cynthia_campolina" List of articles available in the literature used in the systematic review about the predation effect by cats and rodents on the reproducitve success of seabirds. Format: .txt "data_for_meta-analysis_cynthia_campolina" List of papers, among the reviewd articles, used for the meta-analysis and their respective data. Format: .txt "CM20023-EST03-1BD03-E" Original excel file that was used for the meta-analysis in the R program. We chose to keep the original name of the file once it is the one in the script (see "R_script_for_meta-analysis_cynthia_campolina" file). This excel file and the "data_for_meta-analysis_cynthia_campolina" file have the same data, but in different formats. Format: .xlsx "R_script_for_meta-analysis_cynthia_campolina" R script with the commands used to run the meta-analysis on the predation effect by cats and rodents on the reproducitve success of seabirds, using the data available on the "CM20023-EST03-1BD03-E" file. Format: .r The literature review followed the “Guidelines for systematic review in conservation and environmental management”, proposed by: Pullin AS, Stewart GB (2006) Guidelines for Systematic Review in Conservation And Environmental Management. Conservation Biology 20(6):1647–1656. https://doi.org/10.1111/j.1523-1739.2006.00485.x Databases used were ISI Web of Knowledge (ISI 2022), SCOPUS Preview (SCOPUS 2022) and Scholar Google (Scholar 2022). For the systematic review: Only papers whose predators were cats and rodents (rats and mice) were chosen for the review. After the search, it was excluded from the review the papers that did not meet the five exclusion criteria: (1) duplicate studies; (2) articles where the prey was not a seabird; (3) studies whose predators were not cats, rats and mice; (4) studies that did not analyze or discuss the effects of predator management or control on reproductive success; and (5) review papers. For the meta-analysis: Only articles containing quantitative data on the reproductive success (percentage of nests with reproductive success in relation to the total number of evaluated nests), both in the absence and in the presence of predator control, were chosen. When the reproductive success metric was not available in the text, we contacted the authors requesting information on the mean and standard deviation of nest success.</p>',
+        ),
+      },
+      authors: [{ name: 'Cynthia Campolina', orcid: OrcidId.OrcidId('0000-0002-8440-2458') }],
+      id: new Datasets.ScieloDatasetId({ value: Doi.Doi('10.48331/scielodata.vffsop') }),
+      posted: Temporal.PlainDate.from({ year: 2024, month: 11, day: 4 }),
+      title: {
+        text: rawHtml(
+          'Data for: Predation effect by cats and rodents on the reproductive success of seabirds: a systematic review and meta-analysis',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.VFFSOP'),
+    }),
+  },
+  {
+    response: 'scielo-data-portuguese',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'pt',
+        text: rawHtml(
+          '<p>O trabalho analisou o efeito das Consultas Públicas (CP) e suas contribuições nas recomendações da Comissão Nacional de Incorporação de Tecnologias (CONITEC). Trata-se de estudo descritivo e retrospectivo, com abordagem qualiquantitativa, com fonte de dados secundárias de acesso público, entre 2012 e 2017. Elaborou-se banco de dados para caracterizar as CP de medicamentos e suas contribuições, o que permitiu identificar casos de reversões entre a recomendação preliminar e final da CONITEC.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Rondineli Mendes da Silva', orcid: OrcidId.OrcidId('0000-0002-6243-5179') },
+        { name: 'Sarah Gomes Pitta Lopes' },
+        { name: 'Vera Lúcia Luiza', orcid: OrcidId.OrcidId('0000-0001-6245-7522') },
+      ],
+      id: new Datasets.ScieloDatasetId({ value: Doi.Doi('10.48331/scielodata.4sp3xa') }),
+      posted: Temporal.PlainDate.from({ year: 2022, month: 10, day: 7 }),
+      title: {
+        text: rawHtml(
+          'Data for: Reversão das recomendações emitidas pela Comissão Nacional de Incorporação de Tecnologias no SUS após Consultas Públicas',
+        ),
+        language: 'pt',
+      },
+      url: new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.4SP3XA'),
+    }),
+  },
+  {
+    response: 'scielo-data-spanish',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'es',
+        text: rawHtml(
+          '<p>El propósito de este estudio fue identificar y analizar los factores que influyen en la adherencia a la rehabilitación en el hogar, desde la percepción de usuarios y sus terapeutas en un centro comunitario de rehabilitación del sur de Chile. Se desarrolló bajo un paradigma cualitativo interpretativo, con diseño fenomenológico empírico, orientado a comprender las experiencias y significados atribuidos al proceso terapéutico y a la ejecución de indicaciones domiciliarias. La muestra fue intencionada e incluyó 7 usuarios (en dos casos participaron cuidadores) y 7 profesionales del equipo de neurorrehabilitación (fonoaudiología, kinesiología y terapia ocupacional), quienes generaron un total de 19 entrevistas. Los criterios de selección de usuarios consideraron un tiempo mínimo de permanencia de seis meses en el centro y atención por al menos dos terapeutas. La recolección de datos se efectuó entre enero y mayo de 2023 mediante entrevistas semiestructuradas validadas por jueces expertos, compuestas por 15 preguntas abiertas. Las entrevistas, realizadas en modalidad presencial y en línea, fueron grabadas, transcritas literalmente y codificadas para resguardar el anonimato, previa firma de consentimiento informado y aprobación por comité de ética. El análisis se realizó mediante análisis de contenido, apoyado en una matriz temática construida a partir de los objetivos del estudio. Se efectuó una lectura comprensiva, identificación de unidades de sentido y generación progresiva de categorías y subcategorías. El proceso permitió organizar los hallazgos en cuatro dimensiones analíticas: comunicación y seguimiento, factores personales, contextuales y materiales.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Daniel Rodríguez', orcid: OrcidId.OrcidId('0000-0003-2370-6543') },
+        { name: 'Lisette Fuentes-Ugarte', orcid: OrcidId.OrcidId('0000-0002-7555-3019') },
+        { name: 'Leonardo Cuevas-Zepeda', orcid: OrcidId.OrcidId('0000-0002-1310-1850') },
+        { name: 'Karina Hunter-Echeverría', orcid: OrcidId.OrcidId('0000-0003-0681-6257') },
+        { name: 'Noelia Figueroa Burdiles', orcid: OrcidId.OrcidId('0000-0001-7874-004X') },
+      ],
+      id: new Datasets.ScieloDatasetId({ value: Doi.Doi('10.48331/scielodata.v2hjje') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 2, day: 27 }),
+      title: {
+        text: rawHtml(
+          'Datos de replicación para: Percepción de los usuarios y sus terapeutas sobre los factores que interfieren en la adherencia terapéutica en el hogar',
+        ),
+        language: 'es',
+      },
+      url: new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.V2HJJE'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
