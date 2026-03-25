@@ -371,6 +371,34 @@
     "message": "Is the dataset well-suited to support its stated research purpose?",
     "description": "Label for the question about whether the dataset is appropriate for this kind of research."
   },
+  "selectSuitedForPurpose": {
+    "message": "Select if the dataset is well-suited",
+    "description": "Error message shown when the user tries to complete the form “Is the dataset well-suited to support its stated research purpose?” without selecting an option."
+  },
+  "suitedForPurposeYesTip": {
+    "message": "The way these data were collected, analyzed, and used is well-suited to support its stated research purpose.",
+    "description": "Tip shown alongside the “Yes” option for the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
+  "suitedForPurposeYesWhy": {
+    "message": "How is it well-suited?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
+  "suitedForPurposePartlyTip": {
+    "message": "The way these data were collected, analyzed, and used partly supports its stated research purpose, but other questions, methods, or tools would have been better.",
+    "description": "Tip shown alongside the “Partly” option for the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
+  "suitedForPurposePartlyWhy": {
+    "message": "How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
+  "suitedForPurposeNoTip": {
+    "message": "The way these data were collected, analyzed, and used is not well-suited for its stated research purpose.",
+    "description": "Tip shown alongside the “No” option for the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
+  "suitedForPurposeNoWhy": {
+    "message": "How is it not well-suited for its purpose?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Is the dataset well-suited to support its stated research purpose?”."
+  },
   "changeSuitedForPurpose": {
     "message": "Change <visuallyHidden>if the dataset is well-suited</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Is the dataset well-suited to support its stated research purpose?”."

@@ -22,11 +22,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Is the dataset well-suited to support its stated research purpose?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('suitedForPurpose')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasDataCensoredOrDeleted.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -51,7 +47,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
               )}
             >
               <legend>
-                <h1>Is the dataset well-suited to support its stated research purpose?</h1>
+                <h1>${t('suitedForPurpose')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.isAppropriateForThisKindOfResearch)
@@ -59,7 +55,7 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                     <div class="error-message" id="is-appropriate-for-this-kind-of-research-question-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isAppropriateForThisKindOfResearch.left, {
-                        Missing: () => 'Select if the dataset is well-suited',
+                        Missing: () => t('selectSuitedForPurpose')(),
                       })}
                     </div>
                   `
@@ -84,16 +80,15 @@ export const IsAppropriateForThisKindOfResearchQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-yes" role="note">
-                    The way these data were collected, analyzed, and used is well-suited to support its stated research
-                    purpose.
+                    ${t('suitedForPurposeYesTip')()}
                   </p>
                   <div class="conditional" id="is-appropriate-for-this-kind-of-research-question-yes-control">
                     <div>
                       <label for="is-appropriate-for-this-kind-of-research-question-yes-detail" class="textarea"
-                        >How is it well-suited? (optional)</label
+                        >${t('suitedForPurposeYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="isAppropriateForThisKindOfResearchYesDetail"
@@ -131,17 +126,15 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-partly" role="note">
-                    The way these data were collected, analyzed, and used partly supports its stated research purpose,
-                    but other questions, methods, or tools would have been better.
+                    ${t('suitedForPurposePartlyTip')()}
                   </p>
                   <div class="conditional" id="is-appropriate-for-this-kind-of-research-question-partly-control">
                     <div>
                       <label for="is-appropriate-for-this-kind-of-research-question-partly-detail" class="textarea"
-                        >How is it only partly well-suited? Which parts seem well-suited? Which parts don’t?
-                        (optional)</label
+                        >${t('suitedForPurposePartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="isAppropriateForThisKindOfResearchPartlyDetail"
@@ -179,16 +172,15 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
                   <p id="is-appropriate-for-this-kind-of-research-question-tip-no" role="note">
-                    The way these data were collected, analyzed, and used is not well-suited for its stated research
-                    purpose.
+                    ${t('suitedForPurposeNoTip')()}
                   </p>
                   <div class="conditional" id="is-appropriate-for-this-kind-of-research-question-no-control">
                     <div>
                       <label for="is-appropriate-for-this-kind-of-research-question-no-detail" class="textarea"
-                        >How is it not well-suited for its purpose? (optional)</label
+                        >${t('suitedForPurposeNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="isAppropriateForThisKindOfResearchNoDetail"
@@ -210,7 +202,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="isAppropriateForThisKindOfResearch"
@@ -226,7 +218,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -243,7 +235,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.isAppropriateForThisKindOfResearch)
     ? html`
@@ -251,7 +242,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#is-appropriate-for-this-kind-of-research-question-yes">
             ${pipe(
               Match.value(form.isAppropriateForThisKindOfResearch.left),
-              Match.tag('Missing', () => 'Select if the dataset is well-suited'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSuitedForPurpose')()),
               Match.exhaustive,
             )}
           </a>
