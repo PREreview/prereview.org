@@ -200,11 +200,50 @@
   "enoughMetadata": {
     "message": "crwdns6042:0crwdne6042:0"
   },
+  "selectEnoughMetadata": {
+    "message": "crwdns6208:0crwdne6208:0"
+  },
+  "enoughMetadataYesTip": {
+    "message": "crwdns6210:0crwdne6210:0"
+  },
+  "enoughMetadataYesWhy": {
+    "message": "crwdns6212:0crwdne6212:0"
+  },
+  "enoughMetadataPartlyTip": {
+    "message": "crwdns6214:0crwdne6214:0"
+  },
+  "enoughMetadataPartlyWhy": {
+    "message": "crwdns6216:0crwdne6216:0"
+  },
+  "enoughMetadataNoTip": {
+    "message": "crwdns6218:0crwdne6218:0"
+  },
+  "enoughMetadataNoWhy": {
+    "message": "crwdns6220:0crwdne6220:0"
+  },
   "changeEnoughMetadata": {
     "message": "crwdns6044:0crwdne6044:0"
   },
   "trackChanges": {
     "message": "crwdns6046:0crwdne6046:0"
+  },
+  "selectTrackChanges": {
+    "message": "crwdns6222:0crwdne6222:0"
+  },
+  "trackChangesYesTip": {
+    "message": "crwdns6224:0crwdne6224:0"
+  },
+  "trackChangesYesWhy": {
+    "message": "crwdns6226:0crwdne6226:0"
+  },
+  "trackChangesPartlyTip": {
+    "message": "crwdns6228:0crwdne6228:0"
+  },
+  "trackChangesPartlyWhy": {
+    "message": "crwdns6230:0crwdne6230:0"
+  },
+  "trackChangesNoWhy": {
+    "message": "crwdns6232:0crwdne6232:0"
   },
   "changeTrackChanges": {
     "message": "crwdns6048:0crwdne6048:0"
@@ -212,11 +251,53 @@
   "signsOfAlteration": {
     "message": "crwdns6050:0crwdne6050:0"
   },
+  "selectSignsOfAlteration": {
+    "message": "crwdns6234:0crwdne6234:0"
+  },
+  "signsOfAlterationYesTip": {
+    "message": "crwdns6236:0crwdne6236:0"
+  },
+  "signsOfAlterationYesWhy": {
+    "message": "crwdns6238:0crwdne6238:0"
+  },
+  "signsOfAlterationPartlyTip": {
+    "message": "crwdns6240:0crwdne6240:0"
+  },
+  "signsOfAlterationPartlyWhy": {
+    "message": "crwdns6242:0crwdne6242:0"
+  },
+  "signsOfAlterationNoTip": {
+    "message": "crwdns6244:0crwdne6244:0"
+  },
+  "signsOfAlterationNoWhy": {
+    "message": "crwdns6246:0crwdne6246:0"
+  },
   "changeSignsOfAlteration": {
     "message": "crwdns6052:0crwdne6052:0"
   },
   "suitedForPurpose": {
     "message": "crwdns6054:0crwdne6054:0"
+  },
+  "selectSuitedForPurpose": {
+    "message": "crwdns6248:0crwdne6248:0"
+  },
+  "suitedForPurposeYesTip": {
+    "message": "crwdns6250:0crwdne6250:0"
+  },
+  "suitedForPurposeYesWhy": {
+    "message": "crwdns6252:0crwdne6252:0"
+  },
+  "suitedForPurposePartlyTip": {
+    "message": "crwdns6254:0crwdne6254:0"
+  },
+  "suitedForPurposePartlyWhy": {
+    "message": "crwdns6256:0crwdne6256:0"
+  },
+  "suitedForPurposeNoTip": {
+    "message": "crwdns6258:0crwdne6258:0"
+  },
+  "suitedForPurposeNoWhy": {
+    "message": "crwdns6260:0crwdne6260:0"
   },
   "changeSuitedForPurpose": {
     "message": "crwdns6056:0crwdne6056:0"
@@ -224,17 +305,83 @@
   "supportsConclusion": {
     "message": "crwdns6058:0crwdne6058:0"
   },
+  "selectSupportsConclusion": {
+    "message": "crwdns6262:0crwdne6262:0"
+  },
+  "supportsConclusionYesTip": {
+    "message": "crwdns6264:0crwdne6264:0"
+  },
+  "supportsConclusionYesWhy": {
+    "message": "crwdns6266:0crwdne6266:0"
+  },
+  "supportsConclusionPartlyTip": {
+    "message": "crwdns6268:0crwdne6268:0"
+  },
+  "supportsConclusionPartlyWhy": {
+    "message": "crwdns6270:0crwdne6270:0"
+  },
+  "supportsConclusionNoTip": {
+    "message": "crwdns6272:0crwdne6272:0"
+  },
+  "supportsConclusionNoWhy": {
+    "message": "crwdns6274:0crwdne6274:0"
+  },
   "changeSupportsConclusion": {
     "message": "crwdns6060:0crwdne6060:0"
   },
   "granularEnough": {
     "message": "crwdns6062:0crwdne6062:0"
   },
+  "selectGranularEnough": {
+    "message": "crwdns6276:0crwdne6276:0"
+  },
+  "granularEnoughYesTip": {
+    "message": "crwdns6278:0crwdne6278:0"
+  },
+  "granularEnoughYesWhy": {
+    "message": "crwdns6280:0crwdne6280:0"
+  },
+  "granularEnoughPartlyTip": {
+    "message": "crwdns6282:0crwdne6282:0"
+  },
+  "granularEnoughPartlyWhy": {
+    "message": "crwdns6284:0crwdne6284:0"
+  },
+  "granularEnoughNoTip": {
+    "message": "crwdns6286:0crwdne6286:0"
+  },
+  "granularEnoughNoWhy": {
+    "message": "crwdns6288:0crwdne6288:0"
+  },
   "changeGranularEnough": {
     "message": "crwdns6064:0crwdne6064:0"
   },
   "relativelyErrorFree": {
     "message": "crwdns6066:0crwdne6066:0"
+  },
+  "relativelyErrorFreeTip": {
+    "message": "crwdns6290:0crwdne6290:0"
+  },
+  "selectRelativelyErrorFree": {
+    "message": "crwdns6292:0crwdne6292:0"
+  },
+  "relativelyErrorFreeYesTip": {
+    "message": "crwdns6294:0crwdne6294:0"
+  },
+  "relativelyErrorFreeYesWhy": {
+    "message": "crwdns6296:0crwdne6296:0"
+  },
+  "relativelyErrorFreePartlyTip": {
+    "message": "crwdns6298:0crwdne6298:0"
+  },
+  "relativelyErrorFreePartlyWhy": {
+    "message": "crwdns6300:0crwdne6300:0"
+  },
+  "relativelyErrorFreeNoTip": {
+    "message": "crwdns6302:0crwdne6302:0"
+  },
+  "relativelyErrorFreeNoWhy": {
+    "message": "crwdns6304:0crwdne6304:0"
   },
   "changeRelativelyErrorFree": {
     "message": "crwdns6068:0crwdne6068:0"
