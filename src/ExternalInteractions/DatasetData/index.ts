@@ -30,6 +30,9 @@ export const layer = Layer.effect(
           GetDatasetFromSource(id),
           Effect.map(Datasets.DatasetTitle.fromDataset),
           Effect.catchTag('NotADataset', error => new Datasets.DatasetIsNotFound({ cause: error, datasetId: id })),
+          Effect.tapErrorTag('DatasetIsUnavailable', error =>
+            Effect.annotateLogs(Effect.logError('Unable to get dataset title'), { error }),
+          ),
           Effect.provide(context),
           Effect.withSpan('Datasets.getDatasetTitle', { attributes: { id } }),
         ),
