@@ -70,7 +70,14 @@ const determineDataciteDatasetId = (
       return yield* Either.left(new RecordIsNotSupported({ cause: doi }))
     }
 
-    return Datasets.fromDatasetDoi(doi)
+    const datasetId = Datasets.fromDatasetDoi(doi)
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (datasetId._tag === 'DryadDatasetId' && record.relationships.provider.toLowerCase() !== 'dryad') {
+      return yield* Either.left(new RecordIsNotSupported({ cause: Struct.pick(record.relationships, 'provider') }))
+    }
+
+    return datasetId
   })
 
 const findPublishedDate = (dates: Datacite.Record['dates']) =>
