@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match, Option, pipe } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { NonEmptyString, Uuid } from '../../../types/index.ts'
@@ -19,6 +19,7 @@ export const HasTrackedChangesQuestion = ({
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const currentAnswer = yield* DatasetReviews.checkIfUserCanAnswerIfTheDatasetHasTrackedChanges({
       datasetReviewId,
@@ -27,7 +28,7 @@ export const HasTrackedChangesQuestion = ({
 
     const form = HasTrackedChangesForm.fromAnswer(currentAnswer)
 
-    return MakeResponse({ datasetReviewId, form })
+    return MakeResponse({ datasetReviewId, form, locale })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
@@ -57,6 +58,7 @@ export const HasTrackedChangesSubmission = ({
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const form = yield* HasTrackedChangesForm.fromBody(body)
 
@@ -87,6 +89,6 @@ export const HasTrackedChangesSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
     })
   })

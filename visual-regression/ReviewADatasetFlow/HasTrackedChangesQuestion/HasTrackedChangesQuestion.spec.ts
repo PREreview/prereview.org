@@ -1,14 +1,15 @@
 import { Either } from 'effect'
 import * as HasTrackedChangesForm from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/HasTrackedChangesQuestion/HasTrackedChangesQuestion.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
-
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.HasTrackedChangesQuestion({
     datasetReviewId,
     form: new HasTrackedChangesForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -25,6 +26,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       hasTrackedChangesPartlyDetail: NonEmptyString.fromString('Detail about the partly.'),
       hasTrackedChangesNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -41,6 +43,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       hasTrackedChangesPartlyDetail: Either.right(NonEmptyString.fromString('Detail about the partly.')),
       hasTrackedChangesNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
