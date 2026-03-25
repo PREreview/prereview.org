@@ -31,6 +31,10 @@
     "message": "We think the DOI {doi} could be a Dryad dataset, but we can’t find any details.",
     "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
   },
+  "doiCouldBeScielo": {
+    "message": "We think the DOI {doi} could be a SciELO dataset, but we can’t find any details.",
+    "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
+  },
   "checkCorrectDoi": {
     "message": "If you typed the DOI, check it is correct.",
     "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
