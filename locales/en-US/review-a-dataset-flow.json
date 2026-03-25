@@ -335,6 +335,34 @@
     "message": "Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?",
     "description": "Label for the question about whether data has been censored or deleted."
   },
+  "selectSignsOfAlteration": {
+    "message": "Select if the dataset shows signs of alteration",
+    "description": "Error message shown when the user tries to complete the form “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?” without selecting an option."
+  },
+  "signsOfAlterationYesTip": {
+    "message": "The dataset shows clear signs of alteration that are not accounted for by records of its versioning; some kind of censorship, deletion, or redaction is evident throughout.",
+    "description": "Tip shown alongside the “Yes” option for the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
+  "signsOfAlterationYesWhy": {
+    "message": "How has it been altered?",
+    "description": "Label for the text field to provide context for the “Yes” answer to the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
+  "signsOfAlterationPartlyTip": {
+    "message": "Some parts of this dataset show signs of alterations that are not accounted for by records of its versioning; some kind of censorship, deletion, or redaction is evident throughout.",
+    "description": "Tip shown alongside the “Partly” option for the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
+  "signsOfAlterationPartlyWhy": {
+    "message": "Which parts seem intact? Which parts seem altered? How do they seem altered?",
+    "description": "Label for the text field to provide context for the “Partly” answer to the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
+  "signsOfAlterationNoTip": {
+    "message": "The dataset does not show obvious signs of alteration.",
+    "description": "Tip shown alongside the “No” option for the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
+  "signsOfAlterationNoWhy": {
+    "message": "What makes this dataset seem mostly intact to you? What trust markers make you believe it hasn’t been altered?",
+    "description": "Label for the text field to provide context for the “No” answer to the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."
+  },
   "changeSignsOfAlteration": {
     "message": "Change <visuallyHidden>if the dataset shows signs of alteration</visuallyHidden>",
     "description": "Link that allows the user to change their answer to the question “Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?”."

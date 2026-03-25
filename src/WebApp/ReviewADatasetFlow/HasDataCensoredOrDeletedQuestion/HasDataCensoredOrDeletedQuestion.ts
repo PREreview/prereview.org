@@ -22,11 +22,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Does this dataset show signs of alteration beyond instances of likely human error, such as censorship, deletion, or redaction, that are not accounted for otherwise?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('signsOfAlteration')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetHasTrackedChanges.href({ datasetReviewId })}" class="back">
         <span>${t('forms', 'backLink')()}</span>
@@ -51,10 +47,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
               )}
             >
               <legend>
-                <h1>
-                  Does this dataset show signs of alteration beyond instances of likely human error, such as censorship,
-                  deletion, or redaction, that are not accounted for otherwise?
-                </h1>
+                <h1>${t('signsOfAlteration')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.hasDataCensoredOrDeleted)
@@ -62,7 +55,7 @@ export const HasDataCensoredOrDeletedQuestion = ({
                     <div class="error-message" id="has-data-censored-or-deleted-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.hasDataCensoredOrDeleted.left, {
-                        Missing: () => 'Select if the dataset shows signs of alteration',
+                        Missing: () => t('selectSignsOfAlteration')(),
                       })}
                     </div>
                   `
@@ -84,16 +77,13 @@ export const HasDataCensoredOrDeletedQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
-                  <p id="has-data-censored-or-deleted-tip-yes" role="note">
-                    The dataset shows clear signs of alteration that are not accounted for by records of its versioning;
-                    some kind of censorship, deletion, or redaction is evident throughout.
-                  </p>
+                  <p id="has-data-censored-or-deleted-tip-yes" role="note">${t('signsOfAlterationYesTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-yes-control">
                     <div>
                       <label for="has-data-censored-or-deleted-yes-detail" class="textarea"
-                        >How has it been altered? (optional)</label
+                        >${t('signsOfAlterationYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="hasDataCensoredOrDeletedYesDetail"
@@ -128,16 +118,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Partly</span>
+                    <span>${t('partly')()}</span>
                   </label>
-                  <p id="has-data-censored-or-deleted-tip-partly" role="note">
-                    Some parts of this dataset show signs of alterations that are not accounted for by records of its
-                    versioning; some kind of censorship, deletion, or redaction is evident throughout.
-                  </p>
+                  <p id="has-data-censored-or-deleted-tip-partly" role="note">${t('signsOfAlterationPartlyTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-partly-control">
                     <div>
                       <label for="has-data-censored-or-deleted-partly-detail" class="textarea"
-                        >Which parts seem intact? Which parts seem altered? How do they seem altered? (optional)</label
+                        >${t('signsOfAlterationPartlyWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="hasDataCensoredOrDeletedPartlyDetail"
@@ -172,16 +159,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
-                  <p id="has-data-censored-or-deleted-tip-no" role="note">
-                    The dataset does not show obvious signs of alteration.
-                  </p>
+                  <p id="has-data-censored-or-deleted-tip-no" role="note">${t('signsOfAlterationNoTip')()}</p>
                   <div class="conditional" id="has-data-censored-or-deleted-no-control">
                     <div>
                       <label for="has-data-censored-or-deleted-no-detail" class="textarea"
-                        >What makes this dataset seem mostly intact to you? What trust markers make you believe it
-                        hasn’t been altered? (optional)</label
+                        >${t('signsOfAlterationNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="hasDataCensoredOrDeletedNoDetail"
@@ -203,7 +187,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="hasDataCensoredOrDeleted"
@@ -216,7 +200,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -233,7 +217,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.hasDataCensoredOrDeleted)
     ? html`
@@ -241,7 +224,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#has-data-censored-or-deleted-yes">
             ${pipe(
               Match.value(form.hasDataCensoredOrDeleted.left),
-              Match.tag('Missing', () => 'Select if the dataset shows signs of alteration'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectSignsOfAlteration')()),
               Match.exhaustive,
             )}
           </a>
