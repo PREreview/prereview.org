@@ -11,6 +11,7 @@ const requesterId1 = OrcidId.OrcidId('0000-0002-1825-0097')
 const requesterId2 = OrcidId.OrcidId('0000-0002-6109-0367')
 
 const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
+const preprintId1IndeterminateVersion = new Preprints.BiorxivOrMedrxivPreprintId({ value: Doi.Doi('10.1101/12345') })
 const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67890') })
 
 const reviewRequestId1 = Uuid.Uuid('123e4567-e89b-12d3-a456-426614174000')
@@ -57,6 +58,12 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     { requesterId: requesterId1, preprintId: preprintId2 },
     [started],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
+  ],
+  [
+    'same DOI, different preprint ID',
+    { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
+    [started],
+    Either.right({ reviewRequestId: reviewRequestId1, personaChoice: Option.none() }),
   ],
   [
     'incomplete without choice',

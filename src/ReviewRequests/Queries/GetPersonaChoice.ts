@@ -1,6 +1,6 @@
-import { Array, Data, Either, HashMap, Match, Option } from 'effect'
+import { Array, Either, HashMap, Match, Option, Schema } from 'effect'
 import * as Events from '../../Events.ts'
-import type * as Preprints from '../../Preprints/index.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -29,8 +29,11 @@ interface ReviewRequest {
 
 interface State {
   readonly reviewRequestsById: HashMap.HashMap<Uuid.Uuid, ReviewRequest>
-  readonly reviewRequestIdsByInput: HashMap.HashMap<Input, Uuid.Uuid>
+  readonly reviewRequestIdsByInput: HashMap.HashMap<string, Uuid.Uuid>
 }
+
+const inputToHashKey = (input: Input): string =>
+  `${input.requesterId}-${Schema.encodeSync(Preprints.IndeterminatePreprintIdFromStringSchema)(input.preprintId)}`
 
 const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State => {
   const reviewRequestsById = HashMap.mutate(state.reviewRequestsById, mutableState =>
@@ -83,14 +86,14 @@ const updateReviewRequestIdsByInputStateWithPertinentEvent = (
     ReviewRequestForAPreprintWasStarted: event =>
       HashMap.set(
         state,
-        Data.struct({ requesterId: event.requesterId, preprintId: event.preprintId }),
+        inputToHashKey({ requesterId: event.requesterId, preprintId: event.preprintId }),
         event.reviewRequestId,
       ),
     ReviewRequestForAPreprintWasPublished: () => state,
   })
 
 const query = (state: State, input: Input): Result => {
-  const reviewRequestId = HashMap.get(state.reviewRequestIdsByInput, Data.struct(input))
+  const reviewRequestId = HashMap.get(state.reviewRequestIdsByInput, inputToHashKey(input))
 
   if (Option.isNone(reviewRequestId)) {
     return Either.left(new Errors.UnknownReviewRequest({}))
