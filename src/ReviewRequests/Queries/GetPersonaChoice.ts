@@ -16,17 +16,21 @@ export type Result = Either.Either<
 
 interface ReviewRequest {
   requesterId: OrcidId.OrcidId
+  preprintId: Preprints.IndeterminatePreprintId
   requestState: 'published' | 'pending'
 }
 
-type State = HashMap.HashMap<Uuid.Uuid, ReviewRequest>
+interface State {
+  readonly reviewRequestsById: HashMap.HashMap<Uuid.Uuid, ReviewRequest>
+  readonly reviewRequestsByInput: HashMap.HashMap<Input, Uuid.Uuid>
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const query = (state: State, input: Input): Result => Either.left(new Errors.UnknownReviewRequest({}))
 
 export const GetPersonaChoice = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.getPersonaChoice',
-  initialState: HashMap.empty(),
+  initialState: { reviewRequestsById: HashMap.empty(), reviewRequestsByInput: HashMap.empty() },
   updateStateWithEvents: state => state,
   query,
 })
