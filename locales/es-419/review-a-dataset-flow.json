@@ -1,0 +1,68 @@
+{
+  "whichDataset": {
+    "message": "¿Qué conjunto de datos estás revisando?"
+  },
+  "useDoiUrl": {
+    "message": "Usa el DOI o la URL del conjunto de datos."
+  },
+  "whatIsDoi": {
+    "message": "¿Qué es un DOI?"
+  },
+  "whatIsDoiText": {
+    "message": "Un <doi>DOI</doi> es un identificador único que puedes encontrar en muchos conjuntos de datos. Por ejemplo, {example} o {exampleUrl}."
+  },
+  "errorEnterADataset": {
+    "message": "Ingresa el DOI o la URL del conjunto de datos"
+  },
+  "errorEnterTheDataset": {
+    "message": "Ingresa el DOI o la URL del conjunto de datos"
+  },
+  "dontKnowDataset": {
+    "message": "Lo sentimos, no conocemos este conjunto de datos"
+  },
+  "doiIsCorrect": {
+    "message": "Si el DOI es correcto, por favor <contact>contactáctanos</contact>."
+  },
+  "tryDoi": {
+    "message": "De lo contrario, si el conjunto de datos tiene un DOI, por favor intenta usarlo en su lugar."
+  },
+  "reviewADataset": {
+    "message": "Revisar un conjunto de datos"
+  },
+  "backToDataset": {
+    "message": "Volver al conjunto de datos"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Escrito</visuallyHidden> por {authors}"
+  },
+  "youCanWriteAPrereview": {
+    "message": "Puedes escribir una PREreview de {dataset}. Te haremos preguntas sobre el conjunto de datos para crear una revisión estructurada."
+  },
+  "asYouHaveAlreadyStarted": {
+    "message": "Como ya has comenzado una PREreview de {dataset}, te llevaremos al siguiente paso para que puedas continuar."
+  },
+  "beforeStart": {
+    "message": "Antes de comenzar"
+  },
+  "orcidIdLogIn": {
+    "message": "Te pediremos que inicies sesión con tu ORCID iD. Si no tienes un ORCID iD, puedes crear uno."
+  },
+  "whatIsOrcidIdHeading": {
+    "message": "¿Qué es un ORCID iD?"
+  },
+  "whatIsOrcidId": {
+    "message": "Un <link>ORCID iD</link> es un identificador único que te distingue de todas las personas con el mismo nombre o con nombre similar."
+  },
+  "checkYourPrereview": {
+    "message": "Revisa tu PREreview"
+  },
+  "datasetDetails": {
+    "message": "Detalles del conjunto de datos"
+  },
+  "title": {
+    "message": "Título"
+  },
+  "repository": {
+    "message": "Repositorio"
+  }
+}

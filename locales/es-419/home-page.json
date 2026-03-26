@@ -11,6 +11,9 @@
   "requestReviewButton": {
     "message": "Solicitar una revisión"
   },
+  "reviewDatasetLink": {
+    "message": "Revisar un conjunto de datos"
+  },
   "trainingTitle": {
     "message": "Capacitación en revisión por pares"
   },
@@ -64,6 +67,9 @@
   },
   "statisticsUsers": {
     "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
+  },
+  "statisticsLink": {
+    "message": "Ver más estadísticas  "
   },
   "reviewsTitle": {
     "message": "PREreviews recientes"
