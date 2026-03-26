@@ -58,6 +58,18 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     [started],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
   ],
+  [
+    'incomplete without choice',
+    { requesterId: requesterId1, preprintId: preprintId1 },
+    [started],
+    Either.right({ reviewRequestId: reviewRequestId1, personaChoice: Option.none() }),
+  ],
+  [
+    'has been published',
+    { requesterId: requesterId1, preprintId: preprintId1 },
+    [started, publicChosen, published],
+    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+  ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.GetPersonaChoice
 
@@ -73,12 +85,6 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
 
 test.failing.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   [
-    'incomplete without choice',
-    { requesterId: requesterId1, preprintId: preprintId1 },
-    [started],
-    Either.right({ reviewRequestId: reviewRequestId1, personaChoice: Option.none() }),
-  ],
-  [
     'incomplete with choice',
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started, publicChosen],
@@ -89,12 +95,6 @@ test.failing.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEv
     { requesterId: requesterId1, preprintId: preprintId1 },
     [started, publicChosen, pseudonymChosen],
     Either.right({ reviewRequestId: reviewRequestId1, personaChoice: Option.some('pseudonym') }),
-  ],
-  [
-    'has been published',
-    { requesterId: requesterId1, preprintId: preprintId1 },
-    [started, publicChosen, published],
-    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.GetPersonaChoice
