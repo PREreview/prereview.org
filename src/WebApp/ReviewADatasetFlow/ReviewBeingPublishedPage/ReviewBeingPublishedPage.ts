@@ -20,7 +20,7 @@ export const ReviewBeingPublishedPage = ({
 
       <poll-redirect>
         <div>
-          <p>$t('publishPrereviewText')()</p>
+          <p>${t('publishPrereviewText')()}</p>
 
           <a href="${Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId })}" class="button"
             >${t('forms', 'reloadButton')()}</a
