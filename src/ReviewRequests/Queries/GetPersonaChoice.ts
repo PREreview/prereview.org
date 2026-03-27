@@ -5,7 +5,11 @@ import * as Queries from '../../Queries.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
-const eventTypes = ['ReviewRequestForAPreprintWasStarted', 'ReviewRequestForAPreprintWasPublished'] as const
+const eventTypes = [
+  'ReviewRequestForAPreprintWasStarted',
+  'PersonaForAReviewRequestForAPreprintWasChosen',
+  'ReviewRequestForAPreprintWasPublished',
+] as const
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
 
@@ -24,6 +28,7 @@ export type Result = Either.Either<
 interface ReviewRequest {
   requesterId: OrcidId.OrcidId
   preprintId: Preprints.IndeterminatePreprintId
+  personaChoice: Option.Option<'public' | 'pseudonym'>
   requestState: 'published' | 'pending'
 }
 
@@ -68,8 +73,15 @@ const updateReviewRequestsByIdStateWithPertinentEvent = (
       HashMap.set(state, event.reviewRequestId, {
         requesterId: event.requesterId,
         preprintId: event.preprintId,
+        personaChoice: Option.none(),
         requestState: 'pending',
       } satisfies ReviewRequest),
+    PersonaForAReviewRequestForAPreprintWasChosen: event =>
+      HashMap.modify(
+        state,
+        event.reviewRequestId,
+        review => ({ ...review, personaChoice: Option.some(event.persona) }) satisfies ReviewRequest,
+      ),
     ReviewRequestForAPreprintWasPublished: event =>
       HashMap.modify(
         state,
@@ -89,6 +101,7 @@ const updateReviewRequestIdsByInputStateWithPertinentEvent = (
         inputToHashKey({ requesterId: event.requesterId, preprintId: event.preprintId }),
         event.reviewRequestId,
       ),
+    PersonaForAReviewRequestForAPreprintWasChosen: () => state,
     ReviewRequestForAPreprintWasPublished: () => state,
   })
 
@@ -109,7 +122,7 @@ const query = (state: State, input: Input): Result => {
     return Either.left(new Errors.ReviewRequestHasBeenPublished({}))
   }
 
-  return Either.right({ reviewRequestId: reviewRequestId.value, personaChoice: Option.none() })
+  return Either.right({ reviewRequestId: reviewRequestId.value, personaChoice: reviewRequest.value.personaChoice })
 }
 
 export const GetPersonaChoice = Queries.StatefulQuery({

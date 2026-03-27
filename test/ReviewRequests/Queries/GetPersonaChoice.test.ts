@@ -77,20 +77,6 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     [started, publicChosen, published],
     Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
-])('%s', (_name, input, events, expected) => {
-  const { initialState, updateStateWithEvents, query } = _.GetPersonaChoice
-
-  const state = Array.match(events, {
-    onNonEmpty: events => updateStateWithEvents(initialState, events),
-    onEmpty: () => initialState,
-  })
-
-  const actual = query(state, input)
-
-  expect(actual).toStrictEqual(expected)
-})
-
-test.failing.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   [
     'incomplete with choice',
     { requesterId: requesterId1, preprintId: preprintId1 },
