@@ -267,19 +267,23 @@ function showRapidPrereviews(
 
       <div>
         <p>
-          ${t('rapidReplacedWith')({
-            link: text =>
-              html`<a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
-                >${text}</a
-              >`.toString(),
-          })}
+          ${rawHtml(
+            t('rapidReplacedWith')({
+              link: text =>
+                html`<a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
+                  >${text}</a
+                >`.toString(),
+            }),
+          )}
         </p>
 
         <p>
-          ${t('writeStructuredPrereview')({
-            link: text =>
-              html`<a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">${text}</a>`.toString(),
-          })}
+          ${rawHtml(
+            t('writeStructuredPrereview')({
+              link: text =>
+                html`<a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">${text}</a>`.toString(),
+            }),
+          )}
         </p>
 
         <p>${t('updatingRapidPrereviews')()}</p>
