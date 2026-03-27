@@ -30,8 +30,8 @@ export const IsMissingAnythingQuestion = ({
         <div>
           <h1>
             <label id="is-missing-anything-label" for="is-missing-anything">
-              ${t('anythingMissing')()} ${t('forms', 'optionalSuffix')()}
-            </label>
+              ${t('anythingMissing')()} ${t('forms', 'optionalSuffix')()}</label
+            >
           </h1>
 
           ${Match.valueTags(form, {
