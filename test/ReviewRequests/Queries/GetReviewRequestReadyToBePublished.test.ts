@@ -40,6 +40,13 @@ const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
   publishedAt: now,
 })
 
+const imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  reviewRequestId: reviewRequestId1,
+  requester: { orcidId: requesterId1, persona: 'public' },
+  preprintId: preprintId1,
+  publishedAt: now,
+})
+
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   [
     'no events',
@@ -50,14 +57,20 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
   [
     'different requester',
     { requesterId: requesterId2, preprintId: preprintId1 },
-    [started],
+    [started, imported],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'different preprint',
     { requesterId: requesterId1, preprintId: preprintId2 },
-    [started],
+    [started, imported],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
+  ],
+  [
+    'has been imported',
+    { requesterId: requesterId1, preprintId: preprintId1 },
+    [imported],
+    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'has been published',
@@ -66,9 +79,15 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
     Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
-    'same DOI, different preprint ID',
+    'started with same DOI, different preprint ID',
     { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
     [started, publicChosen, published],
+    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+  ],
+  [
+    'imported with same DOI, different preprint ID',
+    { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
+    [imported],
     Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [

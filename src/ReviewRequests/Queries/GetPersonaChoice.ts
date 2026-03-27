@@ -9,6 +9,7 @@ const eventTypes = [
   'ReviewRequestForAPreprintWasStarted',
   'PersonaForAReviewRequestForAPreprintWasChosen',
   'ReviewRequestForAPreprintWasPublished',
+  'ReviewRequestByAPrereviewerWasImported',
 ] as const
 
 type PertinentEvent = Events.EventSubset<typeof eventTypes>
@@ -88,6 +89,13 @@ const updateReviewRequestsByIdStateWithPertinentEvent = (
         event.reviewRequestId,
         review => ({ ...review, requestState: 'published' }) satisfies ReviewRequest,
       ),
+    ReviewRequestByAPrereviewerWasImported: event =>
+      HashMap.set(state, event.reviewRequestId, {
+        requesterId: event.requester.orcidId,
+        preprintId: event.preprintId,
+        personaChoice: Option.some(event.requester.persona),
+        requestState: 'published',
+      } satisfies ReviewRequest),
   })
 
 const updateReviewRequestIdsByInputStateWithPertinentEvent = (
@@ -103,6 +111,12 @@ const updateReviewRequestIdsByInputStateWithPertinentEvent = (
       ),
     PersonaForAReviewRequestForAPreprintWasChosen: () => state,
     ReviewRequestForAPreprintWasPublished: () => state,
+    ReviewRequestByAPrereviewerWasImported: event =>
+      HashMap.set(
+        state,
+        inputToHashKey({ requesterId: event.requester.orcidId, preprintId: event.preprintId }),
+        event.reviewRequestId,
+      ),
   })
 
 const query = (state: State, input: Input): Result => {

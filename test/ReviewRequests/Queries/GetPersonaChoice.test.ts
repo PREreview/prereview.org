@@ -40,6 +40,13 @@ const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
   publishedAt: now,
 })
 
+const imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+  reviewRequestId: reviewRequestId1,
+  requester: { orcidId: requesterId1, persona: 'public' },
+  preprintId: preprintId1,
+  publishedAt: now,
+})
+
 test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
   [
     'no events',
@@ -50,20 +57,32 @@ test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.
   [
     'different requester',
     { requesterId: requesterId2, preprintId: preprintId1 },
-    [started],
+    [started, imported],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
     'different preprint',
     { requesterId: requesterId1, preprintId: preprintId2 },
-    [started],
+    [started, imported],
     Either.left(new ReviewRequests.UnknownReviewRequest({})),
   ],
   [
-    'same DOI, different preprint ID',
+    'has been imported',
+    { requesterId: requesterId1, preprintId: preprintId1 },
+    [imported],
+    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
+  ],
+  [
+    'started with same DOI, different preprint ID',
     { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
     [started],
     Either.right({ reviewRequestId: reviewRequestId1, personaChoice: Option.none() }),
+  ],
+  [
+    'imported with same DOI, different preprint ID',
+    { requesterId: requesterId1, preprintId: preprintId1IndeterminateVersion },
+    [imported],
+    Either.left(new ReviewRequests.ReviewRequestHasBeenPublished({})),
   ],
   [
     'incomplete without choice',
