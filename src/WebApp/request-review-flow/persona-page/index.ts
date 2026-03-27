@@ -1,4 +1,4 @@
-import { Struct, flow, pipe } from 'effect'
+import { Option, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -10,16 +10,11 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import {
-  type GetReviewRequestEnv,
-  type IncompleteReviewRequest,
-  type SaveReviewRequestEnv,
-  getReviewRequest,
-  saveReviewRequest,
-} from '../../../review-request.ts'
+import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import type { Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -44,9 +39,8 @@ export const requestReviewPersona = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    GetReviewRequestEnv &
     SaveReviewRequestEnv &
-    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -61,13 +55,9 @@ export const requestReviewPersona = ({
     ),
     RTE.bindW(
       'reviewRequest',
-      flow(
-        ({ user, preprint }) => getReviewRequest(user.orcid, preprint),
-        RTE.chainW(request =>
-          match(request)
-            .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
-            .with({ status: 'incomplete' }, RTE.right)
-            .exhaustive(),
+      flow(({ user, preprint }) =>
+        EffectToFpts.toReaderTaskEither(
+          ReviewRequests.getPersonaChoice({ requesterId: user.orcid, preprintId: preprint }),
         ),
       ),
     ),
@@ -77,21 +67,30 @@ export const requestReviewPersona = ({
       error =>
         RT.of(
           match(error)
-            .with('already-completed', () =>
+            .with({ _tag: 'ReviewRequestHasBeenPublished' }, () =>
               RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
             )
             .with('no-session', () =>
               LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
             )
-            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
+            .with({ _tag: P.union('PreprintIsNotFound', 'UnknownReviewRequest') }, () => pageNotFound(locale))
+            .with({ _tag: P.union('PreprintIsUnavailable', 'UnableToQuery') }, 'unavailable', () =>
+              havingProblemsPage(locale),
+            )
             .exhaustive(),
         ),
       state =>
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
           .with({ method: P.string }, ({ preprint, reviewRequest, user, locale }) =>
-            RT.of(personaForm({ form: { persona: E.right(reviewRequest.persona) }, preprint, user, locale })),
+            RT.of(
+              personaForm({
+                form: { persona: E.right(Option.getOrUndefined(reviewRequest.personaChoice)) },
+                preprint,
+                user,
+                locale,
+              }),
+            ),
           )
           .exhaustive(),
     ),
@@ -105,7 +104,7 @@ const handlePersonaForm = ({
   locale,
 }: {
   body: unknown
-  reviewRequest: IncompleteReviewRequest
+  reviewRequest: { personaChoice: Option.Option<'public' | 'pseudonym'>; reviewRequestId: Uuid.Uuid }
   preprint: PreprintId
   user: User
   locale: SupportedLocale
@@ -120,10 +119,16 @@ const handlePersonaForm = ({
         E.mapLeft(() => fields),
       ),
     ),
-    RTE.chainFirstW(fields => saveReviewRequest(user.orcid, preprint, { ...reviewRequest, persona: fields.persona })),
+    RTE.chainFirstW(fields =>
+      saveReviewRequest(user.orcid, preprint, {
+        status: 'incomplete',
+        persona: fields.persona,
+        id: reviewRequest.reviewRequestId,
+      }),
+    ),
     RTE.chainFirstW(fields =>
       EffectToFpts.toReaderTaskEither(
-        ReviewRequests.choosePersona({ persona: fields.persona, reviewRequestId: reviewRequest.id }),
+        ReviewRequests.choosePersona({ persona: fields.persona, reviewRequestId: reviewRequest.reviewRequestId }),
       ),
     ),
     RTE.matchW(
