@@ -3,12 +3,14 @@ import * as IsReadyToBeSharedForm from '../../../src/WebApp/ReviewADatasetFlow/I
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsReadyToBeSharedQuestion/IsReadyToBeSharedQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.IsReadyToBeSharedQuestion({
     datasetReviewId,
     form: new IsReadyToBeSharedForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -24,6 +26,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       isReadyToBeSharedYesDetail: NonEmptyString.fromString('Detail about the yes.'),
       isReadyToBeSharedNoDetail: NonEmptyString.fromString('Detail about the no.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -39,6 +42,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
       isReadyToBeSharedYesDetail: Either.right(NonEmptyString.fromString('Detail about the yes.')),
       isReadyToBeSharedNoDetail: Either.right(NonEmptyString.fromString('Detail about the no.')),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
