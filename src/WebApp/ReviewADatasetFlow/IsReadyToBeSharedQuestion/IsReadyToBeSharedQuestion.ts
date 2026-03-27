@@ -22,7 +22,7 @@ export const IsReadyToBeSharedQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Is this dataset ready to be shared?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('readyToBeShared')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -43,7 +43,7 @@ export const IsReadyToBeSharedQuestion = ({
               )}
             >
               <legend>
-                <h1>Is this dataset ready to be shared?</h1>
+                <h1>${t('readyToBeShared')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.isReadyToBeShared)
@@ -51,7 +51,7 @@ export const IsReadyToBeSharedQuestion = ({
                     <div class="error-message" id="is-ready-to-be-shared-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.isReadyToBeShared.left, {
-                        Missing: () => 'Select if the dataset is ready to be shared',
+                        Missing: () => t('selectReadyToBeShared')(),
                       })}
                     </div>
                   `
@@ -72,12 +72,12 @@ export const IsReadyToBeSharedQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-yes-control">
                     <div>
                       <label for="is-ready-to-be-shared-yes-detail" class="textarea"
-                        >Why is it ready to be shared? (optional)</label
+                        >${t('readyToBeSharedYesWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isReadyToBeSharedYesDetail" id="is-ready-to-be-shared-yes-detail" rows="5">
 ${Match.valueTags(form, {
@@ -106,12 +106,12 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
                   <div class="conditional" id="is-ready-to-be-shared-no-control">
                     <div>
                       <label for="is-ready-to-be-shared-no-detail" class="textarea"
-                        >Why is it not ready to be shared? (optional)</label
+                        >${t('readyToBeSharedNoWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea name="isReadyToBeSharedNoDetail" id="is-ready-to-be-shared-no-detail" rows="5">
 ${Match.valueTags(form, {
@@ -141,7 +141,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -158,7 +158,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.isReadyToBeShared)
     ? html`
@@ -166,7 +165,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#is-ready-to-be-shared-yes">
             ${pipe(
               Match.value(form.isReadyToBeShared.left),
-              Match.tag('Missing', () => 'Select if the dataset is ready to be shared'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectReadyToBeShared')()),
               Match.exhaustive,
             )}
           </a>
