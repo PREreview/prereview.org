@@ -1,9 +1,19 @@
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export const ReviewPublishedPage = ({ datasetReview }: { datasetReview: DatasetReviews.PublishedReviewDetails }) => {
+export const ReviewPublishedPage = ({
+  datasetReview,
+  locale,
+}: {
+  datasetReview: DatasetReviews.PublishedReviewDetails
+  locale: SupportedLocale
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
     title: plainText('PREreview published'),
     main: html`

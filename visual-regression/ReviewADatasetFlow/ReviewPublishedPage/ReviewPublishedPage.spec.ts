@@ -1,10 +1,11 @@
 import type * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewPublishedPage/ReviewPublishedPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Doi, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.ReviewPublishedPage({ datasetReview })
+  const response = _.ReviewPublishedPage({ datasetReview, locale: DefaultLocale })
 
   const content = await showPage(response)
 
@@ -12,7 +13,10 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when using a pseudonym', async ({ showPage }) => {
-  const response = _.ReviewPublishedPage({ datasetReview: { ...datasetReview, persona: 'pseudonym' } })
+  const response = _.ReviewPublishedPage({
+    datasetReview: { ...datasetReview, persona: 'pseudonym' },
+    locale: DefaultLocale,
+  })
 
   const content = await showPage(response)
 
