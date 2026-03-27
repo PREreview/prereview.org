@@ -17,9 +17,8 @@ test('content looks right', async ({ showPage }) => {
   const response = checkPage({
     preprint,
     reviewRequest: {
-      status: 'incomplete',
-      persona: 'public',
-      id: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
+      personaChoice: 'public',
+      reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
     },
     user: {
       name: NonEmptyString('Josiah Carberry'),
@@ -38,9 +37,8 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
   const response = checkPage({
     preprint,
     reviewRequest: {
-      status: 'incomplete',
-      persona: 'pseudonym',
-      id: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
+      personaChoice: 'pseudonym',
+      reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
     },
     user: {
       name: NonEmptyString('Josiah Carberry'),

@@ -7,17 +7,11 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import {
-  type GetReviewRequestEnv,
-  type IncompleteReviewRequest,
-  type SaveReviewRequestEnv,
-  getReviewRequest,
-  saveReviewRequest,
-} from '../../../review-request.ts'
+import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
-import { Temporal } from '../../../types/index.ts'
+import { Temporal, type Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -41,9 +35,8 @@ export const requestReviewCheck = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    GetReviewRequestEnv &
     SaveReviewRequestEnv &
-    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -58,15 +51,8 @@ export const requestReviewCheck = ({
     ),
     RTE.bindW(
       'reviewRequest',
-      flow(
-        ({ user, preprint }) => getReviewRequest(user.orcid, preprint),
-        RTE.chainW(request =>
-          match(request)
-            .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
-            .with({ status: 'incomplete', persona: P.optional(P.nullish) }, () => RTE.left('no-persona' as const))
-            .with({ status: 'incomplete', persona: P.string }, RTE.right)
-            .exhaustive(),
-        ),
+      EffectToFpts.toReaderTaskEitherK(({ user, preprint }) =>
+        ReviewRequests.getReviewRequestReadyToBePublished({ requesterId: user.orcid, preprintId: preprint }),
       ),
     ),
     RTE.let('method', () => method),
@@ -74,17 +60,19 @@ export const requestReviewCheck = ({
       error =>
         RT.of(
           match(error)
-            .with('already-completed', () =>
+            .with({ _tag: 'ReviewRequestHasBeenPublished' }, () =>
               RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
             )
-            .with('no-persona', () =>
+            .with({ _tag: 'ReviewRequestNotReadyToBePublished' }, () =>
               RedirectResponse({ location: format(requestReviewPersonaMatch.formatter, { id: preprint }) }),
             )
             .with('no-session', () =>
               LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
             )
-            .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
-            .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
+            .with({ _tag: P.union('PreprintIsNotFound', 'UnknownReviewRequest') }, () => pageNotFound(locale))
+            .with({ _tag: P.union('PreprintIsUnavailable', 'UnableToQuery') }, 'unavailable', () =>
+              havingProblemsPage(locale),
+            )
             .exhaustive(),
         ),
       state =>
@@ -97,12 +85,12 @@ export const requestReviewCheck = ({
 
 const handleForm = ({
   preprint,
-  reviewRequest,
+  reviewRequest: { reviewRequestId },
   user,
   locale,
 }: {
   preprint: PreprintId
-  reviewRequest: IncompleteReviewRequest
+  reviewRequest: { reviewRequestId: Uuid.Uuid }
   user: User
   locale: SupportedLocale
 }) =>
@@ -112,10 +100,7 @@ const handleForm = ({
         Effect.gen(function* () {
           const publishedAt = yield* Temporal.currentInstant
 
-          yield* ReviewRequests.publishReviewRequest({
-            publishedAt,
-            reviewRequestId: reviewRequest.id,
-          })
+          yield* ReviewRequests.publishReviewRequest({ publishedAt, reviewRequestId })
         }),
         Effect.tapError(error => Effect.logError('Failed to publishRequest').pipe(Effect.annotateLogs({ error }))),
       ),

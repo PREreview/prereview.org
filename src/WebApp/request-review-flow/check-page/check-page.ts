@@ -4,9 +4,8 @@ import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import type { IncompleteReviewRequest } from '../../../review-request.ts'
 import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../routes.ts'
-import { ProfileId } from '../../../types/index.ts'
+import { ProfileId, type Uuid } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
 import type { User } from '../../../user.ts'
@@ -21,7 +20,7 @@ export function checkPage({
   locale,
 }: {
   preprint: PreprintId
-  reviewRequest: Required<IncompleteReviewRequest>
+  reviewRequest: { personaChoice: 'public' | 'pseudonym'; reviewRequestId: Uuid.Uuid }
   user: User
   locale: SupportedLocale
 }) {
@@ -46,7 +45,7 @@ export function checkPage({
                 <dt><span>${t('publishedName')()}</span></dt>
                 <dd>
                   ${displayAuthor(
-                    match(reviewRequest.persona)
+                    match(reviewRequest.personaChoice)
                       .with('public', () => user)
                       .with('pseudonym', () => ({ name: user.pseudonym }))
                       .exhaustive(),

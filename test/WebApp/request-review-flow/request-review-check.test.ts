@@ -5,7 +5,8 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as Commands from '../../../src/Commands.ts'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
-import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../../src/review-request.ts'
+import * as Queries from '../../../src/Queries.ts'
+import type { SaveReviewRequestEnv } from '../../../src/review-request.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
@@ -24,7 +25,7 @@ describe('requestReviewCheck', () => {
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
+          fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
           fc.preprintTitle({ id: fc.preprintId() }),
           fc.supportedLocale(),
         ])('when the request can be published', (preprint, user, reviewRequest, preprintTitle, locale) =>
@@ -34,7 +35,7 @@ describe('requestReviewCheck', () => {
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
             >(_ => Effect.void)
             const runtime = yield* Effect.provide(
-              Effect.runtime<ReviewRequests.ReviewRequestCommands>(),
+              Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
               Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
             )
 
@@ -46,7 +47,6 @@ describe('requestReviewCheck', () => {
                 locale,
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
-                getReviewRequest: () => TE.right(reviewRequest),
                 runtime,
                 saveReviewRequest,
               })(),
@@ -57,18 +57,25 @@ describe('requestReviewCheck', () => {
             )
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
-              reviewRequestId: reviewRequest.id,
+              reviewRequestId: reviewRequest.reviewRequestId,
             })
             expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
               status: 'completed',
             })
-          }).pipe(EffectTest.run),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
+              }),
+            ),
+            EffectTest.run,
+          ),
         )
 
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
+          fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
           fc.preprintTitle({ id: fc.preprintId() }),
           fc.supportedLocale(),
         ])("when the request state can't be changed", (preprint, user, reviewRequest, preprintTitle, locale) =>
@@ -78,7 +85,7 @@ describe('requestReviewCheck', () => {
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
             >(_ => Effect.void)
             const runtime = yield* Effect.provide(
-              Effect.runtime<ReviewRequests.ReviewRequestCommands>(),
+              Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
               Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
             )
 
@@ -90,7 +97,6 @@ describe('requestReviewCheck', () => {
                 locale,
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
-                getReviewRequest: () => TE.right(reviewRequest),
                 runtime,
                 saveReviewRequest,
               })(),
@@ -106,18 +112,25 @@ describe('requestReviewCheck', () => {
             })
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
-              reviewRequestId: reviewRequest.id,
+              reviewRequestId: reviewRequest.reviewRequestId,
             })
             expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
               status: 'completed',
             })
-          }).pipe(EffectTest.run),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
+              }),
+            ),
+            EffectTest.run,
+          ),
         )
 
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
+          fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
           fc.preprintTitle({ id: fc.preprintId() }),
           fc.supportedLocale(),
           fc.anything().chain(cause =>
@@ -136,7 +149,7 @@ describe('requestReviewCheck', () => {
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
             >(_ => error)
             const runtime = yield* Effect.provide(
-              Effect.runtime<ReviewRequests.ReviewRequestCommands>(),
+              Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
               Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
             )
 
@@ -148,7 +161,6 @@ describe('requestReviewCheck', () => {
                 locale,
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
-                getReviewRequest: () => TE.right(reviewRequest),
                 runtime,
                 saveReviewRequest: shouldNotBeCalled,
               })(),
@@ -164,9 +176,16 @@ describe('requestReviewCheck', () => {
             })
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
-              reviewRequestId: reviewRequest.id,
+              reviewRequestId: reviewRequest.reviewRequestId,
             })
-          }).pipe(EffectTest.run),
+          }).pipe(
+            Effect.provide(
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
+              }),
+            ),
+            EffectTest.run,
+          ),
         )
       })
 
@@ -174,13 +193,15 @@ describe('requestReviewCheck', () => {
         fc.indeterminatePreprintId(),
         fc.string().filter(method => method !== 'POST'),
         fc.user(),
-        fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
+        fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
       ])('when the form needs submitting', (preprint, method, user, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
           const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
-          const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+          const runtime = yield* Effect.runtime<
+            ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
+          >()
 
           const actual = yield* Effect.promise(() =>
             _.requestReviewCheck({
@@ -190,7 +211,6 @@ describe('requestReviewCheck', () => {
               locale,
             })({
               getPreprintTitle,
-              getReviewRequest: () => TE.right(reviewRequest),
               runtime,
               saveReviewRequest: shouldNotBeCalled,
             })(),
@@ -207,7 +227,15 @@ describe('requestReviewCheck', () => {
             js: ['single-use-form.js'],
           })
           expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
-        }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+        }).pipe(
+          Effect.provide([
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
+          EffectTest.run,
+        ),
       )
     })
 
@@ -216,11 +244,12 @@ describe('requestReviewCheck', () => {
       fc.string(),
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
-      fc.completedReviewRequest(),
       fc.supportedLocale(),
-    ])('when the request is already complete', (preprint, method, user, preprintTitle, reviewRequest, locale) =>
+    ])('when the request is already complete', (preprint, method, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+        const runtime = yield* Effect.runtime<
+          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
+        >()
 
         const actual = yield* Effect.promise(() =>
           _.requestReviewCheck({
@@ -230,7 +259,6 @@ describe('requestReviewCheck', () => {
             locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
-            getReviewRequest: () => TE.right(reviewRequest),
             runtime,
             saveReviewRequest: shouldNotBeCalled,
           })(),
@@ -241,7 +269,15 @@ describe('requestReviewCheck', () => {
           status: StatusCodes.SeeOther,
           location: format(requestReviewPublishedMatch.formatter, { id: preprint }),
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReviewRequestReadyToBePublished: () => new ReviewRequests.ReviewRequestHasBeenPublished({}),
+          }),
+        ]),
+        EffectTest.run,
+      ),
     )
 
     test.prop([
@@ -249,11 +285,12 @@ describe('requestReviewCheck', () => {
       fc.string().filter(method => method !== 'POST'),
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
-      fc.incompleteReviewRequest({ persona: fc.constant(undefined) }),
       fc.supportedLocale(),
-    ])("when a name hasn't been chosen", (preprint, method, user, preprintTitle, reviewRequest, locale) =>
+    ])("when a name hasn't been chosen", (preprint, method, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+        const runtime = yield* Effect.runtime<
+          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
+        >()
 
         const actual = yield* Effect.promise(() =>
           _.requestReviewCheck({
@@ -263,7 +300,6 @@ describe('requestReviewCheck', () => {
             locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
-            getReviewRequest: () => TE.right(reviewRequest),
             runtime,
             saveReviewRequest: shouldNotBeCalled,
           })(),
@@ -274,7 +310,18 @@ describe('requestReviewCheck', () => {
           status: StatusCodes.SeeOther,
           location: format(requestReviewPersonaMatch.formatter, { id: preprint }),
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {
+            getReviewRequestReadyToBePublished: () =>
+              new ReviewRequests.ReviewRequestNotReadyToBePublished({
+                missing: ['PersonaForAReviewRequestForAPreprintWasChosen'],
+              }),
+          }),
+        ]),
+        EffectTest.run,
+      ),
     )
 
     test.prop([
@@ -285,8 +332,13 @@ describe('requestReviewCheck', () => {
       fc.supportedLocale(),
     ])("when a request hasn't been started", (preprint, method, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
-        const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+        const getReviewRequestReadyToBePublished = jest.fn<
+          (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
+        >(_ => new ReviewRequests.UnknownReviewRequest({}))
+        const runtime = yield* Effect.provide(
+          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
+        )
 
         const actual = yield* Effect.promise(() =>
           _.requestReviewCheck({
@@ -296,7 +348,6 @@ describe('requestReviewCheck', () => {
             locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
-            getReviewRequest,
             runtime,
             saveReviewRequest: shouldNotBeCalled,
           })(),
@@ -310,7 +361,10 @@ describe('requestReviewCheck', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
+        expect(getReviewRequestReadyToBePublished).toHaveBeenCalledWith({
+          requesterId: user.orcid,
+          preprintId: preprintTitle.id,
+        })
       }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
     )
 
@@ -322,8 +376,13 @@ describe('requestReviewCheck', () => {
       fc.supportedLocale(),
     ])("when the request can't be loaded", (preprint, method, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
-        const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+        const getReviewRequestReadyToBePublished = jest.fn<
+          (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
+        >(_ => new Queries.UnableToQuery({}))
+        const runtime = yield* Effect.provide(
+          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
+        )
 
         const actual = yield* Effect.promise(() =>
           _.requestReviewCheck({
@@ -333,7 +392,6 @@ describe('requestReviewCheck', () => {
             locale,
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
-            getReviewRequest,
             runtime,
             saveReviewRequest: shouldNotBeCalled,
           })(),
@@ -347,7 +405,10 @@ describe('requestReviewCheck', () => {
           skipToLabel: 'main',
           js: [],
         })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never)
+        expect(getReviewRequestReadyToBePublished).toHaveBeenCalledWith({
+          requesterId: user.orcid,
+          preprintId: preprintTitle.id,
+        })
       }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
     )
   })
@@ -356,12 +417,13 @@ describe('requestReviewCheck', () => {
     'when the user is not logged in',
     (preprint, method, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<ReviewRequests.ReviewRequestCommands>()
+        const runtime = yield* Effect.runtime<
+          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
+        >()
 
         const actual = yield* Effect.promise(() =>
           _.requestReviewCheck({ method, preprint, locale })({
             getPreprintTitle: shouldNotBeCalled,
-            getReviewRequest: shouldNotBeCalled,
             runtime,
             saveReviewRequest: shouldNotBeCalled,
           })(),
@@ -371,6 +433,12 @@ describe('requestReviewCheck', () => {
           _tag: 'LogInResponse',
           location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
+        ]),
+        EffectTest.run,
+      ),
   )
 })
