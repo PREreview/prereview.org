@@ -731,6 +731,14 @@
     "message": "Publish PREreview",
     "description": "Button to publish the PREreview"
   },
+  "publishingPrereview": {
+    "message": "We’re publishing your PREreview",
+    "description": "Title of the page shown while the PREreview is being published."
+  },
+  "publishPrereviewText": {
+    "message": "You’ll be able to see your PREreview shortly.",
+    "description": "Text shown alongside the title “We’re publishing your PREreview”."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."

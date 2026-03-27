@@ -14,21 +14,21 @@ export const ReviewBeingPublishedPage = ({
   const t = translate(locale, 'review-a-dataset-flow')
 
   return StreamlinePageResponse({
-    title: plainText('We’re publishing your PREreview'),
+    title: plainText(t('publishingPrereview')()),
     main: html`
-      <h1>We’re publishing your PREreview</h1>
+      <h1>${t('publishingPrereview')()}</h1>
 
       <poll-redirect>
         <div>
-          <p>You’ll be able to see your PREreview shortly.</p>
+          <p>$t('publishPrereviewText')()</p>
 
           <a href="${Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId })}" class="button"
-            >Reload page</a
+            >${t('forms', 'reloadButton')()}</a
           >
         </div>
 
         <div hidden class="loading">
-          <p>You’ll be able to see your PREreview shortly.</p>
+          <p>${t('publishPrereviewText')()}</p>
         </div>
 
         <div hidden>

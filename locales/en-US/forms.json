@@ -27,6 +27,10 @@
     "message": "Save and continue",
     "description": "Button that saves the user’s information and takes them to the next step in a process."
   },
+  "reloadButton": {
+    "message": "Reload page",
+    "description": "Button that reloads the current page to check for changes."
+  },
   "radioSeparatorLabel": {
     "message": "or",
     "description": "Label that separates one or more of your radio options that is different from the others."
