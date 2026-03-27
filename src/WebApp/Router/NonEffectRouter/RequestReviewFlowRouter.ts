@@ -64,11 +64,6 @@ export const RequestReviewFlowRouter = pipe(
       handler(env)({
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
-        getReviewRequest: (orcid, preprint) =>
-          withEnv(Keyv.getReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })([
-            orcid,
-            preprint,
-          ]),
         runtime: env.runtime,
         saveReviewRequest: (orcid, preprint, request) =>
           withEnv(Keyv.saveReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })(

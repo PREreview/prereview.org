@@ -1,12 +1,12 @@
-import { flow, pipe } from 'effect'
+import { pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
+import { getPreprintTitle, type GetPreprintTitleEnv } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
-import type { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { type GetReviewRequestEnv, getReviewRequest } from '../../../review-request.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
+import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -27,7 +27,7 @@ export const requestReviewPublished = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv & EffectToFpts.EffectEnv,
+  GetPreprintTitleEnv & EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -42,25 +42,20 @@ export const requestReviewPublished = ({
     ),
     RTE.bindW(
       'reviewRequest',
-      flow(
-        ({ preprint, user }) => getReviewRequest(user.orcid, preprint),
-        RTE.chainW(request =>
-          match(request)
-            .with({ status: 'incomplete' }, () => RTE.left('incomplete' as const))
-            .with({ status: 'completed' }, RTE.right)
-            .exhaustive(),
-        ),
+      EffectToFpts.toReaderTaskEitherK(({ user, preprint }) =>
+        ReviewRequests.getPublishedReviewRequestByAPrereviewer({ requesterId: user.orcid, preprintId: preprint }),
       ),
     ),
     RTE.matchW(
       error =>
         match(error)
-          .with('incomplete', () => pageNotFound(locale))
           .with('no-session', () =>
             LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
           )
-          .with({ _tag: 'PreprintIsNotFound' }, 'not-found', () => pageNotFound(locale))
-          .with({ _tag: 'PreprintIsUnavailable' }, 'unavailable', () => havingProblemsPage(locale))
+          .with({ _tag: P.union('PreprintIsNotFound', 'UnknownReviewRequest') }, 'not-found', () =>
+            pageNotFound(locale),
+          )
+          .with({ _tag: P.union('PreprintIsUnavailable', 'UnableToQuery') }, () => havingProblemsPage(locale))
           .exhaustive(),
       state => publishedPage(state.locale, state.preprint),
     ),
