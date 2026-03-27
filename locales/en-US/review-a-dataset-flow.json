@@ -739,6 +739,50 @@
     "message": "You’ll be able to see your PREreview shortly.",
     "description": "Text shown alongside the title “We’re publishing your PREreview”."
   },
+  "prereviewPublished": {
+    "message": "PREreview published",
+    "description": "Title of the page shown once the PREreview has been published."
+  },
+  "yourDoi": {
+    "message": "Your DOI",
+    "description": "Label for the DOI of the published PREreview."
+  },
+  "whatHappensNext": {
+    "message": "What happens next",
+    "description": "Heading for the section that explains what happens after the PREreview is published."
+  },
+  "inviteOthers": {
+    "message": "If you reviewed the dataset with others, please get in touch so we can invite them to appear on the review. Our email address is {emailAddress}.",
+    "description": "Text that appears alongside the heading “What happens next”."
+  },
+  "opensNewTabSuffix": {
+    "message": "(opens in a new tab)",
+    "description": "Text that appears after links that open in a new tab. For example, “some link (opens in a new tab)”."
+  },
+  "shareYourReview": {
+    "message": "Share your review",
+    "description": "Heading for the section that encourages users to share their review."
+  },
+  "shareYourReviewText": {
+    "message": "Please let the authors know that you published your review. They may have contact details on the dataset.",
+    "description": "Text that appears alongside the heading “Share your review”."
+  },
+  "letUsKnowHowItWent": {
+    "message": "Let us know how it went",
+    "description": "Heading for the section that encourages users to provide feedback about their experience reviewing a dataset."
+  },
+  "scheduleInterview": {
+    "message": "<link>Schedule an interview</link> with our product team to discuss your experience on PREreview. We gladly compensate interviewees in appreciation for their help!",
+    "description": "Text that appears alongside the heading “Let us know how it went”."
+  },
+  "feedbackForm": {
+    "message": "You can also share your feedback about PREreview.org with us by completing a <link>brief anonymous survey</link>.",
+    "description": "Text that appears alongside the heading “Let us know how it went”."
+  },
+  "seeYourReview": {
+    "message": "See your review",
+    "description": "Button that takes the user to their published PREreview."
+  },
   "whatNameWouldYouLikeToUse": {
     "message": "What name would you like to use?",
     "description": "Label for the question about the name the user would like to use."
