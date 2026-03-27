@@ -156,7 +156,8 @@
     "message": "List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research."
   },
   "addedAuthorCount": {
-    "message": "You have added {authorCount, number} other {authorCount, plural, one {author} other {authors}}"
+    "message": "{authorCount, plural, one {You have added # other author} other {You have added # other authors}}",
+    "description": "Text showing how many other authors have been added to the PREreview."
   },
   "authorNumber": {
     "message": "Author {number, number}"

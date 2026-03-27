@@ -46,7 +46,8 @@
     "message": "No comments have been published yet."
   },
   "commentItemTitle": {
-    "message": "Comment by {authors, plural, one {{author}} other {{author} et al.}}"
+    "message": "{authors, plural, one {Comment by {author}} other {Comment by {author} et al.}}",
+    "description": "Title for a comment on the review."
   },
   "commentItemAuthors": {
     "message": "<hide>Authored</hide> by {authors}"
