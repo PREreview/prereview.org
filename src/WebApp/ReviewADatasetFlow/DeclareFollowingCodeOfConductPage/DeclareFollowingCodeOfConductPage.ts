@@ -22,7 +22,7 @@ export const DeclareFollowingCodeOfConductPage = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Code of Conduct', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('codeOfConduct')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -47,44 +47,42 @@ export const DeclareFollowingCodeOfConductPage = ({
             )}
           >
             <legend>
-              <h1>Code of Conduct</h1>
+              <h1>${t('codeOfConduct')()}</h1>
             </legend>
 
             <p id="following-code-of-conduct-tip" role="note">
-              As a member of our community, we expect you to abide by the
-              <a href="${Routes.CodeOfConduct}">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+              ${rawHtml(
+                t('codeOfConductTip')({ link: text => html`<a href="${Routes.CodeOfConduct}">${text}</a>`.toString() }),
+              )}
             </p>
 
             <details>
-              <summary><span>Examples of expected behaviors</span></summary>
+              <summary><span>${t('examplesExpectedBehaviors')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>Using welcoming and inclusive language.</li>
-                  <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
-                  <li>Being respectful of differing viewpoints and experiences.</li>
-                  <li>Gracefully accepting constructive criticism.</li>
-                  <li>Focusing on what is best for the community.</li>
-                  <li>Showing empathy towards other community members.</li>
+                  <li>${t('exampleLanguage')()}</li>
+                  <li>${t('exampleConstructive')()}</li>
+                  <li>${t('exampleRespect')()}</li>
+                  <li>${t('exampleCriticism')()}</li>
+                  <li>${t('exampleCommunity')()}</li>
+                  <li>${t('exampleEmpathy')()}</li>
                 </ul>
               </div>
             </details>
 
             <details>
-              <summary><span>Examples of unacceptable behaviors</span></summary>
+              <summary><span>${t('examplesUnacceptableBehaviors')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
-                  <li>Providing unconstructive or disruptive feedback on PREreview.</li>
-                  <li>Public or private harassment.</li>
-                  <li>
-                    Publishing others’ confidential information, such as a physical or electronic address, without
-                    explicit permission.
-                  </li>
-                  <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
-                  <li>Reviewing your own dataset.</li>
-                  <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
+                  <li>${t('exampleTrolling')()}</li>
+                  <li>${t('exampleUnconstructiveFeedback')()}</li>
+                  <li>${t('exampleHarassment')()}</li>
+                  <li>${t('exampleConfidentialInformation')()}</li>
+                  <li>${t('exampleSexualizedLanguage')()}</li>
+                  <li>${t('exampleReviewingOwnDataset')()}</li>
+                  <li>${t('exampleInappropriateConduct')()}</li>
                 </ul>
               </div>
             </details>
@@ -94,7 +92,7 @@ export const DeclareFollowingCodeOfConductPage = ({
                   <div class="error-message" id="following-code-of-conduct-error">
                     <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.followingCodeOfConduct.left, {
-                      Missing: () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+                      Missing: () => t('confirmCodeOfConduct')(),
                     })}
                   </div>
                 `
@@ -112,7 +110,7 @@ export const DeclareFollowingCodeOfConductPage = ({
                   InvalidForm: () => '',
                 })}
               />
-              <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
+              <span>${t('followingCodeOfConduct')()}</span>
             </label>
           </fieldset>
         </div>
@@ -126,14 +124,13 @@ export const DeclareFollowingCodeOfConductPage = ({
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: DeclareFollowingCodeOfConductForm.InvalidForm) =>
   Either.isLeft(form.followingCodeOfConduct)
     ? html`
         <li>
           <a href="#following-code-of-conduct-yes">
             ${Match.valueTags(form.followingCodeOfConduct.left, {
-              Missing: () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+              Missing: () => translate(locale, 'review-a-dataset-flow', 'confirmCodeOfConduct')(),
             })}
           </a>
         </li>

@@ -211,6 +211,82 @@
     "message": "Change <visuallyHidden>your competing interests</visuallyHidden>",
     "description": "Link that allows the user to change their competing interests."
   },
+  "codeOfConduct": {
+    "message": "Code of Conduct",
+    "description": "Title of the page that asks you to confirm you’re following the Code of Conduct."
+  },
+  "codeOfConductTip": {
+    "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>.",
+    "description": "Text shown alongside the title “Code of Conduct”."
+  },
+  "examplesExpectedBehaviors": {
+    "message": "Examples of expected behaviors",
+    "description": "Heading for a list of examples of expected behaviors according to the Code of Conduct."
+  },
+  "exampleLanguage": {
+    "message": "Using welcoming and inclusive language.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "exampleConstructive": {
+    "message": "Providing feedback that is constructive, i.e. useful, to the receiver.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "exampleRespect": {
+    "message": "Being respectful of differing viewpoints and experiences.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "exampleCriticism": {
+    "message": "Gracefully accepting constructive criticism.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "exampleCommunity": {
+    "message": "Focusing on what is best for the community.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "exampleEmpathy": {
+    "message": "Showing empathy towards other community members.",
+    "description": "Example of an expected behavior according to the Code of Conduct."
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "Examples of unacceptable behaviors",
+    "description": "Heading for a list of examples of unacceptable behaviors according to the Code of Conduct."
+  },
+  "exampleTrolling": {
+    "message": "Trolling, insulting or derogatory comments, and personal or political attacks.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleUnconstructiveFeedback": {
+    "message": "Providing unconstructive or disruptive feedback on PREreview.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleHarassment": {
+    "message": "Public or private harassment.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleConfidentialInformation": {
+    "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleSexualizedLanguage": {
+    "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleReviewingOwnDataset": {
+    "message": "Reviewing your own dataset.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "exampleInappropriateConduct": {
+    "message": "Other conduct which could reasonably be considered inappropriate in a professional setting.",
+    "description": "Example of an unacceptable behavior according to the Code of Conduct."
+  },
+  "confirmCodeOfConduct": {
+    "message": "Confirm that you are following the Code of Conduct",
+    "description": "Error message shown when the user tries to complete the form to confirm they’re following the Code of Conduct without confirming it."
+  },
+  "followingCodeOfConduct": {
+    "message": "I’m following the Code of Conduct",
+    "description": "Label for the checkbox to confirm that the user is following the Code of Conduct."
+  },
   "yourReview": {
     "message": "Your review",
     "description": "Heading for the section the shows the user’s review of the dataset."
