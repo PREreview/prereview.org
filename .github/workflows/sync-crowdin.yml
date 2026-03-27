@@ -1,0 +1,29 @@
+name: Sync Crowdin
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-crowdin:
+    name: 'Sync Crowdin'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v6.0.2
+        with:
+          sparse-checkout: |
+            locales/en-US/
+            crowdin.yml
+          sparse-checkout-cone-mode: false
+
+      - name: 'Upload sources to Crowdin'
+        uses: crowdin/github-action@v2.15.2
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_sources: false
+          download_translations: false
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_API_TOKEN }}
