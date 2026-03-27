@@ -74,13 +74,16 @@
     "message": "Statistics"
   },
   "statisticsReviews": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
+    "message": "{number, plural, one {<data>#</data> PREreview} other {<data>#</data> PREreviews}}",
+    "description": "Text for the box showing the number of PREreviews published."
   },
   "statisticsServers": {
-    "message": "{number, plural, one {<data>{number, number}</data> preprint server} other {<data>{number, number}</data> preprint servers}}"
+    "message": "{number, plural, one {<data>#</data> preprint server} other {<data>#</data> preprint servers}}",
+    "description": "Text for the box showing the number of supported preprint servers."
   },
   "statisticsUsers": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
+    "message": "{number, plural, one {<data>#</data> PREreviewer} other {<data>#</data> PREreviewers}}",
+    "description": "Text for the box showing the number of PREreviewers."
   },
   "statisticsLink": {
     "message": "See more statistics",

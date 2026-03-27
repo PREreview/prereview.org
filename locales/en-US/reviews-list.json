@@ -9,7 +9,8 @@
     "message": "{numberOfReviewers, plural, one {{reviewers} of {club} reviewed {preprint}} other {{reviewers} of {club} reviewed {preprint}}}"
   },
   "otherAuthors": {
-    "message": "{number, plural, one {{number, number} other author} other {{number, number} other authors}}"
+    "message": "{number, plural, one {# other author} other {# other authors}}",
+    "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "reviewPublished": {
     "message": "Review published"

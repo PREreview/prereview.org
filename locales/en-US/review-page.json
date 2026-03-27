@@ -24,7 +24,8 @@
     "message": "<hide>Authored</hide> by {authors} of {club}"
   },
   "otherAuthors": {
-    "message": "{otherAuthors, plural, one {{otherAuthors, number} other author} other {{otherAuthors, number} other authors}}"
+    "message": "{otherAuthors, plural, one {# other author} other {# other authors}}",
+    "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "published": {
     "message": "Published"

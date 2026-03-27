@@ -22,7 +22,8 @@
     "message": "Read the preprint"
   },
   "prereviews": {
-    "message": "{number, plural, one {{number, number} PREreview} other {{number, number} PREreviews}}"
+    "message": "{number, plural, one {# PREreview} other {# PREreviews}}",
+    "description": "Heading for the section showing the PREreviews for the preprint."
   },
   "writeAPrereview": {
     "message": "Write a PREreview"
@@ -43,7 +44,8 @@
     "message": "PREreview by {author} et al. of {club}"
   },
   "otherAuthors": {
-    "message": "{number, plural, one {{number, number} other author} other {{number, number} other authors}}"
+    "message": "{number, plural, one {# other author} other {# other authors}}",
+    "description": "Text for the entry in the author list indicating the number of anonymous authors."
   },
   "authoredBy": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}"
@@ -64,7 +66,8 @@
     "message": "Read <visuallyHidden>the PREreview by {author} et al. of {club}</visuallyHidden>"
   },
   "rapidPrereviews": {
-    "message": "{number, plural, one {{number, number} Rapid PREreview} other {{number, number} Rapid PREreviews}}"
+    "message": "{number, plural, one {# Rapid PREreview} other {# Rapid PREreviews}}",
+    "description": "Heading for the section showing the Rapid PREreviews for the preprint."
   },
   "whereCanRapidPrereview": {
     "message": "Where can I fill out a Rapid PREreview?"
