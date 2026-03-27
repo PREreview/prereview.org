@@ -1,9 +1,18 @@
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-export const ReviewBeingPublishedPage = ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) => {
+export const ReviewBeingPublishedPage = ({
+  datasetReviewId,
+  locale,
+}: {
+  datasetReviewId: Uuid.Uuid
+  locale: SupportedLocale
+}) => {
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
     title: plainText('We’re publishing your PREreview'),
     main: html`
@@ -23,7 +32,9 @@ export const ReviewBeingPublishedPage = ({ datasetReviewId }: { datasetReviewId:
         </div>
 
         <div hidden>
-          <a href="${Routes.ReviewADatasetReviewPublished.href({ datasetReviewId })}" class="button">Continue</a>
+          <a href="${Routes.ReviewADatasetReviewPublished.href({ datasetReviewId })}" class="button"
+            >${t('forms', 'continueButton')()}</a
+          >
         </div>
       </poll-redirect>
     `,

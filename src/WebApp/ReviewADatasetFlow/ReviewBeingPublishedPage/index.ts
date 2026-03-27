@@ -1,5 +1,5 @@
 import { Effect, Equal } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -16,6 +16,7 @@ export const ReviewBeingPublishedPage = ({
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
 
     if (!Equal.equals(user.orcid, author)) {
@@ -24,7 +25,7 @@ export const ReviewBeingPublishedPage = ({
 
     yield* DatasetReviews.checkIfReviewIsBeingPublished(datasetReviewId)
 
-    return MakeResponse({ datasetReviewId })
+    return MakeResponse({ datasetReviewId, locale })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasBeenPublished: () =>

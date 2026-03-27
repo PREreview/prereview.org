@@ -1,10 +1,11 @@
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewBeingPublishedPage/ReviewBeingPublishedPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.ReviewBeingPublishedPage({ datasetReviewId })
+  const response = _.ReviewBeingPublishedPage({ datasetReviewId, locale: DefaultLocale })
 
   const content = await showPage(response)
 
