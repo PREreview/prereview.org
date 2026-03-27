@@ -22,11 +22,7 @@ export const MattersToItsAudienceQuestion = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(
-      'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
-      errorPrefix(locale, hasAnError),
-      plainText,
-    ),
+    title: pipe(t('howConsequential')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -47,11 +43,7 @@ export const MattersToItsAudienceQuestion = ({
               )}
             >
               <legend>
-                <h1>
-                  Is this dataset likely to be of interest to researchers in its corresponding field of study, to most
-                  researchers, or to the general public? How consequential is it likely to seem to that audience or
-                  those audiences?
-                </h1>
+                <h1>${t('howConsequential')()}</h1>
               </legend>
 
               ${hasAnError && Either.isLeft(form.mattersToItsAudience)
@@ -59,7 +51,7 @@ export const MattersToItsAudienceQuestion = ({
                     <div class="error-message" id="matters-to-its-audience-error">
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.mattersToItsAudience.left, {
-                        Missing: () => 'Select how consequential is it likely to seem',
+                        Missing: () => t('selectHowConsequential')(),
                       })}
                     </div>
                   `
@@ -84,15 +76,13 @@ export const MattersToItsAudienceQuestion = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Very consequential</span>
+                    <span>${t('veryConsequential')()}</span>
                   </label>
-                  <p id="matters-to-its-audience-tip-very-consequential" role="note">
-                    The dataset is likely to be very consequential for a broad audience.
-                  </p>
+                  <p id="matters-to-its-audience-tip-very-consequential" role="note">${t('veryConsequentialTip')()}</p>
                   <div class="conditional" id="matters-to-its-audience-very-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-very-consequential-detail" class="textarea"
-                        >How is it very consequential? (optional)</label
+                        >${t('veryConsequentialWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="mattersToItsAudienceVeryConsequentialDetail"
@@ -130,15 +120,15 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Somewhat consequential</span>
+                    <span>${t('somewhatConsequential')()}</span>
                   </label>
                   <p id="matters-to-its-audience-tip-somewhat-consequential" role="note">
-                    Several minor errors or even one major error are in the dataset.
+                    ${t('somewhatConsequentialTip')()}
                   </p>
                   <div class="conditional" id="matters-to-its-audience-somewhat-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-somewhat-consequential-detail" class="textarea"
-                        >How is it somewhat consequential? (optional)</label
+                        >${t('somewhatConsequentialWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="mattersToItsAudienceSomewhatConsequentialDetail"
@@ -176,15 +166,13 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Not consequential</span>
+                    <span>${t('notConsequential')()}</span>
                   </label>
-                  <p id="matters-to-its-audience-tip-not-consequential" role="note">
-                    The dataset isn’t likely to be consequential for its intended audience.
-                  </p>
+                  <p id="matters-to-its-audience-tip-not-consequential" role="note">${t('notConsequentialTip')()}</p>
                   <div class="conditional" id="matters-to-its-audience-not-consequential-control">
                     <div>
                       <label for="matters-to-its-audience-not-consequential-detail" class="textarea"
-                        >How is it not consequential? (optional)</label
+                        >${t('notConsequentialWhy')()} ${t('forms', 'optionalSuffix')()}</label
                       >
                       <textarea
                         name="mattersToItsAudienceNotConsequentialDetail"
@@ -219,7 +207,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>I don’t know</span>
+                    <span>${t('dontKnow')()}</span>
                   </label>
                 </li>
               </ol>
@@ -236,7 +224,6 @@ ${Match.valueTags(form, {
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
   Either.isLeft(form.mattersToItsAudience)
     ? html`
@@ -244,7 +231,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
           <a href="#matters-to-its-audience-very-consequential">
             ${pipe(
               Match.value(form.mattersToItsAudience.left),
-              Match.tag('Missing', () => 'Select how consequential is it likely to seem'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectHowConsequential')()),
               Match.exhaustive,
             )}
           </a>

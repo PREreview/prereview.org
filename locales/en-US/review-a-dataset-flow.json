@@ -519,17 +519,45 @@
     "message": "Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?",
     "description": "Label for the question about the dataset mattering to its audience."
   },
+  "selectHowConsequential": {
+    "message": "Select how consequential is it likely to seem",
+    "description": "Error message shown when the user tries to complete the form “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?” without selecting an option."
+  },
   "veryConsequential": {
     "message": "Very consequential",
     "description": "Option for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
+  "veryConsequentialTip": {
+    "message": "The dataset is likely to be very consequential for a broad audience.",
+    "description": "Tip shown alongside the option “Very consequential” for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
+  "veryConsequentialWhy": {
+    "message": "How is it very consequential?",
+    "description": "Label for the text field to provide context for the “Very consequential” answer to the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
   },
   "somewhatConsequential": {
     "message": "Somewhat consequential",
     "description": "Option for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
   },
+  "somewhatConsequentialTip": {
+    "message": "Several minor errors or even one major error are in the dataset.",
+    "description": "Tip shown alongside the option “Somewhat consequential” for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
+  "somewhatConsequentialWhy": {
+    "message": "How is it somewhat consequential?",
+    "description": "Label for the text field to provide context for the “Somewhat consequential” answer to the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
   "notConsequential": {
     "message": "Not consequential",
     "description": "Option for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
+  "notConsequentialTip": {
+    "message": "The dataset isn’t likely to be consequential for its intended audience.",
+    "description": "Tip shown alongside the option “Not consequential” for the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
+  },
+  "notConsequentialWhy": {
+    "message": "How is it not consequential?",
+    "description": "Label for the text field to provide context for the “Not consequential” answer to the question “Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?”."
   },
   "changeHowConsequential": {
     "message": "Change <visuallyHidden>how consequential the dataset is likely to seem</visuallyHidden>",
