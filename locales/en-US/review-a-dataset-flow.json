@@ -147,6 +147,58 @@
     "message": "Change <visuallyHidden>your published name</visuallyHidden>",
     "description": "Link that allows the user to change their published name."
   },
+  "haveCompetingInterests": {
+    "message": "Do you have any competing interests?",
+    "description": "Label for the question about whether the PREreviewer has any competing interests."
+  },
+  "competingInterestsTip": {
+    "message": "We ask all reviewers to disclose any competing interests that could influence their review of the dataset.",
+    "description": "Text shown alongside the question “Do you have any competing interests?”."
+  },
+  "competingInterestDefinition": {
+    "message": "A competing interest is anything that could interfere with the objectivity of a PREreview.",
+    "description": "Text shown alongside the question “Do you have any competing interests?”."
+  },
+  "examples": {
+    "message": "Examples",
+    "description": "Heading for a list of examples."
+  },
+  "examplePersonalRelationship": {
+    "message": "You have a personal relationship with the author.",
+    "description": "Example of a competing interest."
+  },
+  "exampleRival": {
+    "message": "You are a rival or competitor of the author.",
+    "description": "Example of a competing interest."
+  },
+  "exampleWorked": {
+    "message": "You have recently worked with the author.",
+    "description": "Example of a competing interest."
+  },
+  "exampleCollaborate": {
+    "message": "You collaborate with the author.",
+    "description": "Example of a competing interest."
+  },
+  "examplePublished": {
+    "message": "You have published with the author in the last five years.",
+    "description": "Example of a competing interest."
+  },
+  "exampleGrant": {
+    "message": "You hold a grant with the author.",
+    "description": "Example of a competing interest."
+  },
+  "selectCompetingInterests": {
+    "message": "Select yes if you have any competing interests",
+    "description": "Error message shown when the user tries to complete the form “Do you have any competing interests?” without selecting an option."
+  },
+  "competingInterestsDetails": {
+    "message": "What are they?",
+    "description": "Label for the text field to provide details for the “Yes” option for the question “Do you have any competing interests?”."
+  },
+  "enterCompetingInterestsDetails": {
+    "message": "Enter details of your competing interests",
+    "description": "Error message shown when the user tries to complete the form “Do you have any competing interests?” with the “Yes” option without providing details."
+  },
   "competingInterests": {
     "message": "Competing interests",
     "description": "Label for the section that contains information about the user’s competing interests."

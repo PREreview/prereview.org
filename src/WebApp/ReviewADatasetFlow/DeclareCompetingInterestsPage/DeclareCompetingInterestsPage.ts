@@ -22,7 +22,7 @@ export const DeclareCompetingInterestsPage = ({
 
   return StreamlinePageResponse({
     status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe('Do you have any competing interests?', errorPrefix(locale, hasAnError), plainText),
+    title: pipe(t('haveCompetingInterests')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
         ><span>${t('forms', 'backLink')()}</span></a
@@ -48,29 +48,26 @@ export const DeclareCompetingInterestsPage = ({
               )}
             >
               <legend>
-                <h1>Do you have any competing interests?</h1>
+                <h1>${t('haveCompetingInterests')()}</h1>
               </legend>
 
               <div id="declare-competing-interests-tip" role="note">
-                <p>
-                  We ask all reviewers to disclose any competing interests that could influence their review of the
-                  dataset.
-                </p>
+                <p>${t('competingInterestsTip')()}</p>
 
-                <p>A competing interest is anything that could interfere with the objectivity of a PREreview.</p>
+                <p>${t('competingInterestDefinition')()}</p>
               </div>
 
               <details>
-                <summary><span>Examples</span></summary>
+                <summary><span>${t('examples')()}</span></summary>
 
                 <div>
                   <ul>
-                    <li>You have a personal relationship with the author.</li>
-                    <li>You are a rival or competitor of the author.</li>
-                    <li>You have recently worked with the author.</li>
-                    <li>You collaborate with the author.</li>
-                    <li>You have published with the author in the last five years.</li>
-                    <li>You hold a grant with the author.</li>
+                    <li>${t('examplePersonalRelationship')()}</li>
+                    <li>${t('exampleRival')()}</li>
+                    <li>${t('exampleWorked')()}</li>
+                    <li>${t('exampleCollaborate')()}</li>
+                    <li>${t('examplePublished')()}</li>
+                    <li>${t('exampleGrant')()}</li>
                   </ul>
                 </div>
               </details>
@@ -81,7 +78,7 @@ export const DeclareCompetingInterestsPage = ({
                       <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${pipe(
                         Match.value(form.declareCompetingInterests.left),
-                        Match.tag('Missing', () => 'Select yes if you have any competing interests'),
+                        Match.tag('Missing', () => t('selectCompetingInterests')()),
                         Match.exhaustive,
                       )}
                     </div>
@@ -108,7 +105,7 @@ export const DeclareCompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>No</span>
+                    <span>${t('no')()}</span>
                   </label>
                 </li>
                 <li>
@@ -134,11 +131,13 @@ export const DeclareCompetingInterestsPage = ({
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>Yes</span>
+                    <span>${t('yes')()}</span>
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
                     <div ${rawHtml(hasAnError && Either.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>
-                      <label for="competing-interests-details" class="textarea">What are they?</label>
+                      <label for="competing-interests-details" class="textarea"
+                        >${t('competingInterestsDetails')()}</label
+                      >
 
                       ${hasAnError && Either.isLeft(form.competingInterestsDetails)
                         ? html`
@@ -146,7 +145,7 @@ export const DeclareCompetingInterestsPage = ({
                               <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
-                                Match.tag('Missing', () => 'Enter details of your competing interests'),
+                                Match.tag('Missing', () => t('enterCompetingInterestsDetails')()),
                                 Match.exhaustive,
                               )}
                             </div>
@@ -189,7 +188,6 @@ ${pipe(
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInterestsForm.InvalidForm) => html`
   ${Either.isLeft(form.declareCompetingInterests)
     ? html`
@@ -197,7 +195,7 @@ const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInteres
           <a href="#declare-competing-interests-no">
             ${pipe(
               Match.value(form.declareCompetingInterests.left),
-              Match.tag('Missing', () => 'Select yes if you have any competing interests'),
+              Match.tag('Missing', () => translate(locale, 'review-a-dataset-flow', 'selectCompetingInterests')()),
               Match.exhaustive,
             )}
           </a>
@@ -210,7 +208,9 @@ const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInteres
           <a href="#competing-interests-details">
             ${pipe(
               Match.value(form.competingInterestsDetails.left),
-              Match.tag('Missing', () => 'Enter details of your competing interests'),
+              Match.tag('Missing', () =>
+                translate(locale, 'review-a-dataset-flow', 'enterCompetingInterestsDetails')(),
+              ),
               Match.exhaustive,
             )}
           </a>
