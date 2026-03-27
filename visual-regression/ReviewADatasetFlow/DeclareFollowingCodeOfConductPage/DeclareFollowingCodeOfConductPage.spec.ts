@@ -1,6 +1,7 @@
 import { Either } from 'effect'
 import * as DeclareFollowingCodeOfConductForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareFollowingCodeOfConductPage/DeclareFollowingCodeOfConductPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
@@ -8,6 +9,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.DeclareFollowingCodeOfConductPage({
     datasetReviewId,
     form: new DeclareFollowingCodeOfConductForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -21,6 +23,7 @@ test('content looks right when there is a declaration', async ({ showPage }) => 
     form: new DeclareFollowingCodeOfConductForm.CompletedForm({
       followingCodeOfConduct: 'yes',
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -34,6 +37,7 @@ test('content looks right when the declaration is missing', async ({ showPage })
     form: new DeclareFollowingCodeOfConductForm.InvalidForm({
       followingCodeOfConduct: Either.left(new DeclareFollowingCodeOfConductForm.Missing()),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

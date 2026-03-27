@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
@@ -19,6 +19,7 @@ export const DeclareFollowingCodeOfConductPage = ({
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const hasBeenDeclared = yield* DatasetReviews.checkIfUserCanDeclareFollowingCodeOfConduct({
       datasetReviewId,
@@ -27,7 +28,7 @@ export const DeclareFollowingCodeOfConductPage = ({
 
     const form = DeclareFollowingCodeOfConductForm.fromHasBeenDeclared(hasBeenDeclared)
 
-    return MakeResponse({ datasetReviewId, form })
+    return MakeResponse({ datasetReviewId, form, locale })
   }).pipe(
     Effect.catchTags({
       DatasetReviewHasNotBeenStarted: () => PageNotFound,
@@ -57,6 +58,7 @@ export const DeclareFollowingCodeOfConductSubmission = ({
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     const form = yield* DeclareFollowingCodeOfConductForm.fromBody(body)
 
@@ -79,6 +81,6 @@ export const DeclareFollowingCodeOfConductSubmission = ({
         },
         Effect.catchAll(() => HavingProblemsPage),
       ),
-      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form })),
+      InvalidForm: form => Effect.succeed(MakeResponse({ datasetReviewId, form, locale })),
     })
   })

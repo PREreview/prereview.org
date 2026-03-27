@@ -1,6 +1,8 @@
-import { Either, Match } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -9,16 +11,21 @@ import type * as DeclareFollowingCodeOfConductForm from './DeclareFollowingCodeO
 export const DeclareFollowingCodeOfConductPage = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid.Uuid
   form: DeclareFollowingCodeOfConductForm.DeclareFollowingCodeOfConductForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Code of Conduct`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Code of Conduct', errorPrefix(locale, hasAnError), plainText),
     nav: html`
       <a href="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}" class="back"
-        ><span>Back</span></a
+        ><span>${t('forms', 'backLink')()}</span></a
       >
     `,
     main: html`
@@ -27,33 +34,14 @@ export const DeclareFollowingCodeOfConductPage = ({
         action="${Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId })}"
         novalidate
       >
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.followingCodeOfConduct)
-                    ? html`
-                        <li>
-                          <a href="#following-code-of-conduct-yes">
-                            ${Match.valueTags(form.followingCodeOfConduct.left, {
-                              Missing: () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
-                            })}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <fieldset
             role="group"
             aria-describedby="following-code-of-conduct-tip"
             ${rawHtml(
-              form._tag === 'InvalidForm' && Either.isLeft(form.followingCodeOfConduct)
+              hasAnError && Either.isLeft(form.followingCodeOfConduct)
                 ? 'aria-invalid="true" aria-errormessage="following-code-of-conduct-error"'
                 : '',
             )}
@@ -101,10 +89,10 @@ export const DeclareFollowingCodeOfConductPage = ({
               </div>
             </details>
 
-            ${form._tag === 'InvalidForm' && Either.isLeft(form.followingCodeOfConduct)
+            ${hasAnError && Either.isLeft(form.followingCodeOfConduct)
               ? html`
                   <div class="error-message" id="following-code-of-conduct-error">
-                    <span class="visually-hidden">Error:</span>
+                    <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                     ${Match.valueTags(form.followingCodeOfConduct.left, {
                       Missing: () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
                     })}
@@ -129,11 +117,25 @@ export const DeclareFollowingCodeOfConductPage = ({
           </fieldset>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetDeclareFollowingCodeOfConduct.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['error-summary.js'] : [],
+    js: hasAnError ? ['error-summary.js'] : [],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: DeclareFollowingCodeOfConductForm.InvalidForm) =>
+  Either.isLeft(form.followingCodeOfConduct)
+    ? html`
+        <li>
+          <a href="#following-code-of-conduct-yes">
+            ${Match.valueTags(form.followingCodeOfConduct.left, {
+              Missing: () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+            })}
+          </a>
+        </li>
+      `
+    : html``
