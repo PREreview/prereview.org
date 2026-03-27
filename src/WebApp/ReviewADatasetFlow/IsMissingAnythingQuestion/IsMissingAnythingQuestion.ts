@@ -1,6 +1,8 @@
 import { Match, Option, String } from 'effect'
 import { html, plainText } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { IsMissingAnythingForm } from './IsMissingAnythingForm.ts'
@@ -8,23 +10,28 @@ import type { IsMissingAnythingForm } from './IsMissingAnythingForm.ts'
 export const IsMissingAnythingQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: IsMissingAnythingForm
+  locale: SupportedLocale
 }) => {
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    title: plainText`What else, if anything, would it be helpful for the researcher to include with this dataset to make it easier to find, understand and reuse in ethical and responsible ways?`,
+    title: plainText(t('anythingMissing')()),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsReadyToBeShared.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
     `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId })}" novalidate>
         <div>
           <h1>
             <label id="is-missing-anything-label" for="is-missing-anything">
-              What else, if anything, would it be helpful for the researcher to include with this dataset to make it
-              easier to find, understand and reuse in ethical and responsible ways? (optional)</label
-            >
+              ${t('anythingMissing')()} ${t('forms', 'optionalSuffix')()}
+            </label>
           </h1>
 
           ${Match.valueTags(form, {
@@ -36,7 +43,7 @@ ${Option.getOrElse(form.isMissingAnything, () => String.empty)}</textarea
           })}
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetIsMissingAnything.href({ datasetReviewId }),

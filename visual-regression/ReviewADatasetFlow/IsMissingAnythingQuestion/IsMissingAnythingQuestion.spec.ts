@@ -1,5 +1,6 @@
 import * as IsMissingAnythingForm from '../../../src/WebApp/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsMissingAnythingQuestion/IsMissingAnythingQuestion.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
 import { expect, test } from '../../base.ts'
@@ -8,6 +9,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.IsMissingAnythingQuestion({
     datasetReviewId,
     form: new IsMissingAnythingForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -21,6 +23,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
     form: new IsMissingAnythingForm.CompletedForm({
       isMissingAnything: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
