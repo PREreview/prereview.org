@@ -1,13 +1,12 @@
-import { flow, pipe } from 'effect'
+import { Effect, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as R from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { P, match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
+import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   type GetReviewRequestEnv,
   type IncompleteReviewRequest,
@@ -15,9 +14,10 @@ import {
   getReviewRequest,
   saveReviewRequest,
 } from '../../../review-request.ts'
+import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
-import type { Uuid } from '../../../types/index.ts'
+import { Temporal } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -28,10 +28,6 @@ import {
 } from '../../Response/index.ts'
 import { checkPage } from './check-page.ts'
 import { failureMessage } from './failure-message.ts'
-
-export interface PublishRequestEnv {
-  publishRequest: (reviewRequestId: Uuid.Uuid) => TE.TaskEither<'unavailable', void>
-}
 
 export const requestReviewCheck = ({
   method,
@@ -44,7 +40,10 @@ export const requestReviewCheck = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv & PublishRequestEnv & SaveReviewRequestEnv,
+  GetPreprintTitleEnv &
+    GetReviewRequestEnv &
+    SaveReviewRequestEnv &
+    EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -96,9 +95,6 @@ export const requestReviewCheck = ({
     ),
   )
 
-const publishRequest = (reviewRequestId: Uuid.Uuid): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
-  R.asks(({ publishRequest }) => publishRequest(reviewRequestId))
-
 const handleForm = ({
   preprint,
   reviewRequest,
@@ -111,7 +107,19 @@ const handleForm = ({
   locale: SupportedLocale
 }) =>
   pipe(
-    publishRequest(reviewRequest.id),
+    EffectToFpts.toReaderTaskEither(
+      pipe(
+        Effect.gen(function* () {
+          const publishedAt = yield* Temporal.currentInstant
+
+          yield* ReviewRequests.publishReviewRequest({
+            publishedAt,
+            reviewRequestId: reviewRequest.id,
+          })
+        }),
+        Effect.tapError(error => Effect.logError('Failed to publishRequest').pipe(Effect.annotateLogs({ error }))),
+      ),
+    ),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage(locale),

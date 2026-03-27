@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
@@ -6,9 +6,8 @@ import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { Temporal, Uuid } from '../../../types/index.ts'
+import { Uuid } from '../../../types/index.ts'
 import {
   requestReviewCheck,
   requestReviewPersona,
@@ -70,26 +69,6 @@ export const RequestReviewFlowRouter = pipe(
             orcid,
             preprint,
           ]),
-        publishRequest: withEnv(
-          EffectToFpts.toReaderTaskEitherK((reviewRequestId: Uuid.Uuid) =>
-            pipe(
-              Effect.gen(function* () {
-                const publishedAt = yield* Temporal.currentInstant
-
-                yield* ReviewRequests.publishReviewRequest({
-                  publishedAt,
-                  reviewRequestId,
-                })
-              }),
-              Effect.tapError(error =>
-                Effect.logError('Failed to publishRequest').pipe(Effect.annotateLogs({ error })),
-              ),
-              Effect.mapError(() => 'unavailable' as const),
-              Effect.scoped,
-            ),
-          ),
-          { runtime: env.runtime },
-        ),
         runtime: env.runtime,
         saveReviewRequest: (orcid, preprint, request) =>
           withEnv(Keyv.saveReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })(
