@@ -5,6 +5,7 @@ import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
+import type { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { type GetReviewRequestEnv, getReviewRequest } from '../../../review-request.ts'
 import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
@@ -26,7 +27,7 @@ export const requestReviewPublished = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  GetPreprintTitleEnv & GetReviewRequestEnv,
+  GetPreprintTitleEnv & GetReviewRequestEnv & EffectToFpts.EffectEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
