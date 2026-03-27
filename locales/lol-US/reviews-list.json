@@ -9,7 +9,7 @@
     "message": "crwdns5918:0numberOfReviewers={numberOfReviewers}crwdnd5918:0reviewers={reviewers}crwdnd5918:0club={club}crwdnd5918:0preprint={preprint}crwdnd5918:0reviewers={reviewers}crwdnd5918:0club={club}crwdnd5918:0preprint={preprint}crwdne5918:0"
   },
   "otherAuthors": {
-    "message": "crwdns5904:0number={number}crwdnd5904:0number={number}crwdnd5904:0number={number}crwdne5904:0"
+    "message": "crwdns6320:0number={number}crwdne6320:0"
   },
   "reviewPublished": {
     "message": "crwdns2126:0crwdne2126:0"

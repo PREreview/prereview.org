@@ -59,15 +59,6 @@
   "statisticsTitle": {
     "message": "Estadísticas"
   },
-  "statisticsReviews": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreview} other {<data>{number, number}</data> PREreviews}}"
-  },
-  "statisticsServers": {
-    "message": "{number, plural, one {<data>{number, number}</data> servidor de preprint} other {<data>{number, number}</data> servidores de preprint}}"
-  },
-  "statisticsUsers": {
-    "message": "{number, plural, one {<data>{number, number}</data> PREreviewer} other {<data>{number, number}</data> PREreviewers}}"
-  },
   "statisticsLink": {
     "message": "Ver más estadísticas  "
   },

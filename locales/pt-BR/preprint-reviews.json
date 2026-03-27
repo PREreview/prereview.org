@@ -20,9 +20,6 @@
   "readPreprint": {
     "message": "Ler o preprint"
   },
-  "prereviews": {
-    "message": "{number, plural, one {{number, number} Avaliação PREreview} other {{number, number} Avaliações PREreview}}"
-  },
   "writeAPrereview": {
     "message": "Escrever uma Avaliação PREreview"
   },
@@ -41,9 +38,6 @@
   "prereviewByMultipleAuthorsInClub": {
     "message": "Avaliação PREreview feita por {author} et al. do/a {club}"
   },
-  "otherAuthors": {
-    "message": "{number, plural, one {{number, number} outro autor} other {{number, number} outros autores}}"
-  },
   "authoredBy": {
     "message": "<visuallyHidden>De autoria</visuallyHidden> de {authors}"
   },
@@ -61,9 +55,6 @@
   },
   "readPrereviewByMultipleAuthorsInClub": {
     "message": "Ler <visuallyHidden>a avaliação PREreview de {author} et al. do/a {club}</visuallyHidden>"
-  },
-  "rapidPrereviews": {
-    "message": "{number, plural, one {{number, number} Avaliação PREreview Rápida} other {{number, number} Avaliações PREreview Rápidas}}"
   },
   "whereCanRapidPrereview": {
     "message": "Onde posso preencher uma Avaliação PREreview Rápida?"

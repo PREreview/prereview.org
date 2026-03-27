@@ -21,7 +21,7 @@
     "message": "crwdns5098:0crwdne5098:0"
   },
   "prereviews": {
-    "message": "crwdns5100:0number={number}crwdnd5100:0number={number}crwdnd5100:0number={number}crwdne5100:0"
+    "message": "crwdns6314:0number={number}crwdne6314:0"
   },
   "writeAPrereview": {
     "message": "crwdns5102:0crwdne5102:0"
@@ -42,7 +42,7 @@
     "message": "crwdns5112:0{author}crwdnd5112:0{club}crwdne5112:0"
   },
   "otherAuthors": {
-    "message": "crwdns5114:0number={number}crwdnd5114:0number={number}crwdnd5114:0number={number}crwdne5114:0"
+    "message": "crwdns6316:0number={number}crwdne6316:0"
   },
   "authoredBy": {
     "message": "crwdns5116:0{authors}crwdne5116:0"
@@ -63,7 +63,7 @@
     "message": "crwdns5126:0{author}crwdnd5126:0{club}crwdne5126:0"
   },
   "rapidPrereviews": {
-    "message": "crwdns5128:0number={number}crwdnd5128:0number={number}crwdnd5128:0number={number}crwdne5128:0"
+    "message": "crwdns6318:0number={number}crwdne6318:0"
   },
   "whereCanRapidPrereview": {
     "message": "crwdns5130:0crwdne5130:0"

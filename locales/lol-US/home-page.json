@@ -60,13 +60,13 @@
     "message": "crwdns1862:0crwdne1862:0"
   },
   "statisticsReviews": {
-    "message": "crwdns4338:0number={number}crwdnd4338:0number={number}crwdnd4338:0number={number}crwdne4338:0"
+    "message": "crwdns6306:0number={number}crwdne6306:0"
   },
   "statisticsServers": {
-    "message": "crwdns4340:0number={number}crwdnd4340:0number={number}crwdnd4340:0number={number}crwdne4340:0"
+    "message": "crwdns6308:0number={number}crwdne6308:0"
   },
   "statisticsUsers": {
-    "message": "crwdns4342:0number={number}crwdnd4342:0number={number}crwdnd4342:0number={number}crwdne4342:0"
+    "message": "crwdns6310:0number={number}crwdne6310:0"
   },
   "statisticsLink": {
     "message": "crwdns5984:0crwdne5984:0"

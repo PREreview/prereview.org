@@ -8,9 +8,6 @@
   "clubReviewText": {
     "message": "{numberOfReviewers, plural, one {{reviewers} do {club} revisou {preprint}} other {{reviewers} do {club} revisaram {preprint}}}"
   },
-  "otherAuthors": {
-    "message": "{number, plural, one {{number, number} outro autor} other {{number, number} outros autores}}"
-  },
   "reviewPublished": {
     "message": "Avaliação publicada"
   },

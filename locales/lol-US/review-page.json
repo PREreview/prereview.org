@@ -24,7 +24,7 @@
     "message": "crwdns2070:0{authors}crwdnd2070:0{club}crwdne2070:0"
   },
   "otherAuthors": {
-    "message": "crwdns2072:0otherAuthors={otherAuthors}crwdnd2072:0otherAuthors={otherAuthors}crwdnd2072:0otherAuthors={otherAuthors}crwdne2072:0"
+    "message": "crwdns6312:0otherAuthors={otherAuthors}crwdne6312:0"
   },
   "published": {
     "message": "crwdns2074:0crwdne2074:0"
