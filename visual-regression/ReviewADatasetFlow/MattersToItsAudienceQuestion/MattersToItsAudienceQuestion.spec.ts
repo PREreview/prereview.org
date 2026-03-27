@@ -3,12 +3,14 @@ import * as MattersToItsAudienceForm from '../../../src/WebApp/ReviewADatasetFlo
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/MattersToItsAudienceQuestion/MattersToItsAudienceQuestion.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
   const response = _.MattersToItsAudienceQuestion({
     datasetReviewId,
     form: new MattersToItsAudienceForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -27,6 +29,7 @@ test('content looks right when there is an answer', async ({ showPage }) => {
       ),
       mattersToItsAudienceNotConsequentialDetail: NonEmptyString.fromString('Detail about the not-consequential.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -49,6 +52,7 @@ test('content looks right when the answer is missing', async ({ showPage }) => {
         NonEmptyString.fromString('Detail about the not-consequential.'),
       ),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)

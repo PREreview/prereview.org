@@ -1,55 +1,47 @@
 import { Either, Match, Option, pipe, String } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-import type { MattersToItsAudienceForm } from './MattersToItsAudienceForm.ts'
+import type { InvalidForm, MattersToItsAudienceForm } from './MattersToItsAudienceForm.ts'
 
 export const MattersToItsAudienceQuestion = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid
   form: MattersToItsAudienceForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe(
+      'Is this dataset likely to be of interest to researchers in its corresponding field of study, to most researchers, or to the general public? How consequential is it likely to seem to that audience or those audiences?',
+      errorPrefix(locale, hasAnError),
+      plainText,
+    ),
     nav: html`
-      <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetIsErrorFree.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
     `,
     main: html`
       <form method="post" action="${Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId })}" novalidate>
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.mattersToItsAudience)
-                    ? html`
-                        <li>
-                          <a href="#matters-to-its-audience-very-consequential">
-                            ${pipe(
-                              Match.value(form.mattersToItsAudience.left),
-                              Match.tag('Missing', () => 'Select how consequential is it likely to seem'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.mattersToItsAudience)
+                hasAnError && Either.isLeft(form.mattersToItsAudience)
                   ? 'aria-invalid="true" aria-errormessage="matters-to-its-audience-error"'
                   : '',
               )}
@@ -62,10 +54,10 @@ export const MattersToItsAudienceQuestion = ({
                 </h1>
               </legend>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.mattersToItsAudience)
+              ${hasAnError && Either.isLeft(form.mattersToItsAudience)
                 ? html`
                     <div class="error-message" id="matters-to-its-audience-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${Match.valueTags(form.mattersToItsAudience.left, {
                         Missing: () => 'Select how consequential is it likely to seem',
                       })}
@@ -214,7 +206,7 @@ ${Match.valueTags(form, {
                   </div>
                 </li>
                 <li>
-                  <span>or</span>
+                  <span>${t('forms', 'radioSeparatorLabel')()}</span>
                   <label>
                     <input
                       name="mattersToItsAudience"
@@ -235,11 +227,27 @@ ${Match.valueTags(form, {
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetMattersToItsAudience.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) =>
+  Either.isLeft(form.mattersToItsAudience)
+    ? html`
+        <li>
+          <a href="#matters-to-its-audience-very-consequential">
+            ${pipe(
+              Match.value(form.mattersToItsAudience.left),
+              Match.tag('Missing', () => 'Select how consequential is it likely to seem'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : html``
