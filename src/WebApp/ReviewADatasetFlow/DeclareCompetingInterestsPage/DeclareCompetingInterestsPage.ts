@@ -1,6 +1,8 @@
 import { Either, Match, Option, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
+import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
@@ -9,15 +11,22 @@ import type * as DeclareCompetingInterestsForm from './DeclareCompetingInterests
 export const DeclareCompetingInterestsPage = ({
   datasetReviewId,
   form,
+  locale,
 }: {
   datasetReviewId: Uuid.Uuid
   form: DeclareCompetingInterestsForm.DeclareCompetingInterestsForm
+  locale: SupportedLocale
 }) => {
+  const hasAnError = form._tag === 'InvalidForm'
+  const t = translate(locale, 'review-a-dataset-flow')
+
   return StreamlinePageResponse({
-    status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: plainText`${form._tag === 'InvalidForm' ? 'Error: ' : ''}Do you have any competing interests?`,
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe('Do you have any competing interests?', errorPrefix(locale, hasAnError), plainText),
     nav: html`
-      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"><span>Back</span></a>
+      <a href="${Routes.ReviewADatasetChooseYourPersona.href({ datasetReviewId })}" class="back"
+        ><span>${t('forms', 'backLink')()}</span></a
+      >
     `,
     main: html`
       <form
@@ -25,49 +34,15 @@ export const DeclareCompetingInterestsPage = ({
         action="${Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId })}"
         novalidate
       >
-        ${form._tag === 'InvalidForm'
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${Either.isLeft(form.declareCompetingInterests)
-                    ? html`
-                        <li>
-                          <a href="#declare-competing-interests-no">
-                            ${pipe(
-                              Match.value(form.declareCompetingInterests.left),
-                              Match.tag('Missing', () => 'Select yes if you have any competing interests'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                  ${Either.isLeft(form.competingInterestsDetails)
-                    ? html`
-                        <li>
-                          <a href="#competing-interests-details">
-                            ${pipe(
-                              Match.value(form.competingInterestsDetails.left),
-                              Match.tag('Missing', () => 'Enter details of your competing interests'),
-                              Match.exhaustive,
-                            )}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${form._tag === 'InvalidForm' ? 'class="error"' : ''}>
+        <div ${hasAnError ? 'class="error"' : ''}>
           <conditional-inputs>
             <fieldset
               role="group"
               aria-describedby="declare-competing-interests-tip"
               ${rawHtml(
-                form._tag === 'InvalidForm' && Either.isLeft(form.declareCompetingInterests)
+                hasAnError && Either.isLeft(form.declareCompetingInterests)
                   ? 'aria-invalid="true" aria-errormessage="declare-competing-interests-error"'
                   : '',
               )}
@@ -100,10 +75,10 @@ export const DeclareCompetingInterestsPage = ({
                 </div>
               </details>
 
-              ${form._tag === 'InvalidForm' && Either.isLeft(form.declareCompetingInterests)
+              ${hasAnError && Either.isLeft(form.declareCompetingInterests)
                 ? html`
                     <div class="error-message" id="declare-competing-interests-error">
-                      <span class="visually-hidden">Error:</span>
+                      <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                       ${pipe(
                         Match.value(form.declareCompetingInterests.left),
                         Match.tag('Missing', () => 'Select yes if you have any competing interests'),
@@ -162,19 +137,13 @@ export const DeclareCompetingInterestsPage = ({
                     <span>Yes</span>
                   </label>
                   <div class="conditional" id="competing-interests-details-control">
-                    <div
-                      ${rawHtml(
-                        form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
-                          ? 'class="error"'
-                          : '',
-                      )}
-                    >
+                    <div ${rawHtml(hasAnError && Either.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>
                       <label for="competing-interests-details" class="textarea">What are they?</label>
 
-                      ${form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
+                      ${hasAnError && Either.isLeft(form.competingInterestsDetails)
                         ? html`
                             <div class="error-message" id="competing-interests-details-error">
-                              <span class="visually-hidden">Error:</span>
+                              <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                               ${pipe(
                                 Match.value(form.competingInterestsDetails.left),
                                 Match.tag('Missing', () => 'Enter details of your competing interests'),
@@ -189,7 +158,7 @@ export const DeclareCompetingInterestsPage = ({
                         id="competing-interests-details"
                         rows="5"
                         ${rawHtml(
-                          form._tag === 'InvalidForm' && Either.isLeft(form.competingInterestsDetails)
+                          hasAnError && Either.isLeft(form.competingInterestsDetails)
                             ? 'aria-invalid="true" aria-errormessage="competing-interests-details-error"'
                             : '',
                         )}
@@ -211,11 +180,41 @@ ${pipe(
           </conditional-inputs>
         </div>
 
-        <button>Save and continue</button>
+        ${saveAndContinueButton(locale)}
       </form>
     `,
     canonical: Routes.ReviewADatasetDeclareCompetingInterests.href({ datasetReviewId }),
-    js: form._tag === 'InvalidForm' ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
+    js: hasAnError ? ['conditional-inputs.js', 'error-summary.js'] : ['conditional-inputs.js'],
     skipToLabel: 'form',
   })
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toErrorItems = (locale: SupportedLocale) => (form: DeclareCompetingInterestsForm.InvalidForm) => html`
+  ${Either.isLeft(form.declareCompetingInterests)
+    ? html`
+        <li>
+          <a href="#declare-competing-interests-no">
+            ${pipe(
+              Match.value(form.declareCompetingInterests.left),
+              Match.tag('Missing', () => 'Select yes if you have any competing interests'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : ''}
+  ${Either.isLeft(form.competingInterestsDetails)
+    ? html`
+        <li>
+          <a href="#competing-interests-details">
+            ${pipe(
+              Match.value(form.competingInterestsDetails.left),
+              Match.tag('Missing', () => 'Enter details of your competing interests'),
+              Match.exhaustive,
+            )}
+          </a>
+        </li>
+      `
+    : ''}
+`

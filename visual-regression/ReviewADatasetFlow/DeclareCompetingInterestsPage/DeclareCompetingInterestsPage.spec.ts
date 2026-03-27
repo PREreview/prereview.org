@@ -1,6 +1,7 @@
 import { Either } from 'effect'
 import * as DeclareCompetingInterestsForm from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsForm.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/DeclareCompetingInterestsPage/DeclareCompetingInterestsPage.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { expect, test } from '../../base.ts'
 
@@ -8,6 +9,7 @@ test('content looks right', async ({ showPage }) => {
   const response = _.DeclareCompetingInterestsPage({
     datasetReviewId,
     form: new DeclareCompetingInterestsForm.EmptyForm(),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -22,6 +24,7 @@ test('content looks right when there is a choice', async ({ showPage }) => {
       declareCompetingInterests: 'yes',
       competingInterestsDetails: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
@@ -36,6 +39,7 @@ test('content looks right when the choice is missing', async ({ showPage }) => {
       declareCompetingInterests: Either.left(new DeclareCompetingInterestsForm.Missing()),
       competingInterestsDetails: Either.left(new DeclareCompetingInterestsForm.Missing()),
     }),
+    locale: DefaultLocale,
   })
 
   const content = await showPage(response)
