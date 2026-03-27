@@ -56,7 +56,6 @@ import {
   type LanguagesStoreEnv,
   type LocationStoreEnv,
   type ResearchInterestsStoreEnv,
-  type ReviewRequestStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
 import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
@@ -99,7 +98,6 @@ interface AppFixtures {
   wasPrereviewRemoved: typeof Prereviews.WasPrereviewRemoved.Service
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
-  reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
@@ -2412,9 +2410,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
-  reviewRequestStore: async ({}, use) => {
-    await use(new Keyv())
-  },
   seedEvents: async ({}, use) => {
     await use([])
   },
@@ -2433,7 +2428,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         languagesStore,
         locationStore,
         researchInterestsStore,
-        reviewRequestStore,
         slackUserIdStore,
         userOnboardingStore,
         wasPrereviewRemoved,
@@ -2463,7 +2457,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             locationStore,
             orcidTokenStore: new Keyv(),
             researchInterestsStore,
-            reviewRequestStore,
             slackUserIdStore,
             userOnboardingStore,
           }),

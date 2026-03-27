@@ -189,7 +189,6 @@ export const nonEffectRouter: Effect.Effect<
     users,
     authorInviteStore: keyvStores.authorInviteStore,
     formStore: keyvStores.formStore,
-    reviewRequestStore: keyvStores.reviewRequestStore,
     sessionStore: sessionStore.store,
     nodemailer,
   } satisfies Env
@@ -241,7 +240,6 @@ export interface Env {
   }
   authorInviteStore: Keyv.Keyv
   formStore: Keyv.Keyv
-  reviewRequestStore: Keyv.Keyv
   sessionStore: Keyv.Keyv
   orcidOauth: typeof OrcidOauth.Service
   scietyListToken: typeof ScietyListToken.Service

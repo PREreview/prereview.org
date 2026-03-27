@@ -18,10 +18,8 @@ import { IsOpenForRequestsC } from './is-open-for-requests.ts'
 import { LanguagesC } from './languages.ts'
 import { LocationC } from './location.ts'
 import { OrcidTokenC } from './orcid-token.ts'
-import type { PreprintId } from './Preprints/index.ts'
 import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
-import { ReviewRequestC } from './review-request.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
@@ -42,7 +40,6 @@ export class KeyvStores extends Context.Tag('KeyvStores')<
     LocationStoreEnv &
     OrcidTokenStoreEnv &
     ResearchInterestsStoreEnv &
-    ReviewRequestStoreEnv &
     SlackUserIdStoreEnv &
     UserOnboardingStoreEnv &
     FormStoreEnv
@@ -82,7 +79,6 @@ export const keyvStoresLayer = Layer.effect(
         namespace: 'research-interests',
         store: createKeyvStore(),
       }),
-      reviewRequestStore: new Keyv({ emitErrors: false, namespace: 'review-request', store: createKeyvStore() }),
       slackUserIdStore: new Keyv({ emitErrors: false, namespace: 'slack-user-id', store: createKeyvStore() }),
       userOnboardingStore: new Keyv({ emitErrors: false, namespace: 'user-onboarding', store: createKeyvStore() }),
     }
@@ -125,10 +121,6 @@ export interface OrcidTokenStoreEnv {
   orcidTokenStore: Keyv
 }
 
-export interface ReviewRequestStoreEnv {
-  reviewRequestStore: Keyv
-}
-
 export interface SessionStoreEnv {
   sessionStore: Keyv
 }
@@ -148,12 +140,6 @@ interface KeyvEnv {
 const OrcidD: Decoder<unknown, OrcidId> = D.fromRefinement(isOrcidId, 'ORCID')
 
 const OrcidE: Encoder<string, OrcidId> = { encode: identity }
-
-const PreprintIdE: Encoder<string, PreprintId> = {
-  encode: preprintId => `${preprintId._tag}-${preprintId.value}`,
-}
-
-const UnderscoreTupleE = flow(EN.tuple, EN.compose({ encode: values => values.join('_') }))
 
 const deleteKey =
   <K>(keyEncoder: Encoder<string, K>) =>
@@ -453,11 +439,6 @@ export const saveAvatar = flow(
 export const deleteAvatar = flow(
   deleteKey(OrcidE),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
-)
-
-export const saveReviewRequest = flow(
-  setKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
-  RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )
 
 export const addToSession = (sessionId: string, key: string, value: Json) =>

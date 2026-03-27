@@ -108,7 +108,6 @@ import {
 } from '../src/Preprints/index.ts'
 import { Prereview } from '../src/Prereviews/index.ts'
 import type { ResearchInterests } from '../src/research-interests.ts'
-import type { CompletedReviewRequest, IncompleteReviewRequest, ReviewRequest } from '../src/review-request.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import type { SlackUserId } from '../src/slack-user-id.ts'
 import type { SlackUser } from '../src/slack-user.ts'
@@ -1234,24 +1233,6 @@ export const subfieldId = (): fc.Arbitrary<SubfieldId> => fc.constantFrom(...sub
 export const topicId = (): fc.Arbitrary<TopicId> => fc.constantFrom(...topicIds)
 
 export const keywordId = (): fc.Arbitrary<KeywordId> => fc.constantFrom(...keywordIds)
-
-export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
-  fc.oneof(incompleteReviewRequest(), completedReviewRequest())
-
-export const incompleteReviewRequest = ({
-  persona,
-}: { persona?: fc.Arbitrary<IncompleteReviewRequest['persona']> } = {}): fc.Arbitrary<IncompleteReviewRequest> =>
-  fc.record(
-    {
-      status: constant('incomplete'),
-      persona: persona ?? constantFrom('public', 'pseudonym'),
-      id: uuid(),
-    },
-    !persona ? { requiredKeys: ['status', 'id'] } : {},
-  )
-
-export const completedReviewRequest = (): fc.Arbitrary<CompletedReviewRequest> =>
-  fc.record({ status: constant('completed') })
 
 export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
   fc.oneof(openAuthorInvite(), declinedAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
