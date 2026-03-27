@@ -41,9 +41,6 @@
   "noComments": {
     "message": "Nenhum comentário foi publicado ainda."
   },
-  "commentItemTitle": {
-    "message": "Comentário de {authors, plural, one {{author}} other {{author} et al.}}"
-  },
   "commentItemAuthors": {
     "message": "<hide>De autoria</hide> de {authors}"
   },

@@ -5,6 +5,9 @@
   "errorPrefix": {
     "message": "Error"
   },
+  "optionalSuffix": {
+    "message": "(opcional)"
+  },
   "errorSummaryTitle": {
     "message": "Hay un problema"
   },

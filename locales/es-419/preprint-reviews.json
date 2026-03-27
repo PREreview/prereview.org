@@ -20,6 +20,9 @@
   "readPreprint": {
     "message": "Leer el preprint"
   },
+  "prereviews": {
+    "message": "{number, plural, one {# PREreview} other {# PREreviews}}"
+  },
   "writeAPrereview": {
     "message": "Redactar una PREreview"
   },
@@ -37,6 +40,9 @@
   },
   "prereviewByMultipleAuthorsInClub": {
     "message": "PREreview de {author} y otros/as en {club}"
+  },
+  "otherAuthors": {
+    "message": "{number, plural, one {# otro autor} other {# otros autores}}"
   },
   "authoredBy": {
     "message": "<visuallyHidden>Escrito</visuallyHidden> por {authors}"

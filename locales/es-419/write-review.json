@@ -155,9 +155,6 @@
   "listFlowConcerns": {
     "message": "Enumera las preocupaciones que de ser atendidas mejorarían el flujo de la información y/o claridad pero que no son críticas para la comprensión de la investigación y sus conclusiones."
   },
-  "addedAuthorCount": {
-    "message": "Has agregado {authorCount, number} {authorCount, plural, one {otro autor} other {otros autores}}"
-  },
   "authorNumber": {
     "message": "Autor/a {number, number}"
   },

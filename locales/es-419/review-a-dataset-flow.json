@@ -64,5 +64,161 @@
   },
   "repository": {
     "message": "Repositorio"
+  },
+  "yourReview": {
+    "message": "Tu revisión"
+  },
+  "rateQuality": {
+    "message": "¿Cómo calificarías la calidad de este conjunto de datos?"
+  },
+  "selectRateQuality": {
+    "message": "Selecciona cómo calificas la calidad"
+  },
+  "excellent": {
+    "message": "Excelente"
+  },
+  "excellentTip": {
+    "message": "Hay pocos, si acaso, errores notorios, inconsistencias, valores faltantes u otros problemas en este conjunto de datos."
+  },
+  "excellentWhy": {
+    "message": "¿Por qué es de calidad excelente?"
+  },
+  "fair": {
+    "message": "Regular"
+  },
+  "fairTip": {
+    "message": "Hay algunos errores, inconsistencias, valores faltantes u otros problemas notorios en este conjunto de datos, pero sigue estando lo suficientemente íntegro como para confiar en él."
+  },
+  "fairWhy": {
+    "message": "¿Por qué es de calidad regular?"
+  },
+  "poor": {
+    "message": "Mala"
+  },
+  "poorTip": {
+    "message": "Hay muchos errores, inconsistencias, valores faltantes u otros problemas notorios en el conjunto de datos que hacen que sea demasiado difícil confiar en él."
+  },
+  "poorWhy": {
+    "message": "¿Por qué es de mala calidad?"
+  },
+  "dontKnow": {
+    "message": "No lo sé"
+  },
+  "changeQualityRating": {
+    "message": "Cambiar <visuallyHidden>cómo calificas la calidad</visuallyHidden>"
+  },
+  "followFairAndCare": {
+    "message": "¿Este conjunto de datos sigue los principios FAIR y CARE?"
+  },
+  "selectFollowFairAndCare": {
+    "message": "Selecciona si el conjunto de datos cumple con los principios FAIR y CARE"
+  },
+  "followFairAndCareYesTip": {
+    "message": "El conjunto de datos tiene suficientes metadatos y cumple con los principios FAIR y CARE."
+  },
+  "followFairAndCareYesWhy": {
+    "message": "¿Cómo se ajusta a los principios?"
+  },
+  "followFairAndCarePartlyTip": {
+    "message": "El conjunto de datos tiene algunos metadatos y cumple algunos principios FAIR y CARE, pero hay problemas menores."
+  },
+  "followFairAndCarePartlyWhy": {
+    "message": "¿Cómo se ajusta parcialmente a los principios?"
+  },
+  "followFairAndCareNoTip": {
+    "message": "El conjunto de datos carece de suficientes metadatos y no cumple con los principios FAIR y CARE."
+  },
+  "followFairAndCareNoWhy": {
+    "message": "¿Cómo no cumple con los principios?"
+  },
+  "yes": {
+    "message": "Sí"
+  },
+  "no": {
+    "message": "No"
+  },
+  "partly": {
+    "message": "Parcialmente"
+  },
+  "changeFairAndCare": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos sigue los principios FAIR y CARE</visuallyHidden>"
+  },
+  "enoughMetadata": {
+    "message": "¿El conjunto de datos tiene suficientes metadatos?"
+  },
+  "enoughMetadataYesTip": {
+    "message": "El conjunto de datos incluye suficientes metadatos, como su tipo de datos, herramientas y métodos utilizados para recopilar y analizar la información, consideraciones éticas aplicadas durante la recolección y el análisis, y documentación de respaldo, como un glosario, un README o recomendaciones de software."
+  },
+  "enoughMetadataYesWhy": {
+    "message": "¿Qué metadatos tiene?"
+  },
+  "enoughMetadataPartlyTip": {
+    "message": "El conjunto de datos incluye parte de la información mencionada anteriormente, pero se necesita más para comprender del todo de qué forma se recopilaron, analizaron y utilizaron los datos."
+  },
+  "enoughMetadataPartlyWhy": {
+    "message": "¿Qué metadatos tiene y cuáles faltan?"
+  },
+  "supportsConclusionYesTip": {
+    "message": "Este conjunto de datos apoya claramente las conclusiones del investigador al respecto, o es probable que apoye conclusiones claras, y no requiere interpretación creativa ni sobreinterpretación."
+  },
+  "supportsConclusionYesWhy": {
+    "message": "¿Cómo respalda las conclusiones?"
+  },
+  "supportsConclusionPartlyTip": {
+    "message": "Este conjunto de datos respalda algunas de las conclusiones del investigador al respecto, o probablemente respalde algunas conclusiones claras, pero no respalda claramente algunas otras de las conclusiones o es poco probable que lo haga debido a problemas menores."
+  },
+  "supportsConclusionPartlyWhy": {
+    "message": "¿Cómo respalda en parte las conclusiones?"
+  },
+  "supportsConclusionNoWhy": {
+    "message": "¿Cómo no respalda las conclusiones?"
+  },
+  "changeSupportsConclusion": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos respalda las conclusiones</visuallyHidden>"
+  },
+  "selectGranularEnough": {
+    "message": "Seleccione si el conjunto de datos es lo suficientemente detallado"
+  },
+  "granularEnoughYesTip": {
+    "message": "El conjunto de datos proporciona información a un nivel lo suficientemente detallado o granular como para ser confiable como estándar de medición o de verdad."
+  },
+  "granularEnoughYesWhy": {
+    "message": "¿En qué medida es lo suficientemente detallado?"
+  },
+  "granularEnoughPartlyTip": {
+    "message": "Algunos datos del conjunto de datos ofrecen un nivel lo suficientemente detallado o granular como para ser confiables como estándar de medición o de verdad, pero no todos."
+  },
+  "granularEnoughPartlyWhy": {
+    "message": "¿En qué sentido es solo parcialmente detallado? ¿Qué partes necesitan más detalle?"
+  },
+  "granularEnoughNoTip": {
+    "message": "El conjunto de datos no ofrece información con un nivel lo suficientemente detallado o granular como para ser confiable como estándar de medición o de verdad."
+  },
+  "granularEnoughNoWhy": {
+    "message": "¿Por qué no es lo suficientemente detallado?"
+  },
+  "changeGranularEnough": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos es lo suficientemente detallado</visuallyHidden>"
+  },
+  "relativelyErrorFree": {
+    "message": "¿Está el conjunto de datos relativamente libre de errores?"
+  },
+  "relativelyErrorFreeTip": {
+    "message": "Los errores pueden incluir, por ejemplo, el uso de métodos de recolección o análisis de datos inapropiados, la aplicación de métricas inadecuadas a los datos o la manipulación de los datos de otras maneras que resulten en errores en el conjunto de datos."
+  },
+  "selectRelativelyErrorFree": {
+    "message": "Seleccione si el conjunto de datos está relativamente libre de errores"
+  },
+  "relativelyErrorFreeYesTip": {
+    "message": "Hay pocos errores, si acaso, en el conjunto de datos y los que hay son menores."
+  },
+  "relativelyErrorFreeYesWhy": {
+    "message": "¿Hay algún error?"
+  },
+  "relativelyErrorFreePartlyTip": {
+    "message": "Hay varios errores menores o, incluso, un error grave en el conjunto de datos."
+  },
+  "relativelyErrorFreePartlyWhy": {
+    "message": "¿Qué errores hay?"
   }
 }

@@ -110,6 +110,45 @@
   "changePublishedName": {
     "message": "crwdns6010:0crwdne6010:0"
   },
+  "haveCompetingInterests": {
+    "message": "crwdns6322:0crwdne6322:0"
+  },
+  "competingInterestsTip": {
+    "message": "crwdns6324:0crwdne6324:0"
+  },
+  "competingInterestDefinition": {
+    "message": "crwdns6326:0crwdne6326:0"
+  },
+  "examples": {
+    "message": "crwdns6328:0crwdne6328:0"
+  },
+  "examplePersonalRelationship": {
+    "message": "crwdns6330:0crwdne6330:0"
+  },
+  "exampleRival": {
+    "message": "crwdns6332:0crwdne6332:0"
+  },
+  "exampleWorked": {
+    "message": "crwdns6334:0crwdne6334:0"
+  },
+  "exampleCollaborate": {
+    "message": "crwdns6336:0crwdne6336:0"
+  },
+  "examplePublished": {
+    "message": "crwdns6338:0crwdne6338:0"
+  },
+  "exampleGrant": {
+    "message": "crwdns6340:0crwdne6340:0"
+  },
+  "selectCompetingInterests": {
+    "message": "crwdns6342:0crwdne6342:0"
+  },
+  "competingInterestsDetails": {
+    "message": "crwdns6344:0crwdne6344:0"
+  },
+  "enterCompetingInterestsDetails": {
+    "message": "crwdns6346:0crwdne6346:0"
+  },
   "competingInterests": {
     "message": "crwdns6012:0crwdne6012:0"
   },
@@ -118,6 +157,63 @@
   },
   "changeCompetingInterests": {
     "message": "crwdns6016:0crwdne6016:0"
+  },
+  "codeOfConduct": {
+    "message": "crwdns6348:0crwdne6348:0"
+  },
+  "codeOfConductTip": {
+    "message": "crwdns6350:0crwdne6350:0"
+  },
+  "examplesExpectedBehaviors": {
+    "message": "crwdns6352:0crwdne6352:0"
+  },
+  "exampleLanguage": {
+    "message": "crwdns6354:0crwdne6354:0"
+  },
+  "exampleConstructive": {
+    "message": "crwdns6356:0crwdne6356:0"
+  },
+  "exampleRespect": {
+    "message": "crwdns6358:0crwdne6358:0"
+  },
+  "exampleCriticism": {
+    "message": "crwdns6360:0crwdne6360:0"
+  },
+  "exampleCommunity": {
+    "message": "crwdns6362:0crwdne6362:0"
+  },
+  "exampleEmpathy": {
+    "message": "crwdns6364:0crwdne6364:0"
+  },
+  "examplesUnacceptableBehaviors": {
+    "message": "crwdns6366:0crwdne6366:0"
+  },
+  "exampleTrolling": {
+    "message": "crwdns6368:0crwdne6368:0"
+  },
+  "exampleUnconstructiveFeedback": {
+    "message": "crwdns6370:0crwdne6370:0"
+  },
+  "exampleHarassment": {
+    "message": "crwdns6372:0crwdne6372:0"
+  },
+  "exampleConfidentialInformation": {
+    "message": "crwdns6374:0crwdne6374:0"
+  },
+  "exampleSexualizedLanguage": {
+    "message": "crwdns6376:0crwdne6376:0"
+  },
+  "exampleReviewingOwnDataset": {
+    "message": "crwdns6378:0crwdne6378:0"
+  },
+  "exampleInappropriateConduct": {
+    "message": "crwdns6380:0crwdne6380:0"
+  },
+  "confirmCodeOfConduct": {
+    "message": "crwdns6382:0crwdne6382:0"
+  },
+  "followingCodeOfConduct": {
+    "message": "crwdns6384:0crwdne6384:0"
   },
   "yourReview": {
     "message": "crwdns6018:0crwdne6018:0"
@@ -389,20 +485,50 @@
   "howConsequential": {
     "message": "crwdns6070:0crwdne6070:0"
   },
+  "selectHowConsequential": {
+    "message": "crwdns6386:0crwdne6386:0"
+  },
   "veryConsequential": {
     "message": "crwdns6072:0crwdne6072:0"
+  },
+  "veryConsequentialTip": {
+    "message": "crwdns6388:0crwdne6388:0"
+  },
+  "veryConsequentialWhy": {
+    "message": "crwdns6390:0crwdne6390:0"
   },
   "somewhatConsequential": {
     "message": "crwdns6074:0crwdne6074:0"
   },
+  "somewhatConsequentialTip": {
+    "message": "crwdns6392:0crwdne6392:0"
+  },
+  "somewhatConsequentialWhy": {
+    "message": "crwdns6394:0crwdne6394:0"
+  },
   "notConsequential": {
     "message": "crwdns6076:0crwdne6076:0"
+  },
+  "notConsequentialTip": {
+    "message": "crwdns6396:0crwdne6396:0"
+  },
+  "notConsequentialWhy": {
+    "message": "crwdns6398:0crwdne6398:0"
   },
   "changeHowConsequential": {
     "message": "crwdns6078:0crwdne6078:0"
   },
   "readyToBeShared": {
     "message": "crwdns6080:0crwdne6080:0"
+  },
+  "readyToBeSharedYesWhy": {
+    "message": "crwdns6400:0crwdne6400:0"
+  },
+  "readyToBeSharedNoWhy": {
+    "message": "crwdns6402:0crwdne6402:0"
+  },
+  "selectReadyToBeShared": {
+    "message": "crwdns6404:0crwdne6404:0"
   },
   "changeReadyToBeShared": {
     "message": "crwdns6082:0crwdne6082:0"
@@ -421,6 +547,45 @@
   },
   "publishPrereview": {
     "message": "crwdns6092:0crwdne6092:0"
+  },
+  "publishingPrereview": {
+    "message": "crwdns6406:0crwdne6406:0"
+  },
+  "publishPrereviewText": {
+    "message": "crwdns6408:0crwdne6408:0"
+  },
+  "prereviewPublished": {
+    "message": "crwdns6410:0crwdne6410:0"
+  },
+  "yourDoi": {
+    "message": "crwdns6412:0crwdne6412:0"
+  },
+  "whatHappensNext": {
+    "message": "crwdns6414:0crwdne6414:0"
+  },
+  "inviteOthers": {
+    "message": "crwdns6416:0{emailAddress}crwdne6416:0"
+  },
+  "opensNewTabSuffix": {
+    "message": "crwdns6418:0crwdne6418:0"
+  },
+  "shareYourReview": {
+    "message": "crwdns6420:0crwdne6420:0"
+  },
+  "shareYourReviewText": {
+    "message": "crwdns6422:0crwdne6422:0"
+  },
+  "letUsKnowHowItWent": {
+    "message": "crwdns6424:0crwdne6424:0"
+  },
+  "scheduleInterview": {
+    "message": "crwdns6426:0crwdne6426:0"
+  },
+  "feedbackForm": {
+    "message": "crwdns6428:0crwdne6428:0"
+  },
+  "seeYourReview": {
+    "message": "crwdns6430:0crwdne6430:0"
   },
   "whatNameWouldYouLikeToUse": {
     "message": "crwdns6094:0crwdne6094:0"

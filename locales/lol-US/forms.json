@@ -20,6 +20,9 @@
   "saveContinueButton": {
     "message": "crwdns5820:0crwdne5820:0"
   },
+  "reloadButton": {
+    "message": "crwdns6432:0crwdne6432:0"
+  },
   "radioSeparatorLabel": {
     "message": "crwdns5822:0crwdne5822:0"
   }

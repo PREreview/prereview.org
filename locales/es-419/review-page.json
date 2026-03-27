@@ -23,6 +23,9 @@
   "clubReviewAuthors": {
     "message": "<hide>Redactada</hide> por {authors} del {club}"
   },
+  "otherAuthors": {
+    "message": "{otherAuthors, plural, one {# otro autor} other {# otros autores}}"
+  },
   "published": {
     "message": "Publicado"
   },
@@ -40,9 +43,6 @@
   },
   "noComments": {
     "message": "No se han publicado comentarios aún."
-  },
-  "commentItemTitle": {
-    "message": "Comentario de {authors, plural, one {{author}} other {{author} y otros/as}}."
   },
   "commentItemAuthors": {
     "message": "<hide>Escrito</hide> por {authors}"
