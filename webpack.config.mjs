@@ -126,11 +126,11 @@ export default (env, argv) => ({
       new CssMinimizerPlugin(),
       new ImageMinimizerPlugin({
         minimizer: {
-          implementation: ImageMinimizerPlugin.imageminMinify,
+          implementation: ImageMinimizerPlugin.svgoMinify,
           options: {
-            plugins: [
-              ['svgo', { plugins: [{ name: 'preset-default', params: { overrides: { inlineStyles: false } } }] }],
-            ],
+            encodeOptions: {
+              plugins: [{ name: 'preset-default', params: { overrides: { inlineStyles: false } } }],
+            },
           },
         },
       }),
