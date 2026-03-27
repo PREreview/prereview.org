@@ -8,6 +8,7 @@ import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNee
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
+import { GetPublishedReviewRequestByAPrereviewer } from './GetPublishedReviewRequestByAPrereviewer.ts'
 import { GetReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 import { GetReviewRequestReadyToBePublished } from './GetReviewRequestReadyToBePublished.ts'
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
@@ -21,6 +22,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     findReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof FindReviewRequestByAPrereviewer>
     getPersonaChoice: Queries.FromStatefulQuery<typeof GetPersonaChoice>
     getReviewRequestReadyToBePublished: Queries.FromStatefulQuery<typeof GetReviewRequestReadyToBePublished>
+    getPublishedReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof GetPublishedReviewRequestByAPrereviewer>
     getFiveMostRecentReviewRequests: Queries.FromStatefulQuery<typeof GetFiveMostRecentReviewRequests>
     getReceivedReviewRequest: Queries.FromOnDemandQuery<typeof GetReceivedReviewRequest>
     getPublishedReviewRequest: Queries.FromOnDemandQuery<typeof GetPublishedReviewRequest>
@@ -36,6 +38,7 @@ export const {
   findReviewRequestByAPrereviewer,
   getPersonaChoice,
   getReviewRequestReadyToBePublished,
+  getPublishedReviewRequestByAPrereviewer,
   getFiveMostRecentReviewRequests,
   getReceivedReviewRequest,
   getPublishedReviewRequest,
@@ -65,6 +68,7 @@ const makeReviewRequestQueries: Effect.Effect<
     findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
     getReviewRequestReadyToBePublished: yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished),
     getPersonaChoice: yield* Queries.makeStatefulQuery(GetPersonaChoice),
+    getPublishedReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(GetPublishedReviewRequestByAPrereviewer),
     getFiveMostRecentReviewRequests: yield* Queries.makeStatefulQuery(GetFiveMostRecentReviewRequests),
     getReceivedReviewRequest: yield* Queries.makeOnDemandQuery(GetReceivedReviewRequest),
     getPublishedReviewRequest: yield* Queries.makeOnDemandQuery(GetPublishedReviewRequest),
