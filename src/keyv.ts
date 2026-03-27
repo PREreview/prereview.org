@@ -455,11 +455,6 @@ export const deleteAvatar = flow(
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
 
-export const getReviewRequest = flow(
-  getKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
-  RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
-)
-
 export const saveReviewRequest = flow(
   setKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
   RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),

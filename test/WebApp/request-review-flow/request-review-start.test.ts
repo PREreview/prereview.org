@@ -7,7 +7,6 @@ import * as Commands from '../../../src/Commands.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/index.ts'
-import type { SaveReviewRequestEnv } from '../../../src/review-request.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../../src/routes.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
@@ -31,14 +30,12 @@ describe('requestReviewStart', () => {
             Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
             Layer.mock(ReviewRequests.ReviewRequestQueries, { findReviewRequestByAPrereviewer }),
           )
-          const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
 
           const actual = yield* Effect.promise(() =>
             _.requestReviewStart({ preprint, user, locale })({
               generateUuid: () => uuid,
               getPreprintTitle: () => TE.right(preprintTitle),
               runtime,
-              saveReviewRequest,
             })(),
           )
 
@@ -50,10 +47,6 @@ describe('requestReviewStart', () => {
           expect(findReviewRequestByAPrereviewer).toHaveBeenCalledWith({
             requesterId: user.orcid,
             preprintId: preprintTitle.id,
-          })
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
-            status: 'incomplete',
-            id: uuid,
           })
         }).pipe(
           Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { startReviewRequest: () => Effect.void })),
@@ -86,7 +79,6 @@ describe('requestReviewStart', () => {
               generateUuid: () => uuid,
               getPreprintTitle: () => TE.right(preprintTitle),
               runtime,
-              saveReviewRequest: () => TE.right(undefined),
             })(),
           )
 
@@ -129,7 +121,6 @@ describe('requestReviewStart', () => {
             generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -168,7 +159,6 @@ describe('requestReviewStart', () => {
             generateUuid: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -209,7 +199,6 @@ describe('requestReviewStart', () => {
             generateUuid: shouldNotBeCalled,
             getPreprintTitle: shouldNotBeCalled,
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 

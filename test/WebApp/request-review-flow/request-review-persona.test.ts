@@ -10,7 +10,6 @@ import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/persona-page/index.ts'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
-import type { SaveReviewRequestEnv } from '../../../src/review-request.ts'
 import * as Routes from '../../../src/routes.ts'
 import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -37,17 +36,21 @@ describe('requestReviewPersona', () => {
               _ => Effect.succeed(reviewRequest),
             )
             const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
-            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
+            const choosePersona = jest.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
+              _ => Effect.void,
+            )
             const runtime = yield* Effect.provide(
               Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice }),
+              [
+                Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice }),
+                Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona }),
+              ],
             )
 
             const actual = yield* Effect.promise(() =>
               _.requestReviewPersona({ body: { persona }, preprint, method: 'POST', user, locale })({
                 getPreprintTitle,
                 runtime,
-                saveReviewRequest,
               })(),
             )
 
@@ -58,64 +61,8 @@ describe('requestReviewPersona', () => {
             })
             expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
             expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
-            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
-              status: 'incomplete',
-              persona,
-              id: reviewRequest.reviewRequestId,
-            })
-          }).pipe(
-            Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona: () => Effect.void })),
-            EffectTest.run,
-          ),
-        )
-
-        test.prop([
-          fc.indeterminatePreprintId(),
-          fc.user(),
-          fc.record({
-            reviewRequestId: fc.uuid(),
-            personaChoice: fc.maybe(fc.constantFrom('public', 'pseudonym')),
-          }),
-          fc.preprintTitle({ id: fc.preprintId() }),
-          fc.constantFrom('public', 'pseudonym'),
-          fc.supportedLocale(),
-        ])("when the persona can't be set", async (preprint, user, reviewRequest, preprintTitle, persona, locale) =>
-          Effect.gen(function* () {
-            const runtime = yield* Effect.runtime<
-              ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-            >()
-            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
-
-            const actual = yield* Effect.promise(() =>
-              _.requestReviewPersona({ body: { persona }, preprint, method: 'POST', user, locale })({
-                getPreprintTitle: () => TE.right(preprintTitle),
-                runtime,
-                saveReviewRequest,
-              })(),
-            )
-
-            expect(actual).toStrictEqual({
-              _tag: 'PageResponse',
-              status: StatusCodes.ServiceUnavailable,
-              title: expect.anything(),
-              main: expect.anything(),
-              skipToLabel: 'main',
-              js: [],
-            })
-            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
-              status: 'incomplete',
-              persona,
-              id: reviewRequest.reviewRequestId,
-            })
-          }).pipe(
-            Effect.provide([
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                getPersonaChoice: () => Effect.succeed(reviewRequest),
-              }),
-            ]),
-            EffectTest.run,
-          ),
+            expect(choosePersona).toHaveBeenCalledWith({ persona, reviewRequestId: reviewRequest.reviewRequestId })
+          }).pipe(EffectTest.run),
         )
 
         test.prop([
@@ -148,7 +95,6 @@ describe('requestReviewPersona', () => {
                 _.requestReviewPersona({ body: { persona }, preprint, method: 'POST', user, locale })({
                   getPreprintTitle: () => TE.right(preprintTitle),
                   runtime,
-                  saveReviewRequest: () => TE.right(undefined),
                 })(),
               )
 
@@ -192,7 +138,6 @@ describe('requestReviewPersona', () => {
             _.requestReviewPersona({ body, preprint, method: 'POST', user, locale })({
               getPreprintTitle: () => TE.right(preprintTitle),
               runtime,
-              saveReviewRequest: shouldNotBeCalled,
             })(),
           )
 
@@ -241,7 +186,6 @@ describe('requestReviewPersona', () => {
             _.requestReviewPersona({ body, preprint, method, user, locale })({
               getPreprintTitle,
               runtime,
-              saveReviewRequest: shouldNotBeCalled,
             })(),
           )
 
@@ -278,7 +222,6 @@ describe('requestReviewPersona', () => {
           _.requestReviewPersona({ body, preprint, method, user, locale })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -315,7 +258,6 @@ describe('requestReviewPersona', () => {
           _.requestReviewPersona({ body, preprint, method, user, locale })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -356,7 +298,6 @@ describe('requestReviewPersona', () => {
         _.requestReviewPersona({ body, preprint, method, user, locale })({
           getPreprintTitle: () => TE.right(preprintTitle),
           runtime,
-          saveReviewRequest: shouldNotBeCalled,
         })(),
       )
 
@@ -389,7 +330,6 @@ describe('requestReviewPersona', () => {
           _.requestReviewPersona({ body, preprint, method, user, locale })({
             getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -422,7 +362,6 @@ describe('requestReviewPersona', () => {
           _.requestReviewPersona({ body, preprint, method, locale })({
             getPreprintTitle: shouldNotBeCalled,
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 

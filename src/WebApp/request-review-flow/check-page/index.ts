@@ -7,7 +7,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
@@ -35,7 +34,6 @@ export const requestReviewCheck = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    SaveReviewRequestEnv &
     EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
@@ -86,12 +84,10 @@ export const requestReviewCheck = ({
 const handleForm = ({
   preprint,
   reviewRequest: { reviewRequestId },
-  user,
   locale,
 }: {
   preprint: PreprintId
   reviewRequest: { reviewRequestId: Uuid.Uuid }
-  user: User
   locale: SupportedLocale
 }) =>
   pipe(
@@ -105,7 +101,6 @@ const handleForm = ({
         Effect.tapError(error => Effect.logError('Failed to publishRequest').pipe(Effect.annotateLogs({ error }))),
       ),
     ),
-    RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage(locale),
       () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),

@@ -6,7 +6,6 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as Commands from '../../../src/Commands.ts'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import * as Queries from '../../../src/Queries.ts'
-import type { SaveReviewRequestEnv } from '../../../src/review-request.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
@@ -30,7 +29,6 @@ describe('requestReviewCheck', () => {
           fc.supportedLocale(),
         ])('when the request can be published', (preprint, user, reviewRequest, preprintTitle, locale) =>
           Effect.gen(function* () {
-            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
             const publishReviewRequest = jest.fn<
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
             >(_ => Effect.void)
@@ -48,7 +46,6 @@ describe('requestReviewCheck', () => {
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
                 runtime,
-                saveReviewRequest,
               })(),
             )
 
@@ -58,9 +55,6 @@ describe('requestReviewCheck', () => {
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
               reviewRequestId: reviewRequest.reviewRequestId,
-            })
-            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
-              status: 'completed',
             })
           }).pipe(
             Effect.provide(
@@ -78,12 +72,11 @@ describe('requestReviewCheck', () => {
           fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
           fc.preprintTitle({ id: fc.preprintId() }),
           fc.supportedLocale(),
-        ])("when the request state can't be changed", (preprint, user, reviewRequest, preprintTitle, locale) =>
+        ])("when the request can't be published", (preprint, user, reviewRequest, preprintTitle, locale) =>
           Effect.gen(function* () {
-            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
             const publishReviewRequest = jest.fn<
               (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
-            >(_ => Effect.void)
+            >(_ => new Commands.UnableToHandleCommand({}))
             const runtime = yield* Effect.provide(
               Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
               Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
@@ -98,7 +91,6 @@ describe('requestReviewCheck', () => {
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
                 runtime,
-                saveReviewRequest,
               })(),
             )
 
@@ -113,9 +105,6 @@ describe('requestReviewCheck', () => {
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
               reviewRequestId: reviewRequest.reviewRequestId,
-            })
-            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id as never, {
-              status: 'completed',
             })
           }).pipe(
             Effect.provide(
@@ -162,7 +151,6 @@ describe('requestReviewCheck', () => {
               })({
                 getPreprintTitle: () => TE.right(preprintTitle),
                 runtime,
-                saveReviewRequest: shouldNotBeCalled,
               })(),
             )
 
@@ -212,7 +200,6 @@ describe('requestReviewCheck', () => {
             })({
               getPreprintTitle,
               runtime,
-              saveReviewRequest: shouldNotBeCalled,
             })(),
           )
 
@@ -260,7 +247,6 @@ describe('requestReviewCheck', () => {
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -301,7 +287,6 @@ describe('requestReviewCheck', () => {
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -349,7 +334,6 @@ describe('requestReviewCheck', () => {
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -393,7 +377,6 @@ describe('requestReviewCheck', () => {
           })({
             getPreprintTitle: () => TE.right(preprintTitle),
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 
@@ -425,7 +408,6 @@ describe('requestReviewCheck', () => {
           _.requestReviewCheck({ method, preprint, locale })({
             getPreprintTitle: shouldNotBeCalled,
             runtime,
-            saveReviewRequest: shouldNotBeCalled,
           })(),
         )
 

@@ -2002,68 +2002,6 @@ describe('deleteAvatar', () => {
   })
 })
 
-describe('getReviewRequest', () => {
-  test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest()])(
-    'when the key contains a review request',
-    async (orcid, preprint, reviewRequest) => {
-      const store = new Keyv()
-      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, reviewRequest)
-
-      const actual = await _.getReviewRequest([orcid, preprint])({
-        reviewRequestStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.right(reviewRequest))
-    },
-  )
-
-  test.prop([fc.orcidId(), fc.preprintId(), fc.anything()])(
-    'when the key contains something other than a review request',
-    async (orcid, preprint, value) => {
-      const store = new Keyv()
-      await store.set(`${orcid}_${preprint._tag}-${preprint.value}`, value)
-
-      const actual = await _.getReviewRequest([orcid, preprint])({
-        reviewRequestStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.left('not-found'))
-    },
-  )
-
-  test.prop([fc.orcidId(), fc.preprintId()])('when the key is not found', async (orcid, preprint) => {
-    const store = new Keyv()
-
-    const actual = await _.getReviewRequest([orcid, preprint])({
-      reviewRequestStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
-  test.prop([fc.orcidId(), fc.preprintId(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, preprint, error) => {
-      const store = new Keyv()
-      store.get = (): Promise<never> => Promise.reject(error)
-
-      const actual = await _.getReviewRequest([orcid, preprint])({
-        reviewRequestStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
-  )
-})
-
 describe('saveReviewRequest', () => {
   test.prop([fc.orcidId(), fc.preprintId(), fc.reviewRequest()])(
     'when the key contains a review request',

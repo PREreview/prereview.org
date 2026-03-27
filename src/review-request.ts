@@ -1,4 +1,4 @@
-import { flow, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
@@ -18,10 +18,6 @@ export interface IncompleteReviewRequest {
 
 export interface CompletedReviewRequest {
   readonly status: 'completed'
-}
-
-export interface GetReviewRequestEnv {
-  getReviewRequest: (orcid: OrcidId, preprint: PreprintId) => TE.TaskEither<'not-found' | 'unavailable', ReviewRequest>
 }
 
 export interface SaveReviewRequestEnv {
@@ -57,22 +53,6 @@ export const ReviewRequestC = C.make(D.union(IncompleteReviewRequestC, Completed
       .with({ status: 'completed' }, CompletedReviewRequestC.encode)
       .exhaustive(),
 }) satisfies C.Codec<unknown, unknown, ReviewRequest>
-
-export const getReviewRequest = (
-  orcid: OrcidId,
-  preprint: PreprintId,
-): RTE.ReaderTaskEither<GetReviewRequestEnv, 'not-found' | 'unavailable', ReviewRequest> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getReviewRequest }) => getReviewRequest(orcid, preprint)))
-
-export const maybeGetReviewRequest = flow(
-  getReviewRequest,
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.right(undefined))
-      .with('unavailable', RTE.left)
-      .exhaustive(),
-  ),
-)
 
 export const saveReviewRequest = (
   orcid: OrcidId,

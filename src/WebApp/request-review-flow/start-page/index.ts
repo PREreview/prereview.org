@@ -7,7 +7,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
@@ -26,7 +25,6 @@ export const requestReviewStart = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    SaveReviewRequestEnv &
     Uuid.GenerateUuidEnv &
     EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse
@@ -52,7 +50,6 @@ export const requestReviewStart = ({
         onNone: () =>
           pipe(
             RTE.rightReaderIO(Uuid.generateUuidIO),
-            RTE.chainFirstW(id => saveReviewRequest(user.orcid, preprint, { status: 'incomplete', id })),
             RTE.chainFirstW(id =>
               EffectToFpts.toReaderTaskEither(
                 Effect.andThen(Temporal.currentInstant, startedAt =>

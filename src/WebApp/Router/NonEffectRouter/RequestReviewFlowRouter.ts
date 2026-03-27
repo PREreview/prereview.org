@@ -2,8 +2,6 @@ import { pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { withEnv } from '../../../Fpts.ts'
-import * as Keyv from '../../../keyv.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -65,11 +63,6 @@ export const RequestReviewFlowRouter = pipe(
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         runtime: env.runtime,
-        saveReviewRequest: (orcid, preprint, request) =>
-          withEnv(Keyv.saveReviewRequest, { reviewRequestStore: env.reviewRequestStore, ...env.logger })(
-            [orcid, preprint],
-            request,
-          ),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

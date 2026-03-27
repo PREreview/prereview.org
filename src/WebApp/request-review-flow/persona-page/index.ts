@@ -10,7 +10,6 @@ import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { type SaveReviewRequestEnv, saveReviewRequest } from '../../../review-request.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { requestReviewCheckMatch, requestReviewPublishedMatch } from '../../../routes.ts'
@@ -39,7 +38,6 @@ export const requestReviewPersona = ({
   locale: SupportedLocale
 }): RT.ReaderTask<
   GetPreprintTitleEnv &
-    SaveReviewRequestEnv &
     EffectToFpts.EffectEnv<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
@@ -118,13 +116,6 @@ const handlePersonaForm = ({
         E.apS('persona', fields.persona),
         E.mapLeft(() => fields),
       ),
-    ),
-    RTE.chainFirstW(fields =>
-      saveReviewRequest(user.orcid, preprint, {
-        status: 'incomplete',
-        persona: fields.persona,
-        id: reviewRequest.reviewRequestId,
-      }),
     ),
     RTE.chainFirstW(fields =>
       EffectToFpts.toReaderTaskEither(
