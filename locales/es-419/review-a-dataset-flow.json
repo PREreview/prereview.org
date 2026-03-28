@@ -219,6 +219,54 @@
     "message": "Hay varios errores menores o, incluso, un error grave en el conjunto de datos."
   },
   "relativelyErrorFreePartlyWhy": {
-    "message": "¿Qué errores hay?"
+    "message": "¿Qué errores tiene?"
+  },
+  "relativelyErrorFreeNoTip": {
+    "message": "Hay muchos errores menores y mayores en el conjunto de datos."
+  },
+  "relativelyErrorFreeNoWhy": {
+    "message": "¿Qué errores graves tiene?"
+  },
+  "changeRelativelyErrorFree": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos está relativamente libre de errores</visuallyHidden>"
+  },
+  "howConsequential": {
+    "message": "¿Es probable que este conjunto de datos interese a los investigadores de su campo de estudio, a la mayoría de los investigadores o al público en general? ¿Qué tan relevante les parecerá a esas audiencias?"
+  },
+  "veryConsequential": {
+    "message": "Muy relevante"
+  },
+  "somewhatConsequential": {
+    "message": "Algo relevante"
+  },
+  "notConsequential": {
+    "message": "No relevante"
+  },
+  "readyToBeShared": {
+    "message": "¿Este conjunto de datos está listo para ser compartido?"
+  },
+  "changeReadyToBeShared": {
+    "message": "Cambiar <visuallyHidden>si el conjunto de datos está listo para ser compartido</visuallyHidden>"
+  },
+  "noAnswer": {
+    "message": "Sin respuesta"
+  },
+  "changeAnythingMissing": {
+    "message": "Cambiar <visuallyHidden>si al conjunto de datos le falta algo</visuallyHidden>"
+  },
+  "whatNameWouldYouLikeToUse": {
+    "message": "¿Qué nombre te gustaría usar?"
+  },
+  "selectNameYouWouldLikeToUse": {
+    "message": "Selecciona el nombre que te gustaría usar"
+  },
+  "whatIsAPrereviewPseudonym": {
+    "message": "¿Qué es un seudónimo de PREreview?"
+  },
+  "prereviewPseudonymnExplainer": {
+    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes utilizar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}.’"
+  },
+  "weWillLinkToYourOrcid": {
+    "message": "Vincularemos tu PREreview a tu ORCID iD."
   }
 }
