@@ -1,1 +1,38 @@
-{}
+{
+  "structuredReviewTitle": {
+    "message": "Structured PREreview of {dataset}",
+    "description": "Title of a dataset review."
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {author}",
+    "description": "Byline that shows the author of the dataset review."
+  },
+  "backLink": {
+    "message": "Back to all reviews",
+    "description": "Text for a link that takes the user back to the list of the reviews for the dataset."
+  },
+  "seeDataset": {
+    "message": "See the dataset",
+    "description": "Text for a link that takes the user to dataset itself."
+  },
+  "published": {
+    "message": "Published",
+    "description": "Label for the date when the dataset review was published."
+  },
+  "license": {
+    "message": "License",
+    "description": "Label for the license of the dataset review."
+  },
+  "licenseCcBy40": {
+    "message": "Attribution 4.0 International",
+    "description": "Name of the license (https://creativecommons.org/licenses/by/4.0/)."
+  },
+  "competingInterests": {
+    "message": "Competing interests",
+    "description": "Label for the section that contains information about the author’s competing interests."
+  },
+  "noCompetingInterestsStatement": {
+    "message": "The author declares that they have no competing interests.",
+    "description": "Text shown alongside the heading “Competing interests”."
+  }
+}
