@@ -20,6 +20,9 @@
   "saveContinueButton": {
     "message": "Guardar y continuar"
   },
+  "reloadButton": {
+    "message": "Actualizar página"
+  },
   "radioSeparatorLabel": {
     "message": "o"
   }

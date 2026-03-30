@@ -32,6 +32,9 @@
   "license": {
     "message": "Licencia"
   },
+  "licenseCcZero10": {
+    "message": "CC0 1.0 Universal"
+  },
   "licenseCcBy40": {
     "message": "Atribución 4.0 Internacional"
   },
@@ -43,6 +46,9 @@
   },
   "noComments": {
     "message": "No se han publicado comentarios aún."
+  },
+  "commentItemTitle": {
+    "message": "{authors, plural, one {Comentario de {author}} other {Comentario de {author} et al.}}"
   },
   "commentItemAuthors": {
     "message": "<hide>Escrito</hide> por {authors}"

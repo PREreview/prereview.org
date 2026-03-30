@@ -11,6 +11,9 @@
   "preprintDetails": {
     "message": "Saltar a detalles del preprint"
   },
+  "datasetDetails": {
+    "message": "Saltar a los detalles del conjunto de datos"
+  },
   "prereviews": {
     "message": "Saltar a PREreviews"
   }

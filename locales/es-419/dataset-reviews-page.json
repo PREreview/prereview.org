@@ -1,0 +1,14 @@
+{
+  "abstractHeading": {
+    "message": "Resumen"
+  },
+  "posted": {
+    "message": "Publicado"
+  },
+  "repository": {
+    "message": "Repositorio"
+  },
+  "seeDataset": {
+    "message": "Ver el conjunto de datos"
+  }
+}

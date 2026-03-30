@@ -1,0 +1,26 @@
+{
+  "authoredBy": {
+    "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
+  },
+  "backLink": {
+    "message": "Volver a todas las revisiones"
+  },
+  "seeDataset": {
+    "message": "Ver el conjunto de datos"
+  },
+  "published": {
+    "message": "Publicada"
+  },
+  "license": {
+    "message": "Licencia"
+  },
+  "licenseCcBy40": {
+    "message": "Atribución 4.0 Internacional"
+  },
+  "competingInterests": {
+    "message": "Conflicto de intereses"
+  },
+  "noCompetingInterestsStatement": {
+    "message": "El/la autor/a declara que no posee conflicto de intereses."
+  }
+}
