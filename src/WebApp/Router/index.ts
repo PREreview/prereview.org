@@ -63,6 +63,7 @@ const MakeStaticRoute = <E, R>(
 
 const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.RequestAReviewOfThisPreprint, RequestAReviewFlow.RequestAReviewOfThisPreprintPage),
+  MakeRoute('GET', Routes.RequestAReviewStartNow, RequestAReviewFlow.StartNow),
 ])
 
 const ReviewADatasetFlowRouter = HttpRouter.fromIterable([

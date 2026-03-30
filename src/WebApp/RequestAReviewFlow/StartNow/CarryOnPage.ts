@@ -3,10 +3,11 @@ import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import { preprintReviewsMatch, requestReviewCheckMatch, requestReviewStartMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { preprintReviewsMatch, requestReviewCheckMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const carryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
+export const CarryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
   const t = translate(locale, 'request-review-flow')
 
   return PageResponse({
@@ -25,6 +26,6 @@ export const carryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
         >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,
-    canonical: format(requestReviewStartMatch.formatter, { id: preprint }),
+    canonical: Routes.RequestAReviewStartNow.href({ preprintId: preprint }),
   })
 }

@@ -1,7 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer } from 'effect'
-import { format } from 'fp-ts-routing'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -139,7 +138,7 @@ describe('requestReview', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: format(Routes.requestReviewStartMatch.formatter, { id: preprint.id }),
+          location: Routes.RequestAReviewStartNow.href({ preprintId: preprint.id }),
         })
       }).pipe(
         Effect.provide(

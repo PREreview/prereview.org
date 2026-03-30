@@ -1,5 +1,4 @@
 import { Effect, Option } from 'effect'
-import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
@@ -31,9 +30,7 @@ export const RequestAReviewOfThisPreprintPage: ({
       return Option.match(reviewRequestId, {
         onNone: () => MakeResponse({ preprint, user: Option.getOrUndefined(user), locale }),
         onSome: () =>
-          Response.RedirectResponse({
-            location: format(Routes.requestReviewStartMatch.formatter, { id: preprint.id }),
-          }),
+          Response.RedirectResponse({ location: Routes.RequestAReviewStartNow.href({ preprintId: preprint.id }) }),
       })
     },
     Effect.catchTags({

@@ -5,26 +5,12 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
-import { Uuid } from '../../../types/index.ts'
-import {
-  requestReviewCheck,
-  requestReviewPersona,
-  requestReviewPublished,
-  requestReviewStart,
-} from '../../request-review-flow/index.ts'
+import { requestReviewCheck, requestReviewPersona, requestReviewPublished } from '../../request-review-flow/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 
 export const RequestReviewFlowRouter = pipe(
   [
-    pipe(
-      Routes.requestReviewStartMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            requestReviewStart({ locale: env.locale, preprint: id, user: env.loggedInUser }),
-      ),
-    ),
     pipe(
       Routes.requestReviewPersonaMatch.parser,
       P.map(
@@ -60,7 +46,6 @@ export const RequestReviewFlowRouter = pipe(
   P.map(
     handler => (env: Env) =>
       handler(env)({
-        generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
         runtime: env.runtime,
       }),
