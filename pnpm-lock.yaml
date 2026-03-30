@@ -366,8 +366,8 @@ importers:
         specifier: ^40.0.0
         version: 40.0.0(stylelint@17.6.0(typescript@5.9.3))
       stylelint-plugin-logical-css:
-        specifier: ^2.0.2
-        version: 2.0.2(stylelint@17.6.0(typescript@5.9.3))
+        specifier: ^2.1.0
+        version: 2.1.0(stylelint@17.6.0(typescript@5.9.3))
       ts-deepmerge:
         specifier: ^7.0.3
         version: 7.0.3
@@ -6087,8 +6087,8 @@ packages:
     peerDependencies:
       stylelint: ^16.18.0 || ^17.0.0
 
-  stylelint-plugin-logical-css@2.0.2:
-    resolution: {integrity: sha512-k3AgoE0EA7RPDg+PNf3obo3HAAi4ViqEpFYWwbEsSiI1+ScNogVtBNnZ068gfXv63wybTR0XfAQE72fdHSX7Mw==}
+  stylelint-plugin-logical-css@2.1.0:
+    resolution: {integrity: sha512-625OT+p5y2kkGBaRV7uTYscuH0m1UueMXh0WcidrXgwF2DOnKov+un9tvuyNG+SUC07W0ibcn+fZvQs/keskww==}
     peerDependencies:
       stylelint: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
@@ -13082,7 +13082,7 @@ snapshots:
       postcss-sorting: 10.0.0(postcss@8.5.8)
       stylelint: 17.6.0(typescript@5.9.3)
 
-  stylelint-plugin-logical-css@2.0.2(stylelint@17.6.0(typescript@5.9.3)):
+  stylelint-plugin-logical-css@2.1.0(stylelint@17.6.0(typescript@5.9.3)):
     dependencies:
       stylelint: 17.6.0(typescript@5.9.3)
 
