@@ -1,4 +1,5 @@
 import { Effect } from 'effect'
+import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Personas from '../../Personas/index.ts'
@@ -9,6 +10,8 @@ import { createDatasetReviewPage } from './DatasetReviewPage.ts'
 
 export const DatasetReviewPage = Effect.fn(
   function* ({ datasetReviewId }: { datasetReviewId: Uuid.Uuid }) {
+    const locale = yield* Locale
+
     const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
     const { author, dataset } = yield* Effect.all(
       {
@@ -24,6 +27,7 @@ export const DatasetReviewPage = Effect.fn(
         author,
         dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },
       },
+      locale,
     })
   },
   Effect.catchTags({

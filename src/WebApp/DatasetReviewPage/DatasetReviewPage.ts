@@ -4,8 +4,8 @@ import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
-import { type Html, html, plainText } from '../../html.ts'
-import { DefaultLocale } from '../../locales/index.ts'
+import { html, plainText, type Html } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
@@ -22,7 +22,16 @@ export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dat
   }
 }
 
-export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: DatasetReview }) => {
+export const createDatasetReviewPage = ({
+  datasetReview,
+  locale,
+}: {
+  datasetReview: DatasetReview
+  locale: SupportedLocale
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t = translate(locale, 'dataset-review-page')
+
   return PageResponse({
     title: plainText`Structured PREreview of “${plainText(datasetReview.dataset.title)}”`,
     description: plainText`Authored by ${displayAuthor(datasetReview.author)}`,
@@ -48,7 +57,7 @@ export const createDatasetReviewPage = ({ datasetReview }: { datasetReview: Data
         <dl>
           <div>
             <dt>Published</dt>
-            <dd>${renderDate(DefaultLocale)(datasetReview.published)}</dd>
+            <dd>${renderDate(locale)(datasetReview.published)}</dd>
           </div>
           <div>
             <dt>DOI</dt>
