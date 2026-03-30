@@ -1,4 +1,4 @@
-import { Array, flow, pipe, Struct } from 'effect'
+import { Array, flow, identity, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
@@ -24,26 +24,28 @@ export const createDatasetReviewsPage = ({
   datasetReviews: ReadonlyArray<DatasetReview>
   locale: SupportedLocale
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = translate(locale, 'dataset-reviews-page')
 
   return TwoUpPageResponse({
-    title: plainText`PREreviews of “${plainText(dataset.title.text)}”`,
-    description: plainText`Authored by ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale))}
+    title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”`.toString() })),
+    description: plainText`${t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(), visuallyHidden: identity })}
     ${
       dataset.abstract
         ? plainText`
-          Abstract
+          ${t('abstractHeading')()}
 
           ${dataset.abstract.text}
         `
         : ''
     }
       `,
-    h1: html`PREreviews of
-      <cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
-        >${dataset.title.text}</cite
-      >`,
+    h1: rawHtml(
+      t('title')({
+        dataset: html`<cite lang="${dataset.title.language}" dir="${rtlDetect.getLangDir(dataset.title.language)}"
+          >${dataset.title.text}</cite
+        >`.toString(),
+      }),
+    ),
     aside: html`
       <article aria-labelledby="dataset-title">
         <header>
@@ -52,17 +54,21 @@ export const createDatasetReviewsPage = ({
           </h2>
 
           <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale))}
+            ${rawHtml(
+              t('authoredBy')({
+                authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(),
+                visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+              }),
+            )}
           </div>
 
           <dl>
             <div>
-              <dt>Posted</dt>
+              <dt>${t('posted')()}</dt>
               <dd>${renderDate(locale)(dataset.posted)}</dd>
             </div>
             <div>
-              <dt>Repository</dt>
+              <dt>${t('repository')()}</dt>
               <dd>${Datasets.getRepositoryName(dataset.id)}</dd>
             </div>
 
@@ -75,7 +81,7 @@ export const createDatasetReviewsPage = ({
 
         ${dataset.abstract
           ? html`
-              <h3>Abstract</h3>
+              <h3>${t('abstractHeading')()}</h3>
 
               <div lang="${dataset.abstract.language}" dir="${rtlDetect.getLangDir(dataset.abstract.language)}">
                 ${fixHeadingLevels(3, dataset.abstract.text)}
@@ -83,14 +89,16 @@ export const createDatasetReviewsPage = ({
             `
           : ''}
 
-        <a href="${dataset.url.href}" class="button">See the dataset</a>
+        <a href="${dataset.url.href}" class="button">${t('seeDataset')()}</a>
       </article>
     `,
     main: html`
-      <h2>${datasetReviews.length} PREreview${datasetReviews.length === 1 ? '' : 's'}</h2>
+      <h2>${t('prereviews')({ numberOfPrereviews: datasetReviews.length })}</h2>
 
       <div class="button-group" role="group">
-        <a href="${Routes.ReviewThisDataset.href({ datasetId: dataset.id })}" class="button">Write a PREreview</a>
+        <a href="${Routes.ReviewThisDataset.href({ datasetId: dataset.id })}" class="button"
+          >${t('writeAPrereview')()}</a
+        >
       </div>
 
       ${Array.match(datasetReviews, {
@@ -104,17 +112,26 @@ export const createDatasetReviewsPage = ({
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        PREreview by ${displayAuthor(datasetReview.author)}
+                        ${t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
                       </h3>
 
                       <div class="byline">
-                        <span class="visually-hidden">Authored</span> by ${displayAuthor(datasetReview.author)}
+                        ${rawHtml(
+                          t('prereviewAuthoredBy')({
+                            author: displayAuthor(datasetReview.author),
+                            visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                          }),
+                        )}
                       </div>
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      Read
-                      <span class="visually-hidden">the PREreview by ${displayAuthor(datasetReview.author)}</span>
+                      ${rawHtml(
+                        t('readPrereview')({
+                          author: displayAuthor(datasetReview.author),
+                          visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                        }),
+                      )}
                     </a>
                   </article>
                 </li>

@@ -45,12 +45,7 @@ export const toPage = ({
           <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
         `,
         skipLinks: [
-          [
-            response.type === 'dataset'
-              ? html`Skip to dataset details`
-              : rawHtml(translate(locale, 'skip-links', `${response.type}Details`)()),
-            `#${response.type}-details`,
-          ],
+          [rawHtml(translate(locale, 'skip-links', `${response.type}Details`)()), `#${response.type}-details`],
           [rawHtml(translate(locale, 'skip-links', 'prereviews')()), '#prereviews'],
         ],
         js: message ? (['notification-banner.js'] as const) : [],

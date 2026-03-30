@@ -1,1 +1,46 @@
-{}
+{
+  "title": {
+    "message": "PREreviews of {dataset}",
+    "description": "Title of the page showing the PREreviews of a dataset."
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}",
+    "description": "Byline that shows the authors of the dataset."
+  },
+  "abstractHeading": {
+    "message": "Abstract",
+    "description": "Heading for the abstract of the dataset."
+  },
+  "posted": {
+    "message": "Posted",
+    "description": "Label for the date that the dataset was posted."
+  },
+  "repository": {
+    "message": "Repository",
+    "description": "Label for the repository containing the dataset."
+  },
+  "seeDataset": {
+    "message": "See the dataset",
+    "description": "Text for a button that takes the user to the dataset."
+  },
+  "prereviews": {
+    "message": "{numberOfPrereviews, plural, one {# PREreview} other {# PREreviews}}",
+    "description": "Heading for the section showing the dataset reviews."
+  },
+  "writeAPrereview": {
+    "message": "Write a PREreview",
+    "description": "Text for a button that takes the user to the page for writing a dataset review."
+  },
+  "prereviewTitle": {
+    "message": "PREreview by {author}",
+    "description": "Title for a dataset review"
+  },
+  "prereviewAuthoredBy": {
+    "message": "<visuallyHidden>Authored</visuallyHidden> by {author}",
+    "description": "Byline that shows the author of a dataset review."
+  },
+  "readPrereview": {
+    "message": "Read <visuallyHidden>the PREreview by {author}</visuallyHidden>",
+    "description": "Text for the link that takes the user to a dataset review."
+  }
+}

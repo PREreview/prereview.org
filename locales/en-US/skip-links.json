@@ -12,6 +12,10 @@
     "message": "Skip to preprint details",
     "description": "Link that takes the user straight to details about a preprint, such as its title and abstract."
   },
+  "datasetDetails": {
+    "message": "Skip to dataset details",
+    "description": "Link that takes the user straight to details about a dataset, such as its title and abstract."
+  },
   "prereviews": {
     "message": "Skip to PREreviews",
     "description": "Link that takes the user straight to a list of PREreviews for a preprint."
