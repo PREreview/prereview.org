@@ -11,7 +11,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/persona-page/index.ts'
 import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
+import { requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../src/routes.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
@@ -228,7 +228,7 @@ describe('requestReviewPersona', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: format(requestReviewPublishedMatch.formatter, { id: preprint }),
+          location: Routes.RequestAReviewPublished.href({ preprintId: preprint }),
         })
       }).pipe(
         Effect.provide([

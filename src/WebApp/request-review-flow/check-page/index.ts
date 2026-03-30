@@ -9,7 +9,7 @@ import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/ind
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import { requestReviewPersonaMatch } from '../../../routes.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -59,7 +59,7 @@ export const requestReviewCheck = ({
         RT.of(
           match(error)
             .with({ _tag: 'ReviewRequestHasBeenPublished' }, () =>
-              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
+              RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint }) }),
             )
             .with({ _tag: 'ReviewRequestNotReadyToBePublished' }, () =>
               RedirectResponse({ location: format(requestReviewPersonaMatch.formatter, { id: preprint }) }),
@@ -103,6 +103,6 @@ const handleForm = ({
     ),
     RTE.matchW(
       () => failureMessage(locale),
-      () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
+      () => RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint }) }),
     ),
   )

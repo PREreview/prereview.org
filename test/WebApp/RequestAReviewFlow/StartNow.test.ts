@@ -9,7 +9,7 @@ import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/StartNow/index.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
+import { requestReviewCheckMatch } from '../../../src/routes.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -115,7 +115,7 @@ describe('requestReviewStart', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
+          location: Routes.RequestAReviewPublished.href({ preprintId: preprintTitle.id }),
         })
       }).pipe(
         Effect.provide(

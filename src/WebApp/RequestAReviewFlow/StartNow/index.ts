@@ -5,7 +5,7 @@ import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { requestReviewCheckMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import { requestReviewCheckMatch } from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -55,9 +55,7 @@ export const StartNow: ({
       onSome: Match.valueTags({
         PublishedReviewRequest: () =>
           Effect.succeed(
-            RedirectResponse({
-              location: format(requestReviewPublishedMatch.formatter, { id: preprint.id }),
-            }),
+            RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint.id }) }),
           ),
         ReviewRequestPendingPublication: () => Effect.succeed(CarryOnPage(locale, preprint.id)),
       }),

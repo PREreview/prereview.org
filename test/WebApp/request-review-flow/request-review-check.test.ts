@@ -8,7 +8,7 @@ import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../../src/routes.ts'
+import { requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Temporal } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/check-page/index.ts'
@@ -50,7 +50,7 @@ describe('requestReviewCheck', () => {
             )
 
             expect(actual).toStrictEqual(
-              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }) }),
+              RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprintTitle.id }) }),
             )
             expect(publishReviewRequest).toHaveBeenCalledWith({
               publishedAt: yield* Temporal.currentInstant,
@@ -253,7 +253,7 @@ describe('requestReviewCheck', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: format(requestReviewPublishedMatch.formatter, { id: preprint }),
+          location: Routes.RequestAReviewPublished.href({ preprintId: preprint }),
         })
       }).pipe(
         Effect.provide([

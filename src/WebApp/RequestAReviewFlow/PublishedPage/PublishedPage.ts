@@ -3,13 +3,14 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import { requestReviewPublishedMatch, reviewRequestsMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { reviewRequestsMatch } from '../../../routes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 const listOfRequestsLink = (text: string) => `<a href="${format(reviewRequestsMatch.formatter, {})}">${text}</a>`
 const communitySlackLink = (text: string) => `<a href="https://bit.ly/PREreview-Slack">${text}</a>`
 
-export const publishedPage = (locale: SupportedLocale, preprint: PreprintId) => {
+export const PublishedPage = (locale: SupportedLocale, preprint: PreprintId) => {
   const t = translate(locale, 'request-review-flow')
 
   return StreamlinePageResponse({
@@ -30,6 +31,6 @@ export const publishedPage = (locale: SupportedLocale, preprint: PreprintId) => 
         )}
       </p>
     `,
-    canonical: format(requestReviewPublishedMatch.formatter, { id: preprint }),
+    canonical: Routes.RequestAReviewPublished.href({ preprintId: preprint }),
   })
 }

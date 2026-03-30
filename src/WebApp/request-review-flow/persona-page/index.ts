@@ -12,7 +12,7 @@ import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/ind
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { requestReviewCheckMatch, requestReviewPublishedMatch } from '../../../routes.ts'
+import { requestReviewCheckMatch } from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -66,7 +66,7 @@ export const requestReviewPersona = ({
         RT.of(
           match(error)
             .with({ _tag: 'ReviewRequestHasBeenPublished' }, () =>
-              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
+              RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint }) }),
             )
             .with('no-session', () =>
               LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),
