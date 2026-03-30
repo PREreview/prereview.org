@@ -2,13 +2,18 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option } from 'effect'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { Doi, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/DatasetReviewsPage/DatasetReviewsPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showTwoUpPage }) => {
-  const response = _.createDatasetReviewsPage({ dataset, datasetReviews: [prereview1, prereview2] })
+  const response = _.createDatasetReviewsPage({
+    dataset,
+    datasetReviews: [prereview1, prereview2],
+    locale: DefaultLocale,
+  })
 
   const [content, aside] = await showTwoUpPage(response)
 
@@ -17,7 +22,7 @@ test('content looks right', async ({ showTwoUpPage }) => {
 })
 
 test('content looks right when empty', async ({ showTwoUpPage }) => {
-  const response = _.createDatasetReviewsPage({ dataset, datasetReviews: Array.empty() })
+  const response = _.createDatasetReviewsPage({ dataset, datasetReviews: Array.empty(), locale: DefaultLocale })
 
   const [content, aside] = await showTwoUpPage(response)
 

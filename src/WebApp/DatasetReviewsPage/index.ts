@@ -1,4 +1,5 @@
 import { Effect } from 'effect'
+import { Locale } from '../../Context.ts'
 import * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import * as Personas from '../../Personas/index.ts'
@@ -8,6 +9,8 @@ import { createDatasetReviewsPage } from './DatasetReviewsPage.ts'
 
 export const DatasetReviewsPage = Effect.fn(
   function* ({ datasetId }: { datasetId: Datasets.DatasetId }) {
+    const locale = yield* Locale
+
     const { dataset, datasetReviews } = yield* Effect.all(
       {
         dataset: Datasets.getDataset(datasetId),
@@ -27,7 +30,7 @@ export const DatasetReviewsPage = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    return createDatasetReviewsPage({ dataset, datasetReviews })
+    return createDatasetReviewsPage({ dataset, datasetReviews, locale })
   },
   Effect.catchTags({
     DatasetIsNotFound: () => PageNotFound,

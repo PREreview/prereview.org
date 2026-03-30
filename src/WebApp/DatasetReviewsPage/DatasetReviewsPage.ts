@@ -3,8 +3,8 @@ import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
-import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
-import { DefaultLocale } from '../../locales/index.ts'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
@@ -18,13 +18,17 @@ export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dat
 export const createDatasetReviewsPage = ({
   dataset,
   datasetReviews,
+  locale,
 }: {
   dataset: Datasets.Dataset
   datasetReviews: ReadonlyArray<DatasetReview>
+  locale: SupportedLocale
 }) => {
+  const t = translate(locale, 'dataset-reviews-page')
+
   return TwoUpPageResponse({
     title: plainText`PREreviews of “${plainText(dataset.title.text)}”`,
-    description: plainText`Authored by ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(DefaultLocale))}
+    description: plainText`Authored by ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale))}
     ${
       dataset.abstract
         ? plainText`
@@ -48,13 +52,13 @@ export const createDatasetReviewsPage = ({
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
-            ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(DefaultLocale))}
+            ${pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale))}
           </div>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(DefaultLocale)(dataset.posted)}</dd>
+              <dd>${renderDate(locale)(dataset.posted)}</dd>
             </div>
             <div>
               <dt>Repository</dt>
