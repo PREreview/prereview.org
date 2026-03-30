@@ -64,7 +64,7 @@
     "@babel/preset-typescript": "^7.28.5",
     "@csstools/postcss-global-data": "^4.0.0",
     "@effect/experimental": "^0.60.0",
-    "@effect/language-service": "^0.84.0",
+    "@effect/language-service": "^0.84.2",
     "@effect/sql-libsql": "^0.41.0",
     "@eslint/js": "^9.39.2",
     "@fast-check/jest": "^2.2.0",
