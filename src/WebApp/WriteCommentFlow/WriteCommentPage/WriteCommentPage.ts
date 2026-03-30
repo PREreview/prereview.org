@@ -103,7 +103,9 @@ export const WriteCommentPage = ({
                     'CC0-1.0',
                     () => html`
                       <dfn>
-                        <abbr title="CC0 1.0 Universal"><span translate="no">CC0 1.0</span></abbr>
+                        <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
+                          ><span translate="no">CC0 1.0</span></abbr
+                        >
                       </dfn>
                     `,
                   ),

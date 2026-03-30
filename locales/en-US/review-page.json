@@ -33,6 +33,10 @@
   "license": {
     "message": "License"
   },
+  "licenseCcZero10": {
+    "message": "CC0 1.0 Universal",
+    "description": "Name of the license (https://creativecommons.org/publicdomain/zero/1.0/)."
+  },
   "licenseCcBy40": {
     "message": "Attribution 4.0 International"
   },

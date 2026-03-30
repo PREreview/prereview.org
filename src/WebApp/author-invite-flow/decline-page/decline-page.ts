@@ -123,7 +123,9 @@ export const declinePage = ({
                       () => html`
                         <a href="https://creativecommons.org/publicdomain/zero/1.0/">
                           <dfn>
-                            <abbr title="CC0 1.0 Universal"><span translate="no">CC0 1.0</span></abbr>
+                            <abbr title="${translate(locale, 'review-page', 'licenseCcZero10')()}"
+                              ><span translate="no">CC0 1.0</span></abbr
+                            >
                           </dfn>
                         </a>
                       `,
