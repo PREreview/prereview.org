@@ -24,6 +24,7 @@ export const createDatasetReviewsPage = ({
   datasetReviews: ReadonlyArray<DatasetReview>
   locale: SupportedLocale
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const t = translate(locale, 'dataset-reviews-page')
 
   return TwoUpPageResponse({
