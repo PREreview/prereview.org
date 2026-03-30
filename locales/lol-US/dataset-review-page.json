@@ -1,0 +1,29 @@
+{
+  "structuredReviewTitle": {
+    "message": "crwdns6438:0{dataset}crwdne6438:0"
+  },
+  "authoredBy": {
+    "message": "crwdns6442:0{author}crwdne6442:0"
+  },
+  "backLink": {
+    "message": "crwdns6446:0crwdne6446:0"
+  },
+  "seeDataset": {
+    "message": "crwdns6450:0crwdne6450:0"
+  },
+  "published": {
+    "message": "crwdns6454:0crwdne6454:0"
+  },
+  "license": {
+    "message": "crwdns6458:0crwdne6458:0"
+  },
+  "licenseCcBy40": {
+    "message": "crwdns6462:0crwdne6462:0"
+  },
+  "competingInterests": {
+    "message": "crwdns6466:0crwdne6466:0"
+  },
+  "noCompetingInterestsStatement": {
+    "message": "crwdns6470:0crwdne6470:0"
+  }
+}
