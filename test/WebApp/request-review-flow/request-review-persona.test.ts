@@ -258,7 +258,7 @@ describe('requestReviewPersonaSubmission', () => {
           )
 
           const actual = yield* Effect.promise(() =>
-            _.requestReviewPersonaSubmission({ body: { persona }, preprint, user, locale })({
+            _.requestReviewPersonaSubmission({ body: { chooseYourPersona: persona }, preprint, user, locale })({
               getPreprintTitle,
               runtime,
             })(),
@@ -302,7 +302,7 @@ describe('requestReviewPersonaSubmission', () => {
             >()
 
             const actual = yield* Effect.promise(() =>
-              _.requestReviewPersonaSubmission({ body: { persona }, preprint, user, locale })({
+              _.requestReviewPersonaSubmission({ body: { chooseYourPersona: persona }, preprint, user, locale })({
                 getPreprintTitle: () => TE.right(preprintTitle),
                 runtime,
               })(),

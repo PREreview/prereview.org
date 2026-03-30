@@ -1,8 +1,5 @@
-import { Match, pipe } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
-import { match } from 'ts-pattern'
-import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
@@ -11,10 +8,7 @@ import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../share
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
-
-export interface PersonaForm {
-  readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
-}
+import type { ChooseYourPersonaForm, InvalidForm } from './ChooseYourPersonaForm.ts'
 
 const definition = (text: string) => `<dfn>${text}</dfn>`
 
@@ -24,35 +18,35 @@ export function personaForm({
   user,
   locale,
 }: {
-  form: PersonaForm
+  form: ChooseYourPersonaForm
   preprint: PreprintId
   user: User
   locale: SupportedLocale
 }) {
-  const error = hasAnError(form)
+  const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale, 'request-review-flow')
 
   return StreamlinePageResponse({
-    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, error), plainText),
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe(t('whatNameWouldYouLikeToUse')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`<a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back"
       ><span>${t('backToPreprint')()}</span></a
     >`,
     main: html`
       <form method="post" action="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" novalidate>
-        ${error ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
+        ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
-        <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
+        <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
           <fieldset
             role="group"
-            aria-describedby="persona-tip"
-            ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
+            aria-describedby="choose-your-persona-tip"
+            ${rawHtml(hasAnError ? 'aria-invalid="true" aria-errormessage="choose-your-persona-error"' : '')}
           >
             <legend>
               <h1>${t('whatNameWouldYouLikeToUse')()}</h1>
             </legend>
 
-            <p id="persona-tip" role="note">${t('chooseBetweenOrcidNameAndPseudonym')()}</p>
+            <p id="choose-your-persona-tip" role="note">${t('chooseBetweenOrcidNameAndPseudonym')()}</p>
 
             <details>
               <summary><span>${t('whatIsAPrereviewPseudonym')()}</span></summary>
@@ -68,12 +62,12 @@ export function personaForm({
               </div>
             </details>
 
-            ${E.isLeft(form.persona)
+            ${hasAnError && Either.isLeft(form.chooseYourPersona)
               ? html`
-                  <div class="error-message" id="persona-error">
+                  <div class="error-message" id="choose-your-persona-error">
                     <span class="visually-hidden">${translate(locale, 'forms', 'errorPrefix')()}:</span>
-                    ${Match.valueTags(form.persona.left, {
-                      MissingE: t('selectNameYouWouldLikeToUse'),
+                    ${Match.valueTags(form.chooseYourPersona.left, {
+                      Missing: t('selectNameYouWouldLikeToUse'),
                     })}
                   </div>
                 `
@@ -83,33 +77,45 @@ export function personaForm({
               <li>
                 <label>
                   <input
-                    name="persona"
-                    id="persona-public"
+                    name="chooseYourPersona"
+                    id="choose-your-persona-public"
                     type="radio"
                     value="public"
-                    aria-describedby="persona-tip-public"
-                    ${match(form.persona)
-                      .with({ right: 'public' }, () => 'checked')
-                      .otherwise(() => '')}
+                    aria-describedby="choose-your-persona-tip-public"
+                    ${pipe(
+                      Match.value(form),
+                      Match.when(
+                        { _tag: 'CompletedForm', chooseYourPersona: persona => persona === 'public' },
+                        () => 'checked',
+                      ),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   <span>${user.name}</span>
                 </label>
-                <p id="persona-tip-public" role="note">${t('weWillLinkRequestToYourOrcid')()}</p>
+                <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkRequestToYourOrcid')()}</p>
               </li>
               <li>
                 <label>
                   <input
-                    name="persona"
+                    name="chooseYourPersona"
                     type="radio"
                     value="pseudonym"
-                    aria-describedby="persona-tip-pseudonym"
-                    ${match(form.persona)
-                      .with({ right: 'pseudonym' }, () => 'checked')
-                      .otherwise(() => '')}
+                    aria-describedby="choose-your-persona-tip-pseudonym"
+                    ${pipe(
+                      Match.value(form),
+                      Match.when(
+                        { _tag: 'CompletedForm', chooseYourPersona: persona => persona === 'pseudonym' },
+                        () => 'checked',
+                      ),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   <span>${user.pseudonym}</span>
                 </label>
-                <p id="persona-tip-pseudonym" role="note">${t('weWillLinkRequestToOthersThatUseYourPseudonymn')()}</p>
+                <p id="choose-your-persona-tip-pseudonym" role="note">
+                  ${t('weWillLinkRequestToOthersThatUseYourPseudonymn')()}
+                </p>
               </li>
             </ol>
           </fieldset>
@@ -120,17 +126,17 @@ export function personaForm({
     `,
     canonical: format(requestReviewPersonaMatch.formatter, { id: preprint }),
     skipToLabel: 'form',
-    js: error ? ['error-summary.js'] : [],
+    js: hasAnError ? ['error-summary.js'] : [],
   })
 }
 
-const toErrorItems = (locale: SupportedLocale) => (form: PersonaForm) => html`
-  ${E.isLeft(form.persona)
+const toErrorItems = (locale: SupportedLocale) => (form: InvalidForm) => html`
+  ${Either.isLeft(form.chooseYourPersona)
     ? html`
         <li>
-          <a href="#persona-public">
-            ${Match.valueTags(form.persona.left, {
-              MissingE: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
+          <a href="#choose-your-persona-public">
+            ${Match.valueTags(form.chooseYourPersona.left, {
+              Missing: translate(locale, 'request-review-flow', 'selectNameYouWouldLikeToUse'),
             })}
           </a>
         </li>

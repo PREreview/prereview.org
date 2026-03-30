@@ -1,11 +1,8 @@
-import { Option, Struct, flow, pipe } from 'effect'
+import { flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
-import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
@@ -21,6 +18,7 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
+import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 import { personaForm } from './persona-form.ts'
 
 export const requestReviewPersona = ({
@@ -72,7 +70,7 @@ export const requestReviewPersona = ({
       ({ preprint, reviewRequest, user, locale }) =>
         RT.of(
           personaForm({
-            form: { persona: E.right(Option.getOrUndefined(reviewRequest.personaChoice)) },
+            form: ChooseYourPersonaForm.fromPersonaChoice(reviewRequest.personaChoice),
             preprint,
             user,
             locale,
@@ -133,18 +131,17 @@ export const requestReviewPersonaSubmission = ({
         ),
       ({ preprint, reviewRequest, user, locale, body }) =>
         pipe(
-          RTE.Do,
-          RTE.let('persona', () => pipe(PersonaFieldD.decode(body), E.mapLeft(missingE))),
-          RTE.chainEitherK(fields =>
-            pipe(
-              E.Do,
-              E.apS('persona', fields.persona),
-              E.mapLeft(() => fields),
-            ),
+          EffectToFpts.toReaderTaskEither(ChooseYourPersonaForm.fromBody(body)),
+          RTE.filterOrElse(
+            form => form._tag === 'CompletedForm',
+            form => form as ChooseYourPersonaForm.InvalidForm,
           ),
-          RTE.chainFirstW(fields =>
+          RTE.chainFirstW(form =>
             EffectToFpts.toReaderTaskEither(
-              ReviewRequests.choosePersona({ persona: fields.persona, reviewRequestId: reviewRequest.reviewRequestId }),
+              ReviewRequests.choosePersona({
+                persona: form.chooseYourPersona,
+                reviewRequestId: reviewRequest.reviewRequestId,
+              }),
             ),
           ),
           RTE.matchW(
@@ -155,17 +152,10 @@ export const requestReviewPersonaSubmission = ({
                   { _tag: P.union('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', 'UnableToHandleCommand') },
                   () => havingProblemsPage(locale),
                 )
-                .with({ persona: P.any }, form => personaForm({ form, preprint, user, locale }))
+                .with({ _tag: 'InvalidForm' }, form => personaForm({ form, preprint, user, locale }))
                 .exhaustive(),
             () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint }) }),
           ),
         ),
     ),
   )
-
-const PersonaFieldD = pipe(
-  D.struct({
-    persona: D.literal('public', 'pseudonym'),
-  }),
-  D.map(Struct.get('persona')),
-)
