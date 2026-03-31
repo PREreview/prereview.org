@@ -1,3 +1,4 @@
+export * from './CheckYourRequestPage/index.ts'
 export * from './ChooseYourPersonaPage/index.ts'
 export * from './PublishedPage/index.ts'
 export * from './RequestAReviewOfThisPreprintPage/index.ts'

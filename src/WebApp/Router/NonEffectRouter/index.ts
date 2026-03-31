@@ -66,7 +66,6 @@ import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
 import { DataRouter } from './DataRouter.ts'
 import { legacyRouter } from './legacy-routes.ts'
 import { MyDetailsRouter } from './MyDetailsRouter.ts'
-import { RequestReviewFlowRouter } from './RequestReviewFlowRouter.ts'
 import { WriteReviewRouter } from './WriteReviewRouter.ts'
 
 export const nonEffectRouter: Effect.Effect<
@@ -434,7 +433,6 @@ const routerWithoutHyperTs = pipe(
     ),
     AuthorInviteFlowRouter,
     MyDetailsRouter,
-    RequestReviewFlowRouter,
     WriteReviewRouter,
     pipe(
       legacyRouter,

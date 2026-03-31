@@ -1,11 +1,9 @@
 import { Effect, Match, Option } from 'effect'
-import { format } from 'fp-ts-routing'
 import { Locale } from '../../../Context.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { requestReviewCheckMatch } from '../../../routes.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
@@ -50,7 +48,7 @@ export const StartNow: ({
             requesterId: user.orcid,
           })
 
-          return RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: preprint.id }) })
+          return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
         }),
       onSome: Match.valueTags({
         PublishedReviewRequest: () =>

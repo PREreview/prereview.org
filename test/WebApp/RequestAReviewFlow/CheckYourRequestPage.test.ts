@@ -1,23 +1,21 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer } from 'effect'
-import { format } from 'fp-ts-routing'
-import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as Commands from '../../../src/Commands.ts'
-import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
+import { Locale } from '../../../src/Context.ts'
+import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Temporal } from '../../../src/types/index.ts'
-import * as _ from '../../../src/WebApp/request-review-flow/check-page/index.ts'
+import { LoggedInUser } from '../../../src/user.ts'
+import * as _ from '../../../src/WebApp/RequestAReviewFlow/CheckYourRequestPage/index.ts'
 import { RedirectResponse } from '../../../src/WebApp/Response/index.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
-import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
-describe('requestReviewCheck', () => {
+describe('CheckYourRequestPage', () => {
   describe('when the user is logged in', () => {
     test.prop([
       fc.indeterminatePreprintId(),
@@ -25,27 +23,20 @@ describe('requestReviewCheck', () => {
       fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])('when there is a incomplete request', (preprint, user, reviewRequest, preprintTitle, locale) =>
+    ])('when there is a incomplete request', (preprintId, user, reviewRequest, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
+        const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+          Effect.succeed(preprintTitle),
+        )
 
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle,
-            runtime,
-          })(),
+        const actual = yield* Effect.provide(
+          _.CheckYourRequestPage({ preprintId }),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle }),
         )
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
+          canonical: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprintTitle.id }),
           status: StatusCodes.OK,
           title: expect.anything(),
           nav: expect.anything(),
@@ -53,9 +44,11 @@ describe('requestReviewCheck', () => {
           skipToLabel: 'form',
           js: ['single-use-form.js'],
         })
-        expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
+        expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
@@ -70,30 +63,20 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])('when the request is already complete', (preprint, user, preprintTitle, locale) =>
+    ])('when the request is already complete', (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestPage({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.RequestAReviewPublished.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewPublished.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestReadyToBePublished: () => new ReviewRequests.ReviewRequestHasBeenPublished({}),
@@ -108,30 +91,20 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a name hasn't been chosen", (preprint, user, preprintTitle, locale) =>
+    ])("when a name hasn't been chosen", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestPage({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestReadyToBePublished: () =>
@@ -149,25 +122,15 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a request hasn't been started", (preprint, user, preprintTitle, locale) =>
+    ])("when a request hasn't been started", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
         const getReviewRequestReadyToBePublished = jest.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new ReviewRequests.UnknownReviewRequest({}))
-        const runtime = yield* Effect.provide(
-          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
-        )
 
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
+        const actual = yield* Effect.provide(
+          _.CheckYourRequestPage({ preprintId }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
         )
 
         expect(actual).toStrictEqual({
@@ -182,7 +145,15 @@ describe('requestReviewCheck', () => {
           requesterId: user.orcid,
           preprintId: preprintTitle.id,
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        ]),
+        EffectTest.run,
+      ),
     )
 
     test.prop([
@@ -190,25 +161,15 @@ describe('requestReviewCheck', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when the request can't be loaded", (preprint, user, preprintTitle, locale) =>
+    ])("when the request can't be loaded", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
         const getReviewRequestReadyToBePublished = jest.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new Queries.UnableToQuery({}))
-        const runtime = yield* Effect.provide(
-          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
-        )
 
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
+        const actual = yield* Effect.provide(
+          _.CheckYourRequestPage({ preprintId }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
         )
 
         expect(actual).toStrictEqual({
@@ -223,31 +184,32 @@ describe('requestReviewCheck', () => {
           requesterId: user.orcid,
           preprintId: preprintTitle.id,
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        ]),
+        EffectTest.run,
+      ),
     )
   })
 
   test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
     'when the user is not logged in',
-    (preprint, locale) =>
+    (preprintId, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheck({ preprint, locale })({
-            getPreprintTitle: shouldNotBeCalled,
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestPage({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'LogInResponse',
-          location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
         ]),
@@ -256,7 +218,7 @@ describe('requestReviewCheck', () => {
   )
 })
 
-describe('requestReviewCheckSubmission', () => {
+describe('CheckYourRequestSubmission', () => {
   describe('when the user is logged in', () => {
     describe('when there is a incomplete request', () => {
       test.prop([
@@ -265,25 +227,15 @@ describe('requestReviewCheckSubmission', () => {
         fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
-      ])('when the request can be published', (preprint, user, reviewRequest, preprintTitle, locale) =>
+      ])('when the request can be published', (preprintId, user, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
           const publishReviewRequest = jest.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => Effect.void)
-          const runtime = yield* Effect.provide(
-            Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
-          )
 
-          const actual = yield* Effect.promise(() =>
-            _.requestReviewCheckSubmission({
-              preprint,
-              user,
-              locale,
-            })({
-              getPreprintTitle: () => TE.right(preprintTitle),
-              runtime,
-            })(),
+          const actual = yield* Effect.provide(
+            _.CheckYourRequestSubmission({ preprintId }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
           )
 
           expect(actual).toStrictEqual(
@@ -294,11 +246,14 @@ describe('requestReviewCheckSubmission', () => {
             reviewRequestId: reviewRequest.reviewRequestId,
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
             }),
-          ),
+          ]),
           EffectTest.run,
         ),
       )
@@ -309,25 +264,15 @@ describe('requestReviewCheckSubmission', () => {
         fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
-      ])("when the request can't be published", (preprint, user, reviewRequest, preprintTitle, locale) =>
+      ])("when the request can't be published", (preprintId, user, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
           const publishReviewRequest = jest.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => new Commands.UnableToHandleCommand({}))
-          const runtime = yield* Effect.provide(
-            Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
-          )
 
-          const actual = yield* Effect.promise(() =>
-            _.requestReviewCheckSubmission({
-              preprint,
-              user,
-              locale,
-            })({
-              getPreprintTitle: () => TE.right(preprintTitle),
-              runtime,
-            })(),
+          const actual = yield* Effect.provide(
+            _.CheckYourRequestSubmission({ preprintId }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
           )
 
           expect(actual).toStrictEqual({
@@ -343,11 +288,14 @@ describe('requestReviewCheckSubmission', () => {
             reviewRequestId: reviewRequest.reviewRequestId,
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
             }),
-          ),
+          ]),
           EffectTest.run,
         ),
       )
@@ -358,35 +306,16 @@ describe('requestReviewCheckSubmission', () => {
         fc.record({ personaChoice: fc.constantFrom('public', 'pseudonym'), reviewRequestId: fc.uuid() }),
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
-        fc.anything().chain(cause =>
-          fc.constantFrom(
-            new Commands.UnableToHandleCommand({ cause }),
-            new ReviewRequests.UnknownReviewRequest({ cause }),
-            new ReviewRequests.ReviewRequestNotReadyToBePublished({
-              missing: ['PersonaForAReviewRequestForAPreprintWasChosen'],
-            }),
-            new ReviewRequests.ReviewRequestHasBeenPublished({ cause }),
-          ),
-        ),
-      ])('when the request can not be published', (preprint, user, reviewRequest, preprintTitle, locale, error) =>
+        fc.anything().map(cause => new Commands.UnableToHandleCommand({ cause })),
+      ])('when the request can not be published', (preprintId, user, reviewRequest, preprintTitle, locale, error) =>
         Effect.gen(function* () {
           const publishReviewRequest = jest.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => error)
-          const runtime = yield* Effect.provide(
-            Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
-          )
 
-          const actual = yield* Effect.promise(() =>
-            _.requestReviewCheckSubmission({
-              preprint,
-              user,
-              locale,
-            })({
-              getPreprintTitle: () => TE.right(preprintTitle),
-              runtime,
-            })(),
+          const actual = yield* Effect.provide(
+            _.CheckYourRequestSubmission({ preprintId }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, { publishReviewRequest }),
           )
 
           expect(actual).toStrictEqual({
@@ -402,11 +331,14 @@ describe('requestReviewCheckSubmission', () => {
             reviewRequestId: reviewRequest.reviewRequestId,
           })
         }).pipe(
-          Effect.provide(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               getReviewRequestReadyToBePublished: () => Effect.succeed(reviewRequest),
             }),
-          ),
+          ]),
           EffectTest.run,
         ),
       )
@@ -417,30 +349,20 @@ describe('requestReviewCheckSubmission', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])('when the request is already complete', (preprint, user, preprintTitle, locale) =>
+    ])('when the request is already complete', (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheckSubmission({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestSubmission({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.RequestAReviewPublished.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewPublished.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestReadyToBePublished: () => new ReviewRequests.ReviewRequestHasBeenPublished({}),
@@ -455,30 +377,20 @@ describe('requestReviewCheckSubmission', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a name hasn't been chosen", (preprint, user, preprintTitle, locale) =>
+    ])("when a name hasn't been chosen", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheckSubmission({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestSubmission({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
             getReviewRequestReadyToBePublished: () =>
@@ -496,25 +408,15 @@ describe('requestReviewCheckSubmission', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a request hasn't been started", (preprint, user, preprintTitle, locale) =>
+    ])("when a request hasn't been started", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
         const getReviewRequestReadyToBePublished = jest.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new ReviewRequests.UnknownReviewRequest({}))
-        const runtime = yield* Effect.provide(
-          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
-        )
 
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheckSubmission({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
+        const actual = yield* Effect.provide(
+          _.CheckYourRequestSubmission({ preprintId }),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
         )
 
         expect(actual).toStrictEqual({
@@ -529,7 +431,15 @@ describe('requestReviewCheckSubmission', () => {
           requesterId: user.orcid,
           preprintId: preprintTitle.id,
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        ]),
+        EffectTest.run,
+      ),
     )
 
     test.prop([
@@ -537,29 +447,19 @@ describe('requestReviewCheckSubmission', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when the request can't be loaded", (preprint, user, preprintTitle, locale) =>
+    ])("when the request can't be loaded", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
         const getReviewRequestReadyToBePublished = jest.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new Queries.UnableToQuery({}))
-        const runtime = yield* Effect.provide(
-          Effect.runtime<ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries>(),
+
+        const actual = yield* Effect.provide(
+          _.CheckYourRequestSubmission({ preprintId }),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
         )
 
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheckSubmission({
-            preprint,
-            user,
-            locale,
-          })({
-            getPreprintTitle: () => TE.right(preprintTitle),
-            runtime,
-          })(),
-        )
-
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
+          _tag: 'StreamlinePageResponse',
           status: StatusCodes.ServiceUnavailable,
           title: expect.anything(),
           main: expect.anything(),
@@ -570,31 +470,32 @@ describe('requestReviewCheckSubmission', () => {
           requesterId: user.orcid,
           preprintId: preprintTitle.id,
         })
-      }).pipe(Effect.provide(Layer.mock(ReviewRequests.ReviewRequestCommands, {})), EffectTest.run),
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+        ]),
+        EffectTest.run,
+      ),
     )
   })
 
   test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
     'when the user is not logged in',
-    (preprint, locale) =>
+    (preprintId, locale) =>
       Effect.gen(function* () {
-        const runtime = yield* Effect.runtime<
-          ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries
-        >()
-
-        const actual = yield* Effect.promise(() =>
-          _.requestReviewCheckSubmission({ preprint, locale })({
-            getPreprintTitle: shouldNotBeCalled,
-            runtime,
-          })(),
-        )
+        const actual = yield* _.CheckYourRequestSubmission({ preprintId })
 
         expect(actual).toStrictEqual({
           _tag: 'LogInResponse',
-          location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
+          location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }),
         })
       }).pipe(
         Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
         ]),

@@ -5,7 +5,7 @@ import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
-import { profileMatch, requestReviewCheckMatch } from '../../../routes.ts'
+import { profileMatch } from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
@@ -14,7 +14,7 @@ import { StreamlinePageResponse } from '../../Response/index.ts'
 
 const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
 
-export function checkPage({
+export function CheckYourRequestPage({
   preprint,
   reviewRequest,
   user,
@@ -33,7 +33,7 @@ export function checkPage({
     >`,
     main: html`
       <single-use-form>
-        <form method="post" action="${format(requestReviewCheckMatch.formatter, { id: preprint })}" novalidate>
+        <form method="post" action="${Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint })}" novalidate>
           <h1>${t('checkYourRequest')()}</h1>
 
           <div class="summary-card">
@@ -69,7 +69,7 @@ export function checkPage({
         </form>
       </single-use-form>
     `,
-    canonical: format(requestReviewCheckMatch.formatter, { id: preprint }),
+    canonical: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint }),
     skipToLabel: 'form',
     js: ['single-use-form.js'],
   })

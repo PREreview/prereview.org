@@ -6,7 +6,7 @@ import { StreamlinePageResponse } from '../../Response/index.ts'
 
 const mailtoHelp = (text: string) => `<a href="mailto:help@prereview.org">${text}</a>`
 
-export const failureMessage = (locale: SupportedLocale) => {
+export const FailureMessage = (locale: SupportedLocale) => {
   const t = translate(locale, 'request-review-flow')
 
   return StreamlinePageResponse({

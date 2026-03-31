@@ -4,7 +4,7 @@ import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
-import { preprintReviewsMatch, requestReviewCheckMatch } from '../../../routes.ts'
+import { preprintReviewsMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 export const CarryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
@@ -22,7 +22,7 @@ export const CarryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
 
       <p>${t('asYouHaveAlreadyStarted')()}</p>
 
-      <a href="${format(requestReviewCheckMatch.formatter, { id: preprint })}" role="button" draggable="false"
+      <a href="${Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,

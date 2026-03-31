@@ -1,10 +1,10 @@
-import type { UrlParams } from '@effect/platform'
-import { Effect, Match } from 'effect'
+import { Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
+import { Temporal } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
@@ -14,10 +14,10 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
-import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
-import { ChooseYourPersonaPage as MakeResponse } from './ChooseYourPersonaPage.ts'
+import { CheckYourRequestPage as MakeResponse } from './CheckYourRequestPage.ts'
+import { FailureMessage } from './FailureMessage.ts'
 
-export const ChooseYourPersonaPage: ({
+export const CheckYourRequestPage: ({
   preprintId,
 }: {
   preprintId: IndeterminatePreprintId
@@ -25,18 +25,19 @@ export const ChooseYourPersonaPage: ({
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
   ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
-> = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
+> = Effect.fn('RequestAReviewFlow.CheckYourRequestPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
     const locale = yield* Locale
 
     const preprint = yield* Preprints.getPreprintTitle(preprintId)
 
-    const reviewRequest = yield* ReviewRequests.getPersonaChoice({ requesterId: user.orcid, preprintId: preprint.id })
+    const reviewRequest = yield* ReviewRequests.getReviewRequestReadyToBePublished({
+      requesterId: user.orcid,
+      preprintId: preprint.id,
+    })
 
-    const form = ChooseYourPersonaForm.fromPersonaChoice(reviewRequest.personaChoice)
-
-    return MakeResponse({ form, preprint: preprint.id, user, locale })
+    return MakeResponse({ preprint: preprint.id, reviewRequest, user, locale })
   },
   (error, { preprintId }) =>
     Effect.catchTags(error, {
@@ -44,6 +45,8 @@ export const ChooseYourPersonaPage: ({
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
+      ReviewRequestNotReadyToBePublished: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }) })),
       UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
@@ -51,47 +54,41 @@ export const ChooseYourPersonaPage: ({
     }),
 )
 
-export const ChooseYourPersonaSubmission: ({
-  body,
+export const CheckYourRequestSubmission: ({
   preprintId,
 }: {
-  body: UrlParams.UrlParams
   preprintId: IndeterminatePreprintId
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
   ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
-  function* ({ body, preprintId }) {
+  function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
-    const locale = yield* Locale
 
     const preprint = yield* Preprints.getPreprintTitle(preprintId)
 
-    const reviewRequest = yield* ReviewRequests.getPersonaChoice({ requesterId: user.orcid, preprintId: preprint.id })
-
-    const form = yield* ChooseYourPersonaForm.fromBody(body)
-
-    return yield* Match.valueTags(form, {
-      CompletedForm: Effect.fnUntraced(function* (form: ChooseYourPersonaForm.CompletedForm) {
-        yield* ReviewRequests.choosePersona({
-          persona: form.chooseYourPersona,
-          reviewRequestId: reviewRequest.reviewRequestId,
-        })
-
-        return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
-      }),
-      InvalidForm: form => Effect.succeed(MakeResponse({ form, preprint: preprint.id, user, locale })),
+    const { reviewRequestId } = yield* ReviewRequests.getReviewRequestReadyToBePublished({
+      requesterId: user.orcid,
+      preprintId: preprint.id,
     })
+
+    const publishedAt = yield* Temporal.currentInstant
+
+    yield* ReviewRequests.publishReviewRequest({ publishedAt, reviewRequestId })
+
+    return RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint.id }) })
   },
   (error, { preprintId }) =>
     Effect.catchTags(error, {
       PreprintIsNotFound: () => PageNotFound,
-      PreprintIsUnavailable: () => HavingProblemsPage,
+      PreprintIsUnavailable: () => Effect.andThen(Locale, FailureMessage),
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
-      UnableToHandleCommand: () => HavingProblemsPage,
-      UnableToQuery: () => HavingProblemsPage,
+      ReviewRequestNotReadyToBePublished: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }) })),
+      UnableToHandleCommand: () => Effect.andThen(Locale, FailureMessage),
+      UnableToQuery: () => Effect.andThen(Locale, FailureMessage),
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),

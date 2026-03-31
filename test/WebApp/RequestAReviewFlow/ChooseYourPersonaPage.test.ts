@@ -2,7 +2,6 @@ import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
-import { format } from 'fp-ts-routing'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
@@ -11,7 +10,6 @@ import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage/index.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch } from '../../../src/routes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
@@ -238,7 +236,7 @@ describe('ChooseYourPersonaSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: StatusCodes.SeeOther,
-            location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
+            location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprintTitle.id }),
           })
           expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
           expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
