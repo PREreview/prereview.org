@@ -1,1 +1,1 @@
-export { requestReviewCheck } from './check-page/index.ts'
+export { requestReviewCheck, requestReviewCheckSubmission } from './check-page/index.ts'
