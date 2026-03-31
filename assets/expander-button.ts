@@ -60,7 +60,7 @@ export class ExpanderButton extends HTMLElement {
         return
       }
 
-      if (event.key !== 'Tab' || controlled.hidden || document.activeElement !== button) {
+      if (event.key !== 'Tab' || controlled.hidden === true || document.activeElement !== button) {
         return
       }
 
@@ -80,7 +80,7 @@ export class ExpanderButton extends HTMLElement {
         return
       }
 
-      if (event.key !== 'Tab' || controlled.hidden) {
+      if (event.key !== 'Tab' || controlled.hidden === true) {
         return
       }
 
