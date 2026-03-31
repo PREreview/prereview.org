@@ -8,7 +8,7 @@ import type { GetPreprintTitleEnv } from '../../../src/preprint.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Routes from '../../../src/routes.ts'
-import { requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../src/routes.ts'
+import { requestReviewCheckMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Temporal } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/request-review-flow/check-page/index.ts'
@@ -293,7 +293,7 @@ describe('requestReviewCheck', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: StatusCodes.SeeOther,
-          location: format(requestReviewPersonaMatch.formatter, { id: preprint }),
+          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint }),
         })
       }).pipe(
         Effect.provide([

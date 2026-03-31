@@ -3,7 +3,8 @@ import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { preprintReviewsMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { User } from '../../../user.ts'
@@ -12,7 +13,7 @@ import type { ChooseYourPersonaForm, InvalidForm } from './ChooseYourPersonaForm
 
 const definition = (text: string) => `<dfn>${text}</dfn>`
 
-export function personaForm({
+export function ChooseYourPersonaPage({
   form,
   preprint,
   user,
@@ -33,7 +34,7 @@ export function personaForm({
       ><span>${t('backToPreprint')()}</span></a
     >`,
     main: html`
-      <form method="post" action="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" novalidate>
+      <form method="post" action="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}" novalidate>
         ${hasAnError ? pipe(form, toErrorItems(locale), errorSummary(locale)) : ''}
 
         <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
@@ -124,7 +125,7 @@ export function personaForm({
         ${saveAndContinueButton(locale)}
       </form>
     `,
-    canonical: format(requestReviewPersonaMatch.formatter, { id: preprint }),
+    canonical: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint }),
     skipToLabel: 'form',
     js: hasAnError ? ['error-summary.js'] : [],
   })

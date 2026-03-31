@@ -1,5 +1,4 @@
 import { Effect, flow, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
@@ -9,7 +8,6 @@ import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/ind
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { requestReviewPersonaMatch } from '../../../routes.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -62,7 +60,7 @@ export const requestReviewCheck = ({
               RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint }) }),
             )
             .with({ _tag: 'ReviewRequestNotReadyToBePublished' }, () =>
-              RedirectResponse({ location: format(requestReviewPersonaMatch.formatter, { id: preprint }) }),
+              RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint }) }),
             )
             .with('no-session', () =>
               LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }) }),

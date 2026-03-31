@@ -4,7 +4,8 @@ import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
-import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
+import { profileMatch, requestReviewCheckMatch } from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
@@ -27,7 +28,7 @@ export function checkPage({
   const t = translate(locale, 'request-review-flow')
   return StreamlinePageResponse({
     title: pipe(t('checkYourRequest')(), plainText),
-    nav: html`<a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" class="back"
+    nav: html`<a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}" class="back"
       ><span>${translate(locale, 'forms', 'backLink')()}</span></a
     >`,
     main: html`
@@ -52,7 +53,7 @@ export function checkPage({
                   )}
                 </dd>
                 <dd>
-                  <a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}"
+                  <a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}"
                     >${rawHtml(t('changeName')({ visuallyHidden }))}</a
                   >
                 </dd>

@@ -5,35 +5,12 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as Preprints from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
-import {
-  requestReviewCheck,
-  requestReviewPersona,
-  requestReviewPersonaSubmission,
-} from '../../request-review-flow/index.ts'
+import { requestReviewCheck } from '../../request-review-flow/index.ts'
 import type * as Response from '../../Response/index.ts'
 import type { Env } from './index.ts'
 
 export const RequestReviewFlowRouter = pipe(
   [
-    pipe(
-      Routes.requestReviewPersonaMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            env.method === 'POST'
-              ? requestReviewPersonaSubmission({
-                  body: env.body,
-                  locale: env.locale,
-                  preprint: id,
-                  user: env.loggedInUser,
-                })
-              : requestReviewPersona({
-                  locale: env.locale,
-                  preprint: id,
-                  user: env.loggedInUser,
-                }),
-      ),
-    ),
     pipe(
       Routes.requestReviewCheckMatch.parser,
       P.map(

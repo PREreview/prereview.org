@@ -128,6 +128,13 @@ export const RequestAReviewStartNow = Route({
   schema: Schema.Struct({ preprintId: PreprintIdSchema }),
 })
 
+export const RequestAReviewChooseYourPersona = Route({
+  path: '/preprints/:preprintId/request-a-prereview/choose-name',
+  href: params =>
+    `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview/choose-name`,
+  schema: Schema.Struct({ preprintId: PreprintIdSchema }),
+})
+
 export const RequestAReviewPublished = Route({
   path: '/preprints/:preprintId/request-a-prereview/request-published',
   href: params =>
@@ -731,8 +738,6 @@ const requestReviewBaseMatch = pipe(
   P.andThen(type('id', PreprintIdC)),
   P.andThen(P.lit('request-a-prereview')),
 )
-
-export const requestReviewPersonaMatch = pipe(requestReviewBaseMatch, P.andThen(P.lit('choose-name')), P.andThen(P.end))
 
 export const requestReviewCheckMatch = pipe(
   requestReviewBaseMatch,
