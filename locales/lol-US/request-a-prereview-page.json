@@ -116,6 +116,9 @@
   "doiCouldBeVerixiv": {
     "message": "crwdns5339:0{doi}crwdne5339:0"
   },
+  "doiCouldBeUmsida": {
+    "message": "crwdns6520:0{doi}crwdne6520:0"
+  },
   "doiCouldBeZenodo": {
     "message": "crwdns5341:0{doi}crwdne5341:0"
   },

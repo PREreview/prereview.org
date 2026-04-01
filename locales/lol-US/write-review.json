@@ -227,6 +227,9 @@
   "shareOnBluesky": {
     "message": "crwdns5938:0crwdne5938:0"
   },
+  "shareOnBlueskyMessage": {
+    "message": "crwdns6522:0{preprintTitle}crwdnd6522:0{prereviewHandle}crwdne6522:0"
+  },
   "shareOnLinkedin": {
     "message": "crwdns3982:0crwdne3982:0"
   },
