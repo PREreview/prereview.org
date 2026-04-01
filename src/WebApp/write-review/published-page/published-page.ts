@@ -74,8 +74,13 @@ export const publishedPage = ({
             <div class="button-group" role="group">
               <a
                 href="https://bsky.app/intent/compose?${new URLSearchParams({
-                  text: plainText`I’ve just published a #PreprintReview of “${preprint.title}” on @prereview.bsky.social ${url.href}
-`.toString(),
+                  text: `${t(
+                    'write-review',
+                    'shareOnBlueskyMessage',
+                  )({
+                    preprintTitle: plainText`“${preprint.title}”`.toString(),
+                    prereviewHandle: '@prereview.bsky.social',
+                  })} ${url.href}`,
                 }).toString()}"
                 target="_blank"
                 rel="noopener noreferrer"

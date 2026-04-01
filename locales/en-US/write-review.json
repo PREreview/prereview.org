@@ -229,6 +229,10 @@
   "shareOnBluesky": {
     "message": "Share it on Bluesky"
   },
+  "shareOnBlueskyMessage": {
+    "message": "I’ve just published a #PreprintReview of {preprintTitle} on {prereviewHandle}",
+    "description": "Suggested message to share on Bluesky after publishing a PREreview."
+  },
   "shareOnLinkedin": {
     "message": "Share it on LinkedIn"
   },
