@@ -34,7 +34,9 @@ export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
 
         <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
           <h1>
-            <label id="which-preprint-label" for="preprint">${t('request-a-prereview-page', 'requestTitle')()}</label>
+            <label id="which-preprint-label" for="which-preprint"
+              >${t('request-a-prereview-page', 'requestTitle')()}</label
+            >
           </h1>
 
           <p id="which-preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
