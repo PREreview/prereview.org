@@ -1,12 +1,10 @@
 import { Either, Match, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.ts'
-import { type SupportedLocale, translate } from '../../locales/index.ts'
-import * as Routes from '../../routes.ts'
-import { requestAPrereviewMatch } from '../../routes.ts'
-import { errorPrefix } from '../../shared-translation-elements.ts'
-import * as StatusCodes from '../../StatusCodes.ts'
-import { PageResponse } from '../Response/index.ts'
+import { html, plainText, rawHtml } from '../../../html.ts'
+import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import * as Routes from '../../../routes.ts'
+import { errorPrefix } from '../../../shared-translation-elements.ts'
+import * as StatusCodes from '../../../StatusCodes.ts'
+import { PageResponse } from '../../Response/index.ts'
 import type * as RequestAReviewForm from './RequestAReviewForm.ts'
 
 export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, locale: SupportedLocale) => {
@@ -18,7 +16,7 @@ export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
     title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
-      <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
+      <form method="post" action="${Routes.RequestAReview}" novalidate>
         ${hasAnError
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -92,7 +90,7 @@ export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, l
       </form>
     `,
     skipToLabel: 'form',
-    canonical: format(requestAPrereviewMatch.formatter, {}),
+    canonical: Routes.RequestAReview,
     js: hasAnError ? ['error-summary.js'] : [],
   })
 }

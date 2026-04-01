@@ -1,7 +1,7 @@
-import * as RequestAReviewForm from '../../../src/WebApp/request-a-prereview-page/RequestAReviewForm.ts'
-import * as fc from '../../fc.ts'
+import * as RequestAReviewForm from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/RequestAReviewForm.ts'
+import * as fc from '../../../fc.ts'
 
-export * from '../../fc.ts'
+export * from '../../../fc.ts'
 
 export const invalidForm = (): fc.Arbitrary<RequestAReviewForm.InvalidForm> =>
   fc

@@ -116,6 +116,8 @@ export const DatasetReview = Route({
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 })
 
+export const RequestAReview = '/request-a-prereview'
+
 export const RequestAReviewOfThisPreprint = Route({
   path: '/preprints/:preprintId/request-a-prereview',
   href: params => `/preprints/${Schema.encodeSync(PreprintIdSchema)(params.preprintId)}/request-a-prereview`,
@@ -737,8 +739,6 @@ export const reviewRequestsMatch = pipe(
   ),
   P.andThen(P.end),
 )
-
-export const requestAPrereviewMatch = pipe(P.lit('request-a-prereview'), P.andThen(P.end))
 
 export const authorInviteMatch = pipe(P.lit('author-invite'), P.andThen(type('id', UuidC)), P.andThen(P.end))
 

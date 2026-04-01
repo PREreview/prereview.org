@@ -1,4 +1,4 @@
-import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import type * as RequestAReviewForm from './RequestAReviewForm.ts'
 
 export type Decision =

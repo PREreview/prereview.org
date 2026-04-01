@@ -1,8 +1,8 @@
 import { Doi } from 'doi-ts'
-import { DefaultLocale } from '../../src/locales/index.ts'
-import { BiorxivPreprintId, PhilsciPreprintId } from '../../src/Preprints/index.ts'
-import { unknownPreprintPage } from '../../src/WebApp/request-a-prereview-page/unknown-preprint-page.ts'
-import { expect, test } from '../base.ts'
+import { DefaultLocale } from '../../../src/locales/index.ts'
+import { BiorxivPreprintId, PhilsciPreprintId } from '../../../src/Preprints/index.ts'
+import { unknownPreprintPage } from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/unknown-preprint-page.ts'
+import { expect, test } from '../../base.ts'
 
 test('content looks right with a DOI ID', async ({ showPage }) => {
   const response = unknownPreprintPage(

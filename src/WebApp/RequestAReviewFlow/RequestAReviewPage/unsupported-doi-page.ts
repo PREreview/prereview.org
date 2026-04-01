@@ -1,9 +1,8 @@
-import { format } from 'fp-ts-routing'
-import { html, plainText, rawHtml } from '../../html.ts'
-import { type SupportedLocale, translate } from '../../locales/index.ts'
-import { requestAPrereviewMatch } from '../../routes.ts'
-import * as StatusCodes from '../../StatusCodes.ts'
-import { PageResponse } from '../Response/index.ts'
+import { html, plainText, rawHtml } from '../../../html.ts'
+import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import * as Routes from '../../../routes.ts'
+import * as StatusCodes from '../../../StatusCodes.ts'
+import { PageResponse } from '../../Response/index.ts'
 
 export const unsupportedDoiPage = (locale: SupportedLocale) =>
   PageResponse({
@@ -24,8 +23,6 @@ export const unsupportedDoiPage = (locale: SupportedLocale) =>
         )}
       </p>
 
-      <a href="${format(requestAPrereviewMatch.formatter, {})}" class="button"
-        >${translate(locale, 'forms', 'backLink')()}</a
-      >
+      <a href="${Routes.RequestAReview}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
     `,
   })

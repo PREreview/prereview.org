@@ -11,14 +11,7 @@ import * as Preprints from '../../Preprints/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
-import {
-  requestAPrereviewMatch,
-  reviewAPreprintMatch,
-  reviewMatch,
-  reviewRequestsMatch,
-  reviewsMatch,
-  writeReviewMatch,
-} from '../../routes.ts'
+import { reviewAPreprintMatch, reviewMatch, reviewRequestsMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -46,9 +39,7 @@ export const createPage = ({
             <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button"
               >${translate(locale, 'home-page', 'reviewPreprintButton')()}</a
             >
-            <a href="${format(requestAPrereviewMatch.formatter, {})}"
-              >${translate(locale, 'home-page', 'requestReviewButton')()}</a
-            >
+            <a href="${Routes.RequestAReview}">${translate(locale, 'home-page', 'requestReviewButton')()}</a>
             <a href="${Routes.ReviewADataset}">${translate(locale, 'home-page', 'reviewDatasetLink')()}</a>
           </div>
         </div>

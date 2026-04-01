@@ -1,6 +1,6 @@
-import { Url } from '@effect/platform'
+import { Url, UrlParams } from '@effect/platform'
 import { Data, Effect, Either, Option, Schema } from 'effect'
-import { Doi, NonEmptyString } from '../../types/index.ts'
+import { Doi, NonEmptyString } from '../../../types/index.ts'
 
 export type RequestAReviewForm = IncompleteForm | CompletedForm
 
@@ -23,8 +23,8 @@ export class CompletedForm extends Data.TaggedClass('CompletedForm')<{
 }> {}
 
 export const fromBody = Effect.fn(
-  function* (body: unknown) {
-    const { whichPreprint } = yield* Schema.decodeUnknown(WhichPreprintSchema)(body)
+  function* (body: UrlParams.UrlParams) {
+    const { whichPreprint } = yield* Schema.decode(WhichPreprintSchema)(body)
 
     return Option.match(
       Option.orElse(Doi.parse(whichPreprint), () => Either.getRight(Url.fromString(whichPreprint))),
@@ -37,6 +37,8 @@ export const fromBody = Effect.fn(
   Effect.catchTag('ParseError', () => Effect.succeed(new InvalidForm({ whichPreprint: Either.left(new Missing()) }))),
 )
 
-const WhichPreprintSchema = Schema.Struct({
-  whichPreprint: NonEmptyString.NonEmptyStringSchema,
-})
+const WhichPreprintSchema = UrlParams.schemaRecord(
+  Schema.Struct({
+    whichPreprint: NonEmptyString.NonEmptyStringSchema,
+  }),
+)

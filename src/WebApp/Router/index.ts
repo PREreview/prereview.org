@@ -62,6 +62,16 @@ const MakeStaticRoute = <E, R>(
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
 
 const RequestAReviewFlowRouter = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.RequestAReview, RequestAReviewFlow.RequestAReviewPage()),
+  MakeStaticRoute(
+    'POST',
+    Routes.RequestAReview,
+    pipe(
+      Effect.Do,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(RequestAReviewFlow.RequestAReviewSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.RequestAReviewOfThisPreprint, RequestAReviewFlow.RequestAReviewOfThisPreprintPage),
   MakeRoute('GET', Routes.RequestAReviewStartNow, RequestAReviewFlow.StartNow),
   MakeRoute('GET', Routes.RequestAReviewChooseYourPersona, RequestAReviewFlow.ChooseYourPersonaPage),

@@ -55,7 +55,6 @@ import { LoggedInUser, SessionId, type User } from '../../../user.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
 import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import { profile } from '../../profile-page/index.ts'
-import { requestAPrereview, requestAPrereviewSubmission } from '../../request-a-prereview-page/index.ts'
 import * as Response from '../../Response/index.ts'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.ts'
 import { CommentsForReview, reviewPage } from '../../review-page/index.ts'
@@ -361,17 +360,6 @@ const routerWithoutHyperTs = pipe(
                 ...env.logger,
               }),
             }),
-      ),
-    ),
-    pipe(
-      Routes.requestAPrereviewMatch.parser,
-      P.map(
-        () => (env: Env) =>
-          (env.method === 'POST'
-            ? requestAPrereviewSubmission({ body: env.body, locale: env.locale })
-            : requestAPrereview({ locale: env.locale }))({
-            resolvePreprintId: EffectToFpts.toTaskEitherK(Preprints.resolvePreprintId, env.runtime),
-          }),
       ),
     ),
     pipe(
