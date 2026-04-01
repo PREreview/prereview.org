@@ -148,25 +148,21 @@ describe('makeDecision', () => {
       expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedUrl' })
     })
 
-    test.prop([
-      fc
-        .nonEmptyString()
-        .filter(
-          string =>
-            (!string.startsWith('10.') && !string.startsWith('http')) || !string.includes('.') || !string.includes('/'),
-        ),
-    ])('when the form is invalid', async whichPreprint => {
-      const actual = await _.makeDecision({ body: { whichPreprint }, method: 'POST' })({
-        resolvePreprintId: shouldNotBeCalled,
-      })()
+    test.prop([fc.nonEmptyString().filter(string => !string.startsWith('10.') && !URL.canParse(string))])(
+      'when the form is invalid',
+      async whichPreprint => {
+        const actual = await _.makeDecision({ body: { whichPreprint }, method: 'POST' })({
+          resolvePreprintId: shouldNotBeCalled,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'ShowFormWithErrors',
-        form: new RequestAReviewForm.InvalidForm({
-          whichPreprint: Either.left(new RequestAReviewForm.Invalid({ value: whichPreprint })),
-        }),
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'ShowFormWithErrors',
+          form: new RequestAReviewForm.InvalidForm({
+            whichPreprint: Either.left(new RequestAReviewForm.Invalid({ value: whichPreprint })),
+          }),
+        })
+      },
+    )
 
     test.prop([fc.string({ unit: fc.whiteSpaceCharacter() })])('when the form is empty', async whichPreprint => {
       const actual = await _.makeDecision({ body: { whichPreprint }, method: 'POST' })({
