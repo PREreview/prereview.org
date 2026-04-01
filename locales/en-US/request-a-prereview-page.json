@@ -116,6 +116,10 @@
   "doiCouldBeVerixiv": {
     "message": "We think the DOI {doi} could be a VeriXiv preprint, but we can’t find any details."
   },
+  "doiCouldBeUmsida": {
+    "message": "We think the DOI {doi} could be an UMSIDA preprint, but we can’t find any details.",
+    "description": "Text shown alongside the heading “Sorry, we don’t know this preprint”."
+  },
   "doiCouldBeZenodo": {
     "message": "We think the DOI {doi} could be a Zenodo preprint, but we can’t find any details."
   },
