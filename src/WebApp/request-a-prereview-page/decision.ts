@@ -1,5 +1,5 @@
 import type { IndeterminatePreprintId, PreprintId } from '../../Preprints/index.ts'
-import type * as Form from './form.ts'
+import type * as RequestAReviewForm from './RequestAReviewForm.ts'
 
 export type Decision =
   | BeginFlow
@@ -39,7 +39,7 @@ export interface ShowUnsupportedUrl {
 
 export interface ShowFormWithErrors {
   _tag: 'ShowFormWithErrors'
-  form: Form.InvalidForm
+  form: RequestAReviewForm.InvalidForm
 }
 
 export interface ShowEmptyForm {
@@ -61,7 +61,7 @@ export const ShowUnsupportedDoi: ShowUnsupportedDoi = { _tag: 'ShowUnsupportedDo
 
 export const ShowUnsupportedUrl: ShowUnsupportedUrl = { _tag: 'ShowUnsupportedUrl' }
 
-export const ShowFormWithErrors = (form: Form.InvalidForm): ShowFormWithErrors => ({
+export const ShowFormWithErrors = (form: RequestAReviewForm.InvalidForm): ShowFormWithErrors => ({
   _tag: 'ShowFormWithErrors',
   form,
 })

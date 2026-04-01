@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
@@ -7,37 +7,37 @@ import { requestAPrereviewMatch } from '../../routes.ts'
 import { errorPrefix } from '../../shared-translation-elements.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { PageResponse } from '../Response/index.ts'
-import type * as Form from './form.ts'
+import type * as RequestAReviewForm from './RequestAReviewForm.ts'
 
-export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: SupportedLocale) => {
-  const error = form._tag === 'InvalidForm'
+export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, locale: SupportedLocale) => {
+  const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale)
 
   return PageResponse({
-    status: error ? StatusCodes.BadRequest : StatusCodes.OK,
-    title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, error), plainText),
+    status: hasAnError ? StatusCodes.BadRequest : StatusCodes.OK,
+    title: pipe(t('request-a-prereview-page', 'requestTitle')(), errorPrefix(locale, hasAnError), plainText),
     nav: html`<a href="${Routes.HomePage}" class="back"><span>${t('forms', 'backLink')()}</span></a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
-        ${error
+        ${hasAnError
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
                 <h2 id="error-summary-title">${t('forms', 'errorSummaryTitle')()}</h2>
                 <ul>
                   <li>
-                    <a href="#preprint">${t('request-a-prereview-page', 'errorEnterPreprint')()}</a>
+                    <a href="#which-preprint">${t('request-a-prereview-page', 'errorEnterPreprint')()}</a>
                   </li>
                 </ul>
               </error-summary>
             `
           : ''}
 
-        <div ${rawHtml(error ? 'class="error"' : '')}>
+        <div ${rawHtml(hasAnError ? 'class="error"' : '')}>
           <h1>
-            <label id="preprint-label" for="preprint">${t('request-a-prereview-page', 'requestTitle')()}</label>
+            <label id="which-preprint-label" for="preprint">${t('request-a-prereview-page', 'requestTitle')()}</label>
           </h1>
 
-          <p id="preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
+          <p id="which-preprint-tip" role="note">${t('request-a-prereview-page', 'useDoiUrl')()}</p>
 
           <details>
             <summary><span>${t('request-a-prereview-page', 'whatIsDoi')()}</span></summary>
@@ -60,9 +60,9 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
             </div>
           </details>
 
-          ${error
+          ${hasAnError && Either.isLeft(form.whichPreprint)
             ? html`
-                <div class="error-message" id="preprint-error">
+                <div class="error-message" id="which-preprint-error">
                   <span class="visually-hidden">${t('forms', 'errorPrefix')()}:</span>
                   ${t('request-a-prereview-page', 'errorEnterPreprint')()}
                 </div>
@@ -70,14 +70,19 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
             : ''}
 
           <input
-            id="preprint"
-            name="preprint"
+            id="which-preprint"
+            name="whichPreprint"
             type="text"
             size="60"
             spellcheck="false"
-            aria-describedby="preprint-tip"
-            ${error ? html`value="${form.value}"` : ''}
-            ${error ? html`aria-invalid="true" aria-errormessage="preprint-error"` : ''}
+            aria-describedby="which-preprint-tip"
+            ${hasAnError && Either.isLeft(form.whichPreprint)
+              ? html`aria-invalid="true" aria-errormessage="which-preprint-error"
+                ${Match.valueTags(form.whichPreprint.left, {
+                  Invalid: ({ value }) => html`value="${value}"`,
+                  Missing: () => '',
+                })}`
+              : ''}
           />
         </div>
 
@@ -86,6 +91,6 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm, locale: Support
     `,
     skipToLabel: 'form',
     canonical: format(requestAPrereviewMatch.formatter, {}),
-    js: error ? ['error-summary.js'] : [],
+    js: hasAnError ? ['error-summary.js'] : [],
   })
 }

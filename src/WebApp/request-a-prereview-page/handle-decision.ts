@@ -4,9 +4,9 @@ import * as Routes from '../../routes.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import * as Response from '../Response/index.ts'
 import type * as Decision from './decision.ts'
-import * as Form from './form.ts'
 import { notAPreprintPage } from './not-a-preprint-page.ts'
 import { requestAPrereviewPage } from './request-a-prereview-page.ts'
+import * as RequestAReviewForm from './RequestAReviewForm.ts'
 import { unknownPreprintPage } from './unknown-preprint-page.ts'
 import { unsupportedDoiPage } from './unsupported-doi-page.ts'
 import { unsupportedUrlPage } from './unsupported-url-page.ts'
@@ -21,5 +21,5 @@ export const handleDecision = (decision: Decision.Decision, locale: SupportedLoc
     ShowUnknownPreprint: ({ preprint }) => unknownPreprintPage(preprint, locale),
     ShowUnsupportedDoi: () => unsupportedDoiPage(locale),
     ShowUnsupportedUrl: () => unsupportedUrlPage(locale),
-    ShowEmptyForm: () => requestAPrereviewPage(Form.EmptyForm, locale),
+    ShowEmptyForm: () => requestAPrereviewPage(new RequestAReviewForm.EmptyForm(), locale),
   })

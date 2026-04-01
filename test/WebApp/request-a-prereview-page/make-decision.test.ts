@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
-import { Array, Tuple } from 'effect'
+import { Array, Either, Tuple } from 'effect'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { ResolvePreprintIdEnv } from '../../../src/preprint.ts'
 import {
@@ -18,6 +18,7 @@ import {
   PreprintIsUnavailable,
 } from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/WebApp/request-a-prereview-page/make-decision.ts'
+import * as RequestAReviewForm from '../../../src/WebApp/request-a-prereview-page/RequestAReviewForm.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
@@ -83,7 +84,7 @@ describe('makeDecision', () => {
     )('when the form is valid', async ([value, expected], preprintId) => {
       const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(preprintId))
 
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({ resolvePreprintId })()
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({ resolvePreprintId })()
 
       expect(actual).toStrictEqual({ _tag: 'BeginFlow', preprint: preprintId })
       expect(resolvePreprintId).toHaveBeenCalledWith(...expected)
@@ -95,7 +96,7 @@ describe('makeDecision', () => {
         fc.supportedPreprintUrl().map(([url, id]) => Tuple.make(url.href, id)),
       ),
     ])('when the preprint is not found', async ([value, preprint]) => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({
         resolvePreprintId: () => TE.left(new PreprintIsNotFound({})),
       })()
 
@@ -111,7 +112,7 @@ describe('makeDecision', () => {
         fc.supportedPreprintUrl().map(([url]) => url.href),
       ),
     ])('when it is not a preprint', async value => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({
         resolvePreprintId: () => TE.left(new NotAPreprint({})),
       })()
 
@@ -124,7 +125,7 @@ describe('makeDecision', () => {
         fc.supportedPreprintUrl().map(([url]) => url.href),
       ),
     ])("when the preprint can't be loaded", async value => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({
         resolvePreprintId: () => TE.left(new PreprintIsUnavailable({})),
       })()
 
@@ -132,7 +133,7 @@ describe('makeDecision', () => {
     })
 
     test.prop([fc.nonPreprintDoi()])('when it is not a supported DOI', async value => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({
         resolvePreprintId: shouldNotBeCalled,
       })()
 
@@ -140,7 +141,7 @@ describe('makeDecision', () => {
     })
 
     test.prop([fc.nonPreprintUrl().map(url => url.href)])('when it is not a supported URL', async value => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+      const actual = await _.makeDecision({ body: { whichPreprint: value }, method: 'POST' })({
         resolvePreprintId: shouldNotBeCalled,
       })()
 
@@ -149,17 +150,35 @@ describe('makeDecision', () => {
 
     test.prop([
       fc
-        .string()
+        .nonEmptyString()
         .filter(
           string =>
             (!string.startsWith('10.') && !string.startsWith('http')) || !string.includes('.') || !string.includes('/'),
         ),
-    ])('when the form is invalid', async value => {
-      const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST' })({
+    ])('when the form is invalid', async whichPreprint => {
+      const actual = await _.makeDecision({ body: { whichPreprint }, method: 'POST' })({
         resolvePreprintId: shouldNotBeCalled,
       })()
 
-      expect(actual).toStrictEqual({ _tag: 'ShowFormWithErrors', form: { _tag: 'InvalidForm', value } })
+      expect(actual).toStrictEqual({
+        _tag: 'ShowFormWithErrors',
+        form: new RequestAReviewForm.InvalidForm({
+          whichPreprint: Either.left(new RequestAReviewForm.Invalid({ value: whichPreprint })),
+        }),
+      })
+    })
+
+    test.prop([fc.string({ unit: fc.whiteSpaceCharacter() })])('when the form is empty', async whichPreprint => {
+      const actual = await _.makeDecision({ body: { whichPreprint }, method: 'POST' })({
+        resolvePreprintId: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'ShowFormWithErrors',
+        form: new RequestAReviewForm.InvalidForm({
+          whichPreprint: Either.left(new RequestAReviewForm.Missing()),
+        }),
+      })
     })
   })
 

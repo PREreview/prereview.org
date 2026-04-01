@@ -174,7 +174,7 @@ export const some = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
 export const maybe = <A>(someArb: fc.Arbitrary<A>): fc.Arbitrary<Option.Option<A>> =>
   fc.oneof(some(someArb), fc.constant(Option.none()))
 
-const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<Either.Either<never, E>> => arb.map(Either.left)
+export const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<Either.Either<never, E>> => arb.map(Either.left)
 
 const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Either.Either<A>> => arb.map(Either.right)
 
