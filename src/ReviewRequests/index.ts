@@ -1,4 +1,3 @@
-import type { HttpClient } from '@effect/platform'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
@@ -56,7 +55,7 @@ export const layer = pipe(
     ReviewRequests,
     Effect.gen(function* () {
       const context = yield* Effect.andThen(
-        Effect.context<HttpClient.HttpClient | Preprints.Preprints | Queries.ReviewRequestQueries>(),
+        Effect.context<Preprints.Preprints | Queries.ReviewRequestQueries>(),
         Context.omit(Scope.Scope),
       )
 

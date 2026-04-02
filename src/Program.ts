@@ -347,11 +347,11 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
-  Layer.provide([Prereviews.layer, Layer.provide(ReviewRequests.layer, CachingHttpClient.layer('10 minutes'))]),
+  Layer.provide([Prereviews.layer, ReviewRequests.layer]),
   Layer.provide([
     Personas.layer,
     DatasetData.layer,
-    Layer.provide(PreprintData.layer, CachingHttpClient.layer('1 day')),
+    PreprintData.layer,
     OpenAlexWorks.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
     getPseudonym,
