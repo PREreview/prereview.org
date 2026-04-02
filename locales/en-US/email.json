@@ -35,10 +35,42 @@
   "chooseNotToBeListedLink": {
     "message": "You can also choose not to be listed by <link>declining this invitation</link> or ignoring this email."
   },
+  "acknowledgeReviewRequestTitle": {
+    "message": "Review requested from the PREreview community",
+    "description": "The title of the email sent to a user when they have requested a PREreview of their preprint."
+  },
+  "thanksReviewRequest": {
+    "message": "Thank you for requesting a review from PREreview.",
+    "description": "Text in the email titled “Review requested from the PREreview community”."
+  },
+  "reviewRequestSharedWithCommunity": {
+    "message": "While we cannot guarantee a review, we’ve shared your request with our PREreview community on our {slackChannel} Slack channel.",
+    "description": "Text in the email titled “Review requested from the PREreview community”."
+  },
+  "reviewRequestSlackCommunity": {
+    "message": "You can join our Slack Community and add further details to your review request by signing up at {slackLink}.",
+    "description": "Text in the email titled “Review requested from the PREreview community”."
+  },
   "haveAnyQuestions": {
     "message": "If you have any questions, please let us know at {emailAddress}."
   },
   "allTheBest": {
     "message": "All the best,"
+  },
+  "footerIntro": {
+    "message": "PREreview is a platform, resource center, and convener.",
+    "description": "The first sentence of the email footer."
+  },
+  "footerCommunity": {
+    "message": "We provide ways for feedback to preprints to be done openly, rapidly, constructively, and by a global community of peers.",
+    "description": "The second sentence of the email footer."
+  },
+  "footerJoinHtml": {
+    "message": "Join us at <prereviewLink>prereview.org</prereviewLink> and <slackLink>sign up to our vibrant Slack community</slackLink>.",
+    "description": "The third sentence of the email footer for HTML emails."
+  },
+  "footerJoinText": {
+    "message": "Join us at {prereviewLink} and sign up to our vibrant Slack community at {slackLink}.",
+    "description": "The third sentence of the email footer for plain-text emails."
   }
 }
