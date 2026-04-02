@@ -16,7 +16,7 @@ test('HTML looks right', async ({ page }) => {
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
-test('text looks right', async ({ page }) => {
+test('text looks right', { tag: '@text' }, () => {
   const email = _.CreateEmail({
     requester: {
       name: NonEmptyString('Josiah Carberry'),
@@ -24,7 +24,5 @@ test('text looks right', async ({ page }) => {
     },
   })
 
-  await page.setContent(`<pre>${email.text}</pre>`)
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  expect(`${email.text}\n`).toMatchSnapshot()
 })

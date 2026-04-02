@@ -35,7 +35,7 @@ test('email-verification HTML looks right', async ({ page }) => {
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
-test('email-verification text looks right', async ({ page }) => {
+test('email-verification text looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmail({
     user: {
       name: NonEmptyString('Josiah Carberry'),
@@ -49,9 +49,7 @@ test('email-verification text looks right', async ({ page }) => {
     verificationUrl: new URL('http://example.com'),
   })({ locale: DefaultLocale })
 
-  await page.setContent(`<pre>${email.text}</pre>`)
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  expect(`${email.text}\n`).toMatchSnapshot()
 })
 
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
@@ -73,7 +71,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
-test('email-verification text for an invited author looks right', async ({ page }) => {
+test('email-verification text for an invited author looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
     user: {
       name: NonEmptyString('Josiah Carberry'),
@@ -87,9 +85,7 @@ test('email-verification text for an invited author looks right', async ({ page 
     authorInvite: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
   })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
 
-  await page.setContent(`<pre>${email.text}</pre>`)
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  expect(`${email.text}\n`).toMatchSnapshot()
 })
 
 test('email-verification HTML for a comment looks right', async ({ page }) => {
@@ -112,7 +108,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
-test('email-verification text for a comment looks right', async ({ page }) => {
+test('email-verification text for a comment looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmailForComment({
     user: {
       name: NonEmptyString('Josiah Carberry'),
@@ -127,9 +123,7 @@ test('email-verification text for a comment looks right', async ({ page }) => {
     locale: DefaultLocale,
   })({ publicUrl: new URL('http://example.com') })
 
-  await page.setContent(`<pre>${email.text}</pre>`)
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  expect(`${email.text}\n`).toMatchSnapshot()
 })
 
 test('author-invite HTML looks right', async ({ page }) => {
@@ -155,7 +149,7 @@ test('author-invite HTML looks right', async ({ page }) => {
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
 
-test('author-invite text looks right', async ({ page }) => {
+test('author-invite text looks right', { tag: '@text' }, ({}) => {
   const email = createAuthorInviteEmail(
     {
       name: NonEmptyString('Josiah Carberry'),
@@ -173,7 +167,5 @@ test('author-invite text looks right', async ({ page }) => {
     DefaultLocale,
   )({ publicUrl: new URL('http://example.com') })
 
-  await page.setContent(`<pre>${email.text}</pre>`)
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
+  expect(`${email.text}\n`).toMatchSnapshot()
 })

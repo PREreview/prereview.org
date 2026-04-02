@@ -57,12 +57,19 @@ export default defineConfig({
         ...env,
         name: `${env.name} Visual Regression`,
         testDir: 'visual-regression',
+        grepInvert: /@text/,
         snapshotDir: path.resolve('visual-regression', 'snapshots'),
       }))
       .flatMap(env => [
         env,
         { ...env, name: `${env.name} (no JavaScript)`, use: { ...env.use, javaScriptEnabled: false } },
       ]),
+    {
+      name: 'Text Visual Regression',
+      testDir: 'visual-regression',
+      grep: /@text/,
+      snapshotDir: path.resolve('visual-regression', 'snapshots'),
+    },
   ],
   testDir: 'integration',
   use: {
