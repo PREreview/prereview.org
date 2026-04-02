@@ -39,6 +39,7 @@ export const ClubIdSchema = Schema.Literal(
   'oxplants',
   'padua-biomedical-sciences',
   'parasitology-infectious-diseases',
+  'physical-education',
   'plant-biotechnology',
   'plant-pathology-genomics',
   'prosac',

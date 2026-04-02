@@ -731,6 +731,30 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [{ name: 'Diptarup Mallick', orcid: OrcidId('0009-0006-6065-9650') }],
     contact: EmailAddress('diptarupmallick3@gmail.com'),
   },
+  'physical-education': {
+    name: 'Physical Education Preprint & Review Club',
+    description: html`
+      <p>
+        The Physical Education Preprint &amp; Review Club is coordinated by researchers and graduate students in
+        Physical Education at the <a href="https://www.uem.br">State University of Maringá</a> (Brazil) and is connected
+        to initiatives promoted by the
+        <a href="https://periodicos.uem.br/ojs/index.php/RevEducFis/index">Journal of Physical Education</a> (Maringá)
+        to encourage open science practices and innovation in scholarly communication. The initiative aligns with the
+        journal’s editorial commitment to transparency, collaboration, and the recognition of diverse forms of scholarly
+        contribution.
+      </p>
+      <p>
+        The Physical Education Preprint &amp; Review Club is a collaborative training space where students and
+        early-career researchers discuss preprints in Physical Education and Sport Sciences and learn how to produce
+        constructive peer reviews. Reviews developed within the club are part of a formative and open-science learning
+        environment and are independent from the formal peer-review process of the Journal of Physical Education
+        (Maringá), which follows its own editorial procedures.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-04-02'),
+    leads: [{ name: 'Carlos Herold Junior', orcid: OrcidId('0000-0001-7962-274X') }],
+    contact: EmailAddress('chjunior@uem.br'),
+  },
   'plant-biotechnology': {
     name: 'Plant Biotechnology Club',
     description: html`
