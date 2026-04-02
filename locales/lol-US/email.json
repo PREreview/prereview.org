@@ -35,10 +35,34 @@
   "chooseNotToBeListedLink": {
     "message": "crwdns5794:0crwdne5794:0"
   },
+  "acknowledgeReviewRequestTitle": {
+    "message": "crwdns6524:0crwdne6524:0"
+  },
+  "thanksReviewRequest": {
+    "message": "crwdns6526:0crwdne6526:0"
+  },
+  "reviewRequestSharedWithCommunity": {
+    "message": "crwdns6528:0{slackChannel}crwdne6528:0"
+  },
+  "reviewRequestSlackCommunity": {
+    "message": "crwdns6530:0{slackLink}crwdne6530:0"
+  },
   "haveAnyQuestions": {
     "message": "crwdns5796:0{emailAddress}crwdne5796:0"
   },
   "allTheBest": {
     "message": "crwdns5798:0crwdne5798:0"
+  },
+  "footerIntro": {
+    "message": "crwdns6532:0crwdne6532:0"
+  },
+  "footerCommunity": {
+    "message": "crwdns6534:0crwdne6534:0"
+  },
+  "footerJoinHtml": {
+    "message": "crwdns6536:0crwdne6536:0"
+  },
+  "footerJoinText": {
+    "message": "crwdns6538:0{prereviewLink}crwdnd6538:0{slackLink}crwdne6538:0"
   }
 }
