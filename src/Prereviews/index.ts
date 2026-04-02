@@ -112,14 +112,16 @@ export const layer = Layer.effect(
           }),
           Effect.map(Struct.get('recentPrereviews')),
           Effect.andThen(
-            Effect.forEach(
-              flow(
-                Match.value,
-                Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
-                Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
-                Match.exhaustive,
+            flow(
+              Array.map(
+                flow(
+                  Match.value,
+                  Match.tag('RecentPreprintPrereview', prereview => Effect.succeed(prereview)),
+                  Match.tag('DatasetReview', ({ id }) => getRecentDatasetPrereview(id)),
+                  Match.exhaustive,
+                ),
               ),
-              { concurrency: 'inherit' },
+              effects => Effect.allSuccesses(effects, { concurrency: 'inherit' }),
             ),
           ),
           Effect.orElseSucceed(Array.empty),
