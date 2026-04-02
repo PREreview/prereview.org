@@ -196,27 +196,42 @@ export const createPage = ({
                     <li>
                       <article aria-labelledby="prereview-${prereview.id}-title">
                         <h3 id="prereview-${prereview.id}-title" class="visually-hidden">
-                          PREreview of
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                            lang="${prereview.dataset.language}"
-                            >${prereview.dataset.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'dataset-reviews-list',
+                              'reviewTitle',
+                            )({
+                              dataset: html`<cite
+                                dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                                lang="${prereview.dataset.language}"
+                                >${prereview.dataset.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </h3>
 
                         <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                          ${formatList(locale)([displayPersona(prereview.author)])} reviewed
-                          <cite
-                            dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                            lang="${prereview.dataset.language}"
-                            >${prereview.dataset.title}</cite
-                          >
+                          ${rawHtml(
+                            translate(
+                              locale,
+                              'dataset-reviews-list',
+                              'reviewText',
+                            )({
+                              reviewers: formatList(locale)([displayPersona(prereview.author)]).toString(),
+                              dataset: html`<cite
+                                dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                                lang="${prereview.dataset.language}"
+                                >${prereview.dataset.title}</cite
+                              >`.toString(),
+                            }),
+                          )}
                         </a>
 
                         <dl>
-                          <dt>Review published</dt>
+                          <dt>${translate(locale, 'dataset-reviews-list', 'reviewPublished')()}</dt>
                           <dd>${renderDate(locale)(prereview.published)}</dd>
-                          <dt>Repository</dt>
+                          <dt>${translate(locale, 'dataset-reviews-list', 'repository')()}</dt>
                           <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
                         </dl>
                       </article>

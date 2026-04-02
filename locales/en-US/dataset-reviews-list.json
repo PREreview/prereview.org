@@ -1,0 +1,18 @@
+{
+  "reviewTitle": {
+    "message": "PREreview of {dataset}",
+    "description": "Title of the review in a list."
+  },
+  "reviewText": {
+    "message": "{reviewers} reviewed {dataset}",
+    "description": "Text of the review in a list."
+  },
+  "reviewPublished": {
+    "message": "Review published",
+    "description": "Label for the date that the review was published."
+  },
+  "repository": {
+    "message": "Repository",
+    "description": "Label for the repository containing the dataset."
+  }
+}
