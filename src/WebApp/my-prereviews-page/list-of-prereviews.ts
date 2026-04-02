@@ -112,16 +112,26 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    <b>${displayPersona(prereview.author)}</b> reviewed
-                    <cite dir="${rtlDetect.getLangDir(prereview.dataset.language)}" lang="${prereview.dataset.language}"
-                      >${prereview.dataset.title}</cite
-                    >
+                    ${rawHtml(
+                      translate(
+                        locale,
+                        'dataset-reviews-list',
+                        'reviewText',
+                      )({
+                        reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
+                        dataset: html`<cite
+                          dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                          lang="${prereview.dataset.language}"
+                          >${prereview.dataset.title}</cite
+                        >`.toString(),
+                      }),
+                    )}
                   </a>
 
                   <dl>
-                    <dt>Review published</dt>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>Repository</dt>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'repository')()}</dt>
                     <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
                   </dl>
                 </article>

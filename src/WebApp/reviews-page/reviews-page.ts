@@ -120,16 +120,26 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    ${formatList(locale)([displayPersona(prereview.author)])} reviewed
-                    <cite dir="${rtlDetect.getLangDir(prereview.dataset.language)}" lang="${prereview.dataset.language}"
-                      >${prereview.dataset.title}</cite
-                    >
+                    ${rawHtml(
+                      translate(
+                        locale,
+                        'dataset-reviews-list',
+                        'reviewText',
+                      )({
+                        reviewer: displayPersona(prereview.author),
+                        dataset: html`<cite
+                          dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                          lang="${prereview.dataset.language}"
+                          >${prereview.dataset.title}</cite
+                        >`.toString(),
+                      }),
+                    )}
                   </a>
 
                   <dl>
-                    <dt>Review published</dt>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'reviewPublished')()}</dt>
                     <dd>${renderDate(locale)(prereview.published)}</dd>
-                    <dt>Repository</dt>
+                    <dt>${translate(locale, 'dataset-reviews-list', 'repository')()}</dt>
                     <dd>${Datasets.getRepositoryName(prereview.dataset.id)}</dd>
                   </dl>
                 </article>
