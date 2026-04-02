@@ -4,7 +4,7 @@
     "description": "Title of the review in a list."
   },
   "reviewText": {
-    "message": "{reviewers} reviewed {dataset}",
+    "message": "{reviewer} reviewed {dataset}",
     "description": "Text of the review in a list."
   },
   "reviewPublished": {
