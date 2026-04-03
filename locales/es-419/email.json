@@ -35,6 +35,12 @@
   "chooseNotToBeListedLink": {
     "message": "También puedes optar por no aparecer <link>rechazando esta invitación</link> o ignorando este correo."
   },
+  "reviewRequestSharedWithCommunity": {
+    "message": "Aunque no podemos garantizar una revisión, hemos compartido tu solicitud con nuestra comunidad de PREreview en nuestro canal de Slack {slackChannel}."
+  },
+  "reviewRequestSlackCommunity": {
+    "message": "Puedes unirte a nuestra comunidad de Slack y añadir más detalles a tu solicitud de revisión registrándote en {slackLink}."
+  },
   "haveAnyQuestions": {
     "message": "Si tienes alguna pregunta, infórmanos en {emailAddress}."
   },

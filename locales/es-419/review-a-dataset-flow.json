@@ -20,11 +20,38 @@
   "dontKnowDataset": {
     "message": "Lo sentimos, no conocemos este conjunto de datos"
   },
+  "doiCouldBeDryad": {
+    "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de Dryad, pero no podemos encontrar más detalles."
+  },
+  "doiCouldBeScielo": {
+    "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de SciELO, pero no podemos encontrar más detalles."
+  },
   "doiIsCorrect": {
     "message": "Si el DOI es correcto, por favor <contact>contactáctanos</contact>."
   },
+  "unsupportedDoi": {
+    "message": "Lo sentimos, pero no admitimos este DOI"
+  },
+  "unsupportedUrl": {
+    "message": "Lo sentimos, pero no admitimos esta URL"
+  },
+  "supportDatasetsFrom": {
+    "message": "Aceptamos conjuntos de datos de Dryad y SciELO."
+  },
+  "doiIsForDataset": {
+    "message": "Si este DOI corresponde a un conjunto de datos de un repositorio que no admitimos, por favor <contact>contactáctanos</contact>."
+  },
+  "urlIsForDataset": {
+    "message": "Si esta URL corresponde a un conjunto de datos de un repositorio que no admitimos, por favor <contact>contáctanos</contact>."
+  },
   "tryDoi": {
     "message": "De lo contrario, si el conjunto de datos tiene un DOI, por favor intenta usarlo en su lugar."
+  },
+  "notADataset": {
+    "message": "Lo sentimos, solo admitimos conjuntos de datos"
+  },
+  "isADataset": {
+    "message": "Si esto es un conjunto de datos, por favor <contact>contactáctanos</contact>."
   },
   "reviewADataset": {
     "message": "Revisar un conjunto de datos"
@@ -62,8 +89,38 @@
   "title": {
     "message": "Título"
   },
+  "posted": {
+    "message": "Publicado"
+  },
   "repository": {
     "message": "Repositorio"
+  },
+  "yourDetails": {
+    "message": "Tus datos"
+  },
+  "examples": {
+    "message": "Ejemplos"
+  },
+  "examplePersonalRelationship": {
+    "message": "Tienes una relación personal con el/la autor/a."
+  },
+  "exampleWorked": {
+    "message": "Has trabajado recientemente con el/la autor/a."
+  },
+  "exampleCollaborate": {
+    "message": "Colaboras con el/la autor/a."
+  },
+  "examplePublished": {
+    "message": "Has publicado con el/la autor/a en los últimos cinco años."
+  },
+  "competingInterestsDetails": {
+    "message": "¿Cuáles son?"
+  },
+  "codeOfConduct": {
+    "message": "Código de conducta"
+  },
+  "exampleEmpathy": {
+    "message": "Mostrar empatía hacia otros integrantes de la comunidad."
   },
   "yourReview": {
     "message": "Tu revisión"
