@@ -99,7 +99,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-no-comments": "^1.1.10",
+    "eslint-plugin-no-comments": "^1.2.1",
     "eslint-plugin-wc": "^3.1.0",
     "expect": "^30.3.0",
     "fast-check": "^3.23.2",

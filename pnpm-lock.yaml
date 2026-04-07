@@ -285,8 +285,8 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.2(jiti@2.6.1))(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-no-comments:
-        specifier: ^1.1.10
-        version: 1.1.10
+        specifier: ^1.2.1
+        version: 1.2.1(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-wc:
         specifier: ^3.1.0
         version: 3.1.0(eslint@9.39.2(jiti@2.6.1))
@@ -3481,8 +3481,11 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-no-comments@1.1.10:
-    resolution: {integrity: sha512-hJohtfKNKDDAmhQ/VsvaN7Q41npFVBeAQISf54ywRQx7EhknF+068SPHj5g3njKMoxYAuk62ahJvJQQvMYeL7g==}
+  eslint-plugin-no-comments@1.2.1:
+    resolution: {integrity: sha512-LsUTMY20oLw+fiu23c3ssBHqKXe7pWMHzaXNx2DM+anpmBwzKHclA3XLrY/YsYNqTipuDA0u28/Wxc2pxke6bA==}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      eslint: ^9.0.0 || ^10.0.0
 
   eslint-plugin-wc@3.1.0:
     resolution: {integrity: sha512-spvXHD2/GTTgYXxFB3xlMThnXGUeNJaiCwWuPGzjDOLXnVGLcQpDt0fyiN6yiLoaLs/yhsj+7G1FpBZKeigCSA==}
@@ -9940,7 +9943,9 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-no-comments@1.1.10: {}
+  eslint-plugin-no-comments@1.2.1(eslint@9.39.2(jiti@2.6.1)):
+    dependencies:
+      eslint: 9.39.2(jiti@2.6.1)
 
   eslint-plugin-wc@3.1.0(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
