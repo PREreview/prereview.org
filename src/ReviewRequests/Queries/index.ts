@@ -6,6 +6,7 @@ import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewReque
 import { FindReviewRequestByAPrereviewer } from './FindReviewRequestByAPrereviewer.ts'
 import { FindReviewRequestsNeedingCategorization } from './FindReviewRequestsNeedingCategorization.ts'
 import { GetFiveMostRecentReviewRequests } from './GetFiveMostRecentReviewRequests.ts'
+import { GetNextExpectedCommandForAUserOnAReviewRequest } from './GetNextExpectedCommandForAUserOnAReviewRequest.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetPublishedReviewRequest } from './GetPublishedReviewRequest.ts'
 import { GetPublishedReviewRequestByAPrereviewer } from './GetPublishedReviewRequestByAPrereviewer.ts'
@@ -20,6 +21,9 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
     findReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof FindReviewRequestByAPrereviewer>
+    getNextExpectedCommandForAUserOnAReviewRequest: Queries.FromStatefulQuery<
+      typeof GetNextExpectedCommandForAUserOnAReviewRequest
+    >
     getPersonaChoice: Queries.FromStatefulQuery<typeof GetPersonaChoice>
     getReviewRequestReadyToBePublished: Queries.FromStatefulQuery<typeof GetReviewRequestReadyToBePublished>
     getPublishedReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof GetPublishedReviewRequestByAPrereviewer>
@@ -36,6 +40,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
 export const {
   doesAPreprintHaveAReviewRequest,
   findReviewRequestByAPrereviewer,
+  getNextExpectedCommandForAUserOnAReviewRequest,
   getPersonaChoice,
   getReviewRequestReadyToBePublished,
   getPublishedReviewRequestByAPrereviewer,
@@ -66,6 +71,9 @@ const makeReviewRequestQueries: Effect.Effect<
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
     findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
+    getNextExpectedCommandForAUserOnAReviewRequest: yield* Queries.makeStatefulQuery(
+      GetNextExpectedCommandForAUserOnAReviewRequest,
+    ),
     getReviewRequestReadyToBePublished: yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished),
     getPersonaChoice: yield* Queries.makeStatefulQuery(GetPersonaChoice),
     getPublishedReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(GetPublishedReviewRequestByAPrereviewer),
