@@ -35,6 +35,12 @@
   "chooseNotToBeListedLink": {
     "message": "También puedes optar por no aparecer <link>rechazando esta invitación</link> o ignorando este correo."
   },
+  "acknowledgeReviewRequestTitle": {
+    "message": "Solicitud de revisión a la comunidad de PREreview"
+  },
+  "thanksReviewRequest": {
+    "message": "Gracias por solicitar una revisión a PREreview."
+  },
   "reviewRequestSharedWithCommunity": {
     "message": "Aunque no podemos garantizar una revisión, hemos compartido tu solicitud con nuestra comunidad de PREreview en nuestro canal de Slack {slackChannel}."
   },
@@ -46,5 +52,11 @@
   },
   "allTheBest": {
     "message": "Atentamente,"
+  },
+  "footerJoinHtml": {
+    "message": "Únete a nosotros en <prereviewLink>prereview.org</prereviewLink> y <slackLink>regístrate en nuestra vibrante comunidad de Slack</slackLink>."
+  },
+  "footerJoinText": {
+    "message": "Únete a nosotros en {prereviewLink} y regístrate en nuestra vibrante comunidad de Slack en {slackLink}."
   }
 }

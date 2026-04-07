@@ -1,0 +1,11 @@
+{
+  "reviewTitle": {
+    "message": "PREreview del {dataset}"
+  },
+  "reviewPublished": {
+    "message": "Revisión publicada"
+  },
+  "repository": {
+    "message": "Repositorio"
+  }
+}

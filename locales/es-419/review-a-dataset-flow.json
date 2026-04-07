@@ -26,6 +26,9 @@
   "doiCouldBeScielo": {
     "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de SciELO, pero no podemos encontrar más detalles."
   },
+  "checkPastedDoi": {
+    "message": "Si pegaste el DOI, verifica que hayas copiado la dirección completa."
+  },
   "doiIsCorrect": {
     "message": "Si el DOI es correcto, por favor <contact>contactáctanos</contact>."
   },
@@ -98,11 +101,23 @@
   "yourDetails": {
     "message": "Tus datos"
   },
+  "publishedName": {
+    "message": "Nombre publicado"
+  },
+  "changePublishedName": {
+    "message": "Cambiar <visuallyHidden>tu nombre publicado</visuallyHidden>"
+  },
+  "competingInterestDefinition": {
+    "message": "Un conflicto de intereses es cualquier cosa que pudiera interferir con la objetividad de una PREreview."
+  },
   "examples": {
     "message": "Ejemplos"
   },
   "examplePersonalRelationship": {
     "message": "Tienes una relación personal con el/la autor/a."
+  },
+  "exampleRival": {
+    "message": "Eres rival o competidor/a del/la autor/a."
   },
   "exampleWorked": {
     "message": "Has trabajado recientemente con el/la autor/a."
@@ -115,6 +130,12 @@
   },
   "competingInterestsDetails": {
     "message": "¿Cuáles son?"
+  },
+  "enterCompetingInterestsDetails": {
+    "message": "Ingresa los detalles de tu conflicto de intereses"
+  },
+  "noneDeclared": {
+    "message": "Ninguno declarado"
   },
   "codeOfConduct": {
     "message": "Código de conducta"

@@ -1,4 +1,10 @@
 {
+  "title": {
+    "message": "PREreviews de {dataset}"
+  },
+  "authoredBy": {
+    "message": "<visuallyHidden>Producido</visuallyHidden> por {authors}"
+  },
   "abstractHeading": {
     "message": "Resumen"
   },
@@ -10,5 +16,17 @@
   },
   "seeDataset": {
     "message": "Ver el conjunto de datos"
+  },
+  "writeAPrereview": {
+    "message": "Redactar una PREreview"
+  },
+  "prereviewTitle": {
+    "message": "PREreview de {author}"
+  },
+  "prereviewAuthoredBy": {
+    "message": "<visuallyHidden>Escrita</visuallyHidden> por {author}"
+  },
+  "readPrereview": {
+    "message": "Leer <visuallyHidden>la PREreview de {author}</visuallyHidden>"
   }
 }
