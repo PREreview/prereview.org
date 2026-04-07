@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Array, Effect, Either, Match, Option, flow, identity, pipe } from 'effect'
+import { Array, Effect, Either, Match, Option, type Types, flow, identity, pipe } from 'effect'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as Decision from './Decision.ts'
 import * as RequestAReviewForm from './RequestAReviewForm.ts'
@@ -46,8 +46,7 @@ const extractPreprintId = (
 > =>
   pipe(
     RequestAReviewForm.fromBody(body),
-    Effect.filterOrFail((form): form is RequestAReviewForm.CompletedForm => form._tag === 'CompletedForm', identity),
-    Effect.mapError(Decision.ShowFormWithErrors),
+    Effect.filterOrFail(hasTag('CompletedForm'), form => Decision.ShowFormWithErrors(form)),
     Effect.andThen(form =>
       pipe(
         Match.value(form.whichPreprint),
@@ -70,3 +69,7 @@ const extractPreprintId = (
       ),
     ),
   )
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}
