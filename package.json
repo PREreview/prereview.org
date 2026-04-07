@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@arendjr/text-clipper": "npm:@jsr/arendjr__text-clipper@^3.0.0",
+    "@arendjr/text-clipper": "jsr:@arendjr/text-clipper@^3.0.0",
     "@effect/ai": "^0.35.0",
     "@effect/ai-openai": "^0.39.0",
     "@effect/cli": "^0.75.0",
