@@ -1,7 +1,7 @@
 import type { UrlParams } from '@effect/platform'
 import { Array, Effect, Either, Match, Option, flow, identity, pipe } from 'effect'
 import * as Preprints from '../../../Preprints/index.ts'
-import * as Decision from './decision.ts'
+import * as Decision from './Decision.ts'
 import * as RequestAReviewForm from './RequestAReviewForm.ts'
 
 export const makeDecision = ({

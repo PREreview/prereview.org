@@ -17,7 +17,7 @@ import {
   PreprintIsNotFound,
   PreprintIsUnavailable,
 } from '../../../../src/Preprints/index.ts'
-import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/make-decision.ts'
+import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/MakeDecision.ts'
 import * as RequestAReviewForm from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/RequestAReviewForm.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'

@@ -4,7 +4,7 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import * as Routes from '../../../../src/routes.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
-import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/handle-decision.ts'
+import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/HandleDecision.ts'
 import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from './fc.ts'
 

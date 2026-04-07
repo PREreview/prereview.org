@@ -1,11 +1,11 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId, PhilsciPreprintId } from '../../../src/Preprints/index.ts'
-import { unknownPreprintPage } from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/unknown-preprint-page.ts'
+import * as _ from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/UnknownPreprintPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right with a DOI ID', async ({ showPage }) => {
-  const response = unknownPreprintPage(
+  const response = _.UnknownPreprintPage(
     new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
     DefaultLocale,
   )
@@ -16,7 +16,7 @@ test('content looks right with a DOI ID', async ({ showPage }) => {
 })
 
 test('content looks right with a PhilSci ID', async ({ showPage }) => {
-  const response = unknownPreprintPage(new PhilsciPreprintId({ value: 21986 }), DefaultLocale)
+  const response = _.UnknownPreprintPage(new PhilsciPreprintId({ value: 21986 }), DefaultLocale)
 
   const content = await showPage(response)
 

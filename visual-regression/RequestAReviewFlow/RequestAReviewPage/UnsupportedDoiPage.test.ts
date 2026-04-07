@@ -1,9 +1,9 @@
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { unsupportedUrlPage } from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/unsupported-url-page.ts'
+import * as _ from '../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/UnsupportedDoiPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const content = await showPage(unsupportedUrlPage(DefaultLocale))
+  const content = await showPage(_.UnsupportedDoiPage(DefaultLocale))
 
   await expect(content).toHaveScreenshot()
 })

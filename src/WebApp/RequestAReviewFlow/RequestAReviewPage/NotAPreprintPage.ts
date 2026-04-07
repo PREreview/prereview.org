@@ -4,7 +4,7 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const notAPreprintPage = (locale: SupportedLocale) =>
+export const NotAPreprintPage = (locale: SupportedLocale) =>
   PageResponse({
     status: StatusCodes.BadRequest,
     title: plainText(translate(locale, 'request-a-prereview-page', 'notAPreprint')()),

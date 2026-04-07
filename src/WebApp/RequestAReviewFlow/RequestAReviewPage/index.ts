@@ -3,8 +3,8 @@ import { Effect } from 'effect'
 import type { Locale } from '../../../Context.ts'
 import type * as Preprints from '../../../Preprints/index.ts'
 import type * as Response from '../../Response/index.ts'
-import { handleDecision } from './handle-decision.ts'
-import { makeDecision } from './make-decision.ts'
+import { handleDecision } from './HandleDecision.ts'
+import { makeDecision } from './MakeDecision.ts'
 
 export const RequestAReviewPage: () => Effect.Effect<Response.Response, never, Preprints.Preprints | Locale> =
   Effect.fn('RequestAReviewFlow.RequestAReviewPage')(function* () {

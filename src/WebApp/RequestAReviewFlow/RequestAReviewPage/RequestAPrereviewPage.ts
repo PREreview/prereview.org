@@ -7,7 +7,7 @@ import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 import type * as RequestAReviewForm from './RequestAReviewForm.ts'
 
-export const requestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, locale: SupportedLocale) => {
+export const RequestAPrereviewPage = (form: RequestAReviewForm.IncompleteForm, locale: SupportedLocale) => {
   const hasAnError = form._tag === 'InvalidForm'
   const t = translate(locale)
 

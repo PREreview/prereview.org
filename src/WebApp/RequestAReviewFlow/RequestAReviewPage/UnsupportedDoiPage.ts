@@ -4,12 +4,12 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const unsupportedUrlPage = (locale: SupportedLocale) =>
+export const UnsupportedDoiPage = (locale: SupportedLocale) =>
   PageResponse({
     status: StatusCodes.BadRequest,
-    title: plainText(translate(locale, 'request-a-prereview-page', 'unsupportedUrlTitle')()),
+    title: plainText(translate(locale, 'request-a-prereview-page', 'unsupportedDoiTitle')()),
     main: html`
-      <h1>${translate(locale, 'request-a-prereview-page', 'unsupportedUrlTitle')()}</h1>
+      <h1>${translate(locale, 'request-a-prereview-page', 'unsupportedDoiTitle')()}</h1>
 
       <p>${translate(locale, 'request-a-prereview-page', 'supportPreprintsFrom')()}</p>
 
@@ -18,12 +18,10 @@ export const unsupportedUrlPage = (locale: SupportedLocale) =>
           translate(
             locale,
             'request-a-prereview-page',
-            'urlContactUs',
+            'doiContactUs',
           )({ contact: text => html`<a href="mailto:help@prereview.org">${text}</a>`.toString() }),
         )}
       </p>
-
-      <p>${translate(locale, 'request-a-prereview-page', 'tryDoi')()}</p>
 
       <a href="${Routes.RequestAReview}" class="button">${translate(locale, 'forms', 'backLink')()}</a>
     `,

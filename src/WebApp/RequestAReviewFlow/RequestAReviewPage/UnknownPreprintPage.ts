@@ -6,7 +6,7 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const unknownPreprintPage = (preprint: IndeterminatePreprintId, locale: SupportedLocale) => {
+export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: SupportedLocale) => {
   return PageResponse({
     status: StatusCodes.BadRequest,
     title: plainText(translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()),
