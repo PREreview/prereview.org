@@ -13,9 +13,7 @@ RUN apt-get update && apt-get install --yes \
 COPY .npmrc ./
 RUN npm install --global pnpm@10
 COPY patches/ patches/
-COPY package.json \
-  pnpm-lock.yaml \
-  ./
+COPY package.json pnpm-lock.yaml ./
 
 #
 # Stage: intlc environment
@@ -72,10 +70,7 @@ FROM npm AS build-prod
 ENV NODE_ENV=production
 
 COPY --from=npm-dev /app/node_modules/ node_modules/
-COPY tsconfig.build.json \
-  tsconfig.json \
-  webpack.config.mjs \
-  ./
+COPY tsconfig.build.json tsconfig.json webpack.config.mjs ./
 COPY src/ src/
 COPY assets/ assets/
 COPY --from=build-intlc /app/assets/locales/ assets/locales/
@@ -132,4 +127,4 @@ HEALTHCHECK --interval=5s --timeout=1s \
 EXPOSE 3000
 USER node
 
-CMD [ "./hivemind", "--no-prefix" ]
+CMD ["./hivemind", "--no-prefix"]
