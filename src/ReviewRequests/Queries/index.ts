@@ -54,6 +54,7 @@ export const {
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
+export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnAReviewRequest.ts'
 export {
   PublishedPrereviewerReviewRequest,
   PublishedReceivedReviewRequest,
