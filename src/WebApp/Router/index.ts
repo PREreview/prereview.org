@@ -400,8 +400,8 @@ const AuthRouter = HttpRouter.fromIterable([
     pipe(
       HttpServerRequest.schemaSearchParams(
         Schema.Union(
-          Schema.Struct({ code: Schema.String, state: Schema.String }),
-          Schema.Struct({ error: Schema.String, state: Schema.String }),
+          Schema.Struct({ code: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
+          Schema.Struct({ error: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
         ),
       ),
       Effect.andThen(
