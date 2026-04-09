@@ -62,7 +62,7 @@ export const CheckYourRequestSubmission: ({
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
   ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
-> = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
+> = Effect.fn('RequestAReviewFlow.CheckYourRequestSubmission')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
 
