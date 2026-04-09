@@ -48,6 +48,7 @@ export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
 export const RequestsData = '/requests-data'
+export const MyReviewRequests = '/my-review-requests'
 
 const stringStartsWith =
   <P extends string>(prefix: P) =>
