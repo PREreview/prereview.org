@@ -147,35 +147,39 @@ describe('requestReviewStart', () => {
       fc.record({ _tag: fc.constantFrom('ReviewRequestPendingPublication'), id: fc.uuid() }),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])('when a request has already been started', (preprintId, user, reviewRequest, preprintTitle, locale) =>
-      Effect.gen(function* () {
-        const actual = yield* _.StartNow({ preprintId })
+      fc.reviewRequestNextExpectedCommand(),
+    ])(
+      'when a request has already been started',
+      (preprintId, user, reviewRequest, preprintTitle, locale, nextExpectedCommand) =>
+        Effect.gen(function* () {
+          const actual = yield* _.StartNow({ preprintId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          canonical: Routes.RequestAReviewStartNow.href({ preprintId: preprintTitle.id }),
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          nav: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
-            }),
-            Layer.mock(Uuid.GenerateUuid, {}),
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            canonical: Routes.RequestAReviewStartNow.href({ preprintId: preprintTitle.id }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mergeAll(
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
+                getNextExpectedCommandForAUserOnAReviewRequest: () => Effect.succeed(nextExpectedCommand),
+              }),
+              Layer.mock(Uuid.GenerateUuid, {}),
+            ),
           ),
+          EffectTest.run,
         ),
-        EffectTest.run,
-      ),
     )
   })
 

@@ -60,7 +60,14 @@ export const StartNow: ({
           Effect.succeed(
             RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId: preprint.id }) }),
           ),
-        ReviewRequestPendingPublication: () => Effect.succeed(CarryOnPage(locale, preprint.id)),
+        ReviewRequestPendingPublication: reviewRequest =>
+          Effect.gen(function* () {
+            const nextExpectedCommand = yield* ReviewRequests.getNextExpectedCommandForAUserOnAReviewRequest({
+              reviewRequestId: reviewRequest.id,
+            })
+
+            return CarryOnPage(locale, preprint.id, RouteForCommand(nextExpectedCommand))
+          }).pipe(Effect.catchTag('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', () => HavingProblemsPage)),
       }),
     })
   },

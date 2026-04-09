@@ -2,12 +2,16 @@ import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { PreprintId } from '../../../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { preprintReviewsMatch } from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const CarryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
+export const CarryOnPage = (
+  locale: SupportedLocale,
+  preprint: PreprintId,
+  nextRoute: Routes.Route<{ preprintId: IndeterminatePreprintId }>,
+) => {
   const t = translate(locale, 'request-review-flow')
 
   return PageResponse({
@@ -22,7 +26,7 @@ export const CarryOnPage = (locale: SupportedLocale, preprint: PreprintId) => {
 
       <p>${t('asYouHaveAlreadyStarted')()}</p>
 
-      <a href="${Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint })}" role="button" draggable="false"
+      <a href="${nextRoute.href({ preprintId: preprint })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'continueButton')()}</a
       >
     `,
