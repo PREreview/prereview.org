@@ -349,6 +349,33 @@ test.each([
     }),
   },
   {
+    response: 'preprintsorg-title-containing-encoded-html-attribute.json',
+    expected: Preprint({
+      authors: [
+        { name: 'Izabela de Castro Santiago' },
+        { name: 'Janaina de Alcântara Lemos', orcid: OrcidId('0000-0001-8458-0097') },
+        { name: 'Ivan Maulaz Silva' },
+        { name: 'Anna Eliza Maciel de Faria Mota Oliveira', orcid: OrcidId('0000-0001-9337-4519') },
+        { name: 'Diego dos Santos Ferreira' },
+      ],
+      id: new PreprintsorgPreprintId({ value: Doi('10.20944/preprints202601.1676.v2') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 4, day: 8 }),
+      title: {
+        text: rawHtml(
+          'Update on the Potential Use of Natural Triterpenes for the Treatment of Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD) and Metabolic Dysfunction-Associated Steatohepatitis (MASH)',
+        ),
+        language: 'en',
+      },
+      abstract: {
+        text: rawHtml(
+          '<p>Background/Objectives: Metabolic dysfunction–associated steatotic liver disease (MASLD) and its progressive inflammatory/fibrotic form, metabolic dysfunction–associated steatohepatitis (MASH), represent a growing global health burden. This progression is driven by complex mechanisms involving metabolic dysregulation, chronic inflammation, oxidative stress, and progressive fibrosis. To date, effective pharmacological therapies remain limited. Pentacyclic triterpenes have attracted increasing attention due to their broad biological activities and ability to modulate multiple molecular pathways implicated in chronic liver disease. This review aims to provide a mechanistic overview of the potential role of pentacyclic triterpenes in MASLD and MASH. Methods: A review of the literature was conducted using major scientific databases (PubMed, and Web of Science) to identify experimental studies investigating pentacyclic triterpenes in metabolic liver diseases. Selected studies were analyzed according to triterpene structural classification, reported bioactivities, molecular targets, and experimental evidence from in vitro and in vivo models of MASLD/MASH or related pathogenic processes. Results: Pentacyclic triterpenes, especially ursolic acid, oleanolic acid, and glycyrrhizin, exhibit hepatoprotective effects including regulation of lipid metabolism, attenuation of oxidative and endoplasmic reticulum stress, suppression of pro-inflammatory signaling, inhibition of inflammasome activation, and reduction of hepatic stellate cell activation and extracellular matrix deposition. These effects involve modulation of signaling pathways such as AMPK, NF-κB, NLRP3, TGF-β, FXR, and MAPK. Preclinical evidence demonstrates improvements in steatosis, inflammation, and fibrosis in experimental models. Conclusions: Pentacyclic triterpenes emerge as multitarget modulators of MASH pathophysiology. However, translation from preclinical evidence to well-designed clinical trials is necessary to validate their safety and efficacy in humans.</p>',
+        ),
+        language: 'en',
+      },
+      url: new URL('https://www.preprints.org/manuscript/202601.1676/v2'),
+    }),
+  },
+  {
     response: 'preprintsorg-abstract-encoded-html.json',
     expected: Preprint({
       authors: [

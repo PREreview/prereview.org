@@ -1,0 +1,76 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 4, 9]],
+      "date-time": "2026-04-09T00:56:00Z",
+      "timestamp": 1775696160103,
+      "version": "3.50.1"
+    },
+    "posted": { "date-parts": [[2026, 4, 8]] },
+    "group-title": "Medicine and Pharmacology",
+    "reference-count": 0,
+    "publisher": "MDPI AG",
+    "license": [
+      {
+        "start": { "date-parts": [[2026, 4, 8]], "date-time": "2026-04-08T00:00:00Z", "timestamp": 1775606400000 },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http:\/\/creativecommons.org\/licenses\/by\/4.0"
+      }
+    ],
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "accepted": { "date-parts": [[2026, 4, 6]] },
+    "abstract": "<jats:p>Background\/Objectives: Metabolic dysfunction\u2013associated steatotic liver disease (MASLD) and its progressive inflammatory\/fibrotic form, metabolic dysfunction\u2013associated steatohepatitis (MASH), represent a growing global health burden. This progression is driven by complex mechanisms involving metabolic dysregulation, chronic inflammation, oxidative stress, and progressive fibrosis. To date, effective pharmacological therapies remain limited. Pentacyclic triterpenes have attracted increasing attention due to their broad biological activities and ability to modulate multiple molecular pathways implicated in chronic liver disease. This review aims to provide a mechanistic overview of the potential role of pentacyclic triterpenes in MASLD and MASH. Methods: A review of the literature was conducted using major scientific databases (PubMed, and Web of Science) to identify experimental studies investigating pentacyclic triterpenes in metabolic liver diseases. Selected studies were analyzed according to triterpene structural classification, reported bioactivities, molecular targets, and experimental evidence from in vitro and in vivo models of MASLD\/MASH or related pathogenic processes. Results: Pentacyclic triterpenes, especially ursolic acid, oleanolic acid, and glycyrrhizin, exhibit hepatoprotective effects including regulation of lipid metabolism, attenuation of oxidative and endoplasmic reticulum stress, suppression of pro-inflammatory signaling, inhibition of inflammasome activation, and reduction of hepatic stellate cell activation and extracellular matrix deposition. These effects involve modulation of signaling pathways such as AMPK, NF-\u03baB, NLRP3, TGF-\u03b2, FXR, and MAPK. Preclinical evidence demonstrates improvements in steatosis, inflammation, and fibrosis in experimental models. Conclusions: Pentacyclic triterpenes emerge as multitarget modulators of MASH pathophysiology. However, translation from preclinical evidence to well-designed clinical trials is necessary to validate their safety and efficacy in humans.<\/jats:p>",
+    "DOI": "10.20944\/preprints202601.1676.v2",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 4, 9]], "date-time": "2026-04-09T00:21:53Z", "timestamp": 1775694113000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "Update on the Potential Use of Natural Triterpenes for the Treatment of Metabolic Dysfunction-Associated Steatotic Liver Disease (&lt;a id=\"article-title\"&gt;&lt;\/a&gt;MASLD) and Metabolic Dysfunction-Associated Steatohepatitis (&lt;a id=\"article-title\"&gt;&lt;\/a&gt;MASH)"
+    ],
+    "prefix": "10.20944",
+    "author": [
+      { "given": "Izabela", "family": "de Castro Santiago", "sequence": "first", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-8458-0097",
+        "authenticated-orcid": false,
+        "given": "Janaina",
+        "family": "de Alc\u00e2ntara Lemos",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Ivan", "family": "Maulaz Silva", "sequence": "additional", "affiliation": [] },
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0001-9337-4519",
+        "authenticated-orcid": false,
+        "given": "Anna Eliza",
+        "family": "Maciel de Faria Mota Oliveira",
+        "sequence": "additional",
+        "affiliation": []
+      },
+      { "given": "Diego", "family": "dos Santos Ferreira", "sequence": "additional", "affiliation": [] }
+    ],
+    "member": "1968",
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 4, 9]], "date-time": "2026-04-09T00:21:56Z", "timestamp": 1775694116000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.preprints.org\/manuscript\/202601.1676\/v2" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026, 4, 8]] },
+    "references-count": 0,
+    "URL": "https:\/\/doi.org\/10.20944\/preprints202601.1676.v2",
+    "relation": {
+      "is-version-of": [{ "id-type": "doi", "id": "10.20944\/preprints202601.1676.v1", "asserted-by": "subject" }]
+    },
+    "subject": [],
+    "published": { "date-parts": [[2026, 4, 8]] },
+    "subtype": "preprint"
+  }
+}
