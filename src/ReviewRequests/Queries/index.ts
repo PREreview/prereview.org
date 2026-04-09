@@ -21,7 +21,7 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
   {
     doesAPreprintHaveAReviewRequest: Queries.FromStatefulQuery<typeof DoesAPreprintHaveAReviewRequest>
     findReviewRequestByAPrereviewer: Queries.FromStatefulQuery<typeof FindReviewRequestByAPrereviewer>
-    getNextExpectedCommandForAUserOnAReviewRequest: Queries.FromStatefulQuery<
+    getNextExpectedCommandForAUserOnAReviewRequest: Queries.FromOnDemandQuery<
       typeof GetNextExpectedCommandForAUserOnAReviewRequest
     >
     getPersonaChoice: Queries.FromStatefulQuery<typeof GetPersonaChoice>
@@ -72,7 +72,7 @@ const makeReviewRequestQueries: Effect.Effect<
   return {
     doesAPreprintHaveAReviewRequest: yield* Queries.makeStatefulQuery(DoesAPreprintHaveAReviewRequest),
     findReviewRequestByAPrereviewer: yield* Queries.makeStatefulQuery(FindReviewRequestByAPrereviewer),
-    getNextExpectedCommandForAUserOnAReviewRequest: yield* Queries.makeStatefulQuery(
+    getNextExpectedCommandForAUserOnAReviewRequest: yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAUserOnAReviewRequest,
     ),
     getReviewRequestReadyToBePublished: yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished),

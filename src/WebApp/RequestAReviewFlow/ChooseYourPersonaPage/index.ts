@@ -81,8 +81,7 @@ export const ChooseYourPersonaSubmission: ({
         })
 
         const nextExpectedCommand = yield* ReviewRequests.getNextExpectedCommandForAUserOnAReviewRequest({
-          requesterId: user.orcid,
-          preprintId: preprint.id,
+          reviewRequestId: reviewRequest.reviewRequestId,
         })
 
         return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })

@@ -255,8 +255,7 @@ describe('ChooseYourPersonaSubmission', () => {
               reviewRequestId: reviewRequest.reviewRequestId,
             })
             expect(getNextExpectedCommandForAUserOnAReviewRequest).toHaveBeenCalledWith({
-              requesterId: user.orcid,
-              preprintId: preprintTitle.id,
+              reviewRequestId: reviewRequest.reviewRequestId,
             })
           }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)]), EffectTest.run),
       )
