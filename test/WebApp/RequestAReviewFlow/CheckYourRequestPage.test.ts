@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Tuple } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
@@ -91,30 +91,38 @@ describe('CheckYourRequestPage', () => {
       fc.user(),
       fc.preprintTitle({ id: fc.preprintId() }),
       fc.supportedLocale(),
-    ])("when a name hasn't been chosen", (preprintId, user, preprintTitle, locale) =>
-      Effect.gen(function* () {
-        const actual = yield* _.CheckYourRequestPage({ preprintId })
+      fc.constantFrom<
+        Array<
+          [
+            ReviewRequests.ReviewRequestNotReadyToBePublished['missing'],
+            Routes.Route<{ preprintId: Preprints.IndeterminatePreprintId }>,
+          ]
+        >
+      >(Tuple.make(['PersonaForAReviewRequestForAPreprintWasChosen'], Routes.RequestAReviewChooseYourPersona)),
+    ])(
+      "when the review request isn't ready to be published",
+      (preprintId, user, preprintTitle, locale, [missing, expected]) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckYourRequestPage({ preprintId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }),
-        })
-      }).pipe(
-        Effect.provide([
-          Layer.succeed(Locale, locale),
-          Layer.succeed(LoggedInUser, user),
-          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          Layer.mock(ReviewRequests.ReviewRequestQueries, {
-            getReviewRequestReadyToBePublished: () =>
-              new ReviewRequests.ReviewRequestNotReadyToBePublished({
-                missing: ['PersonaForAReviewRequestForAPreprintWasChosen'],
-              }),
-          }),
-        ]),
-        EffectTest.run,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: expected.href({ preprintId }),
+          })
+        }).pipe(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getReviewRequestReadyToBePublished: () =>
+                new ReviewRequests.ReviewRequestNotReadyToBePublished({ missing }),
+            }),
+          ]),
+          EffectTest.run,
+        ),
     )
 
     test.prop([

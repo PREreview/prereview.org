@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Array, Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -85,8 +85,10 @@ export const CheckYourRequestSubmission: ({
       PreprintIsUnavailable: () => Effect.andThen(Locale, FailureMessage),
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
-      ReviewRequestNotReadyToBePublished: () =>
-        Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }) })),
+      ReviewRequestNotReadyToBePublished: error =>
+        Effect.succeed(
+          RedirectResponse({ location: routeForMissing[Array.headNonEmpty(error.missing)].href({ preprintId }) }),
+        ),
       UnableToHandleCommand: () => Effect.andThen(Locale, FailureMessage),
       UnableToQuery: () => Effect.andThen(Locale, FailureMessage),
       UnknownReviewRequest: () => PageNotFound,
@@ -94,3 +96,10 @@ export const CheckYourRequestSubmission: ({
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
     }),
 )
+
+const routeForMissing = {
+  PersonaForAReviewRequestForAPreprintWasChosen: Routes.RequestAReviewChooseYourPersona,
+} satisfies Record<
+  ReviewRequests.ReviewRequestNotReadyToBePublished['missing'][number],
+  Routes.Route<{ preprintId: Preprints.IndeterminatePreprintId }>
+>
