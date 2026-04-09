@@ -9,6 +9,7 @@ import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import { CarryOnPage } from './CarryOnPage.ts'
 
 export const StartNow: ({
@@ -48,8 +49,12 @@ export const StartNow: ({
             requesterId: user.orcid,
           })
 
-          return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
-        }),
+          const nextExpectedCommand = yield* ReviewRequests.getNextExpectedCommandForAUserOnAReviewRequest({
+            reviewRequestId,
+          })
+
+          return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
+        }).pipe(Effect.catchTag('UnknownReviewRequest', 'ReviewRequestHasBeenPublished', () => HavingProblemsPage)),
       onSome: Match.valueTags({
         PublishedReviewRequest: () =>
           Effect.succeed(

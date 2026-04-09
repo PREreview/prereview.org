@@ -6,6 +6,7 @@ import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
+import { RouteForCommand } from '../../../src/WebApp/RequestAReviewFlow/RouteForCommand.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/StartNow/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -22,26 +23,34 @@ describe('requestReviewStart', () => {
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
         fc.uuid(),
-      ])('when a request can be started', (preprintId, user, preprintTitle, locale, uuid) =>
+        fc.reviewRequestNextExpectedCommand(),
+      ])('when a request can be started', (preprintId, user, preprintTitle, locale, uuid, nextExpectedCommand) =>
         Effect.gen(function* () {
           const findReviewRequestByAPrereviewer = jest.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['findReviewRequestByAPrereviewer']
           >(_ => Effect.succeedNone)
+          const getNextExpectedCommandForAUserOnAReviewRequest = jest.fn<
+            (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
+          >(_ => Effect.succeed(nextExpectedCommand))
 
           const actual = yield* Effect.provide(
             _.StartNow({ preprintId }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, { findReviewRequestByAPrereviewer }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer,
+              getNextExpectedCommandForAUserOnAReviewRequest,
+            }),
           )
 
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: StatusCodes.SeeOther,
-            location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprintTitle.id }),
+            location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprintTitle.id }),
           })
           expect(findReviewRequestByAPrereviewer).toHaveBeenCalledWith({
             requesterId: user.orcid,
             preprintId: preprintTitle.id,
           })
+          expect(getNextExpectedCommandForAUserOnAReviewRequest).toHaveBeenCalledWith({ reviewRequestId: uuid })
         }).pipe(
           Effect.provide(
             Layer.mergeAll(
