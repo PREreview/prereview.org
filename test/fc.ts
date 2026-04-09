@@ -2267,6 +2267,9 @@ export const datasetReviewNextExpectedCommand = (): fc.Arbitrary<DatasetReviews.
     'PublishDatasetReview',
   )
 
+export const reviewRequestNextExpectedCommand = (): fc.Arbitrary<ReviewRequests.NextExpectedCommand> =>
+  fc.constantFrom('ChoosePersona', 'PublishReviewRequest')
+
 export const reviewRequestForAPreprintWasStarted = ({
   reviewRequestId,
 }: {

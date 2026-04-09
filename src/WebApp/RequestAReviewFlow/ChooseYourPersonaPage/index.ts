@@ -14,6 +14,7 @@ import {
   RedirectResponse,
   type StreamlinePageResponse,
 } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
 import { ChooseYourPersonaPage as MakeResponse } from './ChooseYourPersonaPage.ts'
 
@@ -79,7 +80,12 @@ export const ChooseYourPersonaSubmission: ({
           reviewRequestId: reviewRequest.reviewRequestId,
         })
 
-        return RedirectResponse({ location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprint.id }) })
+        const nextExpectedCommand = yield* ReviewRequests.getNextExpectedCommandForAUserOnAReviewRequest({
+          requesterId: user.orcid,
+          preprintId: preprint.id,
+        })
+
+        return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
       }),
       InvalidForm: form => Effect.succeed(MakeResponse({ form, preprint: preprint.id, user, locale })),
     })

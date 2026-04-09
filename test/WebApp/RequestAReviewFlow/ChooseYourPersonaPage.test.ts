@@ -9,6 +9,7 @@ import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage/index.ts'
+import { RouteForCommand } from '../../../src/WebApp/RequestAReviewFlow/RouteForCommand.ts'
 import * as Routes from '../../../src/routes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -212,39 +213,52 @@ describe('ChooseYourPersonaSubmission', () => {
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.record({ chooseYourPersona: fc.constantFrom('public', 'pseudonym') }),
         fc.supportedLocale(),
-      ])('when the persona is set', async (preprintId, user, reviewRequest, preprintTitle, body, locale) =>
-        Effect.gen(function* () {
-          const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
-            _ => Effect.succeed(reviewRequest),
-          )
-          const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
-            Effect.succeed(preprintTitle),
-          )
-          const choosePersona = jest.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
-            _ => Effect.void,
-          )
+        fc.reviewRequestNextExpectedCommand(),
+      ])(
+        'when the persona is set',
+        async (preprintId, user, reviewRequest, preprintTitle, body, locale, nextExpectedCommand) =>
+          Effect.gen(function* () {
+            const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
+              _ => Effect.succeed(reviewRequest),
+            )
+            const getNextExpectedCommandForAUserOnAReviewRequest = jest.fn<
+              (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
+            >(_ => Effect.succeed(nextExpectedCommand))
+            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+              Effect.succeed(preprintTitle),
+            )
+            const choosePersona = jest.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
+              _ => Effect.void,
+            )
 
-          const actual = yield* Effect.provide(
-            _.ChooseYourPersonaSubmission({ body: UrlParams.fromInput(body), preprintId }),
-            [
-              Layer.mock(Preprints.Preprints, { getPreprintTitle }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona }),
-            ],
-          )
+            const actual = yield* Effect.provide(
+              _.ChooseYourPersonaSubmission({ body: UrlParams.fromInput(body), preprintId }),
+              [
+                Layer.mock(Preprints.Preprints, { getPreprintTitle }),
+                Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                  getPersonaChoice,
+                  getNextExpectedCommandForAUserOnAReviewRequest,
+                }),
+                Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona }),
+              ],
+            )
 
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: Routes.RequestAReviewCheckYourRequest.href({ preprintId: preprintTitle.id }),
-          })
-          expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
-          expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-          expect(choosePersona).toHaveBeenCalledWith({
-            persona: body.chooseYourPersona,
-            reviewRequestId: reviewRequest.reviewRequestId,
-          })
-        }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)]), EffectTest.run),
+            expect(actual).toStrictEqual({
+              _tag: 'RedirectResponse',
+              status: StatusCodes.SeeOther,
+              location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprintTitle.id }),
+            })
+            expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
+            expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+            expect(choosePersona).toHaveBeenCalledWith({
+              persona: body.chooseYourPersona,
+              reviewRequestId: reviewRequest.reviewRequestId,
+            })
+            expect(getNextExpectedCommandForAUserOnAReviewRequest).toHaveBeenCalledWith({
+              requesterId: user.orcid,
+              preprintId: preprintTitle.id,
+            })
+          }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)]), EffectTest.run),
       )
 
       test.prop([
