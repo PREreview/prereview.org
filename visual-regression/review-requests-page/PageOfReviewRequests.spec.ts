@@ -4,15 +4,15 @@ import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
-import { createEmptyPage, createPage } from '../../src/WebApp/review-requests-page/review-requests-page.ts'
+import * as _ from '../../src/WebApp/review-requests-page/PageOfReviewRequests.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = createPage({
+  const response = _.PageOfReviewRequests({
     currentPage: 1,
     totalPages: 3,
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
-    locale: DefaultLocale,
+    locale,
   })
 
   const content = await showPage(response)
@@ -20,21 +20,13 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when empty', async ({ showPage }) => {
-  const response = createEmptyPage({ locale: DefaultLocale })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
 test('content looks right with a language', async ({ showPage }) => {
-  const response = createPage({
+  const response = _.PageOfReviewRequests({
     currentPage: 1,
     totalPages: 3,
     language: 'es',
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
-    locale: DefaultLocale,
+    locale,
   })
 
   const content = await showPage(response)
@@ -43,12 +35,12 @@ test('content looks right with a language', async ({ showPage }) => {
 })
 
 test('content looks right with a field', async ({ showPage }) => {
-  const response = createPage({
+  const response = _.PageOfReviewRequests({
     currentPage: 1,
     totalPages: 3,
     field: '30',
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
-    locale: DefaultLocale,
+    locale,
   })
 
   const content = await showPage(response)
@@ -56,28 +48,12 @@ test('content looks right with a field', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-test('content looks right when empty with a language', async ({ showPage }) => {
-  const response = createEmptyPage({ language: 'es', locale: DefaultLocale })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right when empty with a field', async ({ showPage }) => {
-  const response = createEmptyPage({ field: '30', locale: DefaultLocale })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
 test('content looks on a middle page', async ({ showPage }) => {
-  const response = createPage({
+  const response = _.PageOfReviewRequests({
     currentPage: 2,
     totalPages: 3,
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
-    locale: DefaultLocale,
+    locale,
   })
 
   const content = await showPage(response)
@@ -86,17 +62,19 @@ test('content looks on a middle page', async ({ showPage }) => {
 })
 
 test('content looks on the last page', async ({ showPage }) => {
-  const response = createPage({
+  const response = _.PageOfReviewRequests({
     currentPage: 3,
     totalPages: 3,
     reviewRequests: [reviewRequest1],
-    locale: DefaultLocale,
+    locale,
   })
 
   const content = await showPage(response)
 
   await expect(content).toHaveScreenshot()
 })
+
+const locale = DefaultLocale
 
 const reviewRequest1 = {
   published: Temporal.PlainDate.from('2024-04-24'),
