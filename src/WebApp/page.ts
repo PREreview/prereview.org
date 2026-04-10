@@ -59,6 +59,8 @@ export const page = ({
   canLogInAsDemoUser?: boolean
   useCrowdinInContext: boolean
 }): Html => {
+  const t = translate(locale)
+
   const scripts = pipe(
     Array.dedupe(js),
     Array.appendAll(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
@@ -128,8 +130,8 @@ export const page = ({
           ${environmentLabel
             ? html`
                 <div class="environment">
-                  <strong class="tag">${translate(locale, 'environment', `${environmentLabel}Name`)()}</strong>
-                  <span>${translate(locale, 'environment', `${environmentLabel}Text`)()}</span>
+                  <strong class="tag">${t('environment', `${environmentLabel}Name`)()}</strong>
+                  <span>${t('environment', `${environmentLabel}Text`)()}</span>
                 </div>
               `
             : ''}
@@ -146,10 +148,10 @@ export const page = ({
                 ? html`
                     <expander-button>
                       <a href="${Routes.Menu}" ${current === 'menu' ? html`aria-current="page"` : ''}
-                        >${translate(locale, 'header', 'menu')()}</a
+                        >${t('header', 'menu')()}</a
                       >
                       <button aria-controls="navigation" aria-expanded="false" hidden>
-                        <span>${translate(locale, 'header', 'menu')()}</span>
+                        <span>${t('header', 'menu')()}</span>
                       </button>
                     </expander-button>
                     ${pageUrls
@@ -179,9 +181,9 @@ export const page = ({
                       : ''}
                   `
                 : html`
-                    ${user ? html`<a href="${Routes.LogOut}">${translate(locale, 'header', 'menuLogOut')()}</a>` : ''}
+                    ${user ? html`<a href="${Routes.LogOut}">${t('header', 'menuLogOut')()}</a>` : ''}
                     ${!user && current === 'home'
-                      ? html` <a href="${Routes.LogIn}">${translate(locale, 'header', 'menuLogIn')()}</a>`
+                      ? html` <a href="${Routes.LogIn}">${t('header', 'menuLogIn')()}</a>`
                       : ''}
                   `}
             </div>
@@ -190,84 +192,84 @@ export const page = ({
               ? html`
                   <div id="navigation" class="menu" hidden>
                     <div>
-                      <h3>${translate(locale, 'header', 'getInvolved')()}</h3>
+                      <h3>${t('header', 'getInvolved')()}</h3>
                       <ul>
                         <li>
                           <a
                             href="${format(Routes.reviewsMatch.formatter, {})}"
                             ${current === 'reviews' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuReviews')()}</a
+                            >${t('header', 'menuReviews')()}</a
                           >
-                          <p>${translate(locale, 'header', 'menuReviewsHint')()}</p>
+                          <p>${t('header', 'menuReviewsHint')()}</p>
                         </li>
                         <li>
                           <a
                             href="${format(Routes.reviewRequestsMatch.formatter, {})}"
                             ${current === 'review-requests' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuRequests')()}</a
+                            >${t('header', 'menuRequests')()}</a
                           >
-                          <p>${translate(locale, 'header', 'menuRequestsHint')()}</p>
+                          <p>${t('header', 'menuRequestsHint')()}</p>
                         </li>
                         <li>
                           <a href="${Routes.Clubs}" ${current === 'clubs' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuClubs')()}</a
+                            >${t('header', 'menuClubs')()}</a
                           >
-                          <p>${translate(locale, 'header', 'menuClubsHint')()}</p>
+                          <p>${t('header', 'menuClubsHint')()}</p>
                         </li>
                         <li>
                           <a href="${Routes.Trainings}" ${current === 'trainings' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuTrainings')()}</a
+                            >${t('header', 'menuTrainings')()}</a
                           >
-                          <p>${translate(locale, 'header', 'menuTrainingsHint')()}</p>
+                          <p>${t('header', 'menuTrainingsHint')()}</p>
                         </li>
                         <li>
                           <a
                             href="${Routes.ChampionsProgram}"
                             ${current === 'champions-program' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuChampions')()}</a
+                            >${t('header', 'menuChampions')()}</a
                           >
-                          <p>${translate(locale, 'header', 'menuChampionsHint')()}</p>
+                          <p>${t('header', 'menuChampionsHint')()}</p>
                         </li>
                       </ul>
                     </div>
 
                     <div>
-                      <h3>${translate(locale, 'header', 'findOutMore')()}</h3>
+                      <h3>${t('header', 'findOutMore')()}</h3>
                       <ul>
                         <li>
-                          <a href="https://content.prereview.org/">${translate(locale, 'header', 'menuBlog')()}</a>
+                          <a href="https://content.prereview.org/">${t('header', 'menuBlog')()}</a>
                         </li>
                         <li>
                           <a href="${Routes.AboutUs}" ${current === 'about-us' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuAboutUs')()}</a
+                            >${t('header', 'menuAboutUs')()}</a
                           >
                         </li>
                         <li>
                           <a href="${Routes.Partners}" ${current === 'partners' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuPartners')()}</a
+                            >${t('header', 'menuPartners')()}</a
                           >
                         </li>
                         <li>
-                          <a href="https://donorbox.org/prereview">${translate(locale, 'header', 'menuDonate')()}</a>
+                          <a href="https://donorbox.org/prereview">${t('header', 'menuDonate')()}</a>
                         </li>
                         <li>
                           <a href="${Routes.LiveReviews}" ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuLiveReviews')()}</a
+                            >${t('header', 'menuLiveReviews')()}</a
                           >
                         </li>
                         <li>
                           <a href="${Routes.Resources}" ${current === 'resources' ? html`aria-current="page"` : ''}
-                            >${translate(locale, 'header', 'menuResources')()}</a
+                            >${t('header', 'menuResources')()}</a
                           >
                         </li>
                         <li>
-                          <a href="https://stats.prereview.org/">${translate(locale, 'header', 'menuStatistics')()}</a>
+                          <a href="https://stats.prereview.org/">${t('header', 'menuStatistics')()}</a>
                         </li>
                       </ul>
                     </div>
 
                     <div>
-                      <h3>${translate(locale, 'header', 'myAccount')()}</h3>
+                      <h3>${t('header', 'myAccount')()}</h3>
                       <ul>
                         ${user
                           ? html`
@@ -275,14 +277,10 @@ export const page = ({
                                 <a
                                   href="${format(Routes.myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >${translate(
-                                    locale,
-                                    'header',
-                                    'menuMyDetails',
-                                  )()}${userOnboarding?.seenMyDetailsPage === false
+                                  >${t('header', 'menuMyDetails')()}${userOnboarding?.seenMyDetailsPage === false
                                     ? html` <span role="status"
                                         ><span class="visually-hidden"
-                                          >${translate(locale, 'header', 'menuNewNotification')()}</span
+                                          >${t('header', 'menuNewNotification')()}</span
                                         ></span
                                       >`
                                     : ''}</a
@@ -292,31 +290,29 @@ export const page = ({
                                 <a
                                   href="${format(Routes.myPrereviewsMatch.formatter, {})}"
                                   ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                  >${t('header', 'menuMyPrereviews')()}</a
                                 >
                               </li>
                               <li>
                                 <a
                                   href="${Routes.MyReviewRequests}"
                                   ${current === 'my-review-requests' ? html`aria-current="page"` : ''}
-                                  >${translate(locale, 'header', 'menuMyReviewRequests')()}</a
+                                  >${t('header', 'menuMyReviewRequests')()}</a
                                 >
                               </li>
                               <li>
-                                <a href="${Routes.LogOut}">${translate(locale, 'header', 'menuLogOut')()}</a>
+                                <a href="${Routes.LogOut}">${t('header', 'menuLogOut')()}</a>
                               </li>
                             `
                           : html`
                               <li>
-                                <a href="${Routes.LogIn}">${translate(locale, 'header', 'menuLogIn')()}</a>
+                                <a href="${Routes.LogIn}">${t('header', 'menuLogIn')()}</a>
                               </li>
                               ${Boolean.match(canLogInAsDemoUser, {
                                 onFalse: () => '',
                                 onTrue: () => html`
                                   <li>
-                                    <a href="${Routes.LogInDemo}"
-                                      >${translate(locale, 'header', 'menuLogInDemoUser')()}</a
-                                    >
+                                    <a href="${Routes.LogInDemo}">${t('header', 'menuLogInDemoUser')()}</a>
                                   </li>
                                 `,
                               })}
@@ -329,7 +325,7 @@ export const page = ({
                     ? html`
                         <div id="locale" class="menu" hidden>
                           <div class="locales">
-                            <h3>${translate(locale, 'header', 'chooseLanguage')()}</h3>
+                            <h3>${t('header', 'chooseLanguage')()}</h3>
                             <ul>
                               ${pipe(
                                 Array.fromIterable(UserSelectableLocales),
@@ -384,7 +380,7 @@ export const page = ({
                 ${pageUrls
                   ? html`
                       <div>
-                        <span>${translate(locale, 'footer', 'chooseLanguage')()}</span>
+                        <span>${t('footer', 'chooseLanguage')()}</span>
 
                         <ul>
                           ${pipe(
@@ -423,67 +419,67 @@ export const page = ({
                   : ''}
 
                 <div>
-                  ${translate(locale, 'footer', 'newsletterText')()}
+                  ${t('footer', 'newsletterText')()}
                   <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                    ><span>${translate(locale, 'footer', 'newsletterLink')()}</span></a
+                    ><span>${t('footer', 'newsletterLink')()}</span></a
                   >
                 </div>
 
                 <div>
-                  ${translate(locale, 'footer', 'slackText')()}
+                  ${t('footer', 'slackText')()}
                   <a href="https://bit.ly/PREreview-Slack" class="forward"
-                    ><span>${translate(locale, 'footer', 'slackLink')()}</span></a
+                    ><span>${t('footer', 'slackLink')()}</span></a
                   >
                 </div>
 
                 <div>
                   <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSfynZ25_toGP6pnTrEyKE-Fv-7z7pK2h9AlNksKI9_DVJMnng/viewform"
-                    >${translate(locale, 'footer', 'feedbackLink')()}</a
+                    >${t('footer', 'feedbackLink')()}</a
                   >
                 </div>
 
-                <ul aria-label="${translate(locale, 'footer', 'menuHeading')()}">
-                  <li><a href="https://donorbox.org/prereview">${translate(locale, 'footer', 'menuDonate')()}</a></li>
+                <ul aria-label="${t('footer', 'menuHeading')()}">
+                  <li><a href="https://donorbox.org/prereview">${t('footer', 'menuDonate')()}</a></li>
                   <li>
                     <a href="${Routes.People}" ${current === 'people' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuPeople')()}</a
+                      >${t('footer', 'menuPeople')()}</a
                     >
                   </li>
                   <li>
                     <a href="${Routes.Funding}" ${current === 'funding' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuFunding')()}</a
+                      >${t('footer', 'menuFunding')()}</a
                     >
                   </li>
                   <li>
                     <a href="${Routes.CodeOfConduct}" ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuCodeOfConduct')()}</a
+                      >${t('footer', 'menuCodeOfConduct')()}</a
                     >
                   </li>
                   <li>
                     <a href="${Routes.EdiaStatement}" ${current === 'edia-statement' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuEdiaStatement')()}</a
+                      >${t('footer', 'menuEdiaStatement')()}</a
                     >
                   </li>
                   <li>
                     <a href="${Routes.PrivacyPolicy}" ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuPrivacyPolicy')()}</a
+                      >${t('footer', 'menuPrivacyPolicy')()}</a
                     >
                   </li>
-                  <li><a href="https://content.prereview.org/">${translate(locale, 'footer', 'menuBlog')()}</a></li>
+                  <li><a href="https://content.prereview.org/">${t('footer', 'menuBlog')()}</a></li>
                   <li>
                     <a href="${Routes.HowToUse}" ${current === 'how-to-use' ? html`aria-current="page"` : ''}
-                      >${translate(locale, 'footer', 'menuHowToUse')()}</a
+                      >${t('footer', 'menuHowToUse')()}</a
                     >
                   </li>
                 </ul>
 
-                <ul class="contacts" aria-label="${translate(locale, 'footer', 'contactHeading')()}">
+                <ul class="contacts" aria-label="${t('footer', 'contactHeading')()}">
                   <li>
                     <a
                       href="mailto:contact@prereview.org"
                       class="email"
-                      aria-label="${translate(locale, 'footer', 'contactEmail')({ address: 'contact@prereview.org' })}"
+                      aria-label="${t('footer', 'contactEmail')({ address: 'contact@prereview.org' })}"
                       ><span translate="no">contact@prereview.org</span></a
                     >
                   </li>
@@ -491,11 +487,7 @@ export const page = ({
                     <a
                       href="https://bsky.app/profile/prereview.bsky.social"
                       class="bluesky"
-                      aria-label="${translate(
-                        locale,
-                        'footer',
-                        'contactBluesky',
-                      )({ handle: '@prereview.bsky.social' })}"
+                      aria-label="${t('footer', 'contactBluesky')({ handle: '@prereview.bsky.social' })}"
                       ><span translate="no">@prereview.bsky.social</span></a
                     >
                   </li>
@@ -503,7 +495,7 @@ export const page = ({
                     <a
                       href="https://mas.to/@prereview"
                       class="mastodon"
-                      aria-label="${translate(locale, 'footer', 'contactMastodon')({ handle: '@prereview@mas.to' })}"
+                      aria-label="${t('footer', 'contactMastodon')({ handle: '@prereview@mas.to' })}"
                       ><span translate="no">@prereview@mas.to</span></a
                     >
                   </li>
@@ -511,7 +503,7 @@ export const page = ({
                     <a
                       href="https://www.youtube.com/@Prereview"
                       class="youtube"
-                      aria-label="${translate(locale, 'footer', 'contactYouTube')({ handle: '@Prereview' })}"
+                      aria-label="${t('footer', 'contactYouTube')({ handle: '@Prereview' })}"
                       ><span translate="no">@Prereview</span></a
                     >
                   </li>
@@ -519,7 +511,7 @@ export const page = ({
                     <a
                       href="https://www.linkedin.com/company/prereview/"
                       class="linked-in"
-                      aria-label="${translate(locale, 'footer', 'contactLinkedIn')({ handle: 'PREreview' })}"
+                      aria-label="${t('footer', 'contactLinkedIn')({ handle: 'PREreview' })}"
                       ><span translate="no">PREreview</span></a
                     >
                   </li>
@@ -527,7 +519,7 @@ export const page = ({
                     <a
                       href="https://github.com/PREreview"
                       class="github"
-                      aria-label="${translate(locale, 'footer', 'contactGitHub')({ handle: 'PREreview' })}"
+                      aria-label="${t('footer', 'contactGitHub')({ handle: 'PREreview' })}"
                       ><span translate="no">PREreview</span></a
                     >
                   </li>
@@ -535,8 +527,7 @@ export const page = ({
 
                 <div class="small">
                   ${rawHtml(
-                    translate(
-                      locale,
+                    t(
                       'footer',
                       'zenodo',
                     )({
@@ -551,8 +542,7 @@ export const page = ({
 
           <small>
             ${rawHtml(
-              translate(
-                locale,
+              t(
                 'footer',
                 'copyright',
               )({
