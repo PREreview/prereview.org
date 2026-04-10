@@ -1,5 +1,5 @@
 import { Array, Effect } from 'effect'
-import type { Locale } from '../../Context.ts'
+import { Locale } from '../../Context.ts'
 import * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
@@ -13,12 +13,13 @@ export const MyReviewRequestsPage: Effect.Effect<
   ReviewRequests.ReviewRequests | Locale | LoggedInUser
 > = Effect.gen(function* () {
   const user = yield* LoggedInUser
+  const locale = yield* Locale
 
   const reviewRequests = yield* ReviewRequests.listForPrereviewer(user.orcid)
 
   return Array.match(reviewRequests, {
-    onEmpty: () => NoReviewRequestsPage(),
-    onNonEmpty: reviewRequests => ListOfReviewRequestsPage({ reviewRequests }),
+    onEmpty: () => NoReviewRequestsPage({ locale }),
+    onNonEmpty: reviewRequests => ListOfReviewRequestsPage({ locale, reviewRequests }),
   })
 }).pipe(
   Effect.catchTag('ReviewRequestsAreUnavailable', () => HavingProblemsPage),

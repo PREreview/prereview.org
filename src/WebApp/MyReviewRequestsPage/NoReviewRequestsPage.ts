@@ -1,8 +1,10 @@
 import { html, plainText } from '../../html.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 
-export const NoReviewRequestsPage = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const NoReviewRequestsPage = ({ locale }: { locale: SupportedLocale }) => {
   return PageResponse({
     title: plainText`My review requests`,
     main: html`

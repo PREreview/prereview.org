@@ -1,4 +1,5 @@
 import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Preprints from '../../src/Preprints/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import { Doi, Temporal } from '../../src/types/index.ts'
@@ -6,7 +7,7 @@ import * as _ from '../../src/WebApp/MyReviewRequestsPage/ListOfReviewRequestsPa
 import { expect, test } from '../base.ts'
 
 test('content looks right with one request', async ({ showPage }) => {
-  const response = _.ListOfReviewRequestsPage({ reviewRequests: [reviewRequest1] })
+  const response = _.ListOfReviewRequestsPage({ locale, reviewRequests: [reviewRequest1] })
 
   const content = await showPage(response)
 
@@ -15,6 +16,7 @@ test('content looks right with one request', async ({ showPage }) => {
 
 test('content looks right with multiple requests', async ({ showPage }) => {
   const response = _.ListOfReviewRequestsPage({
+    locale,
     reviewRequests: [reviewRequest1, reviewRequest2, reviewRequest3, reviewRequest4, reviewRequest5],
   })
 
@@ -22,6 +24,8 @@ test('content looks right with multiple requests', async ({ showPage }) => {
 
   await expect(content).toHaveScreenshot()
 })
+
+const locale = DefaultLocale
 
 const reviewRequest1 = {
   published: Temporal.PlainDate.from('2024-04-24'),

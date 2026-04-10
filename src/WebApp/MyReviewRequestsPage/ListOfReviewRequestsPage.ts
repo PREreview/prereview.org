@@ -1,7 +1,7 @@
 import { Array } from 'effect'
 import rtlDetect from 'rtl-detect'
 import { html, plainText } from '../../html.ts'
-import { DefaultLocale } from '../../locales/index.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
@@ -10,8 +10,10 @@ import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export const ListOfReviewRequestsPage = ({
+  locale,
   reviewRequests,
 }: {
+  locale: SupportedLocale
   reviewRequests: Array.NonEmptyReadonlyArray<ReviewRequests.ReviewRequestForPrereviewer>
 }) => {
   return PageResponse({
@@ -48,7 +50,7 @@ export const ListOfReviewRequestsPage = ({
                     <ul class="categories">
                       ${Array.map(
                         subfields,
-                        subfield => html`<li><span>${getSubfieldName(subfield, DefaultLocale)}</span></li>`,
+                        subfield => html`<li><span>${getSubfieldName(subfield, locale)}</span></li>`,
                       )}
                     </ul>
                   `,
@@ -57,7 +59,7 @@ export const ListOfReviewRequestsPage = ({
 
                 <dl>
                   <dt>Request published</dt>
-                  <dd>${renderDate(DefaultLocale)(request.published)}</dd>
+                  <dd>${renderDate(locale)(request.published)}</dd>
                   <dt>Preprint server</dt>
                   <dd>${Preprints.getServerName(request.preprint.id)}</dd>
                 </dl>
