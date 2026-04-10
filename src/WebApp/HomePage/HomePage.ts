@@ -11,7 +11,7 @@ import * as Preprints from '../../Preprints/index.ts'
 import type * as Prereviews from '../../Prereviews/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
-import { reviewAPreprintMatch, reviewMatch, reviewRequestsMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
+import { reviewAPreprintMatch, reviewMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -320,7 +320,7 @@ export const createPage = ({
             </ol>
 
             <nav>
-              <a href="${format(reviewRequestsMatch.formatter, {})}" class="forward"
+              <a href="${Routes.ReviewRequests}" class="forward"
                 ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
               >
             </nav>

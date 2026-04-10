@@ -1,10 +1,9 @@
 import { Array, flow, Number, Order, pipe, String, Tuple } from 'effect'
-import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
-import { reviewRequestsMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
 import { fieldIds, getFieldName } from '../../types/field.ts'
 
 export const title = ({
@@ -34,13 +33,7 @@ export const form = ({
   const t = translate(locale, 'review-requests-page')
 
   return html`
-    <form
-      method="get"
-      action="${format(reviewRequestsMatch.formatter, {})}"
-      novalidate
-      role="search"
-      aria-labelledby="filter-label"
-    >
+    <form method="get" action="${Routes.ReviewRequests}" novalidate role="search" aria-labelledby="filter-label">
       <h2 class="visually-hidden" id="filter-label">${t('filterTitle')()}</h2>
       <input type="hidden" name="page" value="1" />
       <div>

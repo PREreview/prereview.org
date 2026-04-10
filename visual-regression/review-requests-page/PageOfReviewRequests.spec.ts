@@ -4,7 +4,7 @@ import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
-import * as _ from '../../src/WebApp/review-requests-page/PageOfReviewRequests.ts'
+import * as _ from '../../src/WebApp/ReviewRequestsPage/PageOfReviewRequests.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

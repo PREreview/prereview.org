@@ -1,8 +1,8 @@
-import { format } from 'fp-ts-routing'
+import { UrlParams } from '@effect/platform'
 import { html } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
-import { reviewRequestsMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
 import { PageResponse } from '../Response/index.ts'
 import { form, title } from './Page.ts'
 
@@ -27,7 +27,7 @@ export const NoResultsPage = ({
         <p>${t('appearHere')()}</p>
       </div>
     `,
-    canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
+    canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: 1, field, language }))}`,
     current: 'review-requests',
   })
 }

@@ -1,13 +1,11 @@
 import { pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
-import { reviewRequestsMatch } from '../../../routes.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
-const listOfRequestsLink = (text: string) => `<a href="${format(reviewRequestsMatch.formatter, {})}">${text}</a>`
+const listOfRequestsLink = (text: string) => `<a href="${Routes.ReviewRequests}">${text}</a>`
 const communitySlackLink = (text: string) => `<a href="https://bit.ly/PREreview-Slack">${text}</a>`
 
 export const PublishedPage = (locale: SupportedLocale, preprint: PreprintId) => {

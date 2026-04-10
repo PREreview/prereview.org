@@ -1,10 +1,12 @@
+import { UrlParams } from '@effect/platform'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { html, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
-import { reviewRequestsMatch, writeReviewMatch } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
+import { writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
@@ -91,21 +93,25 @@ export const PageOfReviewRequests = ({
       <nav class="pager">
         ${currentPage > 1
           ? html`<a
-              href="${format(reviewRequestsMatch.formatter, { page: currentPage - 1, field, language })}"
+              href="${Routes.ReviewRequests}?${UrlParams.toString(
+                UrlParams.fromInput({ page: currentPage - 1, field, language }),
+              )}"
               rel="prev"
               >${t('pagerNewer')()}</a
             >`
           : ''}
         ${currentPage < totalPages
           ? html`<a
-              href="${format(reviewRequestsMatch.formatter, { page: currentPage + 1, field, language })}"
+              href="${Routes.ReviewRequests}?${UrlParams.toString(
+                UrlParams.fromInput({ page: currentPage + 1, field, language }),
+              )}"
               rel="next"
               >${t('pagerOlder')()}</a
             >`
           : ''}
       </nav>
     `,
-    canonical: format(reviewRequestsMatch.formatter, { page: currentPage, field, language }),
+    canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: currentPage, field, language }))}`,
     current: 'review-requests',
   })
 }

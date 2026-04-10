@@ -1,5 +1,5 @@
 import { DefaultLocale } from '../../src/locales/index.ts'
-import * as _ from '../../src/WebApp/review-requests-page/NoResultsPage.ts'
+import * as _ from '../../src/WebApp/ReviewRequestsPage/NoResultsPage.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right when empty', async ({ showPage }) => {

@@ -1,10 +1,12 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
+import { Cause, Console, Effect, flow, identity, Match, Option, pipe, Record, Schema, Struct } from 'effect'
 import { AllowSiteCrawlers, Locale } from '../../Context.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
+import { FieldIdSchema } from '../../types/field.ts'
+import { Iso639 } from '../../types/index.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
 import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
@@ -33,6 +35,7 @@ import { RequestsData } from '../RequestsData.ts'
 import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
+import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -61,6 +64,12 @@ const MakeStaticRoute = <E, R>(
   path: `/${string}`,
   handler: Effect.Effect<Response.Response, E, R>,
 ) => HttpRouter.makeRoute(method, path, Effect.andThen(handler, Response.toHttpServerResponse))
+
+const EmptyStringAsOptional = <A, I, R>(schema: Schema.Schema<A, I | string, R>) =>
+  Schema.optionalToOptional(Schema.encodedSchema(schema), schema, {
+    decode: Option.filter(value => value !== ''),
+    encode: Option.filter(value => value !== ''),
+  })
 
 const RequestAReviewFlowRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.RequestAReview, RequestAReviewFlow.RequestAReviewPage()),
@@ -447,6 +456,29 @@ export const Router = pipe(
     MakeStaticRoute('GET', Routes.Resources, ResourcesPage),
     MakeStaticRoute('GET', Routes.Trainings, TrainingsPage),
     MakeRoute('GET', Routes.ClubProfile, ClubProfilePage),
+    MakeStaticRoute(
+      'GET',
+      Routes.ReviewRequests,
+      pipe(
+        HttpServerRequest.schemaSearchParams(
+          Schema.Struct({
+            field: EmptyStringAsOptional(FieldIdSchema),
+            language: EmptyStringAsOptional(Iso639.Iso6391Schema),
+            page: Schema.optionalWith(Schema.compose(Schema.NumberFromString, Schema.Int), { default: () => 1 }),
+          }),
+        ),
+        Effect.catchTag('ParseError', error =>
+          Effect.gen(function* () {
+            yield* Console.log(error)
+            return yield* Effect.andThen(
+              HttpServerRequest.HttpServerRequest,
+              request => new HttpServerError.RouteNotFound({ request }),
+            )
+          }),
+        ),
+        Effect.andThen(ReviewRequestsPage),
+      ),
+    ),
   ]),
   HttpRouter.concat(
     pipe(

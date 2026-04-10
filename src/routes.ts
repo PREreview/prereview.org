@@ -49,6 +49,7 @@ export const LogOut = '/log-out'
 export const OrcidAuth = '/orcid'
 export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
+export const ReviewRequests = '/review-requests'
 
 const stringStartsWith =
   <P extends string>(prefix: P) =>
@@ -724,20 +725,6 @@ export const writeReviewPublishMatch = pipe(
 export const writeReviewPublishedMatch = pipe(
   writeReviewBaseMatch,
   P.andThen(P.lit('prereview-published')),
-  P.andThen(P.end),
-)
-
-export const reviewRequestsMatch = pipe(
-  P.lit('review-requests'),
-  P.andThen(
-    query(
-      C.partial({
-        field: EmptyAsUndefinedC(FieldIdC),
-        language: EmptyAsUndefinedC(LanguageC),
-        page: IntegerFromStringC,
-      }),
-    ),
-  ),
   P.andThen(P.end),
 )
 

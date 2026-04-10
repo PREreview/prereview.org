@@ -47,7 +47,7 @@ import * as Preprints from '../../../Preprints/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { PublicUrl } from '../../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
-import * as ReviewRequests from '../../../ReviewRequests/index.ts'
+import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { SlackOauth } from '../../../SlackOauth.ts'
 import type { GenerateUuid } from '../../../types/uuid.ts'
@@ -58,7 +58,6 @@ import { profile } from '../../profile-page/index.ts'
 import * as Response from '../../Response/index.ts'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.ts'
 import { CommentsForReview, reviewPage } from '../../review-page/index.ts'
-import { reviewRequests } from '../../review-requests-page/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
@@ -408,16 +407,6 @@ const routerWithoutHyperTs = pipe(
                 ),
                 env.runtime,
               ),
-            }),
-      ),
-    ),
-    pipe(
-      Routes.reviewRequestsMatch.parser,
-      P.map(
-        ({ field, language, page }) =>
-          (env: Env) =>
-            reviewRequests({ field, language, locale: env.locale, page: page ?? 1 })({
-              getReviewRequests: EffectToFpts.toTaskEitherK(ReviewRequests.search, env.runtime),
             }),
       ),
     ),

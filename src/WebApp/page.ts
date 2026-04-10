@@ -204,7 +204,7 @@ export const page = ({
                         </li>
                         <li>
                           <a
-                            href="${format(Routes.reviewRequestsMatch.formatter, {})}"
+                            href="${Routes.ReviewRequests}"
                             ${current === 'review-requests' ? html`aria-current="page"` : ''}
                             >${t('header', 'menuRequests')()}</a
                           >
