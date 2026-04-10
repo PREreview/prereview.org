@@ -1,11 +1,13 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/review-requests-page/index.ts'
 import { reviewRequestsMatch } from '../../../src/routes.ts'
+import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('reviewRequests', () => {
@@ -28,102 +30,118 @@ describe('reviewRequests', () => {
         }),
       ),
     }),
-  ])('when the requests can be loaded', async (locale, page, field, language, reviewRequests) => {
-    const actual = await _.reviewRequests({ field, language, locale, page })({
-      getReviewRequests: () => TE.right(reviewRequests),
-    })()
+  ])('when the requests can be loaded', (locale, page, field, language, reviewRequests) =>
+    Effect.gen(function* () {
+      const actual = yield* Effect.tryPromise(
+        _.reviewRequests({ field, language, locale, page })({
+          getReviewRequests: () => TE.right(reviewRequests),
+        }),
+      )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(reviewRequestsMatch.formatter, {
-        page: reviewRequests.currentPage,
-        field: reviewRequests.field,
-        language: reviewRequests.language,
-      }),
-      current: 'review-requests',
-      status: StatusCodes.OK,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      extraSkipLink: [expect.anything(), '#results'],
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(reviewRequestsMatch.formatter, {
+          page: reviewRequests.currentPage,
+          field: reviewRequests.field,
+          language: reviewRequests.language,
+        }),
+        current: 'review-requests',
+        status: StatusCodes.OK,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        extraSkipLink: [expect.anything(), '#results'],
+        js: [],
+      })
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([
     fc.supportedLocale(),
     fc.integer(),
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
-  ])("when the requests can't be loaded", async (locale, page, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new ReviewRequests.ReviewRequestsAreUnavailable({})),
-    )
+  ])("when the requests can't be loaded", (locale, page, field, language) =>
+    Effect.gen(function* () {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+        TE.left(new ReviewRequests.ReviewRequestsAreUnavailable({})),
+      )
 
-    const actual = await _.reviewRequests({ field, language, locale, page })({
-      getReviewRequests,
-    })()
+      const actual = yield* Effect.tryPromise(
+        _.reviewRequests({ field, language, locale, page })({
+          getReviewRequests,
+        }),
+      )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([
     fc.supportedLocale(),
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
-  ])("when requests can't be found", async (locale, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
-    )
+  ])("when requests can't be found", (locale, field, language) =>
+    Effect.gen(function* () {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+        TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
+      )
 
-    const actual = await _.reviewRequests({ field, language, locale, page: 1 })({
-      getReviewRequests,
-    })()
+      const actual = yield* Effect.tryPromise(
+        _.reviewRequests({ field, language, locale, page: 1 })({
+          getReviewRequests,
+        }),
+      )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
-      current: 'review-requests',
-      status: StatusCodes.OK,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      extraSkipLink: [expect.anything(), '#results'],
-      js: [],
-    })
-    expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page: 1 })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(reviewRequestsMatch.formatter, { page: 1, field, language }),
+        current: 'review-requests',
+        status: StatusCodes.OK,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        extraSkipLink: [expect.anything(), '#results'],
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page: 1 })
+    }).pipe(EffectTest.run),
+  )
 
   test.prop([
     fc.supportedLocale(),
     fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 })),
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
-  ])("when the requests page can't be found", async (locale, page, field, language) => {
-    const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
-    )
+  ])("when the requests page can't be found", (locale, page, field, language) =>
+    Effect.gen(function* () {
+      const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
+        TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
+      )
 
-    const actual = await _.reviewRequests({ field, language, locale, page })({
-      getReviewRequests,
-    })()
+      const actual = yield* Effect.tryPromise(
+        _.reviewRequests({ field, language, locale, page })({
+          getReviewRequests,
+        }),
+      )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-    expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.NotFound,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequests).toHaveBeenCalledWith({ field, language, page })
+    }).pipe(EffectTest.run),
+  )
 })
