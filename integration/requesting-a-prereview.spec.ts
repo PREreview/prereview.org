@@ -6,6 +6,7 @@ import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
+import { OrcidId } from '../src/types/OrcidId.ts'
 import { areLoggedIn, canLogIn, expect, seedEvents, test } from './base.ts'
 
 const reviewRequestId1 = v4()()
@@ -449,4 +450,30 @@ test.extend(
     .click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+})
+
+test
+  .extend(
+    seedEvents(
+      new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+        startedAt: now,
+        preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
+        reviewRequestId: reviewRequestId1,
+        requesterId: OrcidId('0000-0002-1825-0097'),
+      }),
+      new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+        publishedAt: now,
+        reviewRequestId: reviewRequestId1,
+      }),
+    ),
+  )
+  .extend(canLogIn)
+  .extend(areLoggedIn)('can see my own requests', async ({ page }) => {
+  await page.goto('/my-review-requests', { waitUntil: 'commit' })
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('My review requests')
+
+  await expect(page.getByRole('main')).toContainText(
+    'A conserved local structural motif controls the kinetics of PTP1B catalysis',
+  )
 })
