@@ -1,7 +1,26 @@
-import type { Effect } from 'effect'
+import { Array, Effect } from 'effect'
 import type { Locale } from '../../Context.ts'
-import type { LoggedInUser } from '../../user.ts'
+import * as ReviewRequests from '../../ReviewRequests/index.ts'
+import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import type { PageResponse } from '../Response/index.ts'
+import { ListOfReviewRequestsPage } from './ListOfReviewRequestsPage.ts'
+import { NoReviewRequestsPage } from './NoReviewRequestsPage.ts'
 
-export const MyReviewRequestsPage: Effect.Effect<PageResponse, never, Locale | LoggedInUser> = HavingProblemsPage
+export const MyReviewRequestsPage: Effect.Effect<
+  PageResponse,
+  never,
+  ReviewRequests.ReviewRequests | Locale | LoggedInUser
+> = Effect.gen(function* () {
+  const user = yield* LoggedInUser
+
+  const reviewRequests = yield* ReviewRequests.listForPrereviewer(user.orcid)
+
+  return Array.match(reviewRequests, {
+    onEmpty: () => NoReviewRequestsPage(),
+    onNonEmpty: reviewRequests => ListOfReviewRequestsPage({ reviewRequests }),
+  })
+}).pipe(
+  Effect.catchTag('ReviewRequestsAreUnavailable', () => HavingProblemsPage),
+  Effect.withSpan('MyReviewRequestsPage'),
+)
