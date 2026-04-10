@@ -1,0 +1,22 @@
+{
+  "myReviewRequests": {
+    "message": "My review requests",
+    "description": "Title of the page that shows the list of review requests that you’ve made."
+  },
+  "onlyYouCanSee": {
+    "message": "Only you can see this page.",
+    "description": "Message shown under the title of the page."
+  },
+  "notPublished": {
+    "message": "You haven’t requested a review yet.",
+    "description": "Message shown under the title of the page."
+  },
+  "appearHere": {
+    "message": "When you do, it’ll appear here.",
+    "description": "Text shown alongside “You haven’t requested a review yet”."
+  },
+  "requestAReview": {
+    "message": "Request a review",
+    "description": "Text of the button that takes you to the page where you can request a review."
+  }
+}

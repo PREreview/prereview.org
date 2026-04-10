@@ -1,7 +1,7 @@
 import { Array } from 'effect'
 import rtlDetect from 'rtl-detect'
-import { html, plainText } from '../../html.ts'
-import type { SupportedLocale } from '../../locales/index.ts'
+import { html, plainText, rawHtml } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
@@ -16,13 +16,15 @@ export const ListOfReviewRequestsPage = ({
   locale: SupportedLocale
   reviewRequests: Array.NonEmptyReadonlyArray<ReviewRequests.ReviewRequestForPrereviewer>
 }) => {
+  const t = translate(locale, 'my-review-requests-page')
+
   return PageResponse({
-    title: plainText`My review requests`,
+    title: plainText(t('myReviewRequests')()),
     main: html`
-      <h1>My review requests</h1>
+      <h1>${t('myReviewRequests')()}</h1>
 
       <div class="inset">
-        <p>Only you can see this page.</p>
+        <p>${t('onlyYouCanSee')()}</p>
       </div>
 
       <ol class="cards">
@@ -32,17 +34,33 @@ export const ListOfReviewRequestsPage = ({
             <li>
               <article aria-labelledby="request-${index}-title">
                 <h2 id="request-${index}-title" class="visually-hidden">
-                  Review request for
-                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
-                    >${request.preprint.title}</cite
-                  >
+                  ${rawHtml(
+                    t(
+                      'requests-list',
+                      'requestTitle',
+                    )({
+                      preprint: html`<cite
+                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                        lang="${request.preprint.language}"
+                        >${request.preprint.title}</cite
+                      >`.toString(),
+                    }),
+                  )}
                 </h2>
 
                 <span>
-                  A review was requested for
-                  <cite dir="${rtlDetect.getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
-                    >${request.preprint.title}</cite
-                  ></span
+                  ${rawHtml(
+                    t(
+                      'requests-list',
+                      'requestText',
+                    )({
+                      preprint: html`<cite
+                        dir="${rtlDetect.getLangDir(request.preprint.language)}"
+                        lang="${request.preprint.language}"
+                        >${request.preprint.title}</cite
+                      >`.toString(),
+                    }),
+                  )}</span
                 >
 
                 ${Array.match(request.subfields, {
@@ -58,9 +76,9 @@ export const ListOfReviewRequestsPage = ({
                 })}
 
                 <dl>
-                  <dt>Request published</dt>
+                  <dt>${t('requests-list', 'requestPublished')()}</dt>
                   <dd>${renderDate(locale)(request.published)}</dd>
-                  <dt>Preprint server</dt>
+                  <dt>${t('requests-list', 'requestServer')()}</dt>
                   <dd>${Preprints.getServerName(request.preprint.id)}</dd>
                 </dl>
               </article>
