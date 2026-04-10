@@ -29,6 +29,7 @@ export interface Page {
     | 'live-reviews'
     | 'menu'
     | 'my-details'
+    | 'my-review-requests'
     | 'my-prereviews'
     | 'partners'
     | 'people'
@@ -292,6 +293,13 @@ export const page = ({
                                   href="${format(Routes.myPrereviewsMatch.formatter, {})}"
                                   ${current === 'my-prereviews' ? html`aria-current="page"` : ''}
                                   >${translate(locale, 'header', 'menuMyPrereviews')()}</a
+                                >
+                              </li>
+                              <li>
+                                <a
+                                  href="${Routes.MyReviewRequests}"
+                                  ${current === 'my-review-requests' ? html`aria-current="page"` : ''}
+                                  >My review requests</a
                                 >
                               </li>
                               <li>

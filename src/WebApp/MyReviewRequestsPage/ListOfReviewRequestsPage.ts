@@ -68,5 +68,6 @@ export const ListOfReviewRequestsPage = ({
       </ol>
     `,
     canonical: Routes.MyReviewRequests,
+    current: 'my-review-requests',
   })
 }

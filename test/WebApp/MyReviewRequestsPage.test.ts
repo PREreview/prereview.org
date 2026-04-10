@@ -27,6 +27,7 @@ describe('MyReviewRequestsPage', () => {
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
           canonical: Routes.MyReviewRequests,
+          current: 'my-review-requests',
           status: StatusCodes.OK,
           title: expect.anything(),
           main: expect.anything(),

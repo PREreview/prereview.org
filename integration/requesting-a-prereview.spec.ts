@@ -468,10 +468,21 @@ test
     ),
   )
   .extend(canLogIn)
-  .extend(areLoggedIn)('can see my own requests', async ({ page }) => {
-  await page.goto('/my-review-requests', { waitUntil: 'commit' })
+  .extend(areLoggedIn)('can see my own requests', async ({ javaScriptEnabled, page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
+
+  await menu.click()
+  await page.getByRole('link', { name: 'My review requests' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My review requests')
+
+  if (javaScriptEnabled) {
+    await menu.click()
+
+    await expect(page.getByRole('link', { name: 'My review requests' })).toHaveAttribute('aria-current', 'page')
+  }
 
   await expect(page.getByRole('main')).toContainText(
     'A conserved local structural motif controls the kinetics of PTP1B catalysis',

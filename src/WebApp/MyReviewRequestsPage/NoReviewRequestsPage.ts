@@ -17,5 +17,6 @@ export const NoReviewRequestsPage = () => {
       <a href="${Routes.RequestAReview}" class="button">Request a review</a>
     `,
     canonical: Routes.MyReviewRequests,
+    current: 'my-review-requests',
   })
 }

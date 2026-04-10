@@ -102,6 +102,9 @@ export const createMenuPage = ({
                   <a href="${format(Routes.myPrereviewsMatch.formatter, {})}">${t('menuMyPrereviews')()}</a>
                 </li>
                 <li>
+                  <a href="${Routes.MyReviewRequests}">My review requests</a>
+                </li>
+                <li>
                   <a href="${Routes.LogOut}">${t('menuLogOut')()}</a>
                 </li>
               `,
