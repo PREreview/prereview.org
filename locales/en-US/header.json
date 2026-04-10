@@ -35,6 +35,10 @@
   "menuMyPrereviews": {
     "message": "My PREreviews"
   },
+  "menuMyReviewRequests": {
+    "message": "My review requests",
+    "description": "Link in the menu to a list of review requests that you’ve made."
+  },
   "menuLogOut": {
     "message": "Log out"
   },

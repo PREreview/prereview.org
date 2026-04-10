@@ -299,7 +299,7 @@ export const page = ({
                                 <a
                                   href="${Routes.MyReviewRequests}"
                                   ${current === 'my-review-requests' ? html`aria-current="page"` : ''}
-                                  >My review requests</a
+                                  >${translate(locale, 'header', 'menuMyReviewRequests')()}</a
                                 >
                               </li>
                               <li>
