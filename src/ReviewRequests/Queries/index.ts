@@ -13,6 +13,7 @@ import { GetPublishedReviewRequestByAPrereviewer } from './GetPublishedReviewReq
 import { GetReceivedReviewRequest } from './GetReceivedReviewRequest.ts'
 import { GetReviewRequestReadyToBePublished } from './GetReviewRequestReadyToBePublished.ts'
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
+import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
@@ -33,6 +34,9 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     searchForPublishedReviewRequests: Queries.FromStatefulQuery<typeof SearchForPublishedReviewRequests>
     findReviewRequestsNeedingCategorization: Queries.FromOnDemandQuery<typeof FindReviewRequestsNeedingCategorization>
     getReviewRequestToAcknowledge: Queries.FromOnDemandQuery<typeof GetReviewRequestToAcknowledge>
+    listAllPublishedReviewRequestsByAPrereviewer: Queries.FromStatefulQuery<
+      typeof ListAllPublishedReviewRequestsByAPrereviewer
+    >
     listAllPublishedReviewRequestsForStats: Queries.FromStatefulQuery<typeof ListAllPublishedReviewRequestsForStats>
   }
 >() {}
@@ -50,6 +54,7 @@ export const {
   searchForPublishedReviewRequests,
   findReviewRequestsNeedingCategorization,
   getReviewRequestToAcknowledge,
+  listAllPublishedReviewRequestsByAPrereviewer,
   listAllPublishedReviewRequestsForStats,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
@@ -84,6 +89,9 @@ const makeReviewRequestQueries: Effect.Effect<
     searchForPublishedReviewRequests: yield* Queries.makeStatefulQuery(SearchForPublishedReviewRequests),
     findReviewRequestsNeedingCategorization: yield* Queries.makeOnDemandQuery(FindReviewRequestsNeedingCategorization),
     getReviewRequestToAcknowledge: yield* Queries.makeOnDemandQuery(GetReviewRequestToAcknowledge),
+    listAllPublishedReviewRequestsByAPrereviewer: yield* Queries.makeStatefulQuery(
+      ListAllPublishedReviewRequestsByAPrereviewer,
+    ),
     listAllPublishedReviewRequestsForStats: yield* Queries.makeStatefulQuery(ListAllPublishedReviewRequestsForStats),
   }
 })
