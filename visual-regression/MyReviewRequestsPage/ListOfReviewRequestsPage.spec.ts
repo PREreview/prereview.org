@@ -1,5 +1,6 @@
 import { rawHtml } from '../../src/html.ts'
 import * as Preprints from '../../src/Preprints/index.ts'
+import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import { Doi, Temporal } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/MyReviewRequestsPage/ListOfReviewRequestsPage.ts'
 import { expect, test } from '../base.ts'
@@ -30,7 +31,7 @@ const reviewRequest1 = {
     language: 'pt',
     title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
   },
-} satisfies _.ReviewRequest
+} satisfies ReviewRequests.ReviewRequestForPrereviewer
 
 const reviewRequest2 = {
   published: Temporal.PlainDate.from('2024-04-24'),
@@ -40,7 +41,7 @@ const reviewRequest2 = {
     language: 'pt',
     title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
   },
-} satisfies _.ReviewRequest
+} satisfies ReviewRequests.ReviewRequestForPrereviewer
 
 const reviewRequest3 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -50,7 +51,7 @@ const reviewRequest3 = {
     language: 'en',
     title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
   },
-} satisfies _.ReviewRequest
+} satisfies ReviewRequests.ReviewRequestForPrereviewer
 
 const reviewRequest4 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -60,7 +61,7 @@ const reviewRequest4 = {
     language: 'es',
     title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
   },
-} satisfies _.ReviewRequest
+} satisfies ReviewRequests.ReviewRequestForPrereviewer
 
 const reviewRequest5 = {
   published: Temporal.PlainDate.from('2024-04-22'),
@@ -70,4 +71,4 @@ const reviewRequest5 = {
     language: 'pt',
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },
-} satisfies _.ReviewRequest
+} satisfies ReviewRequests.ReviewRequestForPrereviewer

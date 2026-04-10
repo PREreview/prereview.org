@@ -1,29 +1,18 @@
 import { Array } from 'effect'
-import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
-import { type Html, html, plainText } from '../../html.ts'
+import { html, plainText } from '../../html.ts'
 import { DefaultLocale } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
-import type { Temporal } from '../../types/index.ts'
-import { getSubfieldName, type SubfieldId } from '../../types/subfield.ts'
+import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
-
-export interface ReviewRequest {
-  readonly published: Temporal.PlainDate
-  readonly subfields: ReadonlyArray<SubfieldId>
-  readonly preprint: {
-    readonly id: Preprints.PreprintId
-    readonly language: LanguageCode
-    readonly title: Html
-  }
-}
 
 export const ListOfReviewRequestsPage = ({
   reviewRequests,
 }: {
-  reviewRequests: Array.NonEmptyReadonlyArray<ReviewRequest>
+  reviewRequests: Array.NonEmptyReadonlyArray<ReviewRequests.ReviewRequestForPrereviewer>
 }) => {
   return PageResponse({
     title: plainText`My review requests`,
