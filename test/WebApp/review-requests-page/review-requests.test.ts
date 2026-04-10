@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/review-requests-page/index.ts'
 import { reviewRequestsMatch } from '../../../src/routes.ts'
@@ -56,7 +57,7 @@ describe('reviewRequests', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests can't be loaded", async (locale, page, field, language) => {
     const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new _.ReviewRequestsAreUnavailable({})),
+      TE.left(new ReviewRequests.ReviewRequestsAreUnavailable({})),
     )
 
     const actual = await _.reviewRequests({ field, language, locale, page })({
@@ -80,7 +81,7 @@ describe('reviewRequests', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when requests can't be found", async (locale, field, language) => {
     const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new _.ReviewRequestsNotFound({})),
+      TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
     )
 
     const actual = await _.reviewRequests({ field, language, locale, page: 1 })({
@@ -108,7 +109,7 @@ describe('reviewRequests', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests page can't be found", async (locale, page, field, language) => {
     const getReviewRequests = jest.fn<_.GetReviewRequestsEnv['getReviewRequests']>(_args =>
-      TE.left(new _.ReviewRequestsNotFound({})),
+      TE.left(new ReviewRequests.ReviewRequestsNotFound({})),
     )
 
     const actual = await _.reviewRequests({ field, language, locale, page })({

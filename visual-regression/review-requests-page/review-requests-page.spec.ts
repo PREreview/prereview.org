@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
-import type { ReviewRequests } from '../../src/WebApp/review-requests-page/index.ts'
+import type * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import { createEmptyPage, createPage } from '../../src/WebApp/review-requests-page/review-requests-page.ts'
 import { expect, test } from '../base.ts'
 
@@ -107,7 +107,7 @@ const reviewRequest1 = {
     language: 'pt',
     title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
   },
-} satisfies ReviewRequests['reviewRequests'][number]
+} satisfies ReviewRequests.ReviewRequest
 
 const reviewRequest2 = {
   published: Temporal.PlainDate.from('2024-04-24'),
@@ -118,7 +118,7 @@ const reviewRequest2 = {
     language: 'pt',
     title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
   },
-} satisfies ReviewRequests['reviewRequests'][number]
+} satisfies ReviewRequests.ReviewRequest
 
 const reviewRequest3 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -129,7 +129,7 @@ const reviewRequest3 = {
     language: 'en',
     title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
   },
-} satisfies ReviewRequests['reviewRequests'][number]
+} satisfies ReviewRequests.ReviewRequest
 
 const reviewRequest4 = {
   published: Temporal.PlainDate.from('2024-04-23'),
@@ -140,7 +140,7 @@ const reviewRequest4 = {
     language: 'es',
     title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
   },
-} satisfies ReviewRequests['reviewRequests'][number]
+} satisfies ReviewRequests.ReviewRequest
 
 const reviewRequest5 = {
   published: Temporal.PlainDate.from('2024-04-22'),
@@ -151,4 +151,4 @@ const reviewRequest5 = {
     language: 'pt',
     title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
   },
-} satisfies ReviewRequests['reviewRequests'][number]
+} satisfies ReviewRequests.ReviewRequest

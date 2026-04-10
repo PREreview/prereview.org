@@ -5,12 +5,12 @@ import rtlDetect from 'rtl-detect'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import type * as ReviewRequests from '../../ReviewRequests/index.ts'
 import { reviewRequestsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { fieldIds, getFieldName } from '../../types/field.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
-import type { ReviewRequests } from './review-requests.ts'
 
 export const createPage = ({
   currentPage,
@@ -19,7 +19,7 @@ export const createPage = ({
   locale,
   field,
   reviewRequests,
-}: ReviewRequests & { locale: SupportedLocale }) =>
+}: ReviewRequests.PageOfReviewRequests & { locale: SupportedLocale }) =>
   PageResponse({
     title: title({ currentPage, field, language, locale }),
     extraSkipLink: [html`${translate(locale, 'review-requests-page', 'skipResults')()}`, '#results'],
@@ -115,7 +115,7 @@ export const createEmptyPage = ({
   field,
   language,
   locale,
-}: Pick<ReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) =>
+}: Pick<ReviewRequests.PageOfReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) =>
   PageResponse({
     title: title({ currentPage: 1, field, language, locale }),
     extraSkipLink: [html`${translate(locale, 'review-requests-page', 'skipResults')()}`, '#results'],
@@ -139,7 +139,7 @@ const title = ({
   field,
   language,
   locale,
-}: Pick<ReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
+}: Pick<ReviewRequests.PageOfReviewRequests, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
   const details = Array.append(
     [
       field ? getFieldName(field, locale) : undefined,
@@ -161,7 +161,7 @@ const form = ({
   field,
   language,
   locale,
-}: Pick<ReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) => html`
+}: Pick<ReviewRequests.PageOfReviewRequests, 'field' | 'language'> & { locale: SupportedLocale }) => html`
   <form
     method="get"
     action="${format(reviewRequestsMatch.formatter, {})}"

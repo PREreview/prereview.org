@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
+import { Array, Context, Data, Effect, flow, Layer, pipe, Scope } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -8,11 +8,6 @@ import type { FieldId } from '../types/field.ts'
 import type { OrcidId } from '../types/index.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 import { getTopicField, getTopicSubfield } from '../types/Topic.ts'
-import {
-  ReviewRequestsAreUnavailable,
-  ReviewRequestsNotFound,
-  type ReviewRequests as PageOfReviewRequests,
-} from '../WebApp/review-requests-page/index.ts' // eslint-disable-line import/no-internal-modules
 import * as Commands from './Commands/index.ts'
 import * as Queries from './Queries/index.ts'
 import * as Workflows from './Workflows/index.ts'
@@ -35,6 +30,14 @@ export interface ReviewRequest {
   }
 }
 
+export interface PageOfReviewRequests {
+  readonly currentPage: number
+  readonly totalPages: number
+  readonly field?: FieldId
+  readonly language?: LanguageCode
+  readonly reviewRequests: Array.NonEmptyReadonlyArray<ReviewRequest>
+}
+
 export interface ReviewRequestForPrereviewer {
   readonly published: Temporal.PlainDate
   readonly subfields: ReadonlyArray<SubfieldId>
@@ -44,6 +47,12 @@ export interface ReviewRequestForPrereviewer {
     readonly title: Html
   }
 }
+
+export class ReviewRequestsNotFound extends Data.TaggedError('ReviewRequestsNotFound')<{ cause?: unknown }> {}
+
+export class ReviewRequestsAreUnavailable extends Data.TaggedError('ReviewRequestsAreUnavailable')<{
+  cause?: unknown
+}> {}
 
 export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,

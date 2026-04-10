@@ -10,12 +10,7 @@ import type { PageResponse } from '../Response/index.ts'
 import { createEmptyPage, createPage } from './review-requests-page.ts'
 import { getReviewRequests, type GetReviewRequestsEnv } from './review-requests.ts'
 
-export {
-  ReviewRequestsAreUnavailable,
-  ReviewRequestsNotFound,
-  type GetReviewRequestsEnv,
-  type ReviewRequests,
-} from './review-requests.ts'
+export { type GetReviewRequestsEnv } from './review-requests.ts'
 
 export const reviewRequests = ({
   field,
