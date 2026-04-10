@@ -2762,6 +2762,24 @@ skip-link {
 
   @media (width >= 50em) {
     flex-direction: row;
+
+    @supports (grid-template-rows: subgrid) {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto;
+      row-gap: 0;
+
+      & > section {
+        display: grid;
+        grid-row: span 3;
+        grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
+
+        & > a {
+          block-size: fit-content;
+        }
+      }
+    }
   }
 }
 
