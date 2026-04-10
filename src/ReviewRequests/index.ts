@@ -5,6 +5,7 @@ import type { Html } from '../html.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 import type { FieldId } from '../types/field.ts'
+import type { OrcidId } from '../types/index.ts'
 import type { SubfieldId } from '../types/subfield.ts'
 import { getTopicField, getTopicSubfield } from '../types/Topic.ts'
 import {
@@ -34,10 +35,23 @@ export interface ReviewRequest {
   }
 }
 
+export interface ReviewRequestForPrereviewer {
+  readonly published: Temporal.PlainDate
+  readonly subfields: ReadonlyArray<SubfieldId>
+  readonly preprint: {
+    readonly id: PreprintId
+    readonly language: LanguageCode
+    readonly title: Html
+  }
+}
+
 export class ReviewRequests extends Context.Tag('ReviewRequests')<
   ReviewRequests,
   {
     getFiveMostRecent: Effect.Effect<ReadonlyArray<ReviewRequest>>
+    listForPrereviewer: (
+      requesterId: OrcidId.OrcidId,
+    ) => Effect.Effect<ReadonlyArray<ReviewRequestForPrereviewer>, ReviewRequestsAreUnavailable>
     search: (query: {
       field?: FieldId
       language?: LanguageCode
@@ -48,7 +62,7 @@ export class ReviewRequests extends Context.Tag('ReviewRequests')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(ReviewRequests)
 
-export const { search } = Effect.serviceFunctions(ReviewRequests)
+export const { search, listForPrereviewer } = Effect.serviceFunctions(ReviewRequests)
 
 export const layer = pipe(
   Layer.effect(
@@ -81,6 +95,29 @@ export const layer = pipe(
           Effect.orElseSucceed(Array.empty),
           Effect.provide(context),
           Effect.withSpan('ReviewRequests.getFiveMostRecent'),
+        ),
+        listForPrereviewer: flow(
+          requesterId => Queries.listAllPublishedReviewRequestsByAPrereviewer({ requesterId }),
+          Effect.andThen(
+            Effect.forEach(
+              Effect.fnUntraced(function* (reviewRequest) {
+                return {
+                  ...reviewRequest,
+                  published: reviewRequest.published.toZonedDateTimeISO('UTC').toPlainDate(),
+                  preprint: yield* Preprints.getPreprintTitle(reviewRequest.preprintId),
+                  subfields: reviewRequest.subfields,
+                }
+              }),
+              { concurrency: 'inherit' },
+            ),
+          ),
+          Effect.catchTags({
+            PreprintIsNotFound: error => new ReviewRequestsAreUnavailable({ cause: error }),
+            PreprintIsUnavailable: error => new ReviewRequestsAreUnavailable({ cause: error }),
+            UnableToQuery: error => new ReviewRequestsAreUnavailable({ cause: error }),
+          }),
+          Effect.provide(context),
+          Effect.withSpan('ReviewRequests.listForPrereviewer'),
         ),
         search: flow(
           Queries.searchForPublishedReviewRequests,
