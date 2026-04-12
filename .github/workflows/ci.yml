@@ -519,7 +519,7 @@ jobs:
         uses: docker/setup-docker-action@v5.0.0
 
       - name: 'Set up flyctl'
-        uses: superfly/flyctl-actions/setup-flyctl@1.5
+        uses: superfly/flyctl-actions/setup-flyctl@1.6
 
       - name: 'Log in to the registry'
         run: flyctl auth docker
@@ -565,7 +565,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: 'Set up flyctl'
-        uses: superfly/flyctl-actions/setup-flyctl@1.5
+        uses: superfly/flyctl-actions/setup-flyctl@1.6
 
       - name: 'Deploy app'
         run: flyctl deploy --config fly.${{ matrix.instance }}.toml --image ${{ needs.push.outputs.image }}
@@ -601,7 +601,7 @@ jobs:
 
       - name: 'Set up flyctl'
         if: steps.changes.outputs.sources == 'true'
-        uses: superfly/flyctl-actions/setup-flyctl@1.5
+        uses: superfly/flyctl-actions/setup-flyctl@1.6
 
       - name: 'Deploy app'
         if: steps.changes.outputs.sources == 'true'
