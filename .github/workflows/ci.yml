@@ -402,7 +402,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: nschloe/action-cached-lfs-checkout@v1.2.4
+        uses: nschloe/action-cached-lfs-checkout@v1.2.5
 
       - name: 'Set up pnpm'
         uses: pnpm/action-setup@v5.0.0
