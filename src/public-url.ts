@@ -19,11 +19,17 @@ export const forRoute: {
 } = <A>(route: Route<A> | Formatter<A> | `/${string}`, args = {} as A) =>
   Effect.orDie(fromString(typeof route === 'string' ? route : 'href' in route ? route.href(args) : format(route, args)))
 
-export function toUrl<A>(formatter: Formatter<A> | Route<A>, a: A) {
-  return R.asks(({ publicUrl }: PublicUrlEnv) =>
-    pipe(new URL('href' in formatter ? formatter.href(a) : format(formatter, a), publicUrl)),
+export const toUrl: {
+  <A>(route: Route<A> | Formatter<A>, a: A): R.Reader<PublicUrlEnv, URL>
+  (route: `/${string}`): R.Reader<PublicUrlEnv, URL>
+} = <A>(formatter: Route<A> | Formatter<A> | `/${string}`, a = {} as A) =>
+  R.asks(
+    ({ publicUrl }: PublicUrlEnv) =>
+      new URL(
+        typeof formatter === 'string' ? formatter : 'href' in formatter ? formatter.href(a) : format(formatter, a),
+        publicUrl,
+      ),
   )
-}
 
 export function ifHasSameOrigin(url: URL) {
   return RE.asksReaderEither(({ publicUrl }: PublicUrlEnv) =>

@@ -19,7 +19,6 @@ import { OrcidOauth } from '../../OrcidOauth.ts'
 import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
-import { orcidCodeMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { NonEmptyString, Uuid } from '../../types/index.ts'
 import { type OrcidId, isOrcidId } from '../../types/OrcidId.ts'
@@ -88,11 +87,7 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
     ...env,
     oauth: {
       ...env.orcidOauth,
-      redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
-        url.search = ''
-
-        return url
-      }),
+      redirectUri: toUrl(Routes.OrcidAuth.path)(env),
     },
   })
 }

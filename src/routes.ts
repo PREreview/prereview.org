@@ -511,12 +511,6 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-export const orcidCodeMatch = pipe(
-  P.lit('orcid'),
-  P.andThen(query(C.struct({ code: C.string, state: C.string }))),
-  P.andThen(P.end),
-)
-
 export const connectOrcidMatch = pipe(P.lit('connect-orcid'), P.andThen(P.end))
 
 export const connectOrcidStartMatch = pipe(P.lit('connect-orcid'), P.andThen(P.lit('start-now')), P.andThen(P.end))
