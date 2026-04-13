@@ -1,6 +1,6 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
-import { AllowSiteCrawlers, Locale } from '../../Context.ts'
+import { AllowSiteCrawlers } from '../../Context.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
@@ -20,7 +20,7 @@ import { HomePage } from '../HomePage/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import { Inbox } from '../Inbox/index.ts'
 import { LiveReviewsPage } from '../LiveReviewsPage.ts'
-import { authenticate, authenticateError, logIn, LogOut } from '../log-in/index.ts'
+import { authenticate, AuthenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
 import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
@@ -429,9 +429,7 @@ const AuthRouter = HttpRouter.fromIterable([
       Match.when({ code: Match.string }, ({ code, state }) =>
         Effect.catchAll(authenticate(code, state), Effect.succeed),
       ),
-      Match.when({ error: Match.string }, ({ error }) =>
-        Effect.andThen(Locale, locale => authenticateError({ error, locale })),
-      ),
+      Match.when({ error: Match.string }, AuthenticateError),
       Match.exhaustive,
     ),
   ),

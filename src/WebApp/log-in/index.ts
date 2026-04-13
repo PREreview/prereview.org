@@ -10,11 +10,9 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { match } from 'ts-pattern'
 import { Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import { timeoutRequest } from '../../fetch.ts'
-import type { SupportedLocale } from '../../locales/index.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
@@ -24,7 +22,7 @@ import { NonEmptyString, Uuid } from '../../types/index.ts'
 import { type OrcidId, isOrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SessionId, newSessionForUser } from '../../user.ts'
-import { FlashMessageResponse, LogInResponse } from '../Response/index.ts'
+import { FlashMessageResponse, LogInResponse, type PageResponse } from '../Response/index.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
 import { failureMessage } from './failure-message.ts'
 
@@ -176,10 +174,12 @@ export const authenticate = Effect.fn(
   ),
 )
 
-export const authenticateError = ({ error, locale }: { error: string; locale: SupportedLocale }) =>
-  match(error)
-    .with('access_denied', () => accessDeniedMessage(locale))
-    .otherwise(() => failureMessage(locale))
+export const AuthenticateError = pipe(
+  Match.type<{ error: string }>(),
+  Match.withReturnType<Effect.Effect<PageResponse, never, Locale>>(),
+  Match.when({ error: 'access_denied' }, () => Effect.andThen(Locale, accessDeniedMessage)),
+  Match.orElse(() => Effect.andThen(Locale, failureMessage)),
+)
 
 function getReferer(state: string) {
   return pipe(

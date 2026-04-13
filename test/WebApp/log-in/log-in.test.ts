@@ -406,32 +406,36 @@ describe('authenticate', () => {
   )
 })
 
-describe('authenticateError', () => {
-  test.prop([fc.supportedLocale()])('with an access_denied error', locale => {
-    const actual = _.authenticateError({ error: 'access_denied', locale })
+describe('AuthenticateError', () => {
+  test.prop([fc.supportedLocale()])('with an access_denied error', locale =>
+    Effect.gen(function* () {
+      const actual = yield* _.AuthenticateError({ error: 'access_denied' })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.Forbidden,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.Forbidden,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+  )
 
-  test.prop([fc.string(), fc.supportedLocale()])('with an unknown error', (error, locale) => {
-    const actual = _.authenticateError({ error, locale })
+  test.prop([fc.string(), fc.supportedLocale()])('with an unknown error', (error, locale) =>
+    Effect.gen(function* () {
+      const actual = yield* _.AuthenticateError({ error })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: StatusCodes.ServiceUnavailable,
+        title: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'main',
+        js: [],
+      })
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+  )
 })
 
 function all<A>(iterable: AsyncIterable<A>): Effect.Effect<ReadonlyArray<A>, unknown> {
