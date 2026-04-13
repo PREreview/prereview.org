@@ -53,8 +53,8 @@ export const NotifyPreprintServer = Effect.fn(
       '@context': ['https://www.w3.org/ns/activitystreams', 'https://coar-notify.net'],
       type: ['Announce', 'coar-notify:ReviewAction'],
       origin: {
-        id: yield* PublicUrl.forRoute(Routes.HomePage, {}),
-        inbox: yield* PublicUrl.forRoute(Routes.Inbox, {}),
+        id: yield* PublicUrl.forRoute(Routes.HomePage),
+        inbox: yield* PublicUrl.forRoute(Routes.Inbox),
         type: 'Service',
       },
       target: target.value,

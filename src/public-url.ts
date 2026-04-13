@@ -13,8 +13,11 @@ export class PublicUrl extends Context.Tag('PublicUrl')<PublicUrl, URL>() {}
 
 const fromString = (url: string) => Effect.andThen(PublicUrl, publicUrl => Url.fromString(url, publicUrl))
 
-export const forRoute = <A>(route: `/${string}` | Route<A> | Formatter<A>, a: A) =>
-  Effect.orDie(fromString(typeof route === 'string' ? route : 'href' in route ? route.href(a) : format(route, a)))
+export const forRoute: {
+  <A>(route: Route<A> | Formatter<A>, a: A): Effect.Effect<URL, never, PublicUrl>
+  (route: `/${string}`): Effect.Effect<URL, never, PublicUrl>
+} = <A>(route: Route<A> | Formatter<A> | `/${string}`, args = {} as A) =>
+  Effect.orDie(fromString(typeof route === 'string' ? route : 'href' in route ? route.href(args) : format(route, args)))
 
 export function toUrl<A>(formatter: Formatter<A> | Route<A>, a: A) {
   return R.asks(({ publicUrl }: PublicUrlEnv) =>
