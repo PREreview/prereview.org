@@ -139,8 +139,7 @@ function generateAuthorizationRequestUrl({
     const orcidOauth = yield* OrcidOauth
     const locale = yield* Locale
 
-    const redirectUri = yield* PublicUrl.forRoute(Routes.orcidCodeMatch.formatter, { code: 'code', state: 'state' })
-    redirectUri.search = ''
+    const redirectUri = yield* PublicUrl.forRoute(Routes.OrcidAuth.path)
 
     const query = UrlParams.fromInput({
       client_id: orcidOauth.clientId,

@@ -1,4 +1,3 @@
-import { UrlParams } from '@effect/platform'
 import { html } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type * as ReviewRequests from '../../ReviewRequests/index.ts'
@@ -27,7 +26,7 @@ export const NoResultsPage = ({
         <p>${t('appearHere')()}</p>
       </div>
     `,
-    canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: 1, field, language }))}`,
+    canonical: Routes.ReviewRequests.href({ page: 1, field, language }),
     current: 'review-requests',
   })
 }

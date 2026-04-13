@@ -204,7 +204,7 @@ export const page = ({
                         </li>
                         <li>
                           <a
-                            href="${Routes.ReviewRequests}"
+                            href="${Routes.ReviewRequests.href({ page: 1 })}"
                             ${current === 'review-requests' ? html`aria-current="page"` : ''}
                             >${t('header', 'menuRequests')()}</a
                           >

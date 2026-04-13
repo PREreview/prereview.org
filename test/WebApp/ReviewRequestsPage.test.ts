@@ -1,4 +1,3 @@
-import { UrlParams } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer } from 'effect'
@@ -17,7 +16,7 @@ describe('ReviewRequestsPage', () => {
     fc.option(fc.fieldId(), { nil: undefined }),
     fc.option(fc.languageCode(), { nil: undefined }),
     fc.record({
-      currentPage: fc.integer(),
+      currentPage: fc.integer({ min: 0 }),
       totalPages: fc.integer(),
       field: fc.option(fc.fieldId(), { nil: undefined }),
       language: fc.option(fc.languageCode(), { nil: undefined }),
@@ -36,7 +35,11 @@ describe('ReviewRequestsPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: reviewRequests.currentPage, field: reviewRequests.field, language: reviewRequests.language }))}`,
+        canonical: Routes.ReviewRequests.href({
+          page: reviewRequests.currentPage,
+          field: reviewRequests.field,
+          language: reviewRequests.language,
+        }),
         current: 'review-requests',
         status: StatusCodes.OK,
         title: expect.anything(),
@@ -99,7 +102,7 @@ describe('ReviewRequestsPage', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: 1, field, language }))}`,
+        canonical: Routes.ReviewRequests.href({ page: 1, field, language }),
         current: 'review-requests',
         status: StatusCodes.OK,
         title: expect.anything(),

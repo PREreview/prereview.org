@@ -33,7 +33,7 @@ export const form = ({
   const t = translate(locale, 'review-requests-page')
 
   return html`
-    <form method="get" action="${Routes.ReviewRequests}" novalidate role="search" aria-labelledby="filter-label">
+    <form method="get" action="${Routes.ReviewRequests.path}" novalidate role="search" aria-labelledby="filter-label">
       <h2 class="visually-hidden" id="filter-label">${t('filterTitle')()}</h2>
       <input type="hidden" name="page" value="1" />
       <div>

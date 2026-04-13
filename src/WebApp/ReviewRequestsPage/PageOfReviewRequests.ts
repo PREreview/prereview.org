@@ -1,4 +1,3 @@
-import { UrlParams } from '@effect/platform'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { html, rawHtml } from '../../html.ts'
@@ -92,26 +91,18 @@ export const PageOfReviewRequests = ({
 
       <nav class="pager">
         ${currentPage > 1
-          ? html`<a
-              href="${Routes.ReviewRequests}?${UrlParams.toString(
-                UrlParams.fromInput({ page: currentPage - 1, field, language }),
-              )}"
-              rel="prev"
+          ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage - 1, field, language })}" rel="prev"
               >${t('pagerNewer')()}</a
             >`
           : ''}
         ${currentPage < totalPages
-          ? html`<a
-              href="${Routes.ReviewRequests}?${UrlParams.toString(
-                UrlParams.fromInput({ page: currentPage + 1, field, language }),
-              )}"
-              rel="next"
+          ? html`<a href="${Routes.ReviewRequests.href({ page: currentPage + 1, field, language })}" rel="next"
               >${t('pagerOlder')()}</a
             >`
           : ''}
       </nav>
     `,
-    canonical: `${Routes.ReviewRequests}?${UrlParams.toString(UrlParams.fromInput({ page: currentPage, field, language }))}`,
+    canonical: Routes.ReviewRequests.href({ page: currentPage, field, language }),
     current: 'review-requests',
   })
 }

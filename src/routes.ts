@@ -1,6 +1,7 @@
+import { UrlParams } from '@effect/platform'
 import { capitalCase } from 'case-anything'
 import { isDoi } from 'doi-ts'
-import { Data, Match, Option, Schema, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Data, Match, Option, Record, Schema, Tuple, flow, identity, pipe } from 'effect'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -11,8 +12,8 @@ import * as Datasets from './Datasets/index.ts'
 import * as Preprints from './Preprints/index.ts'
 import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './Preprints/index.ts'
 import { FptsToEffect } from './RefactoringUtilities/index.ts'
-import { isFieldId } from './types/field.ts'
-import { ProfileId, Uuid } from './types/index.ts'
+import { FieldIdSchema, isFieldId } from './types/field.ts'
+import { Iso639, ProfileId, Uuid } from './types/index.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
@@ -24,7 +25,39 @@ export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   schema: Schema.Schema<A, { readonly [K in keyof A]: string }>
 }
 
+export interface QueryRoute<
+  A extends { readonly [K in keyof A]: unknown },
+  I extends { readonly [K in keyof I]: string | ReadonlyArray<string> | undefined },
+> {
+  path: `/${string}`
+  href: (a: A) => `/${string}`
+  schema: Schema.Schema<A, I>
+}
+
 const Route: <A extends { readonly [K in keyof A]: unknown }>(route: Route<A>) => Route<A> = Data.struct
+
+const QueryRoute = <
+  A extends { readonly [K in keyof A]: unknown },
+  I extends { readonly [K in keyof I]: string | ReadonlyArray<string> | undefined },
+>({
+  path,
+  schema,
+}: {
+  path: `/${string}`
+  schema: Schema.Schema<A, I>
+}): QueryRoute<A, I> =>
+  Data.struct({
+    path,
+    href: flow(
+      Record.filter(value => typeof value !== 'undefined') as never,
+      Schema.encodeSync(UrlParams.schemaRecord(schema)),
+      Array.match({
+        onEmpty: () => path,
+        onNonEmpty: urlParams => `${path}?${UrlParams.toString(urlParams)}` satisfies `/${string}`,
+      }),
+    ),
+    schema,
+  })
 
 export const HomePage = '/'
 export const Inbox = '/inbox'
@@ -46,15 +79,19 @@ export const Resources = '/resources'
 export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
-export const OrcidAuth = '/orcid'
 export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
-export const ReviewRequests = '/review-requests'
 
 const stringStartsWith =
   <P extends string>(prefix: P) =>
   (s: string): s is `${P}${string}` =>
     s.startsWith(prefix)
+
+const EmptyStringAsOptional = <A, R>(schema: Schema.Schema<A, string, R>) =>
+  Schema.optionalToOptional(Schema.String, schema, {
+    decode: Option.filter(value => value !== ''),
+    encode: Option.filter(value => typeof value === 'string' && value !== ''),
+  })
 
 const PreprintIdSchema = Schema.transform(
   Schema.compose(
@@ -100,6 +137,14 @@ const DatasetIdSchema = Schema.transform(
   },
 )
 
+export const OrcidAuth = QueryRoute({
+  path: '/orcid',
+  schema: Schema.Union(
+    Schema.Struct({ code: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
+    Schema.Struct({ error: Schema.String, state: Schema.optionalWith(Schema.String, { default: () => '' }) }),
+  ),
+})
+
 export const ClubProfile = Route({
   path: '/clubs/:id',
   href: params => `/clubs/${Schema.encodeSync(ClubIdSchema)(params.id)}`,
@@ -116,6 +161,18 @@ export const DatasetReview = Route({
   path: '/reviews/:datasetReviewId',
   href: params => `/reviews/${params.datasetReviewId}`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+})
+
+export const ReviewRequests = QueryRoute({
+  path: '/review-requests',
+  schema: Schema.Struct({
+    field: EmptyStringAsOptional(FieldIdSchema),
+    language: EmptyStringAsOptional(Iso639.Iso6391Schema),
+    page: Schema.optionalToRequired(Schema.NumberFromString, Schema.NonNegativeInt, {
+      decode: Option.getOrElse(() => 1),
+      encode: Option.liftPredicate(page => page !== 1),
+    }),
+  }),
 })
 
 export const RequestAReview = '/request-a-prereview'

@@ -34,7 +34,7 @@ export const createMenuPage = ({
               <p>${t('menuReviewsHint')()}</p>
             </li>
             <li>
-              <a href="${Routes.ReviewRequests}">${t('menuRequests')()}</a>
+              <a href="${Routes.ReviewRequests.href({ page: 1 })}">${t('menuRequests')()}</a>
               <p>${t('menuRequestsHint')()}</p>
             </li>
             <li>

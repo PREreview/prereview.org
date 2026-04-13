@@ -320,7 +320,7 @@ export const createPage = ({
             </ol>
 
             <nav>
-              <a href="${Routes.ReviewRequests}" class="forward"
+              <a href="${Routes.ReviewRequests.href({ page: 1 })}" class="forward"
                 ><span>${translate(locale, 'home-page', 'requestsLink')()}</span></a
               >
             </nav>
