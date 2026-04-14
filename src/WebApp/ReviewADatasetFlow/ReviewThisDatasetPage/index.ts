@@ -28,7 +28,7 @@ export const ReviewThisDatasetPage: ({
       })
 
       return Option.match(reviewId, {
-        onNone: () => MakeResponse({ dataset, locale, user }),
+        onNone: () => MakeResponse({ dataset, locale, isLoggedIn: Option.isSome(user) }),
         onSome: () =>
           Response.RedirectResponse({ location: Routes.ReviewThisDatasetStartNow.href({ datasetId: dataset.id }) }),
       })

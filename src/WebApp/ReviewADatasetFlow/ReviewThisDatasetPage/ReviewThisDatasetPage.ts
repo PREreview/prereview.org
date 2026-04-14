@@ -1,21 +1,20 @@
-import { Array, flow, Option, pipe, Struct } from 'effect'
+import { Array, Boolean, flow, pipe, Struct } from 'effect'
 import rtlDetect from 'rtl-detect'
 import * as Datasets from '../../../Datasets/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
-import type { User } from '../../../user.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 export const ReviewThisDatasetPage = ({
   dataset,
   locale,
-  user,
+  isLoggedIn,
 }: {
   dataset: Datasets.Dataset
   locale: SupportedLocale
-  user: Option.Option<User>
+  isLoggedIn: boolean
 }) => {
   const t = translate(locale, 'review-a-dataset-flow')
 
@@ -79,9 +78,9 @@ export const ReviewThisDatasetPage = ({
         )}
       </p>
 
-      ${Option.match(user, {
-        onSome: () => '',
-        onNone: () => html`
+      ${Boolean.match(isLoggedIn, {
+        onTrue: () => '',
+        onFalse: () => html`
           <h2>${t('beforeStart')()}</h2>
 
           <p>${t('orcidIdLogIn')()}</p>
