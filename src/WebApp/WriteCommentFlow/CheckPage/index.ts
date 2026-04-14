@@ -3,7 +3,7 @@ import * as Comments from '../../../Comments/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn } from '../../../user.ts'
+import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
@@ -41,8 +41,7 @@ export const CheckPage = ({
             comment: comment.comment,
             commentId,
             locale,
-            persona: comment.persona,
-            user,
+            persona: toPersonas(user)[`${comment.persona}Persona`],
           }),
         ),
       ),

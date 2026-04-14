@@ -1,10 +1,10 @@
 import { Option } from 'effect'
 import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
-import type { User } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/WriteCommentFlow/CheckPage/CheckPage.ts'
 import { expect, test } from '../../base.ts'
 
@@ -14,8 +14,7 @@ test('content looks right', async ({ showPage }) => {
     comment,
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
-    persona: 'public',
-    user,
+    persona: publicPersona,
   })
 
   const content = await showPage(response)
@@ -29,8 +28,7 @@ test('content looks right using a pseudonym', async ({ showPage }) => {
     comment,
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
-    persona: 'pseudonym',
-    user,
+    persona: pseudonymPersona,
   })
 
   const content = await showPage(response)
@@ -44,8 +42,7 @@ test('content looks right with competing interests', async ({ showPage }) => {
     comment,
     commentId: Uuid.Uuid('7ad2f67d-dc01-48c5-b6ac-3490d494f67d'),
     locale: DefaultLocale,
-    persona: 'public',
-    user,
+    persona: publicPersona,
   })
 
   const content = await showPage(response)
@@ -53,11 +50,14 @@ test('content looks right with competing interests', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const user = {
+const publicPersona = new Personas.PublicPersona({
   name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-  orcid: OrcidId('0000-0002-1825-0097'),
+  orcidId: OrcidId('0000-0002-1825-0097'),
+})
+
+const pseudonymPersona = new Personas.PseudonymPersona({
   pseudonym: Pseudonym('Orange Panda'),
-} satisfies User
+})
 
 const comment = html`
   <h1>Lorem ipsum</h1>

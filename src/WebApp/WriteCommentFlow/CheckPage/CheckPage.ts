@@ -1,10 +1,10 @@
-import { Match, Option, pipe } from 'effect'
+import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import { type NonEmptyString, ProfileId, type Uuid } from '../../../types/index.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const CheckPage = ({
@@ -13,14 +13,12 @@ export const CheckPage = ({
   commentId,
   locale,
   persona,
-  user,
 }: {
   competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   comment: Html
   commentId: Uuid.Uuid
   locale: SupportedLocale
-  persona: 'public' | 'pseudonym'
-  user: User
+  persona: Personas.Persona
 }) =>
   StreamlinePageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'checkTitle')()),
@@ -41,31 +39,23 @@ export const CheckPage = ({
               <div>
                 <dt><span>${translate(locale, 'write-comment-flow', 'publishedNameHeading')()}</span></dt>
                 <dd>
-                  ${pipe(
-                    Match.value(persona),
-                    Match.when(
-                      'public',
-                      () =>
-                        html` <a
-                          href="${format(Routes.profileMatch.formatter, {
-                            profile: ProfileId.forOrcid(user.orcid),
-                          })}"
-                          class="orcid"
-                          >${user.name}</a
-                        >`,
-                    ),
-                    Match.when(
-                      'pseudonym',
-                      () =>
-                        html` <a
-                          href="${format(Routes.profileMatch.formatter, {
-                            profile: ProfileId.forPseudonym(user.pseudonym),
-                          })}"
-                          >${user.pseudonym}</a
-                        >`,
-                    ),
-                    Match.exhaustive,
-                  )}
+                  ${Personas.match(persona, {
+                    onPublic: persona =>
+                      html` <a
+                        href="${format(Routes.profileMatch.formatter, {
+                          profile: ProfileId.forOrcid(persona.orcidId),
+                        })}"
+                        class="orcid"
+                        >${persona.name}</a
+                      >`,
+                    onPseudonym: persona =>
+                      html` <a
+                        href="${format(Routes.profileMatch.formatter, {
+                          profile: ProfileId.forPseudonym(persona.pseudonym),
+                        })}"
+                        >${persona.pseudonym}</a
+                      >`,
+                  })}
                 </dd>
                 <dd>
                   <a href="${Routes.WriteCommentChoosePersona.href({ commentId })}"
