@@ -2,22 +2,18 @@ import { format } from 'fp-ts-routing'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import * as Personas from '../../../Personas/index.ts'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
-import type { OrcidId } from '../../../types/OrcidId.ts'
-import { isPseudonym } from '../../../types/Pseudonym.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export function checkPage({
   inviteId,
   persona,
-  user,
   locale,
 }: {
   inviteId: Uuid
-  persona: 'public' | 'pseudonym'
-  user: User
+  persona: Personas.Persona
   locale: SupportedLocale
 }) {
   return StreamlinePageResponse({
@@ -35,7 +31,7 @@ export function checkPage({
             <dl class="summary-list">
               <div>
                 <dt><span>${translate(locale, 'author-invite-flow', 'publishedName')()}</span></dt>
-                <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
+                <dd>${displayAuthor(persona)}</dd>
                 <dd>
                   <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"
                     >${rawHtml(
@@ -65,16 +61,11 @@ export function checkPage({
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
-  if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+const displayAuthor = Personas.match({
+  onPublic: ({ name, orcidId }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
       >${name}</a
-    >`
-  }
-
-  if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
-  }
-
-  return name
-}
+    >`,
+  onPseudonym: ({ pseudonym }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}">${pseudonym}</a>`,
+})

@@ -23,7 +23,7 @@ import {
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -99,9 +99,10 @@ export const authorInviteCheck = ({
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.let('method', () => method),
     RTE.bindW(
-      'persona',
+      'personaChoice',
       RTE.fromNullableK('no-persona' as const)(({ invite }) => invite.persona),
     ),
+    RTE.let('persona', ({ personaChoice, user }) => toPersonas(user)[`${personaChoice}Persona`]),
     RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
     RTE.matchEW(
       error =>
@@ -141,13 +142,13 @@ export const authorInviteCheck = ({
 const handlePublishForm = ({
   invite,
   inviteId,
-  persona,
+  personaChoice,
   user,
   locale,
 }: {
   invite: AssignedAuthorInvite
   inviteId: Uuid
-  persona: 'public' | 'pseudonym'
+  personaChoice: 'public' | 'pseudonym'
   user: User
   locale: SupportedLocale
 }) =>
@@ -155,7 +156,7 @@ const handlePublishForm = ({
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(invite.review, user, persona),
+        addAuthorToPrereview(invite.review, user, personaChoice),
         RTE.orElseFirstW(error =>
           match(error)
             .with('unavailable', () => saveAuthorInvite(inviteId, invite))
