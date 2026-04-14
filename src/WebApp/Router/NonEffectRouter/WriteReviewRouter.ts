@@ -438,6 +438,8 @@ export const WriteReviewRouter = pipe(
         }),
         getPreprint: EffectToFpts.toTaskEitherK(Preprints.getPreprint, env.runtime),
         getPreprintTitle: EffectToFpts.toTaskEitherK(Preprints.getPreprintTitle, env.runtime),
+        getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
+        getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
         popFromSession: withEnv(
           (key: string) =>
             typeof env.sessionId === 'string'

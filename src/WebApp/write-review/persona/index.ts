@@ -7,11 +7,17 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import {
+  type GetPseudonymPersonaEnv,
+  type GetPublicPersonaEnv,
+  getPseudonymPersona,
+  getPublicPersona,
+} from '../../../persona.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewMatch } from '../../../routes.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
@@ -29,7 +35,10 @@ export const writeReviewPersona = ({
   locale: SupportedLocale
   method: string
   user?: User
-}): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<
+  GetPreprintTitleEnv & GetPublicPersonaEnv & GetPseudonymPersonaEnv & FormStoreEnv,
+  PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchEW(
@@ -46,7 +55,8 @@ export const writeReviewPersona = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
-          RTE.map(state => ({ ...state, ...toPersonas(state.user) })),
+          RTE.bindW('publicPersona', ({ user }) => getPublicPersona(user.orcid)),
+          RTE.bindW('pseudonymPersona', ({ user }) => getPseudonymPersona(user.orcid)),
           RTE.matchE(
             error =>
               RT.of(
@@ -54,7 +64,7 @@ export const writeReviewPersona = ({
                   .with('no-form', 'no-session', () =>
                     RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
-                  .with('form-unavailable', () => havingProblemsPage(locale))
+                  .with(P.union('form-unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
                   .exhaustive(),
               ),
             state =>

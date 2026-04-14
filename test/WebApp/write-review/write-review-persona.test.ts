@@ -10,6 +10,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { CompletedFormC } from '../../../src/WebApp/write-review/completed-form.ts'
 import { FormC, formKey } from '../../../src/WebApp/write-review/form.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
+import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewPersona', () => {
@@ -18,48 +19,62 @@ describe('writeReviewPersona', () => {
     fc.preprintTitle(),
     fc.personaType().map(persona => Tuple.make(persona, { persona })),
     fc.user(),
+    fc.publicPersona(),
+    fc.pseudonymPersona(),
     fc.supportedLocale(),
     fc.completedForm(),
-  ])('when the form is completed', async (preprintId, preprintTitle, [persona, body], user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+  ])(
+    'when the form is completed',
+    async (preprintId, preprintTitle, [persona, body], user, publicPersona, pseudonymPersona, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-    const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: () => TE.right(publicPersona),
+        getPseudonymPersona: () => TE.right(pseudonymPersona),
+      })()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-    })
-  })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.SeeOther,
+        location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+      })
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
     fc.personaType().map(persona => Tuple.make(persona, { persona })),
     fc.user(),
+    fc.publicPersona(),
+    fc.pseudonymPersona(),
     fc.supportedLocale(),
     fc.incompleteForm(),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, [persona, body], user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  ])(
+    'when the form is incomplete',
+    async (preprintId, preprintTitle, [persona, body], user, publicPersona, pseudonymPersona, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: () => TE.right(publicPersona),
+        getPseudonymPersona: () => TE.right(pseudonymPersona),
+      })()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-    })
-  })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: StatusCodes.SeeOther,
+        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+      })
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -72,6 +87,8 @@ describe('writeReviewPersona', () => {
     const actual = await _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
       formStore: new Keyv(),
       getPreprintTitle: () => TE.right(preprintTitle),
+      getPublicPersona: shouldNotBeCalled,
+      getPseudonymPersona: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -87,6 +104,8 @@ describe('writeReviewPersona', () => {
       const actual = await _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -106,6 +125,8 @@ describe('writeReviewPersona', () => {
       const actual = await _.writeReviewPersona({ body, locale, method, id: preprintId, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -125,6 +146,8 @@ describe('writeReviewPersona', () => {
       const actual = await _.writeReviewPersona({ body, locale, method, id: preprintId, user: undefined })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -140,25 +163,32 @@ describe('writeReviewPersona', () => {
     fc.preprintTitle(),
     fc.record({ persona: fc.string() }, { requiredKeys: [] }),
     fc.user(),
+    fc.publicPersona(),
+    fc.pseudonymPersona(),
     fc.supportedLocale(),
     fc.form(),
-  ])('without a persona', async (preprintId, preprintTitle, body, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  ])(
+    'without a persona',
+    async (preprintId, preprintTitle, body, user, publicPersona, pseudonymPersona, locale, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewPersona({ body, locale, method: 'POST', id: preprintId, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: () => TE.right(publicPersona),
+        getPseudonymPersona: () => TE.right(pseudonymPersona),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'StreamlinePageResponse',
-      status: StatusCodes.BadRequest,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: ['error-summary.js'],
-    })
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        status: StatusCodes.BadRequest,
+        title: expect.anything(),
+        nav: expect.anything(),
+        main: expect.anything(),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    },
+  )
 })
