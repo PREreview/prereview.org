@@ -1,11 +1,12 @@
 import { Array, Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
+import * as Personas from '../../../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
+import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import {
@@ -24,7 +25,7 @@ export const CheckYourRequestPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Personas.Personas | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.CheckYourRequestPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -35,7 +36,11 @@ export const CheckYourRequestPage: ({
     const reviewRequest = yield* ReviewRequests.getReviewRequestReadyToBePublished({
       requesterId: user.orcid,
       preprintId: preprint.id,
-    }).pipe(Effect.let('persona', ({ personaChoice }) => toPersonas(user)[`${personaChoice}Persona`]))
+    }).pipe(
+      Effect.bind('persona', ({ personaChoice }) =>
+        Personas.getPersona({ orcidId: user.orcid, persona: personaChoice }),
+      ),
+    )
 
     return MakeResponse({ preprint: preprint.id, reviewRequest, locale })
   },
@@ -47,6 +52,7 @@ export const CheckYourRequestPage: ({
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
       ReviewRequestNotReadyToBePublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewChooseYourPersona.href({ preprintId }) })),
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
