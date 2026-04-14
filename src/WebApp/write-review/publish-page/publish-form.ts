@@ -4,6 +4,7 @@ import rtlDetect from 'rtl-detect'
 import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import * as Personas from '../../../Personas/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import {
@@ -26,14 +27,16 @@ import {
   writeReviewUseOfAiMatch,
 } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
-import type { OrcidId } from '../../../types/OrcidId.ts'
-import { isPseudonym } from '../../../types/Pseudonym.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { CompletedForm } from '../completed-form.ts'
 import { backNav } from '../shared-elements.ts'
 
-export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User, locale: SupportedLocale) {
+export function publishForm(
+  preprint: PreprintTitle,
+  review: CompletedForm,
+  persona: Personas.Persona,
+  locale: SupportedLocale,
+) {
   const t = translate(locale, 'write-review')
 
   const visuallyHidden: { visuallyHidden: (x: string) => string } = {
@@ -89,7 +92,7 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                       .exhaustive()}</span
                   >
                 </dt>
-                <dd>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</dd>
+                <dd>${displayAuthor(persona)}</dd>
                 <dd>
                   <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}"
                     >${rawHtml(t('changeName')(visuallyHidden))}</a
@@ -351,19 +354,14 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
-  if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+const displayAuthor = Personas.match({
+  onPublic: ({ name, orcidId }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
       >${name}</a
-    >`
-  }
-
-  if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
-  }
-
-  return name
-}
+    >`,
+  onPseudonym: ({ pseudonym }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}">${pseudonym}</a>`,
+})
 
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>

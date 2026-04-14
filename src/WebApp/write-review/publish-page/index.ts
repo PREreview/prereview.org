@@ -15,6 +15,7 @@ import {
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
@@ -22,7 +23,7 @@ import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublish
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
@@ -123,7 +124,15 @@ const decideNextStep = (state: {
     .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
       handlePublishForm({ ...state, form: form.right }),
     )
-    .with({ form: P.when(E.isRight) }, ({ form, ...state }) => RT.of(showPublishForm({ ...state, form: form.right })))
+    .with({ form: P.when(E.isRight) }, ({ form, ...state }) =>
+      RT.of(
+        showPublishForm({
+          ...state,
+          persona: toPersonas(state.user)[`${form.right.persona}Persona`],
+          form: form.right,
+        }),
+      ),
+    )
     .exhaustive()
 
 const handlePublishForm = ({
@@ -189,14 +198,14 @@ const handlePublishForm = ({
 const showPublishForm = ({
   form,
   preprint,
-  user,
+  persona,
   locale,
 }: {
   form: CompletedForm
   preprint: PreprintTitle
-  user: User
+  persona: Personas.Persona
   locale: SupportedLocale
-}) => publishForm(preprint, form, user, locale)
+}) => publishForm(preprint, form, persona, locale)
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(

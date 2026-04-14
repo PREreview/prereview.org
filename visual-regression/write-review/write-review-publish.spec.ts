@@ -1,12 +1,11 @@
 import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import * as Personas from '../../src/Personas/index.ts'
 import { type PreprintTitle, BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../src/types/Pseudonym.ts'
-import type { User } from '../../src/user.ts'
 import { publishForm } from '../../src/WebApp/write-review/publish-page/publish-form.ts'
 import { expect, test } from '../base.ts'
 
@@ -16,11 +15,10 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
-const user = {
+const publicPersona = new Personas.PublicPersona({
   name: NonEmptyString('Josiah Carberry'),
-  orcid: OrcidId('0000-0002-1825-0097'),
-  pseudonym: Pseudonym('Orange Panda'),
-} satisfies User
+  orcidId: OrcidId('0000-0002-1825-0097'),
+})
 
 const locale = DefaultLocale
 
@@ -62,7 +60,7 @@ test("content looks right when it's freeform", async ({ showPage }) => {
       competingInterests: 'no',
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
@@ -84,7 +82,7 @@ test('content looks right when generative AI was used', async ({ showPage }) => 
       competingInterests: 'no',
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
@@ -109,7 +107,7 @@ test("content looks right when there's competing interests", async ({ showPage }
       ),
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
@@ -136,7 +134,7 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       competingInterests: 'no',
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
@@ -175,7 +173,7 @@ test("content looks right when it's questions", async ({ showPage }) => {
       competingInterests: 'no',
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
@@ -224,7 +222,7 @@ test("content looks right when it's questions with details", async ({ showPage }
       competingInterests: 'no',
       conduct: 'yes',
     },
-    user,
+    publicPersona,
     locale,
   )
 
