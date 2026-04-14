@@ -17,11 +17,13 @@ test('content looks right', async ({ showPage }) => {
   const response = _.toResponse(
     _.ListOfPrereviews({
       prereviews: [prereview1, prereview2, prereview3, prereview4, prereview5],
-      user: {
+      publicPersona: new Personas.PublicPersona({
         name: NonEmptyString('Josiah Carberry'),
-        orcid: OrcidId('0000-0002-1825-0097'),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+      }),
+      pseudonymPersona: new Personas.PseudonymPersona({
         pseudonym: Pseudonym('Orange Panda'),
-      },
+      }),
     }),
     DefaultLocale,
   )

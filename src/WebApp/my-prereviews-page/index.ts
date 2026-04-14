@@ -2,7 +2,7 @@ import { flow, identity, Match, pipe, Struct } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { SupportedLocale } from '../../locales/index.ts'
-import type { User } from '../../user.ts'
+import { toPersonas, type User } from '../../user.ts'
 import type { Response } from '../Response/index.ts'
 import * as ListOfPrereviews from './list-of-prereviews.ts'
 import * as NoPrereviews from './no-prereviews.ts'
@@ -24,7 +24,9 @@ export const myPrereviews = ({
       'prereviews',
       flow(Struct.get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
     ),
-    RTE.matchW(identity, ListOfPrereviews.ListOfPrereviews),
+    RTE.matchW(identity, ({ prereviews, user }) =>
+      ListOfPrereviews.ListOfPrereviews({ prereviews, ...toPersonas(user) }),
+    ),
     RT.map(
       Match.valueTags({
         ListOfPrereviews: result => ListOfPrereviews.toResponse(result, locale),

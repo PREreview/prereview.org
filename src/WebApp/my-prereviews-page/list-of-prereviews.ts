@@ -11,7 +11,6 @@ import { myPrereviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
-import type { User } from '../../user.ts'
 import { PageResponse } from '../Response/index.ts'
 import type { Prereview } from './prereviews.ts'
 
@@ -20,7 +19,8 @@ export type { Prereview } from './prereviews.ts'
 export interface ListOfPrereviews {
   readonly _tag: 'ListOfPrereviews'
   readonly prereviews: Array.NonEmptyReadonlyArray<Prereview>
-  readonly user: User
+  readonly publicPersona: Personas.PublicPersona
+  readonly pseudonymPersona: Personas.PseudonymPersona
 }
 
 export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPrereviews => ({
@@ -28,7 +28,10 @@ export const ListOfPrereviews = (args: Omit<ListOfPrereviews, '_tag'>): ListOfPr
   ...args,
 })
 
-export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: SupportedLocale) =>
+export const toResponse = (
+  { prereviews, publicPersona, pseudonymPersona }: ListOfPrereviews,
+  locale: SupportedLocale,
+) =>
   PageResponse({
     title: plainText(translate(locale, 'my-prereviews-page', 'myPrereviews')()),
     main: html`
@@ -38,12 +41,14 @@ export const toResponse = ({ prereviews, user }: ListOfPrereviews, locale: Suppo
         <p>${translate(locale, 'my-prereviews-page', 'onlyYouCanSee')()}</p>
 
         <div class="forward-group">
-          <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
+          <a
+            href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(publicPersona.orcidId) })}"
+            class="forward"
             ><span>${translate(locale, 'my-prereviews-page', 'viewPublicProfile')()}</span></a
           >
 
           <a
-            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
+            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonymPersona.pseudonym) })}"
             class="forward"
             ><span>${translate(locale, 'my-prereviews-page', 'viewPseudonymProfile')()}</span></a
           >
