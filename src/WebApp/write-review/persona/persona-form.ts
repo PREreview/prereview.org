@@ -5,11 +5,11 @@ import { match } from 'ts-pattern'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import type { PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewPersonaMatch, writeReviewReadyFullReviewMatch, writeReviewReviewMatch } from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import { prereviewOfSuffix } from '../shared-elements.ts'
 
@@ -21,7 +21,8 @@ export const personaForm = (
   preprint: PreprintTitle,
   form: PersonaForm,
   reviewType: 'freeform' | 'questions' | undefined,
-  user: User,
+  publicPersona: Personas.PublicPersona,
+  pseudonymPersona: Personas.PseudonymPersona,
   locale: SupportedLocale,
 ) => {
   const error = hasAnError(form)
@@ -85,7 +86,7 @@ export const personaForm = (
                   ${rawHtml(
                     t('pseudonymIsA')({
                       term: text => html`<dfn>${text}</dfn>`.toString(),
-                      pseudonym: user.pseudonym.replace(' ', ' '),
+                      pseudonym: pseudonymPersona.pseudonym.replace(' ', ' '),
                     }),
                   )}
                 </p>
@@ -118,7 +119,7 @@ export const personaForm = (
                       .with({ right: 'public' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${user.name}</span>
+                  <span>${publicPersona.name}</span>
                 </label>
                 <p id="persona-tip-public" role="note">${t('linkToOrcidId')()}</p>
               </li>
@@ -133,7 +134,7 @@ export const personaForm = (
                       .with({ right: 'pseudonym' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${user.pseudonym}</span>
+                  <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">${t('linkToPseudonym')()}</p>
               </li>

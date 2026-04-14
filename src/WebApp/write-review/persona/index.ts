@@ -7,10 +7,11 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewMatch } from '../../../routes.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from '../form.ts'
@@ -45,6 +46,7 @@ export const writeReviewPersona = ({
           RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
           RTE.let('method', () => method),
           RTE.let('body', () => body),
+          RTE.map(state => ({ ...state, ...toPersonas(state.user) })),
           RTE.matchE(
             error =>
               RT.of(
@@ -68,27 +70,32 @@ const showPersonaForm = ({
   form,
   locale,
   preprint,
-  user,
+  publicPersona,
+  pseudonymPersona,
 }: {
   form: Form
   locale: SupportedLocale
   preprint: PreprintTitle
-  user: User
-}) => personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user, locale)
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
+}) =>
+  personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, publicPersona, pseudonymPersona, locale)
 
 const showPersonaErrorForm = ({
   form,
   preprint,
-  user,
+  publicPersona,
+  pseudonymPersona,
   originalForm,
   locale,
 }: {
   form: PersonaForm
   preprint: PreprintTitle
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
   originalForm: Form
   locale: SupportedLocale
-}) => personaForm(preprint, form, originalForm.reviewType, user, locale)
+}) => personaForm(preprint, form, originalForm.reviewType, publicPersona, pseudonymPersona, locale)
 
 const handlePersonaForm = ({
   body,
@@ -96,12 +103,16 @@ const handlePersonaForm = ({
   locale,
   preprint,
   user,
+  publicPersona,
+  pseudonymPersona,
 }: {
   body: unknown
   form: Form
   locale: SupportedLocale
   preprint: PreprintTitle
   user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
 }) =>
   pipe(
     RTE.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) }),
@@ -119,7 +130,14 @@ const handlePersonaForm = ({
         match(error)
           .with('form-unavailable', () => havingProblemsPage(locale))
           .with({ persona: P.any }, thisForm =>
-            showPersonaErrorForm({ form: thisForm, preprint, user, originalForm: form, locale }),
+            showPersonaErrorForm({
+              form: thisForm,
+              preprint,
+              publicPersona,
+              pseudonymPersona,
+              originalForm: form,
+              locale,
+            }),
           )
           .exhaustive(),
       form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
