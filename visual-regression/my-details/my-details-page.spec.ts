@@ -2,18 +2,19 @@ import { HashSet, Option } from 'effect'
 import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress, VerifiedContactEmailAddress } from '../../src/contact-email-address.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import * as Personas from '../../src/Personas/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import type { UserOnboarding } from '../../src/user-onboarding.ts'
-import type { User } from '../../src/user.ts'
 import { createPage } from '../../src/WebApp/my-details-page/my-details-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right when publicly visible', async ({ showPage }) => {
   const response = createPage({
-    user,
+    publicPersona,
+    pseudonymPersona,
     locale: DefaultLocale,
     userOnboarding,
     avatar: Option.some(new URL('https://placehold.co/300x300')),
@@ -54,7 +55,8 @@ test('content looks right when publicly visible', async ({ showPage }) => {
 
 test('content looks right when restricted visible', async ({ showPage }) => {
   const response = createPage({
-    user,
+    publicPersona,
+    pseudonymPersona,
     locale: DefaultLocale,
     userOnboarding,
     orcidToken: Option.none(),
@@ -95,7 +97,8 @@ test('content looks right when restricted visible', async ({ showPage }) => {
 
 test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
-    user,
+    publicPersona,
+    pseudonymPersona,
     locale: DefaultLocale,
     userOnboarding: { seenMyDetailsPage: false },
     orcidToken: Option.none(),
@@ -114,11 +117,14 @@ test('content looks right when empty', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
-const user = {
+const publicPersona = new Personas.PublicPersona({
   name: NonEmptyString('Josiah Carberry'),
-  orcid: OrcidId('0000-0002-1825-0097'),
+  orcidId: OrcidId('0000-0002-1825-0097'),
+})
+
+const pseudonymPersona = new Personas.PseudonymPersona({
   pseudonym: Pseudonym('Orange Panda'),
-} satisfies User
+})
 
 const userOnboarding = {
   seenMyDetailsPage: true,

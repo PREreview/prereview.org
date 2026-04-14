@@ -9,6 +9,7 @@ import type { Languages } from '../../languages.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
 import type { Location } from '../../location.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
+import type * as Personas from '../../Personas/index.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
 import {
   changeAvatarMatch,
@@ -34,11 +35,11 @@ import {
 import type { SlackUser } from '../../slack-user.ts'
 import { ProfileId } from '../../types/index.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
-import type { User } from '../../user.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export function createPage({
-  user,
+  publicPersona,
+  pseudonymPersona,
   locale,
   userOnboarding,
   orcidToken,
@@ -51,7 +52,8 @@ export function createPage({
   location,
   languages,
 }: {
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
   locale: SupportedLocale
   userOnboarding: UserOnboarding
   orcidToken: Option.Option<OrcidToken>
@@ -80,12 +82,14 @@ export function createPage({
         <p>${t('my-details', 'onlyYouCanSee')()}</p>
 
         <div class="forward-group">
-          <a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(user.orcid) })}" class="forward"
+          <a
+            href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(publicPersona.orcidId) })}"
+            class="forward"
             ><span>${t('my-details', 'viewPublicProfile')()}</span></a
           >
 
           <a
-            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(user.pseudonym) })}"
+            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonymPersona.pseudonym) })}"
             class="forward"
             ><span>${t('my-details', 'viewPseudonymProfile')()}</span></a
           >
@@ -95,17 +99,17 @@ export function createPage({
       <dl class="summary-list">
         <div>
           <dt><span>${t('my-details', 'name')()}</span></dt>
-          <dd>${user.name}</dd>
+          <dd>${publicPersona.name}</dd>
         </div>
 
         <div>
           <dt><span>ORCID iD</span></dt>
-          <dd><span class="orcid-id">${user.orcid}</span></dd>
+          <dd><span class="orcid-id">${publicPersona.orcidId}</span></dd>
         </div>
 
         <div>
           <dt><span>${t('my-details', 'pseudonym')()}</span></dt>
-          <dd>${user.pseudonym}</dd>
+          <dd>${pseudonymPersona.pseudonym}</dd>
         </div>
 
         ${match(orcidToken)

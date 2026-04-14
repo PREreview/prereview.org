@@ -15,7 +15,7 @@ import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'
 import { getUserOnboarding, saveUserOnboarding } from '../../user-onboarding.ts'
-import type { User } from '../../user.ts'
+import { toPersonas, type User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { LogInResponse } from '../Response/index.ts'
 import { createPage } from './my-details-page.ts'
@@ -27,8 +27,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainW(user =>
       pipe(
-        RTE.Do,
-        RTE.let('user', () => user),
+        RTE.of(toPersonas(user)),
         RTE.let('locale', () => locale),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
         RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
@@ -42,10 +41,10 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
         RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullable))),
       ),
     ),
-    RTE.chainFirstW(({ user, userOnboarding }) =>
+    RTE.chainFirstW(({ publicPersona, userOnboarding }) =>
       userOnboarding.seenMyDetailsPage
         ? RTE.of(undefined)
-        : saveUserOnboarding(user.orcid, { seenMyDetailsPage: true }),
+        : saveUserOnboarding(publicPersona.orcidId, { seenMyDetailsPage: true }),
     ),
     RTE.match(
       error =>
