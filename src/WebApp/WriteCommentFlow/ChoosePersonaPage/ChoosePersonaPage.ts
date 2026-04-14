@@ -1,11 +1,11 @@
 import { Either, Match, pipe } from 'effect'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type * as ChoosePersonaForm from './ChoosePersonaForm.ts'
 
@@ -13,12 +13,14 @@ export const ChoosePersonaPage = ({
   commentId,
   form,
   locale,
-  user,
+  publicPersona,
+  pseudonymPersona,
 }: {
   commentId: Uuid.Uuid
   form: ChoosePersonaForm.ChoosePersonaForm
   locale: SupportedLocale
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
 }) =>
   StreamlinePageResponse({
     status: form._tag === 'InvalidForm' ? StatusCodes.BadRequest : StatusCodes.OK,
@@ -84,7 +86,7 @@ export const ChoosePersonaPage = ({
                       'write-comment-flow',
                       'whatIsPseudonymDefinition',
                     )({
-                      pseudonym: user.pseudonym.replace(' ', '&nbsp;'),
+                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
                       term: text => html`<dfn>${text}</dfn>`.toString(),
                     }),
                   )}
@@ -122,7 +124,7 @@ export const ChoosePersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.name}</span>
+                  <span>${publicPersona.name}</span>
                 </label>
                 <p id="persona-tip-public" role="note">${translate(locale, 'write-comment-flow', 'linkToOrcidId')()}</p>
               </li>
@@ -142,7 +144,7 @@ export const ChoosePersonaPage = ({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.pseudonym}</span>
+                  <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">
                   ${translate(locale, 'write-comment-flow', 'linkToPseudonym')()}
