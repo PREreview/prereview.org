@@ -7,6 +7,7 @@ import { Nodemailer } from '../../../ExternalApis/index.ts'
 import { Email, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
+import * as Personas from '../../../Personas/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -143,6 +144,8 @@ export const AuthorInviteFlowRouter = pipe(
           ),
           env.runtime,
         ),
+        getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
+        getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
         getAuthorInvite: withEnv(Keyv.getAuthorInvite, {
           authorInviteStore: env.authorInviteStore,
           ...env.logger,

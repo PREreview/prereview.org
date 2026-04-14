@@ -13,9 +13,10 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../../../author-invite.ts'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
+import { type GetContactEmailAddressEnv, getContactEmailAddress } from '../../../contact-email-address.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type GetPseudonymPersonaEnv, type GetPublicPersonaEnv, getPersona } from '../../../persona.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import {
   authorInviteDeclineMatch,
@@ -80,7 +81,13 @@ export const authorInviteCheck = ({
   user?: User
   locale: SupportedLocale
 }): RT.ReaderTask<
-  AddAuthorToPrereviewEnv & GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
+  AddAuthorToPrereviewEnv &
+    GetContactEmailAddressEnv &
+    GetPrereviewEnv &
+    GetPublicPersonaEnv &
+    GetPseudonymPersonaEnv &
+    GetAuthorInviteEnv &
+    SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -108,8 +115,17 @@ export const authorInviteCheck = ({
       'personaChoice',
       RTE.fromNullableK('no-persona' as const)(({ invite }) => invite.persona),
     ),
-    RTE.let('persona', ({ personaChoice, user }) => toPersonas(user)[`${personaChoice}Persona`]),
-    RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
+    RTE.bindW('contactEmailAddress', ({ user }) =>
+      pipe(
+        getContactEmailAddress(user.orcid),
+        RTE.filterOrElseW(
+          contactEmailAddress => contactEmailAddress._tag === 'VerifiedContactEmailAddress',
+          () => 'no-verified-email' as const,
+        ),
+        RTE.mapLeft(error => (error === 'not-found' ? ('no-verified-email' as const) : error)),
+      ),
+    ),
+    RTE.bindW('persona', ({ personaChoice, user }) => getPersona({ orcidId: user.orcid, persona: personaChoice })),
     RTE.matchEW(
       error =>
         RT.of(
@@ -122,9 +138,12 @@ export const authorInviteCheck = ({
               RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
             )
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+            .with('no-verified-email', () =>
+              RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) }),
+            )
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound(locale))
-            .with('unavailable', () => havingProblemsPage(locale))
+            .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
             .with('wrong-user', () => noPermissionPage(locale))
             .exhaustive(),
         ),
@@ -136,9 +155,6 @@ export const authorInviteCheck = ({
               PageResponse | RedirectResponse | StreamlinePageResponse
             >
           >()
-          .with({ contactEmailAddress: P.optional({ _tag: 'UnverifiedContactEmailAddress' }) }, () =>
-            RT.of(RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) })),
-          )
           .with({ method: 'POST' }, handlePublishForm)
           .with({ method: P.string }, state => RT.of(checkPage(state)))
           .exhaustive(),

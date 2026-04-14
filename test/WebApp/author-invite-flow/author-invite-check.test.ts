@@ -4,7 +4,6 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
 import type { GetContactEmailAddressEnv } from '../../../src/contact-email-address.ts'
-import * as Personas from '../../../src/Personas/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -37,6 +36,8 @@ describe('authorInvite', () => {
             }),
           ),
         ),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -45,40 +46,45 @@ describe('authorInvite', () => {
         }),
         fc.verifiedContactEmailAddress(),
         fc.supportedLocale(),
-      ])('when the author can be added', async (inviteId, [user, invite], prereview, contactEmailAddress, locale) => {
-        const addAuthorToPrereview = jest.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ => TE.right(undefined))
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-        const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+      ])(
+        'when the author can be added',
+        async (inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale) => {
+          const addAuthorToPrereview = jest.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ =>
+            TE.right(undefined),
+          )
+          const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+          const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
-        const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
-          addAuthorToPrereview,
-          getAuthorInvite,
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPrereview,
-          saveAuthorInvite,
-        })()
+          const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
+            addAuthorToPrereview,
+            getAuthorInvite,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPrereview,
+            saveAuthorInvite,
+            getPublicPersona: invite.persona === 'public' ? () => TE.right(publicPersona) : shouldNotBeCalled,
+            getPseudonymPersona: invite.persona === 'pseudonym' ? () => TE.right(pseudonymPersona) : shouldNotBeCalled,
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
-        })
-        expect(addAuthorToPrereview).toHaveBeenCalledWith(
-          invite.review,
-          { orcidId: user.orcid, pseudonym: user.pseudonym },
-          invite.persona === 'public'
-            ? new Personas.PublicPersona({ name: user.name, orcidId: user.orcid })
-            : new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),
-        )
-        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-        expect(getPrereview).toHaveBeenCalledWith(invite.review)
-        expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {
-          status: 'completed',
-          orcid: invite.orcid,
-          review: invite.review,
-        })
-      })
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+          })
+          expect(addAuthorToPrereview).toHaveBeenCalledWith(
+            invite.review,
+            { orcidId: user.orcid, pseudonym: user.pseudonym },
+            invite.persona === 'public' ? publicPersona : pseudonymPersona,
+          )
+          expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+          expect(getPrereview).toHaveBeenCalledWith(invite.review)
+          expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {
+            status: 'completed',
+            orcid: invite.orcid,
+            review: invite.review,
+          })
+        },
+      )
 
       test.prop([
         fc.uuid(),
@@ -91,6 +97,8 @@ describe('authorInvite', () => {
             }),
           ),
         ),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -99,27 +107,32 @@ describe('authorInvite', () => {
         }),
         fc.verifiedContactEmailAddress(),
         fc.supportedLocale(),
-      ])("when the author can't be added", async (inviteId, [user, invite], prereview, contactEmailAddress, locale) => {
-        const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+      ])(
+        "when the author can't be added",
+        async (inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale) => {
+          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
-        const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
-          addAuthorToPrereview: () => TE.left('unavailable'),
-          getAuthorInvite: () => TE.right(invite),
-          getContactEmailAddress: () => TE.right(contactEmailAddress),
-          getPrereview: () => TE.right(prereview),
-          saveAuthorInvite,
-        })()
+          const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
+            addAuthorToPrereview: () => TE.left('unavailable'),
+            getAuthorInvite: () => TE.right(invite),
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPrereview: () => TE.right(prereview),
+            saveAuthorInvite,
+            getPublicPersona: () => TE.right(publicPersona),
+            getPseudonymPersona: () => TE.right(pseudonymPersona),
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          status: StatusCodes.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(saveAuthorInvite).toHaveBeenLastCalledWith(inviteId, invite)
-      })
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+          expect(saveAuthorInvite).toHaveBeenLastCalledWith(inviteId, invite)
+        },
+      )
     })
 
     test.prop([
@@ -133,6 +146,8 @@ describe('authorInvite', () => {
           }),
         ),
       ),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.string().filter(method => method !== 'POST'),
       fc.record({
         preprint: fc.record({
@@ -144,7 +159,16 @@ describe('authorInvite', () => {
       fc.supportedLocale(),
     ])(
       'when the form needs checking',
-      async (inviteId, [user, invite], method, prereview, contactEmailAddress, locale) => {
+      async (
+        inviteId,
+        [user, invite],
+        publicPersona,
+        pseudonymPersona,
+        method,
+        prereview,
+        contactEmailAddress,
+        locale,
+      ) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
@@ -154,6 +178,8 @@ describe('authorInvite', () => {
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -203,6 +229,8 @@ describe('authorInvite', () => {
           getContactEmailAddress,
           getPrereview: () => TE.right(prereview),
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -240,6 +268,8 @@ describe('authorInvite', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.right(prereview),
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -261,6 +291,8 @@ describe('authorInvite', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -282,6 +314,8 @@ describe('authorInvite', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -309,6 +343,8 @@ describe('authorInvite', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -332,6 +368,8 @@ describe('authorInvite', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -353,6 +391,8 @@ describe('authorInvite', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -372,6 +412,8 @@ describe('authorInvite', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -391,6 +433,8 @@ describe('authorInvite', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -414,6 +458,8 @@ describe('authorInvite', () => {
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
