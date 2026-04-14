@@ -3259,9 +3259,9 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
 
 describe('addAuthorToRecordOnZenodo', () => {
   describe('when the deposition is submitted', () => {
-    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.publicPersona(), fc.user(), fc.doi()])(
       'with a public name',
-      async (zenodoApiKey, id, user, creator, doi) => {
+      async (zenodoApiKey, id, persona, creator, doi) => {
         const submittedDeposition: SubmittedDeposition = {
           id: 1,
           links: {
@@ -3312,7 +3312,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               metadata: {
                 creators: [
                   { name: creator.name, orcid: creator.orcid },
-                  { name: user.name, orcid: user.orcid },
+                  { name: persona.name, orcid: persona.orcidId },
                 ],
                 description: 'Description',
                 title: 'Title',
@@ -3332,8 +3332,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 
         const actual = await _.addAuthorToRecordOnZenodo(
           id,
-          user,
-          'public',
+          persona,
         )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -3341,9 +3340,9 @@ describe('addAuthorToRecordOnZenodo', () => {
       },
     )
 
-    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.pseudonymPersona(), fc.user(), fc.doi()])(
       'with a pseudonym',
-      async (zenodoApiKey, id, user, creator, doi) => {
+      async (zenodoApiKey, id, persona, creator, doi) => {
         const submittedDeposition: SubmittedDeposition = {
           id: 1,
           links: {
@@ -3392,7 +3391,7 @@ describe('addAuthorToRecordOnZenodo', () => {
             url: 'http://example.com/self',
             body: {
               metadata: {
-                creators: [{ name: creator.name, orcid: creator.orcid }, { name: user.pseudonym }],
+                creators: [{ name: creator.name, orcid: creator.orcid }, { name: persona.pseudonym }],
                 description: 'Description',
                 title: 'Title',
                 upload_type: 'publication',
@@ -3411,8 +3410,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 
         const actual = await _.addAuthorToRecordOnZenodo(
           id,
-          user,
-          'pseudonym',
+          persona,
         )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -3420,9 +3418,9 @@ describe('addAuthorToRecordOnZenodo', () => {
       },
     )
 
-    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi(), fc.integer({ min: 3 })])(
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.publicPersona(), fc.user(), fc.doi(), fc.integer({ min: 3 })])(
       'when there are multiple other authors',
-      async (zenodoApiKey, id, user, creator, doi, otherAuthors) => {
+      async (zenodoApiKey, id, persona, creator, doi, otherAuthors) => {
         const submittedDeposition: SubmittedDeposition = {
           id: 1,
           links: {
@@ -3473,7 +3471,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               metadata: {
                 creators: [
                   { name: creator.name, orcid: creator.orcid },
-                  { name: user.name, orcid: user.orcid },
+                  { name: persona.name, orcid: persona.orcidId },
                   { name: `${otherAuthors - 1} other authors` },
                 ],
                 description: 'Description',
@@ -3494,8 +3492,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 
         const actual = await _.addAuthorToRecordOnZenodo(
           id,
-          user,
-          'public',
+          persona,
         )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -3503,9 +3500,9 @@ describe('addAuthorToRecordOnZenodo', () => {
       },
     )
 
-    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.publicPersona(), fc.user(), fc.doi()])(
       'when there are 2 other authors',
-      async (zenodoApiKey, id, user, creator, doi) => {
+      async (zenodoApiKey, id, persona, creator, doi) => {
         const submittedDeposition: SubmittedDeposition = {
           id: 1,
           links: {
@@ -3556,7 +3553,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               metadata: {
                 creators: [
                   { name: creator.name, orcid: creator.orcid },
-                  { name: user.name, orcid: user.orcid },
+                  { name: persona.name, orcid: persona.orcidId },
                   { name: '1 other author' },
                 ],
                 description: 'Description',
@@ -3577,8 +3574,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 
         const actual = await _.addAuthorToRecordOnZenodo(
           id,
-          user,
-          'public',
+          persona,
         )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -3586,9 +3582,9 @@ describe('addAuthorToRecordOnZenodo', () => {
       },
     )
 
-    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.publicPersona(), fc.user(), fc.doi()])(
       'when there is 1 other author',
-      async (zenodoApiKey, id, user, creator, doi) => {
+      async (zenodoApiKey, id, persona, creator, doi) => {
         const submittedDeposition: SubmittedDeposition = {
           id: 1,
           links: {
@@ -3639,7 +3635,7 @@ describe('addAuthorToRecordOnZenodo', () => {
               metadata: {
                 creators: [
                   { name: creator.name, orcid: creator.orcid },
-                  { name: user.name, orcid: user.orcid },
+                  { name: persona.name, orcid: persona.orcidId },
                 ],
                 description: 'Description',
                 title: 'Title',
@@ -3659,8 +3655,7 @@ describe('addAuthorToRecordOnZenodo', () => {
 
         const actual = await _.addAuthorToRecordOnZenodo(
           id,
-          user,
-          'public',
+          persona,
         )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
         expect(actual).toStrictEqual(E.right(undefined))
@@ -3669,62 +3664,55 @@ describe('addAuthorToRecordOnZenodo', () => {
     )
   })
 
-  test.prop([
-    fc.string(),
-    fc.integer({ min: 1 }),
-    fc.user(),
-    fc.constantFrom('public', 'pseudonym'),
-    fc.user(),
-    fc.doi(),
-  ])('when the deposition is not submitted', async (zenodoApiKey, id, user, persona, creator, doi) => {
-    const inProgressDeposition: InProgressDeposition = {
-      id: 1,
-      links: {
-        publish: new URL('http://example.com/publish'),
-        self: new URL('http://example.com/self'),
-      },
-      metadata: {
-        creators: [{ name: creator.name, orcid: creator.orcid }],
-        description: 'Description',
-        doi,
-        title: 'Title',
-        upload_type: 'publication',
-        prereserve_doi: { doi },
-        publication_type: 'peerreview',
-      },
-      state: 'inprogress',
-      submitted: true,
-    }
+  test.prop([fc.string(), fc.integer({ min: 1 }), fc.persona(), fc.user(), fc.doi()])(
+    'when the deposition is not submitted',
+    async (zenodoApiKey, id, persona, creator, doi) => {
+      const inProgressDeposition: InProgressDeposition = {
+        id: 1,
+        links: {
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: creator.name, orcid: creator.orcid }],
+          description: 'Description',
+          doi,
+          title: 'Title',
+          upload_type: 'publication',
+          prereserve_doi: { doi },
+          publication_type: 'peerreview',
+        },
+        state: 'inprogress',
+        submitted: true,
+      }
 
-    const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
-      body: InProgressDepositionC.encode(inProgressDeposition),
-    })
+      const fetch = fetchMock.createInstance().getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+        body: InProgressDepositionC.encode(inProgressDeposition),
+      })
 
-    const actual = await _.addAuthorToRecordOnZenodo(
-      id,
-      user,
-      persona,
-    )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
+      const actual = await _.addAuthorToRecordOnZenodo(
+        id,
+        persona,
+      )({ fetch: (...args) => fetch.fetchHandler(...args), zenodoApiKey })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.callHistory.done()).toBeTruthy()
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.callHistory.done()).toBeTruthy()
+    },
+  )
 
   test.prop([
     fc.string(),
     fc.integer({ min: 1 }),
-    fc.user(),
-    fc.constantFrom('public', 'pseudonym'),
+    fc.persona(),
     fc.oneof(
       fc
         .fetchResponse({ status: fc.statusCode().filter(status => status >= 400) })
         .map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (zenodoApiKey, id, user, persona, response) => {
+  ])('Zenodo is unavailable', async (zenodoApiKey, id, persona, response) => {
     const actual = await _.addAuthorToRecordOnZenodo(
       id,
-      user,
       persona,
     )({
       fetch: () => response,

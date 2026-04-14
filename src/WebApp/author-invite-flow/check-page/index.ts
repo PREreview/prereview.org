@@ -16,6 +16,7 @@ import {
 import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../../contact-email-address.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import {
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
@@ -45,11 +46,11 @@ export interface AddAuthorToPrereviewEnv {
   addAuthorToPrereview: (
     prereview: number,
     author: User,
-    persona: 'public' | 'pseudonym',
+    persona: Personas.Persona,
   ) => TE.TaskEither<'unavailable', void>
 }
 
-const addAuthorToPrereview = (prereview: number, author: User, persona: 'public' | 'pseudonym') =>
+const addAuthorToPrereview = (prereview: number, author: User, persona: Personas.Persona) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) =>
       addAuthorToPrereview(prereview, author, persona),
@@ -142,13 +143,13 @@ export const authorInviteCheck = ({
 const handlePublishForm = ({
   invite,
   inviteId,
-  personaChoice,
+  persona,
   user,
   locale,
 }: {
   invite: AssignedAuthorInvite
   inviteId: Uuid
-  personaChoice: 'public' | 'pseudonym'
+  persona: Personas.Persona
   user: User
   locale: SupportedLocale
 }) =>
@@ -156,7 +157,7 @@ const handlePublishForm = ({
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(invite.review, user, personaChoice),
+        addAuthorToPrereview(invite.review, user, persona),
         RTE.orElseFirstW(error =>
           match(error)
             .with('unavailable', () => saveAuthorInvite(inviteId, invite))

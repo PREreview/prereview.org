@@ -119,7 +119,7 @@ export const AuthorInviteFlowRouter = pipe(
         addAuthorToPrereview: withEnv(
           (id, user, persona) =>
             pipe(
-              ZenodoRecords.addAuthorToRecordOnZenodo(id, user, persona),
+              ZenodoRecords.addAuthorToRecordOnZenodo(id, persona),
               RTE.chainFirstTaskEitherKW(() =>
                 EffectToFpts.toTaskEither(
                   ZenodoRecords.invalidatePrereviewInCache({ prereviewId: id, user }),

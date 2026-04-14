@@ -475,8 +475,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
 
 export const addAuthorToRecordOnZenodo = (
   id: number,
-  user: User,
-  persona: 'public' | 'pseudonym',
+  persona: Personas.Persona,
 ): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
   pipe(
     getDeposition(id),
@@ -489,7 +488,12 @@ export const addAuthorToRecordOnZenodo = (
           creators: pipe(getAuthors(deposition), ({ named, anonymous }) =>
             pipe(
               named,
-              Array.append(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+              Array.append(
+                Personas.match(persona, {
+                  onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                  onPseudonym: persona => ({ name: persona.pseudonym }),
+                }),
+              ),
               Array.appendAll(
                 match(anonymous)
                   .with(P.number.gt(2), anonymous => [{ name: `${anonymous - 1} other authors` }])

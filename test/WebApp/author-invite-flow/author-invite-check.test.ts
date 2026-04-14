@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
 import type { GetContactEmailAddressEnv } from '../../../src/contact-email-address.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -63,7 +64,13 @@ describe('authorInvite', () => {
           status: StatusCodes.SeeOther,
           location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
         })
-        expect(addAuthorToPrereview).toHaveBeenCalledWith(invite.review, user, invite.persona as never)
+        expect(addAuthorToPrereview).toHaveBeenCalledWith(
+          invite.review,
+          user,
+          invite.persona === 'public'
+            ? new Personas.PublicPersona({ name: user.name, orcidId: user.orcid })
+            : new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),
+        )
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
         expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {
