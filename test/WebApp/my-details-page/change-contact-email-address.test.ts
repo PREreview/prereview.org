@@ -67,7 +67,7 @@ describe('changeContactEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
           )
           expect(verifyContactEmailAddress).toHaveBeenCalledWith(
-            user,
+            user.name,
             new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
           )
         },

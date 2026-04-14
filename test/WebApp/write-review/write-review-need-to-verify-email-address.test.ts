@@ -107,7 +107,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
         message: 'verify-contact-email-resend',
       })
-      expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(user, contactEmailAddress, preprintTitle.id)
+      expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(user.name, contactEmailAddress, preprintTitle.id)
     },
   )
 

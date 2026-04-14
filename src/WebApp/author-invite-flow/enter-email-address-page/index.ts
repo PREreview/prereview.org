@@ -208,7 +208,7 @@ const handleEnterEmailAddressForm = ({
         VerifiedContactEmailAddress: () => RTE.of(undefined),
         UnverifiedContactEmailAddress: contactEmailAddress =>
           verifyContactEmailAddressForInvitedAuthor({
-            user,
+            name: user.name,
             emailAddress: contactEmailAddress,
             authorInvite: inviteId,
           }),

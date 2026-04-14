@@ -169,13 +169,13 @@ const verifyContactEmailAddressForComment = Layer.effect(
     const publicUrl = yield* PublicUrl
     const nodemailer = yield* Nodemailer.NodemailerTransporter
 
-    return (user, contactEmailAddress, comment) =>
+    return (name, contactEmailAddress, comment) =>
       pipe(
         Locale,
         Effect.andThen(locale =>
           FptsToEffect.reader(
             Email.createContactEmailAddressVerificationEmailForComment({
-              user,
+              name,
               emailAddress: contactEmailAddress,
               comment,
               locale,

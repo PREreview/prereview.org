@@ -137,7 +137,7 @@ describe('authorInviteEnterEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
           )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
-            user,
+            name: user.name,
             emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })
@@ -197,7 +197,7 @@ describe('authorInviteEnterEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
           )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
-            user,
+            name: user.name,
             emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })

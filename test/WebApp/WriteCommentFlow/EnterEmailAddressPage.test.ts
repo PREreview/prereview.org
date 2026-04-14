@@ -418,7 +418,7 @@ describe('EnterEmailAddressSubmission', () => {
               }),
             )
             expect(verifyContactEmailAddressForComment).toHaveBeenCalledWith(
-              user,
+              user.name,
               new ContactEmailAddress.UnverifiedContactEmailAddress({
                 value: body.emailAddress,
                 verificationToken: uuid,

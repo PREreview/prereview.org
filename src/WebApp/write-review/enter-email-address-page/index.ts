@@ -132,7 +132,9 @@ const handleEnterEmailAddressForm = ({
     RTE.apS('verificationToken', RTE.rightReaderIO(generateUuidIO)),
     RTE.map(({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken })),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-    RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id)),
+    RTE.chainFirstW(contactEmailAddress =>
+      verifyContactEmailAddressForReview(user.name, contactEmailAddress, preprint.id),
+    ),
     RTE.matchW(
       error =>
         match(error)

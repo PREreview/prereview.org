@@ -12,17 +12,11 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import { expect, test } from '../base.ts'
 
 test('email-verification HTML looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmail({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -37,11 +31,7 @@ test('email-verification HTML looks right', async ({ page }) => {
 
 test('email-verification text looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmail({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -54,11 +44,7 @@ test('email-verification text looks right', { tag: '@text' }, ({}) => {
 
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -73,11 +59,7 @@ test('email-verification HTML for an invited author looks right', async ({ page 
 
 test('email-verification text for an invited author looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -90,11 +72,7 @@ test('email-verification text for an invited author looks right', { tag: '@text'
 
 test('email-verification HTML for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
@@ -110,11 +88,7 @@ test('email-verification HTML for a comment looks right', async ({ page }) => {
 
 test('email-verification text for a comment looks right', { tag: '@text' }, ({}) => {
   const email = createContactEmailAddressVerificationEmailForComment({
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    name: NonEmptyString('Josiah Carberry'),
     emailAddress: new UnverifiedContactEmailAddress({
       value: EmailAddress('jcarberry@example.com'),
       verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),

@@ -135,7 +135,7 @@ describe('writeReviewEnterEmailAddress', () => {
         new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
       )
       expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
-        user,
+        user.name,
         new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
         preprintTitle.id,
       )

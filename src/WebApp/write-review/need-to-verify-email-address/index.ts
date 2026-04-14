@@ -114,7 +114,7 @@ const resendVerificationEmail = ({
   user: User
 }) =>
   pipe(
-    verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id),
+    verifyContactEmailAddressForReview(user.name, contactEmailAddress, preprint.id),
     RTE.matchW(
       () => havingProblemsPage(locale),
       () =>

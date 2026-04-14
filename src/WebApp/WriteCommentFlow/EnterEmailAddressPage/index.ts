@@ -171,7 +171,7 @@ export const EnterEmailAddressSubmission = ({
           })
 
           yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
-          yield* verifyContactEmailAddressForComment(user, contactEmailAddress, commentId)
+          yield* verifyContactEmailAddressForComment(user.name, contactEmailAddress, commentId)
 
           return Response.RedirectResponse({
             location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),

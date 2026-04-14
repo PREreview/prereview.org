@@ -8,13 +8,13 @@ import { translate } from '../../../src/locales/index.ts'
 import * as fc from '../../fc.ts'
 
 describe('sendContactEmailAddressVerificationEmail', () => {
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
+  test.prop([fc.origin(), fc.nonEmptyString(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
     'when the email can be sent',
-    async (publicUrl, user, emailAddress, locale) => {
+    async (publicUrl, name, emailAddress, locale) => {
       const sendEmail = jest.fn<Nodemailer.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
       const actual = await _.sendContactEmailAddressVerificationEmail(
-        user,
+        name,
         emailAddress,
       )({
         sendEmail,
@@ -26,18 +26,18 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       expect(sendEmail).toHaveBeenCalledWith(
         expect.objectContaining({
           from: { address: 'help@prereview.org', name: 'PREreview' },
-          to: { address: emailAddress.value, name: user.name },
+          to: { address: emailAddress.value, name },
           subject: translate(locale)('email', 'verifyEmailAddressTitle')(),
         }),
       )
     },
   )
 
-  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
+  test.prop([fc.origin(), fc.nonEmptyString(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
     "when the email can't be sent",
-    async (publicUrl, user, emailAddress, locale) => {
+    async (publicUrl, name, emailAddress, locale) => {
       const actual = await _.sendContactEmailAddressVerificationEmail(
-        user,
+        name,
         emailAddress,
       )({
         publicUrl,
@@ -53,15 +53,15 @@ describe('sendContactEmailAddressVerificationEmail', () => {
 describe('sendContactEmailAddressVerificationEmailForReview', () => {
   test.prop([
     fc.origin(),
-    fc.user(),
+    fc.nonEmptyString(),
     fc.unverifiedContactEmailAddress(),
     fc.indeterminatePreprintId(),
     fc.supportedLocale(),
-  ])('when the email can be sent', async (publicUrl, user, emailAddress, preprint, locale) => {
+  ])('when the email can be sent', async (publicUrl, name, emailAddress, preprint, locale) => {
     const sendEmail = jest.fn<Nodemailer.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
 
     const actual = await _.sendContactEmailAddressVerificationEmailForReview(
-      user,
+      name,
       emailAddress,
       preprint,
     )({
@@ -74,7 +74,7 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
     expect(sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         from: { address: 'help@prereview.org', name: 'PREreview' },
-        to: { address: emailAddress.value, name: user.name },
+        to: { address: emailAddress.value, name },
         subject: translate(locale)('email', 'verifyEmailAddressTitle')(),
       }),
     )
@@ -82,13 +82,13 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
 
   test.prop([
     fc.origin(),
-    fc.user(),
+    fc.nonEmptyString(),
     fc.unverifiedContactEmailAddress(),
     fc.indeterminatePreprintId(),
     fc.supportedLocale(),
-  ])("when the email can't be sent", async (publicUrl, user, emailAddress, preprint, locale) => {
+  ])("when the email can't be sent", async (publicUrl, name, emailAddress, preprint, locale) => {
     const actual = await _.sendContactEmailAddressVerificationEmailForReview(
-      user,
+      name,
       emailAddress,
       preprint,
     )({

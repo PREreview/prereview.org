@@ -110,7 +110,7 @@ const handleChangeContactEmailAddressForm = ({
                   }),
               ),
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-              RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
+              RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user.name, contactEmailAddress)),
               RTE.matchW(
                 () => havingProblemsPage(locale),
                 () =>

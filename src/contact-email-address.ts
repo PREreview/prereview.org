@@ -7,9 +7,9 @@ import type { Uuid } from 'uuid-ts'
 import type { Locale } from './Context.ts'
 import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
+import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
 import { UuidC } from './types/uuid.ts'
-import type { User } from './user.ts'
 
 export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
 
@@ -51,14 +51,14 @@ export interface SaveContactEmailAddressEnv {
 
 export interface VerifyContactEmailAddressEnv {
   verifyContactEmailAddress: (
-    user: User,
+    name: NonEmptyString,
     emailAddress: UnverifiedContactEmailAddress,
   ) => TE.TaskEither<'unavailable', void>
 }
 
 export interface VerifyContactEmailAddressForReviewEnv {
   verifyContactEmailAddressForReview: (
-    user: User,
+    name: NonEmptyString,
     emailAddress: UnverifiedContactEmailAddress,
     preprint: IndeterminatePreprintId,
   ) => TE.TaskEither<'unavailable', void>
@@ -66,7 +66,7 @@ export interface VerifyContactEmailAddressForReviewEnv {
 
 export interface VerifyContactEmailAddressForInvitedAuthorEnv {
   verifyContactEmailAddressForInvitedAuthor: (verify: {
-    user: User
+    name: NonEmptyString
     emailAddress: UnverifiedContactEmailAddress
     authorInvite: Uuid
   }) => TE.TaskEither<'unavailable', void>
@@ -75,7 +75,7 @@ export interface VerifyContactEmailAddressForInvitedAuthorEnv {
 export class VerifyContactEmailAddressForComment extends Context.Tag('VerifyContactEmailAddressForComment')<
   VerifyContactEmailAddressForComment,
   (
-    user: User,
+    name: NonEmptyString,
     emailAddress: UnverifiedContactEmailAddress,
     comment: Uuid,
   ) => Effect.Effect<void, ContactEmailAddressIsUnavailable, Locale>
@@ -144,26 +144,26 @@ export const saveContactEmailAddress = (
   )
 
 export const verifyContactEmailAddress = (
-  user: User,
+  name: NonEmptyString,
   emailAddress: UnverifiedContactEmailAddress,
 ): RTE.ReaderTaskEither<VerifyContactEmailAddressEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ verifyContactEmailAddress }) => verifyContactEmailAddress(user, emailAddress)),
+    RTE.fromTaskEitherK(({ verifyContactEmailAddress }) => verifyContactEmailAddress(name, emailAddress)),
   )
 
 export const verifyContactEmailAddressForReview = (
-  user: User,
+  name: NonEmptyString,
   emailAddress: UnverifiedContactEmailAddress,
   preprint: IndeterminatePreprintId,
 ): RTE.ReaderTaskEither<VerifyContactEmailAddressForReviewEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ verifyContactEmailAddressForReview }) =>
-      verifyContactEmailAddressForReview(user, emailAddress, preprint),
+      verifyContactEmailAddressForReview(name, emailAddress, preprint),
     ),
   )
 
 export const verifyContactEmailAddressForInvitedAuthor = (verify: {
-  user: User
+  name: NonEmptyString
   emailAddress: UnverifiedContactEmailAddress
   authorInvite: Uuid
 }): RTE.ReaderTaskEither<VerifyContactEmailAddressForInvitedAuthorEnv, 'unavailable', void> =>
