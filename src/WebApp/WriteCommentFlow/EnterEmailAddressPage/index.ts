@@ -4,7 +4,7 @@ import * as ContactEmailAddress from '../../../contact-email-address.ts'
 import { Locale } from '../../../Context.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn } from '../../../user.ts'
+import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
@@ -171,7 +171,11 @@ export const EnterEmailAddressSubmission = ({
           })
 
           yield* saveContactEmailAddress(user.orcid, contactEmailAddress)
-          yield* verifyContactEmailAddressForComment(user.name, contactEmailAddress, commentId)
+          yield* verifyContactEmailAddressForComment(
+            toPersonas(user).publicPersona.name,
+            contactEmailAddress,
+            commentId,
+          )
 
           return Response.RedirectResponse({
             location: Routes.WriteCommentNeedToVerifyEmailAddress.href({ commentId }),
