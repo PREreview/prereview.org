@@ -54,7 +54,6 @@ const make: Effect.Effect<typeof Personas.Service, never, FetchHttpClient.Fetch 
               app: legacyPrereviewApi.app,
               key: Redacted.value(legacyPrereviewApi.key),
               url: legacyPrereviewApi.origin,
-              update: legacyPrereviewApi.update,
             },
           }),
           Effect.mapError(error => new UnableToGetPersona({ cause: error })),

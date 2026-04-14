@@ -80,7 +80,6 @@ export const DataRouter = pipe(
                 app: env.legacyPrereviewApiConfig.app,
                 key: Redacted.value(env.legacyPrereviewApiConfig.key),
                 url: env.legacyPrereviewApiConfig.origin,
-                update: env.legacyPrereviewApiConfig.update,
               },
               locationStore: env.users.locationStore,
               ...env.logger,

@@ -70,7 +70,6 @@ const getPseudonym = Layer.effect(
             app: legacyPrereviewApi.app,
             key: Redacted.value(legacyPrereviewApi.key),
             url: legacyPrereviewApi.origin,
-            update: legacyPrereviewApi.update,
           },
         }),
         Effect.catchIf(
@@ -82,7 +81,6 @@ const getPseudonym = Layer.effect(
                 app: legacyPrereviewApi.app,
                 key: Redacted.value(legacyPrereviewApi.key),
                 url: legacyPrereviewApi.origin,
-                update: legacyPrereviewApi.update,
               },
             }),
         ),

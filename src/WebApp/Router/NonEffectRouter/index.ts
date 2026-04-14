@@ -424,7 +424,6 @@ const routerWithoutHyperTs = pipe(
               app: env.legacyPrereviewApiConfig.app,
               key: Redacted.value(env.legacyPrereviewApiConfig.key),
               url: env.legacyPrereviewApiConfig.origin,
-              update: env.legacyPrereviewApiConfig.update,
             },
           }),
           getProfileIdFromUuid: withEnv(LegacyPrereview.getProfileIdFromLegacyPreviewUuid, {
@@ -433,7 +432,6 @@ const routerWithoutHyperTs = pipe(
               app: env.legacyPrereviewApiConfig.app,
               key: Redacted.value(env.legacyPrereviewApiConfig.key),
               url: env.legacyPrereviewApiConfig.origin,
-              update: env.legacyPrereviewApiConfig.update,
             },
           }),
         })),

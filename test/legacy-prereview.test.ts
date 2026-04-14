@@ -1,20 +1,15 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { SystemClock } from 'clock-ts'
-import { Option } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
-import * as IO from 'fp-ts/lib/IO.js'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { rawHtml } from '../src/html.ts'
 import * as _ from '../src/legacy-prereview.ts'
 import * as fc from './fc.ts'
-import { shouldNotBeCalled } from './should-not-be-called.ts'
 
 describe('getPreprintDoiFromLegacyPreviewUuid', () => {
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintDoi()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.preprintDoi()])(
     'when the DOI can be decoded',
-    async (uuid, app, key, url, update, doi) => {
+    async (uuid, app, key, url, doi) => {
       const fetch = fetchMock.createInstance().getOnce({
         url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
         headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -25,16 +20,16 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.right(expect.objectContaining({ value: doi })))
     },
   )
 
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.nonPreprintDoi()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.nonPreprintDoi()])(
     'when the DOI is not a preprint DOI',
-    async (uuid, app, key, url, update, doi) => {
+    async (uuid, app, key, url, doi) => {
       const fetch = fetchMock.createInstance().getOnce({
         url: `${url}api/v2/preprints/${encodeURIComponent(uuid)}`,
         headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -45,7 +40,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
@@ -57,14 +52,13 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
-  ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
+  ])('when the response cannot be decoded', async (uuid, app, key, url, response) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, response)
 
     const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -73,14 +67,14 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
     'when the response has a 404 status code',
-    async (uuid, app, key, url, update) => {
+    async (uuid, app, key, url) => {
       const fetch = fetchMock
         .createInstance()
         .getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
@@ -92,26 +86,25 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
-  ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
+  ])('when the response has a non-200/404 status code', async (uuid, app, key, url, status) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
 
     const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.error()])(
     'when fetch throws an error',
-    async (uuid, app, key, url, update, error) => {
+    async (uuid, app, key, url, error) => {
       const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch: () => Promise.reject(error),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -125,7 +118,6 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.oneof(
       fc.orcidProfileId().map(profile => [
         {
@@ -142,7 +134,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
         profile,
       ]),
     ),
-  ])('when the response can be decoded', async (uuid, app, key, url, update, [data, profile]) => {
+  ])('when the response can be decoded', async (uuid, app, key, url, [data, profile]) => {
     const fetch = fetchMock.createInstance().getOnce({
       url: `${url}api/v2/personas/${encodeURIComponent(uuid)}`,
       headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -153,7 +145,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.right(profile))
@@ -164,30 +156,29 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
-  ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
+  ])('when the response cannot be decoded', async (uuid, app, key, url, response) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, response)
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin()])(
     'when the response has a 404 status code',
-    async (uuid, app, key, url, update) => {
+    async (uuid, app, key, url) => {
       const fetch = fetchMock
         .createInstance()
         .getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, StatusCodes.NotFound)
 
       const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
@@ -199,26 +190,25 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
-  ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
+  ])('when the response has a non-200/404 status code', async (uuid, app, key, url, status) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, status)
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.error()])(
     'when fetch throws an error',
-    async (uuid, app, key, url, update, error) => {
+    async (uuid, app, key, url, error) => {
       const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
         fetch: () => Promise.reject(error),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -227,9 +217,9 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
 })
 
 describe('createUserOnLegacyPrereview', () => {
-  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.pseudonym()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.pseudonym()])(
     'when the user can be created',
-    async (orcid, name, app, key, url, update, pseudonym) => {
+    async (orcid, name, app, key, url, pseudonym) => {
       const fetch = fetchMock.createInstance().postOnce({
         url: `${url}api/v2/users`,
         headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -239,7 +229,7 @@ describe('createUserOnLegacyPrereview', () => {
 
       const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.right(pseudonym))
@@ -252,9 +242,8 @@ describe('createUserOnLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.Created) }),
-  ])('when the user cannot be decoded', async (orcid, name, app, key, url, update, response) => {
+  ])('when the user cannot be decoded', async (orcid, name, app, key, url, response) => {
     const fetch = fetchMock.createInstance().postOnce({
       url: `${url}api/v2/users`,
       headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -264,7 +253,7 @@ describe('createUserOnLegacyPrereview', () => {
 
     const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -277,9 +266,8 @@ describe('createUserOnLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.Created),
-  ])('when the response has a non-201 status code', async (orcid, name, app, key, url, update, status) => {
+  ])('when the response has a non-201 status code', async (orcid, name, app, key, url, status) => {
     const fetch = fetchMock.createInstance().postOnce({
       url: `${url}api/v2/users`,
       headers: { 'X-Api-App': app, 'X-Api-Key': key },
@@ -289,19 +277,19 @@ describe('createUserOnLegacyPrereview', () => {
 
     const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.error()])(
     'when fetch throws an error',
-    async (orcid, name, app, key, url, update, error) => {
+    async (orcid, name, app, key, url, error) => {
       const actual = await _.createUserOnLegacyPrereview({ orcid, name })({
         fetch: () => Promise.reject(error),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -315,7 +303,6 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.tuple(fc.pseudonym(), fc.string()).chain(([pseudonym, realName]) =>
       fc.tuple(
         fc.constant(pseudonym),
@@ -331,7 +318,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
         ),
       ),
     ),
-  ])('when the user can be decoded', async (orcid, app, key, url, update, [pseudonym, personas]) => {
+  ])('when the user can be decoded', async (orcid, app, key, url, [pseudonym, personas]) => {
     const fetch = fetchMock.createInstance().getOnce({
       matcherFunction: ({ options }) => options.cache === 'force-cache',
       url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
@@ -341,7 +328,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.right(pseudonym))
@@ -352,30 +339,29 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.fetchResponse({ status: fc.constant(StatusCodes.OK) }),
-  ])('when the user cannot be decoded', async (orcid, app, key, url, update, response) => {
+  ])('when the user cannot be decoded', async (orcid, app, key, url, response) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin()])(
     'when the response has a 404 status code',
-    async (orcid, app, key, url, update) => {
+    async (orcid, app, key, url) => {
       const fetch = fetchMock
         .createInstance()
         .getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, StatusCodes.NotFound)
 
       const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
         fetch: (...args) => fetch.fetchHandler(...args),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
@@ -387,26 +373,25 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
-  ])('when the response has a non-200/404 status code', async (orcid, app, key, url, update, status) => {
+  ])('when the response has a non-200/404 status code', async (orcid, app, key, url, status) => {
     const fetch = fetchMock.createInstance().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
 
     const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
       fetch: (...args) => fetch.fetchHandler(...args),
-      legacyPrereviewApi: { app, key, url, update },
+      legacyPrereviewApi: { app, key, url },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+  test.prop([fc.orcidId(), fc.string(), fc.string(), fc.origin(), fc.error()])(
     'when fetch throws an error',
-    async (orcid, app, key, url, update, error) => {
+    async (orcid, app, key, url, error) => {
       const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
         fetch: () => Promise.reject(error),
-        legacyPrereviewApi: { app, key, url, update },
+        legacyPrereviewApi: { app, key, url },
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -415,9 +400,9 @@ describe('getPseudonymFromLegacyPrereview', () => {
 })
 
 describe('getRapidPreviewsFromLegacyPrereview', () => {
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.preprintIdWithDoi()])(
     'when the Rapid PREreviews can be loaded',
-    async (app, key, url, update, preprintId) => {
+    async (app, key, url, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
         fetch: (...args) =>
           fetchMock
@@ -468,7 +453,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           app,
           key,
           url,
-          update,
         },
       })()
 
@@ -513,9 +497,9 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     },
   )
 
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.preprintIdWithDoi()])(
     'when the Rapid PREreviews cannot be found',
-    async (app, key, url, update, preprintId) => {
+    async (app, key, url, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
         fetch: (...args) =>
           fetchMock
@@ -531,7 +515,6 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           app,
           key,
           url,
-          update,
         },
       })()
 
@@ -543,10 +526,9 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     fc.string(),
     fc.string(),
     fc.origin(),
-    fc.boolean(),
     fc.preprintIdWithDoi(),
     fc.integer({ min: 400, max: 599 }).filter(status => status !== StatusCodes.NotFound),
-  ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
+  ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, preprintId, status) => {
     const fetch = fetchMock
       .createInstance()
       .getOnce(
@@ -562,285 +544,10 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
         app,
         key,
         url,
-        update,
       },
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.callHistory.done()).toBeTruthy()
   })
-})
-
-describe('createPrereviewOnLegacyPrereview', () => {
-  describe('when the legacy PREreview should be updated', () => {
-    test.prop([
-      fc.string(),
-      fc.string(),
-      fc.origin(),
-      fc.user(),
-      fc.preprintIdWithDoi(),
-      fc.boolean(),
-      fc.uuid(),
-      fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-      fc.constant('CC-BY-4.0'),
-      fc.supportedLocale(),
-    ])(
-      'when the review can be posted',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, license, locale) => {
-        const fetch = fetchMock
-          .createInstance()
-          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
-          .postOnce({
-            url: `${url}api/v2/full-reviews`,
-            headers: { 'X-Api-App': app, 'X-Api-Key': key },
-            body: {
-              preprint: preprintUuid,
-              doi: reviewDoi,
-              authors: [{ orcid: user.orcid, public: true }],
-              isPublished: true,
-              contents: '<p>hello</p>',
-            },
-            response: { status: StatusCodes.Created },
-          })
-
-        const actual = await _.createPrereviewOnLegacyPrereview({
-          conduct: 'yes',
-          otherAuthors,
-          persona: 'public',
-          preprint: {
-            id: preprintId,
-            language: 'en',
-            title: rawHtml('foo'),
-          },
-          review: rawHtml('<p>hello</p>'),
-          language: Option.none(),
-          license,
-          locale,
-          structured,
-          user,
-        })(reviewDoi)({
-          clock: SystemClock,
-          fetch: (...args) => fetch.fetchHandler(...args),
-          legacyPrereviewApi: { app, key, url, update: true },
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.right(undefined))
-      },
-    )
-
-    test.prop([
-      fc.string(),
-      fc.string(),
-      fc.origin(),
-      fc.user(),
-      fc.preprintIdWithDoi(),
-      fc.boolean(),
-      fc.uuid(),
-      fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-      fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
-      fc.constantFrom('CC-BY-4.0', 'CC0-1.0'),
-      fc.supportedLocale(),
-    ])(
-      'when the review cannot be posted',
-      async (
-        app,
-        key,
-        url,
-        user,
-        preprintId,
-        structured,
-        preprintUuid,
-        reviewDoi,
-        otherAuthors,
-        response,
-        license,
-        locale,
-      ) => {
-        const fetch = fetchMock
-          .createInstance()
-          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
-          .postOnce({
-            url: `${url}api/v2/full-reviews`,
-            headers: { 'X-Api-App': app, 'X-Api-Key': key },
-            body: {
-              preprint: preprintUuid,
-              doi: reviewDoi,
-              authors: [{ orcid: user.orcid, public: true }],
-              isPublished: true,
-              contents: '<p>hello</p>',
-            },
-            response,
-          })
-
-        const actual = await _.createPrereviewOnLegacyPrereview({
-          conduct: 'yes',
-          otherAuthors,
-          persona: 'public',
-          preprint: {
-            id: preprintId,
-            language: 'en',
-            title: rawHtml('foo'),
-          },
-          review: rawHtml('<p>hello</p>'),
-          language: Option.none(),
-          license,
-          locale,
-          structured,
-          user,
-        })(reviewDoi)({
-          clock: SystemClock,
-          fetch: (...args) => fetch.fetchHandler(...args),
-          legacyPrereviewApi: { app, key, url, update: true },
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.left('unavailable'))
-      },
-    )
-
-    test.prop([
-      fc.string(),
-      fc.string(),
-      fc.origin(),
-      fc.user(),
-      fc.preprintIdWithDoi(),
-      fc.boolean(),
-      fc.uuid(),
-      fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-      fc.record({ status: fc.integer(), body: fc.string() }),
-      fc.constant('CC-BY-4.0'),
-      fc.supportedLocale(),
-    ])(
-      'when the preprint cannot be resolved',
-      async (
-        app,
-        key,
-        url,
-        user,
-        preprintId,
-        structured,
-        preprintUuid,
-        reviewDoi,
-        otherAuthors,
-        response,
-        license,
-        locale,
-      ) => {
-        const fetch = fetchMock
-          .createInstance()
-          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
-
-        const actual = await _.createPrereviewOnLegacyPrereview({
-          conduct: 'yes',
-          otherAuthors,
-          persona: 'public',
-          preprint: {
-            id: preprintId,
-            language: 'en',
-            title: rawHtml('foo'),
-          },
-          review: rawHtml('<p>hello</p>'),
-          language: Option.none(),
-          license,
-          locale,
-          structured,
-          user,
-        })(reviewDoi)({
-          clock: SystemClock,
-          fetch: (...args) => fetch.fetchHandler(...args),
-          legacyPrereviewApi: { app, key, url, update: true },
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.left('unavailable'))
-        expect(fetch.callHistory.done()).toBeTruthy()
-      },
-    )
-
-    test.prop([
-      fc.user(),
-      fc.string(),
-      fc.string(),
-      fc.origin(),
-      fc.preprintIdWithDoi(),
-      fc.boolean(),
-      fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-      fc.error(),
-      fc.constant('CC-BY-4.0'),
-      fc.supportedLocale(),
-    ])(
-      'when fetch throws an error',
-      async (user, app, key, url, preprintId, structured, reviewDoi, otherAuthors, error, license, locale) => {
-        const actual = await _.createPrereviewOnLegacyPrereview({
-          conduct: 'yes',
-          otherAuthors,
-          persona: 'public',
-          preprint: {
-            id: preprintId,
-            language: 'en',
-            title: rawHtml('foo'),
-          },
-          review: rawHtml('<p>hello</p>'),
-          language: Option.none(),
-          license,
-          locale,
-          structured,
-          user,
-        })(reviewDoi)({
-          clock: SystemClock,
-          fetch: () => Promise.reject(error),
-          legacyPrereviewApi: { app, key, url, update: true },
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.left('unavailable'))
-      },
-    )
-  })
-
-  test.prop([
-    fc.string(),
-    fc.string(),
-    fc.origin(),
-    fc.user(),
-    fc.preprintIdWithDoi(),
-    fc.boolean(),
-    fc.uuid(),
-    fc.doi(),
-    fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-    fc.constant('CC-BY-4.0'),
-    fc.supportedLocale(),
-  ])(
-    'when the legacy PREreview should not be updated',
-    async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, license, locale) => {
-      const actual = await _.createPrereviewOnLegacyPrereview({
-        conduct: 'yes',
-        otherAuthors,
-        persona: 'public',
-        preprint: {
-          id: preprintId,
-          language: 'en',
-          title: rawHtml('foo'),
-        },
-        review: rawHtml('<p>hello</p>'),
-        language: Option.none(),
-        license,
-        locale,
-        structured,
-        user,
-      })(reviewDoi)({
-        clock: SystemClock,
-        fetch: shouldNotBeCalled,
-        legacyPrereviewApi: { app, key, url, update: false },
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.right(undefined))
-    },
-  )
 })

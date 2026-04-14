@@ -85,7 +85,6 @@ interface AppFixtures {
   oauthServer: OAuth2Server
   port: number
   server: Fiber.RuntimeFiber<never>
-  updatesLegacyPrereview: (typeof LegacyPrereviewApi.Service)['update']
   formStore: Keyv
   careerStageStore: Keyv
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
@@ -2419,7 +2418,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         fetch,
         oauthServer,
         port,
-        updatesLegacyPrereview,
         formStore,
         careerStageStore,
         contactEmailAddressStore,
@@ -2486,7 +2484,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             app: 'app',
             key: Redacted.make('key'),
             origin: new URL('http://prereview.test'),
-            update: updatesLegacyPrereview,
           }),
           Layer.succeed(Orcid.OrcidApi, {
             origin: new URL('http://api.orcid.test/'),
@@ -2571,9 +2568,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   userOnboardingStore: async ({}, use) => {
     await use(new Keyv())
   },
-  updatesLegacyPrereview: async ({}, use) => {
-    await use(false)
-  },
   wasPrereviewRemoved: async ({}, use) => {
     await use(() => false)
   },
@@ -2605,16 +2599,6 @@ export const usePostgresDB: Fixtures<
         Layer.unwrapEffect,
       ),
     )
-  },
-}
-
-export const updatesLegacyPrereview: Fixtures<
-  Pick<AppFixtures, 'updatesLegacyPrereview'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'updatesLegacyPrereview'>
-> = {
-  updatesLegacyPrereview: async ({}, use) => {
-    await use(true)
   },
 }
 

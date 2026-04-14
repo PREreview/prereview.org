@@ -10,7 +10,6 @@ import { Nodemailer } from '../../../ExternalApis/index.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import { createPrereviewOnLegacyPrereview, isLegacyCompatiblePrereview } from '../../../legacy-prereview.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -481,12 +480,6 @@ export const WriteReviewRouter = pipe(
             ),
             env.runtime,
           ),
-          legacyPrereviewApi: {
-            app: env.legacyPrereviewApiConfig.app,
-            key: Redacted.value(env.legacyPrereviewApiConfig.key),
-            url: env.legacyPrereviewApiConfig.origin,
-            update: env.legacyPrereviewApiConfig.update,
-          },
           publicUrl: env.publicUrl,
           runtime: env.runtime,
           sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
@@ -511,15 +504,6 @@ export const WriteReviewRouter = pipe(
 const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
     ZenodoRecords.createRecordOnZenodo(newPrereview),
-    RTE.chainFirstW(
-      isLegacyCompatiblePrereview(newPrereview)
-        ? flow(
-            ([doi]) => doi,
-            createPrereviewOnLegacyPrereview(newPrereview),
-            RTE.altW(() => RTE.right(undefined)),
-          )
-        : () => RTE.right(undefined),
-    ),
     RTE.chainFirstW(([, review]) =>
       pipe(
         newPrereview.otherAuthors,

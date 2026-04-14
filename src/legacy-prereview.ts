@@ -1,13 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { type Doi, isDoi } from 'doi-ts'
-import { Array, Boolean, Context, Function, Option, type Redacted, Struct, flow, identity, pipe } from 'effect'
+import { isDoi } from 'doi-ts'
+import { Array, Context, Option, type Redacted, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
@@ -22,12 +21,10 @@ import * as StatusCodes from './StatusCodes.ts'
 import { ProfileId } from './types/index.ts'
 import { type OrcidId, isOrcidId } from './types/OrcidId.ts'
 import { PseudonymC, isPseudonym } from './types/Pseudonym.ts'
-import { UuidC } from './types/uuid.ts'
-import type { NewPrereview } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
 
 export class LegacyPrereviewApi extends Context.Tag('LegacyPrereviewApi')<
   LegacyPrereviewApi,
-  { app: string; key: Redacted.Redacted; origin: URL; update: boolean }
+  { app: string; key: Redacted.Redacted; origin: URL }
 >() {}
 
 export interface LegacyPrereviewApiEnv {
@@ -35,7 +32,6 @@ export interface LegacyPrereviewApiEnv {
     app: string
     key: string
     url: URL
-    update: boolean
   }
 }
 
@@ -131,15 +127,6 @@ const LegacyRapidPrereviewsD = pipe(
           ynAvailableData: RapidPrereviewAnswerD,
         }),
       ),
-    }),
-  ),
-)
-
-const LegacyPrereviewPreprintD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      uuid: UuidC,
     }),
   ),
 )
@@ -325,74 +312,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
     ),
   )
 
-export type LegacyCompatibleNewPrereview = NewPrereview & { preprint: { id: PreprintIdWithDoi } }
-
 export const isLegacyCompatiblePreprint = (preprint: PreprintId): preprint is PreprintIdWithDoi => isDoi(preprint.value)
-
-export const isLegacyCompatiblePrereview = (newPrereview: NewPrereview): newPrereview is LegacyCompatibleNewPrereview =>
-  isLegacyCompatiblePreprint(newPrereview.preprint.id)
-
-export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleNewPrereview) => (doi: Doi) =>
-  pipe(
-    shouldUpdate,
-    R.chain(
-      Boolean.match({
-        onFalse: () => RTE.of(undefined),
-        onTrue: () =>
-          pipe(
-            resolvePreprint(newPrereview.preprint.id.value),
-            RTE.chainReaderKW(preprint =>
-              pipe(
-                legacyPrereviewUrl('full-reviews'),
-                R.chain(
-                  flow(
-                    F.Request('POST'),
-                    F.setBody(
-                      JSON.stringify({
-                        preprint: preprint.uuid,
-                        doi,
-                        authors: [{ orcid: newPrereview.user.orcid, public: newPrereview.persona === 'public' }],
-                        isPublished: true,
-                        contents: newPrereview.review.toString(),
-                      }),
-                      'application/json',
-                    ),
-                    addLegacyPrereviewApiHeaders,
-                  ),
-                ),
-              ),
-            ),
-            RTE.chainW(F.send),
-            RTE.local(timeoutRequest(5000)),
-            RTE.filterOrElseW(F.hasStatus(StatusCodes.Created), identity),
-            RTE.orElseFirstW(
-              RTE.fromReaderIOK(
-                flow(
-                  error => ({
-                    error: match(error)
-                      .with(P.instanceOf(Error), error => error.message)
-                      .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
-                      .with({ _tag: P.string }, D.draw)
-                      .exhaustive(),
-                  }),
-                  L.errorP('Failed to create PREreview on the legacy site'),
-                ),
-              ),
-            ),
-            RTE.bimap(() => 'unavailable' as const, Function.constVoid),
-          ),
-      }),
-    ),
-  )
-
-const resolvePreprint = flow(
-  RTE.fromReaderK((doi: PreprintIdWithDoi['value']) => legacyPrereviewUrl(`resolve?identifier=${doi}`)),
-  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-  RTE.chainW(F.send),
-  RTE.local(timeoutRequest(5000)),
-  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintD)),
-)
 
 function addLegacyPrereviewApiHeaders(request: F.Request) {
   return R.asks(({ legacyPrereviewApi: { app, key } }: LegacyPrereviewApiEnv) =>
@@ -402,5 +322,3 @@ function addLegacyPrereviewApiHeaders(request: F.Request) {
 
 const legacyPrereviewUrl = (path: string) =>
   R.asks(({ legacyPrereviewApi }: LegacyPrereviewApiEnv) => new URL(`/api/v2/${path}`, legacyPrereviewApi.url))
-
-const shouldUpdate = R.asks(({ legacyPrereviewApi }: LegacyPrereviewApiEnv) => legacyPrereviewApi.update)

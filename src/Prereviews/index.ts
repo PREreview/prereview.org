@@ -229,7 +229,6 @@ export const layer = Layer.effect(
                 app: legacyPrereviewApi.app,
                 key: Redacted.value(legacyPrereviewApi.key),
                 url: legacyPrereviewApi.origin,
-                update: legacyPrereviewApi.update,
               },
             }),
           ),

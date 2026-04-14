@@ -139,7 +139,6 @@ pipe(
         app: Config.string('LEGACY_PREREVIEW_API_APP'),
         key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
         origin: Config.url('LEGACY_PREREVIEW_URL'),
-        update: Config.withDefault(Config.boolean('LEGACY_PREREVIEW_UPDATE'), false),
       }),
     ),
     Nodemailer.layerTransporterConfig(Config.redacted(Config.url('SMTP_URI'))),
