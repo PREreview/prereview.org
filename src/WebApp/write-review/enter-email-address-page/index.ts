@@ -21,7 +21,7 @@ import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
 import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
@@ -133,7 +133,7 @@ const handleEnterEmailAddressForm = ({
     RTE.map(({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken })),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
     RTE.chainFirstW(contactEmailAddress =>
-      verifyContactEmailAddressForReview(user.name, contactEmailAddress, preprint.id),
+      verifyContactEmailAddressForReview(toPersonas(user).publicPersona.name, contactEmailAddress, preprint.id),
     ),
     RTE.matchW(
       error =>

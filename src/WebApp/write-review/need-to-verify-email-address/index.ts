@@ -18,7 +18,7 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../../../routes.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
   FlashMessageResponse,
@@ -114,7 +114,7 @@ const resendVerificationEmail = ({
   user: User
 }) =>
   pipe(
-    verifyContactEmailAddressForReview(user.name, contactEmailAddress, preprint.id),
+    verifyContactEmailAddressForReview(toPersonas(user).publicPersona.name, contactEmailAddress, preprint.id),
     RTE.matchW(
       () => havingProblemsPage(locale),
       () =>

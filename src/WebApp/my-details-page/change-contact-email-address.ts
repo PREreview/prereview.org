@@ -19,7 +19,7 @@ import type { SupportedLocale } from '../../locales/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.ts'
-import type { User } from '../../user.ts'
+import { type User, toPersonas } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-contact-email-address-form-page.ts'
@@ -110,7 +110,9 @@ const handleChangeContactEmailAddressForm = ({
                   }),
               ),
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
-              RTE.chainFirstW(contactEmailAddress => verifyContactEmailAddress(user.name, contactEmailAddress)),
+              RTE.chainFirstW(contactEmailAddress =>
+                verifyContactEmailAddress(toPersonas(user).publicPersona.name, contactEmailAddress),
+              ),
               RTE.matchW(
                 () => havingProblemsPage(locale),
                 () =>

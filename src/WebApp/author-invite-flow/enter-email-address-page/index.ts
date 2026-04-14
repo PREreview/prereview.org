@@ -33,7 +33,7 @@ import {
 } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -208,7 +208,7 @@ const handleEnterEmailAddressForm = ({
         VerifiedContactEmailAddress: () => RTE.of(undefined),
         UnverifiedContactEmailAddress: contactEmailAddress =>
           verifyContactEmailAddressForInvitedAuthor({
-            name: user.name,
+            name: toPersonas(user).publicPersona.name,
             emailAddress: contactEmailAddress,
             authorInvite: inviteId,
           }),
