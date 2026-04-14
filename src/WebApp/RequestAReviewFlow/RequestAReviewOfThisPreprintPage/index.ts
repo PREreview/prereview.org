@@ -28,7 +28,7 @@ export const RequestAReviewOfThisPreprintPage: ({
       })
 
       return Option.match(reviewRequestId, {
-        onNone: () => MakeResponse({ preprint, user: Option.getOrUndefined(user), locale }),
+        onNone: () => MakeResponse({ preprint, isLoggedIn: Option.isSome(user), locale }),
         onSome: () =>
           Response.RedirectResponse({ location: Routes.RequestAReviewStartNow.href({ preprintId: preprint.id }) }),
       })
