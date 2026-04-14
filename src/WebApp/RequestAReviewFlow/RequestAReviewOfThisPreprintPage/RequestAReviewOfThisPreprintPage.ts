@@ -48,7 +48,7 @@ export const RequestAReviewOfThisPreprintPage = ({
             </div>
           </details>
         `,
-      })}}
+      })}
 
       <a href="${Routes.RequestAReviewStartNow.href({ preprintId: preprint.id })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'startButton')()}</a
