@@ -2,7 +2,6 @@ import { match } from 'ts-pattern'
 import { html, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
-import type { User } from '../../user.ts'
 import { showNotificationBanner } from '../notification-banner.ts'
 import type { Page } from '../page.ts'
 import type { PageUrls } from './ConstructPageUrls.ts'
@@ -15,14 +14,14 @@ export const toPage = ({
   userOnboarding,
   pageUrls,
   response,
-  user,
+  isLoggedIn,
 }: {
   locale: SupportedLocale
   message?: (typeof FlashMessageSchema.literals)[number]
   userOnboarding?: UserOnboarding
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
   pageUrls?: PageUrls
-  user?: User | undefined
+  isLoggedIn: boolean
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
@@ -51,7 +50,7 @@ export const toPage = ({
         js: message ? (['notification-banner.js'] as const) : [],
         pageUrls,
         type: 'two-up',
-        user,
+        isLoggedIn,
         userOnboarding,
       }
     : {
@@ -71,7 +70,7 @@ export const toPage = ({
         js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
         pageUrls,
         type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
-        user,
+        isLoggedIn,
         userOnboarding,
       }
 

@@ -84,7 +84,7 @@ export const toHttpServerResponse = (
           pageUrls: Option.getOrUndefined(pageUrls),
           response,
           userOnboarding: Option.getOrUndefined(userOnboarding),
-          user: Option.getOrUndefined(user),
+          isLoggedIn: Option.isSome(user),
         }),
       ).toString(),
       HttpServerResponse.html,

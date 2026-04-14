@@ -6,7 +6,6 @@ import { DefaultLocale, type SupportedLocale, UserSelectableLocales, translate }
 import assets from '../manifest.json' with { type: 'json' }
 import * as Routes from '../routes.ts'
 import type { UserOnboarding } from '../user-onboarding.ts'
-import type { User } from '../user.ts'
 import type * as Response from './Response/index.ts'
 
 export interface Page {
@@ -39,13 +38,25 @@ export interface Page {
     | 'reviews'
     | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'expander-button.js' | 'skip-link.js'>>
-  readonly user?: User
+  readonly isLoggedIn: boolean
   readonly userOnboarding?: UserOnboarding
   readonly pageUrls?: Response.PageUrls
 }
 
 export const page = ({
-  page: { locale, title, description, type, content, skipLinks = [], current, js = [], user, userOnboarding, pageUrls },
+  page: {
+    locale,
+    title,
+    description,
+    type,
+    content,
+    skipLinks = [],
+    current,
+    js = [],
+    isLoggedIn,
+    userOnboarding,
+    pageUrls,
+  },
   environmentLabel,
   fathomId,
   publicUrl,
@@ -181,8 +192,8 @@ export const page = ({
                       : ''}
                   `
                 : html`
-                    ${user ? html`<a href="${Routes.LogOut}">${t('header', 'menuLogOut')()}</a>` : ''}
-                    ${!user && current === 'home'
+                    ${isLoggedIn ? html`<a href="${Routes.LogOut}">${t('header', 'menuLogOut')()}</a>` : ''}
+                    ${!isLoggedIn && current === 'home'
                       ? html` <a href="${Routes.LogIn}">${t('header', 'menuLogIn')()}</a>`
                       : ''}
                   `}
@@ -271,7 +282,7 @@ export const page = ({
                     <div>
                       <h3>${t('header', 'myAccount')()}</h3>
                       <ul>
-                        ${user
+                        ${isLoggedIn
                           ? html`
                               <li>
                                 <a

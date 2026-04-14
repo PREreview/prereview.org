@@ -4,18 +4,17 @@ import { html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
-import type { User } from '../../user.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export const createMenuPage = ({
   canLogInAsDemoUser = false,
   locale,
-  user,
+  isLoggedIn,
   userOnboarding,
 }: {
   canLogInAsDemoUser?: boolean
   locale: SupportedLocale
-  user: Option.Option<User>
+  isLoggedIn: boolean
   userOnboarding: Option.Option<UserOnboarding>
 }) => {
   const t = translate(locale, 'header')
@@ -82,8 +81,8 @@ export const createMenuPage = ({
         <div>
           <h3>${t('myAccount')()}</h3>
           <ul>
-            ${Option.match(user, {
-              onSome: () => html`
+            ${Boolean.match(isLoggedIn, {
+              onTrue: () => html`
                 <li>
                   <a href="${format(Routes.myDetailsMatch.formatter, {})}"
                     >${t('menuMyDetails')()}${Option.match(
@@ -108,7 +107,7 @@ export const createMenuPage = ({
                   <a href="${Routes.LogOut}">${t('menuLogOut')()}</a>
                 </li>
               `,
-              onNone: () => html`
+              onFalse: () => html`
                 <li>
                   <a href="${Routes.LogIn}">${t('menuLogIn')()}</a>
                 </li>

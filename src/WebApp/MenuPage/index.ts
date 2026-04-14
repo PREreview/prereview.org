@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import { Locale } from '../../Context.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import { UserOnboardingService } from '../../user-onboarding.ts'
@@ -11,5 +11,5 @@ export const MenuPage = Effect.gen(function* () {
   const userOnboarding = yield* Effect.serviceOption(UserOnboardingService)
   const canLogInAsDemoUser = yield* FeatureFlags.canLogInAsDemoUser
 
-  return createMenuPage({ canLogInAsDemoUser, locale, user, userOnboarding })
+  return createMenuPage({ canLogInAsDemoUser, locale, isLoggedIn: Option.isSome(user), userOnboarding })
 })

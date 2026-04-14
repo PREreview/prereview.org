@@ -56,6 +56,7 @@ export const test = baseTest.extend<ShowPage>({
       const pageHtml = templatePage(
         toPage({
           locale: DefaultLocale,
+          isLoggedIn: false,
           ...extra,
           response: PageResponse({
             title: response.title,
@@ -73,7 +74,7 @@ export const test = baseTest.extend<ShowPage>({
   },
   showTwoUpPage: async ({ page, showHtml, templatePage }, use) => {
     await use(async response => {
-      const pageHtml = templatePage(toPage({ locale: DefaultLocale, response }))
+      const pageHtml = templatePage(toPage({ locale: DefaultLocale, isLoggedIn: false, response }))
 
       await showHtml(pageHtml)
 
