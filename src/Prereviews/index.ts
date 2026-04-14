@@ -21,7 +21,7 @@ import type { FieldId } from '../types/field.ts'
 import type { Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
-import type { User } from '../user.ts'
+import { toPersonas, type User } from '../user.ts'
 import {
   type PreprintPrereview,
   type Prereview,
@@ -195,14 +195,20 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
-          return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForUserFromZenodo(user), {
-            fetch,
-            getPreprintTitle,
-            publicUrl,
-            zenodoApiKey: Redacted.value(zenodoApi.key),
-            zenodoUrl: zenodoApi.origin,
-            ...loggerEnv,
-          })
+          return yield* FptsToEffect.readerTaskEither(
+            ZenodoRecords.getPrereviewsForUserFromZenodo({
+              orcidId: user.orcid,
+              pseudonym: toPersonas(user).pseudonymPersona.pseudonym,
+            }),
+            {
+              fetch,
+              getPreprintTitle,
+              publicUrl,
+              zenodoApiKey: Redacted.value(zenodoApi.key),
+              zenodoUrl: zenodoApi.origin,
+              ...loggerEnv,
+            },
+          )
         },
         Effect.andThen(
           Effect.forEach(

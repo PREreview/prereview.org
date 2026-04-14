@@ -2058,7 +2058,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 describe('getPrereviewsForUserFromZenodo', () => {
   test.prop([
     fc.origin(),
-    fc.user(),
+    fc.record({ orcidId: fc.orcidId(), pseudonym: fc.pseudonym() }),
     fc.preprintTitle(),
     fc.preprintTitle(),
     fc.oneof(
@@ -2260,7 +2260,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
             .getOnce({
               url: 'https://zenodo.org/api/communities/prereview-reviews/records',
               query: {
-                q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+                q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcidId} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
                 size: '100',
                 sort: 'publication-desc',
                 resource_type: 'publication::publication-peerreview',
@@ -2312,7 +2312,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
   )
 
   test.prop([
-    fc.user(),
+    fc.record({ orcidId: fc.orcidId(), pseudonym: fc.pseudonym() }),
     fc.preprintTitle(),
     fc.constantFrom(new PreprintIsNotFound({}), new PreprintIsUnavailable({})),
   ])('when a preprint cannot be loaded', async (user, preprint, error) => {
@@ -2500,7 +2500,7 @@ describe('getPrereviewsForUserFromZenodo', () => {
   })
 
   test.prop([
-    fc.user(),
+    fc.record({ orcidId: fc.orcidId(), pseudonym: fc.pseudonym() }),
     fc.integer({
       min: 400,
       max: 599,

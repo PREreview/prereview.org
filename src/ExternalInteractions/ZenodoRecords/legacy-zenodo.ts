@@ -69,8 +69,8 @@ import { ProfileId, Uuid } from '../../types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from '../../types/iso639.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
-import type { User } from '../../user.ts'
 import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // eslint-disable-line import/no-internal-modules
 import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts' // eslint-disable-line import/no-internal-modules
 import type { NewPrereview } from '../../WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
@@ -352,11 +352,11 @@ export const getPrereviewsForProfileFromZenodo = flow(
 )
 
 export const getPrereviewsForUserFromZenodo = flow(
-  (user: User) =>
+  (user: { orcidId: OrcidId; pseudonym: Pseudonym }) =>
     RTE.asks(
       ({ publicUrl }: PublicUrlEnv) =>
         new URLSearchParams({
-          q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
+          q: `(metadata.related_identifiers.resource_type.id:"publication-preprint" OR (metadata.related_identifiers.resource_type.id:"dataset" AND metadata.related_identifiers.identifier:${new RegExp(`${publicUrl.origin}/reviews/.+`)})) AND (metadata.creators.person_or_org.identifiers.identifier:${user.orcidId} metadata.creators.person_or_org.name:"${user.pseudonym}")`,
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
