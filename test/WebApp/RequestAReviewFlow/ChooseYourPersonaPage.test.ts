@@ -4,6 +4,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Effect, Layer, Option } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -21,46 +22,54 @@ describe('ChooseYourPersonaPage', () => {
       test.prop([
         fc.indeterminatePreprintId(),
         fc.user(),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.record({
           reviewRequestId: fc.uuid(),
           personaChoice: fc.maybe(fc.constantFrom('public', 'pseudonym')),
         }),
         fc.preprintTitle({ id: fc.preprintId() }),
         fc.supportedLocale(),
-      ])('when the form needs submitting', async (preprintId, user, reviewRequest, preprintTitle, locale) =>
-        Effect.gen(function* () {
-          const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
-            _ => Effect.succeed(reviewRequest),
-          )
-          const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
-            Effect.succeed(preprintTitle),
-          )
+      ])(
+        'when the form needs submitting',
+        async (preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, locale) =>
+          Effect.gen(function* () {
+            const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
+              _ => Effect.succeed(reviewRequest),
+            )
+            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+              Effect.succeed(preprintTitle),
+            )
 
-          const actual = yield* Effect.provide(_.ChooseYourPersonaPage({ preprintId }), [
-            Layer.mock(Preprints.Preprints, { getPreprintTitle }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice }),
-          ])
+            const actual = yield* Effect.provide(_.ChooseYourPersonaPage({ preprintId }), [
+              Layer.mock(Preprints.Preprints, { getPreprintTitle }),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice }),
+            ])
 
-          expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            canonical: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprintTitle.id }),
-            status: StatusCodes.OK,
-            title: expect.anything(),
-            nav: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'form',
-            js: [],
-          })
-          expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
-          expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-        }).pipe(
-          Effect.provide([
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-          ]),
-          EffectTest.run,
-        ),
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              canonical: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprintTitle.id }),
+              status: StatusCodes.OK,
+              title: expect.anything(),
+              nav: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'form',
+              js: [],
+            })
+            expect(getPersonaChoice).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId: preprintTitle.id })
+            expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+          }).pipe(
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Personas.Personas, {
+                getPublicPersona: () => Effect.succeed(publicPersona),
+                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+              }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+            ]),
+            EffectTest.run,
+          ),
       )
     })
 
@@ -82,6 +91,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -113,6 +123,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -142,6 +153,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
@@ -168,6 +180,7 @@ describe('ChooseYourPersonaPage', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, {
             getPreprintTitle: () => new Preprints.PreprintIsUnavailable({}),
           }),
@@ -191,6 +204,7 @@ describe('ChooseYourPersonaPage', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
@@ -257,7 +271,14 @@ describe('ChooseYourPersonaSubmission', () => {
             expect(getNextExpectedCommandForAUserOnAReviewRequest).toHaveBeenCalledWith({
               reviewRequestId: reviewRequest.reviewRequestId,
             })
-          }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)]), EffectTest.run),
+          }).pipe(
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Personas.Personas, {}),
+            ]),
+            EffectTest.run,
+          ),
       )
 
       test.prop([
@@ -287,6 +308,7 @@ describe('ChooseYourPersonaSubmission', () => {
           Effect.provide([
             Layer.succeed(Locale, locale),
             Layer.succeed(LoggedInUser, user),
+            Layer.mock(Personas.Personas, {}),
             Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
             Layer.mock(ReviewRequests.ReviewRequestCommands, { choosePersona: () => error }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -300,6 +322,8 @@ describe('ChooseYourPersonaSubmission', () => {
       test.prop([
         fc.indeterminatePreprintId(),
         fc.user(),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.record({
           reviewRequestId: fc.uuid(),
           personaChoice: fc.maybe(fc.constantFrom('public', 'pseudonym')),
@@ -314,30 +338,38 @@ describe('ChooseYourPersonaSubmission', () => {
           ),
         ),
         fc.supportedLocale(),
-      ])('when the form is invalid', async (preprintId, user, reviewRequest, preprintTitle, body, locale) =>
-        Effect.gen(function* () {
-          const actual = yield* _.ChooseYourPersonaSubmission({ body, preprintId })
+      ])(
+        'when the form is invalid',
+        async (preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, body, locale) =>
+          Effect.gen(function* () {
+            const actual = yield* _.ChooseYourPersonaSubmission({ body, preprintId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            canonical: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprintTitle.id }),
-            status: StatusCodes.BadRequest,
-            title: expect.anything(),
-            nav: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'form',
-            js: ['error-summary.js'],
-          })
-        }).pipe(
-          Effect.provide([
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => Effect.succeed(reviewRequest) }),
-          ]),
-          EffectTest.run,
-        ),
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              canonical: Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprintTitle.id }),
+              status: StatusCodes.BadRequest,
+              title: expect.anything(),
+              nav: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'form',
+              js: ['error-summary.js'],
+            })
+          }).pipe(
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Personas.Personas, {
+                getPublicPersona: () => Effect.succeed(publicPersona),
+                getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+              }),
+              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                getPersonaChoice: () => Effect.succeed(reviewRequest),
+              }),
+            ]),
+            EffectTest.run,
+          ),
       )
     })
 
@@ -360,6 +392,7 @@ describe('ChooseYourPersonaSubmission', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -392,6 +425,7 @@ describe('ChooseYourPersonaSubmission', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {
@@ -425,6 +459,7 @@ describe('ChooseYourPersonaSubmission', () => {
       Effect.provide([
         Layer.succeed(Locale, locale),
         Layer.succeed(LoggedInUser, user),
+        Layer.mock(Personas.Personas, {}),
         Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
         Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
         Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
@@ -451,6 +486,7 @@ describe('ChooseYourPersonaSubmission', () => {
         Effect.provide([
           Layer.succeed(Locale, locale),
           Layer.succeed(LoggedInUser, user),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, { getPreprintTitle: () => new Preprints.PreprintIsUnavailable({}) }),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
@@ -472,6 +508,7 @@ describe('ChooseYourPersonaSubmission', () => {
       }).pipe(
         Effect.provide([
           Layer.succeed(Locale, locale),
+          Layer.mock(Personas.Personas, {}),
           Layer.mock(Preprints.Preprints, {}),
           Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
           Layer.mock(ReviewRequests.ReviewRequestQueries, {}),

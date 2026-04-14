@@ -1,11 +1,12 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
+import * as Personas from '../../../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
+import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import {
@@ -25,7 +26,7 @@ export const ChooseYourPersonaPage: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
+  ReviewRequests.ReviewRequestQueries | Personas.Personas | Preprints.Preprints | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaPage')(
   function* ({ preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -35,9 +36,17 @@ export const ChooseYourPersonaPage: ({
 
     const reviewRequest = yield* ReviewRequests.getPersonaChoice({ requesterId: user.orcid, preprintId: preprint.id })
 
+    const { publicPersona, pseudonymPersona } = yield* Effect.all(
+      {
+        publicPersona: Personas.getPublicPersona(user.orcid),
+        pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+      },
+      { concurrency: 'inherit' },
+    )
+
     const form = ChooseYourPersonaForm.fromPersonaChoice(reviewRequest.personaChoice)
 
-    return MakeResponse({ form, preprint: preprint.id, ...toPersonas(user), locale })
+    return MakeResponse({ form, preprint: preprint.id, publicPersona, pseudonymPersona, locale })
   },
   (error, { preprintId }) =>
     Effect.catchTags(error, {
@@ -46,6 +55,7 @@ export const ChooseYourPersonaPage: ({
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
       UnableToQuery: () => HavingProblemsPage,
+      UnableToGetPersona: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
@@ -61,7 +71,11 @@ export const ChooseYourPersonaSubmission: ({
 }) => Effect.Effect<
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse,
   never,
-  ReviewRequests.ReviewRequestCommands | ReviewRequests.ReviewRequestQueries | Preprints.Preprints | Locale
+  | ReviewRequests.ReviewRequestCommands
+  | ReviewRequests.ReviewRequestQueries
+  | Personas.Personas
+  | Preprints.Preprints
+  | Locale
 > = Effect.fn('RequestAReviewFlow.ChooseYourPersonaSubmission')(
   function* ({ body, preprintId }) {
     const user = yield* EnsureUserIsLoggedIn
@@ -86,7 +100,18 @@ export const ChooseYourPersonaSubmission: ({
 
         return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
       }),
-      InvalidForm: form => Effect.succeed(MakeResponse({ form, preprint: preprint.id, ...toPersonas(user), locale })),
+      InvalidForm: form =>
+        Effect.gen(function* () {
+          const { publicPersona, pseudonymPersona } = yield* Effect.all(
+            {
+              publicPersona: Personas.getPublicPersona(user.orcid),
+              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+            },
+            { concurrency: 'inherit' },
+          )
+
+          return MakeResponse({ form, preprint: preprint.id, publicPersona, pseudonymPersona, locale })
+        }),
     })
   },
   (error, { preprintId }) =>
@@ -95,6 +120,7 @@ export const ChooseYourPersonaSubmission: ({
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
