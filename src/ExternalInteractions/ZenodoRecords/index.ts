@@ -4,9 +4,9 @@ import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
+import type { OrcidId, Pseudonym } from '../../types/index.ts'
 // eslint-disable-next-line import/no-internal-modules
 import * as ReviewPage from '../../WebApp/review-page/comments.ts'
-import type { User } from '../../user.ts'
 import { addCommentText } from './AddCommentText.ts'
 import { getCommunityRecords } from './CommunityRecords.ts'
 import { constructCommentListUrl } from './ConstructCommentListUrl.ts'
@@ -103,7 +103,7 @@ export const invalidatePrereviewInCache = ({
 }: {
   prereviewId: number
   preprintId?: PreprintId
-  user: User
+  user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
 }): Effect.Effect<void, never, ZenodoApi.ZenodoApi | CachingHttpClient.HttpCache> =>
   pipe(
     constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),

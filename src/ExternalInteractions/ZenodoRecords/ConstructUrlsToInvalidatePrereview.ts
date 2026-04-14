@@ -2,7 +2,7 @@ import { Url, UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
-import type { User } from '../../user.ts'
+import type { OrcidId, Pseudonym } from '../../types/index.ts'
 import { toExternalIdentifier } from './legacy-zenodo.ts'
 
 export const constructUrlsToInvalidatePrereview = ({
@@ -12,7 +12,7 @@ export const constructUrlsToInvalidatePrereview = ({
 }: {
   prereviewId: number
   preprintId: PreprintId | undefined
-  user: User
+  user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
 }): Effect.Effect<ReadonlyArray<URL>, never, Zenodo.ZenodoApi> =>
   Effect.all(
     [
@@ -32,12 +32,15 @@ const constructUrlToRecord = (prereviewId: number): Effect.Effect<URL, never, Ze
     return new URL(`/api/records/${prereviewId}`, zenodoApi.origin)
   })
 
-const constructUrlToListOfPrereviewsByUser = (user: User): Effect.Effect<URL, never, Zenodo.ZenodoApi> =>
+const constructUrlToListOfPrereviewsByUser = (user: {
+  orcidId: OrcidId.OrcidId
+  pseudonym: Pseudonym.Pseudonym
+}): Effect.Effect<URL, never, Zenodo.ZenodoApi> =>
   Effect.gen(function* () {
     const zenodoApi = yield* Zenodo.ZenodoApi
     const zenodoCommunityRecordsApiUrl = new URL('/api/communities/prereview-reviews/records', zenodoApi.origin)
     const params = UrlParams.fromInput({
-      q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcid} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
+      q: `metadata.creators.person_or_org.identifiers.identifier:${user.orcidId} metadata.creators.person_or_org.name:"${user.pseudonym}"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

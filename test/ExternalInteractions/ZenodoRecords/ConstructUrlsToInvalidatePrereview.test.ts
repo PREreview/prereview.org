@@ -4,7 +4,6 @@ import { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/ConstructUrlsToInvalidatePrereview.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
 import * as EffectTest from '../../EffectTest.ts'
@@ -15,8 +14,7 @@ describe('constructUrlsToInvalidatePrereview', () => {
       const prereviewId = 12345
       const preprintId = new BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
       const user = {
-        name: NonEmptyString('Josiah Carberry'),
-        orcid: OrcidId('0000-0002-1825-0097'),
+        orcidId: OrcidId('0000-0002-1825-0097'),
         pseudonym: Pseudonym('Orange Panda'),
       }
 

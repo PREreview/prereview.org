@@ -21,6 +21,7 @@ import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../routes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
+import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import { type User, toPersonas } from '../../../user.ts'
@@ -43,7 +44,7 @@ export interface NewPrereview {
   license: 'CC0-1.0' | 'CC-BY-4.0'
   locale: SupportedLocale
   structured: boolean
-  user: User
+  user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
 }
 
 export interface PublishPrereviewEnv {
@@ -174,7 +175,7 @@ const handlePublishForm = ({
           preprint,
           review: renderReview(form, locale),
           structured: form.reviewType === 'questions',
-          user,
+          user: { orcidId: user.orcid, pseudonym: toPersonas(user).pseudonymPersona.pseudonym },
         })),
       ),
     ),

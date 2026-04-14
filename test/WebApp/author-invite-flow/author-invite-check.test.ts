@@ -66,7 +66,7 @@ describe('authorInvite', () => {
         })
         expect(addAuthorToPrereview).toHaveBeenCalledWith(
           invite.review,
-          user,
+          { orcidId: user.orcid, pseudonym: user.pseudonym },
           invite.persona === 'public'
             ? new Personas.PublicPersona({ name: user.name, orcidId: user.orcid })
             : new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),

@@ -24,6 +24,7 @@ import {
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
+import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
@@ -45,12 +46,16 @@ export interface Prereview {
 export interface AddAuthorToPrereviewEnv {
   addAuthorToPrereview: (
     prereview: number,
-    author: User,
+    author: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym },
     persona: Personas.Persona,
   ) => TE.TaskEither<'unavailable', void>
 }
 
-const addAuthorToPrereview = (prereview: number, author: User, persona: Personas.Persona) =>
+const addAuthorToPrereview = (
+  prereview: number,
+  author: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym },
+  persona: Personas.Persona,
+) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) =>
       addAuthorToPrereview(prereview, author, persona),
@@ -157,7 +162,11 @@ const handlePublishForm = ({
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(invite.review, user, persona),
+        addAuthorToPrereview(
+          invite.review,
+          { orcidId: user.orcid, pseudonym: toPersonas(user).pseudonymPersona.pseudonym },
+          persona,
+        ),
         RTE.orElseFirstW(error =>
           match(error)
             .with('unavailable', () => saveAuthorInvite(inviteId, invite))

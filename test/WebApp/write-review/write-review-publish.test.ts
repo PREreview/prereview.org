@@ -139,7 +139,7 @@ describe('writeReviewPublish', () => {
           license: newReview.generativeAiIdeas === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
           locale,
           structured: true,
-          user,
+          user: { orcidId: user.orcid, pseudonym: user.pseudonym },
         })
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
@@ -201,7 +201,7 @@ describe('writeReviewPublish', () => {
           license: newReview.generativeAiIdeas === 'yes' ? 'CC0-1.0' : 'CC-BY-4.0',
           locale,
           structured: false,
-          user,
+          user: { orcidId: user.orcid, pseudonym: user.pseudonym },
         })
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
