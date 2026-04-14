@@ -5,7 +5,7 @@ import type { IndeterminatePreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
-import { EnsureUserIsLoggedIn } from '../../../user.ts'
+import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import {
@@ -37,7 +37,7 @@ export const ChooseYourPersonaPage: ({
 
     const form = ChooseYourPersonaForm.fromPersonaChoice(reviewRequest.personaChoice)
 
-    return MakeResponse({ form, preprint: preprint.id, user, locale })
+    return MakeResponse({ form, preprint: preprint.id, ...toPersonas(user), locale })
   },
   (error, { preprintId }) =>
     Effect.catchTags(error, {
@@ -86,7 +86,7 @@ export const ChooseYourPersonaSubmission: ({
 
         return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ preprintId: preprint.id }) })
       }),
-      InvalidForm: form => Effect.succeed(MakeResponse({ form, preprint: preprint.id, user, locale })),
+      InvalidForm: form => Effect.succeed(MakeResponse({ form, preprint: preprint.id, ...toPersonas(user), locale })),
     })
   },
   (error, { preprintId }) =>

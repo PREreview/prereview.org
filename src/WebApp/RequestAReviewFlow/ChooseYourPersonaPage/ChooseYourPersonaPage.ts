@@ -2,12 +2,12 @@ import { Either, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { preprintReviewsMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { ChooseYourPersonaForm, InvalidForm } from './ChooseYourPersonaForm.ts'
 
@@ -16,12 +16,14 @@ const definition = (text: string) => `<dfn>${text}</dfn>`
 export function ChooseYourPersonaPage({
   form,
   preprint,
-  user,
+  publicPersona,
+  pseudonymPersona,
   locale,
 }: {
   form: ChooseYourPersonaForm
   preprint: PreprintId
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
   locale: SupportedLocale
 }) {
   const hasAnError = form._tag === 'InvalidForm'
@@ -55,7 +57,10 @@ export function ChooseYourPersonaPage({
               <div>
                 <p>
                   ${rawHtml(
-                    t('prereviewPseudonymnExplainer')({ definition, pseudonym: user.pseudonym.replace(' ', '&nbsp;') }),
+                    t('prereviewPseudonymnExplainer')({
+                      definition,
+                      pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
+                    }),
                   )}
                 </p>
 
@@ -92,7 +97,7 @@ export function ChooseYourPersonaPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.name}</span>
+                  <span>${publicPersona.name}</span>
                 </label>
                 <p id="choose-your-persona-tip-public" role="note">${t('weWillLinkRequestToYourOrcid')()}</p>
               </li>
@@ -112,7 +117,7 @@ export function ChooseYourPersonaPage({
                       Match.orElse(() => ''),
                     )}
                   />
-                  <span>${user.pseudonym}</span>
+                  <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="choose-your-persona-tip-pseudonym" role="note">
                   ${t('weWillLinkRequestToOthersThatUseYourPseudonymn')()}
