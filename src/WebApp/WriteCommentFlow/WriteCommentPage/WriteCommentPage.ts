@@ -1,4 +1,4 @@
-import { Array, flow, Match, pipe } from 'effect'
+import { Array, Boolean, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import { getClubName } from '../../../Clubs/index.ts'
@@ -7,17 +7,16 @@ import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { Prereview } from '../../../Prereviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
-import type { User } from '../../../user.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 export const WriteCommentPage = ({
   prereview,
   locale,
-  user,
+  isLoggedIn,
 }: {
   prereview: Prereview
   locale: SupportedLocale
-  user?: User
+  isLoggedIn: boolean
 }) => {
   const t = translate(locale)
 
@@ -150,28 +149,29 @@ export const WriteCommentPage = ({
         )}
       </p>
 
-      ${user
-        ? ''
-        : html`
-            <h2>${t('write-comment-flow', 'beforeStartHeading')()}</h2>
+      ${Boolean.match(isLoggedIn, {
+        onTrue: () => '',
+        onFalse: () => html`
+          <h2>${t('write-comment-flow', 'beforeStartHeading')()}</h2>
 
-            <p>${t('write-comment-flow', 'orcidLogIn')()}</p>
+          <p>${t('write-comment-flow', 'orcidLogIn')()}</p>
 
-            <details>
-              <summary><span>${t('write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
+          <details>
+            <summary><span>${t('write-comment-flow', 'whatIsOrcidHeading')()}</span></summary>
 
-              <div>
-                <p>
-                  ${rawHtml(
-                    t(
-                      'write-comment-flow',
-                      'whatIsOrcid',
-                    )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
-                  )}
-                </p>
-              </div>
-            </details>
-          `}
+            <div>
+              <p>
+                ${rawHtml(
+                  t(
+                    'write-comment-flow',
+                    'whatIsOrcid',
+                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
+                )}
+              </p>
+            </div>
+          </details>
+        `,
+      })}
 
       <a href="${Routes.WriteCommentStartNow.href({ id: prereview.id })}" role="button" draggable="false"
         >${t('forms', 'startButton')()}</a

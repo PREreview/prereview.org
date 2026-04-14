@@ -26,7 +26,7 @@ export const WriteCommentPage = ({
     const prereview = yield* Prereviews.getPrereview(id)
 
     return yield* Option.match(user, {
-      onNone: () => Effect.succeed(MakeResponse({ prereview, locale })),
+      onNone: () => Effect.succeed(MakeResponse({ prereview, locale, isLoggedIn: false })),
       onSome: user =>
         Effect.gen(function* () {
           const getNextExpectedCommandForUser = yield* Comments.GetNextExpectedCommandForUser
@@ -37,7 +37,7 @@ export const WriteCommentPage = ({
             return Response.RedirectResponse({ location: Routes.WriteCommentStartNow.href({ id: prereview.id }) })
           }
 
-          return MakeResponse({ prereview, locale, user })
+          return MakeResponse({ prereview, locale, isLoggedIn: true })
         }),
     })
   }).pipe(

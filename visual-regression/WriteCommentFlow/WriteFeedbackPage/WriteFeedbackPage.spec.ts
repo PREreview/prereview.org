@@ -4,15 +4,12 @@ import { html } from '../../../src/html.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../../src/types/Pseudonym.ts'
-import type { User } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/WriteCommentFlow/WriteCommentPage/WriteCommentPage.ts'
 import { expect, test } from '../../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale })
+  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale, isLoggedIn: false })
 
   const content = await showPage(response)
 
@@ -20,7 +17,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when logged in', async ({ showPage }) => {
-  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale, user })
+  const response = _.WriteCommentPage({ prereview, locale: DefaultLocale, isLoggedIn: true })
 
   const content = await showPage(response)
 
@@ -123,9 +120,3 @@ const prereview = new Prereviews.Prereview({
     <h2>Competing interests</h2>
     <p>The author declares that they have no competing interests.</p>`,
 })
-
-const user = {
-  name: NonEmptyString('Josiah Carberry'),
-  orcid: OrcidId('0000-0002-1825-0097'),
-  pseudonym: Pseudonym('Orange Panda'),
-} satisfies User
