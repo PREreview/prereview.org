@@ -3,15 +3,12 @@ import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../src/types/Pseudonym.ts'
-import type { User } from '../../src/user.ts'
 import { startPage } from '../../src/WebApp/write-review/write-a-prereview-page/write-a-prereview-page.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {
-  const response = startPage(preprint, DefaultLocale)
+  const response = startPage(preprint, DefaultLocale, false)
 
   const content = await showPage(response)
 
@@ -19,7 +16,7 @@ test('content looks right', async ({ showPage }) => {
 })
 
 test('content looks right when logged in', async ({ showPage }) => {
-  const response = startPage(preprint, DefaultLocale, user)
+  const response = startPage(preprint, DefaultLocale, true)
 
   const content = await showPage(response)
 
@@ -58,9 +55,3 @@ const preprint = Preprint({
   },
   url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
 })
-
-const user = {
-  name: NonEmptyString('Josiah Carberry'),
-  orcid: OrcidId('0000-0002-1825-0097'),
-  pseudonym: Pseudonym('Orange Panda'),
-} satisfies User

@@ -53,7 +53,7 @@ export const writeReview = ({
             error =>
               match(error)
                 .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter, locale))
-                .with('no-session', () => startPage(preprint, locale))
+                .with('no-session', () => startPage(preprint, locale, false))
                 .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
                 .exhaustive(),
             state =>
@@ -61,7 +61,7 @@ export const writeReview = ({
                 .with({ form: P.when(E.isRight) }, () =>
                   RedirectResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
                 )
-                .with({ form: P.when(E.isLeft) }, ({ user }) => startPage(preprint, locale, user))
+                .with({ form: P.when(E.isLeft) }, () => startPage(preprint, locale, true))
                 .exhaustive(),
           ),
         ),

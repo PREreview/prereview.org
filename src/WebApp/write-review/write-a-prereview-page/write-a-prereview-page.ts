@@ -1,18 +1,17 @@
 import { isDoi } from 'doi-ts'
-import { Array, flow, pipe } from 'effect'
+import { Array, Boolean, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
-import { P, match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Preprint } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { renderDate } from '../../../time.ts'
-import type { User } from '../../../user.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: User) =>
+export const startPage = (preprint: Preprint, locale: SupportedLocale, isLoggedIn: boolean) =>
   PageResponse({
     title: plainText(translate(locale, 'write-review', 'writeAPrereview')()),
     nav: html`
@@ -107,29 +106,30 @@ export const startPage = (preprint: Preprint, locale: SupportedLocale, user?: Us
         )}
       </p>
 
-      ${user
-        ? ''
-        : html`
-            <h2>${translate(locale, 'write-review', 'beforeStartHeading')()}</h2>
+      ${Boolean.match(isLoggedIn, {
+        onTrue: () => '',
+        onFalse: () => html`
+          <h2>${translate(locale, 'write-review', 'beforeStartHeading')()}</h2>
 
-            <p>${translate(locale, 'write-review', 'orcidLogIn')()}</p>
+          <p>${translate(locale, 'write-review', 'orcidLogIn')()}</p>
 
-            <details>
-              <summary><span>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</span></summary>
+          <details>
+            <summary><span>${translate(locale, 'write-review', 'whatIsOrcidHeading')()}</span></summary>
 
-              <div>
-                <p>
-                  ${rawHtml(
-                    translate(
-                      locale,
-                      'write-review',
-                      'whatIsOrcid',
-                    )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
-                  )}
-                </p>
-              </div>
-            </details>
-          `}
+            <div>
+              <p>
+                ${rawHtml(
+                  translate(
+                    locale,
+                    'write-review',
+                    'whatIsOrcid',
+                  )({ link: text => html`<a href="https://orcid.org/"><dfn>${text}</dfn></a>`.toString() }),
+                )}
+              </p>
+            </div>
+          </details>
+        `,
+      })}
 
       <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
         >${translate(locale, 'forms', 'startButton')()}</a
