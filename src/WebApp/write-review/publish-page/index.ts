@@ -15,7 +15,7 @@ import {
 import { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import { type Html, fixHeadingLevels, html } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type * as Personas from '../../../Personas/index.ts'
+import * as Personas from '../../../Personas/index.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
@@ -67,7 +67,7 @@ export const writeReviewPublish = ({
     FormStoreEnv &
     PublishPrereviewEnv &
     AddToSessionEnv &
-    EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection>,
+    EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Personas.Personas>,
   Response
 > =>
   pipe(
@@ -126,12 +126,19 @@ const decideNextStep = (state: {
       handlePublishForm({ ...state, form: form.right }),
     )
     .with({ form: P.when(E.isRight) }, ({ form, ...state }) =>
-      RT.of(
-        showPublishForm({
-          ...state,
-          persona: toPersonas(state.user)[`${form.right.persona}Persona`],
-          form: form.right,
-        }),
+      pipe(
+        EffectToFpts.toReaderTaskEither(
+          Personas.getPersona({ orcidId: state.user.orcid, persona: form.right.persona }),
+        ),
+        RTE.matchW(
+          () => failureMessage(state.locale),
+          persona =>
+            showPublishForm({
+              ...state,
+              persona,
+              form: form.right,
+            }),
+        ),
       ),
     )
     .exhaustive()
@@ -151,18 +158,31 @@ const handlePublishForm = ({
 }) =>
   pipe(
     deleteForm(user.orcid, preprint.id),
-    RTE.chainReaderTaskKW(() =>
+    RTE.chainW(() =>
       pipe(
-        match(form)
-          .returnType<
-            RT.ReaderTask<EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection>, Option.Option<LanguageCode>>
-          >()
-          .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
-          .with({ reviewType: 'freeform' }, form =>
-            EffectToFpts.toReaderTask(Effect.option(LanguageDetection.detectLanguage(form.review))),
-          )
-          .exhaustive(),
-        RT.map(language => ({
+        RTE.Do,
+        RTE.apS(
+          'language',
+          RTE.rightReaderTask(
+            match(form)
+              .returnType<
+                RT.ReaderTask<
+                  EffectToFpts.EffectEnv<LanguageDetection.LanguageDetection | Personas.Personas>,
+                  Option.Option<LanguageCode>
+                >
+              >()
+              .with({ reviewType: 'questions' }, () => RT.of(localeToIso6391(locale)))
+              .with({ reviewType: 'freeform' }, form =>
+                EffectToFpts.toReaderTask(Effect.option(LanguageDetection.detectLanguage(form.review))),
+              )
+              .exhaustive(),
+          ),
+        ),
+        RTE.apSW(
+          'persona',
+          EffectToFpts.toReaderTaskEither(Personas.getPersona({ orcidId: user.orcid, persona: form.persona })),
+        ),
+        RTE.map(({ language, persona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
           language,
@@ -171,7 +191,7 @@ const handlePublishForm = ({
             .with('no', () => 'CC-BY-4.0' as const)
             .exhaustive(),
           locale,
-          persona: toPersonas(user)[`${form.persona}Persona`],
+          persona,
           preprint,
           review: renderReview(form, locale),
           structured: form.reviewType === 'questions',
