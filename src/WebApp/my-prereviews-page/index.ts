@@ -22,7 +22,12 @@ export const myPrereviews = ({
     RTE.apS('user', RTE.fromEither(RequireLogIn.ensureUserIsLoggedIn(user))),
     RTE.bindW(
       'prereviews',
-      flow(Struct.get('user'), Prereviews.getMyPrereviews, RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews)),
+      flow(
+        Struct.get('user'),
+        Struct.get('orcid'),
+        Prereviews.getMyPrereviews,
+        RTE.chainEitherKW(NoPrereviews.ensureThereArePrereviews),
+      ),
     ),
     RTE.matchW(identity, ({ prereviews, user }) =>
       ListOfPrereviews.ListOfPrereviews({ prereviews, ...toPersonas(user) }),

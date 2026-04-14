@@ -18,10 +18,9 @@ import * as Preprints from '../Preprints/index.ts'
 import { PublicUrl } from '../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { FieldId } from '../types/field.ts'
-import type { Uuid } from '../types/index.ts'
+import type { OrcidId, Uuid } from '../types/index.ts'
 import type { NonEmptyString } from '../types/NonEmptyString.ts'
 import type { ProfileId } from '../types/profile-id.ts'
-import { toPersonas, type User } from '../user.ts'
 import {
   type PreprintPrereview,
   type Prereview,
@@ -48,7 +47,7 @@ export class Prereviews extends Context.Tag('Prereviews')<
       profile: ProfileId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
     getForUser: (
-      user: User,
+      user: OrcidId.OrcidId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
     getRapidPrereviewsForPreprint: (
       id: PreprintId,
@@ -195,11 +194,10 @@ export const layer = Layer.effect(
 
           const loggerEnv = yield* MakeDeprecatedLoggerEnv
 
+          const { pseudonym } = yield* Personas.getPseudonymPersona(user)
+
           return yield* FptsToEffect.readerTaskEither(
-            ZenodoRecords.getPrereviewsForUserFromZenodo({
-              orcidId: user.orcid,
-              pseudonym: toPersonas(user).pseudonymPersona.pseudonym,
-            }),
+            ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
             {
               fetch,
               getPreprintTitle,
