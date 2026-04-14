@@ -24,7 +24,7 @@ import {
   authorInviteMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
-import type { User } from '../../../user.ts'
+import { type User, toPersonas } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -106,7 +106,9 @@ export const authorInvitePersona = ({
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
           .with({ method: P.string }, ({ invite, user, locale }) =>
-            RT.of(personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, user, locale })),
+            RT.of(
+              personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, ...toPersonas(user), locale }),
+            ),
           )
           .exhaustive(),
     ),
@@ -140,7 +142,7 @@ const handlePersonaForm = ({
       error =>
         match(error)
           .with('unavailable', () => havingProblemsPage(locale))
-          .with({ persona: P.any }, form => personaForm({ form, inviteId, user, locale }))
+          .with({ persona: P.any }, form => personaForm({ form, inviteId, ...toPersonas(user), locale }))
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
     ),

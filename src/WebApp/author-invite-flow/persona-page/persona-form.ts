@@ -6,10 +6,10 @@ import type { Uuid } from 'uuid-ts'
 import { hasAnError, type MissingE } from '../../../form.ts'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 import { authorInvitePersonaMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export interface PersonaForm {
@@ -19,12 +19,14 @@ export interface PersonaForm {
 export function personaForm({
   form,
   inviteId,
-  user,
+  publicPersona,
+  pseudonymPersona,
   locale,
 }: {
   form: PersonaForm
   inviteId: Uuid
-  user: User
+  publicPersona: Personas.PublicPersona
+  pseudonymPersona: Personas.PseudonymPersona
   locale: SupportedLocale
 }) {
   const error = hasAnError(form)
@@ -58,7 +60,7 @@ export function personaForm({
                   ${rawHtml(
                     t('pseudonymExplainer')({
                       definition,
-                      userPseudonym: user.pseudonym.replace(' ', '&nbsp;'),
+                      userPseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
                     }),
                   )}
                 </p>
@@ -91,7 +93,7 @@ export function personaForm({
                       .with({ right: 'public' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${user.name}</span>
+                  <span>${publicPersona.name}</span>
                 </label>
                 <p id="persona-tip-public" role="note">${t('weWillLinkYourPrereviewToYourOrcid')()}</p>
               </li>
@@ -106,7 +108,7 @@ export function personaForm({
                       .with({ right: 'pseudonym' }, () => 'checked')
                       .otherwise(() => '')}
                   />
-                  <span>${user.pseudonym}</span>
+                  <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="persona-tip-pseudonym" role="note">${t('weWillOnlyLinkToOtherPseudonymPrereviews')()}</p>
               </li>
