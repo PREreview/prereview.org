@@ -10,6 +10,7 @@ import { Nodemailer } from '../../../ExternalApis/index.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
+import * as Personas from '../../../Personas/index.ts'
 import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
@@ -516,10 +517,10 @@ const publishPrereview = (newPrereview: NewPrereview) =>
                 authorInvite,
                 {
                   ...newPrereview,
-                  author: match(newPrereview.persona)
-                    .with('public', () => newPrereview.user.name)
-                    .with('pseudonym', () => newPrereview.user.pseudonym)
-                    .exhaustive(),
+                  author: Personas.match(newPrereview.persona, {
+                    onPublic: persona => persona.name,
+                    onPseudonym: persona => persona.pseudonym,
+                  }),
                 },
                 newPrereview.locale,
               ),

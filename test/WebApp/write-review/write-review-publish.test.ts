@@ -6,6 +6,7 @@ import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -128,7 +129,10 @@ describe('writeReviewPublish', () => {
         expect(publishPrereview).toHaveBeenCalledWith({
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
-          persona: newReview.persona,
+          persona:
+            newReview.persona === 'public'
+              ? new Personas.PublicPersona({ name: user.name, orcidId: user.orcid })
+              : new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),
           preprint: preprintTitle,
           review: expect.anything(),
           language: localeToIso6391(locale),
@@ -187,7 +191,10 @@ describe('writeReviewPublish', () => {
         expect(publishPrereview).toHaveBeenCalledWith({
           conduct: 'yes',
           otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
-          persona: newReview.persona,
+          persona:
+            newReview.persona === 'public'
+              ? new Personas.PublicPersona({ name: user.name, orcidId: user.orcid })
+              : new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),
           preprint: preprintTitle,
           review: expect.htmlContaining(newReview.review) as never,
           language: expect.anything(),

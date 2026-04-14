@@ -28,6 +28,7 @@ import {
 import { getClubName, getClubNameAndFormerNames } from '../../../src/Clubs/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/legacy-zenodo.ts'
 import { plainText, rawHtml } from '../../../src/html.ts'
+import type * as Personas from '../../../src/Personas/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import { reviewMatch } from '../../../src/routes.ts'
@@ -4031,7 +4032,7 @@ describe('createRecordOnZenodo', () => {
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-        persona: fc.constant('public'),
+        persona: fc.publicPersona(),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
@@ -4071,7 +4072,12 @@ describe('createRecordOnZenodo', () => {
           self: new URL('http://example.com/self'),
         },
         metadata: {
-          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          creators: [
+            {
+              name: (newPrereview.persona as Personas.PublicPersona).name,
+              orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+            },
+          ],
           description: 'Description',
           prereserve_doi: {
             doi: reviewDoi,
@@ -4089,7 +4095,12 @@ describe('createRecordOnZenodo', () => {
           edit: new URL('http://example.com/edit'),
         },
         metadata: {
-          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          creators: [
+            {
+              name: (newPrereview.persona as Personas.PublicPersona).name,
+              orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+            },
+          ],
           description: 'Description',
           doi: reviewDoi,
           title: 'Title',
@@ -4123,8 +4134,8 @@ describe('createRecordOnZenodo', () => {
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                   creators: [
                     {
-                      name: newPrereview.user.name,
-                      orcid: newPrereview.user.orcid,
+                      name: (newPrereview.persona as Personas.PublicPersona).name,
+                      orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
                     },
                     ...match(newPrereview.otherAuthors.length)
                       .with(0, () => [])
@@ -4193,7 +4204,7 @@ ${newPrereview.review.toString()}`,
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-        persona: fc.constant('public'),
+        persona: fc.publicPersona(),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
@@ -4233,7 +4244,12 @@ ${newPrereview.review.toString()}`,
           self: new URL('http://example.com/self'),
         },
         metadata: {
-          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          creators: [
+            {
+              name: (newPrereview.persona as Personas.PublicPersona).name,
+              orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+            },
+          ],
           description: 'Description',
           prereserve_doi: {
             doi: reviewDoi,
@@ -4251,7 +4267,12 @@ ${newPrereview.review.toString()}`,
           edit: new URL('http://example.com/edit'),
         },
         metadata: {
-          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          creators: [
+            {
+              name: (newPrereview.persona as Personas.PublicPersona).name,
+              orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
+            },
+          ],
           description: 'Description',
           doi: reviewDoi,
           title: 'Title',
@@ -4285,8 +4306,8 @@ ${newPrereview.review.toString()}`,
                   title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
                   creators: [
                     {
-                      name: newPrereview.user.name,
-                      orcid: newPrereview.user.orcid,
+                      name: (newPrereview.persona as Personas.PublicPersona).name,
+                      orcid: (newPrereview.persona as Personas.PublicPersona).orcidId,
                     },
                     ...match(newPrereview.otherAuthors.length)
                       .with(0, () => [])
@@ -4359,7 +4380,7 @@ ${newPrereview.review.toString()}`,
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-        persona: fc.constant('pseudonym'),
+        persona: fc.pseudonymPersona(),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
@@ -4447,7 +4468,7 @@ ${newPrereview.review.toString()}`,
                   publication_type: 'peerreview',
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                   creators: [
-                    { name: newPrereview.user.pseudonym },
+                    { name: (newPrereview.persona as Personas.PseudonymPersona).pseudonym },
                     ...match(newPrereview.otherAuthors.length)
                       .with(0, () => [])
                       .with(1, () => [{ name: '1 other author' }])
@@ -4513,7 +4534,7 @@ ${newPrereview.review.toString()}`,
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
         otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-        persona: fc.constant('pseudonym'),
+        persona: fc.pseudonymPersona(),
         preprint: fc.preprintTitle(),
         review: fc.html(),
         language: fc.maybe(fc.languageCode()),
@@ -4601,7 +4622,7 @@ ${newPrereview.review.toString()}`,
                   publication_type: 'peerreview',
                   title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
                   creators: [
-                    { name: newPrereview.user.pseudonym },
+                    { name: (newPrereview.persona as Personas.PseudonymPersona).pseudonym },
                     ...match(newPrereview.otherAuthors.length)
                       .with(0, () => [])
                       .with(1, () => [{ name: '1 other author' }])
@@ -4670,7 +4691,7 @@ ${newPrereview.review.toString()}`,
     fc.record<NewPrereview>({
       conduct: fc.constant('yes'),
       otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
-      persona: fc.constantFrom('public', 'pseudonym'),
+      persona: fc.persona(),
       preprint: fc.preprintTitle(),
       review: fc.html(),
       language: fc.maybe(fc.languageCode()),

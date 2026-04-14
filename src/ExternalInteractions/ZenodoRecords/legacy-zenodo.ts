@@ -38,6 +38,7 @@ import {
 import { type ClubId, getClubByName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
+import * as Personas from '../../Personas/index.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -674,9 +675,10 @@ function createDepositMetadata(
           }”`.toString(),
           creators: pipe(
             Array.of(
-              newPrereview.persona === 'public'
-                ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
-                : { name: newPrereview.user.pseudonym },
+              Personas.match(newPrereview.persona, {
+                onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                onPseudonym: persona => ({ name: persona.pseudonym }),
+              }),
             ),
             Array.appendAll(
               match(newPrereview.otherAuthors.length)

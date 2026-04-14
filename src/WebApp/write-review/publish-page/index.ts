@@ -36,7 +36,7 @@ import { getCompetingInterests, getUseOfAi, publishForm } from './publish-form.t
 export interface NewPrereview {
   conduct: 'yes'
   otherAuthors: ReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
-  persona: 'public' | 'pseudonym'
+  persona: Personas.Persona
   preprint: PreprintTitle
   review: Html
   language: Option.Option<LanguageCode>
@@ -170,7 +170,7 @@ const handlePublishForm = ({
             .with('no', () => 'CC-BY-4.0' as const)
             .exhaustive(),
           locale,
-          persona: form.persona,
+          persona: toPersonas(user)[`${form.persona}Persona`],
           preprint,
           review: renderReview(form, locale),
           structured: form.reviewType === 'questions',
