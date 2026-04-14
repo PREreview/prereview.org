@@ -1,15 +1,12 @@
 import { pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
+import * as Personas from '../../../Personas/index.ts'
 import type { PreprintId } from '../../../Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { profileMatch } from '../../../routes.ts'
 import { ProfileId, type Uuid } from '../../../types/index.ts'
-import type { OrcidId } from '../../../types/OrcidId.ts'
-import { isPseudonym } from '../../../types/Pseudonym.ts'
-import type { User } from '../../../user.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>`
@@ -17,12 +14,10 @@ const visuallyHidden = (s: string) => `<span class="visually-hidden">${s}</span>
 export function CheckYourRequestPage({
   preprint,
   reviewRequest,
-  user,
   locale,
 }: {
   preprint: PreprintId
-  reviewRequest: { personaChoice: 'public' | 'pseudonym'; reviewRequestId: Uuid.Uuid }
-  user: User
+  reviewRequest: { persona: Personas.Persona; reviewRequestId: Uuid.Uuid }
   locale: SupportedLocale
 }) {
   const t = translate(locale, 'request-review-flow')
@@ -44,14 +39,7 @@ export function CheckYourRequestPage({
             <dl class="summary-list">
               <div>
                 <dt><span>${t('publishedName')()}</span></dt>
-                <dd>
-                  ${displayAuthor(
-                    match(reviewRequest.personaChoice)
-                      .with('public', () => user)
-                      .with('pseudonym', () => ({ name: user.pseudonym }))
-                      .exhaustive(),
-                  )}
-                </dd>
+                <dd>${displayAuthor(reviewRequest.persona)}</dd>
                 <dd>
                   <a href="${Routes.RequestAReviewChooseYourPersona.href({ preprintId: preprint })}"
                     >${rawHtml(t('changeName')({ visuallyHidden }))}</a
@@ -75,16 +63,11 @@ export function CheckYourRequestPage({
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
-  if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcid) })}" class="orcid"
+const displayAuthor = Personas.match({
+  onPublic: ({ name, orcidId }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
       >${name}</a
-    >`
-  }
-
-  if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(name) })}">${name}</a>`
-  }
-
-  return name
-}
+    >`,
+  onPseudonym: ({ pseudonym }) =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}">${pseudonym}</a>`,
+})

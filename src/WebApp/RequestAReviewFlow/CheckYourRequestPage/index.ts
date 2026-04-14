@@ -5,7 +5,7 @@ import * as Preprints from '../../../Preprints/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Temporal } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn } from '../../../user.ts'
+import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import {
@@ -35,9 +35,9 @@ export const CheckYourRequestPage: ({
     const reviewRequest = yield* ReviewRequests.getReviewRequestReadyToBePublished({
       requesterId: user.orcid,
       preprintId: preprint.id,
-    })
+    }).pipe(Effect.let('persona', ({ personaChoice }) => toPersonas(user)[`${personaChoice}Persona`]))
 
-    return MakeResponse({ preprint: preprint.id, reviewRequest, user, locale })
+    return MakeResponse({ preprint: preprint.id, reviewRequest, locale })
   },
   (error, { preprintId }) =>
     Effect.catchTags(error, {

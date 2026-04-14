@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
@@ -16,13 +17,11 @@ test('content looks right', async ({ showPage }) => {
   const response = _.CheckYourRequestPage({
     preprint,
     reviewRequest: {
-      personaChoice: 'public',
+      persona: new Personas.PublicPersona({
+        name: NonEmptyString('Josiah Carberry'),
+        orcidId: OrcidId('0000-0002-1825-0097'),
+      }),
       reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
-    },
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
     },
     locale,
   })
@@ -36,13 +35,8 @@ test('content looks right with a pseudonym', async ({ showPage }) => {
   const response = _.CheckYourRequestPage({
     preprint,
     reviewRequest: {
-      personaChoice: 'pseudonym',
+      persona: new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') }),
       reviewRequestId: Uuid.Uuid('1e4959fa-b753-4b00-aece-3851ad7b1488'),
-    },
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
     },
     locale,
   })
