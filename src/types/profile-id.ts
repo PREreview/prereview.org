@@ -1,4 +1,5 @@
-import { Data, Function } from 'effect'
+import { Data, Function, Match } from 'effect'
+import type * as Personas from '../Personas/index.ts'
 import type { OrcidId } from './OrcidId.ts'
 import type { Pseudonym } from './Pseudonym.ts'
 
@@ -11,6 +12,11 @@ export class OrcidProfileId extends Data.TaggedClass('OrcidProfileId')<{
 export class PseudonymProfileId extends Data.TaggedClass('PseudonymProfileId')<{
   pseudonym: Pseudonym
 }> {}
+
+export const forPersona = Match.typeTags<Personas.Persona, ProfileId>()({
+  PublicPersona: ({ orcidId }) => forOrcid(orcidId),
+  PseudonymPersona: ({ pseudonym }) => forPseudonym(pseudonym),
+})
 
 export const forOrcid = (orcid: OrcidId) => new OrcidProfileId({ orcid })
 

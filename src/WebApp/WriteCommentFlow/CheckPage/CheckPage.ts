@@ -42,17 +42,13 @@ export const CheckPage = ({
                   ${Personas.match(persona, {
                     onPublic: persona =>
                       html` <a
-                        href="${format(Routes.profileMatch.formatter, {
-                          profile: ProfileId.forOrcid(persona.orcidId),
-                        })}"
+                        href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
                         class="orcid"
                         >${persona.name}</a
                       >`,
                     onPseudonym: persona =>
                       html` <a
-                        href="${format(Routes.profileMatch.formatter, {
-                          profile: ProfileId.forPseudonym(persona.pseudonym),
-                        })}"
+                        href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
                         >${persona.pseudonym}</a
                       >`,
                   })}

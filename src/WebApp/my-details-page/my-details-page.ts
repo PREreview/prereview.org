@@ -82,14 +82,12 @@ export function createPage({
         <p>${t('my-details', 'onlyYouCanSee')()}</p>
 
         <div class="forward-group">
-          <a
-            href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(publicPersona.orcidId) })}"
-            class="forward"
+          <a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(publicPersona) })}" class="forward"
             ><span>${t('my-details', 'viewPublicProfile')()}</span></a
           >
 
           <a
-            href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonymPersona.pseudonym) })}"
+            href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(pseudonymPersona) })}"
             class="forward"
             ><span>${t('my-details', 'viewPseudonymProfile')()}</span></a
           >

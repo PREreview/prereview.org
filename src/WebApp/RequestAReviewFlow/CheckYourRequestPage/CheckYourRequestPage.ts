@@ -64,10 +64,12 @@ export function CheckYourRequestPage({
 }
 
 const displayAuthor = Personas.match({
-  onPublic: ({ name, orcidId }) =>
-    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(orcidId) })}" class="orcid"
-      >${name}</a
+  onPublic: persona =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+      >${persona.name}</a
     >`,
-  onPseudonym: ({ pseudonym }) =>
-    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(pseudonym) })}">${pseudonym}</a>`,
+  onPseudonym: persona =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      >${persona.pseudonym}</a
+    >`,
 })
