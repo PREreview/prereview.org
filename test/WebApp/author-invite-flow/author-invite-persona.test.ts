@@ -42,6 +42,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite,
           getPrereview,
           saveAuthorInvite,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -72,6 +74,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite: () => TE.right(invite),
           getPrereview: () => TE.right(prereview),
           saveAuthorInvite: () => TE.left('unavailable'),
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -88,6 +92,8 @@ describe('authorInvitePersona', () => {
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.anything(),
       fc.record({
@@ -96,27 +102,34 @@ describe('authorInvitePersona', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the form is invalid', async (inviteId, [user, invite], locale, body, prereview) => {
-      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method: 'POST', user })({
-        getAuthorInvite: () => TE.right(invite),
-        getPrereview: () => TE.right(prereview),
-        saveAuthorInvite: shouldNotBeCalled,
-      })()
+    ])(
+      'when the form is invalid',
+      async (inviteId, [user, invite], publicPersona, pseudonymPersona, locale, body, prereview) => {
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method: 'POST', user })({
+          getAuthorInvite: () => TE.right(invite),
+          getPrereview: () => TE.right(prereview),
+          saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['error-summary.js'],
+        })
+      },
+    )
 
     test.prop([
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.string().filter(method => method !== 'POST'),
       fc.anything(),
@@ -126,28 +139,33 @@ describe('authorInvitePersona', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the form needs submitting', async (inviteId, [user, invite], locale, method, body, prereview) => {
-      const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-      const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+    ])(
+      'when the form needs submitting',
+      async (inviteId, [user, invite], publicPersona, pseudonymPersona, locale, method, body, prereview) => {
+        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
-        getAuthorInvite,
-        getPrereview,
-        saveAuthorInvite: shouldNotBeCalled,
-      })()
+        const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
+          getAuthorInvite,
+          getPrereview,
+          saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
-        status: StatusCodes.OK,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: [],
-      })
-      expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-      expect(getPrereview).toHaveBeenCalledWith(invite.review)
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+        expect(getPrereview).toHaveBeenCalledWith(invite.review)
+      },
+    )
 
     test.prop([
       fc.uuid(),
@@ -160,6 +178,8 @@ describe('authorInvitePersona', () => {
         getAuthorInvite: () => TE.right(invite),
         getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -179,6 +199,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite: () => TE.left('unavailable'),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -205,6 +227,8 @@ describe('authorInvitePersona', () => {
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -227,6 +251,8 @@ describe('authorInvitePersona', () => {
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -246,6 +272,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -263,6 +291,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite: () => TE.right(invite),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -280,6 +310,8 @@ describe('authorInvitePersona', () => {
           getAuthorInvite: () => TE.left('not-found'),
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
+          getPseudonymPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -301,6 +333,8 @@ describe('authorInvitePersona', () => {
         getAuthorInvite: () => TE.right(invite),
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
+        getPseudonymPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({

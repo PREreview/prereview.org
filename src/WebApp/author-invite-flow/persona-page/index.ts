@@ -19,12 +19,18 @@ import { missingE } from '../../../form.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
+  type GetPseudonymPersonaEnv,
+  type GetPublicPersonaEnv,
+  getPseudonymPersona,
+  getPublicPersona,
+} from '../../../persona.ts'
+import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -61,7 +67,7 @@ export const authorInvitePersona = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
+  GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv & GetPublicPersonaEnv & GetPseudonymPersonaEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -106,8 +112,21 @@ export const authorInvitePersona = ({
         match(state)
           .with({ method: 'POST' }, handlePersonaForm)
           .with({ method: P.string }, ({ invite, user, locale }) =>
-            RT.of(
-              personaForm({ form: { persona: E.right(invite.persona) }, inviteId: id, ...toPersonas(user), locale }),
+            pipe(
+              RTE.Do,
+              RTE.apS('publicPersona', getPublicPersona(user.orcid)),
+              RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
+              RTE.matchW(
+                () => havingProblemsPage(locale),
+                ({ publicPersona, pseudonymPersona }) =>
+                  personaForm({
+                    form: { persona: E.right(invite.persona) },
+                    inviteId: id,
+                    publicPersona,
+                    pseudonymPersona,
+                    locale,
+                  }),
+              ),
             ),
           )
           .exhaustive(),
@@ -138,13 +157,24 @@ const handlePersonaForm = ({
       ),
     ),
     RTE.chainFirstW(fields => saveAuthorInvite(inviteId, { ...invite, persona: fields.persona })),
-    RTE.matchW(
+    RTE.matchEW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(locale))
-          .with({ persona: P.any }, form => personaForm({ form, inviteId, ...toPersonas(user), locale }))
+          .with('unavailable', () => RT.of(havingProblemsPage(locale)))
+          .with({ persona: P.any }, form =>
+            pipe(
+              RTE.Do,
+              RTE.apS('publicPersona', getPublicPersona(user.orcid)),
+              RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
+              RTE.matchW(
+                () => havingProblemsPage(locale),
+                ({ publicPersona, pseudonymPersona }) =>
+                  personaForm({ form, inviteId, publicPersona, pseudonymPersona, locale }),
+              ),
+            ),
+          )
           .exhaustive(),
-      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+      () => RT.of(RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) })),
     ),
   )
 
