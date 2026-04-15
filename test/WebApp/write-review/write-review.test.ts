@@ -55,7 +55,14 @@ describe('writeReview', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.supportedLocale(),
-      fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
+      fc
+        .user()
+        .chain(user =>
+          fc.tuple(
+            fc.constant(user),
+            fc.preprint({ authors: fc.tuple(fc.record({ name: fc.string(), orcid: fc.constant(user.orcid) })) }),
+          ),
+        ),
     ])('the user is an author', async (preprintId, locale, [user, preprint]) => {
       const actual = await _.writeReview({ id: preprintId, locale, user })({
         formStore: new Keyv(),

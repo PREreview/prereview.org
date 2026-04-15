@@ -11,12 +11,18 @@ describe('ensureUserIsNotAnAuthor', () => {
     expect(actual).toStrictEqual(E.right(user))
   })
 
-  test.prop([fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) })))])(
-    'when user is an author',
-    ([user, preprint]) => {
-      const actual = _.ensureUserIsNotAnAuthor(preprint)(user)
+  test.prop([
+    fc
+      .user()
+      .chain(user =>
+        fc.tuple(
+          fc.constant(user),
+          fc.preprint({ authors: fc.tuple(fc.record({ name: fc.string(), orcid: fc.constant(user.orcid) })) }),
+        ),
+      ),
+  ])('when user is an author', ([user, preprint]) => {
+    const actual = _.ensureUserIsNotAnAuthor(preprint)(user)
 
-      expect(actual).toStrictEqual(E.left({ type: 'is-author', user }))
-    },
-  )
+    expect(actual).toStrictEqual(E.left({ type: 'is-author', user }))
+  })
 })

@@ -133,7 +133,14 @@ describe('writeReviewReviewType', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
+    fc
+      .user()
+      .chain(user =>
+        fc.tuple(
+          fc.constant(user),
+          fc.preprint({ authors: fc.tuple(fc.record({ name: fc.string(), orcid: fc.constant(user.orcid) })) }),
+        ),
+      ),
     fc.supportedLocale(),
     fc.anything(),
     fc.string(),
