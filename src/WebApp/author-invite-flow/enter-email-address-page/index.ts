@@ -24,6 +24,7 @@ import {
 import { getInput, invalidE, missingE } from '../../../form.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type GetPublicPersonaEnv, getPublicPersona } from '../../../persona.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -33,7 +34,7 @@ import {
 } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -74,6 +75,7 @@ export const authorInviteEnterEmailAddress = ({
     GetContactEmailAddressEnv &
     GetPrereviewEnv &
     GetAuthorInviteEnv &
+    GetPublicPersonaEnv &
     SaveContactEmailAddressEnv &
     VerifyContactEmailAddressForInvitedAuthorEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
@@ -207,17 +209,22 @@ const handleEnterEmailAddressForm = ({
       Match.valueTags({
         VerifiedContactEmailAddress: () => RTE.of(undefined),
         UnverifiedContactEmailAddress: contactEmailAddress =>
-          verifyContactEmailAddressForInvitedAuthor({
-            name: toPersonas(user).publicPersona.name,
-            emailAddress: contactEmailAddress,
-            authorInvite: inviteId,
-          }),
+          pipe(
+            getPublicPersona(user.orcid),
+            RTE.chainW(publicPersona =>
+              verifyContactEmailAddressForInvitedAuthor({
+                name: publicPersona.name,
+                emailAddress: contactEmailAddress,
+                authorInvite: inviteId,
+              }),
+            ),
+          ),
       }),
     ),
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(locale))
+          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
           .with({ useInvitedAddress: P.any }, form =>
             enterEmailAddressForm({
               form,

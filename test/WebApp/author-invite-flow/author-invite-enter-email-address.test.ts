@@ -61,6 +61,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite,
           getContactEmailAddress,
           getPrereview,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -84,6 +85,7 @@ describe('authorInviteEnterEmailAddress', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.publicPersona(),
         fc.supportedLocale(),
         fc.emailAddress(),
         fc.record({
@@ -96,7 +98,16 @@ describe('authorInviteEnterEmailAddress', () => {
         fc.uuid(),
       ])(
         'using a different email address',
-        async (inviteId, [user, invite], locale, otherEmailAddress, prereview, contactEmailAddress, uuid) => {
+        async (
+          inviteId,
+          [user, invite],
+          publicPersona,
+          locale,
+          otherEmailAddress,
+          prereview,
+          contactEmailAddress,
+          uuid,
+        ) => {
           const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
           const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
             TE.fromEither(contactEmailAddress),
@@ -120,6 +131,7 @@ describe('authorInviteEnterEmailAddress', () => {
             getAuthorInvite,
             getContactEmailAddress,
             getPrereview,
+            getPublicPersona: () => TE.right(publicPersona),
             saveContactEmailAddress,
             verifyContactEmailAddressForInvitedAuthor,
           })()
@@ -137,7 +149,7 @@ describe('authorInviteEnterEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
           )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
-            name: user.name,
+            name: publicPersona.name,
             emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })
@@ -149,6 +161,7 @@ describe('authorInviteEnterEmailAddress', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.publicPersona(),
         fc.supportedLocale(),
         fc.emailAddress(),
         fc.record({
@@ -161,7 +174,16 @@ describe('authorInviteEnterEmailAddress', () => {
         fc.uuid(),
       ])(
         "ther verification email can't be sent",
-        async (inviteId, [user, invite], locale, otherEmailAddress, prereview, contactEmailAddress, uuid) => {
+        async (
+          inviteId,
+          [user, invite],
+          publicPersona,
+          locale,
+          otherEmailAddress,
+          prereview,
+          contactEmailAddress,
+          uuid,
+        ) => {
           const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
             TE.right(undefined),
           )
@@ -180,6 +202,7 @@ describe('authorInviteEnterEmailAddress', () => {
             getAuthorInvite: () => TE.right(invite),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPrereview: () => TE.right(prereview),
+            getPublicPersona: () => TE.right(publicPersona),
             saveContactEmailAddress,
             verifyContactEmailAddressForInvitedAuthor,
           })()
@@ -197,7 +220,7 @@ describe('authorInviteEnterEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
           )
           expect(verifyContactEmailAddressForInvitedAuthor).toHaveBeenCalledWith({
-            name: user.name,
+            name: publicPersona.name,
             emailAddress: new UnverifiedContactEmailAddress({ value: otherEmailAddress, verificationToken: uuid }),
             authorInvite: inviteId,
           })
@@ -230,6 +253,7 @@ describe('authorInviteEnterEmailAddress', () => {
             getAuthorInvite: () => TE.right(invite),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPrereview: () => TE.right(prereview),
+            getPublicPersona: shouldNotBeCalled,
             saveContactEmailAddress: () => TE.left('unavailable'),
             verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
           })()
@@ -272,6 +296,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -312,6 +337,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite,
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -351,6 +377,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -375,6 +402,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
       })()
@@ -397,6 +425,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.left('unavailable'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -426,6 +455,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
       })()
@@ -451,6 +481,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
       })()
@@ -473,6 +504,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -493,6 +525,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -513,6 +546,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.left('not-found'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
         })()
@@ -537,6 +571,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForInvitedAuthor: shouldNotBeCalled,
       })()
