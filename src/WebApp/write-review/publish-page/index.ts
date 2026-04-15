@@ -24,7 +24,7 @@ import type { EmailAddress } from '../../../types/EmailAddress.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
 import { localeToIso6391 } from '../../../types/iso639.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import type { AddToSessionEnv } from '../../session.ts'
@@ -182,7 +182,8 @@ const handlePublishForm = ({
           'persona',
           EffectToFpts.toReaderTaskEither(Personas.getPersona({ orcidId: user.orcid, persona: form.persona })),
         ),
-        RTE.map(({ language, persona }) => ({
+        RTE.apSW('pseudonymPersona', EffectToFpts.toReaderTaskEither(Personas.getPseudonymPersona(user.orcid))),
+        RTE.map(({ language, persona, pseudonymPersona }) => ({
           conduct: form.conduct,
           otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
           language,
@@ -195,7 +196,7 @@ const handlePublishForm = ({
           preprint,
           review: renderReview(form, locale),
           structured: form.reviewType === 'questions',
-          user: { orcidId: user.orcid, pseudonym: toPersonas(user).pseudonymPersona.pseudonym },
+          user: { orcidId: user.orcid, pseudonym: pseudonymPersona.pseudonym },
         })),
       ),
     ),
