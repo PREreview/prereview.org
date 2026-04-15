@@ -1,9 +1,10 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
 import { Locale } from '../../../Context.ts'
+import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
+import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
@@ -18,7 +19,7 @@ export const ChoosePersonaPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Locale
+  Comments.GetComment | Personas.Personas | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -33,34 +34,57 @@ export const ChoosePersonaPage = ({
 
     const locale = yield* Locale
 
-    return pipe(
+    return yield* pipe(
       Match.value(comment),
       Match.tag('CommentInProgress', comment =>
-        MakeResponse({
-          commentId,
-          form: ChoosePersonaForm.fromComment(comment),
-          locale,
-          ...toPersonas(user),
-        }),
+        Effect.andThen(
+          Effect.all(
+            {
+              publicPersona: Personas.getPublicPersona(user.orcid),
+              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+            },
+            { concurrency: 'inherit' },
+          ),
+          ({ publicPersona, pseudonymPersona }) =>
+            MakeResponse({
+              commentId,
+              form: ChoosePersonaForm.fromComment(comment),
+              locale,
+              publicPersona,
+              pseudonymPersona,
+            }),
+        ),
       ),
       Match.tag('CommentReadyForPublishing', comment =>
-        MakeResponse({
-          commentId,
-          form: ChoosePersonaForm.fromComment(comment),
-          locale,
-          ...toPersonas(user),
-        }),
+        Effect.andThen(
+          Effect.all(
+            {
+              publicPersona: Personas.getPublicPersona(user.orcid),
+              pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+            },
+            { concurrency: 'inherit' },
+          ),
+          ({ publicPersona, pseudonymPersona }) =>
+            MakeResponse({
+              commentId,
+              form: ChoosePersonaForm.fromComment(comment),
+              locale,
+              publicPersona,
+              pseudonymPersona,
+            }),
+        ),
       ),
       Match.tag('CommentBeingPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) }),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublishing.href({ commentId }) })),
       ),
       Match.tag('CommentPublished', () =>
-        Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) }),
+        Effect.succeed(Response.RedirectResponse({ location: Routes.WriteCommentPublished.href({ commentId }) })),
       ),
       Match.exhaustive,
     )
   }).pipe(
     Effect.catchTags({
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentChoosePersona.href({ commentId }) })),
@@ -76,7 +100,11 @@ export const ChoosePersonaSubmission = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Comments.HandleCommentCommand | Comments.GetNextExpectedCommandForUserOnAComment | Locale
+  | Comments.GetComment
+  | Comments.HandleCommentCommand
+  | Comments.GetNextExpectedCommandForUserOnAComment
+  | Personas.Personas
+  | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -118,13 +146,22 @@ export const ChoosePersonaSubmission = ({
               }),
             ),
             Match.tag('InvalidForm', form =>
-              Effect.succeed(
-                MakeResponse({
-                  commentId,
-                  form,
-                  locale,
-                  ...toPersonas(user),
-                }),
+              Effect.andThen(
+                Effect.all(
+                  {
+                    publicPersona: Personas.getPublicPersona(user.orcid),
+                    pseudonymPersona: Personas.getPseudonymPersona(user.orcid),
+                  },
+                  { concurrency: 'inherit' },
+                ),
+                ({ publicPersona, pseudonymPersona }) =>
+                  MakeResponse({
+                    commentId,
+                    form,
+                    locale,
+                    publicPersona,
+                    pseudonymPersona,
+                  }),
               ),
             ),
             Match.exhaustive,
@@ -144,6 +181,7 @@ export const ChoosePersonaSubmission = ({
       CommentHasNotBeenStarted: () => HavingProblemsPage,
       CommentIsBeingPublished: () => HavingProblemsPage,
       CommentWasAlreadyPublished: () => HavingProblemsPage,
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>

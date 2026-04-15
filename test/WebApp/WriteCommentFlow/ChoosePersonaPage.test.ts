@@ -1,8 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Either, Equal } from 'effect'
+import { Effect, Either, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -20,8 +21,10 @@ describe('ChoosePersonaPage', () => {
       fc
         .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
-    ])('when the comment is in progress', (commentId, [comment, user], locale) =>
+    ])('when the comment is in progress', (commentId, [comment, user], publicPersona, pseudonymPersona, locale) =>
       Effect.gen(function* () {
         const actual = yield* _.ChoosePersonaPage({ commentId })
 
@@ -38,6 +41,12 @@ describe('ChoosePersonaPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(
+          Layer.mock(Personas.Personas, {
+            getPublicPersona: () => Effect.succeed(publicPersona),
+            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+          }),
+        ),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -61,6 +70,7 @@ describe('ChoosePersonaPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -84,6 +94,7 @@ describe('ChoosePersonaPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -106,6 +117,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -132,6 +144,7 @@ describe('ChoosePersonaPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -154,6 +167,7 @@ describe('ChoosePersonaPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -171,6 +185,7 @@ describe('ChoosePersonaPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       EffectTest.run,
     ),
   )
@@ -217,6 +232,7 @@ describe('ChoosePersonaSubmission', () => {
             Effect.provideService(Locale, locale),
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provide(Layer.mock(Personas.Personas, {})),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,
           ),
@@ -247,6 +263,7 @@ describe('ChoosePersonaSubmission', () => {
             Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
             Effect.provideService(Comments.HandleCommentCommand, () => error),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+            Effect.provide(Layer.mock(Personas.Personas, {})),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,
           ),
@@ -258,6 +275,8 @@ describe('ChoosePersonaSubmission', () => {
         fc
           .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.supportedLocale(),
         fc.oneof(
           fc.record(
@@ -266,7 +285,7 @@ describe('ChoosePersonaSubmission', () => {
           ),
           fc.anything().filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'persona'))),
         ),
-      ])("when there isn't a persona", (commentId, [comment, user], locale, body) =>
+      ])("when there isn't a persona", (commentId, [comment, user], publicPersona, pseudonymPersona, locale, body) =>
         Effect.gen(function* () {
           const actual = yield* _.ChoosePersonaSubmission({ body, commentId })
 
@@ -285,6 +304,12 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provide(
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => Effect.succeed(publicPersona),
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+            }),
+          ),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -312,6 +337,7 @@ describe('ChoosePersonaSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -338,6 +364,7 @@ describe('ChoosePersonaSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -362,6 +389,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -391,6 +419,7 @@ describe('ChoosePersonaSubmission', () => {
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
         Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -415,6 +444,7 @@ describe('ChoosePersonaSubmission', () => {
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
           Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
           Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -434,6 +464,7 @@ describe('ChoosePersonaSubmission', () => {
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
       Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
       Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       EffectTest.run,
     ),
   )
