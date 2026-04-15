@@ -4,7 +4,6 @@ import { Effect } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import * as _ from '../../src/WebApp/LogInDemoUser.ts'
 import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
@@ -16,11 +15,7 @@ describe('LogInDemoUser', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'ForceLogInResponse',
-        user: {
-          name: NonEmptyString('Josiah Carberry'),
-          orcid: '0000-0002-1825-0097',
-          pseudonym: 'Orange Panda',
-        },
+        user: { orcid: '0000-0002-1825-0097' },
       })
     }).pipe(
       Effect.provideService(Locale, locale),

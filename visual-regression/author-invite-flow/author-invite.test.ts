@@ -7,9 +7,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { Prereview } from '../../src/Prereviews/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import { authorInvite } from '../../src/WebApp/author-invite-flow/index.ts'
 import { expect, test } from '../base.ts'
 
@@ -72,11 +70,7 @@ test('content looks right when logged in', async ({ showPage }) => {
   const response = await authorInvite({
     id: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
     locale: DefaultLocale,
-    user: {
-      name: NonEmptyString('Josiah Carberry'),
-      orcid: OrcidId('0000-0002-1825-0097'),
-      pseudonym: Pseudonym('Orange Panda'),
-    },
+    user: { orcid: OrcidId('0000-0002-1825-0097') },
   })({
     getAuthorInvite: () =>
       TE.right({ status: 'open', emailAddress: EmailAddress('jcarberry@example.com'), review: 1234 }),

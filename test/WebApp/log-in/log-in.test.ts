@@ -98,131 +98,65 @@ describe('LogOut', () => {
 })
 
 describe('authenticate', () => {
-  describe('when the state contains a valid referer', () => {
-    test.prop([
-      fc.string(),
-      fc.url(),
-      fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
-      fc.supportedLocale(),
-      fc.record({
-        access_token: fc.string(),
-        token_type: fc.string(),
-        name: fc.nonEmptyString(),
-        orcid: fc.orcidId(),
-      }),
-      fc.pseudonym(),
-      fc.string(),
-      fc.cookieName(),
-      fc.uuid(),
-      fc.string(),
-    ])(
-      'when there is a name',
-      (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, sessionId, signedSessionId) =>
-        Effect.gen(function* () {
-          const sessionStore = new Keyv()
+  test.prop([
+    fc.string(),
+    fc.url(),
+    fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
+    fc.supportedLocale(),
+    fc.record({
+      access_token: fc.string(),
+      token_type: fc.string(),
+      name: fc.string(),
+      orcid: fc.orcidId(),
+    }),
+    fc.pseudonym(),
+    fc.string(),
+    fc.cookieName(),
+    fc.uuid(),
+    fc.string(),
+  ])(
+    'when the state contains a valid referer',
+    (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, sessionId, signedSessionId) =>
+      Effect.gen(function* () {
+        const sessionStore = new Keyv()
 
-          const actual = yield* pipe(
-            _.authenticate(code, referer.href),
-            Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-          )
+        const actual = yield* pipe(
+          _.authenticate(code, referer.href),
+          Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+        )
 
-          const sessions = yield* all(sessionStore.iterator!(undefined))
+        const sessions = yield* all(sessionStore.iterator!(undefined))
 
-          expect(sessions).toStrictEqual([
-            [sessionId, { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
-          ])
-          expect(actual).toStrictEqual(
-            HttpServerResponse.redirect(referer.href, {
-              status: StatusCodes.Found,
-              cookies: Cookies.fromIterable([
-                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
-              ]),
-            }),
-          )
-        }).pipe(
-          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
-            fetchMock
-              .createInstance()
-              .postOnce(orcidOauth.tokenUrl.href, {
-                status: StatusCodes.OK,
-                body: accessToken,
-              })
-              .fetchHandler(...args),
-          ),
-          Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
-          Effect.provideService(_.IsUserBlocked, () => false),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(OrcidOauth, orcidOauth),
-          Effect.provideService(PublicUrl, new URL('/', referer)),
-          Effect.provideService(SessionSecret, Redacted.make(secret)),
-          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
-          EffectTest.run,
+        expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
+        expect(actual).toStrictEqual(
+          HttpServerResponse.redirect(referer.href, {
+            status: StatusCodes.Found,
+            cookies: Cookies.fromIterable([
+              Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
+            ]),
+          }),
+        )
+      }).pipe(
+        Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
+        Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+          fetchMock
+            .createInstance()
+            .postOnce(orcidOauth.tokenUrl.href, {
+              status: StatusCodes.OK,
+              body: accessToken,
+            })
+            .fetchHandler(...args),
         ),
-    )
-
-    test.prop([
-      fc.string(),
-      fc.url(),
-      fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
-      fc.supportedLocale(),
-      fc.record({
-        access_token: fc.string(),
-        token_type: fc.string(),
-        name: fc.string({ unit: fc.whiteSpaceCharacter() }),
-        orcid: fc.orcidId(),
-      }),
-      fc.pseudonym(),
-      fc.string(),
-      fc.cookieName(),
-      fc.uuid(),
-      fc.string(),
-    ])(
-      "when there isn't a name",
-      (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, sessionId, signedSessionId) =>
-        Effect.gen(function* () {
-          const sessionStore = new Keyv()
-
-          const actual = yield* pipe(
-            _.authenticate(code, referer.href),
-            Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-          )
-
-          const sessions = yield* all(sessionStore.iterator!(undefined))
-
-          expect(sessions).toStrictEqual([
-            [sessionId, { user: { name: `PREreviewer ${accessToken.orcid}`, orcid: accessToken.orcid, pseudonym } }],
-          ])
-          expect(actual).toStrictEqual(
-            HttpServerResponse.redirect(referer.href, {
-              status: StatusCodes.Found,
-              cookies: Cookies.fromIterable([
-                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
-              ]),
-            }),
-          )
-        }).pipe(
-          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
-            fetchMock
-              .createInstance()
-              .postOnce(orcidOauth.tokenUrl.href, {
-                status: StatusCodes.OK,
-                body: accessToken,
-              })
-              .fetchHandler(...args),
-          ),
-          Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
-          Effect.provideService(_.IsUserBlocked, () => false),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(OrcidOauth, orcidOauth),
-          Effect.provideService(PublicUrl, new URL('/', referer)),
-          Effect.provideService(SessionSecret, Redacted.make(secret)),
-          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
-          EffectTest.run,
-        ),
-    )
-  })
+        Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
+        Effect.provideService(_.IsUserBlocked, () => false),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(OrcidOauth, orcidOauth),
+        Effect.provideService(PublicUrl, new URL('/', referer)),
+        Effect.provideService(SessionSecret, Redacted.make(secret)),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
+        EffectTest.run,
+      ),
+  )
 
   test.prop([
     fc.string(),
@@ -370,17 +304,17 @@ describe('authenticate', () => {
     ) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
+        const getPseudonym = jest.fn<typeof _.GetPseudonym.Service>(_ => Effect.succeed(pseudonym))
 
         const actual = yield* pipe(
           _.authenticate(code, state),
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+          Effect.provideService(_.GetPseudonym, getPseudonym),
         )
 
         const sessions = yield* all(sessionStore.iterator!(undefined))
 
-        expect(sessions).toStrictEqual([
-          [sessionId, { user: { name: expect.anything(), orcid: accessToken.orcid, pseudonym } }],
-        ])
+        expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
         expect(actual).toStrictEqual(
           HttpServerResponse.redirect(Routes.HomePage, {
             status: StatusCodes.Found,
@@ -390,6 +324,7 @@ describe('authenticate', () => {
             ]),
           }),
         )
+        expect(getPseudonym).toHaveBeenCalledWith({ name: accessToken.name, orcid: accessToken.orcid })
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
         Effect.provideService(FetchHttpClient.Fetch, (...args) =>
@@ -398,7 +333,6 @@ describe('authenticate', () => {
             .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
             .fetchHandler(...args),
         ),
-        Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
         Effect.provideService(OrcidOauth, orcidOauth),

@@ -18,7 +18,7 @@ import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../../publ
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
-import { NonEmptyString, Uuid } from '../../types/index.ts'
+import { Uuid } from '../../types/index.ts'
 import { type OrcidId, isOrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SessionId, newSessionForUser } from '../../user.ts'
@@ -134,19 +134,14 @@ export const authenticate = Effect.fn(
         ),
     })
 
-    const pseudonym = yield* Effect.tapError(getPseudonym(user), () => Effect.logWarning('Unable to get pseudonym'))
+    yield* Effect.tapError(getPseudonym({ name: user.name, orcid: user.orcid }), () =>
+      Effect.logWarning('Unable to get pseudonym'),
+    )
 
     const sessionId = yield* Uuid.v4()
 
     yield* pipe(
-      {
-        ...user,
-        name: NonEmptyString.isNonEmptyString(user.name)
-          ? user.name
-          : NonEmptyString.NonEmptyString(`PREreviewer ${user.orcid}`),
-        pseudonym,
-      },
-      newSessionForUser,
+      newSessionForUser({ orcid: user.orcid }),
       session => Effect.tryPromise(() => store.set(sessionId, session)),
       Effect.tapError(error => Effect.logError('Unable to store new session').pipe(Effect.annotateLogs({ error }))),
     )

@@ -1521,11 +1521,7 @@ export const pseudonymPersona = (): fc.Arbitrary<Personas.PseudonymPersona> =>
 export const persona = (): fc.Arbitrary<Personas.Persona> => fc.oneof(publicPersona(), pseudonymPersona())
 
 export const user = ({ orcid: userOrcid }: { orcid?: fc.Arbitrary<User['orcid']> } = {}): fc.Arbitrary<User> =>
-  fc.record({
-    name: nonEmptyString(),
-    orcid: userOrcid ?? orcidId(),
-    pseudonym: pseudonym(),
-  })
+  fc.record({ orcid: userOrcid ?? orcidId() })
 
 export const userOnboarding = ({
   seenMyDetailsPage,

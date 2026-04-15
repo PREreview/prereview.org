@@ -2,19 +2,10 @@ import { Context, Data, Effect, flow, Record, Schema } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import * as Personas from './Personas/index.ts'
-import { NonEmptyString, OrcidId, Pseudonym } from './types/index.ts'
+import { OrcidId } from './types/index.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 
 export type User = C.TypeOf<typeof UserC>
-
-/** @deprecated */
-export const toPersonas = (
-  user: User,
-): { publicPersona: Personas.PublicPersona; pseudonymPersona: Personas.PseudonymPersona } => ({
-  publicPersona: new Personas.PublicPersona({ name: user.name, orcidId: user.orcid }),
-  pseudonymPersona: new Personas.PseudonymPersona({ pseudonym: user.pseudonym }),
-})
 
 export class LoggedInUser extends Context.Tag('User')<LoggedInUser, User>() {}
 
@@ -23,15 +14,11 @@ export class SessionId extends Context.Tag('SessionId')<SessionId, string>() {}
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 export const UserC = C.struct({
-  name: NonEmptyString.NonEmptyStringC,
   orcid: OrcidC,
-  pseudonym: Pseudonym.PseudonymC,
 })
 
 export const UserSchema = Schema.Struct({
-  name: NonEmptyString.NonEmptyStringSchema,
   orcid: OrcidId.OrcidIdSchema,
-  pseudonym: Pseudonym.PseudonymSchema,
 })
 
 export const newSessionForUser: (user: User) => JsonRecord = flow(UserC.encode, user => Record.singleton('user', user))
