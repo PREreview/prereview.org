@@ -14,6 +14,8 @@ describe('myDetails', () => {
     describe('when the details can be loaded', () => {
       test.prop([
         fc.user(),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(true) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -29,6 +31,8 @@ describe('myDetails', () => {
         'when the user has visited before',
         async (
           user,
+          publicPersona,
+          pseudonymPersona,
           locale,
           userOnboarding,
           orcidToken,
@@ -53,6 +57,8 @@ describe('myDetails', () => {
             getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
             saveUserOnboarding: shouldNotBeCalled,
+            getPublicPersona: () => TE.right(publicPersona),
+            getPseudonymPersona: () => TE.right(pseudonymPersona),
           })()
 
           expect(actual).toStrictEqual({
@@ -70,6 +76,8 @@ describe('myDetails', () => {
 
       test.prop([
         fc.user(),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -85,6 +93,8 @@ describe('myDetails', () => {
         "when the user hasn't visited before",
         async (
           user,
+          publicPersona,
+          pseudonymPersona,
           locale,
           userOnboarding,
           orcidToken,
@@ -111,6 +121,8 @@ describe('myDetails', () => {
             getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
             saveUserOnboarding,
+            getPublicPersona: () => TE.right(publicPersona),
+            getPseudonymPersona: () => TE.right(pseudonymPersona),
           })()
 
           expect(actual).toStrictEqual({
@@ -123,12 +135,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(saveUserOnboarding).toHaveBeenCalledWith(user.orcid, { seenMyDetailsPage: true })
+          expect(saveUserOnboarding).toHaveBeenCalledWith(publicPersona.orcidId, { seenMyDetailsPage: true })
         },
       )
 
       test.prop([
         fc.user(),
+        fc.publicPersona(),
+        fc.pseudonymPersona(),
         fc.supportedLocale(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -144,6 +158,8 @@ describe('myDetails', () => {
         'when the user onboarding cannot be updated',
         async (
           user,
+          publicPersona,
+          pseudonymPersona,
           locale,
           userOnboarding,
           orcidToken,
@@ -168,6 +184,8 @@ describe('myDetails', () => {
             getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
             saveUserOnboarding: () => TE.left('unavailable'),
+            getPublicPersona: () => TE.right(publicPersona),
+            getPseudonymPersona: () => TE.right(pseudonymPersona),
           })()
 
           expect(actual).toStrictEqual({
@@ -184,6 +202,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -198,6 +218,8 @@ describe('myDetails', () => {
       'when the user onboarding cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         orcidToken,
         avatar,
@@ -221,6 +243,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.left('unavailable'),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -236,6 +260,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.url()),
@@ -250,6 +276,8 @@ describe('myDetails', () => {
       'when the ORCID token cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         avatar,
@@ -273,6 +301,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -288,6 +318,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -302,6 +334,8 @@ describe('myDetails', () => {
       'when the Slack user cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -325,6 +359,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -340,6 +376,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -354,6 +392,8 @@ describe('myDetails', () => {
       'when the contact email address cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -377,6 +417,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -392,6 +434,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -406,6 +450,8 @@ describe('myDetails', () => {
       'when being open for requests is unavailable',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -429,6 +475,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.left('unavailable'),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -444,6 +492,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -458,6 +508,8 @@ describe('myDetails', () => {
       'when the career stage cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -481,6 +533,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -496,6 +550,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -510,6 +566,8 @@ describe('myDetails', () => {
       'when the research interests cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -533,6 +591,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -548,6 +608,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -562,6 +624,8 @@ describe('myDetails', () => {
       'when the location cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -585,6 +649,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -600,6 +666,8 @@ describe('myDetails', () => {
 
     test.prop([
       fc.user(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found'), fc.orcidToken()),
@@ -614,6 +682,8 @@ describe('myDetails', () => {
       'when the languages cannot be loaded',
       async (
         user,
+        publicPersona,
+        pseudonymPersona,
         locale,
         userOnboarding,
         orcidToken,
@@ -637,6 +707,8 @@ describe('myDetails', () => {
           getUserOnboarding: () => TE.right(userOnboarding),
           isOpenForRequests: () => TE.fromEither(isOpenForRequests),
           saveUserOnboarding: shouldNotBeCalled,
+          getPublicPersona: () => TE.right(publicPersona),
+          getPseudonymPersona: () => TE.right(pseudonymPersona),
         })()
 
         expect(actual).toStrictEqual({
@@ -664,6 +736,8 @@ describe('myDetails', () => {
       getUserOnboarding: shouldNotBeCalled,
       isOpenForRequests: shouldNotBeCalled,
       saveUserOnboarding: shouldNotBeCalled,
+      getPublicPersona: shouldNotBeCalled,
+      getPseudonymPersona: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({

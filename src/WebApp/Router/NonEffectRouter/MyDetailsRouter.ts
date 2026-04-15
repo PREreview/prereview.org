@@ -323,6 +323,7 @@ export const MyDetailsRouter = pipe(
         fetch: env.fetch,
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
         getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
+        getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
         getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,

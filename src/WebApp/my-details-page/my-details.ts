@@ -1,7 +1,7 @@
 import { Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
+import { match, P } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
 import { maybeGetContactEmailAddress } from '../../contact-email-address.ts'
@@ -11,11 +11,12 @@ import { maybeGetLanguages } from '../../languages.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { maybeGetLocation } from '../../location.ts'
 import { maybeGetOrcidToken } from '../../orcid-token.ts'
+import { getPseudonymPersona, getPublicPersona } from '../../persona.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'
 import { getUserOnboarding, saveUserOnboarding } from '../../user-onboarding.ts'
-import { toPersonas, type User } from '../../user.ts'
+import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { LogInResponse } from '../Response/index.ts'
 import { createPage } from './my-details-page.ts'
@@ -27,8 +28,10 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainW(user =>
       pipe(
-        RTE.of(toPersonas(user)),
+        RTE.Do,
         RTE.let('locale', () => locale),
+        RTE.apSW('publicPersona', getPublicPersona(user.orcid)),
+        RTE.apSW('pseudonymPersona', getPseudonymPersona(user.orcid)),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
         RTE.apSW('orcidToken', pipe(maybeGetOrcidToken(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('avatar', pipe(maybeGetAvatar(user.orcid), RTE.map(Option.fromNullable))),
@@ -50,7 +53,7 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage(locale))
+          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
           .exhaustive(),
       createPage,
     ),
