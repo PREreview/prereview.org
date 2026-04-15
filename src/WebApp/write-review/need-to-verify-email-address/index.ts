@@ -11,6 +11,7 @@ import {
   verifyContactEmailAddressForReview,
 } from '../../../contact-email-address.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type GetPublicPersonaEnv, getPublicPersona } from '../../../persona.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import {
@@ -18,7 +19,7 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../../../routes.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
   FlashMessageResponse,
@@ -40,7 +41,11 @@ export const writeReviewNeedToVerifyEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPreprintTitleEnv & FormStoreEnv & VerifyContactEmailAddressForReviewEnv,
+  GetContactEmailAddressEnv &
+    GetPreprintTitleEnv &
+    GetPublicPersonaEnv &
+    FormStoreEnv &
+    VerifyContactEmailAddressForReviewEnv,
   PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -73,7 +78,7 @@ export const writeReviewNeedToVerifyEmailAddress = ({
               match(state)
                 .returnType<
                   RT.ReaderTask<
-                    VerifyContactEmailAddressForReviewEnv,
+                    VerifyContactEmailAddressForReviewEnv & GetPublicPersonaEnv,
                     PageResponse | RedirectResponse | FlashMessageResponse | StreamlinePageResponse
                   >
                 >()
@@ -114,7 +119,10 @@ const resendVerificationEmail = ({
   user: User
 }) =>
   pipe(
-    verifyContactEmailAddressForReview(toPersonas(user).publicPersona.name, contactEmailAddress, preprint.id),
+    getPublicPersona(user.orcid),
+    RTE.chainW(publicPersona =>
+      verifyContactEmailAddressForReview(publicPersona.name, contactEmailAddress, preprint.id),
+    ),
     RTE.matchW(
       () => havingProblemsPage(locale),
       () =>

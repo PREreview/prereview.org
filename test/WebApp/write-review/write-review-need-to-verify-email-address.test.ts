@@ -35,6 +35,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
 
@@ -64,6 +65,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
 
@@ -84,11 +86,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     fc.preprintTitle(),
     fc.form(),
     fc.user(),
+    fc.publicPersona(),
     fc.supportedLocale(),
     fc.unverifiedContactEmailAddress(),
   ])(
     'resending verification email',
-    async (preprintId, preprintTitle, newReview, user, locale, contactEmailAddress) => {
+    async (preprintId, preprintTitle, newReview, user, publicPersona, locale, contactEmailAddress) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const verifyContactEmailAddressForReview = jest.fn<
@@ -99,6 +102,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: () => TE.right(publicPersona),
         verifyContactEmailAddressForReview,
       })()
 
@@ -107,7 +111,11 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         location: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
         message: 'verify-contact-email-resend',
       })
-      expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(user.name, contactEmailAddress, preprintTitle.id)
+      expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
+        publicPersona.name,
+        contactEmailAddress,
+        preprintTitle.id,
+      )
     },
   )
 
@@ -128,6 +136,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore,
         getContactEmailAddress: () => TE.left('not-found'),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
 
@@ -145,6 +154,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
       const actual = await _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user })({
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         formStore: new Keyv(),
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -164,6 +174,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore: new Keyv(),
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+        getPublicPersona: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
 
@@ -185,6 +196,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
         formStore: new Keyv(),
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+        getPublicPersona: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
 
@@ -205,6 +217,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
       const actual = await _.writeReviewNeedToVerifyEmailAddress({ id: preprintId, locale, method, user: undefined })({
         getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         formStore: new Keyv(),
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
