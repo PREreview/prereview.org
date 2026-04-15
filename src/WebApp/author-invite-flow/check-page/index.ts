@@ -16,7 +16,12 @@ import {
 import { type GetContactEmailAddressEnv, getContactEmailAddress } from '../../../contact-email-address.ts'
 import type { Html } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
-import { type GetPseudonymPersonaEnv, type GetPublicPersonaEnv, getPersona } from '../../../persona.ts'
+import {
+  type GetPseudonymPersonaEnv,
+  type GetPublicPersonaEnv,
+  getPersona,
+  getPseudonymPersona,
+} from '../../../persona.ts'
 import type * as Personas from '../../../Personas/index.ts'
 import {
   authorInviteDeclineMatch,
@@ -26,7 +31,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
 import type { OrcidId, Pseudonym } from '../../../types/index.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {
   LogInResponse,
@@ -56,11 +61,9 @@ const addAuthorToPrereview = (
   prereview: number,
   author: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym },
   persona: Personas.Persona,
-) =>
+): RTE.ReaderTaskEither<AddAuthorToPrereviewEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) =>
-      addAuthorToPrereview(prereview, author, persona),
-    ),
+    RTE.fromTaskEitherK(({ addAuthorToPrereview }) => addAuthorToPrereview(prereview, author, persona)),
   )
 
 export interface GetPrereviewEnv {
@@ -149,12 +152,6 @@ export const authorInviteCheck = ({
         ),
       state =>
         match(state)
-          .returnType<
-            RT.ReaderTask<
-              AddAuthorToPrereviewEnv & SaveAuthorInviteEnv,
-              PageResponse | RedirectResponse | StreamlinePageResponse
-            >
-          >()
           .with({ method: 'POST' }, handlePublishForm)
           .with({ method: P.string }, state => RT.of(checkPage(state)))
           .exhaustive(),
@@ -178,14 +175,13 @@ const handlePublishForm = ({
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(
-          invite.review,
-          { orcidId: user.orcid, pseudonym: toPersonas(user).pseudonymPersona.pseudonym },
-          persona,
+        getPseudonymPersona(user.orcid),
+        RTE.chainW(pseudonymPersona =>
+          addAuthorToPrereview(invite.review, { orcidId: user.orcid, pseudonym: pseudonymPersona.pseudonym }, persona),
         ),
         RTE.orElseFirstW(error =>
           match(error)
-            .with('unavailable', () => saveAuthorInvite(inviteId, invite))
+            .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => saveAuthorInvite(inviteId, invite))
             .exhaustive(),
         ),
       ),
@@ -193,7 +189,7 @@ const handlePublishForm = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => failureMessage(locale))
+          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => failureMessage(locale))
           .exhaustive(),
       () =>
         RedirectResponse({

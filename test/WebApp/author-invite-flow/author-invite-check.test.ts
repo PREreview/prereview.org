@@ -63,7 +63,7 @@ describe('authorInvite', () => {
             getPrereview,
             saveAuthorInvite,
             getPublicPersona: invite.persona === 'public' ? () => TE.right(publicPersona) : shouldNotBeCalled,
-            getPseudonymPersona: invite.persona === 'pseudonym' ? () => TE.right(pseudonymPersona) : shouldNotBeCalled,
+            getPseudonymPersona: () => TE.right(pseudonymPersona),
           })()
 
           expect(actual).toStrictEqual({
@@ -73,7 +73,7 @@ describe('authorInvite', () => {
           })
           expect(addAuthorToPrereview).toHaveBeenCalledWith(
             invite.review,
-            { orcidId: user.orcid, pseudonym: user.pseudonym },
+            { orcidId: user.orcid, pseudonym: pseudonymPersona.pseudonym },
             invite.persona === 'public' ? publicPersona : pseudonymPersona,
           )
           expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
