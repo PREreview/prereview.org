@@ -11,6 +11,7 @@ import { Cloudinary, Nodemailer } from '../../../ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
+import * as Personas from '../../../Personas/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { SlackUserId } from '../../../slack-user-id.ts'
@@ -321,6 +322,7 @@ export const MyDetailsRouter = pipe(
         ),
         fetch: env.fetch,
         generateUuid: EffectToFpts.toIO(Uuid.v4(), env.runtime),
+        getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
         getUserOnboarding: withEnv(Keyv.getUserOnboarding, {
           userOnboardingStore: env.users.userOnboardingStore,
           ...env.logger,

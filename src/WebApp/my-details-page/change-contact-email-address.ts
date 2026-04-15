@@ -16,10 +16,11 @@ import {
 import { getInput, invalidE, missingE } from '../../form.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
+import { type GetPublicPersonaEnv, getPublicPersona } from '../../persona.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { EmailAddressC } from '../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.ts'
-import { type User, toPersonas } from '../../user.ts'
+import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'
 import { createFormPage } from './change-contact-email-address-form-page.ts'
@@ -94,7 +95,7 @@ const handleChangeContactEmailAddressForm = ({
         match(emailAddress)
           .returnType<
             RT.ReaderTask<
-              GenerateUuidEnv & SaveContactEmailAddressEnv & VerifyContactEmailAddressEnv,
+              GenerateUuidEnv & SaveContactEmailAddressEnv & VerifyContactEmailAddressEnv & GetPublicPersonaEnv,
               PageResponse | RedirectResponse | FlashMessageResponse
             >
           >()
@@ -111,7 +112,10 @@ const handleChangeContactEmailAddressForm = ({
               ),
               RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
               RTE.chainFirstW(contactEmailAddress =>
-                verifyContactEmailAddress(toPersonas(user).publicPersona.name, contactEmailAddress),
+                pipe(
+                  getPublicPersona(user.orcid),
+                  RTE.chainW(publicPersona => verifyContactEmailAddress(publicPersona.name, contactEmailAddress)),
+                ),
               ),
               RTE.matchW(
                 () => havingProblemsPage(locale),

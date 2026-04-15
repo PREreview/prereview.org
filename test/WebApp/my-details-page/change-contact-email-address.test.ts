@@ -22,6 +22,7 @@ describe('changeContactEmailAddress', () => {
       getContactEmailAddress: () => TE.fromEither(emailAddress),
       saveContactEmailAddress: shouldNotBeCalled,
       verifyContactEmailAddress: shouldNotBeCalled,
+      getPublicPersona: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -41,12 +42,13 @@ describe('changeContactEmailAddress', () => {
       test.prop([
         fc.emailAddress(),
         fc.user(),
+        fc.publicPersona(),
         fc.supportedLocale(),
         fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
         fc.uuid(),
       ])(
         'when it is different to the previous value',
-        async (emailAddress, user, locale, existingEmailAddress, verificationToken) => {
+        async (emailAddress, user, publicPersona, locale, existingEmailAddress, verificationToken) => {
           const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
           const verifyContactEmailAddress = jest.fn<_.Env['verifyContactEmailAddress']>(_ => TE.right(undefined))
 
@@ -55,6 +57,7 @@ describe('changeContactEmailAddress', () => {
             getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
             saveContactEmailAddress,
             verifyContactEmailAddress,
+            getPublicPersona: () => TE.right(publicPersona),
           })()
 
           expect(actual).toStrictEqual({
@@ -67,7 +70,7 @@ describe('changeContactEmailAddress', () => {
             new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
           )
           expect(verifyContactEmailAddress).toHaveBeenCalledWith(
-            user.name,
+            publicPersona.name,
             new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
           )
         },
@@ -86,6 +89,7 @@ describe('changeContactEmailAddress', () => {
             getContactEmailAddress: () => TE.right(existingEmailAddress),
             saveContactEmailAddress: shouldNotBeCalled,
             verifyContactEmailAddress: shouldNotBeCalled,
+            getPublicPersona: shouldNotBeCalled,
           })()
 
           expect(actual).toStrictEqual({
@@ -112,6 +116,7 @@ describe('changeContactEmailAddress', () => {
         getContactEmailAddress: () => TE.fromEither(emailAddress),
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddress: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -138,6 +143,7 @@ describe('changeContactEmailAddress', () => {
         getContactEmailAddress: () => TE.fromEither(emailAddress),
         saveContactEmailAddress: () => TE.left('unavailable'),
         verifyContactEmailAddress: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -154,25 +160,30 @@ describe('changeContactEmailAddress', () => {
       fc.record({ emailAddress: fc.emailAddress() }),
       fc.user(),
       fc.supportedLocale(),
+      fc.publicPersona(),
       fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
       fc.uuid(),
-    ])('the verification email cannot be sent', async (body, user, locale, emailAddress, verificationToken) => {
-      const actual = await _.changeContactEmailAddress({ body, locale, method: 'POST', user })({
-        generateUuid: () => verificationToken,
-        getContactEmailAddress: () => TE.fromEither(emailAddress),
-        saveContactEmailAddress: () => TE.right(undefined),
-        verifyContactEmailAddress: () => TE.left('unavailable'),
-      })()
+    ])(
+      'the verification email cannot be sent',
+      async (body, user, locale, publicPersona, emailAddress, verificationToken) => {
+        const actual = await _.changeContactEmailAddress({ body, locale, method: 'POST', user })({
+          generateUuid: () => verificationToken,
+          getContactEmailAddress: () => TE.fromEither(emailAddress),
+          saveContactEmailAddress: () => TE.right(undefined),
+          verifyContactEmailAddress: () => TE.left('unavailable'),
+          getPublicPersona: () => TE.right(publicPersona),
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
 
     describe('when no email address is set', () => {
       test.prop([
@@ -186,6 +197,7 @@ describe('changeContactEmailAddress', () => {
           getContactEmailAddress: () => TE.right(existingEmailAddress),
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddress: shouldNotBeCalled,
+          getPublicPersona: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -208,6 +220,7 @@ describe('changeContactEmailAddress', () => {
             getContactEmailAddress: () => TE.left('not-found'),
             saveContactEmailAddress: shouldNotBeCalled,
             verifyContactEmailAddress: shouldNotBeCalled,
+            getPublicPersona: shouldNotBeCalled,
           })()
 
           expect(actual).toStrictEqual({
@@ -228,6 +241,7 @@ describe('changeContactEmailAddress', () => {
         getContactEmailAddress: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddress: shouldNotBeCalled,
+        getPublicPersona: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
