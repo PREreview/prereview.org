@@ -266,6 +266,8 @@ const routerWithoutHyperTs = pipe(
               ),
               env.runtime,
             ),
+            getPublicPersona: EffectToFpts.toTaskEitherK(Personas.getPublicPersona, env.runtime),
+            getPseudonymPersona: EffectToFpts.toTaskEitherK(Personas.getPseudonymPersona, env.runtime),
           }),
       ),
     ),
