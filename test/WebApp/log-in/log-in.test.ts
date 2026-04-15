@@ -1,7 +1,7 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct } from 'effect'
+import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
 import Keyv from 'keyv'
 import { Locale, SessionSecret, SessionStore } from '../../../src/Context.ts'
@@ -334,8 +334,13 @@ describe('authenticate', () => {
 
   test.prop([
     fc.string(),
-    fc.url(),
-    fc.oneof(fc.webUrl(), fc.string()),
+    fc.oneof(
+      fc
+        .tuple(fc.url(), fc.url())
+        .filter(([publicUrl, state]) => publicUrl.origin !== state.origin)
+        .map(([publicUrl, state]) => Tuple.make(publicUrl, state.href)),
+      fc.tuple(fc.url(), fc.string()),
+    ),
     fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
     fc.supportedLocale(),
     fc.record({
@@ -353,8 +358,7 @@ describe('authenticate', () => {
     'when the state contains an invalid referer',
     (
       code,
-      publicUrl,
-      state,
+      [publicUrl, state],
       orcidOauth,
       locale,
       accessToken,
