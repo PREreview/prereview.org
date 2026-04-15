@@ -16,12 +16,13 @@ import {
 } from '../../../contact-email-address.ts'
 import { type InvalidE, type MissingE, getInput, invalidE, missingE } from '../../../form.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
+import { type GetPublicPersonaEnv, getPublicPersona } from '../../../persona.ts'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts'
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
 import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
-import { type User, toPersonas } from '../../../user.ts'
+import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'
 import { type FormStoreEnv, getForm, nextFormMatch } from '../form.ts'
@@ -44,6 +45,7 @@ export const writeReviewEnterEmailAddress = ({
     GetContactEmailAddressEnv &
     SaveContactEmailAddressEnv &
     VerifyContactEmailAddressForReviewEnv &
+    GetPublicPersonaEnv &
     GetPreprintTitleEnv &
     FormStoreEnv,
   PageResponse | RedirectResponse | StreamlinePageResponse
@@ -133,12 +135,17 @@ const handleEnterEmailAddressForm = ({
     RTE.map(({ value, verificationToken }) => new UnverifiedContactEmailAddress({ value, verificationToken })),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
     RTE.chainFirstW(contactEmailAddress =>
-      verifyContactEmailAddressForReview(toPersonas(user).publicPersona.name, contactEmailAddress, preprint.id),
+      pipe(
+        getPublicPersona(user.orcid),
+        RTE.chainW(publicPersona =>
+          verifyContactEmailAddressForReview(publicPersona.name, contactEmailAddress, preprint.id),
+        ),
+      ),
     ),
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage(locale))
+          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
           .with({ emailAddress: P.any }, form => enterEmailAddressPage(preprint, form, locale))
           .exhaustive(),
       () =>

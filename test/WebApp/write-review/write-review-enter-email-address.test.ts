@@ -38,6 +38,7 @@ describe('writeReviewEnterEmailAddress', () => {
         generateUuid: shouldNotBeCalled,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -70,6 +71,7 @@ describe('writeReviewEnterEmailAddress', () => {
         generateUuid: shouldNotBeCalled,
         getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -92,6 +94,7 @@ describe('writeReviewEnterEmailAddress', () => {
     fc.emailAddress().map(emailAddress => Tuple.make({ emailAddress }, emailAddress)),
     fc.uuid(),
     fc.user(),
+    fc.publicPersona(),
     fc.supportedLocale(),
     fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
     fc.form(),
@@ -103,6 +106,7 @@ describe('writeReviewEnterEmailAddress', () => {
       [body, emailAddress],
       verificationToken,
       user,
+      publicPersona,
       locale,
       contactEmailAddress,
       newReview,
@@ -121,6 +125,7 @@ describe('writeReviewEnterEmailAddress', () => {
         getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
         generateUuid: () => verificationToken,
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: () => TE.right(publicPersona),
         saveContactEmailAddress,
         verifyContactEmailAddressForReview,
       })()
@@ -135,7 +140,7 @@ describe('writeReviewEnterEmailAddress', () => {
         new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
       )
       expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(
-        user.name,
+        publicPersona.name,
         new UnverifiedContactEmailAddress({ value: emailAddress, verificationToken }),
         preprintTitle.id,
       )
@@ -165,6 +170,7 @@ describe('writeReviewEnterEmailAddress', () => {
         getContactEmailAddress: () => TE.left('not-found'),
         generateUuid: () => verificationToken,
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -194,6 +200,7 @@ describe('writeReviewEnterEmailAddress', () => {
       getContactEmailAddress: shouldNotBeCalled,
       generateUuid: shouldNotBeCalled,
       getPreprintTitle: () => TE.right(preprintTitle),
+      getPublicPersona: shouldNotBeCalled,
       saveContactEmailAddress: shouldNotBeCalled,
       verifyContactEmailAddressForReview: shouldNotBeCalled,
     })()
@@ -213,6 +220,7 @@ describe('writeReviewEnterEmailAddress', () => {
         getContactEmailAddress: shouldNotBeCalled,
         generateUuid: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -236,6 +244,7 @@ describe('writeReviewEnterEmailAddress', () => {
         getContactEmailAddress: shouldNotBeCalled,
         generateUuid: shouldNotBeCalled,
         getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
@@ -259,6 +268,7 @@ describe('writeReviewEnterEmailAddress', () => {
         getContactEmailAddress: shouldNotBeCalled,
         generateUuid: shouldNotBeCalled,
         getPreprintTitle: () => TE.right(preprintTitle),
+        getPublicPersona: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddressForReview: shouldNotBeCalled,
       })()
