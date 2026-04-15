@@ -1,8 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { Effect, Equal } from 'effect'
+import { Effect, Equal, Layer } from 'effect'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
+import * as Personas from '../../../src/Personas/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -19,27 +20,39 @@ describe('CheckPage', () => {
       fc
         .commentReadyForPublishing()
         .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
       fc.supportedLocale(),
-    ])('when the comment is ready for publishing', (commentId, [comment, user], locale) =>
-      Effect.gen(function* () {
-        const actual = yield* _.CheckPage({ commentId })
+    ])(
+      'when the comment is ready for publishing',
+      (commentId, [comment, user], publicPersona, pseudonymPersona, locale) =>
+        Effect.gen(function* () {
+          const actual = yield* _.CheckPage({ commentId })
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          canonical: Routes.WriteCommentCheck.href({ commentId }),
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          nav: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'form',
-          js: ['single-use-form.js'],
-        })
-      }).pipe(
-        Effect.provideService(Locale, locale),
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.WriteCommentCheck.href({ commentId }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: ['single-use-form.js'],
+          })
+        }).pipe(
+          Effect.provideService(Locale, locale),
+          Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provide(
+            Layer.mock(
+              Personas.Personas,
+              comment.persona === 'public'
+                ? { getPublicPersona: () => Effect.succeed(publicPersona) }
+                : { getPseudonymPersona: () => Effect.succeed(pseudonymPersona) },
+            ),
+          ),
+          Effect.provideService(LoggedInUser, user),
+          EffectTest.run,
+        ),
     )
 
     test.prop([
@@ -60,6 +73,7 @@ describe('CheckPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -83,6 +97,7 @@ describe('CheckPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -109,6 +124,7 @@ describe('CheckPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -131,6 +147,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -157,6 +174,7 @@ describe('CheckPage', () => {
       }).pipe(
         Effect.provideService(Locale, locale),
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provide(Layer.mock(Personas.Personas, {})),
         Effect.provideService(LoggedInUser, user),
         EffectTest.run,
       ),
@@ -179,6 +197,7 @@ describe('CheckPage', () => {
         }).pipe(
           Effect.provideService(Locale, locale),
           Effect.provideService(Comments.GetComment, () => new Queries.UnableToQuery({})),
+          Effect.provide(Layer.mock(Personas.Personas, {})),
           Effect.provideService(LoggedInUser, user),
           EffectTest.run,
         ),
@@ -196,6 +215,7 @@ describe('CheckPage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(Comments.GetComment, shouldNotBeCalled),
+      Effect.provide(Layer.mock(Personas.Personas, {})),
       EffectTest.run,
     ),
   )

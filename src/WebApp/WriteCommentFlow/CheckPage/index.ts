@@ -1,9 +1,10 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import * as Comments from '../../../Comments/index.ts'
 import { Locale } from '../../../Context.ts'
+import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import { EnsureUserIsLoggedIn, toPersonas } from '../../../user.ts'
+import { EnsureUserIsLoggedIn } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
@@ -16,7 +17,7 @@ export const CheckPage = ({
 }): Effect.Effect<
   Response.PageResponse | Response.StreamlinePageResponse | Response.RedirectResponse | Response.LogInResponse,
   never,
-  Comments.GetComment | Locale
+  Comments.GetComment | Personas.Personas | Locale
 > =>
   Effect.gen(function* () {
     const user = yield* EnsureUserIsLoggedIn
@@ -35,13 +36,13 @@ export const CheckPage = ({
       Match.value(comment),
       Match.tag('CommentInProgress', () => PageNotFound),
       Match.tag('CommentReadyForPublishing', comment =>
-        Effect.succeed(
+        Effect.andThen(Personas.getPersona({ orcidId: user.orcid, persona: comment.persona }), persona =>
           MakeResponse({
             competingInterests: comment.competingInterests,
             comment: comment.comment,
             commentId,
             locale,
-            persona: toPersonas(user)[`${comment.persona}Persona`],
+            persona,
           }),
         ),
       ),
@@ -55,6 +56,7 @@ export const CheckPage = ({
     )
   }).pipe(
     Effect.catchTags({
+      UnableToGetPersona: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,
       UserIsNotLoggedIn: () =>
         Effect.succeed(Response.LogInResponse({ location: Routes.WriteCommentCheck.href({ commentId }) })),
