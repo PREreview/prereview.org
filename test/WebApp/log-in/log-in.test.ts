@@ -324,7 +324,7 @@ describe('authenticate', () => {
             ]),
           }),
         )
-        expect(getPseudonym).toHaveBeenCalledWith({ name: accessToken.name, orcid: accessToken.orcid })
+        expect(getPseudonym).toHaveBeenCalledWith(accessToken.orcid)
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
         Effect.provideService(FetchHttpClient.Fetch, (...args) =>

@@ -42,7 +42,7 @@ export interface OrcidOAuthEnv {
 
 export class GetPseudonym extends Context.Tag('GetPseudonym')<
   GetPseudonym,
-  (user: OrcidUser) => Effect.Effect<Pseudonym, 'unavailable'>
+  (orcid: OrcidId) => Effect.Effect<Pseudonym, 'unavailable'>
 >() {}
 
 export interface GetPseudonymEnv {
@@ -111,9 +111,7 @@ export const authenticate = Effect.fn(
         ),
     })
 
-    yield* Effect.tapError(getPseudonym({ name: user.name, orcid: user.orcid }), () =>
-      Effect.logWarning('Unable to get pseudonym'),
-    )
+    yield* Effect.tapError(getPseudonym(user.orcid), () => Effect.logWarning('Unable to get pseudonym'))
 
     const sessionId = yield* Uuid.v4()
 

@@ -62,9 +62,9 @@ const getPseudonym = Layer.effect(
     const fetch = yield* FetchHttpClient.Fetch
     const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
 
-    return user =>
+    return orcid =>
       pipe(
-        FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(user.orcid), {
+        FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcid), {
           fetch,
           legacyPrereviewApi: {
             app: legacyPrereviewApi.app,
@@ -75,7 +75,7 @@ const getPseudonym = Layer.effect(
         Effect.catchIf(
           error => error === 'not-found',
           () =>
-            FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview(user), {
+            FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview({ name: orcid, orcid }), {
               fetch,
               legacyPrereviewApi: {
                 app: legacyPrereviewApi.app,
