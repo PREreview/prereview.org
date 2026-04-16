@@ -3,6 +3,10 @@
     "message": "PREreviews of {dataset}",
     "description": "Title of the page showing the PREreviews of a dataset."
   },
+  "datasetDetails": {
+    "message": "Dataset details",
+    "description": "Heading for the section with details of a dataset, such as its title and abstract."
+  },
   "authoredBy": {
     "message": "<visuallyHidden>Authored</visuallyHidden> by {authors}",
     "description": "Byline that shows the authors of the dataset."
