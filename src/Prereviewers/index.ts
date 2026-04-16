@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
-import type { UnableToHandleCommand } from '../Commands.ts'
+import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
@@ -21,7 +21,19 @@ export const layer = Layer.effect(
     const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
 
     return {
-      register: () => Effect.void,
+      register: orcid =>
+        pipe(
+          FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview({ name: orcid, orcid }), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+            },
+          }),
+          Effect.asVoid,
+          Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
+        ),
       isRegistered: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcid), {
