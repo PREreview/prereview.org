@@ -101,64 +101,143 @@ describe('LogOut', () => {
 })
 
 describe('authenticate', () => {
-  test.prop([
-    fc.string(),
-    fc.url(),
-    fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
-    fc.supportedLocale(),
-    fc.record({
-      access_token: fc.string(),
-      token_type: fc.string(),
-      name: fc.string(),
-      orcid: fc.orcidId(),
-    }),
-    fc.string(),
-    fc.cookieName(),
-    fc.uuid(),
-    fc.string(),
-  ])(
-    'when the state contains a valid referer',
-    (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie, sessionId, signedSessionId) =>
-      Effect.gen(function* () {
-        const sessionStore = new Keyv()
+  describe('the PREreviewer can be logged in', () => {
+    test.prop([
+      fc.string(),
+      fc.url(),
+      fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
+      fc.supportedLocale(),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcidId(),
+      }),
+      fc.string(),
+      fc.cookieName(),
+      fc.uuid(),
+      fc.string(),
+    ])(
+      'when the state contains a valid referer',
+      (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie, sessionId, signedSessionId) =>
+        Effect.gen(function* () {
+          const sessionStore = new Keyv()
 
-        const actual = yield* pipe(
-          _.authenticate(code, referer.href),
-          Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-        )
+          const actual = yield* pipe(
+            _.authenticate(code, referer.href),
+            Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+          )
 
-        const sessions = yield* all(sessionStore.iterator!(undefined))
+          const sessions = yield* all(sessionStore.iterator!(undefined))
 
-        expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
-        expect(actual).toStrictEqual(
-          HttpServerResponse.redirect(referer.href, {
-            status: StatusCodes.Found,
-            cookies: Cookies.fromIterable([
-              Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
-            ]),
-          }),
-        )
-      }).pipe(
-        Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-        Effect.provideService(FetchHttpClient.Fetch, (...args) =>
-          fetchMock
-            .createInstance()
-            .postOnce(orcidOauth.tokenUrl.href, {
-              status: StatusCodes.OK,
-              body: accessToken,
-            })
-            .fetchHandler(...args),
+          expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
+          expect(actual).toStrictEqual(
+            HttpServerResponse.redirect(referer.href, {
+              status: StatusCodes.Found,
+              cookies: Cookies.fromIterable([
+                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
+              ]),
+            }),
+          )
+        }).pipe(
+          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
+          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+            fetchMock
+              .createInstance()
+              .postOnce(orcidOauth.tokenUrl.href, {
+                status: StatusCodes.OK,
+                body: accessToken,
+              })
+              .fetchHandler(...args),
+          ),
+          Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
+          Effect.provideService(_.IsUserBlocked, () => false),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(OrcidOauth, orcidOauth),
+          Effect.provideService(PublicUrl, new URL('/', referer)),
+          Effect.provideService(SessionSecret, Redacted.make(secret)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
+          EffectTest.run,
         ),
-        Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
-        Effect.provideService(_.IsUserBlocked, () => false),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(OrcidOauth, orcidOauth),
-        Effect.provideService(PublicUrl, new URL('/', referer)),
-        Effect.provideService(SessionSecret, Redacted.make(secret)),
-        Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
-        EffectTest.run,
+    )
+
+    test.prop([
+      fc.string(),
+      fc.oneof(
+        fc
+          .tuple(fc.url(), fc.url())
+          .filter(([publicUrl, state]) => publicUrl.origin !== state.origin)
+          .map(([publicUrl, state]) => Tuple.make(publicUrl, state.href)),
+        fc.tuple(fc.url(), fc.string()),
       ),
-  )
+      fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
+      fc.supportedLocale(),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcidId(),
+      }),
+      fc.pseudonym(),
+      fc.string(),
+      fc.cookieName(),
+      fc.uuid(),
+      fc.string(),
+    ])(
+      'when the state contains an invalid referer',
+      (
+        code,
+        [publicUrl, state],
+        orcidOauth,
+        locale,
+        accessToken,
+        pseudonym,
+        secret,
+        sessionCookie,
+        sessionId,
+        signedSessionId,
+      ) =>
+        Effect.gen(function* () {
+          const sessionStore = new Keyv()
+
+          const actual = yield* pipe(
+            _.authenticate(code, state),
+            Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+          )
+
+          const sessions = yield* all(sessionStore.iterator!(undefined))
+
+          expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
+          expect(actual).toStrictEqual(
+            HttpServerResponse.redirect(Routes.HomePage, {
+              status: StatusCodes.Found,
+              cookies: Cookies.fromIterable([
+                Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
+                Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
+              ]),
+            }),
+          )
+        }).pipe(
+          Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
+          Effect.provideService(FetchHttpClient.Fetch, (...args) =>
+            fetchMock
+              .createInstance()
+              .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
+              .fetchHandler(...args),
+          ),
+          Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
+          Effect.provideService(_.IsUserBlocked, () => false),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(OrcidOauth, orcidOauth),
+          Effect.provideService(PublicUrl, publicUrl),
+          Effect.provideService(SessionSecret, Redacted.make(secret)),
+          Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
+          EffectTest.run,
+        ),
+    )
+
+    test.todo('when the PREreviewer has not been registered')
+  })
 
   test.prop([
     fc.string(),
@@ -288,117 +367,44 @@ describe('authenticate', () => {
     }),
     fc.string(),
     fc.cookieName(),
-  ])('when a pseudonym cannot be retrieved', (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie) =>
-    Effect.gen(function* () {
-      const sessionStore = new Keyv()
-      const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
-        status: StatusCodes.OK,
-        body: accessToken,
-      })
-
-      const actual = yield* pipe(
-        _.authenticate(code, referer.href),
-        Effect.flip,
-        Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-        Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
-      )
-
-      const sessions = yield* all(sessionStore.iterator!(undefined))
-
-      expect(sessions).toStrictEqual([])
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(fetch.callHistory.done()).toBeTruthy()
-    }).pipe(
-      Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => new UnableToQuery({}) })),
-      Effect.provideService(_.IsUserBlocked, () => false),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(OrcidOauth, orcidOauth),
-      Effect.provideService(PublicUrl, new URL('/', referer)),
-      Effect.provideService(SessionSecret, Redacted.make(secret)),
-      Effect.provide(Uuid.layer),
-      EffectTest.run,
-    ),
-  )
-
-  test.prop([
-    fc.string(),
-    fc.oneof(
-      fc
-        .tuple(fc.url(), fc.url())
-        .filter(([publicUrl, state]) => publicUrl.origin !== state.origin)
-        .map(([publicUrl, state]) => Tuple.make(publicUrl, state.href)),
-      fc.tuple(fc.url(), fc.string()),
-    ),
-    fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
-    fc.supportedLocale(),
-    fc.record({
-      access_token: fc.string(),
-      token_type: fc.string(),
-      name: fc.string(),
-      orcid: fc.orcidId(),
-    }),
-    fc.pseudonym(),
-    fc.string(),
-    fc.cookieName(),
-    fc.uuid(),
-    fc.string(),
   ])(
-    'when the state contains an invalid referer',
-    (
-      code,
-      [publicUrl, state],
-      orcidOauth,
-      locale,
-      accessToken,
-      pseudonym,
-      secret,
-      sessionCookie,
-      sessionId,
-      signedSessionId,
-    ) =>
+    'when registration state for PREreviewer is not available',
+    (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
+        const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
+          status: StatusCodes.OK,
+          body: accessToken,
+        })
 
         const actual = yield* pipe(
-          _.authenticate(code, state),
+          _.authenticate(code, referer.href),
+          Effect.flip,
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+          Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
         )
 
         const sessions = yield* all(sessionStore.iterator!(undefined))
 
-        expect(sessions).toStrictEqual([[sessionId, { user: { orcid: accessToken.orcid } }]])
-        expect(actual).toStrictEqual(
-          HttpServerResponse.redirect(Routes.HomePage, {
-            status: StatusCodes.Found,
-            cookies: Cookies.fromIterable([
-              Cookies.unsafeMakeCookie(sessionCookie, signedSessionId, { httpOnly: true, path: '/' }),
-              Cookies.unsafeMakeCookie('flash-message', 'logged-in', { httpOnly: true, path: '/' }),
-            ]),
-          }),
-        )
+        expect(sessions).toStrictEqual([])
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+        expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(
-        Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
-        Effect.provideService(FetchHttpClient.Fetch, (...args) =>
-          fetchMock
-            .createInstance()
-            .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
-            .fetchHandler(...args),
-        ),
-        Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
+        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
+        Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => new UnableToQuery({}) })),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
         Effect.provideService(OrcidOauth, orcidOauth),
-        Effect.provideService(PublicUrl, publicUrl),
+        Effect.provideService(PublicUrl, new URL('/', referer)),
         Effect.provideService(SessionSecret, Redacted.make(secret)),
-        Effect.provide(Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) })),
+        Effect.provide(Uuid.layer),
         EffectTest.run,
       ),
   )
