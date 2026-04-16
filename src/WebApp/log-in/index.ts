@@ -14,6 +14,7 @@ import { Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
 import { timeoutRequest } from '../../fetch.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
+import { Prereviewers } from '../../Prereviewers/index.ts'
 import { PublicUrl, type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
@@ -96,6 +97,7 @@ export const authenticate = Effect.fn(
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked
     const getPseudonym = yield* GetPseudonym
+    const prereviewers = yield* Prereviewers
 
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
 
@@ -109,6 +111,11 @@ export const authenticate = Effect.fn(
           Effect.tapError(() => Effect.logInfo('Blocked user from logging in')),
           Effect.annotateLogs('user', authenticatedOrcidId),
         ),
+    })
+
+    yield* Effect.if(prereviewers.isRegistered(authenticatedOrcidId), {
+      onTrue: () => Effect.void,
+      onFalse: () => prereviewers.register(authenticatedOrcidId),
     })
 
     yield* Effect.tapError(getPseudonym(authenticatedOrcidId), () => Effect.logWarning('Unable to get pseudonym'))

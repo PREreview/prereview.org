@@ -7,7 +7,9 @@ import Keyv from 'keyv'
 import { Locale, SessionSecret, SessionStore } from '../../../src/Context.ts'
 import { CookieSignature } from '../../../src/CookieSignature.ts'
 import { OrcidOauth } from '../../../src/OrcidOauth.ts'
+import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
+import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -148,6 +150,7 @@ describe('authenticate', () => {
             .fetchHandler(...args),
         ),
         Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
+        Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
         Effect.provideService(OrcidOauth, orcidOauth),
@@ -204,6 +207,7 @@ describe('authenticate', () => {
           .fetchHandler(...args),
       ),
       Effect.provideService(_.GetPseudonym, shouldNotBeCalled),
+      Effect.provide(Layer.mock(Prereviewers, {})),
       Effect.provideService(Locale, locale),
       Effect.provideService(OrcidOauth, orcidOauth),
       Effect.provideService(PublicUrl, new URL('/', referer)),
@@ -256,6 +260,7 @@ describe('authenticate', () => {
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
       Effect.provideService(_.GetPseudonym, () => Effect.fail('unavailable')),
+      Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => new UnableToQuery({}) })),
       Effect.provideService(_.IsUserBlocked, () => false),
       Effect.provideService(Locale, locale),
       Effect.provideService(OrcidOauth, orcidOauth),
@@ -333,6 +338,7 @@ describe('authenticate', () => {
             .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
             .fetchHandler(...args),
         ),
+        Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
         Effect.provideService(OrcidOauth, orcidOauth),

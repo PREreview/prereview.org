@@ -42,6 +42,7 @@ import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
+import * as Prereviewers from './Prereviewers/index.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { PublicUrl } from './public-url.ts'
 import * as Queries from './Queries.ts'
@@ -352,6 +353,7 @@ export const Program = pipe(
     PreprintData.layer,
     OpenAlexWorks.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
+    Prereviewers.layer,
     getPseudonym,
     doesUserHaveAVerifiedEmailAddress,
     getContactEmailAddress,
