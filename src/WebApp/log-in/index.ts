@@ -96,7 +96,6 @@ export const authenticate = Effect.fn(
     const publicUrl = yield* PublicUrl
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked
-    const getPseudonym = yield* GetPseudonym
     const prereviewers = yield* Prereviewers
 
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
@@ -117,8 +116,6 @@ export const authenticate = Effect.fn(
       onTrue: () => Effect.void,
       onFalse: () => prereviewers.register(authenticatedOrcidId),
     })
-
-    yield* Effect.tapError(getPseudonym(authenticatedOrcidId), () => Effect.logWarning('Unable to get pseudonym'))
 
     const sessionId = yield* Uuid.v4()
 

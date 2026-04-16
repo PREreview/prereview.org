@@ -112,14 +112,13 @@ describe('authenticate', () => {
       name: fc.string(),
       orcid: fc.orcidId(),
     }),
-    fc.pseudonym(),
     fc.string(),
     fc.cookieName(),
     fc.uuid(),
     fc.string(),
   ])(
     'when the state contains a valid referer',
-    (code, referer, orcidOauth, locale, accessToken, pseudonym, secret, sessionCookie, sessionId, signedSessionId) =>
+    (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie, sessionId, signedSessionId) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
 
@@ -150,7 +149,6 @@ describe('authenticate', () => {
             })
             .fetchHandler(...args),
         ),
-        Effect.provideService(_.GetPseudonym, () => Effect.succeed(pseudonym)),
         Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
         Effect.provideService(_.IsUserBlocked, () => false),
         Effect.provideService(Locale, locale),
@@ -207,7 +205,6 @@ describe('authenticate', () => {
           })
           .fetchHandler(...args),
       ),
-      Effect.provideService(_.GetPseudonym, shouldNotBeCalled),
       Effect.provide(Layer.mock(Prereviewers, {})),
       Effect.provideService(Locale, locale),
       Effect.provideService(OrcidOauth, orcidOauth),
@@ -262,7 +259,6 @@ describe('authenticate', () => {
         expect(fetch.callHistory.done()).toBeTruthy()
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-        Effect.provideService(_.GetPseudonym, shouldNotBeCalled),
         Effect.provide(
           Layer.mock(Prereviewers, {
             register: () => new UnableToHandleCommand({}),
@@ -321,7 +317,6 @@ describe('authenticate', () => {
       expect(fetch.callHistory.done()).toBeTruthy()
     }).pipe(
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
-      Effect.provideService(_.GetPseudonym, () => Effect.fail('unavailable')),
       Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => new UnableToQuery({}) })),
       Effect.provideService(_.IsUserBlocked, () => false),
       Effect.provideService(Locale, locale),
@@ -371,12 +366,10 @@ describe('authenticate', () => {
     ) =>
       Effect.gen(function* () {
         const sessionStore = new Keyv()
-        const getPseudonym = jest.fn<typeof _.GetPseudonym.Service>(_ => Effect.succeed(pseudonym))
 
         const actual = yield* pipe(
           _.authenticate(code, state),
           Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
-          Effect.provideService(_.GetPseudonym, getPseudonym),
         )
 
         const sessions = yield* all(sessionStore.iterator!(undefined))
@@ -391,7 +384,6 @@ describe('authenticate', () => {
             ]),
           }),
         )
-        expect(getPseudonym).toHaveBeenCalledWith(accessToken.orcid)
       }).pipe(
         Effect.provide(Layer.mock(CookieSignature, { sign: () => signedSessionId })),
         Effect.provideService(FetchHttpClient.Fetch, (...args) =>
