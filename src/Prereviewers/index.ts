@@ -1,5 +1,8 @@
-import { Context, Effect, Layer } from 'effect'
-import type { UnableToQuery } from '../Queries.ts'
+import { FetchHttpClient } from '@effect/platform'
+import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
+import * as LegacyPrereview from '../legacy-prereview.ts'
+import { UnableToQuery } from '../Queries.ts'
+import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
@@ -10,7 +13,34 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   }
 >() {}
 
-export const layer = Layer.succeed(Prereviewers, {
-  register: () => Effect.void,
-  isRegistered: () => Effect.succeed(false),
-})
+export const layer = Layer.effect(
+  Prereviewers,
+  Effect.gen(function* () {
+    const fetch = yield* FetchHttpClient.Fetch
+    const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
+
+    return {
+      register: () => Effect.void,
+      isRegistered: orcid =>
+        pipe(
+          FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcid), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+            },
+          }),
+          Effect.andThen(true),
+          Effect.catchAll(
+            flow(
+              Match.value,
+              Match.when('unavailable', () => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
+              Match.when('not-found', () => Effect.succeed(false)),
+              Match.exhaustive,
+            ),
+          ),
+        ),
+    }
+  }),
+)
