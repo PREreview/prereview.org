@@ -99,24 +99,24 @@ export const authenticate = Effect.fn(
 
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
 
-    const user = yield* GetOrcidIdUsingAuthorizationCode(code)
+    const authenticatedOrcidId = yield* GetOrcidIdUsingAuthorizationCode(code)
 
-    yield* Effect.if(isUserBlocked(user.orcid), {
+    yield* Effect.if(isUserBlocked(authenticatedOrcidId), {
       onFalse: () => Effect.void,
       onTrue: () =>
         pipe(
           Effect.fail('blocked' as const),
           Effect.tapError(() => Effect.logInfo('Blocked user from logging in')),
-          Effect.annotateLogs('user', Struct.pick(user, 'name', 'orcid')),
+          Effect.annotateLogs('user', authenticatedOrcidId),
         ),
     })
 
-    yield* Effect.tapError(getPseudonym(user.orcid), () => Effect.logWarning('Unable to get pseudonym'))
+    yield* Effect.tapError(getPseudonym(authenticatedOrcidId), () => Effect.logWarning('Unable to get pseudonym'))
 
     const sessionId = yield* Uuid.v4()
 
     yield* pipe(
-      newSessionForUser({ orcid: user.orcid }),
+      newSessionForUser({ orcid: authenticatedOrcidId }),
       session => Effect.tryPromise(() => store.set(sessionId, session)),
       Effect.tapError(error => Effect.logError('Unable to store new session').pipe(Effect.annotateLogs({ error }))),
     )
@@ -201,6 +201,7 @@ const GetOrcidIdUsingAuthorizationCode = Effect.fnUntraced(function* (code: stri
         publicUrl,
       },
     ),
+    Effect.andThen(Struct.get('orcid')),
     Effect.tapError(error =>
       Effect.annotateLogs(Effect.logWarning('Unable to exchange authorization code'), { error }),
     ),
