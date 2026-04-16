@@ -4,6 +4,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
 import Keyv from 'keyv'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale, SessionSecret, SessionStore } from '../../../src/Context.ts'
 import { CookieSignature } from '../../../src/CookieSignature.ts'
 import { OrcidOauth } from '../../../src/OrcidOauth.ts'
@@ -215,6 +216,67 @@ describe('authenticate', () => {
       Effect.provide(Uuid.layer),
       EffectTest.run,
     ),
+  )
+
+  test.prop([
+    fc.string(),
+    fc.url(),
+    fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
+    fc.supportedLocale(),
+    fc.record({
+      access_token: fc.string(),
+      token_type: fc.string(),
+      name: fc.string(),
+      orcid: fc.orcidId(),
+    }),
+    fc.string(),
+    fc.cookieName(),
+  ])(
+    'when the PREreviewer cannot be registered',
+    (code, referer, orcidOauth, locale, accessToken, secret, sessionCookie) =>
+      Effect.gen(function* () {
+        const sessionStore = new Keyv()
+        const fetch = fetchMock.createInstance().postOnce(orcidOauth.tokenUrl.href, {
+          status: StatusCodes.OK,
+          body: accessToken,
+        })
+
+        const actual = yield* pipe(
+          _.authenticate(code, referer.href),
+          Effect.flip,
+          Effect.provideService(SessionStore, { cookie: sessionCookie, store: sessionStore }),
+          Effect.provideService(FetchHttpClient.Fetch, (...args) => fetch.fetchHandler(...args)),
+        )
+
+        const sessions = yield* all(sessionStore.iterator!(undefined))
+
+        expect(sessions).toStrictEqual([])
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+        expect(fetch.callHistory.done()).toBeTruthy()
+      }).pipe(
+        Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
+        Effect.provideService(_.GetPseudonym, shouldNotBeCalled),
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            register: () => new UnableToHandleCommand({}),
+            isRegistered: () => Effect.succeed(false),
+          }),
+        ),
+        Effect.provideService(_.IsUserBlocked, () => false),
+        Effect.provideService(Locale, locale),
+        Effect.provideService(OrcidOauth, orcidOauth),
+        Effect.provideService(PublicUrl, new URL('/', referer)),
+        Effect.provideService(SessionSecret, Redacted.make(secret)),
+        Effect.provide(Uuid.layer),
+        EffectTest.run,
+      ),
   )
 
   test.prop([

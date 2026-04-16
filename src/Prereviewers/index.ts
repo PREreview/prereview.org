@@ -1,5 +1,6 @@
 import { FetchHttpClient } from '@effect/platform'
 import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
+import type { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
@@ -8,7 +9,7 @@ import type { OrcidId } from '../types/index.ts'
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
-    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void>
+    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: (orcidId: OrcidId.OrcidId) => Effect.Effect<boolean, UnableToQuery>
   }
 >() {}
