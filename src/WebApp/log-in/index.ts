@@ -93,36 +93,13 @@ function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R
 export const authenticate = Effect.fn(
   function* (code: string, state: string) {
     const publicUrl = yield* PublicUrl
-    const fetch = yield* FetchHttpClient.Fetch
-    const orcidOauth = yield* OrcidOauth
     const { cookie, store } = yield* SessionStore
     const isUserBlocked = yield* IsUserBlocked
     const getPseudonym = yield* GetPseudonym
 
     const referer = yield* FptsToEffect.reader(getReferer(state), { publicUrl })
 
-    const user = yield* pipe(
-      FptsToEffect.readerTaskEither(
-        pipe(
-          exchangeAuthorizationCode(code),
-          R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
-          RTE.local(timeoutRequest(2000)),
-        ),
-        {
-          fetch,
-          orcidOauth: {
-            authorizeUrl: orcidOauth.authorizeUrl,
-            clientId: orcidOauth.clientId,
-            clientSecret: Redacted.value(orcidOauth.clientSecret),
-            tokenUrl: orcidOauth.tokenUrl,
-          },
-          publicUrl,
-        },
-      ),
-      Effect.tapError(error =>
-        Effect.annotateLogs(Effect.logWarning('Unable to exchange authorization code'), { error }),
-      ),
-    )
+    const user = yield* GetOrcidIdUsingAuthorizationCode(code)
 
     yield* Effect.if(isUserBlocked(user.orcid), {
       onFalse: () => Effect.void,
@@ -202,6 +179,35 @@ const AccessTokenD = pipe(
   }),
   D.intersect(OrcidUserC),
 )
+
+const GetOrcidIdUsingAuthorizationCode = Effect.fnUntraced(function* (code: string) {
+  const publicUrl = yield* PublicUrl
+  const fetch = yield* FetchHttpClient.Fetch
+  const orcidOauth = yield* OrcidOauth
+
+  return yield* pipe(
+    FptsToEffect.readerTaskEither(
+      pipe(
+        exchangeAuthorizationCode(code),
+        R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
+        RTE.local(timeoutRequest(2000)),
+      ),
+      {
+        fetch,
+        orcidOauth: {
+          authorizeUrl: orcidOauth.authorizeUrl,
+          clientId: orcidOauth.clientId,
+          clientSecret: Redacted.value(orcidOauth.clientSecret),
+          tokenUrl: orcidOauth.tokenUrl,
+        },
+        publicUrl,
+      },
+    ),
+    Effect.tapError(error =>
+      Effect.annotateLogs(Effect.logWarning('Unable to exchange authorization code'), { error }),
+    ),
+  )
+})
 
 const exchangeAuthorizationCode = (
   code: string,
