@@ -236,7 +236,67 @@ describe('authenticate', () => {
         ),
     )
 
-    test.todo('when the PREreviewer has not been registered')
+    test.prop([
+      fc.string(),
+      fc.oneof(
+        fc
+          .tuple(fc.url(), fc.url())
+          .filter(([publicUrl, state]) => publicUrl.origin !== state.origin)
+          .map(([publicUrl, state]) => Tuple.make(publicUrl, state.href)),
+        fc.tuple(fc.url(), fc.string()),
+      ),
+      fc.oauth().map(Struct.evolve({ clientSecret: Redacted.make<string> })),
+      fc.supportedLocale(),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcidId(),
+      }),
+      fc.string(),
+      fc.cookieName(),
+      fc.uuid(),
+      fc.string(),
+    ])(
+      'when the PREreviewer has not been registered',
+      (
+        code,
+        [publicUrl, state],
+        orcidOauth,
+        locale,
+        accessToken,
+        secret,
+        sessionCookie,
+        sessionId,
+        signedSessionId,
+      ) => {
+        const registerSpy = jest.fn<(typeof Prereviewers.Service)['register']>(() => Effect.void)
+
+        return Effect.gen(function* () {
+          yield* _.authenticate(code, state)
+
+          expect(registerSpy).toHaveBeenCalled()
+        }).pipe(
+          Effect.provide([
+            Layer.mock(CookieSignature, { sign: () => signedSessionId }),
+            Layer.succeed(FetchHttpClient.Fetch, (...args) =>
+              fetchMock
+                .createInstance()
+                .postOnce(orcidOauth.tokenUrl.href, { status: StatusCodes.OK, body: accessToken })
+                .fetchHandler(...args),
+            ),
+            Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(sessionId) }),
+            Layer.succeed(_.IsUserBlocked, () => false),
+            Layer.succeed(Locale, locale),
+            Layer.succeed(OrcidOauth, orcidOauth),
+            Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(false), register: registerSpy }),
+            Layer.succeed(PublicUrl, publicUrl),
+            Layer.succeed(SessionStore, { cookie: sessionCookie, store: new Keyv() }),
+          ]),
+          EffectTest.run,
+        )
+      },
+    )
   })
 
   test.prop([
