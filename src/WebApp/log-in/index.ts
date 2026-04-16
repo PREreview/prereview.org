@@ -7,7 +7,6 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { Locale, SessionStore } from '../../Context.ts'
@@ -21,7 +20,6 @@ import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { Uuid } from '../../types/index.ts'
 import { type OrcidId, isOrcidId } from '../../types/OrcidId.ts'
-import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SessionId, newSessionForUser } from '../../user.ts'
 import { FlashMessageResponse, LogInResponse, type PageResponse } from '../Response/index.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
@@ -39,15 +37,6 @@ export interface OAuthEnv {
 
 export interface OrcidOAuthEnv {
   orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
-}
-
-export class GetPseudonym extends Context.Tag('GetPseudonym')<
-  GetPseudonym,
-  (orcid: OrcidId) => Effect.Effect<Pseudonym, 'unavailable'>
->() {}
-
-export interface GetPseudonymEnv {
-  getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
 }
 
 export class IsUserBlocked extends Context.Tag('IsUserBlocked')<IsUserBlocked, (user: OrcidId) => boolean>() {}
@@ -78,8 +67,6 @@ const OrcidUserC = C.struct({
   name: C.string,
   orcid: OrcidC,
 })
-
-type OrcidUser = C.TypeOf<typeof OrcidUserC>
 
 function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
   return env => ({

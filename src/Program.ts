@@ -37,7 +37,6 @@ import { collapseRequests } from './fetch.ts'
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { html } from './html.ts'
 import * as Keyv from './keyv.ts'
-import * as LegacyPrereview from './legacy-prereview.ts'
 import { DefaultLocale, translate } from './locales/index.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Personas from './Personas/index.ts'
@@ -54,40 +53,7 @@ import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
-import { GetPseudonym } from './WebApp/log-in/index.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewPage from './WebApp/review-page/index.ts' // eslint-disable-line import/no-internal-modules
-
-const getPseudonym = Layer.effect(
-  GetPseudonym,
-  Effect.gen(function* () {
-    const fetch = yield* FetchHttpClient.Fetch
-    const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
-
-    return orcid =>
-      pipe(
-        FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcid), {
-          fetch,
-          legacyPrereviewApi: {
-            app: legacyPrereviewApi.app,
-            key: Redacted.value(legacyPrereviewApi.key),
-            url: legacyPrereviewApi.origin,
-          },
-        }),
-        Effect.catchIf(
-          error => error === 'not-found',
-          () =>
-            FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview({ name: orcid, orcid }), {
-              fetch,
-              legacyPrereviewApi: {
-                app: legacyPrereviewApi.app,
-                key: Redacted.value(legacyPrereviewApi.key),
-                url: legacyPrereviewApi.origin,
-              },
-            }),
-        ),
-      )
-  }),
-)
 
 const doesUserHaveAVerifiedEmailAddress = Layer.effect(
   Comments.DoesUserHaveAVerifiedEmailAddress,
@@ -354,7 +320,6 @@ export const Program = pipe(
     OpenAlexWorks.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
     Prereviewers.layer,
-    getPseudonym,
     doesUserHaveAVerifiedEmailAddress,
     getContactEmailAddress,
     saveContactEmailAddress,
