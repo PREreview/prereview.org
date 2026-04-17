@@ -2,6 +2,9 @@
   "title": {
     "message": "crwdns6474:0{dataset}crwdne6474:0"
   },
+  "datasetDetails": {
+    "message": "crwdns6560:0crwdne6560:0"
+  },
   "authoredBy": {
     "message": "crwdns6476:0{authors}crwdne6476:0"
   },
