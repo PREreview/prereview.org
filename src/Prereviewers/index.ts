@@ -11,6 +11,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: (orcidId: OrcidId.OrcidId) => Effect.Effect<boolean, UnableToQuery>
+    importRegisteredOrcidId: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
   }
 >() {}
 
@@ -54,6 +55,7 @@ export const layer = Layer.effect(
             ),
           ),
         ),
+      importRegisteredOrcidId: () => Effect.void,
     }
   }),
 )

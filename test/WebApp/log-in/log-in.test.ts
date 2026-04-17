@@ -244,6 +244,9 @@ describe('authenticate', () => {
       'when the PREreviewer has not been registered',
       (code, [publicUrl, state], orcidOauth, locale, accessToken, sessionCookie, sessionId, signedSessionId) => {
         const registerSpy = jest.fn<(typeof Prereviewers.Service)['register']>(() => Effect.void)
+        const importRegisteredOrcidIdSpy = jest.fn<(typeof Prereviewers.Service)['importRegisteredOrcidId']>(
+          () => Effect.void,
+        )
 
         return Effect.gen(function* () {
           yield* _.authenticate(code, state)
@@ -262,7 +265,11 @@ describe('authenticate', () => {
             Layer.succeed(_.IsUserBlocked, () => false),
             Layer.succeed(Locale, locale),
             Layer.succeed(OrcidOauth, orcidOauth),
-            Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(false), register: registerSpy }),
+            Layer.mock(Prereviewers, {
+              isRegistered: () => Effect.succeed(false),
+              register: registerSpy,
+              importRegisteredOrcidId: importRegisteredOrcidIdSpy,
+            }),
             Layer.succeed(PublicUrl, publicUrl),
             Layer.succeed(SessionStore, { cookie: sessionCookie, store: new Keyv() }),
           ]),

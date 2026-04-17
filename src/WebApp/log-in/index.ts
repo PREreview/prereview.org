@@ -101,7 +101,11 @@ export const authenticate = Effect.fn(
 
     yield* Effect.if(prereviewers.isRegistered(authenticatedOrcidId), {
       onTrue: () => Effect.void,
-      onFalse: () => prereviewers.register(authenticatedOrcidId),
+      onFalse: () =>
+        pipe(
+          prereviewers.register(authenticatedOrcidId),
+          Effect.andThen(prereviewers.importRegisteredOrcidId(authenticatedOrcidId)),
+        ),
     })
 
     const sessionId = yield* Uuid.v4()
