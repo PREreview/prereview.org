@@ -149,7 +149,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-    await page.setContent(String(emails[0]?.html))
+    await page.setContent(String(emails[1]?.html))
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
@@ -186,7 +186,7 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-    await page.setContent(String(emails[0]?.html))
+    await page.setContent(String(emails[1]?.html))
 
     const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()

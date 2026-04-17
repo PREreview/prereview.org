@@ -40,7 +40,7 @@ import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
 } from '../src/contact-email-address.ts'
-import { AllowSiteCrawlers, ScietyListToken, SessionSecret } from '../src/Context.ts'
+import { AllowSiteCrawlers, Locale, ScietyListToken, SessionSecret } from '../src/Context.ts'
 import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -3358,9 +3358,10 @@ export const hasAVerifiedEmailAddress: Fixtures<
 export const invitedToBeAnAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'authorInviteStore' | 'baseURL' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'authorInviteStore' | 'baseURL' | 'emails' | 'fetch' | 'nodemailer'> &
+    Pick<PlaywrightTestArgs, 'page'>
 > = {
-  page: async ({ authorInviteStore, baseURL, fetch, page }, use) => {
+  page: async ({ authorInviteStore, baseURL, emails, fetch, nodemailer, page }, use) => {
     const record = {
       conceptdoi: Doi('10.5072/zenodo.1055805'),
       conceptrecid: 1055805,
@@ -3429,24 +3430,34 @@ export const invitedToBeAnAuthor: Fixtures<
       }),
     )
 
-    const email = Email.createAuthorInviteEmail(
-      {
-        name: NonEmptyString('Josiah Carberry'),
-        emailAddress: EmailAddress('jcarberry@example.com'),
-      },
-      Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
-      {
-        author: 'Josiah Carberry',
-        preprint: {
-          id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
-          language: 'en',
-          title: rawHtml('The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'),
-        },
-      },
-      DefaultLocale,
-    )({ publicUrl: new URL(baseURL) })
+    await Effect.runPromise(
+      Effect.provide(
+        Email.inviteAuthor({
+          person: {
+            name: NonEmptyString('Josiah Carberry'),
+            emailAddress: EmailAddress('jcarberry@example.com'),
+          },
+          authorInviteId: Uuid.Uuid('bec5727e-9992-4f3b-85be-6712df617b9d'),
+          newPrereview: {
+            author: 'Josiah Carberry',
+            preprint: {
+              id: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+              language: 'en',
+              title: rawHtml('The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'),
+            },
+          },
+        }),
+        [
+          Layer.succeed(Locale, DefaultLocale),
+          Layer.provide(Email.layer, [
+            Layer.succeed(PublicUrl, new URL(baseURL)),
+            Layer.provide(Nodemailer.layer, Nodemailer.layerTransporter(nodemailer)),
+          ]),
+        ],
+      ),
+    )
 
-    await page.setContent(email.html.toString())
+    await page.setContent(String(emails[0]?.html))
 
     await use(page)
   },

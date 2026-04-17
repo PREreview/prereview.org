@@ -7,7 +7,7 @@ import type * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
-import { Nodemailer } from '../../../ExternalApis/index.ts'
+import type { Locale } from '../../../Context.ts'
 import { Email, OpenAlexWorks, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -486,7 +486,6 @@ export const WriteReviewRouter = pipe(
           ),
           publicUrl: env.publicUrl,
           runtime: env.runtime,
-          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
           zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
           zenodoUrl: env.zenodoApiConfig.origin,
           ...env.logger,
@@ -512,26 +511,32 @@ const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
     ZenodoRecords.createRecordOnZenodo(newPrereview),
     RTE.chainFirstW(([, review]) =>
-      pipe(
-        newPrereview.otherAuthors,
-        RTE.traverseSeqArray(otherAuthor =>
-          pipe(
-            createAuthorInvite({ status: 'open', emailAddress: otherAuthor.emailAddress, review }),
-            RTE.chainReaderKW(authorInvite =>
-              Email.createAuthorInviteEmail(
-                otherAuthor,
-                authorInvite,
-                {
-                  ...newPrereview,
-                  author: Personas.match(newPrereview.persona, {
-                    onPublic: persona => persona.name,
-                    onPseudonym: persona => persona.pseudonym,
-                  }),
-                },
-                newPrereview.locale,
+      RTE.asksReaderTaskEitherW((env: EffectToFpts.EffectEnv<Locale | Email.Email>) =>
+        pipe(
+          newPrereview.otherAuthors,
+          RTE.traverseSeqArray(otherAuthor =>
+            pipe(
+              createAuthorInvite({ status: 'open', emailAddress: otherAuthor.emailAddress, review }),
+              RTE.chainTaskEitherK(authorInviteId =>
+                pipe(
+                  EffectToFpts.toTaskEither(
+                    Email.inviteAuthor({
+                      person: otherAuthor,
+                      authorInviteId,
+                      newPrereview: {
+                        ...newPrereview,
+                        author: Personas.match(newPrereview.persona, {
+                          onPublic: persona => persona.name,
+                          onPseudonym: persona => persona.pseudonym,
+                        }),
+                      },
+                    }),
+                    env.runtime,
+                  ),
+                  TE.mapLeft(() => 'unavailable' as const),
+                ),
               ),
             ),
-            RTE.chainW(Nodemailer.legacySendEmail),
           ),
         ),
       ),

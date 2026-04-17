@@ -3,12 +3,11 @@ import { Locale } from '../../Context.ts'
 import type { Nodemailer } from '../../ExternalApis/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
 import { AcknowledgeReviewRequest } from './AcknowledgeReviewRequest/index.ts'
+import { InviteAuthor } from './InviteAuthor/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
 import { VerifyContactEmailAddressForComment } from './VerifyContactEmailAddressForComment/index.ts'
 import { VerifyContactEmailAddressForInvitedAuthor } from './VerifyContactEmailAddressForInvitedAuthor/index.ts'
 import { VerifyContactEmailAddressForReview } from './VerifyContactEmailAddressForReview/index.ts'
-
-export * from './legacy-email.ts'
 
 export class Email extends Context.Tag('Email')<
   Email,
@@ -18,6 +17,13 @@ export class Email extends Context.Tag('Email')<
     ) => Effect.Effect<
       Effect.Effect.Success<ReturnType<typeof AcknowledgeReviewRequest>>,
       Effect.Effect.Error<ReturnType<typeof AcknowledgeReviewRequest>>
+    >
+    inviteAuthor: (
+      ...args: Parameters<typeof InviteAuthor>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof InviteAuthor>>,
+      Effect.Effect.Error<ReturnType<typeof InviteAuthor>>,
+      Locale
     >
     verifyContactEmailAddress: (
       ...args: Parameters<typeof VerifyContactEmailAddress>
@@ -52,6 +58,7 @@ export class Email extends Context.Tag('Email')<
 
 export const {
   acknowledgeReviewRequest,
+  inviteAuthor,
   verifyContactEmailAddress,
   verifyContactEmailAddressForReview,
   verifyContactEmailAddressForInvitedAuthor,
@@ -67,6 +74,7 @@ export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemai
 
     return {
       acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
+      inviteAuthor: flow(InviteAuthor, Effect.provide(context)),
       verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
       verifyContactEmailAddressForReview: flow(VerifyContactEmailAddressForReview, Effect.provide(context)),
       verifyContactEmailAddressForInvitedAuthor: flow(
