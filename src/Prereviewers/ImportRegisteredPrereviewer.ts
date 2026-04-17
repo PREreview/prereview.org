@@ -79,7 +79,7 @@ export const ImportRegisteredPrereviewer: Commands.Command<
   State,
   PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid
 > = {
-  name: 'RegisteredPrereviewerImported',
+  name: 'ImportRegisteredPrereviewer',
   createFilter,
   foldState,
   decide,
