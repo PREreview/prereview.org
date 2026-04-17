@@ -34,7 +34,12 @@ import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import { Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
 import { Cloudinary, Nodemailer, Slack, Zenodo } from '../../../ExternalApis/index.ts'
-import { CommunitySlack, type LanguageDetection, type OpenAlexWorks } from '../../../ExternalInteractions/index.ts'
+import {
+  CommunitySlack,
+  type Email,
+  type LanguageDetection,
+  type OpenAlexWorks,
+} from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -221,6 +226,8 @@ export interface Env {
     | WorkflowEngine.WorkflowEngine
     | Zenodo.ZenodoApi
     | FeatureFlags.FeatureFlags
+    | Locale
+    | Email.Email
   >
   logger: LoggerEnv
   users: {

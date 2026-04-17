@@ -6,8 +6,9 @@ import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
-import { Cloudinary, Nodemailer } from '../../../ExternalApis/index.ts'
+import { Cloudinary } from '../../../ExternalApis/index.ts'
 import { CommunitySlack, Email } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -469,11 +470,13 @@ export const MyDetailsRouter = pipe(
           clientSecret: Redacted.value(env.slackOauth.clientSecret),
           tokenUrl: env.slackOauth.tokenUrl,
         },
-        verifyContactEmailAddress: withEnv(Email.sendContactEmailAddressVerificationEmail, {
-          locale: env.locale,
-          publicUrl: env.publicUrl,
-          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
-        }),
+        verifyContactEmailAddress: flow(
+          EffectToFpts.toTaskEitherK(
+            (name, emailAddress) => Email.verifyContactEmailAddress({ name, emailAddress }),
+            env.runtime,
+          ),
+          TE.mapLeft(() => 'unavailable' as const),
+        ),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

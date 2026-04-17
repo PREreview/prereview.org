@@ -7,49 +7,6 @@ import * as _ from '../../../src/ExternalInteractions/Email/legacy-email.ts'
 import { translate } from '../../../src/locales/index.ts'
 import * as fc from '../../fc.ts'
 
-describe('sendContactEmailAddressVerificationEmail', () => {
-  test.prop([fc.origin(), fc.nonEmptyString(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
-    'when the email can be sent',
-    async (publicUrl, name, emailAddress, locale) => {
-      const sendEmail = jest.fn<Nodemailer.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
-
-      const actual = await _.sendContactEmailAddressVerificationEmail(
-        name,
-        emailAddress,
-      )({
-        sendEmail,
-        locale,
-        publicUrl,
-      })()
-
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(sendEmail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          from: { address: 'help@prereview.org', name: 'PREreview' },
-          to: { address: emailAddress.value, name },
-          subject: translate(locale)('email', 'verifyEmailAddressTitle')(),
-        }),
-      )
-    },
-  )
-
-  test.prop([fc.origin(), fc.nonEmptyString(), fc.unverifiedContactEmailAddress(), fc.supportedLocale()])(
-    "when the email can't be sent",
-    async (publicUrl, name, emailAddress, locale) => {
-      const actual = await _.sendContactEmailAddressVerificationEmail(
-        name,
-        emailAddress,
-      )({
-        publicUrl,
-        locale,
-        sendEmail: () => TE.left('unavailable'),
-      })()
-
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
-  )
-})
-
 describe('sendContactEmailAddressVerificationEmailForReview', () => {
   test.prop([
     fc.origin(),

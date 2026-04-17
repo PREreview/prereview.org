@@ -1,6 +1,9 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import { Locale } from '../../Context.ts'
 import type { Nodemailer } from '../../ExternalApis/index.ts'
+import type { PublicUrl } from '../../public-url.ts'
 import { AcknowledgeReviewRequest } from './AcknowledgeReviewRequest/index.ts'
+import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
 
 export * from './legacy-email.ts'
 
@@ -13,17 +16,30 @@ export class Email extends Context.Tag('Email')<
       Effect.Effect.Success<ReturnType<typeof AcknowledgeReviewRequest>>,
       Effect.Effect.Error<ReturnType<typeof AcknowledgeReviewRequest>>
     >
+    verifyContactEmailAddress: (
+      ...args: Parameters<typeof VerifyContactEmailAddress>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof VerifyContactEmailAddress>>,
+      Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddress>>,
+      Locale
+    >
   }
 >() {}
 
-export const { acknowledgeReviewRequest } = Effect.serviceFunctions(Email)
+export const { acknowledgeReviewRequest, verifyContactEmailAddress } = Effect.serviceFunctions(Email)
 
-export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<Nodemailer.Nodemailer>(), Context.omit(Scope.Scope))
+export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
+  function* () {
+    const context = yield* Effect.andThen(
+      Effect.context<Nodemailer.Nodemailer | PublicUrl>(),
+      Context.omit(Scope.Scope, Locale),
+    )
 
-  return {
-    acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
-  }
-})
+    return {
+      acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
+      verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
+    }
+  },
+)
 
 export const layer = Layer.effect(Email, make)

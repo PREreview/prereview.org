@@ -14,23 +14,10 @@ import {
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteVerifyEmailAddressMatch,
-  verifyContactEmailAddressMatch,
   writeReviewVerifyEmailAddressMatch,
 } from '../../routes.ts'
 import { EmailAddress } from '../../types/EmailAddress.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
-
-export const sendContactEmailAddressVerificationEmail = (
-  name: NonEmptyString,
-  emailAddress: UnverifiedContactEmailAddress,
-): RTE.ReaderTaskEither<Nodemailer.SendEmailEnv & PublicUrlEnv & { locale: SupportedLocale }, 'unavailable', void> =>
-  pipe(
-    RTE.fromReader(toUrl(verifyContactEmailAddressMatch.formatter, { verify: emailAddress.verificationToken })),
-    RTE.chainReaderKW(verificationUrl =>
-      createContactEmailAddressVerificationEmail({ emailAddress, name, verificationUrl }),
-    ),
-    RTE.chainW(Nodemailer.legacySendEmail),
-  )
 
 export const sendContactEmailAddressVerificationEmailForReview = (
   name: NonEmptyString,

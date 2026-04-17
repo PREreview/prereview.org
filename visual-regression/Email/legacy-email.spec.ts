@@ -3,7 +3,6 @@ import { Uuid } from 'uuid-ts'
 import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.ts'
 import {
   createAuthorInviteEmail,
-  createContactEmailAddressVerificationEmail,
   createContactEmailAddressVerificationEmailForComment,
   createContactEmailAddressVerificationEmailForInvitedAuthor,
 } from '../../src/ExternalInteractions/Email/legacy-email.ts'
@@ -13,34 +12,6 @@ import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { expect, test } from '../base.ts'
-
-test('email-verification HTML looks right', async ({ page }) => {
-  const email = createContactEmailAddressVerificationEmail({
-    name: NonEmptyString('Josiah Carberry'),
-    emailAddress: new UnverifiedContactEmailAddress({
-      value: EmailAddress('jcarberry@example.com'),
-      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
-    }),
-    verificationUrl: new URL('http://example.com'),
-  })({ locale: DefaultLocale })
-
-  await page.setContent(email.html.toString())
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
-})
-
-test('email-verification text looks right', { tag: '@text' }, ({}) => {
-  const email = createContactEmailAddressVerificationEmail({
-    name: NonEmptyString('Josiah Carberry'),
-    emailAddress: new UnverifiedContactEmailAddress({
-      value: EmailAddress('jcarberry@example.com'),
-      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
-    }),
-    verificationUrl: new URL('http://example.com'),
-  })({ locale: DefaultLocale })
-
-  expect(`${email.text}\n`).toMatchSnapshot()
-})
 
 test('email-verification HTML for an invited author looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
