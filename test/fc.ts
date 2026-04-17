@@ -2498,7 +2498,12 @@ export const reviewRequestEvent = (
   )
 
 export const event = (): fc.Arbitrary<Events.Event> =>
-  fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent())
+  fc.oneof(commentEvent(), datasetReviewEvent(), reviewRequestEvent(), registeredPrereviewerImported())
+
+export const registeredPrereviewerImported = (): fc.Arbitrary<Events.RegisteredPrereviewerImported> =>
+  fc
+    .record({ orcidId: orcidId(), registeredAt: instant(), pseudonym: pseudonym() })
+    .map(args => new Events.RegisteredPrereviewerImported(args))
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
