@@ -12,6 +12,29 @@ const input = {
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies _.Input
 
+const imported = new Events.RegisteredPrereviewerImported(input)
+
+const importedDifferentTime = new Events.RegisteredPrereviewerImported({
+  ...input,
+  registeredAt: input.registeredAt.subtract({ hours: 1 }),
+})
+
+const importedDifferentPseudonym = new Events.RegisteredPrereviewerImported({
+  ...input,
+  pseudonym: Pseudonym('Blue Panda'),
+})
+
+const importedDifferentOrcidId = new Events.RegisteredPrereviewerImported({
+  ...input,
+  orcidId: OrcidId('0000-0002-6109-0367'),
+})
+
+const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
 test.failing.each<
   [
     string,
@@ -19,15 +42,49 @@ test.failing.each<
     _.Input,
     Either.Either<Option.Option<Events.Event>, _.PseudonymAlreadyInUse | _.MismatchWithExistingDataForOrcid>,
   ]
->([['no events', [], input, Either.right(Option.some(new Events.RegisteredPrereviewerImported(input)))]])(
-  '%s',
-  (_name, events, input, expected) => {
-    const { foldState, decide } = _.ImportRegisteredPrereviewer
+>([
+  ['no events', [], input, Either.right(Option.some(new Events.RegisteredPrereviewerImported(input)))],
+  [
+    'different PREreviewer imported',
+    [importedDifferentPrereviewer],
+    input,
+    Either.right(Option.some(new Events.RegisteredPrereviewerImported(input))),
+  ],
+  ['already imported, same details', [imported], input, Either.right(Option.none())],
+  [
+    'already imported, different registeredAt',
+    [importedDifferentTime],
+    input,
+    Either.left(
+      new _.MismatchWithExistingDataForOrcid({
+        existingPseudonym: input.pseudonym,
+        existingRegisteredAt: importedDifferentTime.registeredAt,
+      }),
+    ),
+  ],
+  [
+    'already imported, different pseudonym',
+    [importedDifferentPseudonym],
+    input,
+    Either.left(
+      new _.MismatchWithExistingDataForOrcid({
+        existingPseudonym: importedDifferentPseudonym.pseudonym,
+        existingRegisteredAt: input.registeredAt,
+      }),
+    ),
+  ],
+  [
+    'different orcid import with same pseudonym',
+    [importedDifferentOrcidId],
+    input,
+    Either.left(new _.PseudonymAlreadyInUse()),
+  ],
+])('%s', (_name, events, input, expected) => {
+  const { foldState, decide } = _.ImportRegisteredPrereviewer
 
-    const state = foldState(events, input)
+  const state = foldState(events, input)
 
-    const actual = decide(state, input)
+  const actual = decide(state, input)
 
-    expect(actual).toStrictEqual(expected)
-  },
-)
+  expect(actual).toStrictEqual(expected)
+})
