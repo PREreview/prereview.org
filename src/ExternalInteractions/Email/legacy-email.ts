@@ -2,56 +2,14 @@ import { pipe } from 'effect'
 import * as R from 'fp-ts/lib/Reader.js'
 import rtlDetect from 'rtl-detect'
 import type { Uuid } from 'uuid-ts'
-import type { UnverifiedContactEmailAddress } from '../../contact-email-address.ts'
 import type { Nodemailer } from '../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { PreprintTitle } from '../../Preprints/index.ts'
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
-import * as Routes from '../../routes.ts'
 import { authorInviteDeclineMatch, authorInviteMatch } from '../../routes.ts'
 import { EmailAddress } from '../../types/EmailAddress.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
-
-export const createContactEmailAddressVerificationEmailForComment = ({
-  name,
-  emailAddress,
-  comment,
-  locale,
-}: {
-  name: NonEmptyString
-  emailAddress: UnverifiedContactEmailAddress
-  comment: Uuid
-  locale: SupportedLocale
-}): R.Reader<PublicUrlEnv, Nodemailer.Email> =>
-  pipe(
-    toUrl(Routes.WriteCommentVerifyEmailAddress, { commentId: comment, token: emailAddress.verificationToken }),
-    R.map(
-      verificationUrl =>
-        ({
-          from: { address: EmailAddress('help@prereview.org'), name: 'PREreview' },
-          to: { address: emailAddress.value, name },
-          subject: translate(locale, 'email', 'verifyEmailAddressTitle')(),
-          text: `${translate(locale, 'email', 'hiName')({ name })}\n\n${translate(locale, 'email', 'verifyEmailAddressGoingTo')({ link: verificationUrl.href })}`,
-          html: mjmlToHtml(html`
-            <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
-              <mj-head>${mjmlStyle}</mj-head>
-              <mj-body>
-                <mj-section>
-                  <mj-column>
-                    <mj-text>${translate(locale, 'email', 'hiName')({ name })}</mj-text>
-                    <mj-text>${translate(locale, 'email', 'verifyEmailAddressWithButton')()}</mj-text>
-                    <mj-button href="${verificationUrl.href}"
-                      >${translate(locale, 'email', 'verifyEmailAddressButton')()}</mj-button
-                    >
-                  </mj-column>
-                </mj-section>
-              </mj-body>
-            </mjml>
-          `),
-        }) satisfies Nodemailer.Email,
-    ),
-  )
 
 export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },

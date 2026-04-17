@@ -13,7 +13,9 @@ import { UuidC } from './types/uuid.ts'
 
 export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
 
-export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactEmailAddressIsUnavailable') {}
+export class ContactEmailAddressIsUnavailable extends Data.TaggedError('ContactEmailAddressIsUnavailable')<{
+  cause?: unknown
+}> {}
 
 export class GetContactEmailAddress extends Context.Tag('GetContactEmailAddress')<
   GetContactEmailAddress,

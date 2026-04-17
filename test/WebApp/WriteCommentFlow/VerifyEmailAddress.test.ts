@@ -102,7 +102,7 @@ describe('VerifyEmailAddressPage', () => {
               token: contactEmailAddress.verificationToken,
             }).pipe(
               Effect.provideService(ContactEmailAddress.SaveContactEmailAddress, () =>
-                Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+                Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
               ),
             )
 

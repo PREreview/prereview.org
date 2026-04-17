@@ -152,7 +152,7 @@ describe('NeedToVerifyEmailAddressPage', () => {
             Effect.provideService(Comments.HandleCommentCommand, shouldNotBeCalled),
             Effect.provideService(Comments.GetNextExpectedCommandForUserOnAComment, shouldNotBeCalled),
             Effect.provideService(ContactEmailAddress.GetContactEmailAddress, () =>
-              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+              Effect.fail(new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
             ),
             Effect.provideService(LoggedInUser, user),
             EffectTest.run,

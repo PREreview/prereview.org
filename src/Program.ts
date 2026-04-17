@@ -4,7 +4,7 @@ import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, 
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
-import { Locale, SessionStore } from './Context.ts'
+import { SessionStore } from './Context.ts'
 import * as CookieSignature from './CookieSignature.ts'
 import * as DatasetReviews from './DatasetReviews/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
@@ -97,7 +97,7 @@ const getContactEmailAddress = Layer.effect(
         flow(
           Match.value,
           Match.when('not-found', () => new ContactEmailAddress.ContactEmailAddressIsNotFound()),
-          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
           Match.exhaustive,
         ),
       ),
@@ -122,7 +122,7 @@ const saveContactEmailAddress = Layer.effect(
       Effect.mapError(
         flow(
           Match.value,
-          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
+          Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable({})),
           Match.exhaustive,
         ),
       ),
@@ -133,39 +133,14 @@ const saveContactEmailAddress = Layer.effect(
 const verifyContactEmailAddressForComment = Layer.effect(
   ContactEmailAddress.VerifyContactEmailAddressForComment,
   Effect.gen(function* () {
-    const publicUrl = yield* PublicUrl
-    const nodemailer = yield* Nodemailer.NodemailerTransporter
+    const email = yield* Email.Email
 
     return (name, contactEmailAddress, comment) =>
       pipe(
-        Locale,
-        Effect.andThen(locale =>
-          FptsToEffect.reader(
-            Email.createContactEmailAddressVerificationEmailForComment({
-              name,
-              emailAddress: contactEmailAddress,
-              comment,
-              locale,
-            }),
-            { publicUrl },
-          ),
-        ),
-        Effect.andThen(
-          Effect.fn(function* (email) {
-            const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-            return yield* FptsToEffect.readerTaskEither(Nodemailer.sendEmailWithNodemailer(email), {
-              nodemailer,
-              ...loggerEnv,
-            })
-          }),
-        ),
-        Effect.mapError(
-          flow(
-            Match.value,
-            Match.when('unavailable', () => new ContactEmailAddress.ContactEmailAddressIsUnavailable()),
-            Match.exhaustive,
-          ),
+        email.verifyContactEmailAddressForComment({ name, emailAddress: contactEmailAddress, comment }),
+        Effect.catchTag(
+          'UnableToSendEmail',
+          error => new ContactEmailAddress.ContactEmailAddressIsUnavailable({ cause: error }),
         ),
       )
   }),
@@ -312,7 +287,7 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
-  Layer.provide([Prereviews.layer, ReviewRequests.layer]),
+  Layer.provide([Prereviews.layer, ReviewRequests.layer, verifyContactEmailAddressForComment]),
   Layer.provide([
     Personas.layer,
     DatasetData.layer,
@@ -323,7 +298,6 @@ export const Program = pipe(
     doesUserHaveAVerifiedEmailAddress,
     getContactEmailAddress,
     saveContactEmailAddress,
-    verifyContactEmailAddressForComment,
     Layer.effect(Comments.HandleCommentCommand, Comments.makeHandleCommentCommand),
     Layer.effect(Comments.GetNextExpectedCommandForUser, Comments.makeGetNextExpectedCommandForUser),
     Layer.effect(
