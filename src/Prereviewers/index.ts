@@ -55,7 +55,19 @@ export const layer = Layer.effect(
             ),
           ),
         ),
-      importRegisteredOrcidId: () => Effect.void,
+      importRegisteredOrcidId: orcid =>
+        pipe(
+          FptsToEffect.readerTaskEither(LegacyPrereview.getUserFromLegacyPrereview(orcid), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+            },
+          }),
+          Effect.asVoid,
+          Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
+        ),
     }
   }),
 )
