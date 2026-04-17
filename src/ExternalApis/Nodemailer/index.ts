@@ -3,7 +3,6 @@ import type { NodemailerTransporter } from './Nodemailer.ts'
 import { SendEmail } from './SendEmail.ts'
 
 export { Email, UnableToSendEmail } from './Email.ts'
-export * from './legacy-nodemailer.ts'
 export * from './Nodemailer.ts'
 
 export class Nodemailer extends Context.Tag('Nodemailer')<

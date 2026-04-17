@@ -33,7 +33,7 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import { Locale, ScietyListToken, SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
-import { Cloudinary, Nodemailer, Slack, Zenodo } from '../../../ExternalApis/index.ts'
+import { Cloudinary, Slack, Zenodo } from '../../../ExternalApis/index.ts'
 import {
   CommunitySlack,
   type Email,
@@ -89,7 +89,6 @@ export const nonEffectRouter: Effect.Effect<
   | Cloudinary.CloudinaryApi
   | ScietyListToken
   | SessionStore
-  | Nodemailer.NodemailerTransporter
   | Runtime.Runtime.Context<Env['runtime']>
   | FileSystem.FileSystem
   | Path.Path
@@ -118,7 +117,6 @@ export const nonEffectRouter: Effect.Effect<
   const runtime = yield* Effect.runtime<Runtime.Runtime.Context<Env['runtime']>>()
   const fetch = yield* FetchHttpClient.Fetch
   const publicUrl = yield* PublicUrl
-  const nodemailer = yield* Nodemailer.NodemailerTransporter
   const fileSystem = yield* FileSystem.FileSystem
 
   const locale = yield* Locale
@@ -192,7 +190,6 @@ export const nonEffectRouter: Effect.Effect<
     authorInviteStore: keyvStores.authorInviteStore,
     formStore: keyvStores.formStore,
     sessionStore: sessionStore.store,
-    nodemailer,
   } satisfies Env
 
   return yield* handler(env)
@@ -254,7 +251,6 @@ export interface Env {
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
-  nodemailer: typeof Nodemailer.NodemailerTransporter.Service
 }
 
 const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A | B> = P.alt as never
