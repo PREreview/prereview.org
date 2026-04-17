@@ -4,6 +4,7 @@ import type { Nodemailer } from '../../ExternalApis/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
 import { AcknowledgeReviewRequest } from './AcknowledgeReviewRequest/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
+import { VerifyContactEmailAddressForReview } from './VerifyContactEmailAddressForReview/index.ts'
 
 export * from './legacy-email.ts'
 
@@ -23,10 +24,18 @@ export class Email extends Context.Tag('Email')<
       Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddress>>,
       Locale
     >
+    verifyContactEmailAddressForReview: (
+      ...args: Parameters<typeof VerifyContactEmailAddressForReview>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof VerifyContactEmailAddressForReview>>,
+      Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddressForReview>>,
+      Locale
+    >
   }
 >() {}
 
-export const { acknowledgeReviewRequest, verifyContactEmailAddress } = Effect.serviceFunctions(Email)
+export const { acknowledgeReviewRequest, verifyContactEmailAddress, verifyContactEmailAddressForReview } =
+  Effect.serviceFunctions(Email)
 
 export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
   function* () {
@@ -38,6 +47,7 @@ export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemai
     return {
       acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
       verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
+      verifyContactEmailAddressForReview: flow(VerifyContactEmailAddressForReview, Effect.provide(context)),
     }
   },
 )

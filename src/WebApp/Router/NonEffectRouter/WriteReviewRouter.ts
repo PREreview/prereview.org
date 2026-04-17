@@ -4,6 +4,7 @@ import type { Json } from 'fp-ts/lib/Json.js'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
 import { createAuthorInvite, type OpenAuthorInvite } from '../../../author-invite.ts'
 import { Nodemailer } from '../../../ExternalApis/index.ts'
@@ -495,11 +496,14 @@ export const WriteReviewRouter = pipe(
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
         }),
-        verifyContactEmailAddressForReview: withEnv(Email.sendContactEmailAddressVerificationEmailForReview, {
-          locale: env.locale,
-          publicUrl: env.publicUrl,
-          sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
-        }),
+        verifyContactEmailAddressForReview: flow(
+          EffectToFpts.toTaskEitherK(
+            (name, emailAddress, preprint) =>
+              Email.verifyContactEmailAddressForReview({ name, emailAddress, preprint }),
+            env.runtime,
+          ),
+          TE.mapLeft(() => 'unavailable' as const),
+        ),
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>
