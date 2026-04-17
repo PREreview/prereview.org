@@ -4,6 +4,7 @@ import type { Nodemailer } from '../../ExternalApis/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
 import { AcknowledgeReviewRequest } from './AcknowledgeReviewRequest/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
+import { VerifyContactEmailAddressForInvitedAuthor } from './VerifyContactEmailAddressForInvitedAuthor/index.ts'
 import { VerifyContactEmailAddressForReview } from './VerifyContactEmailAddressForReview/index.ts'
 
 export * from './legacy-email.ts'
@@ -31,11 +32,22 @@ export class Email extends Context.Tag('Email')<
       Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddressForReview>>,
       Locale
     >
+    verifyContactEmailAddressForInvitedAuthor: (
+      ...args: Parameters<typeof VerifyContactEmailAddressForInvitedAuthor>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof VerifyContactEmailAddressForInvitedAuthor>>,
+      Effect.Effect.Error<ReturnType<typeof VerifyContactEmailAddressForInvitedAuthor>>,
+      Locale
+    >
   }
 >() {}
 
-export const { acknowledgeReviewRequest, verifyContactEmailAddress, verifyContactEmailAddressForReview } =
-  Effect.serviceFunctions(Email)
+export const {
+  acknowledgeReviewRequest,
+  verifyContactEmailAddress,
+  verifyContactEmailAddressForReview,
+  verifyContactEmailAddressForInvitedAuthor,
+} = Effect.serviceFunctions(Email)
 
 export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemailer | PublicUrl> = Effect.gen(
   function* () {
@@ -48,6 +60,10 @@ export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemai
       acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
       verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
       verifyContactEmailAddressForReview: flow(VerifyContactEmailAddressForReview, Effect.provide(context)),
+      verifyContactEmailAddressForInvitedAuthor: flow(
+        VerifyContactEmailAddressForInvitedAuthor,
+        Effect.provide(context),
+      ),
     }
   },
 )

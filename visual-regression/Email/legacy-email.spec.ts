@@ -4,7 +4,6 @@ import { UnverifiedContactEmailAddress } from '../../src/contact-email-address.t
 import {
   createAuthorInviteEmail,
   createContactEmailAddressVerificationEmailForComment,
-  createContactEmailAddressVerificationEmailForInvitedAuthor,
 } from '../../src/ExternalInteractions/Email/legacy-email.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
@@ -12,34 +11,6 @@ import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { expect, test } from '../base.ts'
-
-test('email-verification HTML for an invited author looks right', async ({ page }) => {
-  const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
-    name: NonEmptyString('Josiah Carberry'),
-    emailAddress: new UnverifiedContactEmailAddress({
-      value: EmailAddress('jcarberry@example.com'),
-      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
-    }),
-    authorInvite: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
-  })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
-
-  await page.setContent(email.html.toString())
-
-  await expect(page).toHaveScreenshot({ fullPage: true })
-})
-
-test('email-verification text for an invited author looks right', { tag: '@text' }, ({}) => {
-  const email = createContactEmailAddressVerificationEmailForInvitedAuthor({
-    name: NonEmptyString('Josiah Carberry'),
-    emailAddress: new UnverifiedContactEmailAddress({
-      value: EmailAddress('jcarberry@example.com'),
-      verificationToken: Uuid('2a29e36c-da26-438d-9a67-577101fa8968'),
-    }),
-    authorInvite: Uuid('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0'),
-  })({ publicUrl: new URL('http://example.com'), locale: DefaultLocale })
-
-  expect(`${email.text}\n`).toMatchSnapshot()
-})
 
 test('email-verification HTML for a comment looks right', async ({ page }) => {
   const email = createContactEmailAddressVerificationEmailForComment({

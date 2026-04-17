@@ -3,7 +3,7 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as T from 'fp-ts/lib/Task.js'
-import { Nodemailer } from '../../../ExternalApis/index.ts'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Email, ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
@@ -162,16 +162,9 @@ export const AuthorInviteFlowRouter = pipe(
           contactEmailAddressStore: env.users.contactEmailAddressStore,
           ...env.logger,
         }),
-        verifyContactEmailAddressForInvitedAuthor: withEnv(
-          flow(
-            RTE.fromReaderK(Email.createContactEmailAddressVerificationEmailForInvitedAuthor),
-            RTE.chainW(Nodemailer.legacySendEmail),
-          ),
-          {
-            locale: env.locale,
-            publicUrl: env.publicUrl,
-            sendEmail: withEnv(Nodemailer.sendEmailWithNodemailer, { nodemailer: env.nodemailer, ...env.logger }),
-          },
+        verifyContactEmailAddressForInvitedAuthor: flow(
+          EffectToFpts.toTaskEitherK(Email.verifyContactEmailAddressForInvitedAuthor, env.runtime),
+          TE.mapLeft(() => 'unavailable' as const),
         ),
       }),
   ),
