@@ -1,4 +1,4 @@
-import { Data, Either, Option } from 'effect'
+import { Array, Data, Either, Option } from 'effect'
 import type * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { Pseudonym, Temporal } from '../types/index.ts'
@@ -22,19 +22,26 @@ export class MismatchWithExistingDataForOrcid extends Data.TaggedError('Mismatch
   existingRegisteredAt: Temporal.Instant
 }> {}
 
-const filter = Events.EventFilter({
-  types: ['RegisteredPrereviewerImported'],
-})
+const createFilter = (input: Input) =>
+  Events.EventFilter([
+    {
+      types: ['RegisteredPrereviewerImported'],
+      predicates: { pseudonym: input.pseudonym },
+    },
+    {
+      types: ['RegisteredPrereviewerImported'],
+      predicates: { orcidId: input.orcidId },
+    },
+  ])
 
-const foldState = (events: ReadonlyArray<Events.Event>): State => {
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
   const byOrcid: Record<string, { pseudonym: Pseudonym.Pseudonym; registeredAt: Temporal.Instant }> = {}
   const byPseudonym: Record<string, OrcidId> = {}
 
-  for (const event of events) {
-    if (event._tag === 'RegisteredPrereviewerImported') {
-      byOrcid[event.orcidId] = { pseudonym: event.pseudonym, registeredAt: event.registeredAt }
-      byPseudonym[event.pseudonym] = event.orcidId
-    }
+  for (const event of filteredEvents) {
+    byOrcid[event.orcidId] = { pseudonym: event.pseudonym, registeredAt: event.registeredAt }
+    byPseudonym[event.pseudonym] = event.orcidId
   }
 
   return { byOrcid, byPseudonym }
@@ -73,7 +80,7 @@ export const ImportRegisteredPrereviewer: Commands.Command<
   PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid
 > = {
   name: 'RegisteredPrereviewerImported',
-  createFilter: () => filter,
+  createFilter,
   foldState,
   decide,
 }
