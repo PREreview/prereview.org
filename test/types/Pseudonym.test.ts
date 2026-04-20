@@ -91,6 +91,7 @@ describe('isPseudonym', () => {
       ['orange panda'],
       ['ORANGE PANDA'],
       ['Giant Panda'],
+      ['Giant Panda 1'],
       ['OrangePanda'],
       ['OrangePanda1'],
       ['Orange  Panda'],

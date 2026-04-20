@@ -57,17 +57,13 @@ export function isPseudonym(value: string): value is Pseudonym {
     if (!Schema.is(Schema.NonNegativeInt)(number)) {
       return false
     }
+
+    if (`${parts[0]} ${parts[1]} ${number}` !== value) {
+      return false
+    }
   }
 
-  if (!colors.includes(parts[0]) || !animals.map(animal => capitalCase(animal)).includes(parts[1])) {
-    return false
-  }
-
-  if (typeof parts[2] === 'string') {
-    return `${parts[0]} ${parts[1]} ${parts[2]}` === value
-  }
-
-  return `${parts[0]} ${parts[1]}` === value
+  return colors.includes(parts[0]) && animals.map(animal => capitalCase(animal)).includes(parts[1])
 }
 
 export const Pseudonym = (pseudonym: string) => PseudonymSchema.make(pseudonym)
