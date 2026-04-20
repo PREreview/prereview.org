@@ -799,7 +799,7 @@
     "message": "What is a PREreview pseudonym?",
     "description": "Heading for the explanation of what a PREreview pseudonym is."
   },
-  "prereviewPseudonymnExplainer": {
+  "prereviewPseudonymExplainer": {
     "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’",
     "description": "Explanation of what a PREreview pseudonym is."
   },

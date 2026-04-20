@@ -61,7 +61,7 @@ export const ChooseYourPersonaPage = ({
               <div>
                 <p>
                   ${rawHtml(
-                    t('prereviewPseudonymnExplainer')({
+                    t('prereviewPseudonymExplainer')({
                       definition,
                       pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
                     }),

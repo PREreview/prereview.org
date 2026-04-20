@@ -57,7 +57,7 @@ export function ChooseYourPersonaPage({
               <div>
                 <p>
                   ${rawHtml(
-                    t('prereviewPseudonymnExplainer')({
+                    t('prereviewPseudonymExplainer')({
                       definition,
                       pseudonym: pseudonymPersona.pseudonym.replace(' ', '&nbsp;'),
                     }),
@@ -120,7 +120,7 @@ export function ChooseYourPersonaPage({
                   <span>${pseudonymPersona.pseudonym}</span>
                 </label>
                 <p id="choose-your-persona-tip-pseudonym" role="note">
-                  ${t('weWillLinkRequestToOthersThatUseYourPseudonymn')()}
+                  ${t('weWillLinkRequestToOthersThatUseYourPseudonym')()}
                 </p>
               </li>
             </ol>

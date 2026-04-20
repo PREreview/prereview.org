@@ -53,7 +53,7 @@
   "whatIsAPrereviewPseudonym": {
     "message": "What is a PREreview pseudonym?"
   },
-  "prereviewPseudonymnExplainer": {
+  "prereviewPseudonymExplainer": {
     "message": "A <definition>PREreview pseudonym</definition> is an alternate name you can use instead of your real name. It is unique and combines a random color and animal. Your pseudonym is ‘{pseudonym}.’"
   },
   "whyUseAPseudonym": {
@@ -62,7 +62,7 @@
   "weWillLinkRequestToYourOrcid": {
     "message": "We’ll link your request to your ORCID iD."
   },
-  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
+  "weWillLinkRequestToOthersThatUseYourPseudonym": {
     "message": "We’ll only link your request to others that also use your pseudonym."
   },
   "requestPublished": {
