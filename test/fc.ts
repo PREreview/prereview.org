@@ -8,11 +8,22 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { animals, colors } from 'anonymus'
-import { capitalCase } from 'case-anything'
 import { mod11_2 } from 'cdigit'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
-import { Array, DateTime, Duration, Either, HashSet, Number, Option, Predicate, Redacted, Struct, Tuple } from 'effect'
+import {
+  Arbitrary,
+  Array,
+  DateTime,
+  Duration,
+  Either,
+  HashSet,
+  Number,
+  Option,
+  Predicate,
+  Redacted,
+  Struct,
+  Tuple,
+} from 'effect'
 import * as fc from 'fast-check'
 import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import fs from 'fs'
@@ -118,7 +129,7 @@ import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
 import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
-import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
 import type { UserOnboarding } from '../src/user-onboarding.ts'
@@ -1323,13 +1334,7 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
 
 export const clubId = (): fc.Arbitrary<Clubs.ClubId> => constantFrom(...Clubs.ClubIdSchema.literals)
 
-export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
-  fc
-    .oneof(
-      fc.tuple(constantFrom(...colors), constantFrom(...animals)),
-      fc.tuple(constantFrom(...colors), constantFrom(...animals), fc.integer({ min: 0 })),
-    )
-    .map(parts => Pseudonym(capitalCase(parts.join(' '))))
+export const pseudonym = (): fc.Arbitrary<Pseudonym> => Arbitrary.make(PseudonymSchema)
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 

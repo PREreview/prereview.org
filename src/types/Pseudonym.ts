@@ -1,6 +1,6 @@
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
-import { Either, Number, Option, pipe, Schema, type Brand } from 'effect'
+import { Arbitrary, Either, Number, Option, pipe, Schema, type Brand } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -28,7 +28,21 @@ export const PseudonymSchema = pipe(
   NonEmptyStringSchema,
   Schema.filter(isPseudonym, { message: () => 'not a pseudonym' }),
   Schema.brand(PseudonymBrand),
-)
+).annotations({
+  arbitrary: () => fc =>
+    fc
+      .record(
+        {
+          color: fc.constantFrom(...colors),
+          animal: fc.constantFrom(...animals.map(animal => capitalCase(animal))),
+          number: Arbitrary.make(Schema.NonNegativeInt),
+        },
+        { requiredKeys: ['color', 'animal'] },
+      )
+      .map(({ color, animal, number }) =>
+        number === undefined ? (`${color} ${animal}` as Pseudonym) : (`${color} ${animal} ${number}` as Pseudonym),
+      ),
+})
 
 export function isPseudonym(value: string): value is Pseudonym {
   const parts = value.split(' ', 3)
