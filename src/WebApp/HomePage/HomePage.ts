@@ -218,7 +218,7 @@ export const createPage = ({
                               'dataset-reviews-list',
                               'reviewText',
                             )({
-                              reviewer: displayPersona(prereview.author),
+                              reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
                               dataset: html`<cite
                                 dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
                                 lang="${prereview.dataset.language}"
