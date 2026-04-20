@@ -64,9 +64,6 @@ importers:
       '@opentelemetry/sdk-trace-node':
         specifier: ^2.6.1
         version: 2.6.1(@opentelemetry/api@1.9.1)
-      anonymus:
-        specifier: ^2.1.3
-        version: 2.1.3
       case-anything:
         specifier: ^3.1.2
         version: 3.1.2
@@ -2648,9 +2645,6 @@ packages:
 
   ajv@8.18.0:
     resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
-
-  anonymus@2.1.3:
-    resolution: {integrity: sha512-TFoFYmhoXuNw2JrrnrxgpqCTyaiQULghC9ahfAfCTbXstgSZzgfKl9FUDu2dKknLjuYOp4HtP4+WQjvr7qGvBg==}
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -8996,8 +8990,6 @@ snapshots:
       fast-uri: 3.1.0
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
-
-  anonymus@2.1.3: {}
 
   ansi-colors@4.1.3: {}
 
