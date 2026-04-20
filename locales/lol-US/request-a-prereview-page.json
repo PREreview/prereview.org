@@ -14,8 +14,8 @@
   "errorEnterPreprint": {
     "message": "crwdns5854:0crwdne5854:0"
   },
-  "dontKnowPreprint": {
-    "message": "crwdns5287:0crwdne5287:0"
+  "doNotKnowPreprint": {
+    "message": "crwdns6606:0crwdne6606:0"
   },
   "notAPreprint": {
     "message": "crwdns5279:0crwdne5279:0"

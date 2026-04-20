@@ -17,9 +17,6 @@
   "havingProblems": {
     "message": "Lo sentimos, estamos teniendo problemas"
   },
-  "dontKnowPreprint": {
-    "message": "Lo sentimos, no conocemos este preprint"
-  },
   "notAPreprint": {
     "message": "Lo sentimos, solo aceptamos preprints"
   },

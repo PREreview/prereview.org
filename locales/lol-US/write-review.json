@@ -539,50 +539,50 @@
   "expectYouToAbideByCodeOfConduct": {
     "message": "crwdns4458:0crwdne4458:0"
   },
-  "examplesOfExpectedBehaviour": {
-    "message": "crwdns4460:0crwdne4460:0"
+  "examplesOfExpectedBehavior": {
+    "message": "crwdns6566:0crwdne6566:0"
   },
-  "expectedBehaviourLanguage": {
-    "message": "crwdns4462:0crwdne4462:0"
+  "expectedBehaviorLanguage": {
+    "message": "crwdns6568:0crwdne6568:0"
   },
-  "expectedBehaviourFeedback": {
-    "message": "crwdns4464:0crwdne4464:0"
+  "expectedBehaviorFeedback": {
+    "message": "crwdns6570:0crwdne6570:0"
   },
-  "expectedBehaviourRespect": {
-    "message": "crwdns4466:0crwdne4466:0"
+  "expectedBehaviorRespect": {
+    "message": "crwdns6572:0crwdne6572:0"
   },
-  "expectedBehaviourGracefulAcceptance": {
-    "message": "crwdns4468:0crwdne4468:0"
+  "expectedBehaviorGracefulAcceptance": {
+    "message": "crwdns6574:0crwdne6574:0"
   },
-  "expectedBehaviourBestOfCommunity": {
-    "message": "crwdns4470:0crwdne4470:0"
+  "expectedBehaviorBestOfCommunity": {
+    "message": "crwdns6576:0crwdne6576:0"
   },
-  "expectedBehaviourEmpathy": {
-    "message": "crwdns4472:0crwdne4472:0"
+  "expectedBehaviorEmpathy": {
+    "message": "crwdns6578:0crwdne6578:0"
   },
-  "examplesOfUnacceptableBehaviour": {
-    "message": "crwdns4474:0crwdne4474:0"
+  "examplesOfUnacceptableBehavior": {
+    "message": "crwdns6580:0crwdne6580:0"
   },
-  "unacceptableBehaviourTrollingEtc": {
-    "message": "crwdns4476:0crwdne4476:0"
+  "unacceptableBehaviorTrollingEtc": {
+    "message": "crwdns6582:0crwdne6582:0"
   },
-  "unacceptableBehaviourUnconstructive": {
-    "message": "crwdns4478:0crwdne4478:0"
+  "unacceptableBehaviorUnconstructive": {
+    "message": "crwdns6584:0crwdne6584:0"
   },
-  "unacceptableBehaviourHarassment": {
-    "message": "crwdns4480:0crwdne4480:0"
+  "unacceptableBehaviorHarassment": {
+    "message": "crwdns6586:0crwdne6586:0"
   },
-  "unacceptableBehaviourPublishingConfidentialInformation": {
-    "message": "crwdns4482:0crwdne4482:0"
+  "unacceptableBehaviorPublishingConfidentialInformation": {
+    "message": "crwdns6588:0crwdne6588:0"
   },
-  "unacceptableBehaviourSexualisedLanguage": {
-    "message": "crwdns4484:0crwdne4484:0"
+  "unacceptableBehaviorSexualizedLanguage": {
+    "message": "crwdns6590:0crwdne6590:0"
   },
-  "unacceptableBehaviourReviewingOwnPreprint": {
-    "message": "crwdns5940:0crwdne5940:0"
+  "unacceptableBehaviorReviewingOwnPreprint": {
+    "message": "crwdns6592:0crwdne6592:0"
   },
-  "unacceptableBehaviourInappropriate": {
-    "message": "crwdns4486:0crwdne4486:0"
+  "unacceptableBehaviorInappropriate": {
+    "message": "crwdns6594:0crwdne6594:0"
   },
   "iAmFollowingCodeOfConduct": {
     "message": "crwdns4488:0crwdne4488:0"

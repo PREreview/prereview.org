@@ -518,51 +518,6 @@
   "expectYouToAbideByCodeOfConduct": {
     "message": "Como membro da nossa comunidade, esperamos que você respeite o <link>Código de Conduta da PREreview</link>."
   },
-  "examplesOfExpectedBehaviour": {
-    "message": "Exemplos de comportamentos esperados"
-  },
-  "expectedBehaviourLanguage": {
-    "message": "Usar linguagem acolhedora e inclusiva."
-  },
-  "expectedBehaviourFeedback": {
-    "message": "Fornecer feedback construtivo, ou seja, útil para quem o recebe."
-  },
-  "expectedBehaviourRespect": {
-    "message": "Respeitar pontos de vista e experiências diferentes."
-  },
-  "expectedBehaviourGracefulAcceptance": {
-    "message": "Aceitar graciosamente críticas construtivas."
-  },
-  "expectedBehaviourBestOfCommunity": {
-    "message": "Focar no que é melhor para a comunidade."
-  },
-  "expectedBehaviourEmpathy": {
-    "message": "Demonstrar empatia em relação com os outros membros da comunidade."
-  },
-  "examplesOfUnacceptableBehaviour": {
-    "message": "Exemplos de comportamentos inaceitáveis"
-  },
-  "unacceptableBehaviourTrollingEtc": {
-    "message": "Provocações (trollagem), insultos, comentários depreciativos e ataques pessoais ou políticos."
-  },
-  "unacceptableBehaviourUnconstructive": {
-    "message": "Fornecer feedback não construtivo ou que prejudique a avaliação PREreview."
-  },
-  "unacceptableBehaviourHarassment": {
-    "message": "Assédio público ou privado."
-  },
-  "unacceptableBehaviourPublishingConfidentialInformation": {
-    "message": "Divulgar informações confidenciais de terceiros, como endereço físico ou eletrônico, sem permissão explícita."
-  },
-  "unacceptableBehaviourSexualisedLanguage": {
-    "message": "Uso de linguagem ou imagens sexualizadas e atenção ou avanços sexuais indesejados."
-  },
-  "unacceptableBehaviourReviewingOwnPreprint": {
-    "message": "Avaliação do próprio preprint."
-  },
-  "unacceptableBehaviourInappropriate": {
-    "message": "Qualquer outro comportamento que possa, de forma razoável, ser considerado inadequado em um ambiente profissional."
-  },
   "iAmFollowingCodeOfConduct": {
     "message": "Estou seguindo o Código de Conduta"
   },

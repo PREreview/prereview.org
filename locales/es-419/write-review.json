@@ -533,51 +533,6 @@
   "expectYouToAbideByCodeOfConduct": {
     "message": "Como integrante de nuestra comunidad, esperamos que sigas el <link>Código de conducta de PREreview</link>."
   },
-  "examplesOfExpectedBehaviour": {
-    "message": "Ejemplos de conducta esperada"
-  },
-  "expectedBehaviourLanguage": {
-    "message": "Usar un lenguaje cordial e inclusivo."
-  },
-  "expectedBehaviourFeedback": {
-    "message": "Ofrecer retroalimentación que sea constructiva, es decir, útil para quien sea es dirigida."
-  },
-  "expectedBehaviourRespect": {
-    "message": "Respetar los diferentes puntos de vista y experiencias."
-  },
-  "expectedBehaviourGracefulAcceptance": {
-    "message": "Aceptar con gracia las críticas constructivas."
-  },
-  "expectedBehaviourBestOfCommunity": {
-    "message": "Centrarse en lo que es mejor para la comunidad."
-  },
-  "expectedBehaviourEmpathy": {
-    "message": "Mostrar empatía hacia otros/as integrantes de la comunidad."
-  },
-  "examplesOfUnacceptableBehaviour": {
-    "message": "Ejemplos de conducta inaceptable"
-  },
-  "unacceptableBehaviourTrollingEtc": {
-    "message": "Comentarios provocativos, ofensivos o despectivos, y ataques personales o políticos."
-  },
-  "unacceptableBehaviourUnconstructive": {
-    "message": "Proporcionar retroalimentación no constructiva o perturbadora en PREreview."
-  },
-  "unacceptableBehaviourHarassment": {
-    "message": "Acoso público o privado."
-  },
-  "unacceptableBehaviourPublishingConfidentialInformation": {
-    "message": "Publicar datos confidenciales de otras personas, como una dirección física o de correo electrónico, sin permiso explícito."
-  },
-  "unacceptableBehaviourSexualisedLanguage": {
-    "message": "Uso de lenguaje o imágenes sexualizadas y atención o insinuaciones sexuales no deseados."
-  },
-  "unacceptableBehaviourReviewingOwnPreprint": {
-    "message": "Revisar tu propio preprint."
-  },
-  "unacceptableBehaviourInappropriate": {
-    "message": "Cualquier otra conducta que pudiera considerarse razonablemente inapropiada en un entorno profesional."
-  },
   "iAmFollowingCodeOfConduct": {
     "message": "Me estoy adhiriendo al Código de conducta"
   },

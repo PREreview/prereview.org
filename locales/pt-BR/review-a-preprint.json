@@ -17,9 +17,6 @@
   "havingProblems": {
     "message": "Desculpe, algo deu errado"
   },
-  "dontKnowPreprint": {
-    "message": "Desculpe, não reconhecemos este preprint"
-  },
   "notAPreprint": {
     "message": "Desculpe, aceitamos apenas preprints"
   },

@@ -53,8 +53,8 @@
   "whatIsAPrereviewPseudonym": {
     "message": "crwdns5527:0crwdne5527:0"
   },
-  "prereviewPseudonymnExplainer": {
-    "message": "crwdns5529:0{pseudonym}crwdne5529:0"
+  "prereviewPseudonymExplainer": {
+    "message": "crwdns6596:0{pseudonym}crwdne6596:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns5531:0crwdne5531:0"
@@ -62,8 +62,8 @@
   "weWillLinkRequestToYourOrcid": {
     "message": "crwdns5533:0crwdne5533:0"
   },
-  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
-    "message": "crwdns5535:0crwdne5535:0"
+  "weWillLinkRequestToOthersThatUseYourPseudonym": {
+    "message": "crwdns6598:0crwdne6598:0"
   },
   "requestPublished": {
     "message": "crwdns5537:0crwdne5537:0"

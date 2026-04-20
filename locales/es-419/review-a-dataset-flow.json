@@ -17,9 +17,6 @@
   "errorEnterTheDataset": {
     "message": "Ingresa el DOI o la URL del conjunto de datos"
   },
-  "dontKnowDataset": {
-    "message": "Lo sentimos, no conocemos este conjunto de datos"
-  },
   "doiCouldBeDryad": {
     "message": "Creemos que el DOI {doi} podría ser un conjunto de datos de Dryad, pero no podemos encontrar más detalles."
   },
@@ -179,9 +176,6 @@
   "poorWhy": {
     "message": "¿Por qué es de mala calidad?"
   },
-  "dontKnow": {
-    "message": "No lo sé"
-  },
   "changeQualityRating": {
     "message": "Cambiar <visuallyHidden>cómo calificas la calidad</visuallyHidden>"
   },
@@ -340,9 +334,6 @@
   },
   "whatIsAPrereviewPseudonym": {
     "message": "¿Qué es un seudónimo de PREreview?"
-  },
-  "prereviewPseudonymnExplainer": {
-    "message": "Un <definition>seudónimo de PREreview</definition> es un nombre alternativo que puedes utilizar en lugar de tu nombre verdadero. Es único y combina de forma aleatoria un color y un animal. Tu seudónimo es ‘{pseudonym}.’"
   },
   "weWillLinkToYourOrcid": {
     "message": "Vincularemos tu PREreview a tu ORCID iD."

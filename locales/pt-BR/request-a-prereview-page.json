@@ -14,9 +14,6 @@
   "errorEnterPreprint": {
     "message": "Insira o DOI ou URL do preprint"
   },
-  "dontKnowPreprint": {
-    "message": "Desculpe, não reconhecemos este preprint"
-  },
   "notAPreprint": {
     "message": "Desculpe, apenas aceitamos preprints"
   },

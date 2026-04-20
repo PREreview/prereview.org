@@ -53,17 +53,11 @@
   "whatIsAPrereviewPseudonym": {
     "message": "O que é um pseudônimo PREreview?"
   },
-  "prereviewPseudonymnExplainer": {
-    "message": "Um <definition>pseudônimo PREreview</definition> é um nome alternativo que você pode usar em vez do seu nome real. Ele é único e combina uma cor e um animal aleatórios. Seu pseudônimo é ‘{pseudonym}.’"
-  },
   "whyUseAPseudonym": {
     "message": "Usando seu pseudônimo, você pode contribuir com avaliações abertas de preprints sem temer represálias ou julgamentos, que podem ocorrer ao usar seu nome real. No entanto, usar um pseudônimo mantém um certo grau de responsabilidade."
   },
   "weWillLinkRequestToYourOrcid": {
     "message": "Vincularemos seu pedido ao seu ORCID iD."
-  },
-  "weWillLinkRequestToOthersThatUseYourPseudonymn": {
-    "message": "Vamos vincular sua solicitação apenas a outras que também utilizam seu pseudônimo."
   },
   "requestPublished": {
     "message": "Solicitação publicada"

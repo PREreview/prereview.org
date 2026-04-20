@@ -17,8 +17,8 @@
   "errorEnterTheDataset": {
     "message": "crwdns6126:0crwdne6126:0"
   },
-  "dontKnowDataset": {
-    "message": "crwdns6128:0crwdne6128:0"
+  "doNotKnowDataset": {
+    "message": "crwdns6602:0crwdne6602:0"
   },
   "doiCouldBeDryad": {
     "message": "crwdns6130:0{doi}crwdne6130:0"
@@ -251,8 +251,8 @@
   "poorWhy": {
     "message": "crwdns6186:0crwdne6186:0"
   },
-  "dontKnow": {
-    "message": "crwdns6028:0crwdne6028:0"
+  "doNotKnow": {
+    "message": "crwdns6604:0crwdne6604:0"
   },
   "changeQualityRating": {
     "message": "crwdns6030:0crwdne6030:0"
@@ -599,8 +599,8 @@
   "whatIsAPrereviewPseudonym": {
     "message": "crwdns6100:0crwdne6100:0"
   },
-  "prereviewPseudonymnExplainer": {
-    "message": "crwdns6102:0{pseudonym}crwdne6102:0"
+  "prereviewPseudonymExplainer": {
+    "message": "crwdns6562:0{pseudonym}crwdne6562:0"
   },
   "whyUseAPseudonym": {
     "message": "crwdns6114:0crwdne6114:0"
