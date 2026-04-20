@@ -8,7 +8,7 @@ import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('getPage', () => {
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.sanitisedHtml()])(
+  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.sanitizedHtml()])(
     'when the page can be loaded',
     (id, html) =>
       Effect.gen(function* () {

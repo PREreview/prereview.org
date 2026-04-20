@@ -525,7 +525,7 @@ export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 
 export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
-export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
+export const sanitizedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
 
 export const plainText = (): fc.Arbitrary<PlainText> => fc.string().map(toPlainText)
 
