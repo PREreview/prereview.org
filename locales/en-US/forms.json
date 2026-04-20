@@ -13,7 +13,7 @@
   },
   "errorSummaryTitle": {
     "message": "There is a problem",
-    "description": "Title of the section summarising any errors a user has made."
+    "description": "Title of the section summarizing any errors a user has made."
   },
   "startButton": {
     "message": "Start now",
