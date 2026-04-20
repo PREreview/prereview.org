@@ -1324,7 +1324,12 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
 export const clubId = (): fc.Arbitrary<Clubs.ClubId> => constantFrom(...Clubs.ClubIdSchema.literals)
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
-  fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => Pseudonym(capitalCase(parts.join(' '))))
+  fc
+    .oneof(
+      fc.tuple(constantFrom(...colors), constantFrom(...animals)),
+      fc.tuple(constantFrom(...colors), constantFrom(...animals), fc.integer({ min: 0 })),
+    )
+    .map(parts => Pseudonym(capitalCase(parts.join(' '))))
 
 export const profileId = (): fc.Arbitrary<ProfileId.ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 

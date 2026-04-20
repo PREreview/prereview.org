@@ -70,6 +70,9 @@ describe('isPseudonym', () => {
   test.prop([fc.pseudonym()], {
     examples: [
       ['Orange Panda' as _.Pseudonym],
+      ['Orange Panda 0' as _.Pseudonym],
+      ['Orange Panda 1' as _.Pseudonym],
+      ['Orange Panda 123' as _.Pseudonym],
       ['Green Hawk' as _.Pseudonym],
       ['Blue Sheep' as _.Pseudonym],
       ['Red Hummingbird' as _.Pseudonym],
@@ -83,7 +86,26 @@ describe('isPseudonym', () => {
   })
 
   test.prop([fc.string()], {
-    examples: [['Orange panda'], ['orange panda'], ['ORANGE PANDA']],
+    examples: [
+      ['Orange panda'],
+      ['orange panda'],
+      ['ORANGE PANDA'],
+      ['Giant Panda'],
+      ['OrangePanda'],
+      ['OrangePanda1'],
+      ['Orange  Panda'],
+      [' Orange Panda'],
+      ['Orange Panda '],
+      ['Orange  Panda 1'],
+      ['Orange Panda Bear'],
+      ['Orange Panda 1 Bear'],
+      ['Orange Panda -1'],
+      ['Orange Panda One'],
+      ['Orange Panda 1!'],
+      ['Orange Panda 1 !'],
+      ['Orange Panda 01'],
+      ['Orange Panda 1.0'],
+    ],
   })('with a non-pseudonym', string => {
     expect(_.isPseudonym(string)).toBe(false)
   })

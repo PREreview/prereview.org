@@ -1,10 +1,10 @@
 import { animals, colors } from 'anonymus'
 import { capitalCase } from 'case-anything'
-import { type Brand, Either, pipe, Schema } from 'effect'
+import { Either, Number, Option, pipe, Schema, type Brand } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
-import { type NonEmptyString, NonEmptyStringSchema } from './NonEmptyString.ts'
+import { NonEmptyStringSchema, type NonEmptyString } from './NonEmptyString.ts'
 
 const PseudonymBrand: unique symbol = Symbol.for('Pseudonym')
 
@@ -31,13 +31,29 @@ export const PseudonymSchema = pipe(
 )
 
 export function isPseudonym(value: string): value is Pseudonym {
-  const parts = value.split(' ', 2)
+  const parts = value.split(' ', 3)
 
   if (typeof parts[0] !== 'string' || typeof parts[1] !== 'string') {
     return false
   }
 
-  return colors.includes(parts[0]) && animals.map(animal => capitalCase(animal)).includes(parts[1])
+  if (typeof parts[2] === 'string') {
+    const number = Option.getOrUndefined(Number.parse(parts[2]))
+
+    if (!Schema.is(Schema.NonNegativeInt)(number)) {
+      return false
+    }
+  }
+
+  if (!colors.includes(parts[0]) || !animals.map(animal => capitalCase(animal)).includes(parts[1])) {
+    return false
+  }
+
+  if (typeof parts[2] === 'string') {
+    return `${parts[0]} ${parts[1]} ${parts[2]}` === value
+  }
+
+  return `${parts[0]} ${parts[1]}` === value
 }
 
 export const Pseudonym = (pseudonym: string) => PseudonymSchema.make(pseudonym)
