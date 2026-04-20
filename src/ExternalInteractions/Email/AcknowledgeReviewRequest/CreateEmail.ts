@@ -1,17 +1,20 @@
+import { Effect } from 'effect'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, rawHtml } from '../../../html.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 
-export const CreateEmail = (reviewRequest: ReviewRequests.ReviewRequestToAcknowledge): Nodemailer.Email => {
+export const CreateEmail: (
+  reviewRequest: ReviewRequests.ReviewRequestToAcknowledge,
+) => Effect.Effect<Nodemailer.Email> = Effect.fnUntraced(function* (reviewRequest) {
   const t = translate(DefaultLocale, 'email')
 
   return {
     from: { name: 'PREreview', address: EmailAddress.EmailAddress('help@prereview.org') },
     to: { name: reviewRequest.requester.name, address: reviewRequest.requester.emailAddress },
     subject: t('acknowledgeReviewRequestTitle')(),
-    html: mjmlToHtml(html`
+    html: yield* mjmlToHtml(html`
       <mjml>
         <mj-body>
           <mj-section>
@@ -81,4 +84,4 @@ ${t('footerCommunity')()}
 ${t('footerJoinText')({ prereviewLink: 'https://prereview.org', slackLink: 'https://bit.ly/PREreview-Slack' })}
 `.trim(),
   }
-}
+})

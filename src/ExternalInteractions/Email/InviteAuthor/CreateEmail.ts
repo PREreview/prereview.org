@@ -29,7 +29,7 @@ export const CreateEmail: (details: {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
     to: { address: person.emailAddress, name: person.name },
     subject: t('beListedAsAuthor')(),
-    html: mjmlToHtml(html`
+    html: yield* mjmlToHtml(html`
       <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
         <mj-head>
           <mj-attributes>

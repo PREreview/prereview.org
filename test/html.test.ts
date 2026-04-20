@@ -1,8 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Effect } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/html.ts'
+import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
 test.each([
@@ -1253,21 +1255,23 @@ describe('RawHtmlC', () => {
   })
 })
 
-test.prop([fc.lorem()])('mjmlToHtml', text => {
-  const actual = _.mjmlToHtml(_.html`
-    <mjml>
-      <mj-body>
-        <mj-section>
-          <mj-column>
-            <mj-text>
-              ${text}
-            </mj-text>
-          </mj-column>
-        </mj-section>
-      </mj-body>
-    </mjml>
-  `)
+test.prop([fc.lorem()])('mjmlToHtml', text =>
+  Effect.gen(function* () {
+    const actual = yield* _.mjmlToHtml(_.html`
+      <mjml>
+        <mj-body>
+          <mj-section>
+            <mj-column>
+              <mj-text>
+                ${text}
+              </mj-text>
+            </mj-column>
+          </mj-section>
+        </mj-body>
+      </mjml>
+    `)
 
-  expect(actual.value).toStrictEqual(expect.stringMatching(/<!doctype html>/))
-  expect(actual.value).toStrictEqual(expect.stringContaining(text))
-})
+    expect(actual.value).toStrictEqual(expect.stringMatching(/<!doctype html>/))
+    expect(actual.value).toStrictEqual(expect.stringContaining(text))
+  }).pipe(EffectTest.run),
+)

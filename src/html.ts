@@ -1,4 +1,4 @@
-import { Array, Data, Match, pipe, type Predicate } from 'effect'
+import { Array, Data, Effect, Match, pipe, type Predicate } from 'effect'
 import { decode, encode } from 'html-entities'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
@@ -57,11 +57,12 @@ export function rawHtml(html: string): Html {
   return new Html({ value })
 }
 
-export function mjmlToHtml(mjml: Html): Html {
-  const value = processMjml(mjml.toString()).html
+export const mjmlToHtml = (mjml: Html): Effect.Effect<Html> =>
+  Effect.sync(() => {
+    const value = processMjml(mjml.toString()).html
 
-  return new Html({ value })
-}
+    return new Html({ value })
+  })
 
 export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}): Html {
   const sanitized = sanitize(html, {

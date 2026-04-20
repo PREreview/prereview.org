@@ -28,7 +28,7 @@ export const CreateEmail: (reviewRequest: {
     from: { address: EmailAddress.EmailAddress('help@prereview.org'), name: 'PREreview' },
     to: { address: emailAddress.value, name },
     subject: t('verifyEmailAddressTitle')(),
-    html: mjmlToHtml(html`
+    html: yield* mjmlToHtml(html`
       <mjml lang="${locale}" dir="${rtlDetect.getLangDir(locale)}">
         <mj-head>
           <mj-attributes>
