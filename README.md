@@ -33,7 +33,7 @@ make start
 
 You can now access the app at <https://localhost>.
 
-You will also have a `.env` file. This file contains environment variables controlling specific behaviours, including credentials for accessing external services.
+You will also have a `.env` file. This file contains environment variables controlling specific behaviors, including credentials for accessing external services.
 
 ## Operations
 

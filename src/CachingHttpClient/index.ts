@@ -23,7 +23,7 @@ export const CachingHttpClient = (
     const cache = yield* HttpCache.HttpCache
     const revalidationQueue = yield* RevalidationQueue
 
-    const cachingBehaviour = (
+    const cachingBehavior = (
       request: Effect.Effect<HttpClientRequest.HttpClientRequest>,
     ): Effect.Effect<HttpClientResponse.HttpClientResponse, HttpClientError.HttpClientError> =>
       Effect.gen(function* () {
@@ -89,7 +89,7 @@ export const CachingHttpClient = (
         )
       }).pipe(Effect.withSpan('CachingHttpClient'))
 
-    return HttpClient.makeWith(cachingBehaviour, Effect.succeed)
+    return HttpClient.makeWith(cachingBehavior, Effect.succeed)
   })
 
 export const layer = (...args: Parameters<typeof CachingHttpClient>) =>

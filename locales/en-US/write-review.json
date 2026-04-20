@@ -545,49 +545,49 @@
   "expectYouToAbideByCodeOfConduct": {
     "message": "As a member of our community, we expect you to abide by the <link>PREreview Code of Conduct</link>."
   },
-  "examplesOfExpectedBehaviour": {
+  "examplesOfExpectedBehavior": {
     "message": "Examples of expected behaviors"
   },
-  "expectedBehaviourLanguage": {
+  "expectedBehaviorLanguage": {
     "message": "Using welcoming and inclusive language."
   },
-  "expectedBehaviourFeedback": {
+  "expectedBehaviorFeedback": {
     "message": "Providing feedback that is constructive, i.e. useful, to the receiver."
   },
-  "expectedBehaviourRespect": {
+  "expectedBehaviorRespect": {
     "message": "Being respectful of differing viewpoints and experiences."
   },
-  "expectedBehaviourGracefulAcceptance": {
+  "expectedBehaviorGracefulAcceptance": {
     "message": "Gracefully accepting constructive criticism."
   },
-  "expectedBehaviourBestOfCommunity": {
+  "expectedBehaviorBestOfCommunity": {
     "message": "Focusing on what is best for the community."
   },
-  "expectedBehaviourEmpathy": {
+  "expectedBehaviorEmpathy": {
     "message": "Showing empathy towards other community members."
   },
-  "examplesOfUnacceptableBehaviour": {
+  "examplesOfUnacceptableBehavior": {
     "message": "Examples of unacceptable behaviors"
   },
-  "unacceptableBehaviourTrollingEtc": {
+  "unacceptableBehaviorTrollingEtc": {
     "message": "Trolling, insulting or derogatory comments, and personal or political attacks."
   },
-  "unacceptableBehaviourUnconstructive": {
+  "unacceptableBehaviorUnconstructive": {
     "message": "Providing unconstructive or disruptive feedback on PREreview."
   },
-  "unacceptableBehaviourHarassment": {
+  "unacceptableBehaviorHarassment": {
     "message": "Public or private harassment."
   },
-  "unacceptableBehaviourPublishingConfidentialInformation": {
+  "unacceptableBehaviorPublishingConfidentialInformation": {
     "message": "Publishing others’ confidential information, such as a physical or electronic address, without explicit permission."
   },
-  "unacceptableBehaviourSexualisedLanguage": {
+  "unacceptableBehaviorSexualizedLanguage": {
     "message": "Use of sexualized language or imagery and unwelcome sexual attention or advances."
   },
-  "unacceptableBehaviourReviewingOwnPreprint": {
+  "unacceptableBehaviorReviewingOwnPreprint": {
     "message": "Reviewing your own preprint."
   },
-  "unacceptableBehaviourInappropriate": {
+  "unacceptableBehaviorInappropriate": {
     "message": "Other conduct which could reasonably be considered inappropriate in a professional setting."
   },
   "iAmFollowingCodeOfConduct": {

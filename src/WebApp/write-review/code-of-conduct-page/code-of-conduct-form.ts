@@ -49,32 +49,32 @@ export const codeOfConductForm = (preprint: PreprintTitle, form: CodeOfConductFo
             </p>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfExpectedBehaviour')()}</span></summary>
+              <summary><span>${t('write-review', 'examplesOfExpectedBehavior')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>${t('write-review', 'expectedBehaviourLanguage')()}</li>
-                  <li>${t('write-review', 'expectedBehaviourFeedback')()}</li>
-                  <li>${t('write-review', 'expectedBehaviourRespect')()}</li>
-                  <li>${t('write-review', 'expectedBehaviourGracefulAcceptance')()}</li>
-                  <li>${t('write-review', 'expectedBehaviourBestOfCommunity')()}</li>
-                  <li>${t('write-review', 'expectedBehaviourEmpathy')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorLanguage')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorFeedback')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorRespect')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorGracefulAcceptance')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorBestOfCommunity')()}</li>
+                  <li>${t('write-review', 'expectedBehaviorEmpathy')()}</li>
                 </ul>
               </div>
             </details>
 
             <details>
-              <summary><span>${t('write-review', 'examplesOfUnacceptableBehaviour')()}</span></summary>
+              <summary><span>${t('write-review', 'examplesOfUnacceptableBehavior')()}</span></summary>
 
               <div>
                 <ul>
-                  <li>${t('write-review', 'unacceptableBehaviourReviewingOwnPreprint')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourTrollingEtc')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourUnconstructive')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourHarassment')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourPublishingConfidentialInformation')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourSexualisedLanguage')()}</li>
-                  <li>${t('write-review', 'unacceptableBehaviourInappropriate')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorReviewingOwnPreprint')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorTrollingEtc')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorUnconstructive')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorHarassment')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorPublishingConfidentialInformation')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorSexualizedLanguage')()}</li>
+                  <li>${t('write-review', 'unacceptableBehaviorInappropriate')()}</li>
                 </ul>
               </div>
             </details>
