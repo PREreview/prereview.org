@@ -39,7 +39,7 @@ Write in the active voice.
 Write in US English (en-US).
 You can include emojis.
 Do not include hashtags.
-Be positive, but ensure you don't discourage those who might feel marginalised or suffer from something like imposter syndrome from participating.
+Be positive, but ensure you don't discourage those who might feel marginalized or suffer from something like imposter syndrome from participating.
 Don't use hyperbole.
 Use objective vocabulary.
 Don't repeat terms.
