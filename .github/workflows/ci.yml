@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -147,7 +147,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -173,7 +173,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -202,7 +202,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -253,7 +253,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -298,7 +298,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -405,7 +405,7 @@ jobs:
         uses: nschloe/action-cached-lfs-checkout@v1.2.5
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
@@ -462,7 +462,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: 'Set up pnpm'
-        uses: pnpm/action-setup@v5.0.0
+        uses: pnpm/action-setup@v6.0.1
         with:
           version: 10
 
