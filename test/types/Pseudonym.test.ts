@@ -85,7 +85,7 @@ describe('isPseudonym', () => {
     expect(_.isPseudonym(string)).toBe(true)
   })
 
-  test.prop([fc.string()], {
+  test.prop([fc.lorem()], {
     examples: [
       ['Orange panda'],
       ['orange panda'],
