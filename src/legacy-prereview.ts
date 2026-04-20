@@ -7,18 +7,11 @@ import * as J from 'fp-ts/lib/Json.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { URL } from 'url'
-import type { Uuid } from 'uuid-ts'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
-import {
-  type IndeterminatePreprintIdWithDoi,
-  type PreprintId,
-  type PreprintIdWithDoi,
-  parsePreprintDoi,
-} from './Preprints/index.ts'
+import type { PreprintId, PreprintIdWithDoi } from './Preprints/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
-import { ProfileId } from './types/index.ts'
 import { type OrcidId, isOrcidId } from './types/OrcidId.ts'
 import { PseudonymC, isPseudonym } from './types/Pseudonym.ts'
 
@@ -145,86 +138,6 @@ const LegacyRapidPrereviewsD = pipe(
         }),
       ),
     }),
-  ),
-)
-
-const LegacyPrereviewPreprintUuidD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      data: D.tuple(
-        D.struct({
-          handle: D.string,
-        }),
-      ),
-    }),
-  ),
-)
-
-const LegacyPrereviewProfileUuidD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      data: D.tuple(
-        D.union(
-          D.struct({
-            isAnonymous: D.literal(false),
-            orcid: OrcidD,
-          }),
-          D.struct({
-            isAnonymous: D.literal(true),
-            name: PseudonymC,
-          }),
-        ),
-      ),
-    }),
-  ),
-)
-
-export const getPreprintIdFromLegacyPreviewUuid: (
-  uuid: Uuid,
-) => RTE.ReaderTaskEither<
-  LegacyPrereviewApiEnv & F.FetchEnv,
-  'not-found' | 'unavailable',
-  IndeterminatePreprintIdWithDoi
-> = flow(
-  RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`preprints/${uuid}`)),
-  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-  RTE.chainW(F.send),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintUuidD)),
-  RTE.mapLeft(error =>
-    match(error)
-      .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
-      .otherwise(() => 'unavailable' as const),
-  ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
-    flow(({ data }) => data[0].handle, parsePreprintDoi),
-  ),
-)
-
-export const getProfileIdFromLegacyPreviewUuid: (
-  uuid: Uuid,
-) => RTE.ReaderTaskEither<LegacyPrereviewApiEnv & F.FetchEnv, 'not-found' | 'unavailable', ProfileId.ProfileId> = flow(
-  RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`personas/${uuid}`)),
-  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-  RTE.chainW(F.send),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewProfileUuidD)),
-  RTE.bimap(
-    error =>
-      match(error)
-        .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
-        .otherwise(() => 'unavailable' as const),
-    ({ data: [data] }) =>
-      match(data)
-        .with({ isAnonymous: false, orcid: P.select() }, ProfileId.forOrcid)
-        .with({ isAnonymous: true, name: P.select() }, ProfileId.forPseudonym)
-        .exhaustive(),
   ),
 )
 
