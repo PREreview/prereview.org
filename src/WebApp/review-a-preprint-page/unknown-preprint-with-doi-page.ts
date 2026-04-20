@@ -12,9 +12,9 @@ export function createUnknownPreprintWithDoiPage(preprint: IndeterminatePreprint
 
   return PageResponse({
     status: StatusCodes.BadRequest,
-    title: plainText(t('review-a-preprint', 'dontKnowPreprint')()),
+    title: plainText(t('review-a-preprint', 'doNotKnowPreprint')()),
     main: html`
-      <h1>${t('review-a-preprint', 'dontKnowPreprint')()}</h1>
+      <h1>${t('review-a-preprint', 'doNotKnowPreprint')()}</h1>
 
       <p>
         ${rawHtml(

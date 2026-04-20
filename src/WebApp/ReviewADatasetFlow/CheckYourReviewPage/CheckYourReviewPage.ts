@@ -113,7 +113,7 @@ export const CheckYourReviewPage = ({
                           Match.when('excellent', t('excellent')),
                           Match.when('fair', t('fair')),
                           Match.when('poor', t('poor')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -137,7 +137,7 @@ export const CheckYourReviewPage = ({
                       Match.when('yes', t('yes')),
                       Match.when('partly', t('partly')),
                       Match.when('no', t('no')),
-                      Match.when('unsure', t('dontKnow')),
+                      Match.when('unsure', t('doNotKnow')),
                       Match.exhaustive,
                     )}
                   </dd>
@@ -162,7 +162,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -191,7 +191,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -220,7 +220,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -249,7 +249,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -278,7 +278,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -307,7 +307,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -336,7 +336,7 @@ export const CheckYourReviewPage = ({
                           Match.when('yes', t('yes')),
                           Match.when('partly', t('partly')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -365,7 +365,7 @@ export const CheckYourReviewPage = ({
                           Match.when('very-consequential', t('veryConsequential')),
                           Match.when('somewhat-consequential', t('somewhatConsequential')),
                           Match.when('not-consequential', t('notConsequential')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>
@@ -393,7 +393,7 @@ export const CheckYourReviewPage = ({
                           Match.value(answer),
                           Match.when('yes', t('yes')),
                           Match.when('no', t('no')),
-                          Match.when('unsure', t('dontKnow')),
+                          Match.when('unsure', t('doNotKnow')),
                           Match.exhaustive,
                         )}
                       </dd>

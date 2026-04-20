@@ -182,7 +182,7 @@ ${Match.valueTags(form, {
                         Match.orElse(() => ''),
                       )}
                     />
-                    <span>${t('dontKnow')()}</span>
+                    <span>${t('doNotKnow')()}</span>
                   </label>
                 </li>
               </ol>

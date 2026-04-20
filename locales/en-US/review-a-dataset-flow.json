@@ -23,7 +23,7 @@
     "message": "Enter the dataset DOI or URL",
     "description": "Error message shown when the user tries to complete the form “Which dataset are you reviewing?” without entering a value."
   },
-  "dontKnowDataset": {
+  "doNotKnowDataset": {
     "message": "Sorry, we don’t know this dataset",
     "description": "Title of the page following the form “Which dataset are you reviewing?” when we don’t recognize the dataset DOI or URL."
   },
@@ -335,7 +335,7 @@
     "message": "Why is it poor quality?",
     "description": "Label for the text field to provide context for the “Poor” rating for the question “How would you rate the quality of this dataset?”."
   },
-  "dontKnow": {
+  "doNotKnow": {
     "message": "I don’t know",
     "description": "Option for indicating that the user can’t answer the question."
   },

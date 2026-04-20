@@ -17,7 +17,7 @@
   "havingProblems": {
     "message": "Sorry, we’re having problems"
   },
-  "dontKnowPreprint": {
+  "doNotKnowPreprint": {
     "message": "Sorry, we don’t know this preprint"
   },
   "notAPreprint": {

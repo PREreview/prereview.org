@@ -14,7 +14,7 @@
   "errorEnterPreprint": {
     "message": "Enter the preprint DOI or URL"
   },
-  "dontKnowPreprint": {
+  "doNotKnowPreprint": {
     "message": "Sorry, we don’t know this preprint"
   },
   "notAPreprint": {

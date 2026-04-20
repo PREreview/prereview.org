@@ -9,9 +9,9 @@ import { PageResponse } from '../../Response/index.ts'
 export const UnknownPreprintPage = (preprint: IndeterminatePreprintId, locale: SupportedLocale) => {
   return PageResponse({
     status: StatusCodes.BadRequest,
-    title: plainText(translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()),
+    title: plainText(translate(locale, 'request-a-prereview-page', 'doNotKnowPreprint')()),
     main: html`
-      <h1>${translate(locale, 'request-a-prereview-page', 'dontKnowPreprint')()}</h1>
+      <h1>${translate(locale, 'request-a-prereview-page', 'doNotKnowPreprint')()}</h1>
 
       ${preprint._tag === 'PhilsciPreprintId'
         ? html`

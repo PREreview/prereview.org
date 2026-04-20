@@ -11,9 +11,9 @@ export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.Data
 
   return PageResponse({
     status: StatusCodes.BadRequest,
-    title: plainText(t('dontKnowDataset')()),
+    title: plainText(t('doNotKnowDataset')()),
     main: html`
-      <h1>${t('dontKnowDataset')()}</h1>
+      <h1>${t('doNotKnowDataset')()}</h1>
 
       <p>
         ${rawHtml(

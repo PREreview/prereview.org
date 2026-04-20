@@ -34,7 +34,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('excellent', () => t('review-a-dataset-flow', 'excellent')()),
                 Match.when('fair', () => t('review-a-dataset-flow', 'fair')()),
                 Match.when('poor', () => t('review-a-dataset-flow', 'poor')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -51,7 +51,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
             Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
             Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
             Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-            Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+            Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
             Match.exhaustive,
           )}
         </dd>
@@ -69,7 +69,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -89,7 +89,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -109,7 +109,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -129,7 +129,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -149,7 +149,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -169,7 +169,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -189,7 +189,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('partly', () => t('review-a-dataset-flow', 'partly')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -209,7 +209,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.when('very-consequential', () => t('review-a-dataset-flow', 'veryConsequential')()),
                 Match.when('somewhat-consequential', () => t('review-a-dataset-flow', 'somewhatConsequential')()),
                 Match.when('not-consequential', () => t('review-a-dataset-flow', 'notConsequential')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
@@ -228,7 +228,7 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
                 Match.value(answer),
                 Match.when('yes', () => t('review-a-dataset-flow', 'yes')()),
                 Match.when('no', () => t('review-a-dataset-flow', 'no')()),
-                Match.when('unsure', () => t('review-a-dataset-flow', 'dontKnow')()),
+                Match.when('unsure', () => t('review-a-dataset-flow', 'doNotKnow')()),
                 Match.exhaustive,
               )}
             </dd>
