@@ -6,7 +6,7 @@ import type { OrcidId } from '../types/OrcidId.ts'
 
 export interface Input {
   readonly orcidId: OrcidId
-  readonly registeredAt: Temporal.Instant
+  readonly registeredAt: Temporal.Instant | 'not available from import source'
   readonly pseudonym: Pseudonym.Pseudonym
 }
 
@@ -76,6 +76,10 @@ const existingRecordMatches = (existing: State['byOrcid'][OrcidId], input: Input
   }
 
   if (existing.registeredAt === 'not available from import source') {
+    return input.registeredAt === 'not available from import source'
+  }
+
+  if (input.registeredAt === 'not available from import source') {
     return false
   }
 
