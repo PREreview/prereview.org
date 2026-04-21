@@ -12,6 +12,12 @@ const input = {
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies _.Input
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const inputWithoutRegisteredAt = {
+  ...input,
+  registeredAt: 'not available from import source',
+} satisfies _.Input
+
 const imported = new Events.RegisteredPrereviewerImported(input)
 
 const importedDifferentTime = new Events.RegisteredPrereviewerImported({
@@ -56,6 +62,12 @@ test.each<
     Either.right(Option.some(new Events.RegisteredPrereviewerImported(input))),
   ],
   ['already imported, same details', [imported], input, Either.right(Option.none())],
+  // [
+  //   'already imported without registeredAt, same details',
+  //   [importedWithoutRegisteredAt],
+  //   inputWithoutRegisteredAt,
+  //   Either.right(Option.none()),
+  // ],
   [
     'already imported, different registeredAt',
     [importedDifferentTime],
@@ -67,6 +79,17 @@ test.each<
       }),
     ),
   ],
+  // [
+  //   'already imported with registeredAt, registeredAt was not available in input',
+  //   [imported],
+  //   inputWithoutRegisteredAt,
+  //   Either.left(
+  //     new _.MismatchWithExistingDataForOrcid({
+  //       existingPseudonym: input.pseudonym,
+  //       existingRegisteredAt: imported.registeredAt,
+  //     }),
+  //   ),
+  // ],
   [
     'already imported, registeredAt was not available',
     [importedWithoutRegisteredAt],
