@@ -11,8 +11,17 @@ export interface Input {
 }
 
 interface State {
-  readonly byOrcid: Record<string, { pseudonym: Pseudonym.Pseudonym; registeredAt: Temporal.Instant }>
-  readonly byPseudonym: Record<string, OrcidId>
+  readonly byOrcid: Record<
+    Events.RegisteredPrereviewerImported['orcidId'],
+    {
+      pseudonym: Events.RegisteredPrereviewerImported['pseudonym']
+      registeredAt: Events.RegisteredPrereviewerImported['registeredAt']
+    }
+  >
+  readonly byPseudonym: Record<
+    Events.RegisteredPrereviewerImported['pseudonym'],
+    Events.RegisteredPrereviewerImported['orcidId']
+  >
 }
 
 export class PseudonymAlreadyInUse extends Data.TaggedError('PseudonymAlreadyInUse') {}
@@ -36,8 +45,8 @@ const createFilter = (input: Input) =>
 
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
-  const byOrcid: Record<string, { pseudonym: Pseudonym.Pseudonym; registeredAt: Temporal.Instant }> = {}
-  const byPseudonym: Record<string, OrcidId> = {}
+  const byOrcid: State['byOrcid'] = {}
+  const byPseudonym: State['byPseudonym'] = {}
 
   for (const event of filteredEvents) {
     byOrcid[event.orcidId] = { pseudonym: event.pseudonym, registeredAt: event.registeredAt }
