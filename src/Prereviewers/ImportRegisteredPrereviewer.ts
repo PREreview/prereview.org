@@ -56,34 +56,59 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   return { byOrcid, byPseudonym }
 }
 
+const pseudonymInUseByOther = (input: Input, state: State) => {
+  const existingPseudonymUsage = state.byPseudonym[input.pseudonym]
+
+  if (!existingPseudonymUsage) {
+    return false
+  }
+
+  if (existingPseudonymUsage === input.orcidId) {
+    return false
+  }
+
+  return true
+}
+
+const existingRecordMatches = (existing: State['byOrcid'][OrcidId], input: Input) => {
+  if (existing.pseudonym !== input.pseudonym) {
+    return false
+  }
+
+  if (existing.registeredAt === 'not available from import source') {
+    return false
+  }
+
+  if (!existing.registeredAt.equals(input.registeredAt)) {
+    return false
+  }
+  return true
+}
+
 const decide = (
   state: State,
   input: Input,
 ): Either.Either<Option.Option<Events.Event>, PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid> => {
-  const existing = state.byOrcid[input.orcidId]
-  if (existing) {
-    if (
-      existing.pseudonym === input.pseudonym &&
-      typeof existing.registeredAt !== 'string' &&
-      existing.registeredAt.equals(input.registeredAt)
-    ) {
-      return Either.right(Option.none())
-    } else {
-      return Either.left(
-        new MismatchWithExistingDataForOrcid({
-          existingPseudonym: existing.pseudonym,
-          existingRegisteredAt: existing.registeredAt,
-        }),
-      )
-    }
-  }
-
-  const pseudonymUsedBy = state.byPseudonym[input.pseudonym]
-  if (pseudonymUsedBy && pseudonymUsedBy !== input.orcidId) {
+  if (pseudonymInUseByOther(input, state)) {
     return Either.left(new PseudonymAlreadyInUse())
   }
 
-  return Either.right(Option.some(new Events.RegisteredPrereviewerImported(input)))
+  const existing = state.byOrcid[input.orcidId]
+
+  if (!existing) {
+    return Either.right(Option.some(new Events.RegisteredPrereviewerImported(input)))
+  }
+
+  if (!existingRecordMatches(existing, input)) {
+    return Either.left(
+      new MismatchWithExistingDataForOrcid({
+        existingPseudonym: existing.pseudonym,
+        existingRegisteredAt: existing.registeredAt,
+      }),
+    )
+  }
+
+  return Either.right(Option.none())
 }
 
 export const ImportRegisteredPrereviewer: Commands.Command<
