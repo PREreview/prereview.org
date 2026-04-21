@@ -16,6 +16,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     importRegisteredOrcidId: (
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
+    importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
   }
 >() {}
 
@@ -76,6 +77,7 @@ export const layer = Layer.effect(
             importRegisteredPrereviewer({ orcidId: orcid, pseudonym, registeredAt: createdAt }),
           ),
         ),
+      importRegisteredPrereviewer,
     }
   }),
 )

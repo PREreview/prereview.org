@@ -1,5 +1,6 @@
 import { Command } from '@effect/cli'
-import { Console, Effect, Schema, Stream, String } from 'effect'
+import { Effect, Schema, Stream, String } from 'effect'
+import { Prereviewers } from '../Prereviewers/index.ts'
 import { OrcidId, Pseudonym, Temporal } from '../types/index.ts'
 
 const PrereviewerSchema = Schema.Struct({
@@ -9,6 +10,8 @@ const PrereviewerSchema = Schema.Struct({
 })
 
 const program = Effect.fnUntraced(function* () {
+  const prereviewers = yield* Prereviewers
+
   const stdinStream = Stream.fromAsyncIterable(
     process.stdin as AsyncIterable<string>,
     () => new Error('Failed to read from stdin'),
@@ -18,7 +21,7 @@ const program = Effect.fnUntraced(function* () {
 
   const decoded = yield* Schema.decode(Schema.parseJson(Schema.Array(PrereviewerSchema)))(input)
 
-  yield* Console.log(decoded)
+  yield* Effect.forEach(decoded, prereviewers.importRegisteredPrereviewer)
 })
 
 export const ImportPrereviewer = Command.make('import-prereviewer', {}, program)
