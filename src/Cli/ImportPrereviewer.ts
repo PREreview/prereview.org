@@ -1,11 +1,14 @@
 import { Command } from '@effect/cli'
-import { Effect, Schema, Stream, String } from 'effect'
+import { Console, Effect, Schema, Stream, String } from 'effect'
 import { Prereviewers } from '../Prereviewers/index.ts'
 import { OrcidId, Pseudonym, Temporal } from '../types/index.ts'
 
 const PrereviewerSchema = Schema.Struct({
   orcidId: OrcidId.OrcidIdSchema,
-  registeredAt: Temporal.InstantSchema,
+  registeredAt: Schema.optionalWith(
+    Schema.Union(Temporal.InstantSchema, Schema.Literal('not available from import source')),
+    { default: () => 'not available from import source' },
+  ),
   pseudonym: Pseudonym.PseudonymSchema,
 })
 
@@ -22,6 +25,6 @@ const program = Effect.fnUntraced(function* () {
   const decoded = yield* Schema.decode(Schema.parseJson(Schema.Array(PrereviewerSchema)))(input)
 
   yield* Effect.forEach(decoded, prereviewers.importRegisteredPrereviewer)
-})
+}, Effect.tapError(Console.log))
 
 export const ImportPrereviewer = Command.make('import-prereviewer', {}, program)
