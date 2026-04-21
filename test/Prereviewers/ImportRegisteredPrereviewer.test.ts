@@ -12,11 +12,10 @@ const input = {
   pseudonym: Pseudonym('Orange Panda'),
 } satisfies _.Input
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const inputWithoutRegisteredAt = {
-  ...input,
-  registeredAt: 'not available from import source',
-} satisfies _.Input
+//const inputWithoutRegisteredAt = {
+//  ...input,
+//  registeredAt: 'not available from import source',
+//} satisfies _.Input
 
 const imported = new Events.RegisteredPrereviewerImported(input)
 
