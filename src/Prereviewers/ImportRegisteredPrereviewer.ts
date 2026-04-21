@@ -28,7 +28,7 @@ export class PseudonymAlreadyInUse extends Data.TaggedError('PseudonymAlreadyInU
 
 export class MismatchWithExistingDataForOrcid extends Data.TaggedError('MismatchWithExistingDataForOrcid')<{
   existingPseudonym: Pseudonym.Pseudonym
-  existingRegisteredAt: Temporal.Instant
+  existingRegisteredAt: Temporal.Instant | 'not available from import source'
 }> {}
 
 const createFilter = (input: Input) =>
@@ -62,7 +62,11 @@ const decide = (
 ): Either.Either<Option.Option<Events.Event>, PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid> => {
   const existing = state.byOrcid[input.orcidId]
   if (existing) {
-    if (existing.pseudonym === input.pseudonym && existing.registeredAt.equals(input.registeredAt)) {
+    if (
+      existing.pseudonym === input.pseudonym &&
+      typeof existing.registeredAt !== 'string' &&
+      existing.registeredAt.equals(input.registeredAt)
+    ) {
       return Either.right(Option.none())
     } else {
       return Either.left(

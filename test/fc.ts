@@ -2512,7 +2512,11 @@ export const event = (): fc.Arbitrary<Events.Event> =>
 
 export const registeredPrereviewerImported = (): fc.Arbitrary<Events.RegisteredPrereviewerImported> =>
   fc
-    .record({ orcidId: orcidId(), registeredAt: instant(), pseudonym: pseudonym() })
+    .record({
+      orcidId: orcidId(),
+      registeredAt: fc.oneof(instant(), constant('not available from import source')),
+      pseudonym: pseudonym(),
+    })
     .map(args => new Events.RegisteredPrereviewerImported(args))
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>

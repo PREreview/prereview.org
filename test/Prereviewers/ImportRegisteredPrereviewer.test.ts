@@ -19,6 +19,11 @@ const importedDifferentTime = new Events.RegisteredPrereviewerImported({
   registeredAt: input.registeredAt.subtract({ hours: 1 }),
 })
 
+const importedWithoutRegisteredAt = new Events.RegisteredPrereviewerImported({
+  ...input,
+  registeredAt: 'not available from import source',
+})
+
 const importedDifferentPseudonym = new Events.RegisteredPrereviewerImported({
   ...input,
   pseudonym: Pseudonym('Blue Panda'),
@@ -59,6 +64,17 @@ test.each<
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: input.pseudonym,
         existingRegisteredAt: importedDifferentTime.registeredAt,
+      }),
+    ),
+  ],
+  [
+    'already imported, registeredAt was not available',
+    [importedWithoutRegisteredAt],
+    input,
+    Either.left(
+      new _.MismatchWithExistingDataForOrcid({
+        existingPseudonym: input.pseudonym,
+        existingRegisteredAt: 'not available from import source',
       }),
     ),
   ],

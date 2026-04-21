@@ -5,7 +5,7 @@ export class RegisteredPrereviewerImported extends Schema.TaggedClass<Registered
   'RegisteredPrereviewerImported',
   {
     orcidId: OrcidId.OrcidIdSchema,
-    registeredAt: Temporal.InstantSchema,
+    registeredAt: Schema.Union(Temporal.InstantSchema, Schema.Literal('not available from import source')),
     pseudonym: Pseudonym.PseudonymSchema,
   },
 ) {}
