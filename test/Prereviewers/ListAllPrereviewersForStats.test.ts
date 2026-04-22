@@ -8,8 +8,8 @@ import { OrcidId, Pseudonym } from '../../src/types/index.ts'
 
 const imported1 = new Events.RegisteredPrereviewerImported({
   orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
-  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
-  registeredAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+  registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
 const imported2 = new Events.RegisteredPrereviewerImported({
@@ -18,13 +18,20 @@ const imported2 = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant(),
 })
 
+const imported3 = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0003-4921-6155'),
+  pseudonym: Pseudonym.Pseudonym('Green Panda'),
+  registeredAt: 'not available from import source',
+})
+
 test.failing.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], []],
   ['imported', [imported1], [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt }]],
   [
     'multiple imported',
-    [imported1, imported2],
+    [imported1, imported2, imported3],
     [
+      { orcidId: imported3.orcidId, registeredAt: imported3.registeredAt },
       { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt },
       { orcidId: imported2.orcidId, registeredAt: imported2.registeredAt },
     ],
