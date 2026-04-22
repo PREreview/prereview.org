@@ -125,7 +125,7 @@
     "stylelint-config-standard": "^40.0.0",
     "stylelint-plugin-logical-css": "^2.1.0",
     "ts-deepmerge": "^7.0.3",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.2",
     "webpack": "^5.106.2",
     "webpack-cli": "^7.0.2",
