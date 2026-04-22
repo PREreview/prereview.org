@@ -20,7 +20,7 @@ const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant(),
 })
 
-test.failing.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], false],
   ['imported', input, [imported], true],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], false],
