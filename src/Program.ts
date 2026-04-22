@@ -288,8 +288,8 @@ export const Program = pipe(
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
   Layer.provide([Prereviews.layer, ReviewRequests.layer, verifyContactEmailAddressForComment]),
+  Layer.provide(Personas.layer),
   Layer.provide([
-    Personas.layer,
     DatasetData.layer,
     PreprintData.layer,
     OpenAlexWorks.layer,

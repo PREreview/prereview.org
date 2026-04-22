@@ -3,11 +3,11 @@ import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
-import * as Queries from '../Queries.ts'
+import type * as Queries from '../Queries.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
-import type { GetPseudonym } from './GetPseudonym.ts'
+import { UnknownPrereviewer, type GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import type { IsRegistered } from './IsRegistered.ts'
 
@@ -66,7 +66,25 @@ export const layer = Layer.effect(
             ),
           ),
         ),
-      getPseudonym: () => new Queries.UnableToQuery({ cause: 'Not implemented' }),
+      getPseudonym: orcidId =>
+        pipe(
+          FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcidId), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+            },
+          }),
+          Effect.mapError(
+            flow(
+              Match.value,
+              Match.when('unavailable', () => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
+              Match.when('not-found', () => new UnknownPrereviewer({})),
+              Match.exhaustive,
+            ),
+          ),
+        ),
       importRegisteredOrcidId: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getUserFromLegacyPrereview(orcid), {

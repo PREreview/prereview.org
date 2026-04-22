@@ -1,8 +1,6 @@
-import { FetchHttpClient } from '@effect/platform'
-import { Context, Data, Effect, Layer, Match, pipe, Redacted, Scope } from 'effect'
+import { Context, Data, Effect, Layer, Match, pipe, Scope } from 'effect'
 import { Orcid } from '../ExternalApis/index.ts'
-import { FptsToEffect } from '../RefactoringUtilities/index.ts'
-import { getPseudonymFromLegacyPrereview, LegacyPrereviewApi } from '../legacy-prereview.ts'
+import { Prereviewers } from '../Prereviewers/index.ts'
 import type { OrcidId } from '../types/index.ts'
 import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.ts'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.ts'
@@ -29,37 +27,28 @@ export const getPersona = pipe(
   Match.exhaustive,
 )
 
-const make: Effect.Effect<typeof Personas.Service, never, FetchHttpClient.Fetch | LegacyPrereviewApi | Orcid.Orcid> =
-  Effect.gen(function* () {
-    const context = yield* Effect.andThen(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
-    const fetch = yield* FetchHttpClient.Fetch
-    const legacyPrereviewApi = yield* LegacyPrereviewApi
+const make: Effect.Effect<typeof Personas.Service, never, Prereviewers | Orcid.Orcid> = Effect.gen(function* () {
+  const context = yield* Effect.andThen(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
+  const prereviewers = yield* Prereviewers
 
-    return {
-      getPublicPersona: orcidId =>
-        pipe(
-          Orcid.getPersonalDetails(orcidId),
-          Effect.andThen(GetNameFromOrcidPersonalDetails),
-          Effect.mapBoth({
-            onSuccess: name => new PublicPersona({ name, orcidId }),
-            onFailure: error => new UnableToGetPersona({ cause: error }),
-          }),
-          Effect.provide(context),
-        ),
-      getPseudonymPersona: orcidId =>
-        pipe(
-          FptsToEffect.readerTaskEither(getPseudonymFromLegacyPrereview(orcidId), {
-            fetch,
-            legacyPrereviewApi: {
-              app: legacyPrereviewApi.app,
-              key: Redacted.value(legacyPrereviewApi.key),
-              url: legacyPrereviewApi.origin,
-            },
-          }),
-          Effect.mapError(error => new UnableToGetPersona({ cause: error })),
-          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
-        ),
-    }
-  })
+  return {
+    getPublicPersona: orcidId =>
+      pipe(
+        Orcid.getPersonalDetails(orcidId),
+        Effect.andThen(GetNameFromOrcidPersonalDetails),
+        Effect.mapBoth({
+          onSuccess: name => new PublicPersona({ name, orcidId }),
+          onFailure: error => new UnableToGetPersona({ cause: error }),
+        }),
+        Effect.provide(context),
+      ),
+    getPseudonymPersona: orcidId =>
+      pipe(
+        prereviewers.getPseudonym(orcidId),
+        Effect.mapError(error => new UnableToGetPersona({ cause: error })),
+        Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+      ),
+  }
+})
 
 export const layer = Layer.effect(Personas, make)
