@@ -6,8 +6,8 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import * as LegacyPrereview from '../../../legacy-prereview.ts'
 import * as Preprints from '../../../Preprints/index.ts'
+import * as Prereviewers from '../../../Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -59,29 +59,32 @@ export const DataRouter = pipe(
             () =>
               pipe(
                 RTE.Do,
-                RTE.apS('users', LegacyPrereview.getUsersFromLegacyPrereview()),
+                RTE.apS(
+                  'users',
+                  EffectToFpts.toReaderTaskEither(
+                    Effect.catchTag(Prereviewers.listAllPrereviewersForStats(), 'UnableToQuery', () =>
+                      Effect.fail('unavailable' as const),
+                    ),
+                  ),
+                ),
                 RTE.apSW('careerStages', Keyv.getAllCareerStages),
                 RTE.apSW('locations', Keyv.getAllLocations),
                 RTE.map(({ users, careerStages, locations }) =>
                   pipe(
                     users,
                     Array.map(user => ({
-                      ...user,
-                      careerStage: careerStages[user.orcid]?.value,
-                      location: locations[user.orcid]?.value,
+                      orcid: user.orcidId,
+                      timestamp: user.registeredAt,
+                      careerStage: careerStages[user.orcidId]?.value,
+                      location: locations[user.orcidId]?.value,
                     })),
                   ),
                 ),
               ),
             {
               careerStageStore: env.users.careerStageStore,
-              fetch: env.fetch,
-              legacyPrereviewApi: {
-                app: env.legacyPrereviewApiConfig.app,
-                key: Redacted.value(env.legacyPrereviewApiConfig.key),
-                url: env.legacyPrereviewApiConfig.origin,
-              },
               locationStore: env.users.locationStore,
+              runtime: env.runtime,
               ...env.logger,
             },
           ),

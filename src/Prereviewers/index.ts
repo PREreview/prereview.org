@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
+import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
@@ -25,6 +25,8 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
   }
 >() {}
+
+export const { listAllPrereviewersForStats } = Effect.serviceFunctions(Prereviewers)
 
 export const layer = Layer.effect(
   Prereviewers,
@@ -87,7 +89,19 @@ export const layer = Layer.effect(
             ),
           ),
         ),
-      listAllPrereviewersForStats: () => new UnableToQuery({ cause: 'Not implemented' }),
+      listAllPrereviewersForStats: () =>
+        pipe(
+          FptsToEffect.readerTaskEither(LegacyPrereview.getUsersFromLegacyPrereview(), {
+            fetch,
+            legacyPrereviewApi: {
+              app: legacyPrereviewApi.app,
+              key: Redacted.value(legacyPrereviewApi.key),
+              url: legacyPrereviewApi.origin,
+            },
+          }),
+          Effect.mapError(() => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
+          Effect.andThen(Array.map(({ orcid, timestamp }) => ({ orcidId: orcid, registeredAt: timestamp }))),
+        ),
       importRegisteredOrcidId: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getUserFromLegacyPrereview(orcid), {
