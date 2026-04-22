@@ -57,12 +57,11 @@ export function rawHtml(html: string): Html {
   return new Html({ value })
 }
 
-export const mjmlToHtml = (mjml: Html): Effect.Effect<Html> =>
-  Effect.sync(() => {
-    const value = processMjml(mjml.toString()).html
+export const mjmlToHtml: (mjml: Html) => Effect.Effect<Html> = Effect.fnUntraced(function* (mjml) {
+  const processed = yield* Effect.promise(() => processMjml(mjml.toString()))
 
-    return new Html({ value })
-  })
+  return new Html({ value: processed.html })
+})
 
 export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}): Html {
   const sanitized = sanitize(html, {
