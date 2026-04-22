@@ -24,7 +24,7 @@ const imported3 = new Events.RegisteredPrereviewerImported({
   registeredAt: 'not available from import source',
 })
 
-test.failing.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], []],
   ['imported', [imported1], [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt }]],
   [
