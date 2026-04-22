@@ -108,7 +108,7 @@
     "jest": "^30.3.0",
     "mini-css-extract-plugin": "^2.10.2",
     "oauth2-mock-server": "^8.2.2",
-    "postcss": "^8.5.9",
+    "postcss": "^8.5.10",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^8.2.1",
     "postcss-preset-env": "^11.2.1",
