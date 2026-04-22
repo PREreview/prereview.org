@@ -72,7 +72,7 @@
     "@jest/globals": "^30.3.0",
     "@playwright/test": "^1.58.2",
     "@prettier/plugin-xml": "^3.4.2",
-    "@swc/core": "^1.15.26",
+    "@swc/core": "^1.15.30",
     "@swc/jest": "^0.2.39",
     "@tiptap/core": "^3.19.0",
     "@tiptap/extension-subscript": "^3.19.0",
