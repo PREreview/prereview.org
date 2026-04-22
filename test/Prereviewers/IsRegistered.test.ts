@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
+import { Either } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/IsRegistered.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'
@@ -28,5 +29,5 @@ test.failing.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
 
   const actual = query(events, input)
 
-  expect(actual).toStrictEqual(expected)
+  expect(actual).toStrictEqual(Either.right(expected))
 })
