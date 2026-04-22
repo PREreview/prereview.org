@@ -3,16 +3,18 @@ import { Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
+import type * as Queries from '../Queries.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
+import type { IsRegistered } from './IsRegistered.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
-    isRegistered: (orcidId: OrcidId.OrcidId) => Effect.Effect<boolean, UnableToQuery>
+    isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     importRegisteredOrcidId: (
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
