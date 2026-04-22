@@ -145,7 +145,8 @@
       "cld"
     ],
     "patchedDependencies": {
-      "fp-ts-routing@0.7.0": "patches/fp-ts-routing@0.7.0.patch"
+      "fp-ts-routing@0.7.0": "patches/fp-ts-routing@0.7.0.patch",
+      "mjml-core@5.0.1": "patches/mjml-core@5.0.1.patch"
     }
   },
   "scripts": {

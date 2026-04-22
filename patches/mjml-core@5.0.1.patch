@@ -1,0 +1,12 @@
+diff --git a/lib/index.js b/lib/index.js
+index cb94673e7e042af485bc7afe22096eb48527cbcd..8088f659f4004e7f18cad5dc99a208c19f98fa79 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -74,7 +74,6 @@ var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/w
+ var _lodash = require("lodash");
+ var _juice = _interopRequireDefault(require("juice"));
+ var _cheerio = require("cheerio");
+-var _prettier = _interopRequireDefault(require("prettier"));
+ var _htmlnano = _interopRequireDefault(require("htmlnano"));
+ var _mjmlParserXml = _interopRequireDefault(require("mjml-parser-xml"));
+ var _mjmlValidator = _interopRequireWildcard(require("mjml-validator"));
