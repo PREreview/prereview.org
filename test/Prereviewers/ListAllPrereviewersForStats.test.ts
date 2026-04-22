@@ -1,0 +1,43 @@
+import { test } from '@fast-check/jest'
+import { expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
+import { Array, Either } from 'effect'
+import * as Events from '../../src/Events.ts'
+import * as _ from '../../src/Prereviewers/ListAllPrereviewersForStats.ts'
+import { OrcidId, Pseudonym } from '../../src/types/index.ts'
+
+const imported1 = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+const imported2 = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+test.failing.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
+  ['no events', [], []],
+  ['imported', [imported1], [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt }]],
+  [
+    'multiple imported',
+    [imported1, imported2],
+    [
+      { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt },
+      { orcidId: imported2.orcidId, registeredAt: imported2.registeredAt },
+    ],
+  ],
+])('%s', (_name, events, expected) => {
+  const { initialState, updateStateWithEvents, query } = _.ListAllPrereviewersForStats
+
+  const state = Array.match(events, {
+    onNonEmpty: events => updateStateWithEvents(initialState, events),
+    onEmpty: () => initialState,
+  })
+
+  const actual = query(state)
+
+  expect(actual).toStrictEqual(Either.right(expected))
+})

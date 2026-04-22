@@ -10,6 +10,7 @@ import type { OrcidId } from '../types/index.ts'
 import { UnknownPrereviewer, type GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import type { IsRegistered } from './IsRegistered.ts'
+import type { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
@@ -17,6 +18,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
+    listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
     importRegisteredOrcidId: (
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
@@ -85,6 +87,7 @@ export const layer = Layer.effect(
             ),
           ),
         ),
+      listAllPrereviewersForStats: () => new UnableToQuery({ cause: 'Not implemented' }),
       importRegisteredOrcidId: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getUserFromLegacyPrereview(orcid), {
