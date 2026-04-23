@@ -25,7 +25,7 @@ const query = (state: State): Result =>
     Either.fromOption(() => new NoPseudonymAvailable()),
   )
 
-export const GetAvailablePseudonym = (possiblePseudonyms: ReadonlyArray<Pseudonym>) =>
+export const GetAvailablePseudonym = (possiblePseudonyms: Set<Pseudonym>) =>
   Queries.StatefulQuery({
     name: 'Prereviewers.getAvailablePseudonym',
     initialState: new Set(possiblePseudonyms),

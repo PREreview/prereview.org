@@ -6,7 +6,8 @@ import * as LegacyPrereview from '../legacy-prereview.ts'
 import * as Queries from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
-import type { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
+import { possiblePseudonyms } from '../types/Pseudonym.ts'
+import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
@@ -70,7 +71,11 @@ export const layer = Layer.effect(
           ),
         ),
       importRegisteredPrereviewer,
-      getAvailablePseudonym: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      getAvailablePseudonym: yield* pipe(
+        possiblePseudonyms,
+        Effect.andThen(GetAvailablePseudonym),
+        Effect.andThen(Queries.makeStatefulQuery),
+      ),
     }
   }),
 )

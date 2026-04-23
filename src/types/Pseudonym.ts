@@ -201,7 +201,8 @@ export const possiblePseudonyms = Effect.gen(function* () {
     })
   })
 
-  return yield* Random.shuffle(pseudonyms)
+  const shuffledPseudonyms = yield* Random.shuffle(pseudonyms)
+  return new Set(shuffledPseudonyms)
 })
 
 export const PseudonymSchema = pipe(

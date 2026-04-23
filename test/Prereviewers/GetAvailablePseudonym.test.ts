@@ -18,7 +18,7 @@ const imported2 = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
-const possiblePseudonyms = [Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')]
+const possiblePseudonyms = new Set([Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')])
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
