@@ -2584,12 +2584,6 @@ export const usePostgresDB: Fixtures<
   },
 }
 
-export const isANewUser: Fixtures<Record<never, never>, Record<never, never>, { hasSeenMyDetailsPage: boolean }> = {
-  hasSeenMyDetailsPage: async ({}, use) => {
-    await use(false)
-  },
-}
-
 export const canLogIn: Fixtures<
   { hasSeenMyDetailsPage: boolean },
   Record<never, never>,

@@ -8,7 +8,6 @@ import {
   canRegisterAsNewUser,
   expect,
   hasAVerifiedEmailAddress,
-  isANewUser,
   isASlackUser,
   test,
   userIsBlocked,
@@ -27,33 +26,30 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   }
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
-  'are prompted to view my details once',
-  async ({ page }) => {
-    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+test.extend(canRegisterAsNewUser).extend(areLoggedIn)('are prompted to view my details once', async ({ page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
-    await menu.click()
+  await menu.click()
 
-    await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
+  await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
 
-    await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'My details' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
+  await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
 
-    await menu.click()
+  await menu.click()
 
-    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
+  await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
 
-    await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'My details' }).click()
 
-    await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
+  await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
 
-    await page.goto('/', { waitUntil: 'commit' })
-    await menu.click()
+  await page.goto('/', { waitUntil: 'commit' })
+  await menu.click()
 
-    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
-  },
-)
+  await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ emails, javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
