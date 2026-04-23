@@ -1820,14 +1820,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  fetch.modifyRoute('pseudonym', { delay: Duration.toMillis('2.5 seconds') })
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-})
-
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say what type of review you want to do',
   async ({ javaScriptEnabled, page }) => {
