@@ -5,6 +5,7 @@ import {
   areLoggedIn,
   canLogIn,
   canLogInAsDemoUser,
+  canRegisterAsNewUser,
   expect,
   hasAVerifiedEmailAddress,
   isANewUser,
@@ -579,6 +580,18 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Early')).toBeFocused()
   },
 )
+
+test.extend(canRegisterAsNewUser)('can log in without having done so before', async ({ page }) => {
+  const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
+  await menu.click()
+
+  await page.getByRole('link', { name: 'Log in' }).click()
+
+  await menu.click()
+  await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible()
+})
 
 test.extend(canLogInAsDemoUser)('can log in as a demo user', async ({ javaScriptEnabled, page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
