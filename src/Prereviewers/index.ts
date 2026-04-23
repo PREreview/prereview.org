@@ -3,13 +3,13 @@ import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effe
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
-import * as Queries from '../Queries.js'
+import * as Queries from '../Queries.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
 import { UnknownPrereviewer, type GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
-import { IsRegistered } from './IsRegistered.js'
+import { IsRegistered } from './IsRegistered.ts'
 import type { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
