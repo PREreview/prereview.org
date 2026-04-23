@@ -48,20 +48,6 @@ const InstantD = pipe(
   ),
 )
 
-const LegacyPrereviewUsersD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      data: D.array(
-        D.struct({
-          orcid: OrcidD,
-          createdAt: InstantD,
-        }),
-      ),
-    }),
-  ),
-)
-
 const LegacyPrereviewUserFullD = pipe(
   JsonD,
   D.compose(
@@ -164,23 +150,6 @@ export const getUserFromLegacyPrereview = (orcid: OrcidId) =>
       match(error)
         .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
         .otherwise(() => 'unavailable' as const),
-    ),
-  )
-
-export const getUsersFromLegacyPrereview = () =>
-  pipe(
-    RTE.fromReader(legacyPrereviewUrl('users')),
-    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-    RTE.chainW(F.send),
-    RTE.local(timeoutRequest(5000)),
-    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUsersD)),
-    RTE.bimap(
-      () => 'unavailable' as const,
-      flow(
-        response => response.data,
-        Array.map(user => ({ orcid: user.orcid, timestamp: user.createdAt })),
-      ),
     ),
   )
 
