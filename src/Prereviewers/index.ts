@@ -1,5 +1,5 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effect'
+import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
@@ -7,7 +7,7 @@ import * as Queries from '../Queries.ts'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
-import { UnknownPrereviewer, type GetPseudonym } from './GetPseudonym.ts'
+import { GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import type { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
@@ -51,25 +51,7 @@ export const layer = Layer.effect(
           Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
         ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
-      getPseudonym: orcidId =>
-        pipe(
-          FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcidId), {
-            fetch,
-            legacyPrereviewApi: {
-              app: legacyPrereviewApi.app,
-              key: Redacted.value(legacyPrereviewApi.key),
-              url: legacyPrereviewApi.origin,
-            },
-          }),
-          Effect.mapError(
-            flow(
-              Match.value,
-              Match.when('unavailable', () => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
-              Match.when('not-found', () => new UnknownPrereviewer({})),
-              Match.exhaustive,
-            ),
-          ),
-        ),
+      getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       listAllPrereviewersForStats: () =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getUsersFromLegacyPrereview(), {

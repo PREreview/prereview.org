@@ -2644,8 +2644,18 @@ export const canLogIn: Fixtures<
 export const canLogInAsDemoUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canLogInAsDemoUser' | 'fetch'>
+  Pick<AppFixtures, 'canLogInAsDemoUser'| 'seedEvents' | 'fetch'>
 > = {
+  seedEvents: async ({ seedEvents }, use) => {
+    await use([
+      ...seedEvents,
+      new Events.RegisteredPrereviewerImported({
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        registeredAt: 'not available from import source',
+        pseudonym: Pseudonym('Orange Panda'),
+      }),
+    ])
+  },
   canLogInAsDemoUser: async ({}, use) => {
     await use(true)
   },
