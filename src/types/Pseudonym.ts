@@ -1,4 +1,4 @@
-import { Arbitrary, Either, Number, Option, pipe, Schema, type Brand } from 'effect'
+import { Arbitrary, Effect, Either, Number, Option, pipe, Random, Schema, type Brand } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -188,6 +188,21 @@ const Animal = Schema.Literal(
   'Yak',
   'Zebra',
 )
+
+export const possiblePseudonyms = Effect.gen(function* () {
+  const animals = new Set(Animal.literals)
+  const colors = new Set(Color.literals)
+  colors.delete('Amthyst')
+
+  const pseudonyms: Array<Pseudonym> = []
+  animals.forEach(animal => {
+    colors.forEach(color => {
+      pseudonyms.push(Pseudonym(`${color} ${animal}`))
+    })
+  })
+
+  return yield* Random.shuffle(pseudonyms)
+})
 
 export const PseudonymSchema = pipe(
   NonEmptyStringSchema,
