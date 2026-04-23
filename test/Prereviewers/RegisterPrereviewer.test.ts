@@ -58,7 +58,7 @@ const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant(),
 })
 
-test.failing.each<
+test.each<
   [
     string,
     ReadonlyArray<Events.Event>,

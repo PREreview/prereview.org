@@ -1,5 +1,6 @@
-import { Data } from 'effect'
-import type * as Commands from '../Commands.ts'
+import { Array, Data, Either, Match, Option } from 'effect'
+import * as Commands from '../Commands.ts'
+import * as Events from '../Events.ts'
 import type { Pseudonym, Temporal } from '../types/index.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 
@@ -9,7 +10,14 @@ export interface Input {
   readonly pseudonym: Pseudonym.Pseudonym
 }
 
-type State = unknown
+type State = PrereviewerNotRegistered | PrereviewerAlreadyRegistered | PseudonymAlreadyInUse
+
+class PrereviewerNotRegistered extends Data.TaggedClass('PrereviewerNotRegistered') {}
+
+class PrereviewerAlreadyRegistered extends Data.TaggedClass('PrereviewerAlreadyRegistered')<{
+  registeredAt: Temporal.Instant | 'not available from import source'
+  pseudonym: Pseudonym.Pseudonym
+}> {}
 
 export class PseudonymAlreadyInUse extends Data.TaggedError('PseudonymAlreadyInUse') {}
 
@@ -18,9 +26,67 @@ export class MismatchWithExistingDataForOrcid extends Data.TaggedError('Mismatch
   existingRegisteredAt: Temporal.Instant | 'not available from import source'
 }> {}
 
-export declare const RegisterPrereviewer: Commands.Command<
-  'RegisteredPrereviewerImported' | 'PrereviewerRegistered',
-  [Input],
-  State,
-  PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid
->
+const createFilter = (input: Input) =>
+  Events.EventFilter([
+    {
+      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
+      predicates: { pseudonym: input.pseudonym },
+    },
+    {
+      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
+      predicates: { orcidId: input.orcidId },
+    },
+  ])
+
+const isPseudonymRegisteredToDifferentOrcidId = (
+  input: Input,
+  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
+) => event.pseudonym === input.pseudonym && event.orcidId !== input.orcidId
+
+const isPrereviewerRegistered = (
+  input: Input,
+  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
+) => event.orcidId === input.orcidId
+
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
+
+  if (Array.some(filteredEvents, event => isPseudonymRegisteredToDifferentOrcidId(input, event))) {
+    return new PseudonymAlreadyInUse()
+  }
+
+  const alreadyRegistered = Array.findFirst(filteredEvents, event => isPrereviewerRegistered(input, event))
+  if (Option.isSome(alreadyRegistered)) {
+    return new PrereviewerAlreadyRegistered({
+      registeredAt: alreadyRegistered.value.registeredAt,
+      pseudonym: alreadyRegistered.value.pseudonym,
+    })
+  }
+
+  return new PrereviewerNotRegistered()
+}
+
+const decide = (state: State, input: Input) =>
+  Match.valueTags(state, {
+    PseudonymAlreadyInUse: Either.left,
+    PrereviewerAlreadyRegistered: existing => {
+      if (existing.registeredAt !== input.registeredAt || existing.pseudonym !== input.pseudonym) {
+        return Either.left(
+          new MismatchWithExistingDataForOrcid({
+            existingPseudonym: existing.pseudonym,
+            existingRegisteredAt: existing.registeredAt,
+          }),
+        )
+      }
+
+      return Either.right(Option.none())
+    },
+    PrereviewerNotRegistered: () => Either.right(Option.some(new Events.PrereviewerRegistered(input))),
+  })
+
+export const RegisterPrereviewer = Commands.Command({
+  name: 'Prereviewers.registerPrereviewer',
+  createFilter,
+  foldState,
+  decide,
+})
