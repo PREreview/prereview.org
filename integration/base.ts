@@ -2606,24 +2606,6 @@ export const canLogIn: Fixtures<
     ])
   },
   page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
-    fetch.get({
-      name: 'pseudonym',
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        body: {
-          data: {
-            personas: [
-              {
-                isAnonymous: true,
-                name: 'Orange Panda',
-              },
-            ],
-          },
-        },
-      },
-    })
-
     fetch.post('http://orcid.test/token', {
       status: StatusCodes.OK,
       body: {
@@ -2644,7 +2626,7 @@ export const canLogIn: Fixtures<
 export const canLogInAsDemoUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents' | 'fetch'>
+  Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
     await use([
@@ -2658,27 +2640,6 @@ export const canLogInAsDemoUser: Fixtures<
   },
   canLogInAsDemoUser: async ({}, use) => {
     await use(true)
-  },
-  fetch: async ({ fetch }, use) => {
-    fetch.get({
-      name: 'pseudonym',
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        body: {
-          data: {
-            personas: [
-              {
-                isAnonymous: true,
-                name: 'Orange Panda',
-              },
-            ],
-          },
-        },
-      },
-    })
-
-    await use(fetch)
   },
 }
 

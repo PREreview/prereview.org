@@ -62,22 +62,6 @@ const LegacyPrereviewUsersD = pipe(
   ),
 )
 
-const LegacyPrereviewUserD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      data: D.struct({
-        personas: D.array(
-          D.struct({
-            isAnonymous: D.boolean,
-            name: D.string,
-          }),
-        ),
-      }),
-    }),
-  ),
-)
-
 const LegacyPrereviewUserFullD = pipe(
   JsonD,
   D.compose(
@@ -174,29 +158,6 @@ export const getUserFromLegacyPrereview = (orcid: OrcidId) =>
         Option.map(Struct.get('name')),
         Option.filter(isPseudonym),
         Option.map(pseudonym => ({ pseudonym, createdAt, orcid })),
-      ),
-    ),
-    RTE.mapLeft(error =>
-      match(error)
-        .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
-        .otherwise(() => 'unavailable' as const),
-    ),
-  )
-
-export const getPseudonymFromLegacyPrereview = (orcid: OrcidId) =>
-  pipe(
-    RTE.fromReader(legacyPrereviewUrl(`users/${orcid}`)),
-    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-    RTE.chainW(F.send),
-    RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
-    RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
-      flow(
-        ({ data }) => Array.findFirst(data.personas, Struct.get('isAnonymous')),
-        Option.map(Struct.get('name')),
-        Option.filter(isPseudonym),
       ),
     ),
     RTE.mapLeft(error =>
