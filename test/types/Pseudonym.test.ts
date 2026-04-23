@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
-import { Either, Schema } from 'effect'
+import { describe, expect, it } from '@jest/globals'
+import { Effect, Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/Pseudonym.ts'
@@ -109,5 +109,17 @@ describe('isPseudonym', () => {
     ],
   })('with a non-pseudonym', string => {
     expect(_.isPseudonym(string)).toBe(false)
+  })
+})
+
+describe('possiblePseudonyms', () => {
+  const result = Effect.runSync(_.possiblePseudonyms)
+
+  it('does not allow Amthyst', () => {
+    expect(result).not.toContain('Amthyst Panda')
+  })
+
+  it('contains all combinations of colors and animals', () => {
+    expect(result).toHaveLength((72 - 1) * 89)
   })
 })
