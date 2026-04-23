@@ -2557,31 +2557,33 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 }
 
 export const usePostgresDB: Fixtures<
-  Pick<AppFixtures, 'sqlClientLayer'>,
+  { postgresUrl: URL },
   Record<never, never>,
   Pick<AppFixtures, 'sqlClientLayer'>
 > = {
-  sqlClientLayer: async ({}, use) => {
-    await use(
-      pipe(
-        Config.url('POSTGRES_URL'),
-        Effect.andThen(url =>
-          Effect.gen(function* () {
-            const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
+  postgresUrl: async ({}, use) => {
+    const postgresConnection = await pipe(
+      Config.url('POSTGRES_URL'),
+      Effect.andThen(url =>
+        Effect.gen(function* () {
+          const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
 
-            const databaseName = `test${v4()().slice(0, 8)}`
+          const databaseName = `test${v4()().slice(0, 8)}`
 
-            yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
+          yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
 
-            return Url.setPathname(url, databaseName)
-          }),
-        ),
-        Effect.scoped,
-        Effect.provide(Reactivity.layer),
-        Effect.andThen(url => PgClient.layer({ url: Redacted.make(url.href) })),
-        Layer.unwrapEffect,
+          return Url.setPathname(url, databaseName)
+        }),
       ),
+      Effect.scoped,
+      Effect.provide(Reactivity.layer),
+      Effect.runPromise,
     )
+
+    await use(postgresConnection)
+  },
+  sqlClientLayer: async ({ postgresUrl }, use) => {
+    await use(PgClient.layer({ url: Redacted.make(postgresUrl.href) }))
   },
 }
 
