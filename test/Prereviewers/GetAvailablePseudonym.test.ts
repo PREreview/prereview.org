@@ -20,7 +20,7 @@ const imported2 = new Events.RegisteredPrereviewerImported({
 
 const possiblePseudonyms = [Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')]
 
-test.failing.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
   ['first pseudonym used', [imported1], Either.right(Pseudonym.Pseudonym('Blue Sheep'))],
   ['second pseudonym used', [imported2], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
