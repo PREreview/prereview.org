@@ -8,4 +8,6 @@ export type Result = Either.Either<Pseudonym, NoPseudonymAvailable>
 
 type State = unknown
 
-export declare const GetAvailablePseudonym: Queries.StatefulQuery<State, [], Pseudonym, NoPseudonymAvailable>
+export declare const GetAvailablePseudonym: (
+  possiblePseudonyms: ReadonlyArray<Pseudonym>,
+) => Queries.StatefulQuery<State, [], Pseudonym, NoPseudonymAvailable>

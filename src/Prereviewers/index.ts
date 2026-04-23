@@ -23,7 +23,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
     importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
-    getAvailablePseudonym: Queries.FromStatefulQuery<typeof GetAvailablePseudonym>
+    getAvailablePseudonym: Queries.FromStatefulQuery<ReturnType<typeof GetAvailablePseudonym>>
   }
 >() {}
 

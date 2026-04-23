@@ -12,11 +12,21 @@ const imported1 = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
+const imported2 = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym.Pseudonym('Blue Sheep'),
+  registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
+})
+
+const possiblePseudonyms = [Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')]
+
 test.failing.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
   ['first pseudonym used', [imported1], Either.right(Pseudonym.Pseudonym('Blue Sheep'))],
+  ['second pseudonym used', [imported2], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
+  ['all pseudonyms used', [imported1, imported2], Either.left(new _.NoPseudonymAvailable())],
 ])('%s', (_name, events, expected) => {
-  const { initialState, updateStateWithEvents, query } = _.GetAvailablePseudonym
+  const { initialState, updateStateWithEvents, query } = _.GetAvailablePseudonym(possiblePseudonyms)
 
   const state = Array.match(events, {
     onNonEmpty: events => updateStateWithEvents(initialState, events),
