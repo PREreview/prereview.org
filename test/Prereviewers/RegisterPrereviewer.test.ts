@@ -66,7 +66,7 @@ test.failing.each<
     Either.Either<Option.Option<Events.Event>, _.PseudonymAlreadyInUse | _.MismatchWithExistingDataForOrcid>,
   ]
 >([
-  ['no events', [], input, Either.right(Option.some(new Events.RegisteredPrereviewerImported(input)))],
+  ['no events', [], input, Either.right(Option.some(new Events.PrereviewerRegistered(input)))],
   [
     'different PREreviewer imported',
     [importedDifferentPrereviewer],
