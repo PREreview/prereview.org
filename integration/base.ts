@@ -73,6 +73,7 @@ import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { Uuid } from '../src/types/index.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
 import * as WebApp from '../src/WebApp/index.ts'
 import { IsUserBlocked } from '../src/WebApp/log-in/index.ts'
 
@@ -2587,10 +2588,20 @@ export const usePostgresDB: Fixtures<
 export const canLogIn: Fixtures<
   { hasSeenMyDetailsPage: boolean },
   Record<never, never>,
-  Pick<AppFixtures, 'fetch' | 'userOnboardingStore'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'fetch' | 'seedEvents' | 'userOnboardingStore'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
   hasSeenMyDetailsPage: async ({}, use) => {
     await use(true)
+  },
+  seedEvents: async ({ seedEvents }, use) => {
+    await use([
+      ...seedEvents,
+      new Events.RegisteredPrereviewerImported({
+        orcidId: OrcidId('0000-0002-1825-0097'),
+        registeredAt: 'not available from import source',
+        pseudonym: Pseudonym('Orange Panda'),
+      }),
+    ])
   },
   page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
     fetch.get({
