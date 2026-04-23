@@ -105,6 +105,9 @@ export const authenticate = Effect.fn(
         pipe(
           prereviewers.register(authenticatedOrcidId),
           Effect.andThen(prereviewers.importRegisteredOrcidId(authenticatedOrcidId)),
+          Effect.tapError(error =>
+            Effect.logError('Unable to register new PREreviewer').pipe(Effect.annotateLogs({ error })),
+          ),
         ),
     })
 
