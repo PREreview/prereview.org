@@ -11,6 +11,7 @@ import {
   isASlackUser,
   test,
   userIsBlocked,
+  waitForNotBusy,
 } from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
@@ -584,6 +585,7 @@ test.extend(canRegisterAsNewUser)('can log in without having done so before', as
   await menu.click()
 
   await page.getByRole('link', { name: 'Log in' }).click()
+  await waitForNotBusy(page)
 
   await menu.click()
   await expect(page.getByRole('link', { name: 'Log out' })).toBeVisible()
