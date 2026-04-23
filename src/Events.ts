@@ -16,6 +16,7 @@ export const Event = Schema.Union(
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
   PrereviewerEvents.RegisteredPrereviewerImported,
+  PrereviewerEvents.PrereviewerRegistered,
 )
 
 export type EventFilter<T extends Types.Tags<Event>> =

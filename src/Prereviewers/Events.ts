@@ -9,3 +9,9 @@ export class RegisteredPrereviewerImported extends Schema.TaggedClass<Registered
     pseudonym: Pseudonym.PseudonymSchema,
   },
 ) {}
+
+export class PrereviewerRegistered extends Schema.TaggedClass<PrereviewerRegistered>()('PrereviewerRegistered', {
+  orcidId: OrcidId.OrcidIdSchema,
+  registeredAt: Temporal.InstantSchema,
+  pseudonym: Pseudonym.PseudonymSchema,
+}) {}
