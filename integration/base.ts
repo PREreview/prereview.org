@@ -126,24 +126,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   fetch: async ({}, use) => {
     const fetch = fetchMock.createInstance()
 
-    fetch.get({
-      name: 'pseudonym',
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        body: {
-          data: {
-            personas: [
-              {
-                isAnonymous: true,
-                name: 'Orange Panda',
-              },
-            ],
-          },
-        },
-      },
-    })
-
     fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.01.13.476201/rapid-reviews', {
       body: { data: [] },
     })
@@ -2617,6 +2599,24 @@ export const canLogIn: Fixtures<
     await use(true)
   },
   page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
+    fetch.get({
+      name: 'pseudonym',
+      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
+      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      response: {
+        body: {
+          data: {
+            personas: [
+              {
+                isAnonymous: true,
+                name: 'Orange Panda',
+              },
+            ],
+          },
+        },
+      },
+    })
+
     fetch.post('http://orcid.test/token', {
       status: StatusCodes.OK,
       body: {
@@ -2637,10 +2637,31 @@ export const canLogIn: Fixtures<
 export const canLogInAsDemoUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canLogInAsDemoUser'>
+  Pick<AppFixtures, 'canLogInAsDemoUser' | 'fetch'>
 > = {
   canLogInAsDemoUser: async ({}, use) => {
     await use(true)
+  },
+  fetch: async ({ fetch }, use) => {
+    fetch.get({
+      name: 'pseudonym',
+      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
+      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      response: {
+        body: {
+          data: {
+            personas: [
+              {
+                isAnonymous: true,
+                name: 'Orange Panda',
+              },
+            ],
+          },
+        },
+      },
+    })
+
+    await use(fetch)
   },
 }
 
