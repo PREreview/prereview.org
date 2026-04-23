@@ -2644,7 +2644,7 @@ export const canLogIn: Fixtures<
 export const canLogInAsDemoUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canLogInAsDemoUser'| 'seedEvents' | 'fetch'>
+  Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents' | 'fetch'>
 > = {
   seedEvents: async ({ seedEvents }, use) => {
     await use([
