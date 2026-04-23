@@ -10,6 +10,7 @@ import { GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
+import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts';
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
@@ -22,6 +23,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
     importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
+  getAvailablePseudonym: Queries.FromStatefulQuery<typeof GetAvailablePseudonym>
   }
 >() {}
 
@@ -68,6 +70,7 @@ export const layer = Layer.effect(
           ),
         ),
       importRegisteredPrereviewer,
+      getAvailablePseudonym: () => new Queries.UnableToQuery({cause: 'not implemented'})
     }
   }),
 )
