@@ -1,16 +1,15 @@
 import { FetchHttpClient } from '@effect/platform'
-import { Array, Context, Effect, Layer, pipe, Redacted } from 'effect'
+import { Context, Effect, Layer, pipe, Redacted } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
 import * as Queries from '../Queries.ts'
-import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
-import type { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
+import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
@@ -52,19 +51,7 @@ export const layer = Layer.effect(
         ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
-      listAllPrereviewersForStats: () =>
-        pipe(
-          FptsToEffect.readerTaskEither(LegacyPrereview.getUsersFromLegacyPrereview(), {
-            fetch,
-            legacyPrereviewApi: {
-              app: legacyPrereviewApi.app,
-              key: Redacted.value(legacyPrereviewApi.key),
-              url: legacyPrereviewApi.origin,
-            },
-          }),
-          Effect.mapError(() => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
-          Effect.andThen(Array.map(({ orcid, timestamp }) => ({ orcidId: orcid, registeredAt: timestamp }))),
-        ),
+      listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
       importRegisteredOrcidId: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getUserFromLegacyPrereview(orcid), {
