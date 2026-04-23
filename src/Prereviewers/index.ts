@@ -3,13 +3,13 @@ import { Array, Context, Effect, flow, Layer, Match, pipe, Redacted } from 'effe
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
-import type * as Queries from '../Queries.ts'
+import * as Queries from '../Queries.js'
 import { UnableToQuery } from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 import type { OrcidId } from '../types/index.ts'
 import { UnknownPrereviewer, type GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
-import type { IsRegistered } from './IsRegistered.ts'
+import { IsRegistered } from './IsRegistered.js'
 import type { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
@@ -50,26 +50,7 @@ export const layer = Layer.effect(
           Effect.asVoid,
           Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
         ),
-      isRegistered: orcid =>
-        pipe(
-          FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcid), {
-            fetch,
-            legacyPrereviewApi: {
-              app: legacyPrereviewApi.app,
-              key: Redacted.value(legacyPrereviewApi.key),
-              url: legacyPrereviewApi.origin,
-            },
-          }),
-          Effect.andThen(true),
-          Effect.catchAll(
-            flow(
-              Match.value,
-              Match.when('unavailable', () => new UnableToQuery({ cause: 'Legacy user API unavailable' })),
-              Match.when('not-found', () => Effect.succeed(false)),
-              Match.exhaustive,
-            ),
-          ),
-        ),
+      isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: orcidId =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.getPseudonymFromLegacyPrereview(orcidId), {

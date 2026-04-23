@@ -2682,15 +2682,6 @@ export const canRegisterAsNewUser: Fixtures<Record<never, never>, Record<never, 
         scope: '/authenticate',
       },
     })
-    fetch.get({
-      name: 'not registered as PREreviewer',
-      repeat: 1,
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        status: 404,
-      },
-    })
     fetch.post({
       url: 'http://prereview.test/api/v2/users',
       headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
