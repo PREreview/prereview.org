@@ -3,6 +3,7 @@ import { pipe } from 'effect'
 import { CategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { ImportOsrpreRapidPrereview } from './ImportOsrpreRapidPrereview.ts'
 import { ImportPrereviewer } from './ImportPrereviewer.ts'
+import { ImportRapidPrereview } from './ImportRapidPrereview.ts'
 import { PrintStatus } from './PrintStatus.ts'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
@@ -13,6 +14,7 @@ const app = pipe(
     WithdrawReviewRequest,
     CategorizeReviewRequest,
     ImportPrereviewer,
+    ImportRapidPrereview,
     ImportOsrpreRapidPrereview,
   ]),
 )
