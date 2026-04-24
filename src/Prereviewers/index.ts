@@ -16,7 +16,7 @@ import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
-    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
+    legacyRegister: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
@@ -39,7 +39,7 @@ export const layer = Layer.effect(
     const importRegisteredPrereviewer = yield* Commands.makeCommand(ImportRegisteredPrereviewer)
 
     return {
-      register: orcid =>
+      legacyRegister: orcid =>
         pipe(
           FptsToEffect.readerTaskEither(LegacyPrereview.createUserOnLegacyPrereview({ name: orcid, orcid }), {
             fetch,
