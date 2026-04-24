@@ -68,7 +68,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
 const decide = (state: State, input: Input) =>
   Match.valueTags(state, {
-    PseudonymAlreadyInUse: Either.left,
+    PseudonymAlreadyInUse: state => Either.left(state),
     PrereviewerAlreadyRegistered: existing => {
       if (existing.registeredAt !== input.registeredAt || existing.pseudonym !== input.pseudonym) {
         return Either.left(
