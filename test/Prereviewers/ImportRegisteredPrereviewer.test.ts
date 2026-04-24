@@ -18,8 +18,13 @@ const inputWithoutRegisteredAt = {
 } satisfies _.Input
 
 const imported = new Events.RegisteredPrereviewerImported(input)
+const registered = new Events.PrereviewerRegistered(input)
 
 const importedDifferentTime = new Events.RegisteredPrereviewerImported({
+  ...input,
+  registeredAt: input.registeredAt.subtract({ hours: 1 }),
+})
+const registeredDifferentTime = new Events.PrereviewerRegistered({
   ...input,
   registeredAt: input.registeredAt.subtract({ hours: 1 }),
 })
@@ -33,13 +38,26 @@ const importedDifferentPseudonym = new Events.RegisteredPrereviewerImported({
   ...input,
   pseudonym: Pseudonym('Blue Panda'),
 })
+const registeredDifferentPseudonym = new Events.PrereviewerRegistered({
+  ...input,
+  pseudonym: Pseudonym('Blue Panda'),
+})
 
 const importedDifferentOrcidId = new Events.RegisteredPrereviewerImported({
   ...input,
   orcidId: OrcidId('0000-0002-6109-0367'),
 })
+const registeredDifferentOrcidId = new Events.PrereviewerRegistered({
+  ...input,
+  orcidId: OrcidId('0000-0002-6109-0367'),
+})
 
 const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   orcidId: OrcidId('0000-0002-6109-0367'),
   pseudonym: Pseudonym('Blue Panda'),
   registeredAt: Temporal.Now.instant(),
@@ -60,13 +78,14 @@ test.each<
     input,
     Either.right(Option.some(new Events.RegisteredPrereviewerImported(input))),
   ],
-  ['already imported, same details', [imported], input, Either.right(Option.none())],
   [
-    'already imported without registeredAt, same details',
-    [importedWithoutRegisteredAt],
-    inputWithoutRegisteredAt,
-    Either.right(Option.none()),
+    'different PREreviewer registered',
+    [registeredDifferentPrereviewer],
+    input,
+    Either.right(Option.some(new Events.RegisteredPrereviewerImported(input))),
   ],
+  ['already imported, same details', [imported], input, Either.right(Option.none())],
+  ['already registered, same details', [registered], input, Either.right(Option.none())],
   [
     'already imported, different registeredAt',
     [importedDifferentTime],
@@ -86,6 +105,17 @@ test.each<
       new _.MismatchWithExistingDataForOrcid({
         existingPseudonym: input.pseudonym,
         existingRegisteredAt: imported.registeredAt,
+      }),
+    ),
+  ],
+  [
+    'already registered, different registeredAt',
+    [registeredDifferentTime],
+    input,
+    Either.left(
+      new _.MismatchWithExistingDataForOrcid({
+        existingPseudonym: input.pseudonym,
+        existingRegisteredAt: registeredDifferentTime.registeredAt,
       }),
     ),
   ],
@@ -112,8 +142,25 @@ test.each<
     ),
   ],
   [
+    'already registered, different pseudonym',
+    [registeredDifferentPseudonym],
+    input,
+    Either.left(
+      new _.MismatchWithExistingDataForOrcid({
+        existingPseudonym: registeredDifferentPseudonym.pseudonym,
+        existingRegisteredAt: input.registeredAt,
+      }),
+    ),
+  ],
+  [
     'different orcid import with same pseudonym',
     [importedDifferentOrcidId],
+    input,
+    Either.left(new _.PseudonymAlreadyInUse()),
+  ],
+  [
+    'different orcid registered with same pseudonym',
+    [registeredDifferentOrcidId],
     input,
     Either.left(new _.PseudonymAlreadyInUse()),
   ],

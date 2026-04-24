@@ -34,11 +34,11 @@ export class MismatchWithExistingDataForOrcid extends Data.TaggedError('Mismatch
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
-      types: ['RegisteredPrereviewerImported'],
+      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
       predicates: { pseudonym: input.pseudonym },
     },
     {
-      types: ['RegisteredPrereviewerImported'],
+      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
       predicates: { orcidId: input.orcidId },
     },
   ])
@@ -116,7 +116,7 @@ const decide = (
 }
 
 export const ImportRegisteredPrereviewer: Commands.Command<
-  'RegisteredPrereviewerImported',
+  'RegisteredPrereviewerImported' | 'PrereviewerRegistered',
   [Input],
   State,
   PseudonymAlreadyInUse | MismatchWithExistingDataForOrcid
