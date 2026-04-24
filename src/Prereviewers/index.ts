@@ -17,6 +17,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     legacyRegister: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
+    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
@@ -52,6 +53,7 @@ export const layer = Layer.effect(
           Effect.asVoid,
           Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
         ),
+      register: () => new UnableToHandleCommand({ cause: 'Not implemented' }),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
