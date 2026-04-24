@@ -9,6 +9,7 @@ import { LanguageDetection, OpenAlexWorks, PreprintData } from './ExternalIntera
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
+import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
@@ -24,6 +25,7 @@ pipe(
         PreprintData.layer,
         ReviewRequest.queriesLayer,
         ReviewRequest.commandsLayer,
+        PreprintReviews.layer,
         Prereviewers.layer,
       ),
       Layer.provide(LanguageDetection.layerCld),
@@ -46,12 +48,11 @@ pipe(
             origin: Config.url('LEGACY_PREREVIEW_URL'),
           }),
         ),
-        Uuid.layer,
         PgClient.layerConfig({
           url: Config.redacted(Config.string('POSTGRES_URL')),
         }),
       ]),
-      Layer.provideMerge(NodeContext.layer),
+      Layer.provideMerge(Layer.mergeAll(NodeContext.layer, Uuid.layer)),
     ),
   ),
   NodeRuntime.runMain,
