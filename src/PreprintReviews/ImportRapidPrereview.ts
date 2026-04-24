@@ -122,15 +122,25 @@ const decide = (state: State, input: Input) =>
         !Equal.equals(
           Data.struct({
             ...existing,
-            publishedAt: existing.publishedAt.toString(),
+            publishedAt: undefined,
             author: Data.struct(existing.author),
-            questions: Data.struct(existing.questions),
+            questions: Data.struct({
+              ...existing.questions,
+              dataLink: undefined,
+              technicalComments: undefined,
+              editorialComments: undefined,
+            }),
           }),
           Data.struct({
             ...input,
-            publishedAt: input.publishedAt.toString(),
+            publishedAt: undefined,
             author: Data.struct(input.author),
-            questions: Data.struct(input.questions),
+            questions: Data.struct({
+              ...input.questions,
+              dataLink: undefined,
+              technicalComments: undefined,
+              editorialComments: undefined,
+            }),
           }),
         )
       ) {

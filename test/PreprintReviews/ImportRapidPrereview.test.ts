@@ -5,7 +5,6 @@ import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/PreprintReviews/ImportRapidPrereview.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid } from '../../src/types/uuid.ts'
 
@@ -51,11 +50,6 @@ const importedDifferentPersona = new Events.RapidPrereviewImported({
   },
 })
 
-const importedDifferentPublishedAt = new Events.RapidPrereviewImported({
-  ...input,
-  publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
-})
-
 const importedDifferentAnswer1 = new Events.RapidPrereviewImported({
   ...input,
   questions: {
@@ -68,7 +62,7 @@ const importedDifferentAnswer2 = new Events.RapidPrereviewImported({
   ...input,
   questions: {
     ...input.questions,
-    dataLink: Option.some(NonEmptyString('https://example.com/data')),
+    reproducibility: 'yes',
   },
 })
 
@@ -88,12 +82,6 @@ test.each<
     [importedDifferentPersona],
     input,
     Either.left(new _.MismatchWithExistingData({ ...input, author: importedDifferentPersona.author })),
-  ],
-  [
-    'already imported, different published at',
-    [importedDifferentPublishedAt],
-    input,
-    Either.left(new _.MismatchWithExistingData({ ...input, publishedAt: importedDifferentPublishedAt.publishedAt })),
   ],
   [
     'already imported, different answer 1',
