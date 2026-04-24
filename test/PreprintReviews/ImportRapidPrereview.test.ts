@@ -72,7 +72,7 @@ const importedDifferentAnswer2 = new Events.RapidPrereviewImported({
   },
 })
 
-test.failing.each<
+test.each<
   [string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.MismatchWithExistingData>]
 >([
   ['no events', [], input, Either.right(Option.some(new Events.RapidPrereviewImported(input)))],

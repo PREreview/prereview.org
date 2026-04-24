@@ -1,8 +1,8 @@
-import { Data, type Option, Schema } from 'effect'
-import type * as Commands from '../Commands.ts'
+import { Array, Data, Either, Equal, Match, Option, Schema } from 'effect'
+import * as Commands from '../Commands.ts'
+import * as Events from '../Events.ts'
 import type * as Preprints from '../Preprints/index.ts'
 import type { NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
-import * as Events from './Events.ts'
 
 export interface Input {
   author: {
@@ -93,9 +93,56 @@ export class MismatchWithExistingData extends Data.TaggedError('MismatchWithExis
   }
 }> {}
 
-export declare const ImportRapidPrereview: Commands.Command<
-  'RapidPrereviewImported',
-  [Input],
-  State,
-  MismatchWithExistingData
->
+const createFilter = (input: Input) =>
+  Events.EventFilter({
+    types: ['RapidPrereviewImported'],
+    predicates: { rapidPrereviewId: input.rapidPrereviewId },
+  })
+
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
+
+  const importedEvent = Array.head(filteredEvents)
+
+  if (Option.isSome(importedEvent)) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _tag, ...data } = importedEvent.value
+
+    return new RapidPrereviewAlreadyExists(data)
+  }
+
+  return new RapidPrereviewDoesNotExist()
+}
+
+const decide = (state: State, input: Input) =>
+  Match.valueTags(state, {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    RapidPrereviewAlreadyExists: ({ _tag, ...existing }) => {
+      if (
+        !Equal.equals(
+          Data.struct({
+            ...existing,
+            author: Data.struct(existing.author),
+            questions: Data.struct(existing.questions),
+          }),
+          Data.struct({
+            ...input,
+            author: Data.struct(input.author),
+            questions: Data.struct(input.questions),
+          }),
+        )
+      ) {
+        return Either.left(new MismatchWithExistingData(existing))
+      }
+
+      return Either.right(Option.none())
+    },
+    RapidPrereviewDoesNotExist: () => Either.right(Option.some(new Events.RapidPrereviewImported(input))),
+  })
+
+export const ImportRapidPrereview = Commands.Command({
+  name: 'PreprintReviews.importRapidPrereview',
+  createFilter,
+  foldState,
+  decide,
+})

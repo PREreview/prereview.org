@@ -1,6 +1,6 @@
-import { Context, Layer } from 'effect'
+import { Context, Effect, Layer } from 'effect'
 import * as Commands from '../Commands.ts'
-import type { ImportRapidPrereview } from './ImportRapidPrereview.ts'
+import { ImportRapidPrereview } from './ImportRapidPrereview.ts'
 
 export * from './Errors.ts'
 export { ImportRapidPrereviewInput } from './ImportRapidPrereview.ts'
@@ -13,6 +13,9 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
   }
 >() {}
 
-export const layer = Layer.succeed(PreprintReviews, {
-  importRapidPrereview: () => new Commands.UnableToHandleCommand({ cause: 'Not implemented' }),
-})
+export const layer = Layer.effect(
+  PreprintReviews,
+  Effect.all({
+    importRapidPrereview: Commands.makeCommand(ImportRapidPrereview),
+  }),
+)
