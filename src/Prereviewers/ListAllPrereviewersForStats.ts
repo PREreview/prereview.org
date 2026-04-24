@@ -12,9 +12,12 @@ export type Result = ReadonlyArray<PrereviewerForStats>
 
 type State = HashMap.HashMap<OrcidId.OrcidId, PrereviewerForStats>
 
-const filter = Events.EventFilter({ types: ['RegisteredPrereviewerImported'] })
+const filter = Events.EventFilter({ types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'] })
 
-const updateStateWithPertinentEvent = (state: State, event: Events.RegisteredPrereviewerImported): State =>
+const updateStateWithPertinentEvent = (
+  state: State,
+  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
+): State =>
   HashMap.set(state, event.orcidId, {
     orcidId: event.orcidId,
     registeredAt: event.registeredAt,

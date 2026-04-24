@@ -12,7 +12,7 @@ const imported1 = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
-const imported2 = new Events.RegisteredPrereviewerImported({
+const registered2 = new Events.PrereviewerRegistered({
   orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
   pseudonym: Pseudonym.Pseudonym('Blue Panda'),
   registeredAt: Temporal.Now.instant(),
@@ -28,12 +28,12 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', [], []],
   ['imported', [imported1], [{ orcidId: imported1.orcidId, registeredAt: imported1.registeredAt }]],
   [
-    'multiple imported',
-    [imported1, imported2, imported3],
+    'multiple registered',
+    [imported1, registered2, imported3],
     [
       { orcidId: imported3.orcidId, registeredAt: imported3.registeredAt },
       { orcidId: imported1.orcidId, registeredAt: imported1.registeredAt },
-      { orcidId: imported2.orcidId, registeredAt: imported2.registeredAt },
+      { orcidId: registered2.orcidId, registeredAt: registered2.registeredAt },
     ],
   ],
 ])('%s', (_name, events, expected) => {
