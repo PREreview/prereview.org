@@ -7,11 +7,6 @@ import * as Datasets from '../Datasets/index.ts'
 import { MakeDeprecatedLoggerEnv } from '../DeprecatedServices.ts'
 import { Zenodo } from '../ExternalApis/index.ts'
 import { ZenodoRecords } from '../ExternalInteractions/index.ts'
-import {
-  getRapidPreviewsFromLegacyPrereview,
-  isLegacyCompatiblePreprint,
-  LegacyPrereviewApi,
-} from '../legacy-prereview.ts'
 import * as Personas from '../Personas/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Preprints from '../Preprints/index.ts'
@@ -29,7 +24,6 @@ import {
   PrereviewsAreUnavailable,
   PrereviewsPageNotFound,
   type PrereviewWasRemoved,
-  type RapidPrereview,
   RecentDatasetPrereview,
   type RecentPreprintPrereview,
   type RecentPrereviews,
@@ -49,9 +43,6 @@ export class Prereviews extends Context.Tag('Prereviews')<
     getForUser: (
       user: OrcidId.OrcidId,
     ) => Effect.Effect<ReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>, PrereviewsAreUnavailable>
-    getRapidPrereviewsForPreprint: (
-      id: PreprintId,
-    ) => Effect.Effect<ReadonlyArray<RapidPrereview>, PrereviewsAreUnavailable>
     getPrereview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
@@ -71,15 +62,8 @@ export class WasPrereviewRemoved extends Context.Tag('WasPrereviewRemoved')<
 
 export const { getFiveMostRecent } = Effect.serviceConstants(Prereviews)
 
-export const {
-  getForClub,
-  getForPreprint,
-  getForProfile,
-  getForUser,
-  getRapidPrereviewsForPreprint,
-  getPrereview,
-  search,
-} = Effect.serviceFunctions(Prereviews)
+export const { getForClub, getForPreprint, getForProfile, getForUser, getPrereview, search } =
+  Effect.serviceFunctions(Prereviews)
 
 export const layer = Layer.effect(
   Prereviews,
@@ -90,7 +74,6 @@ export const layer = Layer.effect(
     )
     const wasPrereviewRemoved = yield* WasPrereviewRemoved
     const fetch = yield* FetchHttpClient.Fetch
-    const legacyPrereviewApi = yield* LegacyPrereviewApi
     const getPreprintTitle = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprintTitle)
     const getPreprint = yield* EffectToFpts.makeTaskEitherK(Preprints.getPreprint)
     const publicUrl = yield* PublicUrl
@@ -222,30 +205,6 @@ export const layer = Layer.effect(
         Effect.mapError(() => new PrereviewsAreUnavailable()),
         Effect.provide(context),
       ),
-      getRapidPrereviewsForPreprint: id =>
-        pipe(
-          Effect.succeed(id),
-          Effect.filterOrFail(isLegacyCompatiblePreprint, () => 'not-compatible' as const),
-          Effect.andThen(id =>
-            FptsToEffect.readerTaskEither(getRapidPreviewsFromLegacyPrereview(id), {
-              fetch,
-              legacyPrereviewApi: {
-                app: legacyPrereviewApi.app,
-                key: Redacted.value(legacyPrereviewApi.key),
-                url: legacyPrereviewApi.origin,
-              },
-            }),
-          ),
-          Effect.catchAll(
-            flow(
-              Match.value,
-              Match.when('not-compatible', () => Effect.sync(Array.empty)),
-              Match.when('unavailable', () => new PrereviewsAreUnavailable()),
-              Match.exhaustive,
-            ),
-          ),
-          Effect.withSpan('Prereviews.getRapidPrereviewsForPreprint', { attributes: { id } }),
-        ),
       getPrereview: Effect.fn('Prereviews.getPrereview')(function* (id) {
         yield* Effect.annotateCurrentSpan({ id })
 

@@ -78,27 +78,6 @@ export interface PreprintPrereview {
   text: Html
 }
 
-export interface RapidPrereview {
-  author: {
-    name: string
-    orcid?: OrcidId
-  }
-  questions: {
-    availableCode: 'yes' | 'unsure' | 'na' | 'no'
-    availableData: 'yes' | 'unsure' | 'na' | 'no'
-    coherent: 'yes' | 'unsure' | 'na' | 'no'
-    ethics: 'yes' | 'unsure' | 'na' | 'no'
-    future: 'yes' | 'unsure' | 'na' | 'no'
-    limitations: 'yes' | 'unsure' | 'na' | 'no'
-    methods: 'yes' | 'unsure' | 'na' | 'no'
-    newData: 'yes' | 'unsure' | 'na' | 'no'
-    novel: 'yes' | 'unsure' | 'na' | 'no'
-    peerReview: 'yes' | 'unsure' | 'na' | 'no'
-    recommend: 'yes' | 'unsure' | 'na' | 'no'
-    reproducibility: 'yes' | 'unsure' | 'na' | 'no'
-  }
-}
-
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}
 
 export class PrereviewIsUnavailable extends Data.TaggedError('PrereviewIsUnavailable') {}

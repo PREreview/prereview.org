@@ -2,8 +2,11 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
+import { PublicPersona } from '../../src/Personas/Persona.ts'
+import type { RapidPrereview } from '../../src/PreprintReviews/index.ts'
 import { BiorxivPreprintId, Preprint } from '../../src/Preprints/index.ts'
-import type { PreprintPrereview, RapidPrereview } from '../../src/Prereviews/index.ts'
+import type { PreprintPrereview } from '../../src/Prereviews/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { createPage } from '../../src/WebApp/preprint-reviews-page/preprint-reviews.ts'
 import { expect, test } from '../base.ts'
@@ -954,12 +957,12 @@ const prereview5 = {
 } satisfies PreprintPrereview
 
 const rapidPrereview1 = {
-  author: { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
+  author: new PublicPersona({ name: NonEmptyString('Alizée Malnoë'), orcidId: OrcidId('0000-0002-8777-3174') }),
   questions: {
-    availableCode: 'na',
+    availableCode: 'not applicable',
     availableData: 'no',
     coherent: 'yes',
-    ethics: 'na',
+    ethics: 'not applicable',
     future: 'yes',
     limitations: 'yes',
     methods: 'yes',

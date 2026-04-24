@@ -46,6 +46,7 @@ import { LegacyPrereviewApi } from '../../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as Personas from '../../../Personas/index.ts'
+import * as PreprintReviews from '../../../PreprintReviews/index.ts'
 import * as Preprints from '../../../Preprints/index.ts'
 import type * as Prereviewers from '../../../Prereviewers/index.ts'
 import * as Prereviews from '../../../Prereviews/index.ts'
@@ -213,6 +214,7 @@ export interface Env {
     | LegacyPrereviewApi
     | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas
+    | PreprintReviews.PreprintReviews
     | Preprints.Preprints
     | Prereviewers.Prereviewers
     | Prereviews.Prereviews
@@ -289,8 +291,8 @@ const routerWithoutHyperTs = pipe(
               ),
               getRapidPrereviews: EffectToFpts.toTaskEitherK(
                 flow(
-                  Prereviews.getRapidPrereviewsForPreprint,
-                  Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                  PreprintReviews.getRapidPrereviewsForAPreprint,
+                  Effect.catchTag('UnableToQuery', () => Effect.fail('unavailable' as const)),
                 ),
                 env.runtime,
               ),

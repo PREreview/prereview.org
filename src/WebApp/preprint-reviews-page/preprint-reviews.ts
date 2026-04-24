@@ -7,8 +7,10 @@ import { match, P, P as p } from 'ts-pattern'
 import { getClubName } from '../../Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../html.ts'
 import { translate, type SupportedLocale } from '../../locales/index.ts'
+import * as Personas from '../../Personas/index.ts'
+import type { RapidPrereview } from '../../PreprintReviews/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
-import type { PreprintPrereview, RapidPrereview } from '../../Prereviews/index.ts'
+import type { PreprintPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
@@ -253,7 +255,7 @@ function showRapidPrereviews(
         t('authoredBy')({
           authors: pipe(
             rapidPrereviews,
-            Array.map(flow(Struct.get('author'), displayAuthor)),
+            Array.map(flow(Struct.get('author'), displayPersona)),
             formatList(locale),
             list => list.toString(),
           ),
@@ -319,13 +321,13 @@ function showRapidPrereviews(
               'availableCode',
               'recommend',
               'peerReview',
-            ] as Array.NonEmptyReadonlyArray<keyof RapidPrereview['questions']>,
+            ] satisfies Array.NonEmptyReadonlyArray<keyof RapidPrereview['questions']>,
             Array.map(question => ({
               question,
               answers: {
                 yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
                 unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
-                na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
+                na: countRapidPrereviewResponses(rapidPrereviews, question, 'not applicable'),
                 no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
               },
             })),
@@ -366,6 +368,17 @@ function showRapidPrereviews(
     </div>
   `
 }
+
+const displayPersona = Personas.match({
+  onPublic: persona =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
+      >${persona.name}</a
+    >`,
+  onPseudonym: persona =>
+    html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}"
+      >${persona.pseudonym}</a
+    >`,
+})
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: OrcidId }) {
   if (orcid) {

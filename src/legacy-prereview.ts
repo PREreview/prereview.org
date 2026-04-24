@@ -9,7 +9,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
-import type { PreprintId, PreprintIdWithDoi } from './Preprints/index.ts'
+import type { IndeterminatePreprintId, IndeterminatePreprintIdWithDoi } from './Preprints/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 
@@ -82,7 +82,7 @@ const LegacyRapidPrereviewsD = pipe(
   ),
 )
 
-export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
+export const getRapidPreviewsFromLegacyPrereview = (id: IndeterminatePreprintIdWithDoi) =>
   pipe(
     RTE.fromReader(
       legacyPrereviewUrl(
@@ -126,7 +126,9 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
     ),
   )
 
-export const isLegacyCompatiblePreprint = (preprint: PreprintId): preprint is PreprintIdWithDoi => isDoi(preprint.value)
+export const isLegacyCompatiblePreprint = (
+  preprint: IndeterminatePreprintId,
+): preprint is IndeterminatePreprintIdWithDoi => isDoi(preprint.value)
 
 function addLegacyPrereviewApiHeaders(request: F.Request) {
   return R.asks(({ legacyPrereviewApi: { app, key } }: LegacyPrereviewApiEnv) =>
