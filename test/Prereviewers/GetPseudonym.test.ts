@@ -14,7 +14,19 @@ const imported = new Events.RegisteredPrereviewerImported({
   registeredAt: Temporal.Now.instant(),
 })
 
+const registered = new Events.PrereviewerRegistered({
+  orcidId: input,
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
 const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+  pseudonym: Pseudonym.Pseudonym('Blue Panda'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
   pseudonym: Pseudonym.Pseudonym('Blue Panda'),
   registeredAt: Temporal.Now.instant(),
@@ -23,7 +35,14 @@ const importedDifferentPrereviewer = new Events.RegisteredPrereviewerImported({
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.UnknownPrereviewer({}))],
   ['imported', input, [imported], Either.right(imported.pseudonym)],
+  ['registered', input, [registered], Either.right(registered.pseudonym)],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], Either.left(new _.UnknownPrereviewer({}))],
+  [
+    'different PREreviewer registered',
+    input,
+    [registeredDifferentPrereviewer],
+    Either.left(new _.UnknownPrereviewer({})),
+  ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetPseudonym
 

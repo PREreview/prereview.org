@@ -11,7 +11,7 @@ export class UnknownPrereviewer extends Data.TaggedError('UnknownPrereviewer')<{
 
 const createFilter = (orcidId: Input) =>
   Events.EventFilter({
-    types: ['RegisteredPrereviewerImported'],
+    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
     predicates: { orcidId },
   })
 
@@ -21,9 +21,9 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const importedEvent = yield* Either.fromOption(Array.last(filteredEvents), () => new UnknownPrereviewer({}))
+    const registrationEvent = yield* Either.fromOption(Array.last(filteredEvents), () => new UnknownPrereviewer({}))
 
-    return importedEvent.pseudonym
+    return registrationEvent.pseudonym
   })
 
 export const GetPseudonym = Queries.OnDemandQuery({
