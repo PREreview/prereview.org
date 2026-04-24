@@ -55,7 +55,7 @@ const query: (state: State) => Result = flow(
   Array.sortWith(Struct.get('registeredAt'), OrderRegisteredAt),
 )
 
-export const ListAllPrereviewersForStats: Queries.StatefulQuery<State, [], Result, never> = Queries.StatefulQuery({
+export const ListAllPrereviewersForStats: Queries.StatefulQuery<State, [], Result> = Queries.StatefulQuery({
   name: 'Prereviewers.listAllPrereviewersForStats',
   initialState: HashMap.empty(),
   updateStateWithEvents,
