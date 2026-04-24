@@ -2655,32 +2655,6 @@ export const canRegisterAsNewUser: Fixtures<Record<never, never>, Record<never, 
         scope: '/authenticate',
       },
     })
-    fetch.post({
-      url: 'http://prereview.test/api/v2/users',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        status: 201,
-        body: 'Orange Panda',
-      },
-    })
-    fetch.get({
-      name: 'registered with pseudonym',
-      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      response: {
-        body: {
-          data: {
-            personas: [
-              {
-                isAnonymous: true,
-                name: 'Orange Panda',
-              },
-            ],
-            createdAt: '2026-04-23T00:00:00Z',
-          },
-        },
-      },
-    })
 
     await use(fetch)
   },
