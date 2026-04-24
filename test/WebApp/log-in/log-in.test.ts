@@ -243,7 +243,7 @@ describe('authenticate', () => {
     ])(
       'when the PREreviewer has not been registered',
       (code, [publicUrl, state], orcidOauth, locale, accessToken, sessionCookie, sessionId, signedSessionId) => {
-        const registerSpy = jest.fn<(typeof Prereviewers.Service)['legacyRegister']>(() => Effect.void)
+        const registerSpy = jest.fn<(typeof Prereviewers.Service)['register']>(() => Effect.void)
         const importRegisteredOrcidIdSpy = jest.fn<(typeof Prereviewers.Service)['importRegisteredOrcidId']>(
           () => Effect.void,
         )
@@ -267,7 +267,7 @@ describe('authenticate', () => {
             Layer.succeed(OrcidOauth, orcidOauth),
             Layer.mock(Prereviewers, {
               isRegistered: () => Effect.succeed(false),
-              legacyRegister: registerSpy,
+              register: registerSpy,
               importRegisteredOrcidId: importRegisteredOrcidIdSpy,
             }),
             Layer.succeed(PublicUrl, publicUrl),
@@ -375,7 +375,7 @@ describe('authenticate', () => {
       Effect.provide(Layer.mock(CookieSignature, { sign: shouldNotBeCalled })),
       Effect.provide(
         Layer.mock(Prereviewers, {
-          legacyRegister: () => new UnableToHandleCommand({}),
+          register: () => new UnableToHandleCommand({}),
           isRegistered: () => Effect.succeed(false),
         }),
       ),
