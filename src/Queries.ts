@@ -35,14 +35,14 @@ export interface OnDemandQuery<
   EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
-  Error,
+  Error = never,
 > {
   name: string
   createFilter: (...input: Input) => Events.EventFilter<EventTags>
   query: (events: ReadonlyArray<Events.Event>, ...input: Input) => Either.Either<Result, Error>
 }
 
-export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error> {
+export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error = never> {
   name: string
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
@@ -53,12 +53,12 @@ export const OnDemandQuery: <
   EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
-  Error,
+  Error = never,
 >(
   query: OnDemandQuery<EventTags, Input, Result, Error>,
 ) => OnDemandQuery<EventTags, Input, Result, Error> = Data.struct
 
-export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result, Error>(
+export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result, Error = never>(
   query: StatefulQuery<State, Input, Result, Error>,
 ) => StatefulQuery<State, Input, Result, Error> = Data.struct
 
@@ -66,7 +66,7 @@ export const makeOnDemandQuery = <
   EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
-  Error,
+  Error = never,
 >({
   name,
   createFilter,
@@ -97,7 +97,7 @@ export const makeOnDemandQuery = <
     )
   })
 
-export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error>({
+export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error = never>({
   name,
   initialState,
   updateStateWithEvents,
