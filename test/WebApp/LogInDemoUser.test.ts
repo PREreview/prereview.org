@@ -1,8 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as FeatureFlags from '../../src/FeatureFlags.ts'
+import { Prereviewers } from '../../src/Prereviewers/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/LogInDemoUser.ts'
 import * as EffectTest from '../EffectTest.ts'
@@ -20,6 +21,7 @@ describe('LogInDemoUser', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: true })),
+      Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
       EffectTest.run,
     ),
   )
@@ -39,6 +41,7 @@ describe('LogInDemoUser', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: false })),
+      Effect.provide(Layer.mock(Prereviewers, {})),
       EffectTest.run,
     ),
   )
