@@ -2512,9 +2512,40 @@ export const event = (): fc.Arbitrary<Events.Event> =>
     commentEvent(),
     datasetReviewEvent(),
     reviewRequestEvent(),
+    rapidPrereviewImported(),
     registeredPrereviewerImported(),
     prereviewerRegistered(),
   )
+
+export const rapidPrereviewImported = (): fc.Arbitrary<Events.RapidPrereviewImported> =>
+  fc
+    .record({
+      author: fc.record({
+        persona: constantFrom('public', 'pseudonym'),
+        orcidId: orcidId(),
+      }),
+      publishedAt: instant(),
+      preprintId: indeterminatePreprintIdWithDoi(),
+      rapidPrereviewId: uuid(),
+      questions: fc.record({
+        availableCode: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        availableData: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        coherent: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        dataLink: maybe(nonEmptyString()),
+        ethics: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        future: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        limitations: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        methods: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        newData: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        novel: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        peerReview: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        recommend: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        reproducibility: constantFrom('yes', 'unsure', 'not applicable', 'no'),
+        technicalComments: maybe(nonEmptyString()),
+        editorialComments: maybe(nonEmptyString()),
+      }),
+    })
+    .map(args => new Events.RapidPrereviewImported(args))
 
 export const registeredPrereviewerImported = (): fc.Arbitrary<Events.RegisteredPrereviewerImported> =>
   fc

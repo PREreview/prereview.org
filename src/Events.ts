@@ -1,11 +1,13 @@
 import { Array, Context, Effect, Function, Layer, PubSub, Record, Schema, Struct, type Types, flow, pipe } from 'effect'
 import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
+import * as PreprintReviews from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PrereviewerEvents from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewRequestsEvents from './ReviewRequests/Events.ts' // eslint-disable-line import/no-internal-modules
 
 export * from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
+export * from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './ReviewRequests/Events.ts' // eslint-disable-line import/no-internal-modules
 
@@ -15,6 +17,7 @@ export const Event = Schema.Union(
   ...CommentEvents.CommentEvent.members,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
+  PreprintReviews.RapidPrereviewImported,
   PrereviewerEvents.RegisteredPrereviewerImported,
   PrereviewerEvents.PrereviewerRegistered,
 )
