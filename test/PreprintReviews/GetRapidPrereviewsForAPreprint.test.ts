@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Option } from 'effect'
+import { Either, Option } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/PreprintReviews/GetRapidPrereviewsForAPreprint.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
@@ -134,5 +134,7 @@ test.failing.each<[string, _.Input, ReadonlyArray<Events.Event>, ReadonlyArray<U
 
   const actual = query(events, input)
 
-  expect(actual).toStrictEqual(expected.map(rapidPrereviewId => expect.objectContaining({ rapidPrereviewId })))
+  expect(actual).toStrictEqual(
+    Either.right(expected.map(rapidPrereviewId => expect.objectContaining({ rapidPrereviewId }))),
+  )
 })
