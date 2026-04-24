@@ -25,7 +25,6 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
       orcidId: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof ImportRegisteredPrereviewer>>
     importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
-    getAvailablePseudonym: Queries.FromStatefulQuery<ReturnType<typeof GetAvailablePseudonym>>
   }
 >() {}
 
@@ -38,6 +37,13 @@ export const layer = Layer.effect(
     const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
 
     const importRegisteredPrereviewer = yield* Commands.makeCommand(ImportRegisteredPrereviewer)
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const getAvailablePseudonym = yield* pipe(
+      possiblePseudonyms,
+      Effect.andThen(GetAvailablePseudonym),
+      Effect.andThen(Queries.makeStatefulQuery),
+    )
 
     return {
       legacyRegister: orcid =>
@@ -73,11 +79,6 @@ export const layer = Layer.effect(
           ),
         ),
       importRegisteredPrereviewer,
-      getAvailablePseudonym: yield* pipe(
-        possiblePseudonyms,
-        Effect.andThen(GetAvailablePseudonym),
-        Effect.andThen(Queries.makeStatefulQuery),
-      ),
     }
   }),
 )
