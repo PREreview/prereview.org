@@ -477,6 +477,7 @@ export const MyDetailsRouter = pipe(
           ),
           TE.mapLeft(() => 'unavailable' as const),
         ),
+        ...env.logger,
       }),
   ),
 ) satisfies P.Parser<(env: Env) => T.Task<Response.Response>>

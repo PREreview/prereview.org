@@ -1,6 +1,7 @@
 import { Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import * as L from 'logger-fp-ts'
 import { match, P } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
@@ -48,6 +49,11 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
       userOnboarding.seenMyDetailsPage
         ? RTE.of(undefined)
         : saveUserOnboarding(publicPersona.orcidId, { seenMyDetailsPage: true }),
+    ),
+    RTE.orElseFirstW(error =>
+      error === 'no-session'
+        ? RTE.of(undefined)
+        : RTE.rightReaderIO(pipe({ error: error as never }, L.errorP('Unable load My Details page'))),
     ),
     RTE.match(
       error =>
