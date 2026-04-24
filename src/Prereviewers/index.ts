@@ -5,13 +5,14 @@ import { UnableToHandleCommand } from '../Commands.ts'
 import * as LegacyPrereview from '../legacy-prereview.ts'
 import * as Queries from '../Queries.ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
-import type { OrcidId } from '../types/index.ts'
+import { Temporal, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
+import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
@@ -37,8 +38,8 @@ export const layer = Layer.effect(
     const legacyPrereviewApi = yield* LegacyPrereview.LegacyPrereviewApi
 
     const importRegisteredPrereviewer = yield* Commands.makeCommand(ImportRegisteredPrereviewer)
+    const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
       Effect.andThen(GetAvailablePseudonym),
@@ -59,7 +60,23 @@ export const layer = Layer.effect(
           Effect.asVoid,
           Effect.mapError(() => new UnableToHandleCommand({ cause: 'Legacy user API unavailable' })),
         ),
-      register: () => new UnableToHandleCommand({ cause: 'Not implemented' }),
+      register: Effect.fn('Prereviewers.register')(
+        function* (orcidId) {
+          const prereviewer = {
+            orcidId,
+            registeredAt: yield* Temporal.currentInstant,
+            pseudonym: yield* getAvailablePseudonym(),
+          }
+
+          yield* registerPrereviewer(prereviewer)
+        },
+        Effect.catchTag(
+          'MismatchWithExistingDataForOrcid',
+          'NoPseudonymAvailable',
+          'PseudonymAlreadyInUse',
+          error => new UnableToHandleCommand({ cause: error }),
+        ),
+      ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
