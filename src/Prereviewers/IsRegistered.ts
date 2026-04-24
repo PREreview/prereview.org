@@ -9,7 +9,7 @@ export type Result = boolean
 
 const createFilter = (orcidId: Input) =>
   Events.EventFilter({
-    types: ['RegisteredPrereviewerImported'],
+    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
     predicates: { orcidId },
   })
 
