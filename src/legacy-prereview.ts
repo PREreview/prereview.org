@@ -1,6 +1,5 @@
-import { Temporal } from '@js-temporal/polyfill'
 import { isDoi } from 'doi-ts'
-import { Array, Context, Option, type Redacted, Struct, flow, identity, pipe } from 'effect'
+import { Array, Context, type Redacted, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as J from 'fp-ts/lib/Json.js'
@@ -12,8 +11,7 @@ import { URL } from 'url'
 import { timeoutRequest, useStaleCache } from './fetch.ts'
 import type { PreprintId, PreprintIdWithDoi } from './Preprints/index.ts'
 import * as StatusCodes from './StatusCodes.ts'
-import { type OrcidId, isOrcidId } from './types/OrcidId.ts'
-import { PseudonymC, isPseudonym } from './types/Pseudonym.ts'
+import { isOrcidId } from './types/OrcidId.ts'
 
 export class LegacyPrereviewApi extends Context.Tag('LegacyPrereviewApi')<
   LegacyPrereviewApi,
@@ -37,33 +35,6 @@ const JsonD = {
 }
 
 const OrcidD = D.fromRefinement(isOrcidId, 'ORCID')
-
-const InstantD = pipe(
-  D.string,
-  D.parse(string =>
-    E.tryCatch(
-      () => Temporal.Instant.from(string),
-      () => D.error(string, 'Instant'),
-    ),
-  ),
-)
-
-const LegacyPrereviewUserFullD = pipe(
-  JsonD,
-  D.compose(
-    D.struct({
-      data: D.struct({
-        personas: D.array(
-          D.struct({
-            isAnonymous: D.boolean,
-            name: D.string,
-          }),
-        ),
-        createdAt: InstantD,
-      }),
-    }),
-  ),
-)
 
 const RapidPrereviewAnswerD = pipe(
   D.literal('yes', 'unsure', 'N/A', 'no'),
@@ -110,48 +81,6 @@ const LegacyRapidPrereviewsD = pipe(
     }),
   ),
 )
-
-export const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: OrcidId; name: string }) =>
-  pipe(
-    RTE.fromReader(legacyPrereviewUrl('users')),
-    RTE.chainReaderK(
-      flow(
-        F.Request('POST'),
-        F.setBody(JSON.stringify({ orcid, name }), 'application/json'),
-        addLegacyPrereviewApiHeaders,
-      ),
-    ),
-    RTE.chainW(F.send),
-    RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(StatusCodes.Created), identity),
-    RTE.chainTaskEitherKW(F.decode(PseudonymC)),
-    RTE.mapLeft(() => 'unavailable' as const),
-  )
-
-export const getUserFromLegacyPrereview = (orcid: OrcidId) =>
-  pipe(
-    RTE.fromReader(legacyPrereviewUrl(`users/${orcid}`)),
-    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-    RTE.chainW(F.send),
-    RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(F.hasStatus(StatusCodes.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserFullD)),
-    RTE.map(({ data }) => data),
-    RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(({ personas, createdAt }) =>
-      pipe(
-        Array.findFirst(personas, Struct.get('isAnonymous')),
-        Option.map(Struct.get('name')),
-        Option.filter(isPseudonym),
-        Option.map(pseudonym => ({ pseudonym, createdAt, orcid })),
-      ),
-    ),
-    RTE.mapLeft(error =>
-      match(error)
-        .with({ status: StatusCodes.NotFound }, () => 'not-found' as const)
-        .otherwise(() => 'unavailable' as const),
-    ),
-  )
 
 export const getRapidPreviewsFromLegacyPrereview = (id: PreprintIdWithDoi) =>
   pipe(
