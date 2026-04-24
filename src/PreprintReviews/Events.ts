@@ -14,7 +14,7 @@ export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImp
     availableCode: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     availableData: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     coherent: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    dataLink: Schema.Option(NonEmptyString.NonEmptyStringSchema),
+    dataLink: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
     ethics: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     future: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     limitations: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
@@ -24,7 +24,7 @@ export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImp
     peerReview: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     recommend: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
     reproducibility: Schema.Literal('yes', 'unsure', 'not applicable', 'no'),
-    technicalComments: Schema.Option(NonEmptyString.NonEmptyStringSchema),
-    editorialComments: Schema.Option(NonEmptyString.NonEmptyStringSchema),
+    technicalComments: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
+    editorialComments: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
   }),
 }) {}
