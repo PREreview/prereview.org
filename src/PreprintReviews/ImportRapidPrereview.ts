@@ -128,7 +128,7 @@ const decide = (state: State, input: Input) =>
           }),
           Data.struct({
             ...input,
-            publishedAt: existing.publishedAt.toString(),
+            publishedAt: input.publishedAt.toString(),
             author: Data.struct(input.author),
             questions: Data.struct(input.questions),
           }),
