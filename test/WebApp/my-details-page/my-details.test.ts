@@ -1,6 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import { format } from 'fp-ts-routing'
+import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -59,6 +61,8 @@ describe('myDetails', () => {
             saveUserOnboarding: shouldNotBeCalled,
             getPublicPersona: () => TE.right(publicPersona),
             getPseudonymPersona: () => TE.right(pseudonymPersona),
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
           })()
 
           expect(actual).toStrictEqual({
@@ -123,6 +127,8 @@ describe('myDetails', () => {
             saveUserOnboarding,
             getPublicPersona: () => TE.right(publicPersona),
             getPseudonymPersona: () => TE.right(pseudonymPersona),
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
           })()
 
           expect(actual).toStrictEqual({
@@ -186,6 +192,8 @@ describe('myDetails', () => {
             saveUserOnboarding: () => TE.left('unavailable'),
             getPublicPersona: () => TE.right(publicPersona),
             getPseudonymPersona: () => TE.right(pseudonymPersona),
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
           })()
 
           expect(actual).toStrictEqual({
@@ -245,6 +253,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -303,6 +313,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -361,6 +373,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -419,6 +433,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -477,6 +493,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -535,6 +553,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -593,6 +613,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -651,6 +673,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -709,6 +733,8 @@ describe('myDetails', () => {
           saveUserOnboarding: shouldNotBeCalled,
           getPublicPersona: () => TE.right(publicPersona),
           getPseudonymPersona: () => TE.right(pseudonymPersona),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual({
@@ -738,6 +764,8 @@ describe('myDetails', () => {
       saveUserOnboarding: shouldNotBeCalled,
       getPublicPersona: shouldNotBeCalled,
       getPseudonymPersona: shouldNotBeCalled,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual({
