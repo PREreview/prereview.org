@@ -28,7 +28,9 @@ export const reviewsPage = ({
   query?: NonEmptyString
 }): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> =>
   pipe(
-    getRecentPrereviews({ field, language, page, query }),
+    String(query).includes('%')
+      ? RTE.left('not-found' as const)
+      : getRecentPrereviews({ field, language, page, query }),
     RTE.matchW(
       error =>
         match(error)

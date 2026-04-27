@@ -13,7 +13,10 @@ describe('reviewsPage', () => {
     fc.supportedLocale(),
     fc.integer(),
     fc.option(fc.fieldId(), { nil: undefined }),
-    fc.option(fc.nonEmptyString(), { nil: undefined }),
+    fc.option(
+      fc.nonEmptyString().filter(string => !string.includes('%')),
+      { nil: undefined },
+    ),
     fc.record({
       currentPage: fc.integer(),
       totalPages: fc.integer(),
@@ -71,8 +74,33 @@ describe('reviewsPage', () => {
   test.prop([
     fc.supportedLocale(),
     fc.option(fc.fieldId(), { nil: undefined }),
-    fc.option(fc.nonEmptyString(), { nil: undefined }),
+    fc.option(
+      fc.nonEmptyString().filter(string => !string.includes('%')),
+      { nil: undefined },
+    ),
   ])('when there are no reviews', async (locale, field, query) => {
+    const actual = await _.reviewsPage({ field, locale, page: 1, query })({
+      getRecentPrereviews: () => TE.left('not-found'),
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(reviewsMatch.formatter, { page: 1, field, query }),
+      current: 'reviews',
+      status: StatusCodes.OK,
+      title: expect.anything(),
+      main: expect.anything(),
+      skipToLabel: 'main',
+      extraSkipLink: [expect.anything(), '#results'],
+      js: [],
+    })
+  })
+
+  test.prop([
+    fc.supportedLocale(),
+    fc.option(fc.fieldId(), { nil: undefined }),
+    fc.nonEmptyString().filter(string => string.includes('%')),
+  ])('when the query looks odd', async (locale, field, query) => {
     const actual = await _.reviewsPage({ field, locale, page: 1, query })({
       getRecentPrereviews: () => TE.left('not-found'),
     })()
@@ -94,7 +122,10 @@ describe('reviewsPage', () => {
     fc.supportedLocale(),
     fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 })),
     fc.option(fc.fieldId(), { nil: undefined }),
-    fc.option(fc.nonEmptyString(), { nil: undefined }),
+    fc.option(
+      fc.nonEmptyString().filter(string => !string.includes('%')),
+      { nil: undefined },
+    ),
   ])('when the page is not found', async (locale, page, field, query) => {
     const actual = await _.reviewsPage({ field, locale, page, query })({
       getRecentPrereviews: () => TE.left('not-found'),
@@ -114,7 +145,10 @@ describe('reviewsPage', () => {
     fc.supportedLocale(),
     fc.integer(),
     fc.option(fc.fieldId(), { nil: undefined }),
-    fc.option(fc.nonEmptyString(), { nil: undefined }),
+    fc.option(
+      fc.nonEmptyString().filter(string => !string.includes('%')),
+      { nil: undefined },
+    ),
   ])('when the recent reviews cannot be loaded', async (locale, page, field, query) => {
     const actual = await _.reviewsPage({ field, locale, page, query })({
       getRecentPrereviews: () => TE.left('unavailable'),
