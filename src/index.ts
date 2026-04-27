@@ -28,7 +28,6 @@ import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '.
 import { CommunitySlack } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as Keyv from './keyv.ts'
-import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import * as Prereviews from './Prereviews/index.ts'
 import { Program } from './Program.ts'
@@ -131,14 +130,6 @@ pipe(
         cloudName: Config.succeed('prereview'),
         key: Config.redacted('CLOUDINARY_API_KEY'),
         secret: Config.redacted('CLOUDINARY_API_SECRET'),
-      }),
-    ),
-    Layer.effect(
-      LegacyPrereviewApi,
-      Config.all({
-        app: Config.string('LEGACY_PREREVIEW_API_APP'),
-        key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
-        origin: Config.url('LEGACY_PREREVIEW_URL'),
       }),
     ),
     Nodemailer.layerTransporterConfig(Config.redacted(Config.url('SMTP_URI'))),

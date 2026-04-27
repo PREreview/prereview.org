@@ -58,7 +58,6 @@ import {
   type ResearchInterestsStoreEnv,
   type UserOnboardingStoreEnv,
 } from '../src/keyv.ts'
-import { LegacyPrereviewApi } from '../src/legacy-prereview.ts'
 import { DefaultLocale } from '../src/locales/index.ts'
 import { OrcidOauth } from '../src/OrcidOauth.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
@@ -126,10 +125,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.createInstance()
-
-    fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.01.13.476201/rapid-reviews', {
-      body: { data: [] },
-    })
 
     fetch.get({
       name: 'recent-prereviews',
@@ -2122,11 +2117,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
-
-    fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-12345678/rapid-reviews', {
-      body: { data: [] },
-    })
-
     fetch.get('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
       body: {
         name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null },
@@ -2462,11 +2452,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             cloudName: 'prereview',
             key: Redacted.make('key'),
             secret: Redacted.make('app'),
-          }),
-          Layer.succeed(LegacyPrereviewApi, {
-            app: 'app',
-            key: Redacted.make('key'),
-            origin: new URL('http://prereview.test'),
           }),
           Layer.succeed(Orcid.OrcidApi, {
             origin: new URL('http://api.orcid.test/'),

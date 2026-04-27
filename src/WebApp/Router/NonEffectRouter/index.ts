@@ -42,7 +42,6 @@ import {
 import * as FeatureFlags from '../../../FeatureFlags.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as Keyv from '../../../keyv.ts'
-import { LegacyPrereviewApi } from '../../../legacy-prereview.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import * as Personas from '../../../Personas/index.ts'
@@ -126,7 +125,6 @@ export const nonEffectRouter: Effect.Effect<
   const slackApiConfig = yield* Slack.SlackApi
   const shouldUpdateCommunitySlack = yield* CommunitySlack.shouldUpdateCommunitySlack
   const cloudinaryApiConfig = yield* Cloudinary.CloudinaryApi
-  const legacyPrereviewApi = yield* LegacyPrereviewApi
   const orcidOauth = yield* OrcidOauth
   const slackOauth = yield* SlackOauth
   const zenodoApi = yield* Zenodo.ZenodoApi
@@ -184,7 +182,6 @@ export const nonEffectRouter: Effect.Effect<
     shouldUpdateCommunitySlack,
     cloudinaryApiConfig,
     zenodoApiConfig: zenodoApi,
-    legacyPrereviewApiConfig: legacyPrereviewApi,
     users,
     authorInviteStore: keyvStores.authorInviteStore,
     formStore: keyvStores.formStore,
@@ -211,7 +208,6 @@ export interface Env {
     | GenerateUuid
     | HttpClient.HttpClient
     | LanguageDetection.LanguageDetection
-    | LegacyPrereviewApi
     | OpenAlexWorks.OpenAlexWorks
     | Personas.Personas
     | PreprintReviews.PreprintReviews
@@ -250,7 +246,6 @@ export interface Env {
   slackApiConfig: typeof Slack.SlackApi.Service
   shouldUpdateCommunitySlack: typeof CommunitySlack.ShouldUpdateCommunitySlack.Service
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
-  legacyPrereviewApiConfig: typeof LegacyPrereviewApi.Service
   fetch: typeof globalThis.fetch
 }
 
