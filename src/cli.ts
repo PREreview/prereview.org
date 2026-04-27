@@ -4,11 +4,11 @@ import { Config, Effect, Layer, pipe } from 'effect'
 import { Cli } from './Cli/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
-import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from './ExternalApis/index.ts'
+import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
 import { LanguageDetection, OpenAlexWorks, PreprintData } from './ExternalInteractions/index.ts'
-import * as FetchHttpClient from './FetchHttpClient.ts'
 import { LegacyPrereviewApi } from './legacy-prereview.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
+import * as Personas from './Personas/index.ts'
 import * as PreprintReviews from './PreprintReviews/index.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
@@ -26,11 +26,19 @@ pipe(
         ReviewRequest.queriesLayer,
         ReviewRequest.commandsLayer,
         PreprintReviews.layer,
-        Prereviewers.layer,
       ),
+      Layer.provide(Personas.layer),
+      Layer.provideMerge(Prereviewers.layer),
       Layer.provide(LanguageDetection.layerCld),
-      Layer.provide([Crossref.layer, Datacite.layer, JapanLinkCenter.layer, OpenAlex.layer, Philsci.layer]),
-      Layer.provide([SqlEventStore.layer, Layer.effect(FetchHttpClient.Fetch, FetchHttpClient.makeFetch)]),
+      Layer.provide([
+        Crossref.layer,
+        Datacite.layer,
+        JapanLinkCenter.layer,
+        OpenAlex.layer,
+        Orcid.layer,
+        Philsci.layer,
+      ]),
+      Layer.provide(SqlEventStore.layer),
       Layer.provide([
         Events.layer,
         SqlSensitiveDataStore.layer,
@@ -46,6 +54,13 @@ pipe(
             app: Config.string('LEGACY_PREREVIEW_API_APP'),
             key: Config.redacted('LEGACY_PREREVIEW_API_KEY'),
             origin: Config.url('LEGACY_PREREVIEW_URL'),
+          }),
+        ),
+        Layer.effect(
+          Orcid.OrcidApi,
+          Config.all({
+            origin: Config.withDefault(Config.url('ORCID_API_URL'), new URL('https://pub.orcid.org/')),
+            token: Config.option(Config.redacted('ORCID_API_READ_PUBLIC_TOKEN')),
           }),
         ),
         PgClient.layerConfig({
