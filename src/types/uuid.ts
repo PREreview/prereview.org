@@ -1,13 +1,14 @@
-import { Context, Effect, Layer, pipe, Schema } from 'effect'
+import { type Brand, Context, Effect, Layer, pipe, Schema } from 'effect'
 import type { IO } from 'fp-ts/lib/IO.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { v5 as _v5 } from 'uuid'
-import { v4 as _v4, isUuid, Uuid } from 'uuid-ts'
-import { FptsToEffect } from '../RefactoringUtilities/index.ts'
+import * as uuid from 'uuid'
+import type { NonEmptyString } from './NonEmptyString.ts'
 
-export { Uuid } from 'uuid-ts'
+const UuidBrand: unique symbol = Symbol.for('Pseudonym')
+
+export type Uuid = NonEmptyString & Brand.Brand<typeof UuidBrand>
 
 export class GenerateUuid extends Context.Tag('GenerateUuid')<
   GenerateUuid,
@@ -18,14 +19,13 @@ export class GenerateUuid extends Context.Tag('GenerateUuid')<
 >() {}
 
 export const layer: Layer.Layer<GenerateUuid> = Layer.succeed(GenerateUuid, {
-  v4: () => FptsToEffect.io(_v4()),
-  v5: (value, namespace) => Effect.sync(() => Uuid(_v5(value, namespace))),
+  v4: () => Effect.sync(() => Uuid(uuid.v4())),
+  v5: (value, namespace) => Effect.sync(() => Uuid(uuid.v5(value, namespace))),
 })
 
-export const UuidSchema: Schema.Schema<Uuid, string> = pipe(
-  Schema.String,
-  Schema.filter(isUuid, { message: () => 'not a UUID' }),
-)
+export const UuidSchema: Schema.Schema<Uuid, string> = pipe(Schema.UUID, Schema.brand(UuidBrand)) as never
+
+export const Uuid: (value: string) => Uuid = Schema.decodeSync(UuidSchema)
 
 export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>
@@ -42,8 +42,8 @@ export const UuidC = C.make(
   pipe(
     D.string,
     D.parse(s => {
-      if (s.toLowerCase() === s) {
-        return D.fromRefinement(isUuid, 'UUID').decode(s)
+      if (s.toLowerCase() === s && uuid.validate(s)) {
+        return D.success(s as Uuid)
       }
 
       return D.failure(s, 'UUID')

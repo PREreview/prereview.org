@@ -23,7 +23,7 @@ import Keyv from 'keyv'
 import nodemailer from 'nodemailer'
 import { OAuth2Server, type MutableRedirectUri } from 'oauth2-mock-server'
 import { URL } from 'url'
-import { v4 } from 'uuid-ts'
+import { v4 } from 'uuid'
 import {
   EmptyDepositionC,
   InProgressDepositionC,
@@ -2553,7 +2553,7 @@ export const usePostgresDB: Fixtures<
         Effect.gen(function* () {
           const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
 
-          const databaseName = `test${v4()().slice(0, 8)}`
+          const databaseName = `test${v4().slice(0, 8)}`
 
           yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
 

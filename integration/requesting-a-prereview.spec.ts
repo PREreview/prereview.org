@@ -1,16 +1,17 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Option } from 'effect'
-import { v4 } from 'uuid-ts'
+import { v4 } from 'uuid'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
+import { Uuid } from '../src/types/uuid.ts'
 import { areLoggedIn, canLogIn, expect, seedEvents, test } from './base.ts'
 
-const reviewRequestId1 = v4()()
-const reviewRequestId2 = v4()()
+const reviewRequestId1 = Uuid(v4())
+const reviewRequestId2 = Uuid(v4())
 const now = Temporal.Now.instant()
 
 test.extend(canLogIn)('can request a PREreview', async ({ page }) => {
