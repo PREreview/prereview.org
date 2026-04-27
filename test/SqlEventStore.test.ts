@@ -3,12 +3,14 @@ import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
 import { it, test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
+import * as Preprints from '../src/Preprints/index.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
-import { NonEmptyString, Uuid } from '../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
@@ -165,6 +167,10 @@ const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
 const otherCommentId = Uuid.Uuid('2b06c8ae-b1af-478e-8037-7506737e438c')
 const datasetReviewId = Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753')
 const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
+const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.12345') })
+const preprintId1Indeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ value: preprintId1.value })
+const preprintId2 = new Preprints.PhilsciPreprintId({ value: 1 })
+const preprintId3 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
 
 test.each<
   [
@@ -344,6 +350,53 @@ test.each<
         detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
       }),
       new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+    ],
+  ],
+  [
+    'complex predicates',
+    [
+      {
+        types: ['ReviewRequestForAPreprintWasStarted'],
+        predicates: { preprintId: preprintId1 },
+      },
+      {
+        types: ['ReviewRequestForAPreprintWasStarted'],
+        predicates: { preprintId: preprintId2 },
+      },
+    ],
+    [
+      new Events.ReviewRequestForAPreprintWasStarted({
+        startedAt: Temporal.Now.instant(),
+        preprintId: preprintId1,
+        reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
+        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+      new Events.ReviewRequestForAPreprintWasStarted({
+        startedAt: Temporal.Now.instant(),
+        preprintId: preprintId2,
+        reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
+        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+      new Events.ReviewRequestForAPreprintWasStarted({
+        startedAt: Temporal.Now.instant(),
+        preprintId: preprintId3,
+        reviewRequestId: Uuid.Uuid('74300474-a5d8-4fbd-b39d-1e1ff4d65fa7'),
+        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+    ],
+    [
+      new Events.ReviewRequestForAPreprintWasStarted({
+        startedAt: Temporal.Now.instant(),
+        preprintId: preprintId1Indeterminate,
+        reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
+        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+      new Events.ReviewRequestForAPreprintWasStarted({
+        startedAt: Temporal.Now.instant(),
+        preprintId: preprintId2,
+        reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
+        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
     ],
   ],
 ])('find events (%s)', (_name, filter, events, expected) =>

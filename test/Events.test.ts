@@ -1,8 +1,10 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Temporal } from '@js-temporal/polyfill'
 import { Tuple, type Types } from 'effect'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as _ from '../src/Events.ts'
+import * as Preprints from '../src/Preprints/index.ts'
 import { Doi, OrcidId, Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
 
@@ -11,7 +13,16 @@ const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const otherAuthorId = OrcidId.OrcidId('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const otherDatasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') })
+const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.12345') })
+const preprintIdIndeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ value: preprintId.value })
+const otherPreprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
 const datasetReviewWasStarted = new _.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const reviewRequestForAPreprintWasStarted = new _.ReviewRequestForAPreprintWasStarted({
+  startedAt: Temporal.Now.instant(),
+  preprintId,
+  reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
+  requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+})
 
 describe('matches', () => {
   test.prop(
@@ -65,6 +76,12 @@ describe('matches', () => {
             ],
           ], // multiple filters
         ],
+        [
+          [
+            reviewRequestForAPreprintWasStarted,
+            { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: preprintIdIndeterminate } },
+          ], // complex predicate
+        ],
       ],
     },
   )('when the event matches the filter', ([event, filter]) => {
@@ -113,6 +130,12 @@ describe('matches', () => {
               },
             ],
           ], // multiple filters
+        ],
+        [
+          [
+            reviewRequestForAPreprintWasStarted,
+            { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: otherPreprintId } },
+          ], // complex predicate
         ],
       ],
     },

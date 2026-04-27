@@ -71,22 +71,30 @@ export const make: Effect.Effect<
 
   const buildFilterCondition = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
     sql.or(
-      Array.map(Array.ensure(filter), filter =>
-        filter.predicates && Struct.keys(filter.predicates).length > 0
-          ? sql.and([
-              sql.in('type', filter.types),
-              ...sql.onDialectOrElse({
-                pg: () => [sql`payload @> ${filter.predicates}`],
-                orElse: () =>
-                  Record.reduce(filter.predicates ?? {}, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                    typeof value === 'string'
-                      ? Array.append(conditions, sql`payload ->> ${key} = ${value}`)
-                      : conditions,
-                  ),
-              }),
-            ])
-          : sql.in('type', filter.types),
-      ),
+      Array.map(Array.ensure(filter), filter => {
+        if (!filter.predicates || Struct.keys(filter.predicates).length === 0) {
+          return sql.in('type', filter.types)
+        }
+
+        const predicateEncoder = Schema.pick(...(Record.keys(filter.predicates) as never))(
+          Option.getOrThrow(Array.findFirst(Events.Event.members, hasTag(...filter.types))) as never,
+        )
+
+        const encodedPredicates = Schema.encodeSync(predicateEncoder as never)(
+          filter.predicates,
+        ) as Record.ReadonlyRecord<string, string | number>
+
+        return sql.and([
+          sql.in('type', filter.types),
+          ...sql.onDialectOrElse({
+            pg: () => [sql`payload @> ${encodedPredicates}`],
+            orElse: () =>
+              Record.reduce(encodedPredicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
+                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
+              ),
+          }),
+        ])
+      }),
     )
 
   const selectEventRows = <T extends Types.Tags<Events.Event>>(filter: Events.EventFilter<T>) =>
@@ -356,3 +364,7 @@ const PgResults = Schema.Struct({
 })
 
 const SqlQueryResults = Schema.Union(LibsqlResults, PgResults)
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}
