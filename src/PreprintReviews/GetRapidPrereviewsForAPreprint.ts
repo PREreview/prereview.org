@@ -1,7 +1,8 @@
-import type { Option } from 'effect'
+import { Array, Either, flow, Struct, type Option } from 'effect'
+import * as Events from '../Events.ts'
 import type * as Preprints from '../Preprints/index.ts'
-import type * as Queries from '../Queries.ts'
-import type { NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
+import * as Queries from '../Queries.ts'
+import { Temporal, type NonEmptyString, type OrcidId, type Uuid } from '../types/index.ts'
 
 export type Input = Preprints.IndeterminatePreprintId
 
@@ -34,4 +35,22 @@ export interface RapidPrereviewForAPreprint {
 
 export type Result = ReadonlyArray<RapidPrereviewForAPreprint>
 
-export declare const GetRapidPrereviewsForAPreprint: Queries.OnDemandQuery<'RapidPrereviewImported', [Input], Result>
+const createFilter = (preprintId: Input) =>
+  Events.EventFilter({
+    types: ['RapidPrereviewImported'],
+    predicates: { preprintId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+  const filter = createFilter(input)
+
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  return Array.sortWith(filteredEvents, Struct.get('publishedAt'), Temporal.OrderInstant)
+}
+
+export const GetRapidPrereviewsForAPreprint = Queries.OnDemandQuery({
+  name: 'PreprintReviews.getRapidPrereviewsForAPreprint',
+  createFilter,
+  query: flow(query, Either.right),
+})

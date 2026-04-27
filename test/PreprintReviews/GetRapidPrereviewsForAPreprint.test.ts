@@ -119,7 +119,7 @@ const importedDifferentPreprintId = new Events.RapidPrereviewImported({
   },
 })
 
-test.failing.each<[string, _.Input, ReadonlyArray<Events.Event>, ReadonlyArray<Uuid>]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, ReadonlyArray<Uuid>]>([
   ['no events', input, [], []],
   ['imported', input, [imported1], [imported1.rapidPrereviewId]],
   ['different preprint ID', input, [importedDifferentPreprintId], []],
