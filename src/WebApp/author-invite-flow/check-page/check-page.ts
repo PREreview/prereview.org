@@ -4,7 +4,7 @@ import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../../routes.ts'
 import { ProfileId } from '../../../types/index.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export function checkPage({

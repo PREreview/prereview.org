@@ -7,7 +7,7 @@ import { BiorxivPreprintId } from '../../src/Preprints/index.ts'
 import { Prereview } from '../../src/Prereviews/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { authorInvite } from '../../src/WebApp/author-invite-flow/index.ts'
 import { expect, test } from '../base.ts'
 

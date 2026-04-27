@@ -4,7 +4,7 @@ import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { InvalidForm, IsErrorFreeForm } from './IsErrorFreeForm.ts'
 

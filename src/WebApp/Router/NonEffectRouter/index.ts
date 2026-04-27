@@ -54,7 +54,7 @@ import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.
 import type * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { SlackOauth } from '../../../SlackOauth.ts'
-import type { GenerateUuid } from '../../../types/uuid.ts'
+import type { GenerateUuid } from '../../../types/Uuid.ts'
 import { LoggedInUser, SessionId, type User } from '../../../user.ts'
 import { myPrereviews } from '../../my-prereviews-page/index.ts'
 import { preprintReviews } from '../../preprint-reviews-page/index.ts'

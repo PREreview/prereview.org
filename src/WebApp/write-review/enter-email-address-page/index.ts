@@ -21,7 +21,7 @@ import { type GetPreprintTitleEnv, getPreprintTitle } from '../../../preprint.ts
 import type { IndeterminatePreprintId, PreprintTitle } from '../../../Preprints/index.ts'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
+import { type GenerateUuidEnv, generateUuidIO } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../Response/index.ts'

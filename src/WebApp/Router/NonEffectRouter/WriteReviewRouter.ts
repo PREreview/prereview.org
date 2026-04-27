@@ -19,7 +19,7 @@ import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import * as ReviewRequests from '../../../ReviewRequests/index.ts'
 import * as Routes from '../../../routes.ts'
 import { Uuid } from '../../../types/index.ts'
-import { generateUuidIO } from '../../../types/uuid.ts'
+import { generateUuidIO } from '../../../types/Uuid.ts'
 import type * as Response from '../../Response/index.ts'
 import {
   type NewPrereview,

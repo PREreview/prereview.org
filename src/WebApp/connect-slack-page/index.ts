@@ -17,7 +17,7 @@ import { type EditSlackUserIdEnv, saveSlackUserId } from '../../slack-user-id.ts
 import { type IsSlackUserEnv, isSlackUser } from '../../slack-user.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { NonEmptyStringC } from '../../types/NonEmptyString.ts'
-import { type GenerateUuidEnv, generateUuidIO } from '../../types/uuid.ts'
+import { type GenerateUuidEnv, generateUuidIO } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse, RedirectResponse, type Response } from '../Response/index.ts'

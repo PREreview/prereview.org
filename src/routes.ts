@@ -17,7 +17,7 @@ import { Iso639, ProfileId, Uuid } from './types/index.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { isOrcidId } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
-import { UuidC } from './types/uuid.ts'
+import { UuidC } from './types/Uuid.ts'
 
 export interface Route<A extends { readonly [K in keyof A]: unknown }> {
   path: `/${string}`

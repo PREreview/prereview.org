@@ -7,7 +7,7 @@ import * as ReviewRequests from '../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { NonEmptyString } from '../src/types/NonEmptyString.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
-import { Uuid } from '../src/types/uuid.ts'
+import { Uuid } from '../src/types/Uuid.ts'
 import { areLoggedIn, canLogIn, expect, seedEvents, test } from './base.ts'
 
 const reviewRequestId1 = Uuid(v4())

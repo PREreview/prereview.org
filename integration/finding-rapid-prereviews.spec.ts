@@ -5,7 +5,7 @@ import { RapidPrereviewImported } from '../src/Events.ts'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
-import { Uuid } from '../src/types/uuid.ts'
+import { Uuid } from '../src/types/Uuid.ts'
 import { expect, seedEvents, test } from './base.ts'
 
 test.extend(

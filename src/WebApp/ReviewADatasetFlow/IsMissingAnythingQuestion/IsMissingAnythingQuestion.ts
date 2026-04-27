@@ -3,7 +3,7 @@ import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import { saveAndContinueButton } from '../../../shared-translation-elements.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 import type { IsMissingAnythingForm } from './IsMissingAnythingForm.ts'
 

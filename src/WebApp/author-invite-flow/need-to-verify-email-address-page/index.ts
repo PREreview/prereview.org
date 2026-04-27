@@ -16,7 +16,7 @@ import {
   authorInviteMatch,
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {

@@ -8,7 +8,7 @@ import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
 import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
-import { type Uuid, UuidC } from './types/uuid.ts'
+import { type Uuid, UuidC } from './types/Uuid.ts'
 
 export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
 

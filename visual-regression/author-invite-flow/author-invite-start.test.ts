@@ -4,7 +4,7 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right when already started', async ({ showPage }) => {

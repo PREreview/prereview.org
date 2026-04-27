@@ -6,7 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { EmailAddressC, type EmailAddress } from './types/EmailAddress.ts'
 import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
-import type { Uuid } from './types/uuid.ts'
+import type { Uuid } from './types/Uuid.ts'
 
 export type AuthorInvite = OpenAuthorInvite | DeclinedAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 

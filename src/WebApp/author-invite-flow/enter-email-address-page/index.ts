@@ -32,7 +32,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { type GenerateUuidEnv, type Uuid, generateUuidIO } from '../../../types/uuid.ts'
+import { type GenerateUuidEnv, type Uuid, generateUuidIO } from '../../../types/Uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {

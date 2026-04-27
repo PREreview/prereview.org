@@ -12,7 +12,7 @@ import { renderDate } from '../../../time.ts'
 import { ProfileId } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { isPseudonym } from '../../../types/Pseudonym.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { PageResponse } from '../../Response/index.ts'
 import type { Prereview } from './index.ts'
 

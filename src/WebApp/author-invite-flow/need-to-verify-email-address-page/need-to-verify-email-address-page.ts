@@ -4,7 +4,7 @@ import type { UnverifiedContactEmailAddress } from '../../../contact-email-addre
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import { authorInviteNeedToVerifyEmailAddressMatch } from '../../../routes.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export function needToVerifyEmailAddressPage({

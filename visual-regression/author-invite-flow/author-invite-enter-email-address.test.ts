@@ -2,7 +2,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import { invalidE, missingE } from '../../src/form.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { enterEmailAddressForm } from '../../src/WebApp/author-invite-flow/enter-email-address-page/enter-email-address-form.ts'
 import { expect, test } from '../base.ts'
 

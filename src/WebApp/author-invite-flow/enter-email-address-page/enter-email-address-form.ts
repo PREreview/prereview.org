@@ -9,7 +9,7 @@ import { authorInviteEnterEmailAddressMatch } from '../../../routes.ts'
 import { errorPrefix, errorSummary, saveAndContinueButton } from '../../../shared-translation-elements.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import type { EmailAddress } from '../../../types/EmailAddress.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export interface EnterEmailAddressForm {

@@ -5,7 +5,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

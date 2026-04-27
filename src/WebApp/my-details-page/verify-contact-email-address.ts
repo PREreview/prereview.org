@@ -11,7 +11,7 @@ import {
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../../routes.ts'
-import type { Uuid } from '../../types/uuid.ts'
+import type { Uuid } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse } from '../Response/index.ts'

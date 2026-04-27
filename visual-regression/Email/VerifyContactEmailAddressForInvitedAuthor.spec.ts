@@ -6,7 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 import { expect, test } from '../base.ts'
 
 test('HTML looks right', async ({ page }) => {

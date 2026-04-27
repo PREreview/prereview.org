@@ -23,7 +23,7 @@ import {
   authorInvitePublishedMatch,
   authorInviteVerifyEmailAddressMatch,
 } from '../../routes.ts'
-import type { Uuid } from '../../types/uuid.ts'
+import type { Uuid } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../Response/index.ts'

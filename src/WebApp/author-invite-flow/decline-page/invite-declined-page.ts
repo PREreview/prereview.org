@@ -4,7 +4,7 @@ import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import { authorInviteDeclineMatch } from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import type { Uuid } from '../../../types/uuid.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const inviteDeclinedPage = (locale: SupportedLocale, inviteId: Uuid) => {

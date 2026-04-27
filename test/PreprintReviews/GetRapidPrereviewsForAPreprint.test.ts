@@ -7,7 +7,7 @@ import * as _ from '../../src/PreprintReviews/GetRapidPrereviewsForAPreprint.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
-import { Uuid } from '../../src/types/uuid.ts'
+import { Uuid } from '../../src/types/Uuid.ts'
 
 const input = new BiorxivOrMedrxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') })
 
