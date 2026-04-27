@@ -10,13 +10,14 @@ const program = pipe(
   Effect.andThen(Prereviewers.countAvailablePseudonyms),
   Effect.tapBoth({
     onSuccess: flow(
-      ({ used, available }) => ({
+      ({ used, legacyUsed, available }) => ({
         Used: `${used.toLocaleString('en-US')} (${Intl.NumberFormat('en-US', {
           style: 'percent',
         }).format(used / (used + available))})`,
         Remaining: `${available.toLocaleString('en-US')} (${Intl.NumberFormat('en-US', {
           style: 'percent',
         }).format(available / (used + available))})`,
+        'Legacy pseudonyms in use': legacyUsed.toLocaleString('en-US'),
       }),
       Console.table,
     ),

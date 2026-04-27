@@ -27,10 +27,10 @@ const registered3 = new Events.PrereviewerRegistered({
 const possiblePseudonyms = new Set([Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')])
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', [], { used: 0, available: 2 }],
-  ['first pseudonym used', [imported1], { used: 1, available: 1 }],
-  ['second pseudonym used', [registered3], { used: 1, available: 1 }],
-  ['all pseudonyms used', [imported1, imported2, registered3], { used: 2, available: 0 }],
+  ['no events', [], { used: 0, legacyUsed: 0, available: 2 }],
+  ['first pseudonym used', [imported1], { used: 1, legacyUsed: 0, available: 1 }],
+  ['second pseudonym used', [registered3], { used: 1, legacyUsed: 0, available: 1 }],
+  ['all pseudonyms used', [imported1, imported2, registered3], { used: 2, legacyUsed: 1, available: 0 }],
 ])('%s', (_name, events, expected) => {
   const { query } = _.CountAvailablePseudonyms(possiblePseudonyms)
 

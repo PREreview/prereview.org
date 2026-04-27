@@ -1,10 +1,11 @@
-import { Array, Either, flow, Predicate } from 'effect'
+import { Array, Either, flow } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 
 export interface Result {
   readonly used: number
+  readonly legacyUsed: number
   readonly available: number
 }
 
@@ -18,14 +19,15 @@ const query =
   (events: ReadonlyArray<Events.Event>): Result => {
     const filter = createFilter()
 
-    const filteredEvents = Array.filter(
-      events,
-      Predicate.compose(Events.matches(filter), event => possiblePseudonyms.has(event.pseudonym)),
-    )
+    const filteredEvents = Array.filter(events, Events.matches(filter))
+
+    const used = Array.filter(filteredEvents, event => possiblePseudonyms.has(event.pseudonym)).length
+    const legacyUsed = Array.filter(filteredEvents, event => !possiblePseudonyms.has(event.pseudonym)).length
 
     return {
-      used: filteredEvents.length,
-      available: possiblePseudonyms.size - filteredEvents.length,
+      used,
+      legacyUsed,
+      available: possiblePseudonyms.size - used,
     }
   }
 
