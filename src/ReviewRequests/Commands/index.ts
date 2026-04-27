@@ -6,8 +6,6 @@ import type { Uuid } from '../../types/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
 import { ChoosePersona } from './ChoosePersona.ts'
-import * as ImportReviewRequestFromPreprintServer from './ImportReviewRequestFromPreprintServer.ts'
-import * as ImportReviewRequestFromPrereviewer from './ImportReviewRequestFromPrereviewer.ts'
 import { PublishReviewRequest } from './PublishReviewRequest.ts'
 import * as ReceiveReviewRequest from './ReceiveReviewRequest.ts'
 import * as RecordEmailSentToAcknowledgeReviewRequest from './RecordEmailSentToAcknowledgeReviewRequest.ts'
@@ -26,8 +24,6 @@ export class ReviewRequestCommands extends Context.Tag('ReviewRequestCommands')<
     receiveReviewRequest: CommandHandler<ReceiveReviewRequest.Command>
     acceptReviewRequest: CommandHandler<AcceptReviewRequest.Command, AcceptReviewRequest.Error>
     rejectReviewRequest: CommandHandler<RejectReviewRequest.Command, RejectReviewRequest.Error>
-    importReviewRequestFromPreprintServer: CommandHandler<ImportReviewRequestFromPreprintServer.Command>
-    importReviewRequestFromPrereviewer: CommandHandler<ImportReviewRequestFromPrereviewer.Command>
     withdrawReviewRequest: Commands.FromCommand<typeof WithdrawReviewRequest>
     categorizeReviewRequest: CommandHandler<CategorizeReviewRequest.Command, CategorizeReviewRequest.Error>
     recordReviewRequestSharedOnTheCommunitySlack: CommandHandler<
@@ -52,8 +48,6 @@ export const {
   receiveReviewRequest,
   acceptReviewRequest,
   rejectReviewRequest,
-  importReviewRequestFromPreprintServer,
-  importReviewRequestFromPrereviewer,
   withdrawReviewRequest,
   categorizeReviewRequest,
   recordReviewRequestSharedOnTheCommunitySlack,
@@ -128,16 +122,6 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         RejectReviewRequest.createFilter,
         RejectReviewRequest.foldState,
         RejectReviewRequest.decide,
-      ),
-      importReviewRequestFromPreprintServer: handleCommand(
-        ImportReviewRequestFromPreprintServer.createFilter,
-        ImportReviewRequestFromPreprintServer.foldState,
-        ImportReviewRequestFromPreprintServer.decide,
-      ),
-      importReviewRequestFromPrereviewer: handleCommand(
-        ImportReviewRequestFromPrereviewer.createFilter,
-        ImportReviewRequestFromPrereviewer.foldState,
-        ImportReviewRequestFromPrereviewer.decide,
       ),
       withdrawReviewRequest: yield* Commands.makeCommand(WithdrawReviewRequest),
       categorizeReviewRequest: handleCommand(
