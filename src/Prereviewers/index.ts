@@ -6,7 +6,6 @@ import { Temporal, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
-import { ImportRegisteredPrereviewer } from './ImportRegisteredPrereviewer.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
@@ -18,7 +17,6 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
-    importRegisteredPrereviewer: Commands.FromCommand<typeof ImportRegisteredPrereviewer>
   }
 >() {}
 
@@ -27,7 +25,6 @@ export const { listAllPrereviewersForStats } = Effect.serviceFunctions(Prereview
 export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
-    const importRegisteredPrereviewer = yield* Commands.makeCommand(ImportRegisteredPrereviewer)
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
 
     const getAvailablePseudonym = yield* pipe(
@@ -57,7 +54,6 @@ export const layer = Layer.effect(
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
-      importRegisteredPrereviewer,
     }
   }),
 )
