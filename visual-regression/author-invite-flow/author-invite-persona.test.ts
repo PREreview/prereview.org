@@ -1,5 +1,4 @@
 import * as E from 'fp-ts/lib/Either.js'
-import { Uuid } from 'uuid-ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { personaForm } from '../../src/WebApp/author-invite-flow/persona-page/persona-form.ts'
 import { missingE } from '../../src/form.ts'
@@ -7,6 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { Uuid } from '../../src/types/uuid.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

@@ -29,7 +29,6 @@ import type { Json, JsonRecord } from 'fp-ts/lib/Json.js'
 import fs from 'fs'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
 import path from 'path'
-import { Uuid } from 'uuid-ts'
 import type {
   AssignedAuthorInvite,
   AuthorInvite,
@@ -132,6 +131,7 @@ import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
+import { Uuid } from '../src/types/uuid.ts'
 import type { UserOnboarding } from '../src/user-onboarding.ts'
 import type { User } from '../src/user.ts'
 import type { OrcidOAuthEnv } from '../src/WebApp/connect-orcid/index.ts'

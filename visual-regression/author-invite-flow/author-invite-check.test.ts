@@ -1,4 +1,3 @@
-import { Uuid } from 'uuid-ts'
 import * as Personas from '../../src/Personas/index.ts'
 import { checkPage } from '../../src/WebApp/author-invite-flow/check-page/check-page.ts'
 import { failureMessage } from '../../src/WebApp/author-invite-flow/check-page/failure-message.ts'
@@ -6,6 +5,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../src/types/Pseudonym.ts'
+import { Uuid } from '../../src/types/uuid.ts'
 import { expect, test } from '../base.ts'
 
 test('content looks right', async ({ showPage }) => {

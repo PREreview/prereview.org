@@ -6,7 +6,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
 import { type Html, html, plainText, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
@@ -17,6 +16,7 @@ import {
   authorInvitePublishedMatch,
   reviewMatch,
 } from '../../routes.ts'
+import type { Uuid } from '../../types/uuid.ts'
 import type { User } from '../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.ts'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../Response/index.ts'

@@ -4,9 +4,9 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import { EmailAddressC, type EmailAddress } from './types/EmailAddress.ts'
 import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
+import type { Uuid } from './types/uuid.ts'
 
 export type AuthorInvite = OpenAuthorInvite | DeclinedAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 

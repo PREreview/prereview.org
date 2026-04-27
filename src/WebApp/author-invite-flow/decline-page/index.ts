@@ -4,7 +4,6 @@ import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import {
   type GetAuthorInviteEnv,
   type SaveAuthorInviteEnv,
@@ -14,6 +13,7 @@ import {
 import type { SupportedLocale } from '../../../locales/index.ts'
 import type { Prereview } from '../../../Prereviews/index.ts'
 import { authorInviteDeclineMatch } from '../../../routes.ts'
+import type { Uuid } from '../../../types/uuid.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import {
   type LogInResponse,

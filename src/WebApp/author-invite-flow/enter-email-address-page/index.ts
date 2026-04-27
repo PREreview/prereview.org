@@ -8,7 +8,6 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../../author-invite.ts'
 import {
   type ContactEmailAddress,
@@ -33,7 +32,7 @@ import {
   authorInvitePublishedMatch,
 } from '../../../routes.ts'
 import { EmailAddressC } from '../../../types/EmailAddress.ts'
-import { type GenerateUuidEnv, generateUuidIO } from '../../../types/uuid.ts'
+import { type GenerateUuidEnv, type Uuid, generateUuidIO } from '../../../types/uuid.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.ts'
 import {

@@ -3,13 +3,12 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
 import { match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import type { Locale } from './Context.ts'
 import type { IndeterminatePreprintId } from './Preprints/index.ts'
 import { type EmailAddress, EmailAddressC } from './types/EmailAddress.ts'
 import type { NonEmptyString } from './types/NonEmptyString.ts'
 import type { OrcidId } from './types/OrcidId.ts'
-import { UuidC } from './types/uuid.ts'
+import { type Uuid, UuidC } from './types/uuid.ts'
 
 export class ContactEmailAddressIsNotFound extends Data.TaggedError('ContactEmailAddressIsNotFound') {}
 
