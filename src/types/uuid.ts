@@ -6,7 +6,7 @@ import * as D from 'io-ts/lib/Decoder.js'
 import * as uuid from 'uuid'
 import type { NonEmptyString } from './NonEmptyString.ts'
 
-const UuidBrand: unique symbol = Symbol.for('Pseudonym')
+const UuidBrand: unique symbol = Symbol.for('Uuid')
 
 export type Uuid = NonEmptyString & Brand.Brand<typeof UuidBrand>
 
