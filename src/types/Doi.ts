@@ -1,5 +1,7 @@
 import * as Doi from 'doi-ts'
 import { Either, type Equivalence, ParseResult, pipe, Schema } from 'effect'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
 export { Doi, getRegistrant, hasRegistrant, isDoi, toUrl } from 'doi-ts'
@@ -24,3 +26,5 @@ export const parse = FptsToEffect.optionK(Doi.parse)
 export const DoiEquivalence: Equivalence.Equivalence<Doi.Doi> = FptsToEffect.eq(Doi.Eq)
 
 export type Registrant<D extends Doi.Doi> = D extends Doi.Doi<infer R> ? R : never
+
+export const DoiC = C.fromDecoder(D.fromRefinement(Doi.isDoi, 'DOI'))

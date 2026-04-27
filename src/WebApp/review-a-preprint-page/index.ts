@@ -9,7 +9,7 @@ import { P, match } from 'ts-pattern'
 import { getInput, invalidE } from '../../form.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { type ResolvePreprintIdEnv, resolvePreprintId } from '../../preprint.ts'
-import { type IndeterminatePreprintId, fromUrl, parsePreprintDoi } from '../../Preprints/index.ts'
+import { type IndeterminatePreprintId, PreprintDoiD, fromPreprintDoi, fromUrl } from '../../Preprints/index.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { writeReviewMatch } from '../../routes.ts'
 import { type PageResponse, RedirectResponse } from '../Response/index.ts'
@@ -46,10 +46,7 @@ const UrlD = pipe(
   ),
 )
 
-const DoiD = pipe(
-  D.string,
-  D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
-)
+const DoiD = pipe(PreprintDoiD, D.map(fromPreprintDoi))
 
 const PreprintUrlD = pipe(
   UrlD,

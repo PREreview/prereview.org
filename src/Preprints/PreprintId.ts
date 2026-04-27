@@ -342,9 +342,9 @@ export const IndeterminatePreprintIdFromStringSchema: Schema.Schema<
   `doi:${string}` | `https://philsci-archive.pitt.edu/${number}/`
 > = Schema.Union(IndeterminatePreprintIdWithDoiFromStringSchema, PhilsciPreprintIdFromStringSchema)
 
-export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = D.fromRefinement(
-  Predicate.compose(Doi.isDoi, isPreprintDoi),
-  'DOI',
+export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintIdWithDoi['value']> = pipe(
+  Doi.DoiC,
+  D.refine(isPreprintDoi, 'DOI'),
 )
 
 export const parsePreprintDoi: (input: string) => Option.Option<IndeterminatePreprintIdWithDoi> = flow(

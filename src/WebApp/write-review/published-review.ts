@@ -1,16 +1,13 @@
-import { type Doi, isDoi } from 'doi-ts'
 import { pipe } from 'effect'
 import type { JsonRecord } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as C from 'io-ts/lib/Codec.js'
-import * as D from 'io-ts/lib/Decoder.js'
+import { type Doi, DoiC } from '../../types/Doi.ts'
 import { addToSession, popFromSession } from '../session.ts'
 import { type CompletedForm, CompletedFormC } from './completed-form.ts'
 import { FormC } from './form.ts'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
-
-const DoiC = C.make(pipe(D.string, D.refine(isDoi, 'DOI')), { encode: String })
 
 export const PublishedReviewC: C.Codec<unknown, JsonRecord, { doi: Doi; form: CompletedForm; id: number }> = C.struct({
   doi: DoiC,
