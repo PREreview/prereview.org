@@ -513,8 +513,41 @@ export const Router = pipe(
   HttpRouter.get(
     '/robots.txt',
     Effect.if(AllowSiteCrawlers, {
-      onTrue: () => HttpServerResponse.text('User-agent: *\nAllow: /'),
-      onFalse: () => HttpServerResponse.text('User-agent: *\nAllow: /\n\nUser-agent: Amazonbot\nDisallow: /'),
+      onTrue: () =>
+        HttpServerResponse.text(
+          `
+User-agent: AhrefsBot
+User-agent: Amazonbot
+User-agent: bingbot
+User-agent: SemrushBot
+User-agent: SERankingBacklinksBot
+Allow: /reviews/*
+Disallow: /reviews
+Allow: /review-requests/*
+Disallow: /review-requests
+Allow: /
+Crawl-delay: 5
+
+User-agent: *
+Allow: /
+Crawl-delay: 2
+`.trim(),
+        ),
+      onFalse: () =>
+        HttpServerResponse.text(
+          `
+User-agent: AhrefsBot
+User-agent: Amazonbot
+User-agent: bingbot
+User-agent: SemrushBot
+User-agent: SERankingBacklinksBot
+Disallow: /
+
+User-agent: *
+Allow: /
+Crawl-delay: 10
+`.trim(),
+        ),
     }),
   ),
   HttpRouter.concat(LegacyRouter),
