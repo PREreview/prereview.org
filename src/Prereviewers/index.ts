@@ -4,6 +4,7 @@ import { UnableToHandleCommand } from '../Commands.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
+import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { IsRegistered } from './IsRegistered.ts'
@@ -16,11 +17,12 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
+    countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
   }
 >() {}
 
-export const { listAllPrereviewersForStats } = Effect.serviceFunctions(Prereviewers)
+export const { countAvailablePseudonyms, listAllPrereviewersForStats } = Effect.serviceFunctions(Prereviewers)
 
 export const layer = Layer.effect(
   Prereviewers,
@@ -31,6 +33,12 @@ export const layer = Layer.effect(
       possiblePseudonyms,
       Effect.andThen(GetAvailablePseudonym),
       Effect.andThen(Queries.makeStatefulQuery),
+    )
+
+    const countAvailablePseudonyms = yield* pipe(
+      possiblePseudonyms,
+      Effect.andThen(CountAvailablePseudonyms),
+      Effect.andThen(Queries.makeOnDemandQuery),
     )
 
     return {
@@ -53,6 +61,7 @@ export const layer = Layer.effect(
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
+      countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
     }
   }),
