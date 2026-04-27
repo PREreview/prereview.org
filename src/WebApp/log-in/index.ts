@@ -19,7 +19,7 @@ import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { Uuid } from '../../types/index.ts'
-import { type OrcidId, isOrcidId } from '../../types/OrcidId.ts'
+import { OrcidC, type OrcidId } from '../../types/OrcidId.ts'
 import { SessionId, newSessionForUser } from '../../user.ts'
 import { FlashMessageResponse, LogInResponse, type PageResponse } from '../Response/index.ts'
 import { accessDeniedMessage } from './access-denied-message.ts'
@@ -60,8 +60,6 @@ export const LogOut = Effect.gen(function* () {
     ]),
   })
 })
-
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 const OrcidUserC = C.struct({
   name: C.string,

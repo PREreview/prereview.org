@@ -5,7 +5,7 @@ import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { match } from 'ts-pattern'
 import { EmailAddressC, type EmailAddress } from './types/EmailAddress.ts'
-import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
+import { OrcidC, type OrcidId } from './types/OrcidId.ts'
 import type { Uuid } from './types/Uuid.ts'
 
 export type AuthorInvite = OpenAuthorInvite | DeclinedAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
@@ -46,8 +46,6 @@ export interface GetAuthorInviteEnv {
 export interface SaveAuthorInviteEnv {
   saveAuthorInvite: (id: Uuid, authorInvite: AuthorInvite) => TE.TaskEither<'unavailable', void>
 }
-
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 const OpenAuthorInviteC = C.struct({
   status: C.literal('open'),

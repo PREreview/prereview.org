@@ -15,7 +15,7 @@ import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import { FieldIdSchema, isFieldId } from './types/field.ts'
 import { Iso639, ProfileId, Uuid } from './types/index.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
-import { isOrcidId } from './types/OrcidId.ts'
+import { OrcidC } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
 import { UuidC } from './types/Uuid.ts'
 
@@ -434,8 +434,6 @@ const EmptyAsUndefinedC = <I, O, A>(codec: C.Codec<I, O, A>) =>
 const FieldIdC = pipe(C.string, C.refine(isFieldId, 'FieldId'))
 
 const LanguageC = pipe(C.string, C.refine(iso6391.validate, 'LanguageCode'))
-
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcidId, 'ORCID'))
 
 const OrcidProfileIdC = pipe(
   OrcidC,

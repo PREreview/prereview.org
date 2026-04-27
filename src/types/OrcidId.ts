@@ -1,4 +1,6 @@
 import { type Equivalence, ParseResult, pipe, Schema } from 'effect'
+import * as C from 'io-ts/lib/Codec.js'
+import * as D from 'io-ts/lib/Decoder.js'
 import * as OrcidId from 'orcid-id-ts'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'
 
@@ -16,3 +18,5 @@ export const OrcidIdFromUrlSchema = Schema.transformOrFail(Schema.URL, Schema.ty
 export const parse = FptsToEffect.optionK(OrcidId.parse)
 
 export const OrcidIdEquivalence: Equivalence.Equivalence<OrcidId.Orcid> = FptsToEffect.eq(OrcidId.Eq)
+
+export const OrcidC = C.fromDecoder(D.fromRefinement(OrcidId.isOrcid, 'ORCID'))

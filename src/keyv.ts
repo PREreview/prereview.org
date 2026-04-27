@@ -1,5 +1,5 @@
 import KeyvRedis from '@keyv/redis'
-import { Context, Effect, flow, identity, Layer, Option, pipe, Record } from 'effect'
+import { Context, Effect, flow, Layer, Option, pipe, Record } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import type { Json } from 'fp-ts/lib/Json.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -22,7 +22,7 @@ import { DataStoreRedis } from './Redis.ts'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests.ts'
 import { SlackUserIdC } from './slack-user-id.ts'
 import { NonEmptyStringC } from './types/NonEmptyString.ts'
-import { isOrcidId, type OrcidId } from './types/OrcidId.ts'
+import { OrcidC } from './types/OrcidId.ts'
 import { UuidC } from './types/Uuid.ts'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding.ts'
 import type { FormStoreEnv } from './WebApp/write-review/index.ts' // eslint-disable-line import/no-internal-modules
@@ -136,10 +136,6 @@ export interface UserOnboardingStoreEnv {
 interface KeyvEnv {
   keyv: Keyv
 }
-
-const OrcidD: Decoder<unknown, OrcidId> = D.fromRefinement(isOrcidId, 'ORCID')
-
-const OrcidE: Encoder<string, OrcidId> = { encode: identity }
 
 const deleteKey =
   <K>(keyEncoder: Encoder<string, K>) =>
@@ -260,13 +256,13 @@ export const saveAuthorInvite = flow(
 )
 
 export const deleteCareerStage = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
 )
 
 export const getCareerStage = flow(
   getKey(
-    OrcidE,
+    OrcidC,
     D.union(
       CareerStageC,
       pipe(
@@ -280,7 +276,7 @@ export const getCareerStage = flow(
 
 export const getAllCareerStages = pipe(
   getAll(
-    OrcidD,
+    OrcidC,
     D.union(
       CareerStageC,
       pipe(
@@ -293,28 +289,28 @@ export const getAllCareerStages = pipe(
 )
 
 export const saveCareerStage = flow(
-  setKey(OrcidE, CareerStageC),
+  setKey(OrcidC, CareerStageC),
   RTE.local((env: CareerStageStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.careerStageStore })),
 )
 
 export const isOpenForRequests = flow(
-  getKey(OrcidE, IsOpenForRequestsC),
+  getKey(OrcidC, IsOpenForRequestsC),
   RTE.local((env: IsOpenForRequestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.isOpenForRequestsStore })),
 )
 
 export const saveOpenForRequests = flow(
-  setKey(OrcidE, IsOpenForRequestsC),
+  setKey(OrcidC, IsOpenForRequestsC),
   RTE.local((env: IsOpenForRequestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.isOpenForRequestsStore })),
 )
 
 export const deleteResearchInterests = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
 )
 
 export const getResearchInterests = flow(
   getKey(
-    OrcidE,
+    OrcidC,
     D.union(
       ResearchInterestsC,
       pipe(
@@ -331,87 +327,87 @@ export const getResearchInterests = flow(
 )
 
 export const saveResearchInterests = flow(
-  setKey(OrcidE, ResearchInterestsC),
+  setKey(OrcidC, ResearchInterestsC),
   RTE.local((env: ResearchInterestsStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.researchInterestsStore })),
 )
 
 export const deleteOrcidToken = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
 )
 
 export const getOrcidToken = flow(
-  getKey(OrcidE, OrcidTokenC),
+  getKey(OrcidC, OrcidTokenC),
   RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
 )
 
 export const saveOrcidToken = flow(
-  setKey(OrcidE, OrcidTokenC),
+  setKey(OrcidC, OrcidTokenC),
   RTE.local((env: OrcidTokenStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.orcidTokenStore })),
 )
 
 export const deleteSlackUserId = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
 )
 
 export const getSlackUserId = flow(
-  getKey(OrcidE, SlackUserIdC),
+  getKey(OrcidC, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
 )
 
 export const saveSlackUserId = flow(
-  setKey(OrcidE, SlackUserIdC),
+  setKey(OrcidC, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.slackUserIdStore })),
 )
 
 export const deleteLocation = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
 export const getLocation = flow(
-  getKey(OrcidE, LocationC),
+  getKey(OrcidC, LocationC),
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
 export const getAllLocations = pipe(
-  getAll(OrcidD, LocationC),
+  getAll(OrcidC, LocationC),
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
 export const saveLocation = flow(
-  setKey(OrcidE, LocationC),
+  setKey(OrcidC, LocationC),
   RTE.local((env: LocationStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.locationStore })),
 )
 
 export const deleteLanguages = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
 )
 
 export const getLanguages = flow(
-  getKey(OrcidE, LanguagesC),
+  getKey(OrcidC, LanguagesC),
   RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
 )
 
 export const saveLanguages = flow(
-  setKey(OrcidE, LanguagesC),
+  setKey(OrcidC, LanguagesC),
   RTE.local((env: LanguagesStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.languagesStore })),
 )
 
 export const getContactEmailAddress = flow(
-  getKey(OrcidE, ContactEmailAddressC),
+  getKey(OrcidC, ContactEmailAddressC),
   RTE.local((env: ContactEmailAddressStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.contactEmailAddressStore })),
 )
 
 export const saveContactEmailAddress = flow(
-  setKey(OrcidE, ContactEmailAddressC),
+  setKey(OrcidC, ContactEmailAddressC),
   RTE.local((env: ContactEmailAddressStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.contactEmailAddressStore })),
 )
 
 export const getUserOnboarding = flow(
-  getKey(OrcidE, UserOnboardingC),
+  getKey(OrcidC, UserOnboardingC),
   RTE.orElseW(error =>
     match(error)
       .with('not-found', () => RTE.right({ seenMyDetailsPage: false } satisfies UserOnboarding))
@@ -422,22 +418,22 @@ export const getUserOnboarding = flow(
 )
 
 export const saveUserOnboarding = flow(
-  setKey(OrcidE, UserOnboardingC),
+  setKey(OrcidC, UserOnboardingC),
   RTE.local((env: UserOnboardingStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.userOnboardingStore })),
 )
 
 export const getAvatar = flow(
-  getKey(OrcidE, NonEmptyStringC),
+  getKey(OrcidC, NonEmptyStringC),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
 
 export const saveAvatar = flow(
-  setKey(OrcidE, NonEmptyStringC),
+  setKey(OrcidC, NonEmptyStringC),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
 
 export const deleteAvatar = flow(
-  deleteKey(OrcidE),
+  deleteKey(OrcidC),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
 
