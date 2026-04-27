@@ -9,7 +9,7 @@ import * as RE from 'fp-ts/lib/ReaderEither.js'
 import * as RIO from 'fp-ts/lib/ReaderIO.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import type * as T from 'fp-ts/lib/Task.js'
+import * as T from 'fp-ts/lib/Task.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -131,7 +131,7 @@ export const getPrereviewsForSciety = pipe(
   RTE.chain(
     flow(
       records => Math.ceil(records.hits.total / 100),
-      Array.makeBy(i => getPrereviewsPageForSciety(i + 1)),
+      Array.makeBy(i => pipe(getPrereviewsPageForSciety(i + 1), R.map(T.delay(100)))),
       RTE.sequenceArray,
       RTE.map(Array.flatten),
     ),
