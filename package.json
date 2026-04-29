@@ -69,7 +69,7 @@
     "@eslint/js": "^10.0.1",
     "@fast-check/vitest": "^0.4.1",
     "@ibm/plex": "^6.4.1",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@prettier/plugin-xml": "^3.4.2",
     "@tiptap/core": "^3.19.0",
     "@tiptap/extension-subscript": "^3.19.0",
