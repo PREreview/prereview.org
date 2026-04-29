@@ -8,9 +8,6 @@ patchedDependencies:
   fp-ts-routing@0.7.0:
     hash: e1f4ee2afb1efe0e0b8515c8aebb91540305f95bd04017acae33caac5401b197
     path: patches/fp-ts-routing@0.7.0.patch
-  mjml-core@5.0.1:
-    hash: 4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf
-    path: patches/mjml-core@5.0.1.patch
 
 importers:
 
@@ -10416,7 +10413,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10430,7 +10427,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10444,7 +10441,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10458,7 +10455,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10475,7 +10472,7 @@ snapshots:
       glob: 10.5.0
       lodash: 4.18.1
       minimatch: 9.0.9
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-parser-xml: 5.0.1
       mjml-preset-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-validator: 5.0.1
@@ -10493,7 +10490,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10503,7 +10500,7 @@ snapshots:
       - typescript
       - uncss
 
-  mjml-core@5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3):
+  mjml-core@5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.2
       cheerio: 1.0.0
@@ -10530,7 +10527,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10544,7 +10541,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10558,7 +10555,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10572,7 +10569,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10586,7 +10583,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10600,7 +10597,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10614,7 +10611,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10628,7 +10625,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10642,7 +10639,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10656,7 +10653,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10670,7 +10667,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10684,7 +10681,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10698,7 +10695,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10756,7 +10753,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10770,7 +10767,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10784,7 +10781,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10798,7 +10795,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10812,7 +10809,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10826,7 +10823,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
       - relateurl
@@ -10844,7 +10841,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-section: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - purgecss
@@ -10859,7 +10856,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       mjml-cli: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
-      mjml-core: 5.0.1(patch_hash=4591c16ca4462284438ffadcfd1beb90101bc209de75f5b53e7d15fad646dbbf)(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
+      mjml-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-preset-core: 5.0.1(purgecss@8.0.0)(relateurl@0.2.7)(svgo@4.0.1)(terser@5.46.1)(typescript@6.0.3)
       mjml-validator: 5.0.1
     transitivePeerDependencies:
