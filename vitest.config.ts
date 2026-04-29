@@ -2,7 +2,12 @@ import { Duration } from 'effect'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+  cacheDir: '.cache/vitest',
   test: {
+    experimental: {
+      fsModuleCache: true,
+      fsModuleCachePath: '.cache/vitest/module',
+    },
     include: ['./test/**/*.test.ts'],
     sequence: {
       concurrent: true,
