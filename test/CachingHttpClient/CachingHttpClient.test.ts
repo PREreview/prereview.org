@@ -144,7 +144,7 @@ describe('there is no cache entry', () => {
   })
 })
 
-describe('there is a cache entry', () => {
+describe.sequential('there is a cache entry', () => {
   const timeToStale = '10 seconds'
   const url = new URL('https://example.com')
   const originalResponse = HttpClientResponse.fromWeb(
