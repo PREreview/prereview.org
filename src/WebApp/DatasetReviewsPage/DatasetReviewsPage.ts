@@ -28,7 +28,7 @@ export const createDatasetReviewsPage = ({
 
   return TwoUpPageResponse({
     title: plainText(t('title')({ dataset: plainText`“${dataset.title.text}”`.toString() })),
-    description: plainText`${t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(), visuallyHidden: identity })}
+    description: plainText`${rawHtml(t('authoredBy')({ authors: pipe(dataset.authors, Array.map(displayDatasetAuthor), formatList(locale)).toString(), visuallyHidden: identity }))}
     ${
       dataset.abstract
         ? plainText`
