@@ -666,7 +666,10 @@ export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.no
 export const preprintDoi = (): fc.Arbitrary<PreprintIdWithDoi['value']> => preprintIdWithDoi().map(id => id.value)
 
 export const nonDatasetDoi = (): fc.Arbitrary<Doi> =>
-  fc.oneof(doi().filter(Predicate.not(Datasets.isDatasetDoi)), preprintDoi())
+  fc.oneof(
+    doi().filter(Predicate.not(Datasets.isDatasetDoi)),
+    preprintDoi().filter(Predicate.not(hasRegistrant('5281'))),
+  )
 
 export const datasetDoi = (): fc.Arbitrary<Datasets.DatasetId['value']> => datasetId().map(id => id.value)
 
@@ -1201,7 +1204,8 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     zenodoPreprintId(),
   )
 
-export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId(), scieloDatasetId())
+export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> =>
+  fc.oneof(dryadDatasetId(), scieloDatasetId(), zenodoDatasetId())
 
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
@@ -1227,6 +1231,9 @@ export const scieloDatasetUrl = (): fc.Arbitrary<[URL, Datasets.ScieloDatasetId]
     new URL(`https://data.scielo.org/dataset.xhtml?persistentId=doi:${encodeURIComponent(id.value)}`),
     id,
   ])
+
+export const zenodoDatasetId = (): fc.Arbitrary<Datasets.ZenodoDatasetId> =>
+  doi(constantFrom('5281')).map(doi => new Datasets.ZenodoDatasetId({ value: doi }))
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
