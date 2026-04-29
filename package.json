@@ -46,7 +46,7 @@
     "logger-fp-ts": "^0.2.2",
     "logging-ts": "^0.3.4",
     "markdown-it": "^14.1.1",
-    "mjml": "^5.0.1",
+    "mjml": "^5.1.0",
     "nodemailer": "^8.0.6",
     "normalize-url": "^9.0.0",
     "orcid-id-ts": "^0.1.3",
