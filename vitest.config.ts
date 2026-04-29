@@ -9,6 +9,7 @@ export default defineConfig({
       fsModuleCachePath: '.cache/vitest/module',
     },
     include: ['./test/**/*.test.ts'],
+    isolate: false,
     sequence: {
       concurrent: true,
     },
