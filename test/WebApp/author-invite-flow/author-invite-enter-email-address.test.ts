@@ -1,8 +1,7 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   UnverifiedContactEmailAddress,

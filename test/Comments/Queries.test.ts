@@ -1,7 +1,6 @@
-import { it, test } from '@effect/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Doi } from 'doi-ts'
 import { Array, Either, Option } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/Comments/Queries.ts'
 import * as Comments from '../../src/Comments/index.ts'
 import { html } from '../../src/html.ts'

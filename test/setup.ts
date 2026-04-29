@@ -1,7 +1,6 @@
-import { addEqualityTesters } from '@effect/vitest'
+import { addEqualityTesters, expect } from '@effect/vitest'
 import type { ExpectationResult, MatcherState } from '@vitest/expect'
 import * as fc from 'fast-check'
-import { expect } from 'vitest'
 import { Html, PlainText } from '../src/html.ts'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {

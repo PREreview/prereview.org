@@ -1,7 +1,6 @@
 import { HttpServerRequest, HttpServerResponse, Url } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Redacted } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as _ from '../../src/HttpMiddleware/ForceLogIn.ts'
 import * as OrcidOauth from '../../src/OrcidOauth.ts'

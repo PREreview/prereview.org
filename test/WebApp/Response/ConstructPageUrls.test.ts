@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import {
   CrowdinInContextLocale,
   DefaultLocale,

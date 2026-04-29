@@ -1,7 +1,6 @@
 import { UrlParams } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Option, pipe, Predicate, Struct, Tuple } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'

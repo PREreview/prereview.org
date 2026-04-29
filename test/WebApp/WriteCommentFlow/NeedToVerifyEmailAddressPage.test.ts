@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Equal } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
 import { Locale } from '../../../src/Context.ts'

@@ -1,7 +1,7 @@
+import { expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either } from 'effect'
-import { expect } from 'vitest'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/ListAllPrereviewersForStats.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'

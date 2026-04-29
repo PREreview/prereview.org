@@ -1,7 +1,7 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
+import { describe, expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { type Duration, Effect, Exit, Fiber, pipe, TestClock } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
 import * as EffectTest from './EffectTest.ts'
 

@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Doi, toUrl } from 'doi-ts'
-import { describe, expect } from 'vitest'
 import { BiorxivPreprintId } from '../src/Preprints/index.ts'
 import * as _ from '../src/sciety.ts'
 import * as fc from './fc.ts'

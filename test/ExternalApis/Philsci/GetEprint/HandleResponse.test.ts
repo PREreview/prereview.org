@@ -1,7 +1,6 @@
 import type { HttpClientError } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as fc from '../../../fc.ts'

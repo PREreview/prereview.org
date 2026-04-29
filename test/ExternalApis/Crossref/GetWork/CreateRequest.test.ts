@@ -1,7 +1,6 @@
 import { UrlParams } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Crossref/GetWork/CreateRequest.ts'
 import { Doi } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'

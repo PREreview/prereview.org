@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Option, pipe } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/TransformRecordToCommentWithoutText.ts'
 import * as fc from '../../fc.ts'
 

@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, Tuple } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Personas from '../../../src/Personas/index.ts'

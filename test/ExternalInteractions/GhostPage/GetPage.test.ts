@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
-import { describe, expect } from 'vitest'
 import { Ghost } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/GhostPage/GetPage.ts'
 import { rawHtml } from '../../../src/html.ts'

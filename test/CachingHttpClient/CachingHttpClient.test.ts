@@ -1,7 +1,6 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { beforeEach, describe, expect, it } from '@effect/vitest'
 import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock } from 'effect'
-import { beforeEach, describe, expect } from 'vitest'
 import * as _ from '../../src/CachingHttpClient/index.ts'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'

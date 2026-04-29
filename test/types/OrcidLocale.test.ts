@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/OrcidLocale.ts'
 import * as fc from '../fc.ts'
 

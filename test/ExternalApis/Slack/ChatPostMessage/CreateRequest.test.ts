@@ -1,7 +1,6 @@
 import { HttpBody } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Redacted } from 'effect'
-import { describe, expect } from 'vitest'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import { ChatPostMessageInput } from '../../../../src/ExternalApis/Slack/ChatPostMessage/ChatPostMessageInput.ts'
 import * as _ from '../../../../src/ExternalApis/Slack/ChatPostMessage/CreateRequest.ts'

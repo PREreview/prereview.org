@@ -1,7 +1,7 @@
+import { expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
-import { expect } from 'vitest'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/PreprintReviews/GetRapidPrereviewsForAPreprint.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../src/Preprints/index.ts'

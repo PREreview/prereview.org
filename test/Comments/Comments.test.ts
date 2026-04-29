@@ -1,6 +1,6 @@
+import { describe, test } from '@effect/vitest'
 import { Doi } from 'doi-ts'
 import { Option } from 'effect'
-import { describe, test } from 'vitest'
 import * as _ from '../../src/Comments/index.ts'
 import { html } from '../../src/html.ts'
 import { NonEmptyString, Uuid } from '../../src/types/index.ts'

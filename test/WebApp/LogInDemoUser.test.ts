@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import { Prereviewers } from '../../src/Prereviewers/index.ts'

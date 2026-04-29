@@ -1,4 +1,4 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
@@ -10,7 +10,6 @@ import * as IO from 'fp-ts/lib/IO.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
-import { describe, expect, vi } from 'vitest'
 import {
   type EmptyDeposition,
   EmptyDepositionC,

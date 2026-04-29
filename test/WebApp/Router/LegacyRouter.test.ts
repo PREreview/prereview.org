@@ -1,7 +1,7 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
+import { describe, expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { Effect, Redacted } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { rawHtml } from '../../../src/html.ts'

@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Either, Schema, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/SciProfilesId.ts'
 import * as fc from '../fc.ts'
 

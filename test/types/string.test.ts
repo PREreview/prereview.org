@@ -1,8 +1,7 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/NonEmptyString.ts'
 import * as fc from '../fc.ts'
 

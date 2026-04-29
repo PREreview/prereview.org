@@ -1,5 +1,4 @@
-import { it } from '@effect/vitest'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from '@effect/vitest'
 import * as _ from '../src/time.ts'
 import * as fc from './fc.ts'
 

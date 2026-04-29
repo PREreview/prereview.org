@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
-import { describe, expect } from 'vitest'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
 import * as _ from '../../../src/PreprintReviews/Reactions/NotifyCommunitySlack.ts'

@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, identity, Layer } from 'effect'
-import { describe, expect } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'

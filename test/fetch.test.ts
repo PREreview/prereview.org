@@ -1,9 +1,8 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { SystemClock } from 'clock-ts'
 import { Effect } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../src/fetch.ts'
 import * as fc from './fc.ts'
 

@@ -1,7 +1,6 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import type * as Events from '../../../src/Events.ts'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'

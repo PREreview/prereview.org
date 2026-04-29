@@ -1,7 +1,6 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'

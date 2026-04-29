@@ -1,5 +1,4 @@
-import { it } from '@effect/vitest'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { EmailAddress, OrcidId, SciProfilesId } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ActorToRequester.ts'
 import * as fc from '../../fc.ts'

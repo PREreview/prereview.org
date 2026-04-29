@@ -1,7 +1,6 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
-import { describe, expect, vi } from 'vitest'
 import { getClubName } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'

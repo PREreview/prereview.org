@@ -1,8 +1,7 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../src/user.ts'
 import * as fc from './fc.ts'
 

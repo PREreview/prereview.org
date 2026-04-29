@@ -1,5 +1,4 @@
-import { it } from '@effect/vitest'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from '@effect/vitest'
 import * as _ from '../../../../src/ExternalInteractions/OpenAlexWorks/GetCategories/CategoriesFromWork.ts'
 import * as fc from '../../../fc.ts'
 

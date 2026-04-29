@@ -1,7 +1,6 @@
 import { HttpBody } from '@effect/platform'
-import { it } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Redacted, Schema } from 'effect'
-import { describe, expect } from 'vitest'
 import { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Zenodo/CreateDeposition/CreateRequest.ts'
 import * as fc from '../fc.ts'

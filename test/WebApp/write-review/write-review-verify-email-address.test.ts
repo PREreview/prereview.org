@@ -1,9 +1,8 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { describe, expect, vi } from 'vitest'
 import {
   VerifiedContactEmailAddress,
   type GetContactEmailAddressEnv,

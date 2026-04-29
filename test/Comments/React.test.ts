@@ -1,6 +1,5 @@
-import { it } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, pipe } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
 import * as Queries from '../../src/Queries.ts'
