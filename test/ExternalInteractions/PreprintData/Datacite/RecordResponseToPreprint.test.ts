@@ -451,6 +451,7 @@ it.effect.each([
   ['figshare-africarxiv-journal-article'],
   ['osf-file'],
   ['osf-registration'],
+  ['zenodo-dataset'],
   ['zenodo-journal-article'],
 ])('returns a specific error for non-Preprint record (%s)', ([response]) =>
   Effect.gen(function* () {

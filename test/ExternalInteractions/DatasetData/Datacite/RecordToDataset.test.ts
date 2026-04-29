@@ -391,6 +391,28 @@ it.effect.each([
       url: new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.V2HJJE'),
     }),
   },
+  {
+    response: 'zenodo-dataset',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Data (.gdb ESRI file geodatabases) and R scripts used for the publication "Cross-Sections and Dimensions: A LiDAR-Based GIS Tool for Bankfull Channel Mapping". a_completed_s11.zip contains final dataset geodatabase and preliminary datasets for 4 tiles used for slope threshold calibration.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Joshphar Kunapo', orcid: OrcidId.OrcidId('0000-0002-0514-4658') },
+        { name: 'Kathryn Russell', orcid: OrcidId.OrcidId('0000-0002-9613-4665') },
+      ],
+      id: new Datasets.ZenodoDatasetId({ value: Doi.Doi('10.5281/zenodo.18951275') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 3, day: 11 }),
+      title: {
+        text: rawHtml('Cross-Sections and Dimensions: A LiDAR-Based GIS Tool for Bankfull Channel Mapping [Dataset]'),
+        language: 'en',
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.18951275'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -404,7 +426,15 @@ it.effect.each([
   }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-it.effect.each([['dryad-collection']])('returns a specific error for a non-dataset record (%s)', ([response]) =>
+it.effect.each([
+  ['dryad-collection'],
+  ['zenodo-africarxiv'],
+  ['zenodo-empty-resource-type'],
+  ['zenodo-journal-article'],
+  ['zenodo-no-abstract'],
+  ['zenodo-trailing-space'],
+  ['zenodo'],
+])('returns a specific error for a non-dataset record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -432,12 +462,6 @@ it.effect.each([
   ['osf-file'],
   ['osf-project'],
   ['osf-registration'],
-  ['zenodo-africarxiv'],
-  ['zenodo-empty-resource-type'],
-  ['zenodo-journal-article'],
-  ['zenodo-no-abstract'],
-  ['zenodo-trailing-space'],
-  ['zenodo'],
 ])('returns a specific error for non-supported record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(

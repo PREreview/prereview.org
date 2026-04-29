@@ -93,6 +93,7 @@ const findPublishedDate = (dates: Datacite.Record['dates']) =>
   pipe(
     Option.none(),
     Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Available')),
+    Option.orElse(() => Array.findFirst(dates, ({ dateType }) => dateType === 'Issued')),
     Option.andThen(Struct.get('date')),
     Option.andThen(date => (date instanceof Temporal.Instant ? date.toZonedDateTimeISO('UTC').toPlainDate() : date)),
     Option.filter(
@@ -159,4 +160,5 @@ const detectLanguageForRepository = ({
   Match.valueTags(id, {
     DryadDatasetId: () => Effect.succeed('en' as const),
     ScieloDatasetId: () => LanguageDetection.detectLanguageFrom(['en', 'es', 'pt'], text, recordLanguage),
+    ZenodoDatasetId: () => LanguageDetection.detectLanguage(text, recordLanguage),
   })
