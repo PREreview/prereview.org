@@ -1,5 +1,5 @@
-import type { ExpectationResult, MatcherState, Tester, TesterContext } from '@vitest/expect'
-import { Either, Equal, Utils } from 'effect'
+import { addEqualityTesters } from '@effect/vitest'
+import { type ExpectationResult, type MatcherState } from '@vitest/expect'
 import * as fc from 'fast-check'
 import { expect } from 'vitest'
 import { Html, PlainText } from '../src/html.ts'
@@ -8,33 +8,7 @@ if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 
-expect.addEqualityTesters([effectEquals])
-
-function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
-  if (!Equal.isEqual(a) || !Equal.isEqual(b)) {
-    return undefined
-  }
-
-  if (Either.isEither(a) && Either.isEither(b)) {
-    if (Either.isLeft(a) && Either.isLeft(b)) {
-      a = a.left
-      b = b.left
-    } else if (Either.isRight(a) && Either.isRight(b)) {
-      a = a.right
-      b = b.right
-    }
-  }
-
-  return Utils.structuralRegion(
-    () => Equal.equals(a, b),
-    (x, y) =>
-      this.equals(
-        x,
-        y,
-        customTesters.filter(t => t !== effectEquals),
-      ),
-  )
-}
+addEqualityTesters()
 
 function htmlContaining(this: MatcherState, actual: unknown, sample: Html | string): ExpectationResult {
   if (!(actual instanceof Html)) {
