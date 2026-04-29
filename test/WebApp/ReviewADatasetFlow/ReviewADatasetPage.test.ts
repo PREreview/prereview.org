@@ -1,5 +1,5 @@
 import { UrlParams } from '@effect/platform'
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Layer, Option, pipe, Predicate, Struct, Tuple } from 'effect'
 import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
@@ -9,10 +9,9 @@ import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Doi } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/ReviewADatasetPage/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
-test.prop([fc.supportedLocale(), fc.datasetId(), fc.dataset()])('ReviewADatasetPage', locale =>
+it.effect.prop('ReviewADatasetPage', [fc.supportedLocale(), fc.datasetId(), fc.dataset()], ([locale]) =>
   Effect.gen(function* () {
     const actual = yield* _.ReviewADatasetPage
 
@@ -25,11 +24,12 @@ test.prop([fc.supportedLocale(), fc.datasetId(), fc.dataset()])('ReviewADatasetP
       skipToLabel: 'form',
       js: [],
     })
-  }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale), EffectTest.run),
+  }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale)),
 )
 
 describe('ReviewADatasetSubmission', () => {
-  test.prop(
+  it.effect.prop(
+    'when there is a dataset DOI',
     [
       fc.supportedLocale(),
       fc.oneof(
@@ -38,188 +38,206 @@ describe('ReviewADatasetSubmission', () => {
       ),
       fc.datasetId(),
     ],
+    ([locale, [value, expected], resolved]) =>
+      Effect.gen(function* () {
+        const resolveDatasetId = vi.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(_ =>
+          Effect.succeed(resolved),
+        )
+
+        const actual = yield* pipe(
+          _.ReviewADatasetSubmission({ body: UrlParams.fromInput({ whichDataset: value }) }),
+          Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId })),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: Routes.ReviewThisDataset.href({ datasetId: resolved }),
+        })
+        expect(resolveDatasetId).toHaveBeenCalledWith(expected)
+      }).pipe(Effect.provideService(Locale, locale)),
     {
-      examples: [
-        [
-          DefaultLocale,
+      fastCheck: {
+        examples: [
           [
-            '10.5061/dryad.wstqjq2n3', // DOI
+            DefaultLocale,
+            [
+              '10.5061/dryad.wstqjq2n3', // DOI
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-        ],
-        [
-          DefaultLocale,
           [
-            ' 10.5061/dryad.wstqjq2n3 ', // DOI with whitespace
+            DefaultLocale,
+            [
+              ' 10.5061/dryad.wstqjq2n3 ', // DOI with whitespace
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-        ],
-        [
-          DefaultLocale,
           [
-            'https://doi.org/10.5061/dryad.wstqjq2n3', // doi.org URL
+            DefaultLocale,
+            [
+              'https://doi.org/10.5061/dryad.wstqjq2n3', // doi.org URL
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-        ],
-        [
-          DefaultLocale,
           [
-            ' https://doi.org/10.5061/dryad.wstqjq2n3 ', // doi.org URL with whitespace
+            DefaultLocale,
+            [
+              ' https://doi.org/10.5061/dryad.wstqjq2n3 ', // doi.org URL with whitespace
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-        ],
-        [
-          DefaultLocale,
           [
-            'https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3', // Dryad URL
+            DefaultLocale,
+            [
+              'https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3', // Dryad URL
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
-        ],
-        [
-          DefaultLocale,
           [
-            ' https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3 ', // Dryad URL with whitespace
+            DefaultLocale,
+            [
+              ' https://datadryad.org/dataset/doi:10.5061/dryad.wstqjq2n3 ', // Dryad URL with whitespace
+              new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
+            ],
             new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
           ],
-          new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
         ],
-      ],
+      },
     },
-  )('when there is a dataset DOI', (locale, [value, expected], resolved) =>
-    Effect.gen(function* () {
-      const resolveDatasetId = vi.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(_ =>
-        Effect.succeed(resolved),
-      )
-
-      const actual = yield* pipe(
-        _.ReviewADatasetSubmission({ body: UrlParams.fromInput({ whichDataset: value }) }),
-        Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId })),
-      )
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: Routes.ReviewThisDataset.href({ datasetId: resolved }),
-      })
-      expect(resolveDatasetId).toHaveBeenCalledWith(expected)
-    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
   )
 
-  test.prop([
-    fc.supportedLocale(),
-    fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
-    fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsNotFound(args)),
-  ])('when the dataset is not found', (locale, body, error) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ReviewADatasetSubmission({ body })
+  it.effect.prop(
+    'when the dataset is not found',
+    [
+      fc.supportedLocale(),
+      fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
+      fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsNotFound(args)),
+    ],
+    ([locale, body, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewADatasetSubmission({ body })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
-      Effect.provideService(Locale, locale),
-      EffectTest.run,
-    ),
-  )
-
-  test.prop([
-    fc.supportedLocale(),
-    fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
-    fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.DatasetIsUnavailable(args)),
-  ])('when the dataset is unavailable', (locale, body, error) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ReviewADatasetSubmission({ body })
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
-      Effect.provideService(Locale, locale),
-      EffectTest.run,
-    ),
-  )
-
-  test.prop([
-    fc.supportedLocale(),
-    fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
-    fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.NotADataset(args)),
-  ])("when the DOI isn't for a dataset", (locale, body, error) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ReviewADatasetSubmission({ body })
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
-      Effect.provideService(Locale, locale),
-      EffectTest.run,
-    ),
-  )
-
-  test.prop([
-    fc.supportedLocale(),
-    fc.urlParams(fc.record({ whichDataset: fc.oneof(fc.nonDatasetDoi(), fc.nonDatasetUrl().map(Struct.get('href'))) })),
-  ])("when the DOI or URL isn't supported", (locale, body) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ReviewADatasetSubmission({ body })
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale), EffectTest.run),
-  )
-
-  test.prop([
-    fc.supportedLocale(),
-    fc.oneof(
-      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'whichDataset'))),
-      fc.urlParams(
-        fc.record({
-          whichDataset: fc.string().filter(Predicate.nor(Doi.isDoi, (string: string) => URL.canParse(string))),
-        }),
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
+        Effect.provideService(Locale, locale),
       ),
-    ),
-  ])("when there isn't a dataset DOI", (locale, body) =>
-    Effect.gen(function* () {
-      const actual = yield* _.ReviewADatasetSubmission({ body })
+  )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: Routes.ReviewADataset,
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
-    }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale), EffectTest.run),
+  it.effect.prop(
+    'when the dataset is unavailable',
+    [
+      fc.supportedLocale(),
+      fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
+      fc
+        .record({ cause: fc.anything(), datasetId: fc.datasetId() })
+        .map(args => new Datasets.DatasetIsUnavailable(args)),
+    ],
+    ([locale, body, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewADatasetSubmission({ body })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
+        Effect.provideService(Locale, locale),
+      ),
+  )
+
+  it.effect.prop(
+    "when the DOI isn't for a dataset",
+    [
+      fc.supportedLocale(),
+      fc.urlParams(fc.record({ whichDataset: fc.datasetDoi() })),
+      fc.record({ cause: fc.anything(), datasetId: fc.datasetId() }).map(args => new Datasets.NotADataset(args)),
+    ],
+    ([locale, body, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewADatasetSubmission({ body })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(Datasets.Datasets, { resolveDatasetId: () => error })),
+        Effect.provideService(Locale, locale),
+      ),
+  )
+
+  it.effect.prop(
+    "when the DOI or URL isn't supported",
+    [
+      fc.supportedLocale(),
+      fc.urlParams(
+        fc.record({ whichDataset: fc.oneof(fc.nonDatasetDoi(), fc.nonDatasetUrl().map(Struct.get('href'))) }),
+      ),
+    ],
+    ([locale, body]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewADatasetSubmission({ body })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale)),
+  )
+
+  it.effect.prop(
+    "when there isn't a dataset DOI",
+    [
+      fc.supportedLocale(),
+      fc.oneof(
+        fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'whichDataset'))),
+        fc.urlParams(
+          fc.record({
+            whichDataset: fc.string().filter(Predicate.nor(Doi.isDoi, (string: string) => URL.canParse(string))),
+          }),
+        ),
+      ),
+    ],
+    ([locale, body]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ReviewADatasetSubmission({ body })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: Routes.ReviewADataset,
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['error-summary.js'],
+        })
+      }).pipe(Effect.provide(Layer.mock(Datasets.Datasets, {})), Effect.provideService(Locale, locale)),
   )
 })

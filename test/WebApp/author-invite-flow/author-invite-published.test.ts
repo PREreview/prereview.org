@@ -1,4 +1,5 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { describe, expect, vi } from 'vitest'
@@ -17,184 +18,229 @@ import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('authorInvite', () => {
   describe('when the user is logged in', () => {
-    test.prop([
-      fc.uuid(),
-      fc
-        .user()
-        .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-      fc.record({
-        doi: fc.doi(),
-        preprint: fc.record({
-          language: fc.languageCode(),
-          title: fc.html(),
+    it.effect.prop(
+      'when the invite is complete',
+      [
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.record({
+          doi: fc.doi(),
+          preprint: fc.record({
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
         }),
-      }),
-      fc.supportedLocale(),
-    ])('when the invite is complete', async (inviteId, [user, invite], prereview, locale) => {
-      const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-      const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        fc.supportedLocale(),
+      ],
+      ([inviteId, [user, invite], prereview, locale]) =>
+        Effect.gen(function* () {
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-        getAuthorInvite,
-        getPrereview,
-      })()
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite,
+              getPrereview,
+            }),
+          )
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
-        status: StatusCodes.OK,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-      expect(getPrereview).toHaveBeenCalledWith(invite.review)
-    })
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+          expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+          expect(getPrereview).toHaveBeenCalledWith(invite.review)
+        }),
+    )
 
-    test.prop([
-      fc.uuid(),
-      fc
-        .user()
-        .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-      fc.supportedLocale(),
-    ])('when the review cannot be loaded', async (inviteId, [user, invite], locale) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-        getAuthorInvite: () => TE.right(invite),
-        getPrereview: () => TE.left('unavailable'),
-      })()
+    it.effect.prop(
+      'when the review cannot be loaded',
+      [
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.supportedLocale(),
+      ],
+      ([inviteId, [user, invite], locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.right(invite),
+              getPrereview: () => TE.left('unavailable'),
+            }),
+          )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }),
+    )
 
-    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+    it.effect.prop(
       'when the invite cannot be loaded',
-      async (inviteId, user, locale) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-          getAuthorInvite: () => TE.left('unavailable'),
-          getPrereview: shouldNotBeCalled,
-        })()
+      [fc.uuid(), fc.user(), fc.supportedLocale()],
+      ([inviteId, user, locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.left('unavailable'),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.ServiceUnavailable,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }),
     )
 
-    test.prop([
-      fc.uuid(),
-      fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-      fc.supportedLocale(),
-    ])('when the invite is not yet complete', async (inviteId, [user, invite], locale) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-        getAuthorInvite: () => TE.right(invite),
-        getPrereview: shouldNotBeCalled,
-      })()
+    it.effect.prop(
+      'when the invite is not yet complete',
+      [
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.supportedLocale(),
+      ],
+      ([inviteId, [user, invite], locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.right(invite),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
-      })
-    })
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+          })
+        }),
+    )
 
-    test.prop([
-      fc.uuid(),
-      fc.user(),
-      fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite()),
-      fc.supportedLocale(),
-    ])('when the invite is assigned to someone else', async (inviteId, user, invite, locale) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-        getAuthorInvite: () => TE.right(invite),
-        getPrereview: shouldNotBeCalled,
-      })()
+    it.effect.prop(
+      'when the invite is assigned to someone else',
+      [fc.uuid(), fc.user(), fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite()), fc.supportedLocale()],
+      ([inviteId, user, invite, locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.right(invite),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.Forbidden,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.Forbidden,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }),
+    )
 
-    test.prop([fc.uuid(), fc.user(), fc.openAuthorInvite(), fc.supportedLocale()])(
+    it.effect.prop(
       'when the invite is not assigned',
-      async (inviteId, user, invite, locale) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-        })()
+      [fc.uuid(), fc.user(), fc.openAuthorInvite(), fc.supportedLocale()],
+      ([inviteId, user, invite, locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.right(invite),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: format(authorInviteMatch.formatter, { id: inviteId }),
-        })
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(authorInviteMatch.formatter, { id: inviteId }),
+          })
+        }),
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.declinedAuthorInvite(), fc.supportedLocale()])(
+    it.effect.prop(
       'when the invite has been declined',
-      async (inviteId, user, invite, locale) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-        })()
+      [fc.uuid(), fc.user(), fc.declinedAuthorInvite(), fc.supportedLocale()],
+      ([inviteId, user, invite, locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.right(invite),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
-        })
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+          })
+        }),
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.supportedLocale()])(
+    it.effect.prop(
       'when the invite is not found',
-      async (inviteId, user, locale) => {
-        const actual = await _.authorInvitePublished({ id: inviteId, user, locale })({
-          getAuthorInvite: () => TE.left('not-found'),
-          getPrereview: shouldNotBeCalled,
-        })()
+      [fc.uuid(), fc.user(), fc.supportedLocale()],
+      ([inviteId, user, locale]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.promise(
+            _.authorInvitePublished({ id: inviteId, user, locale })({
+              getAuthorInvite: () => TE.left('not-found'),
+              getPrereview: shouldNotBeCalled,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.NotFound,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
-        })
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.NotFound,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+        }),
     )
   })
 
-  test.prop([fc.uuid(), fc.authorInvite(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the user is not logged in',
-    async (inviteId, invite, locale) => {
-      const actual = await _.authorInvitePublished({ id: inviteId, locale })({
-        getAuthorInvite: () => TE.right(invite),
-        getPrereview: shouldNotBeCalled,
-      })()
+    [fc.uuid(), fc.authorInvite(), fc.supportedLocale()],
+    ([inviteId, invite, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.authorInvitePublished({ id: inviteId, locale })({
+            getAuthorInvite: () => TE.right(invite),
+            getPrereview: shouldNotBeCalled,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'LogInResponse',
+          location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+        })
+      }),
   )
 })

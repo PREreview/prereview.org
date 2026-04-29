@@ -1,26 +1,26 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { describe, expect } from 'vitest'
 import { Ghost } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/GhostPage/GetPage.ts'
 import { rawHtml } from '../../../src/html.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('getPage', () => {
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.sanitizedHtml()])(
+  it.effect.prop(
     'when the page can be loaded',
-    (id, html) =>
+    [fc.string({ unit: fc.alphanumeric(), minLength: 1 }), fc.sanitizedHtml()],
+    ([id, html]) =>
       Effect.gen(function* () {
         const actual = yield* _.getPage(id).pipe(
           Effect.provide(Layer.mock(Ghost.Ghost, { getPage: () => Effect.succeed(new Ghost.Page({ html })) })),
         )
 
         expect(actual).toStrictEqual(html)
-      }).pipe(EffectTest.run),
+      }),
   )
 
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page contains links', id =>
+  it.effect.prop('when the page contains links', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([id]) =>
     Effect.gen(function* () {
       const actual = yield* _.getPage(id).pipe(
         Effect.provide(
@@ -42,10 +42,10 @@ describe('getPage', () => {
           '<a href="https://airtable.com/appNMgC4snjFIJQ0X/shrV1HBbujo5ZZbzN">Start a Club!</a><a href="/clubs/asapbio-cancer-biology">ASAPbio Cancer Biology Crowd</a><a href="/clubs/asapbio-metabolism">ASAPbio Metabolism Crowd</a><a href="/">PREreview</a>',
         ),
       )
-    }).pipe(EffectTest.run),
+    }),
   )
 
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page contains an image', id =>
+  it.effect.prop('when the page contains an image', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([id]) =>
     Effect.gen(function* () {
       const actual = yield* _.getPage(id).pipe(
         Effect.provide(
@@ -67,10 +67,10 @@ describe('getPage', () => {
           '<img src="https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png" alt="" width="1464" height="192" />',
         ),
       )
-    }).pipe(EffectTest.run),
+    }),
   )
 
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page contains a button', id =>
+  it.effect.prop('when the page contains a button', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([id]) =>
     Effect.gen(function* () {
       const actual = yield* _.getPage(id).pipe(
         Effect.provide(
@@ -88,20 +88,24 @@ describe('getPage', () => {
       )
 
       expect(actual).toStrictEqual(rawHtml('<a href="https://donorbox.org/prereview" class="button">Donate</a>'))
-    }).pipe(EffectTest.run),
+    }),
   )
 
-  test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('when the page contains a heading with an ID', id =>
-    Effect.gen(function* () {
-      const actual = yield* _.getPage(id).pipe(
-        Effect.provide(
-          Layer.mock(Ghost.Ghost, {
-            getPage: () => Effect.succeed(new Ghost.Page({ html: rawHtml('<h2 id="some-heading">Some heading</h2>') })),
-          }),
-        ),
-      )
+  it.effect.prop(
+    'when the page contains a heading with an ID',
+    [fc.string({ unit: fc.alphanumeric(), minLength: 1 })],
+    ([id]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.getPage(id).pipe(
+          Effect.provide(
+            Layer.mock(Ghost.Ghost, {
+              getPage: () =>
+                Effect.succeed(new Ghost.Page({ html: rawHtml('<h2 id="some-heading">Some heading</h2>') })),
+            }),
+          ),
+        )
 
-      expect(actual).toStrictEqual(rawHtml('<h2 id="some-heading">Some heading</h2>'))
-    }).pipe(EffectTest.run),
+        expect(actual).toStrictEqual(rawHtml('<h2 id="some-heading">Some heading</h2>'))
+      }),
   )
 })

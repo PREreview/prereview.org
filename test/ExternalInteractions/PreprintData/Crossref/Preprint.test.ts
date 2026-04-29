@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { Effect } from 'effect'
 import { describe, expect } from 'vitest'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
@@ -9,31 +9,38 @@ import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('workToPreprint', () => {
-  test.prop([fc.lorem(), fc.option(fc.lorem(), { nil: undefined })], {
-    examples: [
-      ['journal-article', undefined],
-      ['posted-content', undefined],
-      ['posted-content', 'dissertation'],
-      ['posted-content', 'other'],
-    ],
-  })('not a preprint', (type, subtype) =>
-    Effect.gen(function* () {
-      const work = new Crossref.Work({
-        ...stubWork,
-        type,
-        subtype,
-      })
+  it.effect.prop(
+    'not a preprint',
+    [fc.lorem(), fc.option(fc.lorem(), { nil: undefined })],
+    ([type, subtype]) =>
+      Effect.gen(function* () {
+        const work = new Crossref.Work({
+          ...stubWork,
+          type,
+          subtype,
+        })
 
-      const actual = yield* Effect.flip(_.workToPreprint(work))
+        const actual = yield* Effect.flip(_.workToPreprint(work))
 
-      expect(actual._tag).toStrictEqual('NotAPreprint')
-      expect(actual.cause).toStrictEqual({ type, subtype })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
+        expect(actual._tag).toStrictEqual('NotAPreprint')
+        expect(actual.cause).toStrictEqual({ type, subtype })
+      }).pipe(Effect.provide(LanguageDetection.layerCld)),
+    {
+      fastCheck: {
+        examples: [
+          ['journal-article', undefined],
+          ['posted-content', undefined],
+          ['posted-content', 'dissertation'],
+          ['posted-content', 'other'],
+        ],
+      },
+    },
   )
 
-  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+  it.effect.prop(
     'not a Crossref preprint ID',
-    doi =>
+    [fc.oneof(fc.datacitePreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())],
+    ([doi]) =>
       Effect.gen(function* () {
         const work = new Crossref.Work({
           ...stubWork,
@@ -44,7 +51,7 @@ describe('workToPreprint', () => {
 
         expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
         expect(actual.cause).toStrictEqual(doi)
-      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld)),
   )
 
   test('no authors', () =>

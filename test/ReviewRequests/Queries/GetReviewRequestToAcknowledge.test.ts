@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate, Tuple } from 'effect'
 import { describe, expect } from 'vitest'
@@ -99,100 +99,118 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   })
 
 describe('GetReviewRequestToAcknowledge', () => {
-  test.prop<[Array<Events.Event>, Uuid.Uuid]>(
+  it.prop(
+    'not received',
     [fc.array(fc.event().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasReceived')))), fc.uuid()],
-    {
-      examples: [
-        [[], reviewRequestId], // no events
-        [[reviewRequestForAPreprintWasAccepted1, emailToAcknowledgeAReviewRequestForAPreprintWasSent], reviewRequestId], // with events
-        [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
-      ],
+    ([events, reviewRequestId]) => {
+      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
     },
-  )('not received', (events, reviewRequestId) => {
-    const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+    {
+      fastCheck: {
+        examples: [
+          [[], reviewRequestId], // no events
+          [
+            [reviewRequestForAPreprintWasAccepted1, emailToAcknowledgeAReviewRequestForAPreprintWasSent],
+            reviewRequestId,
+          ], // with events
+          [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
-  })
-
-  test.prop<[[Array.NonEmptyArray<Events.Event>, Uuid.Uuid]]>(
+  it.prop(
+    'has been rejected',
     [
       fc
         .tuple(
           fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
           fc.reviewRequestForAPreprintWasRejected({ reviewRequestId: fc.constant(reviewRequestId) }),
         )
-        .map(([received, rejected]) => Tuple.make(Array.make(received, rejected), reviewRequestId)),
+        .map(([received, rejected]) =>
+          Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received, rejected), reviewRequestId),
+        ),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasRejected1], reviewRequestId]], // rejected
-        [
-          [
-            [
-              reviewRequestForAPreprintWasRejected1,
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasRejected2,
-              reviewRequestForAPreprintWasReceived2,
-            ],
-            reviewRequestId,
-          ],
-        ], // multiple times
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasRejected1,
-              emailToAcknowledgeAReviewRequestForAPreprintWasSent,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
-            ],
-            reviewRequestId,
-          ],
-        ], // other requests
-      ],
+    ([[events, reviewRequestId]]) => {
+      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
     },
-  )('has been rejected', ([events, reviewRequestId]) => {
-    const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasRejected1], reviewRequestId]], // rejected
+          [
+            [
+              [
+                reviewRequestForAPreprintWasRejected1,
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasRejected2,
+                reviewRequestForAPreprintWasReceived2,
+              ],
+              reviewRequestId,
+            ],
+          ], // multiple times
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasRejected1,
+                emailToAcknowledgeAReviewRequestForAPreprintWasSent,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+              ],
+              reviewRequestId,
+            ],
+          ], // other requests
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
-  })
-
-  test.prop<[[Array.NonEmptyArray<Events.Event>, Uuid.Uuid]]>(
+  it.prop(
+    'not accepted or rejected',
     [
       fc
         .reviewRequestForAPreprintWasReceived()
-        .map(received => Tuple.make(Array.make(received), received.reviewRequestId)),
+        .map(received => Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received), received.reviewRequestId)),
     ],
+    ([[events, reviewRequestId]]) => {
+      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasNotBeenAccepted({})))
+    },
     {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived1], reviewRequestForAPreprintWasReceived1.reviewRequestId]], // was received
-        [
-          [
-            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasReceived2],
-            reviewRequestForAPreprintWasReceived2.reviewRequestId,
-          ],
-        ], // multiple times
-        [
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived1], reviewRequestForAPreprintWasReceived1.reviewRequestId]], // was received
           [
             [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-              emailToAcknowledgeAReviewRequestForAPreprintWasSent,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasRejected,
+              [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasReceived2],
+              reviewRequestForAPreprintWasReceived2.reviewRequestId,
             ],
-            reviewRequestForAPreprintWasReceived1.reviewRequestId,
-          ],
-        ], // with other events
-      ],
+          ], // multiple times
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+                emailToAcknowledgeAReviewRequestForAPreprintWasSent,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasRejected,
+              ],
+              reviewRequestForAPreprintWasReceived1.reviewRequestId,
+            ],
+          ], // with other events
+        ],
+      },
     },
-  )('not accepted or rejected', ([events, reviewRequestId]) => {
-    const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasNotBeenAccepted({})))
-  })
-
-  test.prop<[[Array.NonEmptyArray<Events.Event>, Uuid.Uuid]]>(
+  it.prop(
+    'already sent',
     [
       fc
         .tuple(
@@ -200,42 +218,48 @@ describe('GetReviewRequestToAcknowledge', () => {
           fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
           fc.emailToAcknowledgeAReviewRequestForAPreprintWasSent({ reviewRequestId: fc.constant(reviewRequestId) }),
         )
-        .map(([received, accepted, sent]) => Tuple.make(Array.make(received, accepted, sent), reviewRequestId)),
+        .map(([received, accepted, sent]) =>
+          Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received, accepted, sent), reviewRequestId),
+        ),
     ],
-    {
-      examples: [
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasAccepted1,
-              emailToAcknowledgeAReviewRequestForAPreprintWasSent,
-            ],
-            reviewRequestId,
-          ],
-        ], // already sent
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasAccepted1,
-              emailToAcknowledgeAReviewRequestForAPreprintWasSent,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
-            ],
-            reviewRequestId,
-          ],
-        ], // other requests
-      ],
-    },
-  )('already sent', ([events, reviewRequestId]) => {
-    const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+    ([[events, reviewRequestId]]) => {
+      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyAcknowledged({})))
-  })
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadyAcknowledged({})))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasAccepted1,
+                emailToAcknowledgeAReviewRequestForAPreprintWasSent,
+              ],
+              reviewRequestId,
+            ],
+          ], // already sent
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasAccepted1,
+                emailToAcknowledgeAReviewRequestForAPreprintWasSent,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+              ],
+              reviewRequestId,
+            ],
+          ], // other requests
+        ],
+      },
+    },
+  )
 
   describe('not yet sent', () => {
-    test.prop<[[Array.NonEmptyArray<Events.Event>, Uuid.Uuid]]>(
+    it.prop(
+      'cannot contact',
       [
         fc
           .tuple(
@@ -245,44 +269,50 @@ describe('GetReviewRequestToAcknowledge', () => {
             }),
             fc.reviewRequestForAPreprintWasAccepted({ reviewRequestId: fc.constant(reviewRequestId) }),
           )
-          .map(([received, accepted]) => Tuple.make(Array.make(received, accepted), reviewRequestId)),
+          .map(([received, accepted]) =>
+            Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received, accepted), reviewRequestId),
+          ),
       ],
-      {
-        examples: [
-          [[[reviewRequestForAPreprintWasReceived3, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // without an email address
-          [[[reviewRequestForAPreprintWasReceived4, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // without a requester
-          [
-            [
-              [
-                reviewRequestForAPreprintWasAccepted1,
-                reviewRequestForAPreprintWasReceived1,
-                reviewRequestForAPreprintWasAccepted2,
-                reviewRequestForAPreprintWasReceived3,
-              ],
-              reviewRequestId,
-            ],
-          ], // multiple times
-          [
-            [
-              [
-                reviewRequestForAPreprintWasReceived3,
-                reviewRequestForAPreprintWasAccepted1,
-                otherReviewRequestForAPreprintWasReceived,
-                otherReviewRequestForAPreprintWasAccepted,
-                otherEmailToAcknowledgeAReviewRequestForAPreprintWasSent,
-              ],
-              reviewRequestId,
-            ],
-          ], // other requests
-        ],
+      ([[events, reviewRequestId]]) => {
+        const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+
+        expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestCannotBeAcknowledged({})))
       },
-    )('cannot contact', ([events, reviewRequestId]) => {
-      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+      {
+        fastCheck: {
+          examples: [
+            [[[reviewRequestForAPreprintWasReceived3, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // without an email address
+            [[[reviewRequestForAPreprintWasReceived4, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // without a requester
+            [
+              [
+                [
+                  reviewRequestForAPreprintWasAccepted1,
+                  reviewRequestForAPreprintWasReceived1,
+                  reviewRequestForAPreprintWasAccepted2,
+                  reviewRequestForAPreprintWasReceived3,
+                ],
+                reviewRequestId,
+              ],
+            ], // multiple times
+            [
+              [
+                [
+                  reviewRequestForAPreprintWasReceived3,
+                  reviewRequestForAPreprintWasAccepted1,
+                  otherReviewRequestForAPreprintWasReceived,
+                  otherReviewRequestForAPreprintWasAccepted,
+                  otherEmailToAcknowledgeAReviewRequestForAPreprintWasSent,
+                ],
+                reviewRequestId,
+              ],
+            ], // other requests
+          ],
+        },
+      },
+    )
 
-      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestCannotBeAcknowledged({})))
-    })
-
-    test.prop<[[Array.NonEmptyArray<Events.Event>, Uuid.Uuid, _.ReviewRequestToAcknowledge]]>(
+    it.prop(
+      'can contact',
       [
         fc
           .record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })
@@ -297,64 +327,69 @@ describe('GetReviewRequestToAcknowledge', () => {
             ),
           )
           .map(([requester, received, accepted]) =>
-            Tuple.make(Array.make(received, accepted), reviewRequestId, { requester }),
+            Tuple.make(Array.make<Array.NonEmptyArray<Events.Event>>(received, accepted), reviewRequestId, {
+              requester,
+            }),
           ),
       ],
-      {
-        examples: [
-          [
-            [
-              [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
-              reviewRequestId,
-              {
-                requester: {
-                  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-                  emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
-                },
-              },
-            ],
-          ], // accepted
-          [
-            [
-              [
-                reviewRequestForAPreprintWasAccepted1,
-                reviewRequestForAPreprintWasReceived1,
-                reviewRequestForAPreprintWasAccepted2,
-                reviewRequestForAPreprintWasReceived2,
-              ],
-              reviewRequestId,
-              {
-                requester: {
-                  name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul'),
-                  emailAddress: EmailAddress.EmailAddress('jbbotul@example.com'),
-                },
-              },
-            ],
-          ], // multiple times
-          [
-            [
-              [
-                reviewRequestForAPreprintWasReceived1,
-                reviewRequestForAPreprintWasAccepted1,
-                otherReviewRequestForAPreprintWasReceived,
-                otherReviewRequestForAPreprintWasAccepted,
-                otherEmailToAcknowledgeAReviewRequestForAPreprintWasSent,
-              ],
-              reviewRequestId,
-              {
-                requester: {
-                  name: NonEmptyString.NonEmptyString('Josiah Carberry'),
-                  emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
-                },
-              },
-            ],
-          ], // other requests
-        ],
-      },
-    )('can contact', ([events, reviewRequestId, expected]) => {
-      const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
+      ([[events, reviewRequestId, expected]]) => {
+        const actual = _.GetReviewRequestToAcknowledge.query(events, { reviewRequestId })
 
-      expect(actual).toStrictEqual(Either.right(expected))
-    })
+        expect(actual).toStrictEqual(Either.right(expected))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [
+              [
+                [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1],
+                reviewRequestId,
+                {
+                  requester: {
+                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+                    emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
+                  },
+                },
+              ],
+            ], // accepted
+            [
+              [
+                [
+                  reviewRequestForAPreprintWasAccepted1,
+                  reviewRequestForAPreprintWasReceived1,
+                  reviewRequestForAPreprintWasAccepted2,
+                  reviewRequestForAPreprintWasReceived2,
+                ],
+                reviewRequestId,
+                {
+                  requester: {
+                    name: NonEmptyString.NonEmptyString('Jean-Baptiste Botul'),
+                    emailAddress: EmailAddress.EmailAddress('jbbotul@example.com'),
+                  },
+                },
+              ],
+            ], // multiple times
+            [
+              [
+                [
+                  reviewRequestForAPreprintWasReceived1,
+                  reviewRequestForAPreprintWasAccepted1,
+                  otherReviewRequestForAPreprintWasReceived,
+                  otherReviewRequestForAPreprintWasAccepted,
+                  otherEmailToAcknowledgeAReviewRequestForAPreprintWasSent,
+                ],
+                reviewRequestId,
+                {
+                  requester: {
+                    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+                    emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
+                  },
+                },
+              ],
+            ], // other requests
+          ],
+        },
+      },
+    )
   })
 })

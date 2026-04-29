@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate } from 'effect'
 import { describe, expect } from 'vitest'
@@ -28,55 +28,73 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[recordCreated1, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[recordCreated1, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started]], // was started
-      [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // was published
-    ],
-  })('does not have a record', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'does not have a record',
+    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.DoesNotHaveARecord())
-  })
+      expect(state).toStrictEqual(new _.DoesNotHaveARecord())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started]], // was started
+          [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // was published
+        ],
+      },
+    },
+  )
 
-  test.prop(
+  it.prop(
+    'has a record',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.zenodoRecordForDatasetReviewWasCreated())
         .map(([started, created]) => [started, created]),
     ],
-    {
-      examples: [
-        [[started, recordCreated1]], // created once
-        [[started, recordCreated1, recordCreated2]], // created twice
-      ],
-    },
-  )('has a record', events => {
-    const state = _.foldState(events)
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.AlreadyHasARecord())
-  })
+      expect(state).toStrictEqual(new _.AlreadyHasARecord())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started, recordCreated1]], // created once
+          [[started, recordCreated1, recordCreated2]], // created twice
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
-  test.prop([fc.integer()])('has not been started', recordId => {
+  it.prop('has not been started', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.NotStarted(), { recordId, datasetReviewId })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.integer()])('does not have a record', recordId => {
+  it.prop('does not have a record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.DoesNotHaveARecord(), { recordId, datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -87,7 +105,7 @@ describe('decide', () => {
   })
 
   describe('already has a record', () => {
-    test.prop([fc.integer()])('with a different answer', recordId => {
+    it.prop('with a different answer', [fc.integer()], ([recordId]) => {
       const result = _.decide(new _.AlreadyHasARecord(), { recordId, datasetReviewId })
 
       expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({})))

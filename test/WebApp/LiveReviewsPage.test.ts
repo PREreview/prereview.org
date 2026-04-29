@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect } from 'effect'
 import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../src/Context.ts'
@@ -6,11 +6,10 @@ import { GhostPage } from '../../src/ExternalInteractions/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/LiveReviewsPage.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('LiveReviewsPage', () => {
-  test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
+  it.effect.prop('when the page can be loaded', [fc.supportedLocale(), fc.ghostPage()], ([locale, page]) =>
     Effect.gen(function* () {
       const getPageFromGhost = vi.fn<typeof GhostPage.GetPageFromGhost.Service>(_ => Effect.succeed(page))
 
@@ -27,10 +26,10 @@ describe('LiveReviewsPage', () => {
         js: [],
       })
       expect(getPageFromGhost).toHaveBeenCalledWith('LiveReviews')
-    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+    }).pipe(Effect.provideService(Locale, locale)),
   )
 
-  test.prop([fc.supportedLocale()])('when the page cannot be loaded', locale =>
+  it.effect.prop('when the page cannot be loaded', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.LiveReviewsPage.pipe(
         Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
@@ -44,6 +43,6 @@ describe('LiveReviewsPage', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provideService(Locale, locale), EffectTest.run),
+    }).pipe(Effect.provideService(Locale, locale)),
   )
 })

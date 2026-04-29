@@ -1,25 +1,24 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { it } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Layer, Option } from 'effect'
 import { expect } from 'vitest'
 import * as _ from '../src/SqlSensitiveDataStore.ts'
 import { Uuid } from '../src/types/index.ts'
-import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
-it.prop([fc.uuid()])('might not find a value', id =>
+it.effect.prop('might not find a value', [fc.uuid()], ([id]) =>
   Effect.gen(function* () {
     const sensitiveDataStore = yield* _.make
 
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.none())
-  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
+  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
 )
 
-it.prop([fc.string()])('can add and retrieve a value', input =>
+it.effect.prop('can add and retrieve a value', [fc.string()], ([input]) =>
   Effect.gen(function* () {
     const sensitiveDataStore = yield* _.make
 
@@ -28,12 +27,13 @@ it.prop([fc.string()])('can add and retrieve a value', input =>
     const value = yield* sensitiveDataStore.get(id)
 
     expect(value).toStrictEqual(Option.some(input))
-  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
+  }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
 )
 
-it.prop([fc.string(), fc.string(), fc.string(), fc.uuid()])(
+it.effect.prop(
   'can add and retrieve multiple values',
-  (input1, input2, input3, id4) =>
+  [fc.string(), fc.string(), fc.string(), fc.uuid()],
+  ([input1, input2, input3, id4]) =>
     Effect.gen(function* () {
       const sensitiveDataStore = yield* _.make
 
@@ -49,7 +49,7 @@ it.prop([fc.string(), fc.string(), fc.string(), fc.uuid()])(
         [id2]: input2,
         [id3]: input3,
       })
-    }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient]), EffectTest.run),
+    }).pipe(Effect.provide([Uuid.layer, TestLibsqlClient])),
 )
 
 const TestLibsqlClient = Layer.unwrapScoped(

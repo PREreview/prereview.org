@@ -1,4 +1,4 @@
-import { it } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { type Array, identity, Option, Predicate } from 'effect'
 import { describe, expect } from 'vitest'
@@ -174,20 +174,28 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   describe('when it has not been started', () => {
-    it.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-      examples: [
-        [[]], // no events
-        [[answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // with events
-      ],
-    })('returns nothing to do', events => {
-      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+    it.prop(
+      'returns nothing to do',
+      [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+      ([events]) => {
+        const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
-      expect(actual).toStrictEqual(Option.none())
-    })
+        expect(actual).toStrictEqual(Option.none())
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[]], // no events
+            [[answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // with events
+          ],
+        },
+      },
+    )
   })
 
   describe('when it is in progress', () => {
     it.prop(
+      'returns the next expected command',
       [
         fc
           .tuple(
@@ -211,311 +219,326 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         fc.constant<_.NextExpectedCommand>('PublishDatasetReview'),
       ],
-      {
-        examples: [
-          [[datasetReviewWasStarted], 'RateTheQuality'], // was started
-          [[datasetReviewWasStarted, ratedTheQualityOfTheDataset1], 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'], // 1 question answered
-          [
-            [datasetReviewWasStarted, ratedTheQualityOfTheDataset1, answeredIfTheDatasetFollowsFairAndCarePrinciples1],
-            'AnswerIfTheDatasetHasEnoughMetadata',
-          ], // 2 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-            ],
-            'AnswerIfTheDatasetHasTrackedChanges',
-          ], // 3 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-            ],
-            'AnswerIfTheDatasetHasDataCensoredOrDeleted',
-          ], // 4 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-            ],
-            'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
-          ], // 5 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-            ],
-            'AnswerIfTheDatasetSupportsRelatedConclusions',
-          ], // 6 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-            ],
-            'AnswerIfTheDatasetIsDetailedEnough',
-          ], // 7 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-            ],
-            'AnswerIfTheDatasetIsErrorFree',
-          ], // 8 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-            ],
-            'AnswerIfTheDatasetMattersToItsAudience',
-          ], // 9 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-            ],
-            'AnswerIfTheDatasetIsReadyToBeShared',
-          ], // 10 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-            ],
-            'AnswerIfTheDatasetIsMissingAnything',
-          ], // 11 questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-              answeredIfTheDatasetIsMissingAnything1,
-            ],
-            'ChoosePersona',
-          ], // all questions answered
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-              answeredIfTheDatasetIsMissingAnything1,
-              personaForDatasetReviewWasChosen1,
-            ],
-            'DeclareCompetingInterests',
-          ], // persona chosen
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-              answeredIfTheDatasetIsMissingAnything1,
-              personaForDatasetReviewWasChosen1,
-              competingInterestsForADatasetReviewWereDeclared1,
-            ],
-            'DeclareFollowingCodeOfConduct',
-          ], // competing interests declared
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-              answeredIfTheDatasetIsMissingAnything1,
-              personaForDatasetReviewWasChosen1,
-              competingInterestsForADatasetReviewWereDeclared1,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-            ],
-            'PublishDatasetReview',
-          ], // declared following code of conduct
-          [
-            [
-              datasetReviewWasStarted,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-              competingInterestsForADatasetReviewWereDeclared1,
-              answeredIfTheDatasetIsMissingAnything1,
-              answeredIfTheDatasetIsReadyToBeShared1,
-              answeredIfTheDatasetMattersToItsAudience1,
-              answeredIfTheDatasetIsErrorFree1,
-              answeredIfTheDatasetSupportsRelatedConclusions1,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
-              answeredIfTheDatasetHasDataCensoredOrDeleted1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetIsDetailedEnough1,
-              ratedTheQualityOfTheDataset1,
-              personaForDatasetReviewWasChosen1,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
-              competingInterestsForADatasetReviewWereDeclared2,
-              answeredIfTheDatasetIsMissingAnything2,
-              answeredIfTheDatasetIsReadyToBeShared2,
-              answeredIfTheDatasetMattersToItsAudience2,
-              answeredIfTheDatasetIsErrorFree2,
-              answeredIfTheDatasetSupportsRelatedConclusions2,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
-              answeredIfTheDatasetHasDataCensoredOrDeleted2,
-              answeredIfTheDatasetHasTrackedChanges2,
-              answeredIfTheDatasetHasEnoughMetadata2,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples2,
-              answeredIfTheDatasetIsDetailedEnough2,
-              ratedTheQualityOfTheDataset2,
-              personaForDatasetReviewWasChosen2,
-            ],
-            'PublishDatasetReview',
-          ], // different order
-        ],
-      },
-    )('returns the next expected command', (events, expected) => {
-      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+      ([events, expected]) => {
+        const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
-      expect(actual).toStrictEqual(Option.some(expected))
-    })
+        expect(actual).toStrictEqual(Option.some(expected))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetReviewWasStarted], 'RateTheQuality'], // was started
+            [[datasetReviewWasStarted, ratedTheQualityOfTheDataset1], 'AnswerIfTheDatasetFollowsFairAndCarePrinciples'], // 1 question answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+              ],
+              'AnswerIfTheDatasetHasEnoughMetadata',
+            ], // 2 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+              ],
+              'AnswerIfTheDatasetHasTrackedChanges',
+            ], // 3 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+              ],
+              'AnswerIfTheDatasetHasDataCensoredOrDeleted',
+            ], // 4 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+              ],
+              'AnswerIfTheDatasetIsAppropriateForThisKindOfResearch',
+            ], // 5 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+              ],
+              'AnswerIfTheDatasetSupportsRelatedConclusions',
+            ], // 6 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+              ],
+              'AnswerIfTheDatasetIsDetailedEnough',
+            ], // 7 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+              ],
+              'AnswerIfTheDatasetIsErrorFree',
+            ], // 8 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+              ],
+              'AnswerIfTheDatasetMattersToItsAudience',
+            ], // 9 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+              ],
+              'AnswerIfTheDatasetIsReadyToBeShared',
+            ], // 10 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+              ],
+              'AnswerIfTheDatasetIsMissingAnything',
+            ], // 11 questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetIsMissingAnything1,
+              ],
+              'ChoosePersona',
+            ], // all questions answered
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetIsMissingAnything1,
+                personaForDatasetReviewWasChosen1,
+              ],
+              'DeclareCompetingInterests',
+            ], // persona chosen
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetIsMissingAnything1,
+                personaForDatasetReviewWasChosen1,
+                competingInterestsForADatasetReviewWereDeclared1,
+              ],
+              'DeclareFollowingCodeOfConduct',
+            ], // competing interests declared
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetIsMissingAnything1,
+                personaForDatasetReviewWasChosen1,
+                competingInterestsForADatasetReviewWereDeclared1,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+              ],
+              'PublishDatasetReview',
+            ], // declared following code of conduct
+            [
+              [
+                datasetReviewWasStarted,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+                competingInterestsForADatasetReviewWereDeclared1,
+                answeredIfTheDatasetIsMissingAnything1,
+                answeredIfTheDatasetIsReadyToBeShared1,
+                answeredIfTheDatasetMattersToItsAudience1,
+                answeredIfTheDatasetIsErrorFree1,
+                answeredIfTheDatasetSupportsRelatedConclusions1,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+                answeredIfTheDatasetHasDataCensoredOrDeleted1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetIsDetailedEnough1,
+                ratedTheQualityOfTheDataset1,
+                personaForDatasetReviewWasChosen1,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
+                competingInterestsForADatasetReviewWereDeclared2,
+                answeredIfTheDatasetIsMissingAnything2,
+                answeredIfTheDatasetIsReadyToBeShared2,
+                answeredIfTheDatasetMattersToItsAudience2,
+                answeredIfTheDatasetIsErrorFree2,
+                answeredIfTheDatasetSupportsRelatedConclusions2,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch2,
+                answeredIfTheDatasetHasDataCensoredOrDeleted2,
+                answeredIfTheDatasetHasTrackedChanges2,
+                answeredIfTheDatasetHasEnoughMetadata2,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples2,
+                answeredIfTheDatasetIsDetailedEnough2,
+                ratedTheQualityOfTheDataset2,
+                personaForDatasetReviewWasChosen2,
+              ],
+              'PublishDatasetReview',
+            ], // different order
+          ],
+        },
+      },
+    )
   })
 
   describe('when it is being published', () => {
     it.prop(
+      'returns nothing to do',
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
       ],
-      {
-        examples: [
-          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested]], // was requested
-          [
-            [
-              datasetReviewWasStarted,
-              ratedTheQualityOfTheDataset1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetHasTrackedChanges1,
-              publicationOfDatasetReviewWasRequested,
-            ],
-          ], // also answered
-          [
-            [
-              datasetReviewWasStarted,
-              publicationOfDatasetReviewWasRequested,
-              answeredIfTheDatasetHasTrackedChanges1,
-              answeredIfTheDatasetHasEnoughMetadata1,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples1,
-              ratedTheQualityOfTheDataset1,
-            ],
-          ], // different order
-        ],
-      },
-    )('returns nothing to do', events => {
-      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+      ([events]) => {
+        const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
-      expect(actual).toStrictEqual(Option.none())
-    })
+        expect(actual).toStrictEqual(Option.none())
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested]], // was requested
+            [
+              [
+                datasetReviewWasStarted,
+                ratedTheQualityOfTheDataset1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetHasTrackedChanges1,
+                publicationOfDatasetReviewWasRequested,
+              ],
+            ], // also answered
+            [
+              [
+                datasetReviewWasStarted,
+                publicationOfDatasetReviewWasRequested,
+                answeredIfTheDatasetHasTrackedChanges1,
+                answeredIfTheDatasetHasEnoughMetadata1,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                ratedTheQualityOfTheDataset1,
+              ],
+            ], // different order
+          ],
+        },
+      },
+    )
   })
 
   describe('when it has been published', () => {
     it.prop(
+      'returns nothing to do',
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
           .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
       ],
-      {
-        examples: [
-          [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // was published
-          [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
-          [[datasetReviewWasStarted, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples1]], // different order
-        ],
-      },
-    )('returns nothing to do', events => {
-      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+      ([events]) => {
+        const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
-      expect(actual).toStrictEqual(Option.none())
-    })
+        expect(actual).toStrictEqual(Option.none())
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples1, datasetReviewWasPublished]], // was published
+            [[datasetReviewWasStarted, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished]], // also requested
+            [[datasetReviewWasStarted, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples1]], // different order
+          ],
+        },
+      },
+    )
   })
 })

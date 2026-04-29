@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Layer, pipe, Schema } from 'effect'
 import { URL } from 'url'
@@ -11,9 +11,8 @@ import * as _ from '../../../../src/ExternalInteractions/DatasetData/Datacite/Re
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import { Doi, OrcidId } from '../../../../src/types/index.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
-test.each([
+it.effect.each([
   {
     response: 'dryad',
     expected: new Datasets.Dataset({
@@ -403,10 +402,10 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-test.each(['dryad-collection'])('returns a specific error for a non-dataset record (%s)', response =>
+it.effect.each([['dryad-collection']])('returns a specific error for a non-dataset record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -417,30 +416,30 @@ test.each(['dryad-collection'])('returns a specific error for a non-dataset reco
     )
 
     expect(actual._tag).toStrictEqual('NotADataset')
-  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})])),
 )
 
-test.each([
-  'arxiv',
-  'cdl-ucb',
-  'cdl-ucd',
-  'cdl-uci',
-  'cdl-ucm',
-  'cdl-ucr',
-  'cdl-ucsc',
-  'cdl-ucsf',
-  'lifecycle-journal-article',
-  'lifecycle-journal-registration',
-  'osf-file',
-  'osf-project',
-  'osf-registration',
-  'zenodo-africarxiv',
-  'zenodo-empty-resource-type',
-  'zenodo-journal-article',
-  'zenodo-no-abstract',
-  'zenodo-trailing-space',
-  'zenodo',
-])('returns a specific error for non-supported record (%s)', response =>
+it.effect.each([
+  ['arxiv'],
+  ['cdl-ucb'],
+  ['cdl-ucd'],
+  ['cdl-uci'],
+  ['cdl-ucm'],
+  ['cdl-ucr'],
+  ['cdl-ucsc'],
+  ['cdl-ucsf'],
+  ['lifecycle-journal-article'],
+  ['lifecycle-journal-registration'],
+  ['osf-file'],
+  ['osf-project'],
+  ['osf-registration'],
+  ['zenodo-africarxiv'],
+  ['zenodo-empty-resource-type'],
+  ['zenodo-journal-article'],
+  ['zenodo-no-abstract'],
+  ['zenodo-trailing-space'],
+  ['zenodo'],
+])('returns a specific error for non-supported record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -451,5 +450,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('RecordIsNotSupported')
-  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})])),
 )

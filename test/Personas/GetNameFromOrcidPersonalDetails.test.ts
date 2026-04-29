@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { Option, Tuple } from 'effect'
 import { describe, expect } from 'vitest'
 import { Orcid } from '../../src/ExternalApis/index.ts'
@@ -7,7 +7,8 @@ import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import * as fc from '../fc.ts'
 
 describe('GetNameFromOrcidPersonalDetails', () => {
-  test.prop(
+  it.prop(
+    'with a name',
     [
       fc
         .tuple(fc.nonEmptyString(), fc.nonEmptyString(), fc.nonEmptyString())
@@ -20,27 +21,30 @@ describe('GetNameFromOrcidPersonalDetails', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [['J. S. Carberry', 'Josiah', 'Carberry', 'J. S. Carberry']],
-        [[undefined, 'Josiah', 'Carberry', 'Josiah Carberry']],
-        [[undefined, 'Josiah', undefined, 'Josiah']],
-      ],
+    ([[creditName, givenNames, familyName, expected]]) => {
+      const personalDetails = new Orcid.PersonalDetails({
+        ...stubPersonalDetails,
+        name: {
+          givenNames: { value: NonEmptyString(givenNames) },
+          familyName: typeof familyName === 'string' ? { value: NonEmptyString(familyName) } : null,
+          creditName: typeof creditName === 'string' ? { value: NonEmptyString(creditName) } : null,
+        },
+      })
+
+      const actual = _.GetNameFromOrcidPersonalDetails(personalDetails)
+
+      expect(actual).toStrictEqual(Option.some(expected))
     },
-  )('with a name', ([creditName, givenNames, familyName, expected]) => {
-    const personalDetails = new Orcid.PersonalDetails({
-      ...stubPersonalDetails,
-      name: {
-        givenNames: { value: NonEmptyString(givenNames) },
-        familyName: typeof familyName === 'string' ? { value: NonEmptyString(familyName) } : null,
-        creditName: typeof creditName === 'string' ? { value: NonEmptyString(creditName) } : null,
+    {
+      fastCheck: {
+        examples: [
+          [['J. S. Carberry', 'Josiah', 'Carberry', 'J. S. Carberry']],
+          [[undefined, 'Josiah', 'Carberry', 'Josiah Carberry']],
+          [[undefined, 'Josiah', undefined, 'Josiah']],
+        ],
       },
-    })
-
-    const actual = _.GetNameFromOrcidPersonalDetails(personalDetails)
-
-    expect(actual).toStrictEqual(Option.some(expected))
-  })
+    },
+  )
 
   test.each([null, { givenNames: null, familyName: null, creditName: null }])('without a name', name => {
     const personalDetails = new Orcid.PersonalDetails({

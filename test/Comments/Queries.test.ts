@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { Doi } from 'doi-ts'
 import { Array, Either, Option } from 'effect'
 import { describe, expect } from 'vitest'
@@ -118,18 +118,20 @@ describe('GetNextExpectedCommandForUser', () => {
     })
   })
 
-  test.prop([fc.orcidId(), fc.integer()])(
+  it.prop(
     'when there are no comments, starts a new comment',
-    (authorId, prereviewId) => {
+    [fc.orcidId(), fc.integer()],
+    ([authorId, prereviewId]) => {
       const actual = _.GetNextExpectedCommandForUser([])({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
     },
   )
 
-  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
+  it.prop(
     'when in progress comments are by other authors, starts a new comment',
-    (authorId, prereviewId, resourceId) => {
+    [fc.orcidId(), fc.integer(), fc.uuid()],
+    ([authorId, prereviewId, resourceId]) => {
       const events = [
         new Comments.CommentWasStarted({
           commentId: resourceId,
@@ -143,9 +145,10 @@ describe('GetNextExpectedCommandForUser', () => {
     },
   )
 
-  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
+  it.prop(
     'when in progress comments are for other PREreviews, starts a new comment',
-    (authorId, prereviewId, resourceId) => {
+    [fc.orcidId(), fc.integer(), fc.uuid()],
+    ([authorId, prereviewId, resourceId]) => {
       const events = [new Comments.CommentWasStarted({ commentId: resourceId, prereviewId: 123, authorId })]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
@@ -153,9 +156,10 @@ describe('GetNextExpectedCommandForUser', () => {
     },
   )
 
-  test.prop([fc.orcidId(), fc.integer(), fc.uuid()])(
+  it.prop(
     'when no user input is needed for a comment, starts a new comment',
-    (authorId, prereviewId, resourceId) => {
+    [fc.orcidId(), fc.integer(), fc.uuid()],
+    ([authorId, prereviewId, resourceId]) => {
       const events = [new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
@@ -364,17 +368,21 @@ describe('GetACommentInNeedOfADoi', () => {
     expect(actual).toStrictEqual(Either.right(resourceId))
   })
 
-  test.prop([
-    fc.nonEmptyArray(
-      fc.publicationOfCommentWasRequested({
-        commentId: fc.uuid().filter(otherResourceId => resourceId !== otherResourceId),
-      }),
-    ),
-  ])('finds the newest comment in need of a DOI when multiple comments need a DOI', otherEvents => {
-    const actual = _.GetACommentInNeedOfADoi(Array.flatten([otherEvents, Array.of(publicationOfCommentWasRequested)]))
+  it.prop(
+    'finds the newest comment in need of a DOI when multiple comments need a DOI',
+    [
+      fc.nonEmptyArray(
+        fc.publicationOfCommentWasRequested({
+          commentId: fc.uuid().filter(otherResourceId => resourceId !== otherResourceId),
+        }),
+      ),
+    ],
+    ([otherEvents]) => {
+      const actual = _.GetACommentInNeedOfADoi(Array.flatten([otherEvents, Array.of(publicationOfCommentWasRequested)]))
 
-    expect(actual).toStrictEqual(Either.right(resourceId))
-  })
+      expect(actual).toStrictEqual(Either.right(resourceId))
+    },
+  )
 
   test('ignores comments that already have a DOI', () => {
     const events = [publicationOfCommentWasRequested, commentWasAssignedADoi]

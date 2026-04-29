@@ -1,11 +1,12 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Tuple } from 'effect'
 import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
-  test.prop(
+  it.prop(
+    'sets the URL',
     [
       fc
         .integer()
@@ -13,18 +14,21 @@ describe('CreateRequest', () => {
           Tuple.make(id, `https://philsci-archive.pitt.edu/cgi/export/eprint/${id}/JSON/pittphilsci-eprint-${id}.json`),
         ),
     ],
-    {
-      examples: [
-        [[23254, 'https://philsci-archive.pitt.edu/cgi/export/eprint/23254/JSON/pittphilsci-eprint-23254.json']],
-      ],
+    ([[eprintId, expected]]) => {
+      const actual = _.CreateRequest(eprintId)
+
+      expect(actual.url).toStrictEqual(expected)
     },
-  )('sets the URL', ([eprintId, expected]) => {
-    const actual = _.CreateRequest(eprintId)
+    {
+      fastCheck: {
+        examples: [
+          [[23254, 'https://philsci-archive.pitt.edu/cgi/export/eprint/23254/JSON/pittphilsci-eprint-23254.json']],
+        ],
+      },
+    },
+  )
 
-    expect(actual.url).toStrictEqual(expected)
-  })
-
-  test.prop([fc.integer()])('sets the Accept header', eprintId => {
+  it.prop('sets the Accept header', [fc.integer()], ([eprintId]) => {
     const actual = _.CreateRequest(eprintId)
 
     expect(actual.headers['accept']).toStrictEqual('application/json')

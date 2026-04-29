@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option, Predicate } from 'effect'
 import { describe, expect } from 'vitest'
@@ -24,16 +24,23 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
-    ],
-  })('not yet started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not yet started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
   test('already started', () => {
     const events = [started]

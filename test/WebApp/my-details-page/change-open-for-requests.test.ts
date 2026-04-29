@@ -1,4 +1,5 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { describe, expect, vi } from 'vitest'
@@ -9,143 +10,170 @@ import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('changeOpenForRequests', () => {
-  test.prop([
-    fc.anything(),
-    fc.string().filter(method => method !== 'POST'),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.isOpenForRequests()),
-  ])('when there is a logged in user', async (body, method, user, locale, openForRequests) => {
-    const actual = await _.changeOpenForRequests({ body, locale, method, user })({
-      isOpenForRequests: () => TE.fromEither(openForRequests),
-      saveOpenForRequests: shouldNotBeCalled,
-    })()
+  it.effect.prop(
+    'when there is a logged in user',
+    [
+      fc.anything(),
+      fc.string().filter(method => method !== 'POST'),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.either(fc.constantFrom('not-found', 'unavailable'), fc.isOpenForRequests()),
+    ],
+    ([body, method, user, locale, openForRequests]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeOpenForRequests({ body, locale, method, user })({
+            isOpenForRequests: () => TE.fromEither(openForRequests),
+            saveOpenForRequests: shouldNotBeCalled,
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(changeOpenForRequestsMatch.formatter, {}),
-      status: StatusCodes.OK,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(changeOpenForRequestsMatch.formatter, {}),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }),
+  )
 
   describe('when the form has been submitted', () => {
-    test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale(), fc.isOpenForRequests()])(
+    it.effect.prop(
       'there is open for requests already',
-      async (openForRequests, user, locale, existingOpenForRequests) => {
-        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+      [fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale(), fc.isOpenForRequests()],
+      ([openForRequests, user, locale, existingOpenForRequests]) =>
+        Effect.gen(function* () {
+          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
-        const actual = await _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
-          isOpenForRequests: () => TE.right(existingOpenForRequests),
-          saveOpenForRequests,
-        })()
+          const actual = yield* Effect.promise(
+            _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
+              isOpenForRequests: () => TE.right(existingOpenForRequests),
+              saveOpenForRequests,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: format(myDetailsMatch.formatter, {}),
-        })
-        expect(saveOpenForRequests).toHaveBeenCalledWith(
-          user.orcid,
-          openForRequests === 'yes'
-            ? {
-                value: true,
-                visibility: existingOpenForRequests.value ? existingOpenForRequests.visibility : 'restricted',
-              }
-            : { value: false },
-        )
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(myDetailsMatch.formatter, {}),
+          })
+          expect(saveOpenForRequests).toHaveBeenCalledWith(
+            user.orcid,
+            openForRequests === 'yes'
+              ? {
+                  value: true,
+                  visibility: existingOpenForRequests.value ? existingOpenForRequests.visibility : 'restricted',
+                }
+              : { value: false },
+          )
+        }),
     )
 
-    test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale()])(
+    it.effect.prop(
       "when there isn't a career stage already",
-      async (openForRequests, user, locale) => {
-        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+      [fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale()],
+      ([openForRequests, user, locale]) =>
+        Effect.gen(function* () {
+          const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
-        const actual = await _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
-          isOpenForRequests: () => TE.left('not-found'),
-          saveOpenForRequests,
-        })()
+          const actual = yield* Effect.promise(
+            _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
+              isOpenForRequests: () => TE.left('not-found'),
+              saveOpenForRequests,
+            }),
+          )
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: StatusCodes.SeeOther,
-          location: format(myDetailsMatch.formatter, {}),
-        })
-        expect(saveOpenForRequests).toHaveBeenCalledWith(
-          user.orcid,
-          openForRequests === 'yes'
-            ? {
-                value: true,
-                visibility: 'restricted',
-              }
-            : { value: false },
-        )
-      },
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(myDetailsMatch.formatter, {}),
+          })
+          expect(saveOpenForRequests).toHaveBeenCalledWith(
+            user.orcid,
+            openForRequests === 'yes'
+              ? {
+                  value: true,
+                  visibility: 'restricted',
+                }
+              : { value: false },
+          )
+        }),
     )
   })
 
-  test.prop([
-    fc.constantFrom('yes', 'no'),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.either(fc.constantFrom('not-found'), fc.isOpenForRequests()),
-  ])(
+  it.effect.prop(
     'when the form has been submitted but the career stage cannot be saved',
-    async (openForRequests, user, locale, existingOpenForRequests) => {
-      const actual = await _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
-        isOpenForRequests: () => TE.fromEither(existingOpenForRequests),
-        saveOpenForRequests: () => TE.left('unavailable'),
-      })()
+    [
+      fc.constantFrom('yes', 'no'),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.either(fc.constantFrom('not-found'), fc.isOpenForRequests()),
+    ],
+    ([openForRequests, user, locale, existingOpenForRequests]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
+            isOpenForRequests: () => TE.fromEither(existingOpenForRequests),
+            saveOpenForRequests: () => TE.left('unavailable'),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
   )
 
-  test.prop([fc.record({ openForRequests: fc.lorem() }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the form has been submitted without setting open for requests',
-    async (body, user, locale) => {
-      const actual = await _.changeOpenForRequests({ body, locale, method: 'POST', user })({
-        isOpenForRequests: shouldNotBeCalled,
-        saveOpenForRequests: shouldNotBeCalled,
-      })()
+    [fc.record({ openForRequests: fc.lorem() }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()],
+    ([body, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeOpenForRequests({ body, locale, method: 'POST', user })({
+            isOpenForRequests: shouldNotBeCalled,
+            saveOpenForRequests: shouldNotBeCalled,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(changeOpenForRequestsMatch.formatter, {}),
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(changeOpenForRequestsMatch.formatter, {}),
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['error-summary.js'],
+        })
+      }),
   )
 
-  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the user is not logged in',
-    async (body, method, locale) => {
-      const actual = await _.changeOpenForRequests({ body, locale, method, user: undefined })({
-        isOpenForRequests: shouldNotBeCalled,
-        saveOpenForRequests: shouldNotBeCalled,
-      })()
+    [fc.anything(), fc.string(), fc.supportedLocale()],
+    ([body, method, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeOpenForRequests({ body, locale, method, user: undefined })({
+            isOpenForRequests: shouldNotBeCalled,
+            saveOpenForRequests: shouldNotBeCalled,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: format(myDetailsMatch.formatter, {}),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'LogInResponse',
+          location: format(myDetailsMatch.formatter, {}),
+        })
+      }),
   )
 })

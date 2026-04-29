@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
 import { describe, expect } from 'vitest'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
@@ -8,91 +8,95 @@ import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import * as Queries from '../../../src/Queries.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('CreateRecordOnZenodo', () => {
   describe('when the command can be completed', () => {
-    test.prop([
-      fc.uuid(),
-      fc.origin(),
-      fc.datasetReviewDataForZenodoRecord({
-        author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
-      }),
-      fc.datasetTitle(),
-      fc.publicPersona(),
-      fc.integer(),
-    ])('with a public persona', (datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, recordId) =>
-      Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+    it.effect.prop(
+      'with a public persona',
+      [
+        fc.uuid(),
+        fc.origin(),
+        fc.datasetReviewDataForZenodoRecord({
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
+        }),
+        fc.datasetTitle(),
+        fc.publicPersona(),
+        fc.integer(),
+      ],
+      ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, recordId]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
-        expect(actual).toStrictEqual(Either.void)
-      }).pipe(
-        Effect.provide([
-          Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getDataForZenodoRecord: () => Effect.succeed(preview),
-          }),
-          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-          Layer.mock(Personas.Personas, {
-            getPublicPersona: () => Effect.succeed(publicPersona),
-          }),
-          Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
-          Layer.succeed(PublicUrl, publicUrl),
-        ]),
-        EffectTest.run,
-      ),
+          expect(actual).toStrictEqual(Either.void)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getDataForZenodoRecord: () => Effect.succeed(preview),
+            }),
+            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+            Layer.mock(Personas.Personas, {
+              getPublicPersona: () => Effect.succeed(publicPersona),
+            }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+            Layer.succeed(PublicUrl, publicUrl),
+          ]),
+        ),
     )
 
-    test.prop([
-      fc.uuid(),
-      fc.origin(),
-      fc.datasetReviewDataForZenodoRecord({
-        author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
-      }),
-      fc.datasetTitle(),
-      fc.pseudonymPersona(),
-      fc.integer(),
-    ])('with a public persona', (datasetReviewId, publicUrl, preview, datasetTitle, pseudonymPersona, recordId) =>
-      Effect.gen(function* () {
-        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+    it.effect.prop(
+      'with a public persona',
+      [
+        fc.uuid(),
+        fc.origin(),
+        fc.datasetReviewDataForZenodoRecord({
+          author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
+        }),
+        fc.datasetTitle(),
+        fc.pseudonymPersona(),
+        fc.integer(),
+      ],
+      ([datasetReviewId, publicUrl, preview, datasetTitle, pseudonymPersona, recordId]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
-        expect(actual).toStrictEqual(Either.void)
-      }).pipe(
-        Effect.provide([
-          Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            getDataForZenodoRecord: () => Effect.succeed(preview),
-          }),
-          Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
-          Layer.mock(Personas.Personas, {
-            getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
-          }),
-          Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
-          Layer.succeed(PublicUrl, publicUrl),
-        ]),
-        EffectTest.run,
-      ),
+          expect(actual).toStrictEqual(Either.void)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(DatasetReviews.DatasetReviewCommands, { markRecordCreatedOnZenodo: () => Effect.void }),
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              getDataForZenodoRecord: () => Effect.succeed(preview),
+            }),
+            Layer.mock(Datasets.Datasets, { getDatasetTitle: () => Effect.succeed(datasetTitle) }),
+            Layer.mock(Personas.Personas, {
+              getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
+            }),
+            Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
+            Layer.succeed(PublicUrl, publicUrl),
+          ]),
+        ),
     )
   })
 
-  test.prop([
-    fc.uuid(),
-    fc.origin(),
-    fc.datasetReviewDataForZenodoRecord(),
-    fc.datasetTitle(),
-    fc.publicPersona(),
-    fc.pseudonymPersona(),
-    fc.integer(),
-    fc.constantFrom(
-      new DatasetReviews.DatasetReviewHasNotBeenStarted(),
-      new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({}),
-      new DatasetReviews.NotAuthorizedToRunCommand({}),
-      new DatasetReviews.UnableToHandleCommand({}),
-    ),
-  ])(
+  it.effect.prop(
     "when the command can't be completed",
-    (datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona, recordId, error) =>
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc.datasetReviewDataForZenodoRecord(),
+      fc.datasetTitle(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+      fc.integer(),
+      fc.constantFrom(
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewAlreadyHasAZenodoRecord({}),
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
+        new DatasetReviews.UnableToHandleCommand({}),
+      ),
+    ],
+    ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona, recordId, error]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
@@ -111,20 +115,20 @@ describe('CreateRecordOnZenodo', () => {
           Layer.mock(ZenodoRecords.ZenodoRecords, { createRecordForDatasetReview: () => Effect.succeed(recordId) }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
-        EffectTest.run,
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.origin(),
-    fc.datasetReviewDataForZenodoRecord(),
-    fc.datasetTitle(),
-    fc.publicPersona(),
-    fc.pseudonymPersona(),
-  ])(
+  it.effect.prop(
     "when the record can't be created",
-    (datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona) =>
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc.datasetReviewDataForZenodoRecord(),
+      fc.datasetTitle(),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+    ],
+    ([datasetReviewId, publicUrl, preview, datasetTitle, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
@@ -145,22 +149,22 @@ describe('CreateRecordOnZenodo', () => {
           }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
-        EffectTest.run,
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.origin(),
-    fc.datasetReviewDataForZenodoRecord(),
-    fc
-      .record({ cause: fc.anything(), datasetId: fc.datasetId() })
-      .chain(args => fc.constantFrom(new Datasets.DatasetIsNotFound(args), new Datasets.DatasetIsUnavailable(args))),
-    fc.publicPersona(),
-    fc.pseudonymPersona(),
-  ])(
+  it.effect.prop(
     "when the dataset can't be loaded",
-    (datasetReviewId, publicUrl, preview, error, publicPersona, pseudonymPersona) =>
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc.datasetReviewDataForZenodoRecord(),
+      fc
+        .record({ cause: fc.anything(), datasetId: fc.datasetId() })
+        .chain(args => fc.constantFrom(new Datasets.DatasetIsNotFound(args), new Datasets.DatasetIsUnavailable(args))),
+      fc.publicPersona(),
+      fc.pseudonymPersona(),
+    ],
+    ([datasetReviewId, publicUrl, preview, error, publicPersona, pseudonymPersona]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
@@ -179,13 +183,13 @@ describe('CreateRecordOnZenodo', () => {
           Layer.mock(ZenodoRecords.ZenodoRecords, {}),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
-        EffectTest.run,
       ),
   )
 
-  test.prop([fc.uuid(), fc.origin(), fc.datasetReviewDataForZenodoRecord(), fc.datasetTitle(), fc.anything()])(
+  it.effect.prop(
     "when the persona can't be loaded",
-    (datasetReviewId, publicUrl, preview, datasetTitle, error) =>
+    [fc.uuid(), fc.origin(), fc.datasetReviewDataForZenodoRecord(), fc.datasetTitle(), fc.anything()],
+    ([datasetReviewId, publicUrl, preview, datasetTitle, error]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
@@ -206,34 +210,35 @@ describe('CreateRecordOnZenodo', () => {
           }),
           Layer.succeed(PublicUrl, publicUrl),
         ]),
-        EffectTest.run,
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.origin(),
-    fc.constantFrom(
-      new DatasetReviews.UnknownDatasetReview({}),
-      new DatasetReviews.DatasetReviewIsInProgress(),
-      new DatasetReviews.DatasetReviewHasBeenPublished(),
-      new Queries.UnableToQuery({}),
-    ),
-  ])("when the data can't be generated", (datasetReviewId, publicUrl, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
+  it.effect.prop(
+    "when the data can't be generated",
+    [
+      fc.uuid(),
+      fc.origin(),
+      fc.constantFrom(
+        new DatasetReviews.UnknownDatasetReview({}),
+        new DatasetReviews.DatasetReviewIsInProgress(),
+        new DatasetReviews.DatasetReviewHasBeenPublished(),
+        new Queries.UnableToQuery({}),
+      ),
+    ],
+    ([datasetReviewId, publicUrl, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.CreateRecordOnZenodo(datasetReviewId), Effect.either)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
-    }).pipe(
-      Effect.provide([
-        Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
-        Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
-        Layer.mock(Datasets.Datasets, {}),
-        Layer.mock(Personas.Personas, {}),
-        Layer.mock(ZenodoRecords.ZenodoRecords, {}),
-        Layer.succeed(PublicUrl, publicUrl),
-      ]),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToCreateRecordOnZenodo({})))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, {}),
+          Layer.mock(DatasetReviews.DatasetReviewQueries, { getDataForZenodoRecord: () => error }),
+          Layer.mock(Datasets.Datasets, {}),
+          Layer.mock(Personas.Personas, {}),
+          Layer.mock(ZenodoRecords.ZenodoRecords, {}),
+          Layer.succeed(PublicUrl, publicUrl),
+        ]),
+      ),
   )
 })

@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate } from 'effect'
 import { describe, expect } from 'vitest'
@@ -30,48 +30,67 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[answered, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[answered, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started]], // was started
-      [[started, answered]], // answered
-    ],
-  })('publication has not been requested', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'publication has not been requested',
+    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotRequested())
-  })
+      expect(state).toStrictEqual(new _.NotRequested())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started]], // was started
+          [[started, answered]], // answered
+        ],
+      },
+    },
+  )
 
-  test.prop(
+  it.prop(
+    'not ready',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, publicationOfDatasetReviewWasRequested]], // was requested
-        [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
-        [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.NotReady({ missing: ['DatasetReviewWasAssignedADoi'] }))
     },
-  )('not ready', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[started, publicationOfDatasetReviewWasRequested]], // was requested
+          [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
+          [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotReady({ missing: ['DatasetReviewWasAssignedADoi'] }))
-  })
-
-  test.prop(
+  it.prop(
+    'is ready',
     [
       fc
         .tuple(
@@ -81,63 +100,71 @@ describe('foldState', () => {
         )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, publicationOfDatasetReviewWasRequested, datasetReviewWasAssignedADoi]],
-        [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasAssignedADoi]], // other events
-        [[started, datasetReviewWasAssignedADoi, publicationOfDatasetReviewWasRequested]], // different order
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.IsReady())
     },
-  )('is ready', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[started, publicationOfDatasetReviewWasRequested, datasetReviewWasAssignedADoi]],
+          [[started, answered, publicationOfDatasetReviewWasRequested, datasetReviewWasAssignedADoi]], // other events
+          [[started, datasetReviewWasAssignedADoi, publicationOfDatasetReviewWasRequested]], // different order
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.IsReady())
-  })
-
-  test.prop(
+  it.prop(
+    'already marked as published',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, answered, datasetReviewWasPublished]], // was published
-        [
-          [
-            started,
-            answered,
-            publicationOfDatasetReviewWasRequested,
-            datasetReviewWasAssignedADoi,
-            datasetReviewWasPublished,
-          ],
-        ], // other events
-        [[started, datasetReviewWasPublished]], // different order
-      ],
-    },
-  )('already marked as published', events => {
-    const state = _.foldState(events)
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.AlreadyMarkedAsPublished())
-  })
+      expect(state).toStrictEqual(new _.AlreadyMarkedAsPublished())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started, answered, datasetReviewWasPublished]], // was published
+          [
+            [
+              started,
+              answered,
+              publicationOfDatasetReviewWasRequested,
+              datasetReviewWasAssignedADoi,
+              datasetReviewWasPublished,
+            ],
+          ], // other events
+          [[started, datasetReviewWasPublished]], // different order
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
-  test.prop([fc.plainDate()])('has not been started', publicationDate => {
+  it.prop('has not been started', [fc.plainDate()], ([publicationDate]) => {
     const result = _.decide(new _.NotStarted(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.plainDate()])('has not been requested', publicationDate => {
+  it.prop('has not been requested', [fc.plainDate()], ([publicationDate]) => {
     const result = _.decide(new _.NotRequested(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.PublicationOfDatasetReviewWasNotRequested()))
   })
 
-  test.prop([fc.plainDate(), fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))])(
+  it.prop(
     'is not ready',
-    (publicationDate, missing) => {
+    [fc.plainDate(), fc.nonEmptyArray(fc.constant('DatasetReviewWasAssignedADoi'))],
+    ([publicationDate, missing]) => {
       const result = _.decide(new _.NotReady({ missing }), { datasetReviewId, publicationDate })
 
       expect(result).toStrictEqual(
@@ -146,7 +173,7 @@ describe('decide', () => {
     },
   )
 
-  test.prop([fc.plainDate()])('is ready', publicationDate => {
+  it.prop('is ready', [fc.plainDate()], ([publicationDate]) => {
     const result = _.decide(new _.IsReady(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(
@@ -154,7 +181,7 @@ describe('decide', () => {
     )
   })
 
-  test.prop([fc.plainDate()])('already marked as published', publicationDate => {
+  it.prop('already marked as published', [fc.plainDate()], ([publicationDate]) => {
     const result = _.decide(new _.AlreadyMarkedAsPublished(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(Either.right(Option.none()))

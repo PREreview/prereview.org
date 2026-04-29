@@ -1,6 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { SystemClock } from 'clock-ts'
-import { Record, Struct } from 'effect'
+import { Effect, Record, Struct } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import Keyv from 'keyv'
@@ -14,2128 +14,2660 @@ import { UserOnboardingC } from '../src/user-onboarding.ts'
 import * as fc from './fc.ts'
 
 describe('getAuthorInvite', () => {
-  test.prop([fc.uuid(), fc.authorInvite()])('when the key contains an author invite', async (uuid, authorInvite) => {
-    const store = new Keyv()
-    await store.set(uuid, authorInvite)
-
-    const actual = await _.getAuthorInvite(uuid)({
-      authorInviteStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(authorInvite))
-  })
-
-  test.prop([fc.uuid(), fc.anything()])(
-    'when the key contains something other than author invite',
-    async (uuid, value) => {
+  it.effect.prop('when the key contains an author invite', [fc.uuid(), fc.authorInvite()], ([uuid, authorInvite]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(uuid, value)
+      yield* Effect.promise(() => store.set(uuid, authorInvite))
 
-      const actual = await _.getAuthorInvite(uuid)({
-        authorInviteStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.getAuthorInvite(uuid)({
+          authorInviteStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('not-found'))
-    },
+      expect(actual).toStrictEqual(E.right(authorInvite))
+    }),
   )
 
-  test.prop([fc.uuid()])('when the key is not found', async uuid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than author invite',
+    [fc.uuid(), fc.anything()],
+    ([uuid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(uuid, value))
 
-    const actual = await _.getAuthorInvite(uuid)({
-      authorInviteStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getAuthorInvite(uuid)({
+            authorInviteStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.uuid(), fc.anything()])('when the key cannot be accessed', async (uuid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key is not found', [fc.uuid()], ([uuid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getAuthorInvite(uuid)({
-      authorInviteStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getAuthorInvite(uuid)({
+          authorInviteStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.uuid(), fc.anything()], ([uuid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.getAuthorInvite(uuid)({
+          authorInviteStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveAuthorInvite', () => {
-  test.prop([fc.uuid(), fc.authorInvite()])('when the key contains an author invite', async (uuid, authorInvite) => {
-    const store = new Keyv()
-    await store.set(uuid, authorInvite)
-
-    const actual = await _.saveAuthorInvite(
-      uuid,
-      authorInvite,
-    )({
-      authorInviteStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(uuid)).toStrictEqual(authorInvite)
-  })
-
-  test.prop([fc.uuid(), fc.anything(), fc.authorInvite()])(
-    'when the key already contains something other than an author invite',
-    async (uuid, value, authorInvite) => {
+  it.effect.prop('when the key contains an author invite', [fc.uuid(), fc.authorInvite()], ([uuid, authorInvite]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(uuid, value)
+      yield* Effect.promise(() => store.set(uuid, authorInvite))
 
-      const actual = await _.saveAuthorInvite(
-        uuid,
-        authorInvite,
-      )({
-        authorInviteStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveAuthorInvite(
+          uuid,
+          authorInvite,
+        )({
+          authorInviteStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(uuid)).toStrictEqual(authorInvite)
-    },
+      expect(yield* Effect.promise(() => store.get(uuid))).toStrictEqual(authorInvite)
+    }),
   )
 
-  test.prop([fc.uuid(), fc.authorInvite()])('when the key is not set', async (uuid, authorInvite) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than an author invite',
+    [fc.uuid(), fc.anything(), fc.authorInvite()],
+    ([uuid, value, authorInvite]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(uuid, value))
 
-    const actual = await _.saveAuthorInvite(
-      uuid,
-      authorInvite,
-    )({
-      authorInviteStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveAuthorInvite(
+            uuid,
+            authorInvite,
+          )({
+            authorInviteStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(uuid)).toStrictEqual(authorInvite)
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(uuid))).toStrictEqual(authorInvite)
+      }),
+  )
 
-  test.prop([fc.uuid(), fc.authorInvite(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (uuid, authorInvite, error) => {
+  it.effect.prop('when the key is not set', [fc.uuid(), fc.authorInvite()], ([uuid, authorInvite]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveAuthorInvite(
-        uuid,
-        authorInvite,
-      )({
-        authorInviteStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveAuthorInvite(
+          uuid,
+          authorInvite,
+        )({
+          authorInviteStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(uuid))).toStrictEqual(authorInvite)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.uuid(), fc.authorInvite(), fc.anything()],
+    ([uuid, authorInvite, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveAuthorInvite(
+            uuid,
+            authorInvite,
+          )({
+            authorInviteStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteCareerStage', () => {
-  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
-    const store = new Keyv()
-    await store.set(orcid, careerStage)
-
-    const actual = await _.deleteCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than career stage',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains a career stage', [fc.orcidId(), fc.careerStage()], ([orcid, careerStage]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, careerStage))
 
-      const actual = await _.deleteCareerStage(orcid)({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than career stage',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.deleteCareerStage(orcid)({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getCareerStage', () => {
-  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
-    const store = new Keyv()
-    await store.set(orcid, careerStage)
-
-    const actual = await _.getCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(careerStage))
-  })
-
-  test.prop([fc.orcidId(), fc.careerStage().map(Struct.get('value'))])(
-    'when the key contains a career stage as a string',
-    async (orcid, careerStage) => {
+  it.effect.prop('when the key contains a career stage', [fc.orcidId(), fc.careerStage()], ([orcid, careerStage]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, careerStage)
+      yield* Effect.promise(() => store.set(orcid, careerStage))
 
-      const actual = await _.getCareerStage(orcid)({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.getCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.right({ value: careerStage, visibility: 'restricted' }))
-    },
+      expect(actual).toStrictEqual(E.right(careerStage))
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than career stage',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+  it.effect.prop(
+    'when the key contains a career stage as a string',
+    [fc.orcidId(), fc.careerStage().map(Struct.get('value'))],
+    ([orcid, careerStage]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, careerStage))
 
-      const actual = await _.getCareerStage(orcid)({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getCareerStage(orcid)({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.right({ value: careerStage, visibility: 'restricted' }))
+      }),
+  )
+
+  it.effect.prop(
+    'when the key contains something other than career stage',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
+
+        const actual = yield* Effect.promise(
+          _.getCareerStage(orcid)({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
+
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* Effect.promise(
+        _.getCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getCareerStage(orcid)({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
-
-    const actual = await _.getCareerStage(orcid)({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getAllCareerStages', () => {
-  test.prop([fc.array(fc.tuple(fc.orcidId(), fc.careerStage()))])(
+  it.effect.prop(
     'when there are career stages',
-    async careerStages => {
-      const store = new Keyv()
-      await Promise.all(careerStages.map(([orcid, careerStage]) => store.set(orcid, careerStage)))
+    [fc.array(fc.tuple(fc.orcidId(), fc.careerStage()))],
+    ([careerStages]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() =>
+          Promise.all(careerStages.map(([orcid, careerStage]) => store.set(orcid, careerStage))),
+        )
 
-      const actual = await _.getAllCareerStages({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getAllCareerStages({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(Object.fromEntries(careerStages)))
-    },
+        expect(actual).toStrictEqual(E.right(Object.fromEntries(careerStages)))
+      }),
   )
 
-  test.prop([fc.anything()])('when the store cannot be accessed', async error => {
-    const store = new Keyv()
-    store.iterator = async function* iterator() {
-      yield await Promise.reject(error)
-    }
+  it.effect.prop('when the store cannot be accessed', [fc.anything()], error =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.iterator = async function* iterator() {
+        yield await Promise.reject(error)
+      }
 
-    const actual = await _.getAllCareerStages({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getAllCareerStages({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveCareerStage', () => {
-  test.prop([fc.orcidId(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
-    const store = new Keyv()
-    await store.set(orcid, careerStage)
-
-    const actual = await _.saveCareerStage(
-      orcid,
-      careerStage,
-    )({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(careerStage)
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.careerStage()])(
-    'when the key already contains something other than career stage',
-    async (orcid, value, careerStage) => {
+  it.effect.prop('when the key contains a career stage', [fc.orcidId(), fc.careerStage()], ([orcid, careerStage]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, careerStage))
 
-      const actual = await _.saveCareerStage(
-        orcid,
-        careerStage,
-      )({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveCareerStage(
+          orcid,
+          careerStage,
+        )({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(careerStage)
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(careerStage)
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.careerStage()])('when the key is not set', async (orcid, careerStage) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than career stage',
+    [fc.orcidId(), fc.anything(), fc.careerStage()],
+    ([orcid, value, careerStage]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveCareerStage(
-      orcid,
-      careerStage,
-    )({
-      careerStageStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveCareerStage(
+            orcid,
+            careerStage,
+          )({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(careerStage)
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(careerStage)
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.careerStage(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, careerStage, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.careerStage()], ([orcid, careerStage]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveCareerStage(
-        orcid,
-        careerStage,
-      )({
-        careerStageStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveCareerStage(
+          orcid,
+          careerStage,
+        )({
+          careerStageStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(careerStage)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.careerStage(), fc.anything()],
+    ([orcid, careerStage, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveCareerStage(
+            orcid,
+            careerStage,
+          )({
+            careerStageStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('isOpenForRequests', () => {
-  test.prop([fc.orcidId(), fc.isOpenForRequests()])(
+  it.effect.prop(
     'when the key contains open for requests',
-    async (orcid, isOpenForRequests) => {
-      const store = new Keyv()
-      await store.set(orcid, isOpenForRequests)
+    [fc.orcidId(), fc.isOpenForRequests()],
+    ([orcid, isOpenForRequests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, isOpenForRequests))
 
-      const actual = await _.isOpenForRequests(orcid)({
-        isOpenForRequestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.isOpenForRequests(orcid)({
+            isOpenForRequestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(isOpenForRequests))
-    },
+        expect(actual).toStrictEqual(E.right(isOpenForRequests))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.oneof(fc.constant(''), fc.anything())])(
+  it.effect.prop(
     'when the key contains something other than open for requests',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.oneof(fc.constant(''), fc.anything())],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.isOpenForRequests(orcid)({
-        isOpenForRequestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.isOpenForRequests(orcid)({
+            isOpenForRequestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
+
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* Effect.promise(
+        _.isOpenForRequests(orcid)({
+          isOpenForRequestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.isOpenForRequests(orcid)({
-      isOpenForRequestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.isOpenForRequests(orcid)({
+          isOpenForRequestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
-
-    const actual = await _.isOpenForRequests(orcid)({
-      isOpenForRequestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveOpenForRequests', () => {
-  test.prop([fc.orcidId(), fc.isOpenForRequests()])(
+  it.effect.prop(
     'when the key contains open for requests',
-    async (orcid, isOpenForRequests) => {
-      const store = new Keyv()
-      await store.set(orcid, isOpenForRequests)
+    [fc.orcidId(), fc.isOpenForRequests()],
+    ([orcid, isOpenForRequests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, isOpenForRequests))
 
-      const actual = await _.saveOpenForRequests(
-        orcid,
-        isOpenForRequests,
-      )({
-        isOpenForRequestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveOpenForRequests(
+            orcid,
+            isOpenForRequests,
+          )({
+            isOpenForRequestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(isOpenForRequests)
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything(), fc.isOpenForRequests()])(
+  it.effect.prop(
     'when the key already contains something other than open for requests',
-    async (orcid, value, isOpenForRequests) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything(), fc.isOpenForRequests()],
+    ([orcid, value, isOpenForRequests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.saveOpenForRequests(
-        orcid,
-        isOpenForRequests,
-      )({
-        isOpenForRequestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveOpenForRequests(
+            orcid,
+            isOpenForRequests,
+          )({
+            isOpenForRequestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(isOpenForRequests)
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.isOpenForRequests()])('when the key is not set', async (orcid, isOpenForRequests) => {
-    const store = new Keyv()
-
-    const actual = await _.saveOpenForRequests(
-      orcid,
-      isOpenForRequests,
-    )({
-      isOpenForRequestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
-  })
-
-  test.prop([fc.orcidId(), fc.isOpenForRequests(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, isOpenForRequests, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.isOpenForRequests()], ([orcid, isOpenForRequests]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveOpenForRequests(
-        orcid,
-        isOpenForRequests,
-      )({
-        isOpenForRequestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveOpenForRequests(
+          orcid,
+          isOpenForRequests,
+        )({
+          isOpenForRequestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(isOpenForRequests)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.isOpenForRequests(), fc.anything()],
+    ([orcid, isOpenForRequests, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveOpenForRequests(
+            orcid,
+            isOpenForRequests,
+          )({
+            isOpenForRequestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteResearchInterests', () => {
-  test.prop([fc.orcidId(), fc.researchInterests()])(
+  it.effect.prop(
     'when the key contains research interests',
-    async (orcid, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, researchInterests)
+    [fc.orcidId(), fc.researchInterests()],
+    ([orcid, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, researchInterests))
 
-      const actual = await _.deleteResearchInterests(orcid)({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.deleteResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything()])(
+  it.effect.prop(
     'when the key contains something other than research interests',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.deleteResearchInterests(orcid)({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.deleteResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteResearchInterests(orcid)({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteResearchInterests(orcid)({
+          researchInterestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteResearchInterests(orcid)({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteResearchInterests(orcid)({
+          researchInterestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getResearchInterests', () => {
-  test.prop([fc.orcidId(), fc.researchInterests()])(
+  it.effect.prop(
     'when the key contains research interests',
-    async (orcid, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, researchInterests)
+    [fc.orcidId(), fc.researchInterests()],
+    ([orcid, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, researchInterests))
 
-      const actual = await _.getResearchInterests(orcid)({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(researchInterests))
-    },
+        expect(actual).toStrictEqual(E.right(researchInterests))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.nonEmptyString()])(
+  it.effect.prop(
     'when the key contains research interests without a visibility level',
-    async (orcid, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, { value: researchInterests })
+    [fc.orcidId(), fc.nonEmptyString()],
+    ([orcid, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, { value: researchInterests }))
 
-      const actual = await _.getResearchInterests(orcid)({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
-    },
+        expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.nonEmptyString()])(
+  it.effect.prop(
     'when the key contains research interests as a string',
-    async (orcid, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, researchInterests)
+    [fc.orcidId(), fc.nonEmptyString()],
+    ([orcid, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, researchInterests))
 
-      const actual = await _.getResearchInterests(orcid)({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
-    },
+        expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
+      }),
   )
 
-  test.prop([
-    fc.orcidId(),
-    fc.oneof(
-      fc.constant(''),
-      fc.anything().filter(value => typeof value !== 'string'),
-    ),
-  ])('when the key contains something other than research interests', async (orcid, value) => {
-    const store = new Keyv()
-    await store.set(orcid, value)
+  it.effect.prop(
+    'when the key contains something other than research interests',
+    [
+      fc.orcidId(),
+      fc.oneof(
+        fc.constant(''),
+        fc.anything().filter(value => typeof value !== 'string'),
+      ),
+    ],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.getResearchInterests(orcid)({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getResearchInterests(orcid)({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getResearchInterests(orcid)({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getResearchInterests(orcid)({
+          researchInterestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getResearchInterests(orcid)({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getResearchInterests(orcid)({
+          researchInterestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveResearchInterests', () => {
-  test.prop([fc.orcidId(), fc.researchInterests()])(
+  it.effect.prop(
     'when the key contains research interests',
-    async (orcid, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, researchInterests)
+    [fc.orcidId(), fc.researchInterests()],
+    ([orcid, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, researchInterests))
 
-      const actual = await _.saveResearchInterests(
-        orcid,
-        researchInterests,
-      )({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveResearchInterests(
+            orcid,
+            researchInterests,
+          )({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(researchInterests)
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(researchInterests)
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything(), fc.researchInterests()])(
+  it.effect.prop(
     'when the key already contains something other than research interests',
-    async (orcid, value, researchInterests) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything(), fc.researchInterests()],
+    ([orcid, value, researchInterests]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.saveResearchInterests(
-        orcid,
-        researchInterests,
-      )({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveResearchInterests(
+            orcid,
+            researchInterests,
+          )({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(researchInterests)
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(researchInterests)
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.researchInterests()])('when the key is not set', async (orcid, researchInterests) => {
-    const store = new Keyv()
-
-    const actual = await _.saveResearchInterests(
-      orcid,
-      researchInterests,
-    )({
-      researchInterestsStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(researchInterests)
-  })
-
-  test.prop([fc.orcidId(), fc.researchInterests(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, researchInterests, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.researchInterests()], ([orcid, researchInterests]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveResearchInterests(
-        orcid,
-        researchInterests,
-      )({
-        researchInterestsStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveResearchInterests(
+          orcid,
+          researchInterests,
+        )({
+          researchInterestsStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(researchInterests)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.researchInterests(), fc.anything()],
+    ([orcid, researchInterests, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveResearchInterests(
+            orcid,
+            researchInterests,
+          )({
+            researchInterestsStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteOrcidToken', () => {
-  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
-    const store = new Keyv()
-    await store.set(orcid, OrcidTokenC.encode(orcidToken))
-
-    const actual = await _.deleteOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than an ORCID token',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains an ORCID token', [fc.orcidId(), fc.orcidToken()], ([orcid, orcidToken]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, OrcidTokenC.encode(orcidToken)))
 
-      const actual = await _.deleteOrcidToken(orcid)({
-        orcidTokenStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than an ORCID token',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.deleteOrcidToken(orcid)({
+            orcidTokenStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getOrcidToken', () => {
-  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, getOrcidToken) => {
-    const store = new Keyv()
-    await store.set(orcid, OrcidTokenC.encode(getOrcidToken))
-
-    const actual = await _.getOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(getOrcidToken))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than an ORCID token',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains an ORCID token', [fc.orcidId(), fc.orcidToken()], ([orcid, getOrcidToken]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, OrcidTokenC.encode(getOrcidToken)))
 
-      const actual = await _.getOrcidToken(orcid)({
-        orcidTokenStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.getOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('not-found'))
-    },
+      expect(actual).toStrictEqual(E.right(getOrcidToken))
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than an ORCID token',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.getOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getOrcidToken(orcid)({
+            orcidTokenStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getOrcidToken(orcid)({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.getOrcidToken(orcid)({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveOrcidToken', () => {
-  test.prop([fc.orcidId(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
-    const store = new Keyv()
-    await store.set(orcid, OrcidTokenC.encode(orcidToken))
-
-    const actual = await _.saveOrcidToken(
-      orcid,
-      orcidToken,
-    )({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.orcidToken()])(
-    'when the key already contains something other than an ORCID token',
-    async (orcid, value, orcidToken) => {
+  it.effect.prop('when the key contains an ORCID token', [fc.orcidId(), fc.orcidToken()], ([orcid, orcidToken]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, OrcidTokenC.encode(orcidToken)))
 
-      const actual = await _.saveOrcidToken(
-        orcid,
-        orcidToken,
-      )({
-        orcidTokenStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveOrcidToken(
+          orcid,
+          orcidToken,
+        )({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(OrcidTokenC.encode(orcidToken))
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.orcidToken()])('when the key is not set', async (orcid, orcidToken) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than an ORCID token',
+    [fc.orcidId(), fc.anything(), fc.orcidToken()],
+    ([orcid, value, orcidToken]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveOrcidToken(
-      orcid,
-      orcidToken,
-    )({
-      orcidTokenStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveOrcidToken(
+            orcid,
+            orcidToken,
+          )({
+            orcidTokenStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(OrcidTokenC.encode(orcidToken))
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.orcidToken(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, orcidToken, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.orcidToken()], ([orcid, orcidToken]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveOrcidToken(
-        orcid,
-        orcidToken,
-      )({
-        orcidTokenStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveOrcidToken(
+          orcid,
+          orcidToken,
+        )({
+          orcidTokenStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(OrcidTokenC.encode(orcidToken))
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.orcidToken(), fc.anything()],
+    ([orcid, orcidToken, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveOrcidToken(
+            orcid,
+            orcidToken,
+          )({
+            orcidTokenStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteSlackUserId', () => {
-  test.prop([fc.orcidId(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
-    const store = new Keyv()
-    await store.set(orcid, SlackUserIdC.encode(slackUserId))
-
-    const actual = await _.deleteSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than a Slack user ID',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains a Slack user ID', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, SlackUserIdC.encode(slackUserId)))
 
-      const actual = await _.deleteSlackUserId(orcid)({
-        slackUserIdStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than a Slack user ID',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.deleteSlackUserId(orcid)({
+            slackUserIdStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getSlackUserId', () => {
-  test.prop([fc.orcidId(), fc.slackUserId()])(
-    'when the key contains a Slack user ID',
-    async (orcid, getSlackUserId) => {
+  it.effect.prop('when the key contains a Slack user ID', [fc.orcidId(), fc.slackUserId()], ([orcid, getSlackUserId]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, SlackUserIdC.encode(getSlackUserId))
+      yield* Effect.promise(() => store.set(orcid, SlackUserIdC.encode(getSlackUserId)))
 
-      const actual = await _.getSlackUserId(orcid)({
-        slackUserIdStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.getSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(SlackUserIdC.decode(SlackUserIdC.encode(getSlackUserId)))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.anything()])(
+  it.effect.prop(
     'when the key contains something other than a Slack user ID',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.getSlackUserId(orcid)({
-        slackUserIdStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getSlackUserId(orcid)({
+            slackUserIdStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
+
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* Effect.promise(
+        _.getSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getSlackUserId(orcid)({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
-
-    const actual = await _.getSlackUserId(orcid)({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveSlackUserId', () => {
-  test.prop([fc.orcidId(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
-    const store = new Keyv()
-    await store.set(orcid, SlackUserIdC.encode(slackUserId))
-
-    const actual = await _.saveSlackUserId(
-      orcid,
-      slackUserId,
-    )({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.slackUserId()])(
-    'when the key already contains something other than a Slack user ID',
-    async (orcid, value, slackUserId) => {
+  it.effect.prop('when the key contains a Slack user ID', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, SlackUserIdC.encode(slackUserId)))
 
-      const actual = await _.saveSlackUserId(
-        orcid,
-        slackUserId,
-      )({
-        slackUserIdStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveSlackUserId(
+          orcid,
+          slackUserId,
+        )({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(SlackUserIdC.encode(slackUserId))
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.slackUserId()])('when the key is not set', async (orcid, slackUserId) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than a Slack user ID',
+    [fc.orcidId(), fc.anything(), fc.slackUserId()],
+    ([orcid, value, slackUserId]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveSlackUserId(
-      orcid,
-      slackUserId,
-    )({
-      slackUserIdStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveSlackUserId(
+            orcid,
+            slackUserId,
+          )({
+            slackUserIdStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(SlackUserIdC.encode(slackUserId))
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.slackUserId(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, slackUserId, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.slackUserId()], ([orcid, slackUserId]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveSlackUserId(
-        orcid,
-        slackUserId,
-      )({
-        slackUserIdStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveSlackUserId(
+          orcid,
+          slackUserId,
+        )({
+          slackUserIdStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(SlackUserIdC.encode(slackUserId))
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.slackUserId(), fc.anything()],
+    ([orcid, slackUserId, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveSlackUserId(
+            orcid,
+            slackUserId,
+          )({
+            slackUserIdStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteLocation', () => {
-  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
-    const store = new Keyv()
-    await store.set(orcid, location)
-
-    const actual = await _.deleteLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than a location',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains a location', [fc.orcidId(), fc.location()], ([orcid, location]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, location))
 
-      const actual = await _.deleteLocation(orcid)({
-        locationStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than a location',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.deleteLocation(orcid)({
+            locationStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getLocation', () => {
-  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
-    const store = new Keyv()
-    await store.set(orcid, location)
+  it.effect.prop('when the key contains a location', [fc.orcidId(), fc.location()], ([orcid, location]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      yield* Effect.promise(() => store.set(orcid, location))
 
-    const actual = await _.getLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right(location))
-  })
+      expect(actual).toStrictEqual(E.right(location))
+    }),
+  )
 
-  test.prop([
-    fc.orcidId(),
-    fc.oneof(
-      fc.constant(''),
-      fc.anything().filter(value => typeof value !== 'string'),
-    ),
-  ])('when the key contains something other than a location', async (orcid, value) => {
-    const store = new Keyv()
-    await store.set(orcid, value)
+  it.effect.prop(
+    'when the key contains something other than a location',
+    [
+      fc.orcidId(),
+      fc.oneof(
+        fc.constant(''),
+        fc.anything().filter(value => typeof value !== 'string'),
+      ),
+    ],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.getLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getLocation(orcid)({
+            locationStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getLocation(orcid)({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLocation(orcid)({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getAllLocations', () => {
-  test.prop([fc.array(fc.tuple(fc.orcidId(), fc.location()))])('when there are locations', async locations => {
-    const store = new Keyv()
-    await Promise.all(locations.map(([orcid, location]) => store.set(orcid, location)))
+  it.effect.prop('when there are locations', [fc.array(fc.tuple(fc.orcidId(), fc.location()))], ([locations]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      yield* Effect.promise(() => Promise.all(locations.map(([orcid, location]) => store.set(orcid, location))))
 
-    const actual = await _.getAllLocations({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getAllLocations({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right(Object.fromEntries(locations)))
-  })
+      expect(actual).toStrictEqual(E.right(Object.fromEntries(locations)))
+    }),
+  )
 
-  test.prop([fc.anything()])('when the store cannot be accessed', async error => {
-    const store = new Keyv()
-    store.iterator = async function* iterator() {
-      yield await Promise.reject(error)
-    }
+  it.effect.prop('when the store cannot be accessed', [fc.anything()], error =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.iterator = async function* iterator() {
+        yield await Promise.reject(error)
+      }
 
-    const actual = await _.getAllLocations({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getAllLocations({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveLocation', () => {
-  test.prop([fc.orcidId(), fc.location()])('when the key contains a location', async (orcid, location) => {
-    const store = new Keyv()
-    await store.set(orcid, location)
-
-    const actual = await _.saveLocation(
-      orcid,
-      location,
-    )({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(location)
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.location()])(
-    'when the key already contains something other than a location',
-    async (orcid, value, location) => {
+  it.effect.prop('when the key contains a location', [fc.orcidId(), fc.location()], ([orcid, location]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, location))
 
-      const actual = await _.saveLocation(
-        orcid,
-        location,
-      )({
-        locationStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveLocation(
+          orcid,
+          location,
+        )({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(location)
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(location)
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.location()])('when the key is not set', async (orcid, location) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than a location',
+    [fc.orcidId(), fc.anything(), fc.location()],
+    ([orcid, value, location]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveLocation(
-      orcid,
-      location,
-    )({
-      locationStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveLocation(
+            orcid,
+            location,
+          )({
+            locationStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(location)
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(location)
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.location(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, location, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.location()], ([orcid, location]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveLocation(
-        orcid,
-        location,
-      )({
-        locationStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveLocation(
+          orcid,
+          location,
+        )({
+          locationStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(location)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.location(), fc.anything()],
+    ([orcid, location, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveLocation(
+            orcid,
+            location,
+          )({
+            locationStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteLanguages', () => {
-  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
-    const store = new Keyv()
-    await store.set(orcid, languages)
-
-    const actual = await _.deleteLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than languages',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains languages', [fc.orcidId(), fc.languages()], ([orcid, languages]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, languages))
 
-      const actual = await _.deleteLanguages(orcid)({
-        languagesStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than languages',
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.deleteLanguages(orcid)({
+            languagesStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('getLanguages', () => {
-  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
-    const store = new Keyv()
-    await store.set(orcid, languages)
+  it.effect.prop('when the key contains languages', [fc.orcidId(), fc.languages()], ([orcid, languages]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      yield* Effect.promise(() => store.set(orcid, languages))
 
-    const actual = await _.getLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right(languages))
-  })
+      expect(actual).toStrictEqual(E.right(languages))
+    }),
+  )
 
-  test.prop([
-    fc.orcidId(),
-    fc.oneof(
-      fc.constant(''),
-      fc.anything().filter(value => typeof value !== 'string'),
-    ),
-  ])('when the key contains something other than languages', async (orcid, value) => {
-    const store = new Keyv()
-    await store.set(orcid, value)
+  it.effect.prop(
+    'when the key contains something other than languages',
+    [
+      fc.orcidId(),
+      fc.oneof(
+        fc.constant(''),
+        fc.anything().filter(value => typeof value !== 'string'),
+      ),
+    ],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.getLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getLanguages(orcid)({
+            languagesStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getLanguages(orcid)({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getLanguages(orcid)({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveLanguages', () => {
-  test.prop([fc.orcidId(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
-    const store = new Keyv()
-    await store.set(orcid, languages)
-
-    const actual = await _.saveLanguages(
-      orcid,
-      languages,
-    )({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(languages)
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.languages()])(
-    'when the key already contains something other than languages',
-    async (orcid, value, languages) => {
+  it.effect.prop('when the key contains languages', [fc.orcidId(), fc.languages()], ([orcid, languages]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, languages))
 
-      const actual = await _.saveLanguages(
-        orcid,
-        languages,
-      )({
-        languagesStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveLanguages(
+          orcid,
+          languages,
+        )({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(languages)
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(languages)
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.languages()])('when the key is not set', async (orcid, languages) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than languages',
+    [fc.orcidId(), fc.anything(), fc.languages()],
+    ([orcid, value, languages]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveLanguages(
-      orcid,
-      languages,
-    )({
-      languagesStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveLanguages(
+            orcid,
+            languages,
+          )({
+            languagesStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(languages)
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(languages)
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.languages(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, languages, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.languages()], ([orcid, languages]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveLanguages(
-        orcid,
-        languages,
-      )({
-        languagesStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveLanguages(
+          orcid,
+          languages,
+        )({
+          languagesStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(languages)
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.languages(), fc.anything()],
+    ([orcid, languages, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveLanguages(
+            orcid,
+            languages,
+          )({
+            languagesStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('getContactEmailAddress', () => {
-  test.prop([fc.orcidId(), fc.contactEmailAddress()])(
+  it.effect.prop(
     'when the key contains an email address',
-    async (orcid, emailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
+    [fc.orcidId(), fc.contactEmailAddress()],
+    ([orcid, emailAddress]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, ContactEmailAddressC.encode(emailAddress)))
 
-      const actual = await _.getContactEmailAddress(orcid)({
-        contactEmailAddressStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getContactEmailAddress(orcid)({
+            contactEmailAddressStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(emailAddress))
-    },
+        expect(actual).toStrictEqual(E.right(emailAddress))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything()])(
+  it.effect.prop(
     'when the key contains something other than an email address',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.getContactEmailAddress(orcid)({
-        contactEmailAddressStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getContactEmailAddress(orcid)({
+            contactEmailAddressStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
+
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* Effect.promise(
+        _.getContactEmailAddress(orcid)({
+          contactEmailAddressStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('not-found'))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getContactEmailAddress(orcid)({
-      contactEmailAddressStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getContactEmailAddress(orcid)({
+          contactEmailAddressStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
-
-    const actual = await _.getContactEmailAddress(orcid)({
-      contactEmailAddressStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveContactEmailAddress', () => {
-  test.prop([fc.orcidId(), fc.contactEmailAddress()])(
+  it.effect.prop(
     'when the key contains an email address',
-    async (orcid, emailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
+    [fc.orcidId(), fc.contactEmailAddress()],
+    ([orcid, emailAddress]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, ContactEmailAddressC.encode(emailAddress)))
 
-      const actual = await _.saveContactEmailAddress(
-        orcid,
-        emailAddress,
-      )({
-        contactEmailAddressStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveContactEmailAddress(
+            orcid,
+            emailAddress,
+          )({
+            contactEmailAddressStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything(), fc.contactEmailAddress()])(
+  it.effect.prop(
     'when the key already contains something other than an email address',
-    async (orcid, value, emailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything(), fc.contactEmailAddress()],
+    ([orcid, value, emailAddress]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.saveContactEmailAddress(
-        orcid,
-        emailAddress,
-      )({
-        contactEmailAddressStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveContactEmailAddress(
+            orcid,
+            emailAddress,
+          )({
+            contactEmailAddressStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.contactEmailAddress()])('when the key is not set', async (orcid, emailAddress) => {
-    const store = new Keyv()
-
-    const actual = await _.saveContactEmailAddress(
-      orcid,
-      emailAddress,
-    )({
-      contactEmailAddressStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
-  })
-
-  test.prop([fc.orcidId(), fc.contactEmailAddress(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, emailAddress, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.contactEmailAddress()], ([orcid, emailAddress]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveContactEmailAddress(
-        orcid,
-        emailAddress,
-      )({
-        contactEmailAddressStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveContactEmailAddress(
+          orcid,
+          emailAddress,
+        )({
+          contactEmailAddressStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.contactEmailAddress(), fc.anything()],
+    ([orcid, emailAddress, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveContactEmailAddress(
+            orcid,
+            emailAddress,
+          )({
+            contactEmailAddressStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('getUserOnboarding', () => {
-  test.prop([fc.orcidId(), fc.userOnboarding()])(
+  it.effect.prop(
     'when the key contains user onboarding details',
-    async (orcid, userOnboarding) => {
-      const store = new Keyv()
-      await store.set(orcid, UserOnboardingC.encode(userOnboarding))
+    [fc.orcidId(), fc.userOnboarding()],
+    ([orcid, userOnboarding]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, UserOnboardingC.encode(userOnboarding)))
 
-      const actual = await _.getUserOnboarding(orcid)({
-        userOnboardingStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getUserOnboarding(orcid)({
+            userOnboardingStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(userOnboarding))
-    },
+        expect(actual).toStrictEqual(E.right(userOnboarding))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything()])(
+  it.effect.prop(
     'when the key contains something other than user onboarding details',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything()],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.getUserOnboarding(orcid)({
-        userOnboardingStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.getUserOnboarding(orcid)({
+            userOnboardingStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
+      }),
+  )
+
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+
+      const actual = yield* Effect.promise(
+        _.getUserOnboarding(orcid)({
+          userOnboardingStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
-    },
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getUserOnboarding(orcid)({
-      userOnboardingStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getUserOnboarding(orcid)({
+          userOnboardingStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
-
-    const actual = await _.getUserOnboarding(orcid)({
-      userOnboardingStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveUserOnboarding', () => {
-  test.prop([fc.orcidId(), fc.userOnboarding()])(
+  it.effect.prop(
     'when the key contains user onboarding details',
-    async (orcid, userOnboarding) => {
-      const store = new Keyv()
-      await store.set(orcid, UserOnboardingC.encode(userOnboarding))
+    [fc.orcidId(), fc.userOnboarding()],
+    ([orcid, userOnboarding]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, UserOnboardingC.encode(userOnboarding)))
 
-      const actual = await _.saveUserOnboarding(
-        orcid,
-        userOnboarding,
-      )({
-        userOnboardingStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveUserOnboarding(
+            orcid,
+            userOnboarding,
+          )({
+            userOnboardingStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.anything(), fc.userOnboarding()])(
+  it.effect.prop(
     'when the key already contains something other than user onboarding details',
-    async (orcid, value, userOnboarding) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
+    [fc.orcidId(), fc.anything(), fc.userOnboarding()],
+    ([orcid, value, userOnboarding]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-      const actual = await _.saveUserOnboarding(
-        orcid,
-        userOnboarding,
-      )({
-        userOnboardingStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.saveUserOnboarding(
+            orcid,
+            userOnboarding,
+          )({
+            userOnboardingStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+      }),
   )
 
-  test.prop([fc.orcidId(), fc.userOnboarding()])('when the key is not set', async (orcid, userOnboarding) => {
-    const store = new Keyv()
-
-    const actual = await _.saveUserOnboarding(
-      orcid,
-      userOnboarding,
-    )({
-      userOnboardingStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
-  })
-
-  test.prop([fc.orcidId(), fc.userOnboarding(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, userOnboarding, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.userOnboarding()], ([orcid, userOnboarding]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveUserOnboarding(
-        orcid,
-        userOnboarding,
-      )({
-        userOnboardingStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveUserOnboarding(
+          orcid,
+          userOnboarding,
+        )({
+          userOnboardingStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.userOnboarding(), fc.anything()],
+    ([orcid, userOnboarding, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveUserOnboarding(
+            orcid,
+            userOnboarding,
+          )({
+            userOnboardingStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('getAvatar', () => {
-  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
-    const store = new Keyv()
-    await store.set(orcid, avatar)
-
-    const actual = await _.getAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(avatar))
-  })
-
-  test.prop([fc.orcidId(), fc.anything().filter(value => typeof value !== 'string' || !isNonEmptyString(value))])(
-    'when the key contains something other than an avatar',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains an avatar', [fc.orcidId(), fc.nonEmptyString()], ([orcid, avatar]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, avatar))
 
-      const actual = await _.getAvatar(orcid)({
-        avatarStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.getAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('not-found'))
-    },
+      expect(actual).toStrictEqual(E.right(avatar))
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not found', async orcid => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key contains something other than an avatar',
+    [fc.orcidId(), fc.anything().filter(value => typeof value !== 'string' || !isNonEmptyString(value))],
+    ([orcid, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.getAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.getAvatar(orcid)({
+            avatarStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+        expect(actual).toStrictEqual(E.left('not-found'))
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  it.effect.prop('when the key is not found', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.getAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.getAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.getAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('saveAvatar', () => {
-  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
-    const store = new Keyv()
-    await store.set(orcid, NonEmptyStringC.encode(avatar))
-
-    const actual = await _.saveAvatar(
-      orcid,
-      avatar,
-    )({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
-  })
-
-  test.prop([fc.orcidId(), fc.anything(), fc.nonEmptyString()])(
-    'when the key already contains something other than an avatar',
-    async (orcid, value, avatar) => {
+  it.effect.prop('when the key contains an avatar', [fc.orcidId(), fc.nonEmptyString()], ([orcid, avatar]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, NonEmptyStringC.encode(avatar)))
 
-      const actual = await _.saveAvatar(
-        orcid,
-        avatar,
-      )({
-        avatarStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.saveAvatar(
+          orcid,
+          avatar,
+        )({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
-    },
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(NonEmptyStringC.encode(avatar))
+    }),
   )
 
-  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key is not set', async (orcid, avatar) => {
-    const store = new Keyv()
+  it.effect.prop(
+    'when the key already contains something other than an avatar',
+    [fc.orcidId(), fc.anything(), fc.nonEmptyString()],
+    ([orcid, value, avatar]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.saveAvatar(
-      orcid,
-      avatar,
-    )({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.saveAvatar(
+            orcid,
+            avatar,
+          )({
+            avatarStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
-  })
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(NonEmptyStringC.encode(avatar))
+      }),
+  )
 
-  test.prop([fc.orcidId(), fc.nonEmptyString(), fc.anything()])(
-    'when the key cannot be accessed',
-    async (orcid, avatar, error) => {
+  it.effect.prop('when the key is not set', [fc.orcidId(), fc.nonEmptyString()], ([orcid, avatar]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.saveAvatar(
-        orcid,
-        avatar,
-      )({ avatarStore: store, clock: SystemClock, logger: () => IO.of(undefined) })()
+      const actual = yield* Effect.promise(
+        _.saveAvatar(
+          orcid,
+          avatar,
+        )({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.get(orcid))).toStrictEqual(NonEmptyStringC.encode(avatar))
+    }),
+  )
+
+  it.effect.prop(
+    'when the key cannot be accessed',
+    [fc.orcidId(), fc.nonEmptyString(), fc.anything()],
+    ([orcid, avatar, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.saveAvatar(orcid, avatar)({ avatarStore: store, clock: SystemClock, logger: () => IO.of(undefined) }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('deleteAvatar', () => {
-  test.prop([fc.orcidId(), fc.nonEmptyString()])('when the key contains a avatar', async (orcid, avatar) => {
-    const store = new Keyv()
-    await store.set(orcid, avatar)
-
-    const actual = await _.deleteAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcidId(), fc.anything()])(
-    'when the key contains something other than avatar',
-    async (orcid, value) => {
+  it.effect.prop('when the key contains a avatar', [fc.orcidId(), fc.nonEmptyString()], ([orcid, avatar]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(orcid, value)
+      yield* Effect.promise(() => store.set(orcid, avatar))
 
-      const actual = await _.deleteAvatar(orcid)({
-        avatarStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.deleteAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
   )
 
-  test.prop([fc.orcidId()])('when the key is not set', async orcid => {
-    const store = new Keyv()
+  it.effect.prop('when the key contains something other than avatar', [fc.orcidId(), fc.anything()], ([orcid, value]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      yield* Effect.promise(() => store.set(orcid, value))
 
-    const actual = await _.deleteAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
 
-  test.prop([fc.orcidId(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
+  it.effect.prop('when the key is not set', [fc.orcidId()], ([orcid]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
 
-    const actual = await _.deleteAvatar(orcid)({
-      avatarStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = yield* Effect.promise(
+        _.deleteAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(yield* Effect.promise(() => store.has(orcid))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop('when the key cannot be accessed', [fc.orcidId(), fc.anything()], ([orcid, error]) =>
+    Effect.gen(function* () {
+      const store = new Keyv()
+      store.delete = () => Promise.reject(error)
+
+      const actual = yield* Effect.promise(
+        _.deleteAvatar(orcid)({
+          avatarStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    }),
+  )
 })
 
 describe('addToSession', () => {
-  test.prop([fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()])(
+  it.effect.prop(
     'when there is a session',
-    async (sessionId, session, key, value) => {
-      const store = new Keyv()
-      await store.set(sessionId, session)
+    [fc.string(), fc.dictionary(fc.lorem(), fc.string()), fc.lorem(), fc.string()],
+    ([sessionId, session, key, value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(sessionId, session))
 
-      const actual = await _.addToSession(
-        sessionId,
-        key,
-        value,
-      )({
-        sessionStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+        const actual = yield* Effect.promise(
+          _.addToSession(
+            sessionId,
+            key,
+            value,
+          )({
+            sessionStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(sessionId)).toStrictEqual({ ...session, [key]: value })
-    },
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual({ ...session, [key]: value })
+      }),
   )
 
-  test.prop([fc.string(), fc.lorem(), fc.string()])('when the session is not set', async (sessionId, key, value) => {
-    const store = new Keyv()
-
-    const actual = await _.addToSession(
-      sessionId,
-      key,
-      value,
-    )({
-      sessionStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(await store.has(sessionId)).toBeFalsy()
-  })
-
-  test.prop([fc.string(), fc.json(), fc.string(), fc.json(), fc.anything()])(
-    'when the session cannot be accessed',
-    async (sessionId, session, key, value, error) => {
+  it.effect.prop('when the session is not set', [fc.string(), fc.lorem(), fc.string()], ([sessionId, key, value]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      await store.set(sessionId, session)
-      store.set = () => Promise.reject(error)
 
-      const actual = await _.addToSession(
-        sessionId,
-        key,
-        value,
-      )({
-        sessionStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.addToSession(
+          sessionId,
+          key,
+          value,
+        )({
+          sessionStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+      expect(yield* Effect.promise(() => store.has(sessionId))).toBeFalsy()
+    }),
+  )
+
+  it.effect.prop(
+    'when the session cannot be accessed',
+    [fc.string(), fc.json(), fc.string(), fc.json(), fc.anything()],
+    ([sessionId, session, key, value, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(sessionId, session))
+        store.set = () => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.addToSession(
+            sessionId,
+            key,
+            value,
+          )({
+            sessionStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })
 
 describe('popFromSession', () => {
-  test.prop([
-    fc.string(),
-    fc.tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem()).filter(([session, key]) => !Record.has(session, key)),
-    fc.string(),
-  ])('when the session contains the key', async (sessionId, [session, key], value) => {
-    const store = new Keyv()
-    await store.set(sessionId, { ...session, [key]: value })
+  it.effect.prop(
+    'when the session contains the key',
+    [
+      fc.string(),
+      fc
+        .tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem())
+        .filter(([session, key]) => !Record.has(session, key)),
+      fc.string(),
+    ],
+    ([sessionId, [session, key], value]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(sessionId, { ...session, [key]: value }))
 
-    const actual = await _.popFromSession(
-      sessionId,
-      key,
-    )({
-      sessionStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.popFromSession(
+            sessionId,
+            key,
+          )({
+            sessionStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.right(value))
-    expect(await store.get(sessionId)).toStrictEqual(session)
-  })
+        expect(actual).toStrictEqual(E.right(value))
+        expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual(session)
+      }),
+  )
 
-  test.prop([
-    fc.string(),
-    fc.tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem()).filter(([session, key]) => !Record.has(session, key)),
-  ])('when the key is not found in the session', async (sessionId, [session, key]) => {
-    const store = new Keyv()
-    await store.set(sessionId, session)
+  it.effect.prop(
+    'when the key is not found in the session',
+    [
+      fc.string(),
+      fc
+        .tuple(fc.dictionary(fc.lorem(), fc.string()), fc.lorem())
+        .filter(([session, key]) => !Record.has(session, key)),
+    ],
+    ([sessionId, [session, key]]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        yield* Effect.promise(() => store.set(sessionId, session))
 
-    const actual = await _.popFromSession(
-      sessionId,
-      key,
-    )({
-      sessionStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+        const actual = yield* Effect.promise(
+          _.popFromSession(
+            sessionId,
+            key,
+          )({
+            sessionStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(await store.get(sessionId)).toStrictEqual(session)
-  })
+        expect(actual).toStrictEqual(E.left('unavailable'))
+        expect(yield* Effect.promise(() => store.get(sessionId))).toStrictEqual(session)
+      }),
+  )
 
-  test.prop([fc.string(), fc.lorem()])('when the session is not found', async (sessionId, key) => {
-    const store = new Keyv()
-
-    const actual = await _.popFromSession(
-      sessionId,
-      key,
-    )({
-      sessionStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
-
-  test.prop([fc.string(), fc.lorem(), fc.anything()])(
-    'when the session cannot be accessed',
-    async (sessionId, key, error) => {
+  it.effect.prop('when the session is not found', [fc.string(), fc.lorem()], ([sessionId, key]) =>
+    Effect.gen(function* () {
       const store = new Keyv()
-      store.get = (): Promise<never> => Promise.reject(error)
 
-      const actual = await _.popFromSession(
-        sessionId,
-        key,
-      )({
-        sessionStore: store,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+      const actual = yield* Effect.promise(
+        _.popFromSession(
+          sessionId,
+          key,
+        )({
+          sessionStore: store,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        }),
+      )
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-    },
+    }),
+  )
+
+  it.effect.prop(
+    'when the session cannot be accessed',
+    [fc.string(), fc.lorem(), fc.anything()],
+    ([sessionId, key, error]) =>
+      Effect.gen(function* () {
+        const store = new Keyv()
+        store.get = (): Promise<never> => Promise.reject(error)
+
+        const actual = yield* Effect.promise(
+          _.popFromSession(
+            sessionId,
+            key,
+          )({
+            sessionStore: store,
+            clock: SystemClock,
+            logger: () => IO.of(undefined),
+          }),
+        )
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      }),
   )
 })

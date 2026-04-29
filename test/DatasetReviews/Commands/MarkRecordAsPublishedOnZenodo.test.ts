@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import { describe, expect } from 'vitest'
@@ -33,49 +33,68 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 const recordWasPublished = new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[recordCreated1, doiWasAssigned, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[recordCreated1, doiWasAssigned, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started]], // was started
-      [[started, answered]], // answered
-      [[started, publicationOfDatasetReviewWasRequested]], // was requested
-      [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
-      [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
-    ],
-  })('not published', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not published',
+    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotPublished())
-  })
+      expect(state).toStrictEqual(new _.NotPublished())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started]], // was started
+          [[started, answered]], // answered
+          [[started, publicationOfDatasetReviewWasRequested]], // was requested
+          [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
+          [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
+        ],
+      },
+    },
+  )
 
-  test.prop(
+  it.prop(
+    'does not have a record',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, answered, publicationOfDatasetReviewWasRequested, doiWasAssigned, datasetReviewWasPublished]], // was published with a DOI
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.DoesNotHaveARecord())
     },
-  )('does not have a record', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[started, answered, publicationOfDatasetReviewWasRequested, doiWasAssigned, datasetReviewWasPublished]], // was published with a DOI
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.DoesNotHaveARecord())
-  })
-
-  test.prop(
+  it.prop(
+    'has an unpublished record',
     [
       fc
         .tuple(
@@ -85,19 +104,23 @@ describe('foldState', () => {
         )
         .map(([started, created, published]) => Tuple.make([started, created, published], created.recordId)),
     ],
-    {
-      examples: [
-        [[[started, recordCreated1, datasetReviewWasPublished], recordCreated1.recordId]], // assigned once
-        [[[started, recordCreated1, recordCreated2, datasetReviewWasPublished], recordCreated2.recordId]], // assigned twice
-      ],
+    ([[events, expected]]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.HasAnUnpublishedRecord({ recordId: expected }))
     },
-  )('has an unpublished record', ([events, expected]) => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[[started, recordCreated1, datasetReviewWasPublished], recordCreated1.recordId]], // assigned once
+          [[[started, recordCreated1, recordCreated2, datasetReviewWasPublished], recordCreated2.recordId]], // assigned twice
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.HasAnUnpublishedRecord({ recordId: expected }))
-  })
-
-  test.prop(
+  it.prop(
+    'has a published record',
     [
       fc
         .tuple(
@@ -108,23 +131,26 @@ describe('foldState', () => {
         )
         .map(([started, created, ...published]) => Tuple.make([started, created, ...published], created.recordId)),
     ],
-    {
-      examples: [
-        [[[started, recordCreated1, datasetReviewWasPublished, recordWasPublished], recordCreated1.recordId]], // assigned once
-        [
-          [
-            [started, recordCreated1, recordCreated2, datasetReviewWasPublished, recordWasPublished],
-            recordCreated2.recordId,
-          ],
-        ], // assigned twice
-        [[[started, datasetReviewWasPublished, recordWasPublished, recordCreated1], recordCreated1.recordId]], // different order
-      ],
-    },
-  )('has a published record', ([events, expected]) => {
-    const state = _.foldState(events)
+    ([[events, expected]]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.HasAPublishedRecord({ recordId: expected }))
-  })
+      expect(state).toStrictEqual(new _.HasAPublishedRecord({ recordId: expected }))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, recordCreated1, datasetReviewWasPublished, recordWasPublished], recordCreated1.recordId]], // assigned once
+          [
+            [
+              [started, recordCreated1, recordCreated2, datasetReviewWasPublished, recordWasPublished],
+              recordCreated2.recordId,
+            ],
+          ], // assigned twice
+          [[[started, datasetReviewWasPublished, recordWasPublished, recordCreated1], recordCreated1.recordId]], // different order
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
@@ -146,7 +172,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewDoesNotHaveAZenodoRecord({})))
   })
 
-  test.prop([fc.integer()])('has an unpublished record', recordId => {
+  it.prop('has an unpublished record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.HasAnUnpublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -154,7 +180,7 @@ describe('decide', () => {
     )
   })
 
-  test.prop([fc.integer()])('has a published record', recordId => {
+  it.prop('has a published record', [fc.integer()], ([recordId]) => {
     const result = _.decide(new _.HasAPublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))

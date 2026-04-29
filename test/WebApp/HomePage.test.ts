@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
@@ -8,10 +8,9 @@ import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/HomePage/index.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
-test.prop([fc.supportedLocale()])('HomePage', locale =>
+it.effect.prop('HomePage', [fc.supportedLocale()], ([locale]) =>
   Effect.gen(function* () {
     const actual = yield* _.HomePage
 
@@ -38,6 +37,5 @@ test.prop([fc.supportedLocale()])('HomePage', locale =>
     ),
     Effect.provide(FeatureFlags.layerDefaults),
     Effect.provideService(Locale, locale),
-    EffectTest.run,
   ),
 )

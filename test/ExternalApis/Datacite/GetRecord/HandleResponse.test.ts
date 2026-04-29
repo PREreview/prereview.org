@@ -1,84 +1,98 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Either } from 'effect'
 import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Datacite/GetRecord/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('HandleResponse', () => {
   describe('with a 200 status code', () => {
     describe('with a decodable body', () => {
-      test.prop([
-        fc.httpClientResponse({
-          body: fc.fileInDirectory('test/ExternalApis/Datacite/RecordSamples'),
-          status: fc.constant(StatusCodes.OK),
-        }),
-      ])('decodes the response', response =>
-        Effect.gen(function* () {
-          const actual = yield* Effect.either(_.HandleResponse(response))
+      it.effect.prop(
+        'decodes the response',
+        [
+          fc.httpClientResponse({
+            body: fc.fileInDirectory('test/ExternalApis/Datacite/RecordSamples'),
+            status: fc.constant(StatusCodes.OK),
+          }),
+        ],
+        ([response]) =>
+          Effect.gen(function* () {
+            const actual = yield* Effect.either(_.HandleResponse(response))
 
-          expect(actual).toStrictEqual(Either.right(expect.anything()))
-        }).pipe(EffectTest.run),
+            expect(actual).toStrictEqual(Either.right(expect.anything()))
+          }),
       )
     })
 
     describe('with an unknown JSON body', () => {
-      test.prop([
-        fc.httpClientResponse({
-          json: fc.json(),
-          status: fc.constant(StatusCodes.OK),
-        }),
-      ])('returns an error', response =>
-        Effect.gen(function* () {
-          const actual = yield* Effect.flip(_.HandleResponse(response))
+      it.effect.prop(
+        'returns an error',
+        [
+          fc.httpClientResponse({
+            json: fc.json(),
+            status: fc.constant(StatusCodes.OK),
+          }),
+        ],
+        ([response]) =>
+          Effect.gen(function* () {
+            const actual = yield* Effect.flip(_.HandleResponse(response))
 
-          expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-          expect(actual.cause).toMatchObject({ _tag: 'ParseError' })
-        }).pipe(EffectTest.run),
+            expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+            expect(actual.cause).toMatchObject({ _tag: 'ParseError' })
+          }),
       )
     })
 
     describe('with an unknown body', () => {
-      test.prop([
-        fc.httpClientResponse({
-          status: fc.constant(StatusCodes.OK),
-          body: fc.lorem(),
-        }),
-      ])('returns an error', response =>
-        Effect.gen(function* () {
-          const actual = yield* Effect.flip(_.HandleResponse(response))
+      it.effect.prop(
+        'returns an error',
+        [
+          fc.httpClientResponse({
+            status: fc.constant(StatusCodes.OK),
+            body: fc.lorem(),
+          }),
+        ],
+        ([response]) =>
+          Effect.gen(function* () {
+            const actual = yield* Effect.flip(_.HandleResponse(response))
 
-          expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'Decode', response })
-        }).pipe(EffectTest.run),
+            expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+            expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'Decode', response })
+          }),
       )
     })
   })
 
   describe('with a 404 status code', () => {
-    test.prop([fc.httpClientResponse({ status: fc.constant(StatusCodes.NotFound) })])('returns an error', response =>
-      Effect.gen(function* () {
-        const actual = yield* Effect.flip(_.HandleResponse(response))
+    it.effect.prop(
+      'returns an error',
+      [fc.httpClientResponse({ status: fc.constant(StatusCodes.NotFound) })],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
 
-        expect(actual._tag).toStrictEqual('RecordIsNotFound')
-        expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
-      }).pipe(EffectTest.run),
+          expect(actual._tag).toStrictEqual('RecordIsNotFound')
+          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+        }),
     )
   })
 
   describe('with another status code', () => {
-    test.prop([
-      fc.httpClientResponse({
-        status: fc.statusCode().filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
-      }),
-    ])('returns an error', response =>
-      Effect.gen(function* () {
-        const actual = yield* Effect.flip(_.HandleResponse(response))
+    it.effect.prop(
+      'returns an error',
+      [
+        fc.httpClientResponse({
+          status: fc.statusCode().filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
+        }),
+      ],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
 
-        expect(actual._tag).toStrictEqual('RecordIsUnavailable')
-        expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
-      }).pipe(EffectTest.run),
+          expect(actual._tag).toStrictEqual('RecordIsUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+        }),
     )
   })
 })

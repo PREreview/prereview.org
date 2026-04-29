@@ -1,11 +1,10 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { it } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { DateTime, Effect, Either, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import { describe, expect, vi } from 'vitest'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('getFromRedis', () => {
@@ -17,7 +16,7 @@ describe('getFromRedis', () => {
 
   describe('there is a value for a given key', () => {
     describe('the value can be read', () => {
-      it.prop([fc.httpClientRequest()])('succeeds', request =>
+      it.effect.prop('succeeds', [fc.httpClientRequest()], ([request]) =>
         Effect.gen(function* () {
           const decodableValue = yield* Schema.encode(CacheValueFromStringSchema)({
             staleAt: yield* DateTime.now,
@@ -32,22 +31,22 @@ describe('getFromRedis', () => {
           const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
           expect(result).toStrictEqual(Either.right(Option.some(expect.anything())))
-        }).pipe(EffectTest.run),
+        }),
       )
     })
 
     describe('the value can not be read', () => {
-      it.prop([fc.httpClientRequest(), fc.string()])('returns not found', (request, unreadableValue) =>
+      it.effect.prop('returns not found', [fc.httpClientRequest(), fc.string()], ([request, unreadableValue]) =>
         Effect.gen(function* () {
           const redis = stubbedRedisReturning(unreadableValue)
 
           const result = yield* _.getFromRedis(redis)(request)
 
           expect(result).toStrictEqual(Option.none())
-        }).pipe(EffectTest.run),
+        }),
       )
 
-      it.prop([fc.httpClientRequest(), fc.string()])('removes the value', (request, unreadableValue) =>
+      it.effect.prop('removes the value', [fc.httpClientRequest(), fc.string()], ([request, unreadableValue]) =>
         Effect.gen(function* () {
           const redis = stubbedRedisReturning(unreadableValue)
 
@@ -55,25 +54,25 @@ describe('getFromRedis', () => {
 
           // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(redis.del).toHaveBeenCalledTimes(1)
-        }).pipe(EffectTest.run),
+        }),
       )
     })
   })
 
   describe('there is no value for a given key', () => {
-    it.prop([fc.httpClientRequest()])('returns not found', request =>
+    it.effect.prop('returns not found', [fc.httpClientRequest()], ([request]) =>
       Effect.gen(function* () {
         const redis = stubbedRedisReturning(null)
 
         const result = yield* _.getFromRedis(redis)(request)
 
         expect(result).toStrictEqual(Option.none())
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.httpClientRequest(), fc.error()])('returns an error', (request, error) =>
+    it.effect.prop('returns an error', [fc.httpClientRequest(), fc.error()], ([request, error]) =>
       Effect.gen(function* () {
         const redis = {
           get: (() => Promise.reject(error)) satisfies IoRedis['get'],
@@ -82,7 +81,7 @@ describe('getFromRedis', () => {
         const result = yield* Effect.either(_.getFromRedis(redis)(request))
 
         expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 })
@@ -94,29 +93,33 @@ describe('writeToRedis', () => {
     }) as unknown as IoRedis
 
   describe('the value can be written', () => {
-    it.prop([
-      fc.string().chain(text => fc.tuple(fc.httpClientResponse({ body: fc.constant(text) }), fc.constant(text))),
-      fc.dateTimeUtc(),
-    ])('succeeds', ([response, body], staleAt) =>
-      Effect.gen(function* () {
-        const redis = stubbedRedis()
+    it.effect.prop(
+      'succeeds',
+      [
+        fc.string().chain(text => fc.tuple(fc.httpClientResponse({ body: fc.constant(text) }), fc.constant(text))),
+        fc.dateTimeUtc(),
+      ],
+      ([[response, body], staleAt]) =>
+        Effect.gen(function* () {
+          const redis = stubbedRedis()
 
-        const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
-        expect(result).toStrictEqual(Either.right(undefined))
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redis.set as unknown).toHaveBeenCalledWith(
-          _.keyForRequest(response.request),
-          expect.stringContaining(JSON.stringify(body)),
-        )
-      }).pipe(EffectTest.run),
+          expect(result).toStrictEqual(Either.right(undefined))
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          expect(redis.set as unknown).toHaveBeenCalledWith(
+            _.keyForRequest(response.request),
+            expect.stringContaining(JSON.stringify(body)),
+          )
+        }),
     )
   })
 
   describe('the response body can not be read', () => {
-    it.prop([fc.httpClientRequest(), fc.dateTimeUtc(), fc.nonEmptyString()])(
+    it.effect.prop(
       'returns an error without touching redis',
-      (request, staleAt, body) =>
+      [fc.httpClientRequest(), fc.dateTimeUtc(), fc.nonEmptyString()],
+      ([request, staleAt, body]) =>
         Effect.gen(function* () {
           const fetchResponse = new Response(body)
           const response = HttpClientResponse.fromWeb(request, fetchResponse)
@@ -128,28 +131,31 @@ describe('writeToRedis', () => {
           expect(result).toStrictEqual(Either.left(expect.anything()))
           // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(redis.set).not.toHaveBeenCalled()
-        }).pipe(EffectTest.run),
+        }),
     )
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.httpClientResponse(), fc.dateTimeUtc(), fc.error()])('returns an error', (response, staleAt, error) =>
-      Effect.gen(function* () {
-        const redis = {
-          set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
-        } as unknown as IoRedis
+    it.effect.prop(
+      'returns an error',
+      [fc.httpClientResponse(), fc.dateTimeUtc(), fc.error()],
+      ([response, staleAt, error]) =>
+        Effect.gen(function* () {
+          const redis = {
+            set: (() => Promise.reject<'OK'>(error)) satisfies IoRedis['set'],
+          } as unknown as IoRedis
 
-        const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
+          const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
-        expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
-      }).pipe(EffectTest.run),
+          expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
+        }),
     )
   })
 })
 
 describe('deleteFromRedis', () => {
   describe('the cached response can be deleted', () => {
-    it.prop([fc.url()])('succeeds', url =>
+    it.effect.prop('succeeds', [fc.url()], ([url]) =>
       Effect.gen(function* () {
         const redis = {
           del: vi.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
@@ -160,12 +166,12 @@ describe('deleteFromRedis', () => {
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 
   describe('there is no cached response', () => {
-    it.prop([fc.url()])('succeeds', url =>
+    it.effect.prop('succeeds', [fc.url()], ([url]) =>
       Effect.gen(function* () {
         const redis = {
           del: vi.fn(() => Promise.resolve(0)) satisfies IoRedis['del'],
@@ -176,12 +182,12 @@ describe('deleteFromRedis', () => {
         expect(result).toStrictEqual(Either.void)
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 
   describe('redis is unreachable', () => {
-    it.prop([fc.url(), fc.error()])('returns an error', (url, error) =>
+    it.effect.prop('returns an error', [fc.url(), fc.error()], ([url, error]) =>
       Effect.gen(function* () {
         const redis = {
           del: (() => Promise.reject(error)) satisfies IoRedis['del'],
@@ -190,7 +196,7 @@ describe('deleteFromRedis', () => {
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
         expect(result).toStrictEqual(Either.left(new InternalHttpCacheFailure({ cause: error.toString() })))
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 })

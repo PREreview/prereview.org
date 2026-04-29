@@ -1,29 +1,31 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
 import * as fc from '../../../fc.ts'
 
 describe('isJapanLinkCenterPreprintId', () => {
-  test.prop([fc.japanLinkCenterPreprintId()])('with a Japan Link Center ID', id => {
+  it.prop('with a Japan Link Center ID', [fc.japanLinkCenterPreprintId()], ([id]) => {
     expect(_.isJapanLinkCenterPreprintId(id)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.crossrefPreprintId(), fc.datacitePreprintId(), fc.philsciPreprintId())])(
+  it.prop(
     'with a non-Japan Link Center ID',
-    id => {
+    [fc.oneof(fc.crossrefPreprintId(), fc.datacitePreprintId(), fc.philsciPreprintId())],
+    ([id]) => {
       expect(_.isJapanLinkCenterPreprintId(id)).toBe(false)
     },
   )
 })
 
 describe('isDoiFromSupportedPublisher', () => {
-  test.prop([fc.japanLinkCenterPreprintDoi()])('with a Japan Link Center DOI', doi => {
+  it.prop('with a Japan Link Center DOI', [fc.japanLinkCenterPreprintDoi()], ([doi]) => {
     expect(_.isDoiFromSupportedPublisher(doi)).toBe(true)
   })
 
-  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.datacitePreprintDoi(), fc.nonPreprintDoi())])(
+  it.prop(
     'with a non-Japan Link Center DOI',
-    doi => {
+    [fc.oneof(fc.crossrefPreprintDoi(), fc.datacitePreprintDoi(), fc.nonPreprintDoi())],
+    ([doi]) => {
       expect(_.isDoiFromSupportedPublisher(doi)).toBe(false)
     },
   )

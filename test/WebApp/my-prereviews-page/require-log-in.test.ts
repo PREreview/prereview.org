@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it, test } from '@effect/vitest'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import { describe, expect } from 'vitest'
@@ -7,7 +7,7 @@ import { myPrereviewsMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
 
 describe('ensureUserIsLoggedIn', () => {
-  test.prop([fc.user()])('when there is a user', user => {
+  it.prop('when there is a user', [fc.user()], ([user]) => {
     const actual = _.ensureUserIsLoggedIn(user)
 
     expect(actual).toStrictEqual(E.right(user))

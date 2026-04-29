@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Predicate, Tuple } from 'effect'
 import { describe, expect } from 'vitest'
@@ -33,31 +33,36 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('query', () => {
-  test.prop(
+  it.prop(
+    'not started',
     [
       fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))),
       fc.uuid(),
       fc.orcidId(),
     ],
-    {
-      examples: [
-        [[], datasetReviewId, authorId], // no events
-        [
-          [declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
-          datasetReviewId,
-          authorId,
-        ], // with events
-        [[started], datasetReviewId2, authorId], // with events for other dataset review
-        [[started, datasetReviewWasPublished], datasetReviewId2, authorId], // with multiple events for other dataset review
-      ],
+    ([events, datasetReviewId, userId]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
     },
-  )('not started', (events, datasetReviewId, userId) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[], datasetReviewId, authorId], // no events
+          [
+            [declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
+            datasetReviewId,
+            authorId,
+          ], // with events
+          [[started], datasetReviewId2, authorId], // with events for other dataset review
+          [[started, datasetReviewWasPublished], datasetReviewId2, authorId], // with multiple events for other dataset review
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
-  })
-
-  test.prop(
+  it.prop(
+    'started by another user',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.orcidId())
@@ -69,38 +74,46 @@ describe('query', () => {
           ),
         ),
     ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
+    },
     {
-      examples: [
-        [[[started], datasetReviewId, authorId2]], // no events
-        [
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId2]], // no events
           [
-            [started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
-            datasetReviewId,
-            authorId2,
-          ],
-        ], // with events
-      ],
+            [
+              [started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
+              datasetReviewId,
+              authorId2,
+            ],
+          ], // with events
+        ],
+      },
     },
-  )('started by another user', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
-  })
-
-  test.prop(
+  it.prop(
+    'not declared',
     [fc.datasetReviewWasStarted().map(event => Tuple.make(Array.make(event), event.datasetReviewId, event.authorId))],
-    {
-      examples: [
-        [[[started], datasetReviewId, authorId]], // was started
-      ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.right(false))
     },
-  )('not declared', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId]], // was started
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.right(false))
-  })
-
-  test.prop(
+  it.prop(
+    'has been declared',
     [
       fc
         .uuid()
@@ -116,29 +129,33 @@ describe('query', () => {
           Tuple.make(Array.make(started, declared), started.datasetReviewId, started.authorId),
         ),
     ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.right(true))
+    },
     {
-      examples: [
-        [[[started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1], datasetReviewId, authorId]], // declared once
-        [
+      fastCheck: {
+        examples: [
+          [[[started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1], datasetReviewId, authorId]], // declared once
           [
             [
-              started,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
+              [
+                started,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
+              ],
+              datasetReviewId,
+              authorId,
             ],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // declared twice
-      ],
+          ], // declared twice
+        ],
+      },
     },
-  )('has been declared', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+  )
 
-    expect(actual).toStrictEqual(Either.right(true))
-  })
-
-  test.prop(
+  it.prop(
+    'is being published',
     [
       fc
         .uuid()
@@ -156,40 +173,44 @@ describe('query', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
-        [
-          [
-            [
-              started,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-              publicationOfDatasetReviewWasRequested,
-            ],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // also declared
-        [
-          [
-            [
-              publicationOfDatasetReviewWasRequested,
-              started,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-            ],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // different order
-      ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
     },
-  )('is being published', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
+          [
+            [
+              [
+                started,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+                publicationOfDatasetReviewWasRequested,
+              ],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // also declared
+          [
+            [
+              [
+                publicationOfDatasetReviewWasRequested,
+                started,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+              ],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // different order
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
-  })
-
-  test.prop(
+  it.prop(
+    'has been published',
     [
       fc
         .uuid()
@@ -207,39 +228,42 @@ describe('query', () => {
           ),
         ),
     ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+    },
     {
-      examples: [
-        [
-          [
-            [started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // was published
-        [
+      fastCheck: {
+        examples: [
           [
             [
-              started,
-              declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
-              publicationOfDatasetReviewWasRequested,
-              datasetReviewWasPublished,
+              [started, declaredThatTheCodeOfConductWasFollowedForADatasetReview1, datasetReviewWasPublished],
+              datasetReviewId,
+              authorId,
             ],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // also requested
-        [
+          ], // was published
           [
-            [started, datasetReviewWasPublished, declaredThatTheCodeOfConductWasFollowedForADatasetReview1],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // different order
-      ],
+            [
+              [
+                started,
+                declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
+                publicationOfDatasetReviewWasRequested,
+                datasetReviewWasPublished,
+              ],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // also requested
+          [
+            [
+              [started, datasetReviewWasPublished, declaredThatTheCodeOfConductWasFollowedForADatasetReview1],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // different order
+        ],
+      },
     },
-  )('has been published', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
-
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
-  })
+  )
 })

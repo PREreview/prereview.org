@@ -1,4 +1,4 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, Option, Tuple } from 'effect'
 import { describe, expect } from 'vitest'
@@ -58,7 +58,8 @@ const command = (): fc.Arbitrary<_.Command> =>
   })
 
 describe('foldState', () => {
-  test.prop(
+  it.prop(
+    'not received',
     [
       fc
         .uuid()
@@ -69,47 +70,55 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[], reviewRequestId]], // no events
-        [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
-        [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
-      ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.NotReceived())
     },
-  )('not received', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    {
+      fastCheck: {
+        examples: [
+          [[[], reviewRequestId]], // no events
+          [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
+          [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotReceived())
-  })
-
-  test.prop(
+  it.prop(
+    'not yet accepted',
     [
       fc
         .reviewRequestForAPreprintWasReceived()
         .map(received => Tuple.make(Array.of<ReviewRequests.ReviewRequestEvent>(received), received.reviewRequestId)),
     ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.NotAccepted())
+    },
     {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // not accepted
-        [
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // not accepted
           [
             [
-              reviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
+              [
+                reviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+              ],
+              reviewRequestId,
             ],
-            reviewRequestId,
-          ],
-        ], // for other review request
-      ],
+          ], // for other review request
+        ],
+      },
     },
-  )('not yet accepted', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+  )
 
-    expect(state).toStrictEqual(new _.NotAccepted())
-  })
-
-  test.prop(
+  it.prop(
+    'already rejected',
     [
       fc
         .uuid()
@@ -127,39 +136,43 @@ describe('foldState', () => {
             ),
         ),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasRejected], reviewRequestId]], // was rejected
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived,
-              reviewRequestForAPreprintWasRejected,
-              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-            ],
-            reviewRequestId,
-          ],
-        ], // other events
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived,
-              reviewRequestForAPreprintWasRejected,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasRejected,
-            ],
-            reviewRequestId,
-          ],
-        ], // other review request too
-      ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.HasBeenRejected())
     },
-  )('already rejected', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasRejected], reviewRequestId]], // was rejected
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasRejected,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              ],
+              reviewRequestId,
+            ],
+          ], // other events
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasRejected,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasRejected,
+              ],
+              reviewRequestId,
+            ],
+          ], // other review request too
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.HasBeenRejected())
-  })
-
-  test.prop(
+  it.prop(
+    'already accepted',
     [
       fc
         .uuid()
@@ -177,47 +190,50 @@ describe('foldState', () => {
             ),
         ),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasAccepted], reviewRequestId]], // was accepted
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived,
-              reviewRequestForAPreprintWasAccepted,
-              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-            ],
-            reviewRequestId,
-          ],
-        ], // other events
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived,
-              reviewRequestForAPreprintWasAccepted,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
-            ],
-            reviewRequestId,
-          ],
-        ], // other review request too
-      ],
-    },
-  )('already accepted', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
 
-    expect(state).toStrictEqual(new _.HasBeenAccepted())
-  })
+      expect(state).toStrictEqual(new _.HasBeenAccepted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasAccepted], reviewRequestId]], // was accepted
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasAccepted,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              ],
+              reviewRequestId,
+            ],
+          ], // other events
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasAccepted,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+              ],
+              reviewRequestId,
+            ],
+          ], // other review request too
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
-  test.prop([command()])('has not been received', command => {
+  it.prop('has not been received', [command()], ([command]) => {
     const result = _.decide(new _.NotReceived(), command)
 
     expect(result).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
   })
 
-  test.prop([command()])('has not been accepted', command => {
+  it.prop('has not been accepted', [command()], ([command]) => {
     const result = _.decide(new _.NotAccepted(), command)
 
     expect(result).toStrictEqual(
@@ -232,13 +248,13 @@ describe('decide', () => {
     )
   })
 
-  test.prop([command()])('has already been rejected', command => {
+  it.prop('has already been rejected', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenRejected(), command)
 
     expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
   })
 
-  test.prop([command()])('has already been accepted', command => {
+  it.prop('has already been accepted', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenAccepted(), command)
 
     expect(result).toStrictEqual(Either.right(Option.none()))

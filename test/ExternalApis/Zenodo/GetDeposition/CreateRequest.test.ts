@@ -1,41 +1,40 @@
-import { test } from '@fast-check/vitest'
+import { it } from '@effect/vitest'
 import { Effect, Redacted } from 'effect'
 import { describe, expect } from 'vitest'
 import { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Zenodo/GetDeposition/CreateRequest.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {
-  test.prop([fc.zenodoApi(), fc.integer()])('creates a GET request', (zenodoApi, recordId) =>
+  it.effect.prop('creates a GET request', [fc.zenodoApi(), fc.integer()], ([zenodoApi, recordId]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(recordId)
 
       expect(actual.method).toStrictEqual('GET')
-    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi)),
   )
 
-  test.prop([fc.zenodoApi(), fc.integer()])('sets the URL', (zenodoApi, recordId) =>
+  it.effect.prop('sets the URL', [fc.zenodoApi(), fc.integer()], ([zenodoApi, recordId]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(recordId)
 
       expect(actual.url).toStrictEqual(`${zenodoApi.origin.origin}/api/deposit/depositions/${recordId}`)
-    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi)),
   )
 
-  test.prop([fc.zenodoApi(), fc.integer()])('sets the Accept header', (zenodoApi, recordId) =>
+  it.effect.prop('sets the Accept header', [fc.zenodoApi(), fc.integer()], ([zenodoApi, recordId]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(recordId)
 
       expect(actual.headers['accept']).toStrictEqual('application/json')
-    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi)),
   )
 
-  test.prop([fc.zenodoApi(), fc.integer()])('sets the Authorization header', (zenodoApi, recordId) =>
+  it.effect.prop('sets the Authorization header', [fc.zenodoApi(), fc.integer()], ([zenodoApi, recordId]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(recordId)
 
       expect(actual.headers['authorization']).toStrictEqual(`Bearer ${Redacted.value(zenodoApi.key)}`)
-    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi), EffectTest.run),
+    }).pipe(Effect.provideService(Zenodo.ZenodoApi, zenodoApi)),
   )
 })
