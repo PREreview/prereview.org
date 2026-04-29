@@ -48,7 +48,7 @@ import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'
 import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.ts'
-import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
+import type { GhostPage } from '../src/ExternalInteractions/index.ts'
 import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintData/Crossref/PreprintId.ts'
 import type { DatacitePreprintId } from '../src/ExternalInteractions/PreprintData/Datacite/PreprintId.ts'
 import type { JapanLinkCenterPreprintId } from '../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
@@ -1310,12 +1310,6 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackChannelId = (): fc.Arbitrary<Slack.ChannelId> => fc.string().map(id => Slack.ChannelId.make(id))
 
 export const slackTimestamp = (): fc.Arbitrary<Slack.Timestamp> => fc.string().map(id => Slack.Timestamp.make(id))
-
-export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.CommunitySlackChannelIds.Service> =>
-  fc.record<typeof CommunitySlack.CommunitySlackChannelIds.Service>({
-    requestAReview: slackChannelId(),
-    shareAReview: slackChannelId(),
-  })
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 

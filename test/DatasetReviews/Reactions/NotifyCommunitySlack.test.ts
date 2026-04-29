@@ -89,9 +89,9 @@ describe('NotifyCommunitySlack', () => {
       ),
   )
 
-  test.prop([fc.uuid(), fc.origin(), fc.communitySlackChannelIds(), fc.publishedDatasetReview(), fc.anything()])(
+  test.prop([fc.uuid(), fc.origin(), fc.publishedDatasetReview(), fc.anything()])(
     "when the persona can't be loaded",
-    (datasetReviewId, publicUrl, communitySlackChannelIds, publishedReview, error) =>
+    (datasetReviewId, publicUrl, publishedReview, error) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.NotifyCommunitySlack(datasetReviewId), Effect.either)
 
