@@ -67,6 +67,9 @@ importers:
       case-anything:
         specifier: ^3.1.2
         version: 3.1.2
+      cdigit:
+        specifier: ^4.0.3
+        version: 4.0.3
       cld:
         specifier: ^2.10.1
         version: 2.10.1
@@ -248,9 +251,6 @@ importers:
       babel-loader:
         specifier: ^10.1.1
         version: 10.1.1(@babel/core@7.29.0)(webpack@5.106.2)
-      cdigit:
-        specifier: ^4.0.3
-        version: 4.0.3
       css-loader:
         specifier: ^7.1.4
         version: 7.1.4(webpack@5.106.2)

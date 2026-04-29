@@ -8,7 +8,6 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { mod11_2 } from 'cdigit'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import {
   Arbitrary,
@@ -127,7 +126,7 @@ import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
-import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
+import { type OrcidId, OrcidIdSchema } from '../src/types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
@@ -1157,15 +1156,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
-export const orcidId = (): fc.Arbitrary<OrcidId> =>
-  fc
-    .string({
-      unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
-      minLength: 4 + 4 + 4 + 3,
-      maxLength: 4 + 4 + 4 + 3,
-    })
-    .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
-    .filter(isOrcidId)
+export const orcidId = (): fc.Arbitrary<OrcidId> => Arbitrary.make(OrcidIdSchema)
 
 export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
   fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
