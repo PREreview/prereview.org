@@ -14,6 +14,8 @@ import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
 import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
+const now = Temporal.Now.instant()
+
 it.prop([
   fc.oneof(
     fc.record(
@@ -366,19 +368,19 @@ test.each<
     ],
     [
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: Temporal.Now.instant(),
+        startedAt: now.subtract({ hours: 2 }),
         preprintId: preprintId1,
         reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: Temporal.Now.instant(),
+        startedAt: now.subtract({ hours: 1 }),
         preprintId: preprintId2,
         reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: Temporal.Now.instant(),
+        startedAt: now,
         preprintId: preprintId3,
         reviewRequestId: Uuid.Uuid('74300474-a5d8-4fbd-b39d-1e1ff4d65fa7'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
@@ -386,13 +388,13 @@ test.each<
     ],
     [
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: Temporal.Now.instant(),
+        startedAt: now.subtract({ hours: 2 }),
         preprintId: preprintId1Indeterminate,
         reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: Temporal.Now.instant(),
+        startedAt: now.subtract({ hours: 1 }),
         preprintId: preprintId2,
         reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
