@@ -1,5 +1,5 @@
-import { describe, expect, it } from '@jest/globals'
 import { Option } from 'effect'
+import { describe, expect, it } from 'vitest'
 import * as _ from '../../src/HttpMiddleware/LocaleInPath.ts'
 import type { SupportedLocale } from '../../src/locales/index.ts'
 

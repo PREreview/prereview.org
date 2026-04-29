@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, pipe, TestClock } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -14,7 +14,7 @@ describe('ProcessReceivedReviewRequest', () => {
       'when the command can be completed',
       (reviewRequestId, reviewRequest, acceptedAt, preprint) =>
         Effect.gen(function* () {
-          const acceptReviewRequest = jest.fn<
+          const acceptReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['acceptReviewRequest']
           >(_ => Effect.void)
 
@@ -74,9 +74,9 @@ describe('ProcessReceivedReviewRequest', () => {
       fc.anything().map(cause => new Preprints.NotAPreprint({ cause })),
     ])('when the command can be completed', (reviewRequestId, reviewRequest, rejectedAt, preprintError) =>
       Effect.gen(function* () {
-        const rejectReviewRequest = jest.fn<
-          (typeof ReviewRequests.ReviewRequestCommands.Service)['rejectReviewRequest']
-        >(_ => Effect.void)
+        const rejectReviewRequest = vi.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['rejectReviewRequest']>(
+          _ => Effect.void,
+        )
 
         yield* TestClock.setTime(rejectedAt.epochMilliseconds)
 

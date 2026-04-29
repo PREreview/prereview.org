@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
 import type { GetContactEmailAddressEnv } from '../../../src/contact-email-address.ts'
 import {
@@ -49,12 +49,10 @@ describe('authorInvite', () => {
       ])(
         'when the author can be added',
         async (inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale) => {
-          const addAuthorToPrereview = jest.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ =>
-            TE.right(undefined),
-          )
-          const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+          const addAuthorToPrereview = vi.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ => TE.right(undefined))
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+          const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
           const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
             addAuthorToPrereview,
@@ -110,7 +108,7 @@ describe('authorInvite', () => {
       ])(
         "when the author can't be added",
         async (inviteId, [user, invite], publicPersona, pseudonymPersona, prereview, contactEmailAddress, locale) => {
-          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+          const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
           const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user, locale })({
             addAuthorToPrereview: () => TE.left('unavailable'),
@@ -169,8 +167,8 @@ describe('authorInvite', () => {
         contactEmailAddress,
         locale,
       ) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInviteCheck({ id: inviteId, method, user, locale })({
           addAuthorToPrereview: shouldNotBeCalled,
@@ -219,7 +217,7 @@ describe('authorInvite', () => {
     ])(
       "when there isn't a verified email address",
       async (inviteId, [user, invite], method, prereview, contactEmailAddress, locale) => {
-        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+        const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
           TE.fromEither(contactEmailAddress),
         )
 

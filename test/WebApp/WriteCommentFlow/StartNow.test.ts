@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
@@ -27,8 +27,8 @@ describe('StartNow', () => {
         fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
       ])('when the comment can be created', (id, locale, user, prereview, commentId, nextCommand) =>
         Effect.gen(function* () {
-          const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
-          const getNextExpectedCommandForUserOnAComment = jest.fn<
+          const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+          const getNextExpectedCommandForUserOnAComment = vi.fn<
             typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
           >(_ => Effect.succeed(Either.right(nextCommand)))
 

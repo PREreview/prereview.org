@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   authorInviteCheckMatch,
@@ -34,9 +34,9 @@ describe('authorInvitePersona', () => {
         }),
         fc.constantFrom('public', 'pseudonym'),
       ])('when the persona is set', async (inviteId, [user, invite], locale, prereview, persona) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-        const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
         const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, locale, method: 'POST', user })({
           getAuthorInvite,
@@ -142,8 +142,8 @@ describe('authorInvitePersona', () => {
     ])(
       'when the form needs submitting',
       async (inviteId, [user, invite], publicPersona, pseudonymPersona, locale, method, body, prereview) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInvitePersona({ body, id: inviteId, locale, method, user })({
           getAuthorInvite,

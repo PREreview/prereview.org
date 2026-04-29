@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-open-for-requests-visibility.ts'
@@ -36,7 +36,7 @@ describe('changeOpenForRequestsVisibility', () => {
   test.prop([fc.isOpenForRequestsVisibility(), fc.user(), fc.supportedLocale(), fc.isOpenForRequestsVisibility()])(
     'when the form has been submitted',
     async (visibility, user, locale, existingVisibility) => {
-      const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+      const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
       const actual = await _.changeOpenForRequestsVisibility({
         body: { openForRequestsVisibility: visibility },
@@ -84,7 +84,7 @@ describe('changeOpenForRequestsVisibility', () => {
     fc.supportedLocale(),
     fc.isOpenForRequestsVisibility(),
   ])('when the form has been submitted without setting visibility', async (body, user, locale, visibility) => {
-    const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+    const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
     const actual = await _.changeOpenForRequestsVisibility({ body, locale, method: 'POST', user })({
       isOpenForRequests: () => TE.of({ value: true, visibility }),

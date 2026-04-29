@@ -1,9 +1,9 @@
 import { Multipart } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Either, Inspectable } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeAvatarMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-avatar.ts'
@@ -62,7 +62,7 @@ describe('changeAvatar', () => {
     fc.user(),
     fc.supportedLocale(),
   ])("when the avatar can't be saved", async (file, user, locale) => {
-    const saveAvatar = jest.fn<_.Env['saveAvatar']>(_ => TE.left('unavailable'))
+    const saveAvatar = vi.fn<_.Env['saveAvatar']>(_ => TE.left('unavailable'))
 
     const actual = await _.changeAvatar({ body: Either.right({ avatar: [file] }), locale, method: 'POST', user })({
       saveAvatar,

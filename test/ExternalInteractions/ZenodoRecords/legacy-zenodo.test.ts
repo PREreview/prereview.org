@@ -1,5 +1,4 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Doi } from 'doi-ts'
@@ -11,6 +10,7 @@ import * as IO from 'fp-ts/lib/IO.js'
 import * as T from 'fp-ts/lib/Task.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { match } from 'ts-pattern'
+import { describe, expect, vi } from 'vitest'
 import {
   type EmptyDeposition,
   EmptyDepositionC,
@@ -735,7 +735,7 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
-      const getPreprint = jest.fn(_ => TE.right(preprint))
+      const getPreprint = vi.fn(_ => TE.right(preprint))
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
@@ -786,7 +786,7 @@ describe('getPrereviewFromZenodo', () => {
   )
 
   test.prop([fc.integer()])('when the review was removed', async id => {
-    const wasPrereviewRemoved = jest.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(_ => true)
+    const wasPrereviewRemoved = vi.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(_ => true)
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
@@ -4044,8 +4044,8 @@ describe('createRecordOnZenodo', () => {
       fc.origin(),
       fc.doi(),
     ])('with a PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
-      const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
+      const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,
@@ -4216,8 +4216,8 @@ ${newPrereview.review.toString()}`,
       fc.origin(),
       fc.doi(),
     ])('with a Structured PREreview', async (newPrereview, subjects, requested, zenodoApiKey, publicUrl, reviewDoi) => {
-      const getPreprintSubjects = jest.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
-      const isReviewRequested = jest.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
+      const getPreprintSubjects = vi.fn<_.GetPreprintSubjectsEnv['getPreprintSubjects']>(_ => T.of(subjects))
+      const isReviewRequested = vi.fn<_.IsReviewRequestedEnv['isReviewRequested']>(_ => TE.right(requested))
 
       const emptyDeposition: EmptyDeposition = {
         id: 1,

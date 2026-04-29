@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
+import { describe, expect } from 'vitest'
 import { Nodemailer } from '../../../src/ExternalApis/index.ts'
 import { Email } from '../../../src/ExternalInteractions/index.ts'
 import * as Queries from '../../../src/Queries.ts'

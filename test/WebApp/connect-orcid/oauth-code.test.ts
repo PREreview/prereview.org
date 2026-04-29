@@ -1,9 +1,9 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { describe, expect, vi } from 'vitest'
 import type { EditOrcidTokenEnv } from '../../../src/orcid-token.ts'
 import { connectOrcidMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -68,7 +68,7 @@ describe('connectOrcidCode', () => {
               status: StatusCodes.OK,
             },
           })
-        const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
+        const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
 
         const actual = await _.connectOrcidCode({ code, locale, user })({
           fetch: (...args) => fetch.fetchHandler(...args),
@@ -121,7 +121,7 @@ describe('connectOrcidCode', () => {
           },
         },
       })
-      const saveOrcidToken = jest.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
+      const saveOrcidToken = vi.fn<EditOrcidTokenEnv['saveOrcidToken']>(_ => TE.right(undefined))
 
       const actual = await _.connectOrcidCode({ code, locale, user })({
         fetch: (...args) => fetch.fetchHandler(...args),

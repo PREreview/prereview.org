@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
@@ -64,7 +64,7 @@ describe('ReviewRequestsPage', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests can't be loaded", (locale, page, field, language) =>
     Effect.gen(function* () {
-      const search = jest.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
+      const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
         _ => new ReviewRequests.ReviewRequestsAreUnavailable({}),
       )
 
@@ -91,7 +91,7 @@ describe('ReviewRequestsPage', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when requests can't be found", (locale, field, language) =>
     Effect.gen(function* () {
-      const search = jest.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
+      const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
         _ => new ReviewRequests.ReviewRequestsNotFound({}),
       )
 
@@ -122,7 +122,7 @@ describe('ReviewRequestsPage', () => {
     fc.option(fc.languageCode(), { nil: undefined }),
   ])("when the requests page can't be found", (locale, page, field, language) =>
     Effect.gen(function* () {
-      const search = jest.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
+      const search = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['search']>(
         _ => new ReviewRequests.ReviewRequestsNotFound({}),
       )
 

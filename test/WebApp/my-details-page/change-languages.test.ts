@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeLanguagesMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-languages.ts'
@@ -38,7 +38,7 @@ describe('changeLanguages', () => {
     test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.languages()])(
       'there are languages already',
       async (languages, user, locale, existingLanguages) => {
-        const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
         const actual = await _.changeLanguages({ body: { languages }, locale, method: 'POST', user })({
           deleteLanguages: shouldNotBeCalled,
@@ -61,7 +61,7 @@ describe('changeLanguages', () => {
     test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale()])(
       "when there aren't languages already",
       async (languages, user, locale) => {
-        const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
         const actual = await _.changeLanguages({ body: { languages }, locale, method: 'POST', user })({
           deleteLanguages: shouldNotBeCalled,
@@ -107,7 +107,7 @@ describe('changeLanguages', () => {
   test.prop([fc.record({ languages: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
     'when the form has been submitted without setting languages',
     async (body, user, locale) => {
-      const deleteLanguages = jest.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
+      const deleteLanguages = vi.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
 
       const actual = await _.changeLanguages({ body, locale, method: 'POST', user })({
         deleteLanguages,

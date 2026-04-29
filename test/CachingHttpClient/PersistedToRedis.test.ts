@@ -1,8 +1,8 @@
 import { Headers, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { it } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { it } from '@fast-check/vitest'
 import { DateTime, Effect, Either, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
+import { describe, expect, vi } from 'vitest'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
 import * as EffectTest from '../EffectTest.ts'
@@ -12,7 +12,7 @@ describe('getFromRedis', () => {
   const stubbedRedisReturning = (value: string | null) =>
     ({
       get: (() => Promise.resolve(value)) satisfies IoRedis['get'],
-      del: jest.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
+      del: vi.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
     }) as unknown as IoRedis
 
   describe('there is a value for a given key', () => {
@@ -90,7 +90,7 @@ describe('getFromRedis', () => {
 describe('writeToRedis', () => {
   const stubbedRedis = () =>
     ({
-      set: jest.fn(() => Promise.resolve('OK' as const)) satisfies IoRedis['set'],
+      set: vi.fn(() => Promise.resolve('OK' as const)) satisfies IoRedis['set'],
     }) as unknown as IoRedis
 
   describe('the value can be written', () => {
@@ -152,7 +152,7 @@ describe('deleteFromRedis', () => {
     it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
-          del: jest.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
+          del: vi.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
         } as unknown as IoRedis
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
@@ -168,7 +168,7 @@ describe('deleteFromRedis', () => {
     it.prop([fc.url()])('succeeds', url =>
       Effect.gen(function* () {
         const redis = {
-          del: jest.fn(() => Promise.resolve(0)) satisfies IoRedis['del'],
+          del: vi.fn(() => Promise.resolve(0)) satisfies IoRedis['del'],
         } as unknown as IoRedis
 
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))

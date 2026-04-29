@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   authorInviteDeclineMatch,
@@ -24,8 +24,8 @@ describe('authorInvite', () => {
     fc.authorInvite().filter(invite => invite.status !== 'declined'),
     fc.prereview(),
   ])('when the user is not logged in', async (inviteId, user, locale, invite, prereview) => {
-    const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-    const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+    const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+    const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
     const actual = await _.authorInvite({ id: inviteId, locale, user })({
       getAuthorInvite,
@@ -50,8 +50,8 @@ describe('authorInvite', () => {
     test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.openAuthorInvite(), fc.prereview()])(
       'when the invite is open',
       async (inviteId, user, locale, invite, prereview) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInvite({ id: inviteId, locale, user })({
           getAuthorInvite,

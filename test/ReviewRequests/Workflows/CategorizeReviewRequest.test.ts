@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
+import { describe, expect } from 'vitest'
 import { OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'

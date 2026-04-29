@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   VerifiedContactEmailAddress,
@@ -42,7 +42,7 @@ describe('authorInviteVerifyEmailAddress', () => {
       ])(
         'when the email address can be verified',
         async (inviteId, [user, invite], locale, prereview, [contactEmailAddress, verifyToken]) => {
-          const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+          const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
             TE.right(undefined),
           )
 
@@ -119,7 +119,7 @@ describe('authorInviteVerifyEmailAddress', () => {
       ])(
         "when the email address can't be verified",
         async (inviteId, [user, invite], locale, prereview, [contactEmailAddress, verifyToken]) => {
-          const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+          const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
             TE.left('unavailable'),
           )
 
@@ -161,7 +161,7 @@ describe('authorInviteVerifyEmailAddress', () => {
     ])(
       'when the email address is already verified',
       async (inviteId, [user, invite], locale, verifyToken, prereview, contactEmailAddress) => {
-        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+        const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
           TE.right(contactEmailAddress),
         )
 
@@ -196,7 +196,7 @@ describe('authorInviteVerifyEmailAddress', () => {
         }),
       }),
     ])('when there is no email address', async (inviteId, [user, invite], locale, verifyToken, prereview) => {
-      const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+      const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
         TE.left('not-found'),
       )
 
@@ -224,7 +224,7 @@ describe('authorInviteVerifyEmailAddress', () => {
       fc.supportedLocale(),
       fc.uuid(),
     ])('when the review cannot be loaded', async (inviteId, [user, invite], locale, verifyToken) => {
-      const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.left('unavailable'))
+      const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.left('unavailable'))
 
       const actual = await _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
         getAuthorInvite: () => TE.right(invite),
@@ -247,7 +247,7 @@ describe('authorInviteVerifyEmailAddress', () => {
     test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.uuid()])(
       'when the invite cannot be loaded',
       async (inviteId, user, locale, verifyToken) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('unavailable'))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('unavailable'))
 
         const actual = await _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
           getAuthorInvite,
@@ -354,7 +354,7 @@ describe('authorInviteVerifyEmailAddress', () => {
     test.prop([fc.uuid(), fc.user(), fc.supportedLocale(), fc.uuid()])(
       'when the invite is not found',
       async (inviteId, user, locale, verifyToken) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('not-found'))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.left('not-found'))
 
         const actual = await _.authorInviteVerifyEmailAddress({ id: inviteId, locale, user, verify: verifyToken })({
           getAuthorInvite,

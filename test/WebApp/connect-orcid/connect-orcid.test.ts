@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetOrcidTokenEnv } from '../../../src/orcid-token.ts'
 import { connectOrcidMatch, connectOrcidStartMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -12,7 +12,7 @@ import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 describe('connectOrcid', () => {
   describe('when the user is logged in', () => {
     test.prop([fc.user(), fc.supportedLocale()])('when ORCID is not already connected', async (user, locale) => {
-      const getOrcidToken = jest.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
+      const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
 
       const actual = await _.connectOrcid({ locale, user })({
         getOrcidToken,

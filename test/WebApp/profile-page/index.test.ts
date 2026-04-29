@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/profile-page/index.ts'
@@ -61,15 +61,15 @@ describe('profile', () => {
         slackUser,
         openForRequests,
       ) => {
-        const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
-        const getName = jest.fn<_.Env['getName']>(_ => TE.of(name))
-        const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
-        const getCareerStage = jest.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
-        const getResearchInterests = jest.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
-        const getLocation = jest.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
-        const getLanguages = jest.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
-        const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
-        const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
+        const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
+        const getName = vi.fn<_.Env['getName']>(_ => TE.of(name))
+        const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+        const getCareerStage = vi.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
+        const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
+        const getLocation = vi.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
+        const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
+        const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
+        const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
 
         const actual = await _.profile({ locale, profile })({
           getAvatar,
@@ -634,7 +634,7 @@ describe('profile', () => {
         ),
       ),
     ])('when the data can be loaded', async (locale, profile, prereviews) => {
-      const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+      const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
 
       const actual = await _.profile({ locale, profile })({
         getAvatar: shouldNotBeCalled,

@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer, Tuple } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Personas from '../../../src/Personas/index.ts'
@@ -30,7 +30,7 @@ describe('CheckYourRequestPage', () => {
       'when there is a incomplete request',
       (preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
-          const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+          const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
             Effect.succeed(preprintTitle),
           )
 
@@ -145,7 +145,7 @@ describe('CheckYourRequestPage', () => {
       fc.supportedLocale(),
     ])("when a request hasn't been started", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequestReadyToBePublished = jest.fn<
+        const getReviewRequestReadyToBePublished = vi.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new ReviewRequests.UnknownReviewRequest({}))
 
@@ -185,7 +185,7 @@ describe('CheckYourRequestPage', () => {
       fc.supportedLocale(),
     ])("when the request can't be loaded", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequestReadyToBePublished = jest.fn<
+        const getReviewRequestReadyToBePublished = vi.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new Queries.UnableToQuery({}))
 
@@ -253,7 +253,7 @@ describe('CheckYourRequestSubmission', () => {
         fc.supportedLocale(),
       ])('when the request can be published', (preprintId, user, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
-          const publishReviewRequest = jest.fn<
+          const publishReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => Effect.void)
 
@@ -290,7 +290,7 @@ describe('CheckYourRequestSubmission', () => {
         fc.supportedLocale(),
       ])("when the request can't be published", (preprintId, user, reviewRequest, preprintTitle, locale) =>
         Effect.gen(function* () {
-          const publishReviewRequest = jest.fn<
+          const publishReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => new Commands.UnableToHandleCommand({}))
 
@@ -333,7 +333,7 @@ describe('CheckYourRequestSubmission', () => {
         fc.anything().map(cause => new Commands.UnableToHandleCommand({ cause })),
       ])('when the request can not be published', (preprintId, user, reviewRequest, preprintTitle, locale, error) =>
         Effect.gen(function* () {
-          const publishReviewRequest = jest.fn<
+          const publishReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestCommands.Service)['publishReviewRequest']
           >(_ => error)
 
@@ -434,7 +434,7 @@ describe('CheckYourRequestSubmission', () => {
       fc.supportedLocale(),
     ])("when a request hasn't been started", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequestReadyToBePublished = jest.fn<
+        const getReviewRequestReadyToBePublished = vi.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new ReviewRequests.UnknownReviewRequest({}))
 
@@ -473,7 +473,7 @@ describe('CheckYourRequestSubmission', () => {
       fc.supportedLocale(),
     ])("when the request can't be loaded", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getReviewRequestReadyToBePublished = jest.fn<
+        const getReviewRequestReadyToBePublished = vi.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
         >(_ => new Queries.UnableToQuery({}))
 

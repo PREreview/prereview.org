@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { SaveAuthorInviteEnv } from '../../../src/author-invite.ts'
 import { authorInviteDeclineMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -33,7 +33,7 @@ describe('authorInviteDecline', () => {
       test.prop([fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()])(
         'when the invite can be saved',
         async (inviteId, invite, locale) => {
-          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
+          const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
           const actual = await _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
             getAuthorInvite: () => TE.right(invite),
@@ -53,7 +53,7 @@ describe('authorInviteDecline', () => {
       test.prop([fc.uuid(), fc.openAuthorInvite(), fc.supportedLocale()])(
         "when the invite can't be saved",
         async (inviteId, invite, locale) => {
-          const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.left('unavailable'))
+          const saveAuthorInvite = vi.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.left('unavailable'))
 
           const actual = await _.authorInviteDecline({ id: inviteId, locale, method: 'POST' })({
             getAuthorInvite: () => TE.right(invite),
@@ -106,7 +106,7 @@ describe('authorInviteDecline', () => {
     fc.prereview(),
     fc.supportedLocale(),
   ])('when the invite is open', async (inviteId, method, invite, review, locale) => {
-    const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(review))
+    const getPrereview = vi.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(review))
 
     const actual = await _.authorInviteDecline({ id: inviteId, locale, method })({
       getAuthorInvite: () => TE.right(invite),

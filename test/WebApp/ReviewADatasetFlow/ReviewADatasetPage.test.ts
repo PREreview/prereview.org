@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer, Option, pipe, Predicate, Struct, Tuple } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -92,7 +92,7 @@ describe('ReviewADatasetSubmission', () => {
     },
   )('when there is a dataset DOI', (locale, [value, expected], resolved) =>
     Effect.gen(function* () {
-      const resolveDatasetId = jest.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(_ =>
+      const resolveDatasetId = vi.fn<(typeof Datasets.Datasets.Service)['resolveDatasetId']>(_ =>
         Effect.succeed(resolved),
       )
 

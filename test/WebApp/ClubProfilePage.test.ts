@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
+import { describe, expect, vi } from 'vitest'
 import { getClubName } from '../../src/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
@@ -29,7 +29,7 @@ describe('ClubProfilePage', () => {
     fc.supportedLocale(),
   ])('when the data can be loaded', (clubId, prereviews, locale) =>
     Effect.gen(function* () {
-      const getForClub = jest.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
+      const getForClub = vi.fn<(typeof Prereviews.Prereviews.Service)['getForClub']>(_ => Effect.succeed(prereviews))
 
       const actual = yield* pipe(
         _.ClubProfilePage({ id: clubId }),

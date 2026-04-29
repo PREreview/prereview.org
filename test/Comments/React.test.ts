@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, pipe } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
 import * as Queries from '../../src/Queries.ts'
@@ -13,7 +13,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
     'marks the email addess as verified',
     (commentId, comment) =>
       Effect.gen(function* () {
-        const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -104,7 +104,7 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
     'assigns a DOI',
     (commentId, inputForCommentZenodoRecord, id, doi) =>
       Effect.gen(function* () {
-        const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
         yield* Effect.provideService(
           _.AssignCommentADoiWhenPublicationWasRequested({
@@ -167,7 +167,7 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
       ),
   ])('published comment', ([commentId, event]) =>
     Effect.gen(function* () {
-      const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+      const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
       yield* Effect.provideService(
         _.PublishCommentWhenCommentWasAssignedADoi(event),

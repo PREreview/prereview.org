@@ -81,6 +81,7 @@ export default defineConfig([
             'remixicon/**/*.svg',
             'integration/base',
             'types/*',
+            'vitest/config',
             '*/index.ts',
           ],
         },

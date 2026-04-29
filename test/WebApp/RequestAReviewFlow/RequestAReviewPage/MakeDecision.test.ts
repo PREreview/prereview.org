@@ -1,8 +1,8 @@
 import { UrlParams } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Doi } from 'doi-ts'
 import { Array, Effect, Either, Layer, Option, Tuple } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import {
   BiorxivOrMedrxivPreprintId,
@@ -83,7 +83,7 @@ describe('makeDecision', () => {
       },
     )('when the form is valid', ([value, expected], preprintId) =>
       Effect.gen(function* () {
-        const resolvePreprintId = jest.fn<(typeof Preprints.Preprints.Service)['resolvePreprintId']>(_ =>
+        const resolvePreprintId = vi.fn<(typeof Preprints.Preprints.Service)['resolvePreprintId']>(_ =>
           Effect.succeed(preprintId),
         )
 

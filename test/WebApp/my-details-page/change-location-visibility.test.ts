@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeLocationVisibilityMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-location-visibility.ts'
@@ -37,7 +37,7 @@ describe('changeLocationVisibility', () => {
   test.prop([fc.locationVisibility(), fc.user(), fc.supportedLocale(), fc.location()])(
     'when the form has been submitted',
     async (visibility, user, locale, existingLocation) => {
-      const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+      const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
       const actual = await _.changeLocationVisibility({
         body: { locationVisibility: visibility },
@@ -90,7 +90,7 @@ describe('changeLocationVisibility', () => {
     fc.supportedLocale(),
     fc.location(),
   ])('when the form has been submitted without setting visibility', async (body, user, locale, location) => {
-    const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
+    const saveLocation = vi.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
     const actual = await _.changeLocationVisibility({ body, locale, method: 'POST', user })({
       deleteLocation: shouldNotBeCalled,

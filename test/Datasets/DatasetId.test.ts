@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Option, Tuple } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../src/Datasets/DatasetId.ts'
 import * as Datasets from '../../src/Datasets/index.ts'
 import { Doi } from '../../src/types/index.ts'

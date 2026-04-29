@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { disconnectSlackMatch, myDetailsMatch } from '../../../src/routes.ts'
 import type { DeleteSlackUserIdEnv } from '../../../src/slack-user-id.ts'
 import type { IsSlackUserEnv } from '../../../src/slack-user.ts'
@@ -15,7 +15,7 @@ describe('disconnectSlack', () => {
     test.prop([fc.user(), fc.supportedLocale(), fc.string().filter(method => method !== 'POST')])(
       'when Slack is connected',
       async (user, locale, method) => {
-        const isSlackUser = jest.fn<IsSlackUserEnv['isSlackUser']>(_ => TE.right(true))
+        const isSlackUser = vi.fn<IsSlackUserEnv['isSlackUser']>(_ => TE.right(true))
 
         const actual = await _.disconnectSlack({ locale, method, user })({
           deleteSlackUserId: shouldNotBeCalled,
@@ -36,7 +36,7 @@ describe('disconnectSlack', () => {
     )
 
     test.prop([fc.user(), fc.supportedLocale()])('when the form is submitted', async (user, locale) => {
-      const deleteSlackUserId = jest.fn<DeleteSlackUserIdEnv['deleteSlackUserId']>(_ => TE.right(undefined))
+      const deleteSlackUserId = vi.fn<DeleteSlackUserIdEnv['deleteSlackUserId']>(_ => TE.right(undefined))
 
       const actual = await _.disconnectSlack({ locale, method: 'POST', user })({
         deleteSlackUserId,

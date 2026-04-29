@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as EffectTest from '../../../EffectTest.ts'

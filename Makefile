@@ -74,13 +74,13 @@ typecheck-analyze: node_modules src/manifest.json
 	npx analyze-trace .cache/tsc-trace ${TEST}
 
 test: node_modules src/manifest.json
-	npx jest ${TEST}
+	npx vitest run ${TEST}
 
 test-fast: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged --maxWorkers=50%
+	FAST_CHECK_NUM_RUNS=10 npx vitest run --changed --maxWorkers=50%
 
 test-watch: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx jest --watch ${TEST}
+	FAST_CHECK_NUM_RUNS=10 npx vitest watch ${TEST}
 
 test-integration: test-integration-image
 	docker compose up postgres --wait

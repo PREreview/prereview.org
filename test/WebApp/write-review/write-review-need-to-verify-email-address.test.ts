@@ -1,8 +1,8 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { describe, expect, vi } from 'vitest'
 import type { VerifyContactEmailAddressForReviewEnv } from '../../../src/contact-email-address.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import {
@@ -94,7 +94,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     async (preprintId, preprintTitle, newReview, user, publicPersona, locale, contactEmailAddress) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const verifyContactEmailAddressForReview = jest.fn<
+      const verifyContactEmailAddressForReview = vi.fn<
         VerifyContactEmailAddressForReviewEnv['verifyContactEmailAddressForReview']
       >(_ => TE.right(undefined))
 

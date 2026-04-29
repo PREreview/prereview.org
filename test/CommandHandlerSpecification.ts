@@ -1,5 +1,5 @@
-import { expect } from '@jest/globals'
 import { Array, Either, Option } from 'effect'
+import { expect } from 'vitest'
 
 export type CommandHandlerSpecfication<Command, Event, Error> = (...givenEvents: ReadonlyArray<Event>) => {
   when: (command: Command) => {

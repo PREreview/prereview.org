@@ -1,6 +1,6 @@
-import { describe, expect, test } from '@jest/globals'
 import { type Array, Effect, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
+import { describe, expect, test } from 'vitest'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/Cld.ts'
 import { type Html, html, type PlainText, rawHtml } from '../../../src/html.ts'
 import * as EffectTest from '../../EffectTest.ts'

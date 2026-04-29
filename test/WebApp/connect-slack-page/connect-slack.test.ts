@@ -1,10 +1,10 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { describe, expect, vi } from 'vitest'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../../../src/routes.ts'
 import type { EditSlackUserIdEnv } from '../../../src/slack-user-id.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -75,8 +75,8 @@ describe('connectSlackStart', () => {
   test.prop([fc.oauth(), fc.supportedLocale(), fc.origin(), fc.uuid(), fc.user()])(
     'when the user is logged in',
     async (slackOauth, locale, publicUrl, uuid, user) => {
-      const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
-      const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+      const generateUuid = vi.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
+      const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
       const actual = await _.connectSlackStart({ locale, user })({
         addToSession,
@@ -137,8 +137,8 @@ describe('connectSlackCode', () => {
   ])(
     'when the access token can be decoded',
     async (code, user, locale, oauth, publicUrl, userId, scopes, accessToken, state) => {
-      const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
-      const popFromSession = jest.fn<PopFromSessionEnv['popFromSession']>(_ => TE.right(state))
+      const saveSlackUserId = vi.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
+      const popFromSession = vi.fn<PopFromSessionEnv['popFromSession']>(_ => TE.right(state))
 
       const actual = await _.connectSlackCode({ code, locale, state, user })({
         fetch: (...args) =>

@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/reviews-page/index.ts'
@@ -47,9 +47,7 @@ describe('reviewsPage', () => {
       ),
     }),
   ])('when the recent reviews can be loaded', async (locale, page, field, query, recentPrereviews) => {
-    const getRecentPrereviews = jest.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(_ =>
-      TE.right(recentPrereviews),
-    )
+    const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(_ => TE.right(recentPrereviews))
 
     const actual = await _.reviewsPage({ field, locale, page, query })({ getRecentPrereviews })()
 

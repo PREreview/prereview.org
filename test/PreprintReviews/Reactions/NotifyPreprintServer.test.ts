@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, Option, pipe } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { CoarNotify } from '../../../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
@@ -19,7 +19,7 @@ describe('NotifyPreprintServer', () => {
         'when the feature is enabled',
         (publicUrl, reviewId, review, uuid) =>
           Effect.gen(function* () {
-            const sendMessage = jest.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
+            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
 
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),
@@ -60,7 +60,7 @@ describe('NotifyPreprintServer', () => {
         'when the feature is sandboxed',
         (publicUrl, reviewId, review, uuid) =>
           Effect.gen(function* () {
-            const sendMessage = jest.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
+            const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
 
             const actual = yield* pipe(
               _.NotifyPreprintServer(reviewId),

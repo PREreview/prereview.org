@@ -1,5 +1,5 @@
-import { describe, expect, it } from '@jest/globals'
 import { Effect, Redacted } from 'effect'
+import { describe, expect, it } from 'vitest'
 import { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/ConstructCommentListUrl.ts'
 import { Doi } from '../../../src/types/index.ts'

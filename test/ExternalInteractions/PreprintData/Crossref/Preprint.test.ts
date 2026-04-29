@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect } from 'effect'
+import { describe, expect } from 'vitest'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'

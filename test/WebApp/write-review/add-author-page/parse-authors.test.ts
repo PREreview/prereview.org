@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Option } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/WebApp/write-review/add-author-page/parse-authors.ts'
 
 describe('parseAuthors', () => {

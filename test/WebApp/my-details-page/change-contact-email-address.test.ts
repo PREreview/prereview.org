@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-contact-email-address.ts'
 import { UnverifiedContactEmailAddress } from '../../../src/contact-email-address.ts'
@@ -49,8 +49,8 @@ describe('changeContactEmailAddress', () => {
       ])(
         'when it is different to the previous value',
         async (emailAddress, user, publicPersona, locale, existingEmailAddress, verificationToken) => {
-          const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
-          const verifyContactEmailAddress = jest.fn<_.Env['verifyContactEmailAddress']>(_ => TE.right(undefined))
+          const saveContactEmailAddress = vi.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
+          const verifyContactEmailAddress = vi.fn<_.Env['verifyContactEmailAddress']>(_ => TE.right(undefined))
 
           const actual = await _.changeContactEmailAddress({ body: { emailAddress }, locale, method: 'POST', user })({
             generateUuid: () => verificationToken,

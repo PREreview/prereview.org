@@ -1,10 +1,10 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
 import { merge } from 'ts-deepmerge'
+import { describe, expect, vi } from 'vitest'
 import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
 import * as Personas from '../../../src/Personas/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
@@ -123,10 +123,8 @@ describe('writeReviewPublish', () => {
         yield* Effect.promise(() =>
           formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
         )
-        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-          TE.right([reviewDoi, reviewId]),
-        )
-        const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({
@@ -204,10 +202,8 @@ describe('writeReviewPublish', () => {
         const runtime = yield* Effect.runtime<LanguageDetection.LanguageDetection | Personas.Personas>()
         const formStore = new Keyv()
         yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
-        const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ =>
-          TE.right([reviewDoi, reviewId]),
-        )
-        const addToSession = jest.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
+        const publishPrereview = vi.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
+        const addToSession = vi.fn<AddToSessionEnv['addToSession']>(_ => TE.of(undefined))
 
         const actual = yield* Effect.promise(() =>
           _.writeReviewPublish({ id: preprintId, locale, method: 'POST', user })({

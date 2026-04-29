@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-research-interests.ts'
@@ -38,7 +38,7 @@ describe('changeResearchInterests', () => {
     test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale(), fc.researchInterests()])(
       'there are research interests already',
       async (researchInterests, user, locale, existingResearchInterests) => {
-        const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
         const actual = await _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
           deleteResearchInterests: shouldNotBeCalled,
@@ -61,7 +61,7 @@ describe('changeResearchInterests', () => {
     test.prop([fc.nonEmptyString(), fc.user(), fc.supportedLocale()])(
       "there aren't research interests already",
       async (researchInterests, user, locale) => {
-        const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+        const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
         const actual = await _.changeResearchInterests({ body: { researchInterests }, locale, method: 'POST', user })({
           deleteResearchInterests: shouldNotBeCalled,
@@ -110,7 +110,7 @@ describe('changeResearchInterests', () => {
   test.prop([fc.record({ researchInterests: fc.constant('') }, { requiredKeys: [] }), fc.user(), fc.supportedLocale()])(
     'when the form has been submitted without setting research interests',
     async (body, user, locale) => {
-      const deleteResearchInterests = jest.fn<_.Env['deleteResearchInterests']>(_ => TE.right(undefined))
+      const deleteResearchInterests = vi.fn<_.Env['deleteResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await _.changeResearchInterests({ body, locale, method: 'POST', user })({
         deleteResearchInterests,

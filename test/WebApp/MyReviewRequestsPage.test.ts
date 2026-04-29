@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as Routes from '../../src/routes.ts'
@@ -15,7 +15,7 @@ describe('MyReviewRequestsPage', () => {
     'when the requests can be loaded',
     (locale, user, reviewRequests) =>
       Effect.gen(function* () {
-        const listForPrereviewer = jest.fn<(typeof ReviewRequests.ReviewRequests.Service)['listForPrereviewer']>(_ =>
+        const listForPrereviewer = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['listForPrereviewer']>(_ =>
           Effect.succeed(reviewRequests),
         )
 

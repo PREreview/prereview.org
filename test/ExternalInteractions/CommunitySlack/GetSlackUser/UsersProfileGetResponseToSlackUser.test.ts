@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Struct } from 'effect'
+import { expect } from 'vitest'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/GetSlackUser/UsersProfileGetResponseToSlackUser.ts'
 import * as fc from '../../../fc.ts'
 

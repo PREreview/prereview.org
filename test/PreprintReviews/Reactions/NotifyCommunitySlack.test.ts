@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
+import { describe, expect } from 'vitest'
 import { CommunitySlack } from '../../../src/ExternalInteractions/index.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
 import * as _ from '../../../src/PreprintReviews/Reactions/NotifyCommunitySlack.ts'

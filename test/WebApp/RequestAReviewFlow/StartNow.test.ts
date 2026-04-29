@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
@@ -26,10 +26,10 @@ describe('requestReviewStart', () => {
         fc.reviewRequestNextExpectedCommand(),
       ])('when a request can be started', (preprintId, user, preprintTitle, locale, uuid, nextExpectedCommand) =>
         Effect.gen(function* () {
-          const findReviewRequestByAPrereviewer = jest.fn<
+          const findReviewRequestByAPrereviewer = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['findReviewRequestByAPrereviewer']
           >(_ => Effect.succeedNone)
-          const getNextExpectedCommandForAUserOnAReviewRequest = jest.fn<
+          const getNextExpectedCommandForAUserOnAReviewRequest = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
           >(_ => Effect.succeed(nextExpectedCommand))
 

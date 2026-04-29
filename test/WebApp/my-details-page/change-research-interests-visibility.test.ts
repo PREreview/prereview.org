@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-research-interests-visibility.ts'
@@ -37,7 +37,7 @@ describe('changeResearchInterestsVisibility', () => {
   test.prop([fc.researchInterestsVisibility(), fc.user(), fc.supportedLocale(), fc.researchInterests()])(
     'when the form has been submitted',
     async (visibility, user, locale, existingResearchInterests) => {
-      const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+      const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await _.changeResearchInterestsVisibility({
         body: { researchInterestsVisibility: visibility },
@@ -93,7 +93,7 @@ describe('changeResearchInterestsVisibility', () => {
     fc.supportedLocale(),
     fc.researchInterests(),
   ])('when the form has been submitted without setting visibility', async (body, user, locale, researchInterests) => {
-    const saveResearchInterests = jest.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
+    const saveResearchInterests = vi.fn<_.Env['saveResearchInterests']>(_ => TE.right(undefined))
 
     const actual = await _.changeResearchInterestsVisibility({ body, locale, method: 'POST', user })({
       deleteResearchInterests: shouldNotBeCalled,

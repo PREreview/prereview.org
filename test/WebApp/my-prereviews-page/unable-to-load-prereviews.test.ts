@@ -1,5 +1,5 @@
-import { test } from '@fast-check/jest'
-import { expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
+import { expect } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/unable-to-load-prereviews.ts'
 import * as fc from './fc.ts'

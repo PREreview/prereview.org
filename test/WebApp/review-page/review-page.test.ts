@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/review-page/index.ts'
 import { reviewMatch } from '../../../src/routes.ts'
@@ -27,8 +27,8 @@ describe('reviewPage', () => {
       }),
     ),
   ])('when the review can be loaded', async (locale, id, prereview, comments) => {
-    const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-    const getComments = jest.fn<_.GetCommentsEnv['getComments']>(_ => TE.right(comments))
+    const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+    const getComments = vi.fn<_.GetCommentsEnv['getComments']>(_ => TE.right(comments))
 
     const actual = await _.reviewPage({ id, locale })({
       getPrereview,

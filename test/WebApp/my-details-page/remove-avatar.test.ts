@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { myDetailsMatch, removeAvatarMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/remove-avatar.ts'
@@ -12,7 +12,7 @@ describe('removeAvatar', () => {
   test.prop([fc.user(), fc.supportedLocale(), fc.url()])(
     'when the avatar can be deleted',
     async (user, locale, avatar) => {
-      const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.right(undefined))
+      const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(_ => TE.right(undefined))
 
       const actual = await _.removeAvatar({ locale, method: 'POST', user })({
         deleteAvatar,
@@ -31,7 +31,7 @@ describe('removeAvatar', () => {
   test.prop([fc.user(), fc.supportedLocale(), fc.url()])(
     "when the avatar can't be deleted",
     async (user, locale, avatar) => {
-      const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
+      const deleteAvatar = vi.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
 
       const actual = await _.removeAvatar({ locale, method: 'POST', user })({
         deleteAvatar,
@@ -72,7 +72,7 @@ describe('removeAvatar', () => {
   )
 
   test.prop([fc.string(), fc.user(), fc.supportedLocale()])('when there is no avatar', async (method, user, locale) => {
-    const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.left('not-found'))
+    const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.left('not-found'))
 
     const actual = await _.removeAvatar({ locale, method, user })({
       deleteAvatar: shouldNotBeCalled,
@@ -90,7 +90,7 @@ describe('removeAvatar', () => {
   test.prop([fc.string(), fc.user(), fc.supportedLocale()])(
     "when there the existing avatar can't be loaded",
     async (method, user, locale) => {
-      const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.left('unavailable'))
+      const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.left('unavailable'))
 
       const actual = await _.removeAvatar({ locale, method, user })({
         deleteAvatar: shouldNotBeCalled,

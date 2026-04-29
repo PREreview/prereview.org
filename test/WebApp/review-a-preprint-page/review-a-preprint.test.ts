@@ -1,9 +1,9 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Doi } from 'doi-ts'
 import { Array, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import {
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
@@ -109,7 +109,7 @@ describe('reviewAPreprint', () => {
         ],
       },
     )('with a preprint DOI', async (locale, [value, expected], resolved) => {
-      const resolvePreprintId = jest.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(resolved))
+      const resolvePreprintId = vi.fn<ResolvePreprintIdEnv['resolvePreprintId']>(_ => TE.of(resolved))
 
       const actual = await _.reviewAPreprint({ body: { preprint: value }, locale, method: 'POST' })({
         resolvePreprintId,

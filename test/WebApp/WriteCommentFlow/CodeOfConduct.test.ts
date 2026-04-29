@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Equal } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -189,8 +189,8 @@ describe('CodeOfConductSubmission', () => {
           fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
         ])('when the comment can be entered', (commentId, [comment, user], locale, nextCommand) =>
           Effect.gen(function* () {
-            const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
-            const getNextExpectedCommandForUserOnAComment = jest.fn<
+            const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+            const getNextExpectedCommandForUserOnAComment = vi.fn<
               typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
             >(_ => Effect.succeed(Either.right(nextCommand)))
 

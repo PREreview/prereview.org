@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
+import { describe, expect } from 'vitest'
 import * as _ from '../src/research-interests.ts'
 import * as fc from './fc.ts'
 

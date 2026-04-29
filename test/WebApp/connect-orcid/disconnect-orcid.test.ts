@@ -1,8 +1,8 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../../src/orcid-token.ts'
 import { disconnectOrcidMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -17,7 +17,7 @@ describe('disconnectOrcid', () => {
         test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.orcidToken()])(
           'when the token can be deleted',
           async (orcidOauth, user, locale, orcidToken) => {
-            const deleteOrcidToken = jest.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
+            const deleteOrcidToken = vi.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
             const fetch = fetchMock.createInstance().postOnce({
               url: orcidOauth.revokeUrl.href,
               matcherFunction: ({ options }) =>
@@ -100,7 +100,7 @@ describe('disconnectOrcid', () => {
     test.prop([fc.oauth(), fc.user(), fc.supportedLocale(), fc.string()])(
       'when ORCID is not already connected',
       async (orcidOauth, user, locale, method) => {
-        const getOrcidToken = jest.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
+        const getOrcidToken = vi.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
 
         const actual = await _.disconnectOrcid({ locale, method, user })({
           deleteOrcidToken: shouldNotBeCalled,

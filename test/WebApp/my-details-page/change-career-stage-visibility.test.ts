@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-career-stage-visibility.ts'
@@ -37,7 +37,7 @@ describe('changeCareerStageVisibility', () => {
   test.prop([fc.careerStageVisibility(), fc.user(), fc.supportedLocale(), fc.careerStage()])(
     'when the form has been submitted',
     async (visibility, user, locale, existingCareerStage) => {
-      const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+      const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
       const actual = await _.changeCareerStageVisibility({
         body: { careerStageVisibility: visibility },
@@ -90,7 +90,7 @@ describe('changeCareerStageVisibility', () => {
     fc.supportedLocale(),
     fc.careerStage(),
   ])('when the form has been submitted without setting visibility', async (body, user, locale, careerStage) => {
-    const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+    const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
     const actual = await _.changeCareerStageVisibility({ body, locale, method: 'POST', user })({
       deleteCareerStage: shouldNotBeCalled,

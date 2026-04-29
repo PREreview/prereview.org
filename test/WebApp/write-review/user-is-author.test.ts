@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import * as E from 'fp-ts/lib/Either.js'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../src/WebApp/write-review/user-is-author.ts'
 import * as fc from './fc.ts'
 

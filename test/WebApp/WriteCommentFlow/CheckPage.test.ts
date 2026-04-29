@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Equal, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Personas from '../../../src/Personas/index.ts'
@@ -232,7 +232,7 @@ describe('CheckPageSubmission', () => {
           .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
       ])('when the comment can be published', (commentId, locale, [comment, user]) =>
         Effect.gen(function* () {
-          const handleCommentCommand = jest.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+          const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
           const actual = yield* Effect.provideService(
             _.CheckPageSubmission({ commentId }),

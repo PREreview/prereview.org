@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeOpenForRequestsMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-open-for-requests.ts'
@@ -37,7 +37,7 @@ describe('changeOpenForRequests', () => {
     test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale(), fc.isOpenForRequests()])(
       'there is open for requests already',
       async (openForRequests, user, locale, existingOpenForRequests) => {
-        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
         const actual = await _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
           isOpenForRequests: () => TE.right(existingOpenForRequests),
@@ -64,7 +64,7 @@ describe('changeOpenForRequests', () => {
     test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.supportedLocale()])(
       "when there isn't a career stage already",
       async (openForRequests, user, locale) => {
-        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = vi.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
         const actual = await _.changeOpenForRequests({ body: { openForRequests }, locale, method: 'POST', user })({
           isOpenForRequests: () => TE.left('not-found'),

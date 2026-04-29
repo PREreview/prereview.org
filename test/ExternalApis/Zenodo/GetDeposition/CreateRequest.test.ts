@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Redacted } from 'effect'
+import { describe, expect } from 'vitest'
 import { Zenodo } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Zenodo/GetDeposition/CreateRequest.ts'
 import * as EffectTest from '../../../EffectTest.ts'

@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Either, Schema, Tuple } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/SciProfilesId.ts'
 import * as fc from '../fc.ts'
 

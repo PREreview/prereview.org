@@ -1,6 +1,6 @@
 import { HttpBody } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/DetectLanguage/Detect/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
 

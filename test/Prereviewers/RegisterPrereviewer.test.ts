@@ -1,6 +1,6 @@
-import { expect, test } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
+import { expect, test } from 'vitest'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/RegisterPrereviewer.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'

@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -83,7 +83,7 @@ describe('requestReviewPublished', () => {
       fc.supportedLocale(),
     ])("when the review can't be loaded", (preprintId, user, preprintTitle, locale) =>
       Effect.gen(function* () {
-        const getPublishedReviewRequestByAPrereviewer = jest.fn<
+        const getPublishedReviewRequestByAPrereviewer = vi.fn<
           (typeof ReviewRequests.ReviewRequestQueries.Service)['getPublishedReviewRequestByAPrereviewer']
         >(_ => new Queries.UnableToQuery({}))
 

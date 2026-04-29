@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Option, Tuple } from 'effect'
+import { describe, expect } from 'vitest'
 import { Orcid } from '../../src/ExternalApis/index.ts'
 import * as _ from '../../src/Personas/GetNameFromOrcidPersonalDetails.ts'
 import { NonEmptyString } from '../../src/types/NonEmptyString.ts'

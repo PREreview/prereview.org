@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/verify-contact-email-address.ts'
 import { VerifiedContactEmailAddress } from '../../../src/contact-email-address.ts'
@@ -13,8 +13,8 @@ describe('verifyContactEmailAddress', () => {
   test.prop([fc.user(), fc.supportedLocale(), fc.unverifiedContactEmailAddress()])(
     'when the email address is unverified',
     async (user, locale, contactEmailAddress) => {
-      const getContactEmailAddress = jest.fn<_.Env['getContactEmailAddress']>(_ => TE.right(contactEmailAddress))
-      const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
+      const getContactEmailAddress = vi.fn<_.Env['getContactEmailAddress']>(_ => TE.right(contactEmailAddress))
+      const saveContactEmailAddress = vi.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
       const actual = await _.verifyContactEmailAddress({ verify: contactEmailAddress.verificationToken, locale, user })(
         {

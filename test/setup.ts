@@ -1,15 +1,14 @@
-import type { Tester, TesterContext } from '@jest/expect-utils'
-import { expect } from '@jest/globals'
+import type { ExpectationResult, MatcherState, Tester, TesterContext } from '@vitest/expect'
 import { Either, Equal, Utils } from 'effect'
-import type { MatcherFunction } from 'expect'
 import * as fc from 'fast-check'
+import { expect } from 'vitest'
 import { Html, PlainText } from '../src/html.ts'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 
-expect.addEqualityTesters([effectEquals, temporalEquals])
+expect.addEqualityTesters([effectEquals])
 
 function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
   if (!Equal.isEqual(a) || !Equal.isEqual(b)) {
@@ -37,22 +36,7 @@ function effectEquals(this: TesterContext, a: unknown, b: unknown, customTesters
   )
 }
 
-function temporalEquals(this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) {
-  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
-    return undefined
-  }
-
-  const typeA = Object.prototype.toString.call(a)
-  const typeB = Object.prototype.toString.call(b)
-
-  if (!typeA.startsWith('[object Temporal.') || typeA !== typeB) {
-    return undefined
-  }
-
-  return this.equals(a.toString(), b.toString(), customTesters)
-}
-
-const htmlContaining: MatcherFunction<[sample: Html | string]> = function (actual, sample) {
+function htmlContaining(this: MatcherState, actual: unknown, sample: Html | string): ExpectationResult {
   if (!(actual instanceof Html)) {
     throw new TypeError('Not Html')
   }
@@ -70,7 +54,7 @@ const htmlContaining: MatcherFunction<[sample: Html | string]> = function (actua
   }
 }
 
-const plainTextContaining: MatcherFunction<[sample: string]> = function (actual, sample) {
+function plainTextContaining(this: MatcherState, actual: unknown, sample: string): ExpectationResult {
   if (!(actual instanceof PlainText)) {
     throw new TypeError('Not PlainText')
   }
@@ -94,13 +78,12 @@ expect.extend({
   plainTextContaining,
 })
 
-declare module 'expect' {
-  interface AsymmetricMatchers {
-    htmlContaining(sample: Html | string): void
-    plainTextContaining(sample: string): void
-  }
-  interface Matchers<R> {
-    htmlContaining(sample: Html | string): R
-    plainTextContaining(sample: string): R
-  }
+interface CustomMatchers<R = unknown> {
+  htmlContaining(sample: Html | string): R
+  plainTextContaining(sample: string): R
+}
+
+declare module 'vitest' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-explicit-any
+  interface Matchers<T = any> extends CustomMatchers<T> {}
 }

@@ -1,5 +1,5 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
+import { describe, expect } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/connect-orcid/oauth-error.ts'
 import * as fc from '../../fc.ts'

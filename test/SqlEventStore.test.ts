@@ -1,10 +1,10 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { it, test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { it, test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -77,7 +77,7 @@ describe('when the last known position is none', () => {
     fc.array(fc.datasetReviewEvent()),
   ])('appends the event', (event, filter, otherEvents) =>
     Effect.gen(function* () {
-      const publish = jest.fn<PubSub.PubSub<Events.Event>['publish']>(_ => Effect.succeed(true))
+      const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(_ => Effect.succeed(true))
 
       const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
@@ -103,7 +103,7 @@ describe('when the last known position is none', () => {
 describe('when the last known position has not changed', () => {
   it.prop([fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()])('appends the event', (existingEvents, event) =>
     Effect.gen(function* () {
-      const publish = jest.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
+      const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
 
       const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
@@ -368,13 +368,13 @@ test.each<
     ],
     [
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now.subtract({ hours: 2 }),
+        startedAt: now,
         preprintId: preprintId1,
         reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now.subtract({ hours: 1 }),
+        startedAt: now,
         preprintId: preprintId2,
         reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
@@ -388,13 +388,13 @@ test.each<
     ],
     [
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now.subtract({ hours: 2 }),
+        startedAt: now,
         preprintId: preprintId1Indeterminate,
         reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
       new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now.subtract({ hours: 1 }),
+        startedAt: now,
         preprintId: preprintId2,
         reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
         requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),

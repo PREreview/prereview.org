@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Array, Effect, Option } from 'effect'
+import { expect } from 'vitest'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'
 import { html, rawHtml } from '../../../../src/html.ts'

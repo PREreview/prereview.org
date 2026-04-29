@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../../src/Comments/index.ts'
 import * as ContactEmailAddress from '../../../src/contact-email-address.ts'
 import { Locale } from '../../../src/Context.ts'
@@ -24,13 +24,13 @@ describe('VerifyEmailAddressPage', () => {
         fc.expectedCommandForUser().filter(nextCommand => nextCommand._tag !== 'ExpectedToStartAComment'),
       ])('when the email address can be verified', (commentId, locale, user, contactEmailAddress, nextCommand) =>
         Effect.gen(function* () {
-          const getNextExpectedCommandForUserOnAComment = jest.fn<
+          const getNextExpectedCommandForUserOnAComment = vi.fn<
             typeof Comments.GetNextExpectedCommandForUserOnAComment.Service
           >(_ => Effect.succeed(Either.right(nextCommand)))
-          const getContactEmailAddress = jest.fn<typeof ContactEmailAddress.GetContactEmailAddress.Service>(_ =>
+          const getContactEmailAddress = vi.fn<typeof ContactEmailAddress.GetContactEmailAddress.Service>(_ =>
             Effect.succeed(contactEmailAddress),
           )
-          const saveContactEmailAddress = jest.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
+          const saveContactEmailAddress = vi.fn<typeof ContactEmailAddress.SaveContactEmailAddress.Service>(
             _ => Effect.void,
           )
 

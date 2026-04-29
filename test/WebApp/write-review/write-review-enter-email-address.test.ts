@@ -1,9 +1,9 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
+import { describe, expect, vi } from 'vitest'
 import {
   UnverifiedContactEmailAddress,
   type SaveContactEmailAddressEnv,
@@ -113,10 +113,10 @@ describe('writeReviewEnterEmailAddress', () => {
     ) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+      const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
         TE.right(undefined),
       )
-      const verifyContactEmailAddressForReview = jest.fn<
+      const verifyContactEmailAddressForReview = vi.fn<
         VerifyContactEmailAddressForReviewEnv['verifyContactEmailAddressForReview']
       >(_ => TE.right(undefined))
 

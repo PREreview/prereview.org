@@ -1,8 +1,8 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
+import { describe, expect } from 'vitest'
 import * as _ from '../src/fetch.ts'
 import * as fc from './fc.ts'
 

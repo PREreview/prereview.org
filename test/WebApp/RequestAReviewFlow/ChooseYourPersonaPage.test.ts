@@ -1,7 +1,7 @@
 import { UrlParams } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer, Option } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Personas from '../../../src/Personas/index.ts'
@@ -34,10 +34,10 @@ describe('ChooseYourPersonaPage', () => {
         'when the form needs submitting',
         async (preprintId, user, publicPersona, pseudonymPersona, reviewRequest, preprintTitle, locale) =>
           Effect.gen(function* () {
-            const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
+            const getPersonaChoice = vi.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
               _ => Effect.succeed(reviewRequest),
             )
-            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
               Effect.succeed(preprintTitle),
             )
 
@@ -232,16 +232,16 @@ describe('ChooseYourPersonaSubmission', () => {
         'when the persona is set',
         async (preprintId, user, reviewRequest, preprintTitle, body, locale, nextExpectedCommand) =>
           Effect.gen(function* () {
-            const getPersonaChoice = jest.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
+            const getPersonaChoice = vi.fn<(typeof ReviewRequests.ReviewRequestQueries.Service)['getPersonaChoice']>(
               _ => Effect.succeed(reviewRequest),
             )
-            const getNextExpectedCommandForAUserOnAReviewRequest = jest.fn<
+            const getNextExpectedCommandForAUserOnAReviewRequest = vi.fn<
               (typeof ReviewRequests.ReviewRequestQueries.Service)['getNextExpectedCommandForAUserOnAReviewRequest']
             >(_ => Effect.succeed(nextExpectedCommand))
-            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
               Effect.succeed(preprintTitle),
             )
-            const choosePersona = jest.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
+            const choosePersona = vi.fn<(typeof ReviewRequests.ReviewRequestCommands.Service)['choosePersona']>(
               _ => Effect.void,
             )
 

@@ -1,9 +1,9 @@
 import { Cookies, FetchHttpClient, HttpServerResponse } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Chunk, Duration, Effect, identity, Layer, pipe, Redacted, Stream, Struct, Tuple } from 'effect'
 import fetchMock from 'fetch-mock'
 import Keyv from 'keyv'
+import { describe, expect, vi } from 'vitest'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale, SessionStore } from '../../../src/Context.ts'
 import { CookieSignature } from '../../../src/CookieSignature.ts'
@@ -243,7 +243,7 @@ describe('authenticate', () => {
     ])(
       'when the PREreviewer has not been registered',
       (code, [publicUrl, state], orcidOauth, locale, accessToken, sessionCookie, sessionId, signedSessionId) => {
-        const registerSpy = jest.fn<(typeof Prereviewers.Service)['register']>(() => Effect.void)
+        const registerSpy = vi.fn<(typeof Prereviewers.Service)['register']>(() => Effect.void)
 
         return Effect.gen(function* () {
           yield* _.authenticate(code, state)
@@ -290,7 +290,7 @@ describe('authenticate', () => {
   ])('when the user is blocked', (code, referer, orcidOauth, locale, accessToken, sessionCookie) =>
     Effect.gen(function* () {
       const sessionStore = new Keyv()
-      const isUserBlocked = jest.fn<typeof _.IsUserBlocked.Service>(_ => true)
+      const isUserBlocked = vi.fn<typeof _.IsUserBlocked.Service>(_ => true)
 
       const actual = yield* pipe(
         _.authenticate(code, referer.href),

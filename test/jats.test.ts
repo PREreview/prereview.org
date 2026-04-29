@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test } from 'vitest'
 import { rawHtml } from '../src/html.ts'
 import * as _ from '../src/jats.ts'
 

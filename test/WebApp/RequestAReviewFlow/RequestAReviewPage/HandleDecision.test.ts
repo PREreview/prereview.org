@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect } from 'vitest'
 import { Locale } from '../../../../src/Context.ts'
 import * as Routes from '../../../../src/routes.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'

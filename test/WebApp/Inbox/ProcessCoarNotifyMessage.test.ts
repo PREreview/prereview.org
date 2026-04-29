@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
+import { describe, expect } from 'vitest'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'

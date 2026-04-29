@@ -1,6 +1,6 @@
-import { it } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { it } from '@fast-check/vitest'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
+import { describe, expect } from 'vitest'
 import {
   CrowdinInContextLocale,
   DefaultLocale,

@@ -1,9 +1,9 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { SystemClock } from 'clock-ts'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { SaveUserOnboardingEnv } from '../../../src/user-onboarding.ts'
@@ -111,7 +111,7 @@ describe('myDetails', () => {
           location,
           languages,
         ) => {
-          const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
+          const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
           const actual = await _.myDetails({ locale, user })({
             getAvatar: () => TE.fromEither(avatar),

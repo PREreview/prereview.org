@@ -1,9 +1,9 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'
 import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
@@ -28,7 +28,7 @@ describe('GetRecord', () => {
     },
   )('calls the record API', ([doi, expectedUrl]) =>
     Effect.gen(function* () {
-      const clientSpy = jest.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
+      const clientSpy = vi.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
       const client = stubbedClient(clientSpy)
 
       yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))

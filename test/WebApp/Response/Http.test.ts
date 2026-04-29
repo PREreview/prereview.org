@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Array, Either, Schema } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../src/WebApp/Response/Http.ts'
 import * as fc from '../../fc.ts'
 

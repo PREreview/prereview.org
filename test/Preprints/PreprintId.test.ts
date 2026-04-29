@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Doi, toUrl } from 'doi-ts'
+import { describe, expect } from 'vitest'
 import * as _ from '../../src/Preprints/PreprintId.ts'
 import * as fc from '../fc.ts'
 

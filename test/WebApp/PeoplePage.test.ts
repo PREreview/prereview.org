@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect } from 'effect'
+import { describe, expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import { GhostPage } from '../../src/ExternalInteractions/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'

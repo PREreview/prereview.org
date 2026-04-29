@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/preprint-reviews-page/index.ts'
@@ -53,9 +53,9 @@ describe('preprintReviews', () => {
       }),
     ),
   ])('when the reviews can be loaded', async (locale, preprint, prereviews, rapidPrereviews) => {
-    const getPreprint = jest.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
-    const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
-    const getRapidPrereviews = jest.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
+    const getPreprint = vi.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
+    const getPrereviews = vi.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
+    const getRapidPrereviews = vi.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
     const actual = await _.preprintReviews({ id: preprint.id, locale })({
       getPreprint,

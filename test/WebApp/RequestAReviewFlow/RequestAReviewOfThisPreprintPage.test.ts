@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect, Layer } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -22,10 +22,10 @@ describe('requestReview', () => {
         fc.supportedLocale(),
       ])('when the preprint is supported', (preprintId, user, preprint, locale) =>
         Effect.gen(function* () {
-          const findReviewRequestByAPrereviewer = jest.fn<
+          const findReviewRequestByAPrereviewer = vi.fn<
             (typeof ReviewRequests.ReviewRequestQueries.Service)['findReviewRequestByAPrereviewer']
           >(_ => Effect.succeedNone)
-          const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
+          const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(_ =>
             Effect.succeed(preprint),
           )
 
@@ -60,7 +60,7 @@ describe('requestReview', () => {
         "when the preprint doesn't exist",
         (preprintId, user, locale) =>
           Effect.gen(function* () {
-            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
               _ => new Preprints.PreprintIsNotFound({}),
             )
 
@@ -94,7 +94,7 @@ describe('requestReview', () => {
         "when the preprint can't be loaded",
         (preprintId, user, locale) =>
           Effect.gen(function* () {
-            const getPreprintTitle = jest.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
+            const getPreprintTitle = vi.fn<(typeof Preprints.Preprints.Service)['getPreprintTitle']>(
               _ => new Preprints.PreprintIsUnavailable({}),
             )
 

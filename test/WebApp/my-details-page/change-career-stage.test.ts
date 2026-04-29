@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import { changeCareerStageMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-career-stage.ts'
@@ -38,7 +38,7 @@ describe('changeCareerStage', () => {
     test.prop([fc.careerStageValue(), fc.user(), fc.supportedLocale(), fc.careerStage()])(
       'there is a career stage already',
       async (careerStage, user, locale, existingCareerStage) => {
-        const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
         const actual = await _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
           deleteCareerStage: shouldNotBeCalled,
@@ -61,7 +61,7 @@ describe('changeCareerStage', () => {
     test.prop([fc.careerStageValue(), fc.user(), fc.supportedLocale()])(
       "when there isn't a career stage already",
       async (careerStage, user, locale) => {
-        const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
+        const saveCareerStage = vi.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
         const actual = await _.changeCareerStage({ body: { careerStage }, locale, method: 'POST', user })({
           deleteCareerStage: shouldNotBeCalled,
@@ -105,7 +105,7 @@ describe('changeCareerStage', () => {
   )
 
   test.prop([fc.user(), fc.supportedLocale()])('when the form has been skipped', async (user, locale) => {
-    const deleteCareerStage = jest.fn<_.Env['deleteCareerStage']>(_ => TE.right(undefined))
+    const deleteCareerStage = vi.fn<_.Env['deleteCareerStage']>(_ => TE.right(undefined))
 
     const actual = await _.changeCareerStage({ body: { careerStage: 'skip' }, locale, method: 'POST', user })({
       deleteCareerStage,

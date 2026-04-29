@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Effect } from 'effect'
+import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import { GhostPage } from '../../src/ExternalInteractions/index.ts'
 import * as Routes from '../../src/routes.ts'
@@ -12,7 +12,7 @@ import * as fc from '../fc.ts'
 describe('HowToUsePage', () => {
   test.prop([fc.supportedLocale(), fc.ghostPage()])('when the page can be loaded', (locale, page) =>
     Effect.gen(function* () {
-      const getPageFromGhost = jest.fn<typeof GhostPage.GetPageFromGhost.Service>(_ => Effect.succeed(page))
+      const getPageFromGhost = vi.fn<typeof GhostPage.GetPageFromGhost.Service>(_ => Effect.succeed(page))
 
       const actual = yield* _.HowToUsePage.pipe(Effect.provideService(GhostPage.GetPageFromGhost, getPageFromGhost))
 

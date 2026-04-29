@@ -1,6 +1,6 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Tuple } from 'effect'
+import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/Philsci/GetEprint/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
 

@@ -1,8 +1,8 @@
-import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
+import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/EmailAddress.ts'
 import * as fc from '../fc.ts'
 

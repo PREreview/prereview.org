@@ -1,5 +1,4 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { FixedClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/lib/Either.js'
@@ -7,6 +6,7 @@ import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Readable } from 'stream'
 import { P, isMatching } from 'ts-pattern'
+import { describe, expect, vi } from 'vitest'
 import * as _ from '../../../src/ExternalApis/Cloudinary/legacy-cloudinary.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as fc from '../../fc.ts'
@@ -22,7 +22,7 @@ describe('getAvatarFromCloudinary', () => {
     fc.orcidId(),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])('when the ORCID iD has an avatar', async (cloudinaryApi, orcid, imageId) => {
-    const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(imageId))
+    const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(imageId))
 
     const actual = await _.getAvatarFromCloudinary(orcid)({
       cloudinaryApi,
@@ -107,8 +107,8 @@ describe('saveAvatarOnCloudinary', () => {
           ),
         response: { status: StatusCodes.OK, body: { public_id: `prereview-profile/${imageId}` } },
       })
-      const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
-      const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
+      const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
+      const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
 
       const actual = await _.saveAvatarOnCloudinary(
         orcid,
@@ -182,8 +182,8 @@ describe('saveAvatarOnCloudinary', () => {
             ),
           response: { status: StatusCodes.OK, body: { result: 'ok' } },
         })
-      const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
-      const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
+      const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
+      const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
 
       const actual = await _.saveAvatarOnCloudinary(
         orcid,
@@ -234,10 +234,8 @@ describe('saveAvatarOnCloudinary', () => {
             body: { public_id: `prereview-profile/${imageId}` },
           })
           .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`, response)
-        const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
-        const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
-          TE.right(undefined),
-        )
+        const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.right(existing))
+        const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.right(undefined))
 
         const actual = await _.saveAvatarOnCloudinary(
           orcid,
@@ -288,9 +286,7 @@ describe('saveAvatarOnCloudinary', () => {
           status: StatusCodes.OK,
           body: { public_id: `prereview-profile/${imageId}` },
         })
-      const saveCloudinaryAvatar = jest.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ =>
-        TE.left('unavailable'),
-      )
+      const saveCloudinaryAvatar = vi.fn<_.SaveCloudinaryAvatarEnv['saveCloudinaryAvatar']>(_ => TE.left('unavailable'))
 
       const actual = await _.saveAvatarOnCloudinary(
         orcid,
@@ -402,7 +398,7 @@ describe('removeAvatarFromCloudinary', () => {
     fc.orcidId(),
     fc.nonEmptyString(),
   ])('when the avatar can be removed', async (date, cloudinaryApi, orcid, avatar) => {
-    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+    const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.right(undefined),
     )
     const fetch = fetchMock.createInstance().postOnce({
@@ -448,7 +444,7 @@ describe('removeAvatarFromCloudinary', () => {
     fc.nonEmptyString(),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])('when the avatar cannot be removed from Cloudinary', async (date, cloudinaryApi, orcid, avatar, response) => {
-    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+    const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.right(undefined),
     )
     const fetch = fetchMock
@@ -481,7 +477,7 @@ describe('removeAvatarFromCloudinary', () => {
     fc.orcidId(),
     fc.nonEmptyString(),
   ])('when the avatar cannot be removed locally', async (date, cloudinaryApi, orcid, avatar) => {
-    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+    const deleteCloudinaryAvatar = vi.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.left('unavailable'),
     )
 
@@ -507,7 +503,7 @@ describe('removeAvatarFromCloudinary', () => {
     }),
     fc.orcidId(),
   ])('when the avatar cannot be loaded locally', async (date, cloudinaryApi, orcid) => {
-    const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('unavailable'))
+    const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('unavailable'))
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
       clock: FixedClock(date),
@@ -531,7 +527,7 @@ describe('removeAvatarFromCloudinary', () => {
     }),
     fc.orcidId(),
   ])('when there is no avatar', async (date, cloudinaryApi, orcid) => {
-    const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
+    const getCloudinaryAvatar = vi.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
       clock: FixedClock(date),

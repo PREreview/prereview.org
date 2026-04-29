@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   UnverifiedContactEmailAddress,
@@ -41,12 +41,12 @@ describe('authorInviteEnterEmailAddress', () => {
         }),
         fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
       ])('using the invite email address', async (inviteId, [user, invite], locale, prereview, contactEmailAddress) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
           TE.fromEither(contactEmailAddress),
         )
-        const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-        const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+        const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
           TE.right(undefined),
         )
 
@@ -108,15 +108,15 @@ describe('authorInviteEnterEmailAddress', () => {
           contactEmailAddress,
           uuid,
         ) => {
-          const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-          const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+          const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+          const getContactEmailAddress = vi.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
             TE.fromEither(contactEmailAddress),
           )
-          const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
-          const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+          const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
             TE.right(undefined),
           )
-          const verifyContactEmailAddressForInvitedAuthor = jest.fn<
+          const verifyContactEmailAddressForInvitedAuthor = vi.fn<
             VerifyContactEmailAddressForInvitedAuthorEnv['verifyContactEmailAddressForInvitedAuthor']
           >(_ => TE.right(undefined))
 
@@ -184,10 +184,10 @@ describe('authorInviteEnterEmailAddress', () => {
           contactEmailAddress,
           uuid,
         ) => {
-          const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+          const saveContactEmailAddress = vi.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
             TE.right(undefined),
           )
-          const verifyContactEmailAddressForInvitedAuthor = jest.fn<
+          const verifyContactEmailAddressForInvitedAuthor = vi.fn<
             VerifyContactEmailAddressForInvitedAuthorEnv['verifyContactEmailAddressForInvitedAuthor']
           >(_ => TE.left('unavailable'))
 
@@ -329,8 +329,8 @@ describe('authorInviteEnterEmailAddress', () => {
     ])(
       'when the form needs submitting',
       async (inviteId, [user, invite], locale, method, body, prereview, contactEmailAddress) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, locale, method, user })({
           generateUuid: shouldNotBeCalled,

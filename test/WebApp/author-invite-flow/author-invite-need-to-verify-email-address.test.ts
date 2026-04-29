@@ -1,7 +1,7 @@
-import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { test } from '@fast-check/vitest'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import { describe, expect, vi } from 'vitest'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import {
   authorInviteCheckMatch,
@@ -33,8 +33,8 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
     ])(
       'when the email address needs to be verified',
       async (inviteId, [user, invite], locale, prereview, contactEmailAddress) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const getAuthorInvite = vi.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = vi.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInviteNeedToVerifyEmailAddress({ id: inviteId, locale, user })({
           getAuthorInvite,
