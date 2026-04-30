@@ -24,7 +24,6 @@ const registered2 = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const imported2replaced = new Events.LegacyPseudonymReplaced({
   orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
   pseudonym: Pseudonym.Pseudonym('Green Horse'),
