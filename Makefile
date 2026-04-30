@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request dump-sandbox-events
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -110,3 +110,6 @@ withdraw-review-request:
 
 categorize-review-request:
 	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js categorize-review-request --wizard"
+
+dump-sandbox-events:
+	echo "COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);" | fly mpg connect nvwq9oz78qe03kl1 -u prereview-sandbox -d prereview-sandbox | tail -n +2 > data/sandbox-events-dump.csv
