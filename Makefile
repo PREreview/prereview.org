@@ -80,7 +80,7 @@ test-fast: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx vitest run --changed --maxWorkers=50%
 
 test-watch: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx vitest watch ${TEST}
+	FAST_CHECK_NUM_RUNS=10 npx vitest watch --changed ${TEST}
 
 test-integration: test-integration-image
 	docker compose up postgres --wait
