@@ -24,7 +24,6 @@ const registered3 = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const imported2replaced = new Events.LegacyPseudonymReplaced({
   orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
   pseudonym: Pseudonym.Pseudonym('Green Horse'),
@@ -42,11 +41,11 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['first pseudonym used', [imported1], { used: 1, legacyUsed: 0, available: 2 }],
   ['second pseudonym used', [registered3], { used: 1, legacyUsed: 0, available: 2 }],
   ['legacy pseudonym in use', [imported1, imported2, registered3], { used: 2, legacyUsed: 1, available: 1 }],
-  // [
-  //   'all pseudonyms used after legacy pseudonym replaced',
-  //   [imported1, imported2, registered3, imported2replaced],
-  //   { used: 3, legacyUsed: 0, available: 0 },
-  // ],
+  [
+    'all pseudonyms used after legacy pseudonym replaced',
+    [imported1, imported2, registered3, imported2replaced],
+    { used: 3, legacyUsed: 0, available: 0 },
+  ],
 ])('%s', (_name, events, expected) => {
   const { query } = _.CountAvailablePseudonyms(possiblePseudonyms)
 
