@@ -29,7 +29,7 @@ export class MismatchWithExistingDataForOrcid extends Data.TaggedError('Mismatch
 const createFilter = (input: Input) =>
   Events.EventFilter([
     {
-      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
+      types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered', 'LegacyPseudonymReplaced'],
       predicates: { pseudonym: input.pseudonym },
     },
     {
@@ -40,13 +40,14 @@ const createFilter = (input: Input) =>
 
 const isPseudonymRegisteredToDifferentOrcidId = (
   input: Input,
-  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
+  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered | Events.LegacyPseudonymReplaced,
 ) => event.pseudonym === input.pseudonym && event.orcidId !== input.orcidId
 
 const isPrereviewerRegistered = (
   input: Input,
-  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered,
-) => event.orcidId === input.orcidId
+  event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered | Events.LegacyPseudonymReplaced,
+): event is Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered =>
+  event.orcidId === input.orcidId && event._tag !== 'LegacyPseudonymReplaced'
 
 const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
   const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
