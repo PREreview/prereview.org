@@ -15,3 +15,9 @@ export class PrereviewerRegistered extends Schema.TaggedClass<PrereviewerRegiste
   registeredAt: Temporal.InstantSchema,
   pseudonym: Pseudonym.PseudonymSchema,
 }) {}
+
+export class LegacyPseudonymReplaced extends Schema.TaggedClass<LegacyPseudonymReplaced>()('LegacyPseudonymReplaced', {
+  orcidId: OrcidId.OrcidIdSchema,
+  replacedAt: Temporal.InstantSchema,
+  pseudonym: Pseudonym.PseudonymSchema,
+}) {}

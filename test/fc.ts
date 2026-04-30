@@ -2507,6 +2507,7 @@ export const event = (): fc.Arbitrary<Events.Event> =>
     rapidPrereviewImported(),
     registeredPrereviewerImported(),
     prereviewerRegistered(),
+    legacyPseudonymReplaced(),
   )
 
 export const rapidPrereviewImported = (): fc.Arbitrary<Events.RapidPrereviewImported> =>
@@ -2556,6 +2557,15 @@ export const prereviewerRegistered = (): fc.Arbitrary<Events.PrereviewerRegister
       pseudonym: pseudonym(),
     })
     .map(args => new Events.PrereviewerRegistered(args))
+
+export const legacyPseudonymReplaced = (): fc.Arbitrary<Events.LegacyPseudonymReplaced> =>
+  fc
+    .record({
+      orcidId: orcidId(),
+      replacedAt: instant(),
+      pseudonym: pseudonym(),
+    })
+    .map(args => new Events.LegacyPseudonymReplaced(args))
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())
