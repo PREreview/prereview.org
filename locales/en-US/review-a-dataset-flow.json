@@ -35,6 +35,10 @@
     "message": "We think the DOI {doi} could be a SciELO dataset, but we can’t find any details.",
     "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
   },
+  "doiCouldBeZenodo": {
+    "message": "We think the DOI {doi} could be a Zenodo dataset, but we can’t find any details.",
+    "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
+  },
   "checkCorrectDoi": {
     "message": "If you typed the DOI, check it is correct.",
     "description": "Message shown alongside the title “Sorry, we don’t know this dataset”."
@@ -56,7 +60,7 @@
     "description": "Title of the page following the form “Which dataset are you reviewing?” when we can’t workout the dataset DOI from the URL."
   },
   "supportDatasetsFrom": {
-    "message": "We support datasets from Dryad and SciELO.",
+    "message": "We support datasets from Dryad, SciELO and Zenodo.",
     "description": "Message shown alongside the titles “Sorry, we don’t support this DOI”, “Sorry, we don’t support this URL” and “Sorry, we only support datasets”."
   },
   "doiIsForDataset": {

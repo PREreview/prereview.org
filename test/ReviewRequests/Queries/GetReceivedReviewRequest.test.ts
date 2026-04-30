@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -68,30 +67,35 @@ const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   })
 
 describe('GetReceivedReviewRequest', () => {
-  test.prop(
+  it.prop(
+    'not received',
     [
       fc.array(
         fc.reviewRequestEvent().filter(Predicate.not(Predicate.isTagged('ReviewRequestForAPreprintWasReceived'))),
       ),
       fc.uuid(),
     ],
-    {
-      examples: [
-        [[], reviewRequestId], // no events
-        [
-          [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
-          reviewRequestId,
-        ], // with events
-        [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
-      ],
+    ([events, reviewRequestId]) => {
+      const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
     },
-  )('not received', (events, reviewRequestId) => {
-    const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+    {
+      fastCheck: {
+        examples: [
+          [[], reviewRequestId], // no events
+          [
+            [reviewRequestForAPreprintWasAccepted1, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+            reviewRequestId,
+          ], // with events
+          [[otherReviewRequestForAPreprintWasReceived], reviewRequestId], // with events for other dataset review
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
-  })
-
-  test.prop(
+  it.prop(
+    'has been accepted',
     [
       fc
         .tuple(
@@ -102,40 +106,44 @@ describe('GetReceivedReviewRequest', () => {
           Tuple.make(Array.make(received, accepted as ReviewRequests.ReviewRequestEvent), reviewRequestId),
         ),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // accepted
-        [
-          [
-            [
-              reviewRequestForAPreprintWasAccepted1,
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasAccepted2,
-              reviewRequestForAPreprintWasReceived2,
-            ],
-            reviewRequestId,
-          ],
-        ], // multiple times
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasAccepted1,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasRejected,
-            ],
-            reviewRequestId,
-          ],
-        ], // other requests
-      ],
+    ([[events, reviewRequestId]]) => {
+      const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
     },
-  )('has been accepted', ([events, reviewRequestId]) => {
-    const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasAccepted1], reviewRequestId]], // accepted
+          [
+            [
+              [
+                reviewRequestForAPreprintWasAccepted1,
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasAccepted2,
+                reviewRequestForAPreprintWasReceived2,
+              ],
+              reviewRequestId,
+            ],
+          ], // multiple times
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasAccepted1,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasRejected,
+              ],
+              reviewRequestId,
+            ],
+          ], // other requests
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
-  })
-
-  test.prop(
+  it.prop(
+    'has been rejected',
     [
       fc
         .tuple(
@@ -146,40 +154,44 @@ describe('GetReceivedReviewRequest', () => {
           Tuple.make(Array.make(received, rejected as ReviewRequests.ReviewRequestEvent), reviewRequestId),
         ),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasRejected1], reviewRequestId]], // rejected
-        [
-          [
-            [
-              reviewRequestForAPreprintWasRejected1,
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasRejected2,
-              reviewRequestForAPreprintWasReceived2,
-            ],
-            reviewRequestId,
-          ],
-        ], // multiple times
-        [
-          [
-            [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasRejected1,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
-            ],
-            reviewRequestId,
-          ],
-        ], // other requests
-      ],
+    ([[events, reviewRequestId]]) => {
+      const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+
+      expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
     },
-  )('has been rejected', ([events, reviewRequestId]) => {
-    const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId })
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasRejected1], reviewRequestId]], // rejected
+          [
+            [
+              [
+                reviewRequestForAPreprintWasRejected1,
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasRejected2,
+                reviewRequestForAPreprintWasReceived2,
+              ],
+              reviewRequestId,
+            ],
+          ], // multiple times
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasRejected1,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+              ],
+              reviewRequestId,
+            ],
+          ], // other requests
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
-  })
-
-  test.prop(
+  it.prop(
+    'not accepted or rejected',
     [
       fc.reviewRequestForAPreprintWasReceived().map(received =>
         Tuple.make(Array.make(received as ReviewRequests.ReviewRequestEvent), {
@@ -188,46 +200,49 @@ describe('GetReceivedReviewRequest', () => {
         }),
       ),
     ],
+    ([[events, expected]]) => {
+      const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId: expected.id })
+
+      expect(actual).toStrictEqual(Either.right(expected))
+    },
     {
-      examples: [
-        [
-          [
-            [reviewRequestForAPreprintWasReceived1],
-            {
-              preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
-              id: reviewRequestForAPreprintWasReceived1.reviewRequestId,
-            },
-          ],
-        ], // was received
-        [
-          [
-            [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasReceived2],
-            {
-              preprintId: reviewRequestForAPreprintWasReceived2.preprintId,
-              id: reviewRequestForAPreprintWasReceived2.reviewRequestId,
-            },
-          ],
-        ], // multiple times
-        [
+      fastCheck: {
+        examples: [
           [
             [
-              reviewRequestForAPreprintWasReceived1,
-              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-              otherReviewRequestForAPreprintWasReceived,
-              otherReviewRequestForAPreprintWasAccepted,
-              otherReviewRequestForAPreprintWasReceived,
+              [reviewRequestForAPreprintWasReceived1],
+              {
+                preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
+                id: reviewRequestForAPreprintWasReceived1.reviewRequestId,
+              },
             ],
-            {
-              preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
-              id: reviewRequestForAPreprintWasReceived1.reviewRequestId,
-            },
-          ],
-        ], // with other events
-      ],
+          ], // was received
+          [
+            [
+              [reviewRequestForAPreprintWasReceived1, reviewRequestForAPreprintWasReceived2],
+              {
+                preprintId: reviewRequestForAPreprintWasReceived2.preprintId,
+                id: reviewRequestForAPreprintWasReceived2.reviewRequestId,
+              },
+            ],
+          ], // multiple times
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived1,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasAccepted,
+                otherReviewRequestForAPreprintWasReceived,
+              ],
+              {
+                preprintId: reviewRequestForAPreprintWasReceived1.preprintId,
+                id: reviewRequestForAPreprintWasReceived1.reviewRequestId,
+              },
+            ],
+          ], // with other events
+        ],
+      },
     },
-  )('not accepted or rejected', ([events, expected]) => {
-    const actual = _.GetReceivedReviewRequest.query(events, { reviewRequestId: expected.id })
-
-    expect(actual).toStrictEqual(Either.right(expected))
-  })
+  )
 })

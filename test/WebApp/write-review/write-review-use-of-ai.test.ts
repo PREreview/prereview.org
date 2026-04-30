@@ -1,8 +1,8 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { describe, expect } from 'vitest'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewUseOfAiMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -12,254 +12,309 @@ import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewUseOfAi', () => {
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale(), fc.form()])(
+  it.effect.prop(
     'when there is a form',
-    async (preprintId, preprintTitle, user, locale, form) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale(), fc.form()],
+    ([preprintId, preprintTitle, user, locale, form]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form)))
 
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
-        status: StatusCodes.OK,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale()])(
+  it.effect.prop(
     "when there isn't a form",
-    async (preprintId, preprintTitle, user, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale()])(
+  it.effect.prop(
     "when there isn't a session",
-    async (preprintId, preprintTitle, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user: undefined })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAi({ id: preprintId, locale, user: undefined })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()])(
+  it.effect.prop(
     'when the preprint cannot be loaded',
-    async (preprintId, user, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-      })()
+    [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
+    ([preprintId, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()])(
+  it.effect.prop(
     'when the preprint is not found',
-    async (preprintId, user, locale) => {
-      const actual = await _.writeReviewUseOfAi({ id: preprintId, locale, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-      })()
+    [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale()],
+    ([preprintId, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAi({ id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
   )
 })
 
 describe('writeReviewUseOfAiSubmission', () => {
   describe('when there is a form', () => {
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.user(),
-      fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
-      fc.supportedLocale(),
-      fc.completedForm(),
-    ])('when the form is completed', async (preprintId, preprintTitle, user, body, locale, form) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(form)))
+    it.effect.prop(
+      'when the form is completed',
+      [
+        fc.indeterminatePreprintId(),
+        fc.preprintTitle(),
+        fc.user(),
+        fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
+        fc.supportedLocale(),
+        fc.completedForm(),
+      ],
+      ([preprintId, preprintTitle, user, body, locale, form]) =>
+        Effect.gen(function* () {
+          const formStore = new Keyv()
+          yield* Effect.promise(() =>
+            formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(form))),
+          )
 
-      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+          const actual = yield* Effect.promise(
+            _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+              formStore,
+              getPreprintTitle: () => TE.right(preprintTitle),
+            }),
+          )
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-      })
-    })
+          expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(body)
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+          })
+        }),
+    )
 
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.user(),
-      fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
-      fc.supportedLocale(),
-      fc.incompleteForm(),
-    ])('when the form is incomplete', async (preprintId, preprintTitle, user, body, locale, form) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+    it.effect.prop(
+      'when the form is incomplete',
+      [
+        fc.indeterminatePreprintId(),
+        fc.preprintTitle(),
+        fc.user(),
+        fc.record({ generativeAiIdeas: fc.constantFrom('yes', 'no') }),
+        fc.supportedLocale(),
+        fc.incompleteForm(),
+      ],
+      ([preprintId, preprintTitle, user, body, locale, form]) =>
+        Effect.gen(function* () {
+          const formStore = new Keyv()
+          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form)))
 
-      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+          const actual = yield* Effect.promise(
+            _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+              formStore,
+              getPreprintTitle: () => TE.right(preprintTitle),
+            }),
+          )
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(body)
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-      })
-    })
+          expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(body)
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          })
+        }),
+    )
 
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.user(),
-      fc.oneof(
-        fc.record({ generativeAiIdeas: fc.string().filter(s => !['yes', 'no'].includes(s)) }, { requiredKeys: [] }),
-        fc.anything(),
-      ),
-      fc.supportedLocale(),
-      fc.incompleteForm(),
-    ])('without declare the use of AI', async (preprintId, preprintTitle, user, body, locale, form) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form))
+    it.effect.prop(
+      'without declare the use of AI',
+      [
+        fc.indeterminatePreprintId(),
+        fc.preprintTitle(),
+        fc.user(),
+        fc.oneof(
+          fc.record({ generativeAiIdeas: fc.string().filter(s => !['yes', 'no'].includes(s)) }, { requiredKeys: [] }),
+          fc.anything(),
+        ),
+        fc.supportedLocale(),
+        fc.incompleteForm(),
+      ],
+      ([preprintId, preprintTitle, user, body, locale, form]) =>
+        Effect.gen(function* () {
+          const formStore = new Keyv()
+          yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(form)))
 
-      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+          const actual = yield* Effect.promise(
+            _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+              formStore,
+              getPreprintTitle: () => TE.right(preprintTitle),
+            }),
+          )
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
-    })
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: format(writeReviewUseOfAiMatch.formatter, { id: preprintTitle.id }),
+            status: StatusCodes.BadRequest,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: ['error-summary.js'],
+          })
+        }),
+    )
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.anything(), fc.supportedLocale()])(
+  it.effect.prop(
     "when there isn't a form",
-    async (preprintId, preprintTitle, user, body, locale) => {
-      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.user(), fc.anything(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, user, body, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.supportedLocale()])(
+  it.effect.prop(
     "when there isn't a session",
-    async (preprintId, preprintTitle, body, locale) => {
-      const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user: undefined })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, body, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user: undefined })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.option(fc.user(), { nil: undefined }),
-    fc.supportedLocale(),
-    fc.anything(),
-  ])('when the preprint cannot be loaded', async (preprintId, user, locale, body) => {
-    const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-      formStore: new Keyv(),
-      getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-    })()
+  it.effect.prop(
+    'when the preprint cannot be loaded',
+    [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale(), fc.anything()],
+    ([preprintId, user, locale, body]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
+  )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.option(fc.user(), { nil: undefined }),
-    fc.supportedLocale(),
-    fc.anything(),
-  ])('when the preprint is not found', async (preprintId, user, locale, body) => {
-    const actual = await _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
-      formStore: new Keyv(),
-      getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-    })()
+  it.effect.prop(
+    'when the preprint is not found',
+    [fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined }), fc.supportedLocale(), fc.anything()],
+    ([preprintId, user, locale, body]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewUseOfAiSubmission({ body, id: preprintId, locale, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.NotFound,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
+  )
 })

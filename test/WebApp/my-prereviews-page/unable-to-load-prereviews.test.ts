@@ -1,10 +1,9 @@
-import { test } from '@fast-check/vitest'
-import { expect } from 'vitest'
+import { expect, it } from '@effect/vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/unable-to-load-prereviews.ts'
 import * as fc from './fc.ts'
 
-test.prop([fc.supportedLocale()])('toResponse', locale => {
+it.prop('toResponse', [fc.supportedLocale()], ([locale]) => {
   const actual = _.toResponse(_.UnableToLoadPrereviews, locale)
 
   expect(actual).toStrictEqual({

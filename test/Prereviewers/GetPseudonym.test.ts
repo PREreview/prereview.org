@@ -1,7 +1,7 @@
+import { expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either } from 'effect'
-import { expect } from 'vitest'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/GetPseudonym.ts'
 import { OrcidId, Pseudonym } from '../../src/types/index.ts'
@@ -32,9 +32,22 @@ const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant(),
 })
 
+const importedLegacy = new Events.RegisteredPrereviewerImported({
+  orcidId: input,
+  pseudonym: Pseudonym.Pseudonym('Blue Panda 0'),
+  registeredAt: Temporal.Now.instant(),
+})
+
+const replaced = new Events.LegacyPseudonymReplaced({
+  orcidId: input,
+  pseudonym: Pseudonym.Pseudonym('Green Horse'),
+  replacedAt: Temporal.Now.instant(),
+})
+
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.UnknownPrereviewer({}))],
   ['imported', input, [imported], Either.right(imported.pseudonym)],
+  ['imported legacy replaced', input, [importedLegacy, replaced], Either.right(replaced.pseudonym)],
   ['registered', input, [registered], Either.right(registered.pseudonym)],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], Either.left(new _.UnknownPrereviewer({}))],
   [

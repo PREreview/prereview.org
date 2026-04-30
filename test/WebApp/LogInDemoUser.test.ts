@@ -1,16 +1,14 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import { Prereviewers } from '../../src/Prereviewers/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/LogInDemoUser.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('LogInDemoUser', () => {
-  test.prop([fc.supportedLocale()])('when can log in as the demo user', locale =>
+  it.effect.prop('when can log in as the demo user', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.LogInDemoUser
 
@@ -22,11 +20,10 @@ describe('LogInDemoUser', () => {
       Effect.provideService(Locale, locale),
       Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: true })),
       Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) })),
-      EffectTest.run,
     ),
   )
 
-  test.prop([fc.supportedLocale()])("when can't log in as the demo user", locale =>
+  it.effect.prop("when can't log in as the demo user", [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.LogInDemoUser
 
@@ -42,7 +39,6 @@ describe('LogInDemoUser', () => {
       Effect.provideService(Locale, locale),
       Effect.provide(FeatureFlags.layer({ canLogInAsDemoUser: false })),
       Effect.provide(Layer.mock(Prereviewers, {})),
-      EffectTest.run,
     ),
   )
 })

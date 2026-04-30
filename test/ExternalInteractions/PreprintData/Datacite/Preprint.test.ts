@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
-import { describe, expect } from 'vitest'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
@@ -10,33 +9,40 @@ import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('recordToPreprint', () => {
-  test.prop([fc.option(fc.lorem(), { nil: undefined }), fc.option(fc.lorem(), { nil: undefined })], {
-    examples: [
-      [undefined, 'JournalArticle'],
-      ['ResearchArticle', 'DataPaper'],
-      ['Journal contribution', 'Text'],
-    ],
-  })('not a preprint', (resourceType, resourceTypeGeneral) =>
-    Effect.gen(function* () {
-      const record = new Datacite.Record({
-        ...stubRecord,
-        types: {
-          ...stubRecord.types,
-          resourceType,
-          resourceTypeGeneral,
-        },
-      })
+  it.effect.prop(
+    'not a preprint',
+    [fc.option(fc.lorem(), { nil: undefined }), fc.option(fc.lorem(), { nil: undefined })],
+    ([resourceType, resourceTypeGeneral]) =>
+      Effect.gen(function* () {
+        const record = new Datacite.Record({
+          ...stubRecord,
+          types: {
+            ...stubRecord.types,
+            resourceType,
+            resourceTypeGeneral,
+          },
+        })
 
-      const actual = yield* Effect.flip(_.recordToPreprint(record))
+        const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-      expect(actual._tag).toStrictEqual('NotAPreprint')
-      expect(actual.cause).toStrictEqual({ ...stubRecord.types, resourceType, resourceTypeGeneral })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
+        expect(actual._tag).toStrictEqual('NotAPreprint')
+        expect(actual.cause).toStrictEqual({ ...stubRecord.types, resourceType, resourceTypeGeneral })
+      }).pipe(Effect.provide(LanguageDetection.layerCld)),
+    {
+      fastCheck: {
+        examples: [
+          [undefined, 'JournalArticle'],
+          ['ResearchArticle', 'DataPaper'],
+          ['Journal contribution', 'Text'],
+        ],
+      },
+    },
   )
 
-  test.prop([fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())])(
+  it.effect.prop(
     'not a DataCite preprint ID',
-    doi =>
+    [fc.oneof(fc.crossrefPreprintDoi(), fc.japanLinkCenterPreprintDoi(), fc.nonPreprintDoi())],
+    ([doi]) =>
       Effect.gen(function* () {
         const record = new Datacite.Record({
           ...stubRecord,
@@ -47,7 +53,7 @@ describe('recordToPreprint', () => {
 
         expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
         expect(actual.cause).toStrictEqual(doi)
-      }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
+      }).pipe(Effect.provide(LanguageDetection.layerCld)),
   )
 
   test('no creators', () =>
@@ -88,22 +94,25 @@ describe('recordToPreprint', () => {
       expect(actual.abstract).toStrictEqual(undefined)
     }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
 
-  test.prop([
-    fc.nonEmptyArray(
-      fc.record({ date: fc.oneof(fc.year(), fc.plainYearMonth(), fc.plainDate()), dateType: fc.lorem() }),
-    ),
-  ])('no posted date', dates =>
-    Effect.gen(function* () {
-      const record = new Datacite.Record({
-        ...stubRecord,
-        dates,
-      })
+  it.effect.prop(
+    'no posted date',
+    [
+      fc.nonEmptyArray(
+        fc.record({ date: fc.oneof(fc.year(), fc.plainYearMonth(), fc.plainDate()), dateType: fc.lorem() }),
+      ),
+    ],
+    ([dates]) =>
+      Effect.gen(function* () {
+        const record = new Datacite.Record({
+          ...stubRecord,
+          dates,
+        })
 
-      const actual = yield* Effect.flip(_.recordToPreprint(record))
+        const actual = yield* Effect.flip(_.recordToPreprint(record))
 
-      expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-      expect(actual.cause).toStrictEqual({ dates })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run),
+        expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
+        expect(actual.cause).toStrictEqual({ dates })
+      }).pipe(Effect.provide(LanguageDetection.layerCld)),
   )
 })
 

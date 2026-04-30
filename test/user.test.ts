@@ -1,26 +1,25 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../src/user.ts'
 import * as fc from './fc.ts'
 
 describe('UserC', () => {
-  test.prop([fc.user()])('when the user can be decoded', user => {
+  it.prop('when the user can be decoded', [fc.user()], ([user]) => {
     const actual = pipe(user, _.UserC.encode, _.UserC.decode)
 
     expect(actual).toStrictEqual(D.success(user))
   })
 
-  test.prop([fc.string()])('when the user cannot be decoded', string => {
+  it.prop('when the user cannot be decoded', [fc.string()], ([string]) => {
     const actual = _.UserC.decode(string)
 
     expect(actual).toStrictEqual(E.left(expect.anything()))
   })
 })
 
-test.prop([fc.user()])('newSessionForUser', user => {
+it.prop('newSessionForUser', [fc.user()], ([user]) => {
   const actual = _.newSessionForUser(user)
 
   expect(actual).toStrictEqual({ user })

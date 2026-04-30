@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Queries/CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -33,27 +32,32 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('query', () => {
-  test.prop(
+  it.prop(
+    'not started',
     [
       fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))),
       fc.uuid(),
       fc.orcidId(),
     ],
-    {
-      examples: [
-        [[], datasetReviewId, authorId], // no events
-        [[answered1, datasetReviewWasPublished], datasetReviewId, authorId], // with events
-        [[started], datasetReviewId2, authorId], // with events for other dataset review
-        [[started, datasetReviewWasPublished], datasetReviewId2, authorId], // with multiple events for other dataset review
-      ],
+    ([events, datasetReviewId, userId]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
     },
-  )('not started', (events, datasetReviewId, userId) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[], datasetReviewId, authorId], // no events
+          [[answered1, datasetReviewWasPublished], datasetReviewId, authorId], // with events
+          [[started], datasetReviewId2, authorId], // with events for other dataset review
+          [[started, datasetReviewWasPublished], datasetReviewId2, authorId], // with multiple events for other dataset review
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
-  })
-
-  test.prop(
+  it.prop(
+    'started by another user',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.orcidId())
@@ -65,32 +69,40 @@ describe('query', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started], datasetReviewId, authorId2]], // no events
-        [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId2]], // with events
-      ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
     },
-  )('started by another user', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId2]], // no events
+          [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId2]], // with events
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()))
-  })
-
-  test.prop(
+  it.prop(
+    'not answered',
     [fc.datasetReviewWasStarted().map(event => Tuple.make(Array.make(event), event.datasetReviewId, event.authorId))],
-    {
-      examples: [
-        [[[started], datasetReviewId, authorId]], // was started
-      ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.right(Option.none()))
     },
-  )('not answered', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId]], // was started
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.right(Option.none()))
-  })
-
-  test.prop(
+  it.prop(
+    'has been answered',
     [
       fc
         .uuid()
@@ -112,19 +124,23 @@ describe('query', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started, answered1], datasetReviewId, authorId, answered1.answer, answered1.detail]], // one answer
-        [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer, answered2.detail]], // two answers
-      ],
+    ([[events, datasetReviewId, userId, expectedAnswer, expectedDetail]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.right(Option.some({ answer: expectedAnswer, detail: expectedDetail })))
     },
-  )('has been answered', ([events, datasetReviewId, userId, expectedAnswer, expectedDetail]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started, answered1], datasetReviewId, authorId, answered1.answer, answered1.detail]], // one answer
+          [[[started, answered1, answered2], datasetReviewId, authorId, answered2.answer, answered2.detail]], // two answers
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.right(Option.some({ answer: expectedAnswer, detail: expectedDetail })))
-  })
-
-  test.prop(
+  it.prop(
+    'is being published',
     [
       fc
         .uuid()
@@ -142,20 +158,24 @@ describe('query', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
-        [[[started, answered1, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // also answered
-        [[[publicationOfDatasetReviewWasRequested, started, answered1], datasetReviewId, authorId]], // different order
-      ],
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
+
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
     },
-  )('is being published', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    {
+      fastCheck: {
+        examples: [
+          [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
+          [[[started, answered1, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // also answered
+          [[[publicationOfDatasetReviewWasRequested, started, answered1], datasetReviewId, authorId]], // different order
+        ],
+      },
+    },
+  )
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
-  })
-
-  test.prop(
+  it.prop(
+    'has been published',
     [
       fc
         .uuid()
@@ -173,22 +193,25 @@ describe('query', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId]], // was published
-        [
-          [
-            [started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // also requested
-        [[[started, datasetReviewWasPublished, answered1], datasetReviewId, authorId]], // different order
-      ],
-    },
-  )('has been published', ([events, datasetReviewId, userId]) => {
-    const actual = _.query(events, { datasetReviewId, userId })
+    ([[events, datasetReviewId, userId]]) => {
+      const actual = _.query(events, { datasetReviewId, userId })
 
-    expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
-  })
+      expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, answered1, datasetReviewWasPublished], datasetReviewId, authorId]], // was published
+          [
+            [
+              [started, answered1, publicationOfDatasetReviewWasRequested, datasetReviewWasPublished],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // also requested
+          [[[started, datasetReviewWasPublished, answered1], datasetReviewId, authorId]], // different order
+        ],
+      },
+    },
+  )
 })

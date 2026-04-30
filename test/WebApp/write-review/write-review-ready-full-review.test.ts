@@ -1,9 +1,8 @@
-import { test } from '@fast-check/vitest'
-import { Tuple } from 'effect'
+import { describe, expect, it } from '@effect/vitest'
+import { Effect, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { describe, expect } from 'vitest'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -13,209 +12,239 @@ import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewReadyFullReview', () => {
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).map(([readyFullReview, readyFullReviewDetails]) =>
-      Tuple.make(readyFullReview, readyFullReviewDetails, {
-        readyFullReview,
-        readyFullReviewNoDetails: readyFullReviewDetails.no,
-        readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
-        readyFullReviewYesDetails: readyFullReviewDetails.yes,
-      }),
-    ),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.completedQuestionsForm(),
-  ])(
+  it.effect.prop(
     'when the form is completed',
-    async (preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).map(([readyFullReview, readyFullReviewDetails]) =>
+        Tuple.make(readyFullReview, readyFullReviewDetails, {
+          readyFullReview,
+          readyFullReviewNoDetails: readyFullReviewDetails.no,
+          readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
+          readyFullReviewYesDetails: readyFullReviewDetails.yes,
+        }),
+      ),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.completedQuestionsForm(),
+    ],
+    ([preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() =>
+          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+        )
 
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-        readyFullReview,
-        readyFullReviewDetails,
-      })
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
-
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).map(([readyFullReview, readyFullReviewDetails]) =>
-      Tuple.make(readyFullReview, readyFullReviewDetails, {
-        readyFullReview,
-        readyFullReviewNoDetails: readyFullReviewDetails.no,
-        readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
-        readyFullReviewYesDetails: readyFullReviewDetails.yes,
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+          readyFullReview,
+          readyFullReviewDetails,
+        })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+        })
       }),
-    ),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.incompleteQuestionsForm(),
-  ])(
+  )
+
+  it.effect.prop(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).map(([readyFullReview, readyFullReviewDetails]) =>
+        Tuple.make(readyFullReview, readyFullReviewDetails, {
+          readyFullReview,
+          readyFullReviewNoDetails: readyFullReviewDetails.no,
+          readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
+          readyFullReviewYesDetails: readyFullReviewDetails.yes,
+        }),
+      ),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.incompleteQuestionsForm(),
+    ],
+    ([preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, body], user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
-        readyFullReview,
-        readyFullReviewDetails,
-      })
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-      })
-    },
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject({
+          readyFullReview,
+          readyFullReviewDetails,
+        })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        })
+      }),
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.anything(),
-    fc.string(),
-    fc.user(),
-    fc.supportedLocale(),
-  ])('when there is no form', async (preprintId, preprintTitle, body, method, user, locale) => {
-    const actual = await _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
-      formStore: new Keyv(),
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+  it.effect.prop(
+    'when there is no form',
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
+  )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the preprint cannot be loaded',
-    async (preprintId, body, method, user, locale) => {
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-      })()
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([preprintId, body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the preprint cannot be found',
-    async (preprintId, body, method, user, locale) => {
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-      })()
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([preprintId, body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.record({ readyFullReview: fc.lorem() }, { requiredKeys: [] }),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.questionsForm(),
-  ])(
+  it.effect.prop(
     'without saying if it is ready for a full review',
-    async (preprintId, preprintTitle, body, user, locale, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.record({ readyFullReview: fc.lorem() }, { requiredKeys: [] }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.questionsForm(),
+    ],
+    ([preprintId, preprintTitle, body, user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method: 'POST', id: preprintId, user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['conditional-inputs.js', 'error-summary.js'],
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['conditional-inputs.js', 'error-summary.js'],
+        })
+      }),
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.anything(),
-    fc.string(),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.oneof(fc.freeformForm(), fc.constant({})),
-  ])(
+  it.effect.prop(
     "when you haven't said you want to answer questions",
-    async (preprintId, preprintTitle, body, method, user, locale, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.anything(),
+      fc.string(),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.oneof(fc.freeformForm(), fc.constant({})),
+    ],
+    ([preprintId, preprintTitle, body, method, user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
 
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()])(
+  it.effect.prop(
     "when there isn't a session",
-    async (preprintId, preprintTitle, body, method, locale) => {
-      const formStore = new Keyv()
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, body, method, locale]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
 
-      const actual = await _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user: undefined })({
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
+        const actual = yield* Effect.promise(
+          _.writeReviewReadyFullReview({ body, locale, method, id: preprintId, user: undefined })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
   )
 })

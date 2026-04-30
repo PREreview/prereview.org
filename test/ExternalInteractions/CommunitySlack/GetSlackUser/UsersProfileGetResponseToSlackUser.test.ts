@@ -1,12 +1,12 @@
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Struct } from 'effect'
-import { expect } from 'vitest'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/GetSlackUser/UsersProfileGetResponseToSlackUser.ts'
 import * as fc from '../../../fc.ts'
 
-test.prop([fc.nonEmptyString(), fc.url(), fc.slackUserId().map(Struct.get('userId'))])(
+it.prop(
   'UsersProfileGetResponseToSlackUser',
-  (name, image, userId) => {
+  [fc.nonEmptyString(), fc.url(), fc.slackUserId().map(Struct.get('userId'))],
+  ([name, image, userId]) => {
     const actual = _.UsersProfileGetResponseToSlackUser({ realName: name, image48: image }, userId)
 
     expect(actual).toStrictEqual({

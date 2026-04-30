@@ -8,7 +8,6 @@ import {
   UrlParams,
 } from '@effect/platform'
 import { Temporal } from '@js-temporal/polyfill'
-import { mod11_2 } from 'cdigit'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import {
   Arbitrary,
@@ -48,7 +47,7 @@ import type * as DatasetReviews from '../src/DatasetReviews/index.ts'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as Events from '../src/Events.ts'
 import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.ts'
-import type { CommunitySlack, GhostPage } from '../src/ExternalInteractions/index.ts'
+import type { GhostPage } from '../src/ExternalInteractions/index.ts'
 import type { CrossrefPreprintId } from '../src/ExternalInteractions/PreprintData/Crossref/PreprintId.ts'
 import type { DatacitePreprintId } from '../src/ExternalInteractions/PreprintData/Datacite/PreprintId.ts'
 import type { JapanLinkCenterPreprintId } from '../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
@@ -126,8 +125,8 @@ import { EmailAddress } from '../src/types/EmailAddress.ts'
 import { type FieldId, fieldIds } from '../src/types/field.ts'
 import { OrcidLocale, ProfileId, SciProfilesId } from '../src/types/index.ts'
 import { type KeywordId, keywordIds } from '../src/types/Keyword.ts'
-import { type NonEmptyString, isNonEmptyString } from '../src/types/NonEmptyString.ts'
-import { type OrcidId, isOrcidId } from '../src/types/OrcidId.ts'
+import { type NonEmptyString, NonEmptyStringSchema, isNonEmptyString } from '../src/types/NonEmptyString.ts'
+import { type OrcidId, OrcidIdSchema } from '../src/types/OrcidId.ts'
 import { type Pseudonym, PseudonymSchema } from '../src/types/Pseudonym.ts'
 import { type SubfieldId, subfieldIds } from '../src/types/subfield.ts'
 import { type TopicId, topicIds } from '../src/types/Topic.ts'
@@ -667,7 +666,10 @@ export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(Predicate.no
 export const preprintDoi = (): fc.Arbitrary<PreprintIdWithDoi['value']> => preprintIdWithDoi().map(id => id.value)
 
 export const nonDatasetDoi = (): fc.Arbitrary<Doi> =>
-  fc.oneof(doi().filter(Predicate.not(Datasets.isDatasetDoi)), preprintDoi())
+  fc.oneof(
+    doi().filter(Predicate.not(Datasets.isDatasetDoi)),
+    preprintDoi().filter(Predicate.not(hasRegistrant('5281'))),
+  )
 
 export const datasetDoi = (): fc.Arbitrary<Datasets.DatasetId['value']> => datasetId().map(id => id.value)
 
@@ -1157,15 +1159,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
 
 export const japanLinkCenterPreprintId = (): fc.Arbitrary<JapanLinkCenterPreprintId> => jxivPreprintId()
 
-export const orcidId = (): fc.Arbitrary<OrcidId> =>
-  fc
-    .string({
-      unit: constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
-      minLength: 4 + 4 + 4 + 3,
-      maxLength: 4 + 4 + 4 + 3,
-    })
-    .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
-    .filter(isOrcidId)
+export const orcidId = (): fc.Arbitrary<OrcidId> => Arbitrary.make(OrcidIdSchema)
 
 export const sciProfilesId = (): fc.Arbitrary<SciProfilesId.SciProfilesId> =>
   fc.integer({ min: 1 }).map(String).map(SciProfilesId.SciProfilesId)
@@ -1210,7 +1204,8 @@ export const notACoarNotifyTargetPreprintId = (): fc.Arbitrary<Exclude<PreprintI
     zenodoPreprintId(),
   )
 
-export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> => fc.oneof(dryadDatasetId(), scieloDatasetId())
+export const datasetId = (): fc.Arbitrary<Datasets.DatasetId> =>
+  fc.oneof(dryadDatasetId(), scieloDatasetId(), zenodoDatasetId())
 
 export const nonDatasetUrl = (): fc.Arbitrary<URL> =>
   fc.oneof(url(), supportedPreprintUrl().map(Tuple.getFirst), unsupportedPreprintUrl())
@@ -1236,6 +1231,9 @@ export const scieloDatasetUrl = (): fc.Arbitrary<[URL, Datasets.ScieloDatasetId]
     new URL(`https://data.scielo.org/dataset.xhtml?persistentId=doi:${encodeURIComponent(id.value)}`),
     id,
   ])
+
+export const zenodoDatasetId = (): fc.Arbitrary<Datasets.ZenodoDatasetId> =>
+  doi(constantFrom('5281')).map(doi => new Datasets.ZenodoDatasetId({ value: doi }))
 
 export const fieldId = (): fc.Arbitrary<FieldId> => fc.constantFrom(...fieldIds)
 
@@ -1310,12 +1308,6 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackChannelId = (): fc.Arbitrary<Slack.ChannelId> => fc.string().map(id => Slack.ChannelId.make(id))
 
 export const slackTimestamp = (): fc.Arbitrary<Slack.Timestamp> => fc.string().map(id => Slack.Timestamp.make(id))
-
-export const communitySlackChannelIds = (): fc.Arbitrary<typeof CommunitySlack.CommunitySlackChannelIds.Service> =>
-  fc.record<typeof CommunitySlack.CommunitySlackChannelIds.Service>({
-    requestAReview: slackChannelId(),
-    shareAReview: slackChannelId(),
-  })
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
@@ -1492,7 +1484,7 @@ export const nonEmptyArray = <T>(
   constraints: fc.ArrayConstraints = {},
 ): fc.Arbitrary<Array.NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(Array.isNonEmptyArray)
 
-export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
+export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => Arbitrary.make(NonEmptyStringSchema)
 
 export const nonEmptyTrimmedString = (): fc.Arbitrary<NonEmptyString> =>
   fc
@@ -2515,6 +2507,7 @@ export const event = (): fc.Arbitrary<Events.Event> =>
     rapidPrereviewImported(),
     registeredPrereviewerImported(),
     prereviewerRegistered(),
+    legacyPseudonymReplaced(),
   )
 
 export const rapidPrereviewImported = (): fc.Arbitrary<Events.RapidPrereviewImported> =>
@@ -2564,6 +2557,15 @@ export const prereviewerRegistered = (): fc.Arbitrary<Events.PrereviewerRegister
       pseudonym: pseudonym(),
     })
     .map(args => new Events.PrereviewerRegistered(args))
+
+export const legacyPseudonymReplaced = (): fc.Arbitrary<Events.LegacyPseudonymReplaced> =>
+  fc
+    .record({
+      orcidId: orcidId(),
+      replacedAt: instant(),
+      pseudonym: pseudonym(),
+    })
+    .map(args => new Events.LegacyPseudonymReplaced(args))
 
 export const commentWasAlreadyStarted = (): fc.Arbitrary<Comments.CommentWasAlreadyStarted> =>
   fc.constant(new Comments.CommentWasAlreadyStarted())

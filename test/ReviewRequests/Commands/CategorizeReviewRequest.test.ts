@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, Either, Equal, Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/ReviewRequests/Commands/CategorizeReviewRequest.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
 import { Uuid } from '../../../src/types/index.ts'
@@ -35,7 +34,8 @@ const command = (): fc.Arbitrary<_.Command> =>
   })
 
 describe('foldState', () => {
-  test.prop(
+  it.prop(
+    'not yet categorized',
     [
       fc
         .uuid()
@@ -46,55 +46,62 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[], reviewRequestId]], // no events
-        [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
-        [[[otherReviewRequestForAPreprintWasCategorized], reviewRequestId]], // for other review request
-      ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.NotCategorized())
     },
-  )('not yet categorized', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    {
+      fastCheck: {
+        examples: [
+          [[[], reviewRequestId]], // no events
+          [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
+          [[[otherReviewRequestForAPreprintWasCategorized], reviewRequestId]], // for other review request
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotCategorized())
-  })
-
-  test.prop(
+  it.prop(
+    'already categorized',
     [
       fc
         .reviewRequestForAPreprintWasCategorized()
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId, event)),
     ],
-    {
-      examples: [
-        [[[reviewRequestForAPreprintWasCategorized], reviewRequestId, reviewRequestForAPreprintWasCategorized]], // was categorized
-        [
-          [
-            [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasCategorized],
-            reviewRequestId,
-            reviewRequestForAPreprintWasCategorized,
-          ],
-        ], // other events
-        [
-          [
-            [reviewRequestForAPreprintWasCategorized, otherReviewRequestForAPreprintWasCategorized],
-            reviewRequestId,
-            reviewRequestForAPreprintWasCategorized,
-          ],
-        ], // other review request too
-      ],
-    },
-  )('already categorized', ([events, reviewRequestId, categorized]) => {
-    const state = _.foldState(events, reviewRequestId)
+    ([[events, reviewRequestId, categorized]]) => {
+      const state = _.foldState(events, reviewRequestId)
 
-    expect(state).toStrictEqual(
-      new _.HasBeenCategorized({
-        language: categorized.language,
-        keywords: categorized.keywords,
-        topics: categorized.topics,
-      }),
-    )
-  })
+      expect(state).toStrictEqual(
+        new _.HasBeenCategorized({
+          language: categorized.language,
+          keywords: categorized.keywords,
+          topics: categorized.topics,
+        }),
+      )
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasCategorized], reviewRequestId, reviewRequestForAPreprintWasCategorized]], // was categorized
+          [
+            [
+              [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasCategorized],
+              reviewRequestId,
+              reviewRequestForAPreprintWasCategorized,
+            ],
+          ], // other events
+          [
+            [
+              [reviewRequestForAPreprintWasCategorized, otherReviewRequestForAPreprintWasCategorized],
+              reviewRequestId,
+              reviewRequestForAPreprintWasCategorized,
+            ],
+          ], // other review request too
+        ],
+      },
+    },
+  )
 
   describe('recategorized', () => {
     const categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
@@ -161,7 +168,7 @@ describe('foldState', () => {
 })
 
 describe('decide', () => {
-  test.prop([command()])('has not been categorized', command => {
+  it.prop('has not been categorized', [command()], ([command]) => {
     const result = _.decide(new _.NotCategorized(), command)
 
     expect(result).toStrictEqual(
@@ -179,7 +186,7 @@ describe('decide', () => {
   })
 
   describe('has already been categorized', () => {
-    test.prop([command()])('with the details', command => {
+    it.prop('with the details', [command()], ([command]) => {
       const result = _.decide(
         new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics: command.topics }),
         command,
@@ -188,95 +195,108 @@ describe('decide', () => {
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
 
-    test.prop(
+    it.prop(
+      'with a different language',
       [
         fc
           .tuple(command(), fc.languageCode())
           .filter(([command, language]) => !Equal.equals(command.language, language)),
       ],
-      {
-        examples: [[[{ language: 'en', keywords: [], topics: [], reviewRequestId }, 'de']]],
-      },
-    )('with a different language', ([command, language]) => {
-      const result = _.decide(
-        new _.HasBeenCategorized({ language, keywords: command.keywords, topics: command.topics }),
-        command,
-      )
+      ([[command, language]]) => {
+        const result = _.decide(
+          new _.HasBeenCategorized({ language, keywords: command.keywords, topics: command.topics }),
+          command,
+        )
 
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(
-            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-              reviewRequestId: command.reviewRequestId,
-              language: command.language,
-            }),
+        expect(result).toStrictEqual(
+          Either.right(
+            Option.some(
+              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+                reviewRequestId: command.reviewRequestId,
+                language: command.language,
+              }),
+            ),
           ),
-        ),
-      )
-    })
+        )
+      },
+      {
+        fastCheck: {
+          examples: [[[{ language: 'en', keywords: [], topics: [], reviewRequestId }, 'de']]],
+        },
+      },
+    )
 
-    test.prop(
+    it.prop(
+      'with different keywords',
       [
         fc
           .tuple(command(), fc.array(fc.keywordId()))
           .filter(([command, keywords]) => !Equal.equals(Data.array(command.keywords), Data.array(keywords))),
       ],
+      ([[command, keywords]]) => {
+        const result = _.decide(
+          new _.HasBeenCategorized({ language: command.language, keywords, topics: command.topics }),
+          command,
+        )
+
+        expect(result).toStrictEqual(
+          Either.right(
+            Option.some(
+              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+                reviewRequestId: command.reviewRequestId,
+                keywords: command.keywords,
+              }),
+            ),
+          ),
+        )
+      },
       {
-        examples: [
-          [
+        fastCheck: {
+          examples: [
             [
-              { language: 'en', keywords: ['0002c27aea4747f32cb5'], topics: [], reviewRequestId },
-              ['051301983f5df5f40ef4'],
+              [
+                { language: 'en', keywords: ['0002c27aea4747f32cb5'], topics: [], reviewRequestId },
+                ['051301983f5df5f40ef4'],
+              ],
             ],
           ],
-        ],
+        },
       },
-    )('with different keywords', ([command, keywords]) => {
-      const result = _.decide(
-        new _.HasBeenCategorized({ language: command.language, keywords, topics: command.topics }),
-        command,
-      )
+    )
 
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(
-            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-              reviewRequestId: command.reviewRequestId,
-              keywords: command.keywords,
-            }),
-          ),
-        ),
-      )
-    })
-
-    test.prop(
+    it.prop(
+      'with different topics',
       [
         fc
           .tuple(command(), fc.array(fc.topicId()))
           .filter(([command, topics]) => !Equal.equals(Data.array(command.topics), Data.array(topics))),
       ],
-      {
-        examples: [[[{ language: 'en', keywords: [], topics: ['10001'], reviewRequestId }, ['10202']]]],
-      },
-    )('with different topics', ([command, topics]) => {
-      const result = _.decide(
-        new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics }),
-        command,
-      )
+      ([[command, topics]]) => {
+        const result = _.decide(
+          new _.HasBeenCategorized({ language: command.language, keywords: command.keywords, topics }),
+          command,
+        )
 
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(
-            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-              reviewRequestId: command.reviewRequestId,
-              topics: command.topics,
-            }),
+        expect(result).toStrictEqual(
+          Either.right(
+            Option.some(
+              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+                reviewRequestId: command.reviewRequestId,
+                topics: command.topics,
+              }),
+            ),
           ),
-        ),
-      )
-    })
+        )
+      },
+      {
+        fastCheck: {
+          examples: [[[{ language: 'en', keywords: [], topics: ['10001'], reviewRequestId }, ['10202']]]],
+        },
+      },
+    )
 
-    test.prop(
+    it.prop(
+      'with all different',
       [
         fc
           .tuple(command(), fc.languageCode(), fc.array(fc.keywordId()), fc.array(fc.topicId()))
@@ -287,33 +307,36 @@ describe('decide', () => {
               !Equal.equals(Data.array(command.topics), Data.array(topics)),
           ),
       ],
+      ([[command, language, keywords, topics]]) => {
+        const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
+
+        expect(result).toStrictEqual(
+          Either.right(
+            Option.some(
+              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+                reviewRequestId: command.reviewRequestId,
+                language: command.language,
+                keywords: command.keywords,
+                topics: command.topics,
+              }),
+            ),
+          ),
+        )
+      },
       {
-        examples: [
-          [
+        fastCheck: {
+          examples: [
             [
-              { language: 'en', keywords: ['000093b5c386a313390a'], topics: ['10264'], reviewRequestId },
-              'de',
-              ['f61c4022cf9f517ca412'],
-              ['13152'],
+              [
+                { language: 'en', keywords: ['000093b5c386a313390a'], topics: ['10264'], reviewRequestId },
+                'de',
+                ['f61c4022cf9f517ca412'],
+                ['13152'],
+              ],
             ],
           ],
-        ],
+        },
       },
-    )('with all different', ([command, language, keywords, topics]) => {
-      const result = _.decide(new _.HasBeenCategorized({ language, keywords, topics }), command)
-
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(
-            new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
-              reviewRequestId: command.reviewRequestId,
-              language: command.language,
-              keywords: command.keywords,
-              topics: command.topics,
-            }),
-          ),
-        ),
-      )
-    })
+    )
   })
 })

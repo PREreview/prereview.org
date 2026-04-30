@@ -1,10 +1,9 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { it, test } from '@fast-check/vitest'
+import { describe, expect, it, test, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -16,16 +15,10 @@ import * as fc from './fc.ts'
 
 const now = Temporal.Now.instant()
 
-it.prop([
-  fc.oneof(
-    fc.record(
-      {
-        types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
-        predicate: fc.dictionary(fc.string(), fc.string()),
-      },
-      { requiredKeys: ['types'] },
-    ),
-    fc.nonEmptyArray(
+it.effect.prop(
+  'starts empty',
+  [
+    fc.oneof(
       fc.record(
         {
           types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
@@ -33,38 +26,40 @@ it.prop([
         },
         { requiredKeys: ['types'] },
       ),
+      fc.nonEmptyArray(
+        fc.record(
+          {
+            types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+            predicate: fc.dictionary(fc.string(), fc.string()),
+          },
+          { requiredKeys: ['types'] },
+        ),
+      ),
     ),
-  ),
-])('starts empty', filter =>
-  Effect.gen(function* () {
-    const eventStore = yield* _.make
+  ],
+  ([filter]) =>
+    Effect.gen(function* () {
+      const eventStore = yield* _.make
 
-    const actual = yield* eventStore.query(filter)
-    const all = yield* eventStore.all
+      const actual = yield* eventStore.query(filter)
+      const all = yield* eventStore.all
 
-    expect(actual).toStrictEqual(Option.none())
-    expect(all).toStrictEqual(Option.none())
-  }).pipe(
-    Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
-    Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-    Effect.provide(Layer.mock(Events.Events, {} as never)),
-    Effect.provide(TestLibsqlClient),
-    EffectTest.run,
-  ),
+      expect(actual).toStrictEqual(Option.none())
+      expect(all).toStrictEqual(Option.none())
+    }).pipe(
+      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
+      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+      Effect.provide(Layer.mock(Events.Events, {} as never)),
+      Effect.provide(TestLibsqlClient),
+    ),
 )
 
 describe('when the last known position is none', () => {
-  it.prop([
-    fc.commentEvent(),
-    fc.oneof(
-      fc.record(
-        {
-          types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
-          predicate: fc.dictionary(fc.string(), fc.string()),
-        },
-        { requiredKeys: ['types'] },
-      ),
-      fc.nonEmptyArray(
+  it.effect.prop(
+    'appends the event',
+    [
+      fc.commentEvent(),
+      fc.oneof(
         fc.record(
           {
             types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
@@ -72,96 +67,110 @@ describe('when the last known position is none', () => {
           },
           { requiredKeys: ['types'] },
         ),
+        fc.nonEmptyArray(
+          fc.record(
+            {
+              types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+              predicate: fc.dictionary(fc.string(), fc.string()),
+            },
+            { requiredKeys: ['types'] },
+          ),
+        ),
       ),
-    ),
-    fc.array(fc.datasetReviewEvent()),
-  ])('appends the event', (event, filter, otherEvents) =>
-    Effect.gen(function* () {
-      const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(_ => Effect.succeed(true))
+      fc.array(fc.datasetReviewEvent()),
+    ],
+    ([event, filter, otherEvents]) =>
+      Effect.gen(function* () {
+        const publish = vi.fn<PubSub.PubSub<Events.Event>['publish']>(_ => Effect.succeed(true))
 
-      const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
+        const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
-      yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
+        yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
 
-      yield* eventStore.append(event, { filter, lastKnownPosition: Option.none() })
+        yield* eventStore.append(event, { filter, lastKnownPosition: Option.none() })
 
-      const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
-      const all = yield* eventStore.all
+        const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
+        const all = yield* eventStore.all
 
-      expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
-      expect(all).toStrictEqual(Option.some({ events: [...otherEvents, event], lastKnownPosition: expect.anything() }))
-      expect(publish).toHaveBeenCalledWith(event)
-    }).pipe(
-      Effect.provide(Uuid.layer),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(TestLibsqlClient),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
+        expect(all).toStrictEqual(
+          Option.some({ events: [...otherEvents, event], lastKnownPosition: expect.anything() }),
+        )
+        expect(publish).toHaveBeenCalledWith(event)
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(TestLibsqlClient),
+      ),
   )
 })
 
 describe('when the last known position has not changed', () => {
-  it.prop([fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()])('appends the event', (existingEvents, event) =>
-    Effect.gen(function* () {
-      const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
+  it.effect.prop(
+    'appends the event',
+    [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
+    ([existingEvents, event]) =>
+      Effect.gen(function* () {
+        const publish = vi.fn<PubSub.PubSub<unknown>['publish']>(_ => Effect.succeed(true))
 
-      const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
+        const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
-      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+        yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
-      const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
+        const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
 
-      yield* eventStore.append(event, {
-        filter: { types: Events.CommentEventTypes },
-        lastKnownPosition: Option.some(lastKnownPosition),
-      })
+        yield* eventStore.append(event, {
+          filter: { types: Events.CommentEventTypes },
+          lastKnownPosition: Option.some(lastKnownPosition),
+        })
 
-      const all = yield* eventStore.all
+        const all = yield* eventStore.all
 
-      expect(all).toStrictEqual(
-        Option.some({ events: [...existingEvents, event], lastKnownPosition: expect.anything() }),
-      )
-      expect(publish).toHaveBeenCalledWith(event)
-    }).pipe(
-      Effect.provide(Uuid.layer),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(TestLibsqlClient),
-      EffectTest.run,
-    ),
+        expect(all).toStrictEqual(
+          Option.some({ events: [...existingEvents, event], lastKnownPosition: expect.anything() }),
+        )
+        expect(publish).toHaveBeenCalledWith(event)
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(TestLibsqlClient),
+      ),
   )
 })
 
 describe('when the last known position has changed', () => {
-  it.prop([fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()])('does nothing', (existingEvents, event) =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
+  it.effect.prop(
+    'does nothing',
+    [fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()],
+    ([existingEvents, event]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
 
-      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+        yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
 
-      const error = yield* Effect.flip(
-        eventStore.append(event, {
-          filter: { types: Events.CommentEventTypes },
-          lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
-        }),
-      )
+        const error = yield* Effect.flip(
+          eventStore.append(event, {
+            filter: { types: Events.CommentEventTypes },
+            lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
+          }),
+        )
 
-      expect(error).toBeInstanceOf(EventStore.NewEventsFound)
+        expect(error).toBeInstanceOf(EventStore.NewEventsFound)
 
-      const all = yield* eventStore.all
+        const all = yield* eventStore.all
 
-      expect(all).toStrictEqual(
-        Array.match(existingEvents, {
-          onEmpty: Option.none,
-          onNonEmpty: events => Option.some({ events, lastKnownPosition: expect.anything() }),
-        }),
-      )
-    }).pipe(
-      Effect.provide(Uuid.layer),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
-      EffectTest.run,
-    ),
+        expect(all).toStrictEqual(
+          Array.match(existingEvents, {
+            onEmpty: Option.none,
+            onNonEmpty: events => Option.some({ events, lastKnownPosition: expect.anything() }),
+          }),
+        )
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestLibsqlClient),
+      ),
   )
 })
 
@@ -419,9 +428,10 @@ test.each<
   ),
 )
 
-test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())])(
+it.effect.prop(
   'lists events since',
-  (existingEvents, newEvents) =>
+  [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+  ([existingEvents, newEvents]) =>
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
@@ -439,7 +449,6 @@ test.prop([fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
       Effect.provide(TestLibsqlClient),
-      EffectTest.run,
     ),
 )
 

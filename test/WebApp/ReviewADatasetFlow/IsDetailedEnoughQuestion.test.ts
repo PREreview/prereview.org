@@ -1,7 +1,6 @@
 import { UrlParams } from '@effect/platform'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer, Option } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -10,50 +9,52 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/ReviewADatasetFlow/IsDetailedEnoughQuestion/index.ts'
 import { RouteForCommand } from '../../../src/WebApp/ReviewADatasetFlow/RouteForCommand.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('IsDetailedEnoughQuestion', () => {
   describe('when the dataset review is by the user', () => {
-    test.prop([
-      fc.uuid(),
-      fc.supportedLocale(),
-      fc.user(),
-      fc.maybe(
-        fc.record({
-          answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-          detail: fc.maybe(fc.nonEmptyString()),
-        }),
-      ),
-    ])('when the dataset review is in progress', (datasetReviewId, locale, user, answer) =>
-      Effect.gen(function* () {
-        const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
-
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          canonical: Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId }),
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          nav: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'form',
-          js: ['conditional-inputs.js'],
-        })
-      }).pipe(
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewQueries, {
-            checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: () => Effect.succeed(answer),
+    it.effect.prop(
+      'when the dataset review is in progress',
+      [
+        fc.uuid(),
+        fc.supportedLocale(),
+        fc.user(),
+        fc.maybe(
+          fc.record({
+            answer: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+            detail: fc.maybe(fc.nonEmptyString()),
           }),
         ),
-        Effect.provideService(Locale, locale),
-        Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
-      ),
+      ],
+      ([datasetReviewId, locale, user, answer]) =>
+        Effect.gen(function* () {
+          const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
+
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            canonical: Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId }),
+            status: StatusCodes.OK,
+            title: expect.anything(),
+            nav: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'form',
+            js: ['conditional-inputs.js'],
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfUserCanAnswerIfTheDatasetIsDetailedEnough: () => Effect.succeed(answer),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+        ),
     )
 
-    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+    it.effect.prop(
       'when the dataset review is being published',
-      (datasetReviewId, locale, user) =>
+      [fc.uuid(), fc.supportedLocale(), fc.user()],
+      ([datasetReviewId, locale, user]) =>
         Effect.gen(function* () {
           const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
 
@@ -71,13 +72,13 @@ describe('IsDetailedEnoughQuestion', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
         ),
     )
 
-    test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+    it.effect.prop(
       'when the dataset review has been published',
-      (datasetReviewId, locale, user) =>
+      [fc.uuid(), fc.supportedLocale(), fc.user()],
+      ([datasetReviewId, locale, user]) =>
         Effect.gen(function* () {
           const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
 
@@ -95,14 +96,14 @@ describe('IsDetailedEnoughQuestion', () => {
           ),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
         ),
     )
   })
 
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+  it.effect.prop(
     'when the dataset review is by a different user',
-    (datasetReviewId, locale, user) =>
+    [fc.uuid(), fc.supportedLocale(), fc.user()],
+    ([datasetReviewId, locale, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
 
@@ -123,13 +124,13 @@ describe('IsDetailedEnoughQuestion', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
       ),
   )
 
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+  it.effect.prop(
     "when the dataset review hasn't been started",
-    (datasetReviewId, locale, user) =>
+    [fc.uuid(), fc.supportedLocale(), fc.user()],
+    ([datasetReviewId, locale, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
 
@@ -149,13 +150,13 @@ describe('IsDetailedEnoughQuestion', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
       ),
   )
 
-  test.prop([fc.uuid(), fc.supportedLocale(), fc.user()])(
+  it.effect.prop(
     "when the dataset review can't been queried",
-    (datasetReviewId, locale, user) =>
+    [fc.uuid(), fc.supportedLocale(), fc.user()],
+    ([datasetReviewId, locale, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.IsDetailedEnoughQuestion({ datasetReviewId })
 
@@ -175,7 +176,6 @@ describe('IsDetailedEnoughQuestion', () => {
         ),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
       ),
   )
 })
@@ -183,49 +183,105 @@ describe('IsDetailedEnoughQuestion', () => {
 describe('IsDetailedEnoughSubmission', () => {
   describe('when there is an answer', () => {
     describe('when the answer can be saved', () => {
-      test.prop([
-        fc.uuid(),
-        fc.urlParams(
-          fc.record(
-            {
-              isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-              isDetailedEnoughYesDetail: fc.string(),
-              isDetailedEnoughPartlyDetail: fc.string(),
-              isDetailedEnoughNoDetail: fc.string(),
-            },
-            { requiredKeys: ['isDetailedEnough'] },
+      it.effect.prop(
+        'the next expected command can be found',
+        [
+          fc.uuid(),
+          fc.urlParams(
+            fc.record(
+              {
+                isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+                isDetailedEnoughYesDetail: fc.string(),
+                isDetailedEnoughPartlyDetail: fc.string(),
+                isDetailedEnoughNoDetail: fc.string(),
+              },
+              { requiredKeys: ['isDetailedEnough'] },
+            ),
           ),
-        ),
-        fc.supportedLocale(),
-        fc.user(),
-        fc.datasetReviewNextExpectedCommand(),
-      ])('the next expected command can be found', (datasetReviewId, body, locale, user, nextExpectedCommand) =>
-        Effect.gen(function* () {
-          const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
+          fc.supportedLocale(),
+          fc.user(),
+          fc.datasetReviewNextExpectedCommand(),
+        ],
+        ([datasetReviewId, body, locale, user, nextExpectedCommand]) =>
+          Effect.gen(function* () {
+            const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
 
-          expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: StatusCodes.SeeOther,
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
-          })
-        }).pipe(
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewCommands, {
-              answerIfTheDatasetIsDetailedEnough: () => Effect.void,
-            }),
+            expect(actual).toStrictEqual({
+              _tag: 'RedirectResponse',
+              status: StatusCodes.SeeOther,
+              location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+            })
+          }).pipe(
+            Effect.provide(
+              Layer.mock(DatasetReviews.DatasetReviewCommands, {
+                answerIfTheDatasetIsDetailedEnough: () => Effect.void,
+              }),
+            ),
+            Effect.provide(
+              Layer.mock(DatasetReviews.DatasetReviewQueries, {
+                getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
+              }),
+            ),
+            Effect.provideService(Locale, locale),
+            Effect.provideService(LoggedInUser, user),
           ),
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getNextExpectedCommandForAUserOnADatasetReview: () => Effect.succeedSome(nextExpectedCommand),
-            }),
-          ),
-          Effect.provideService(Locale, locale),
-          Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
-        ),
       )
 
-      test.prop([
+      it.effect.prop(
+        "the next expected command can't be found",
+        [
+          fc.uuid(),
+          fc.urlParams(
+            fc.record(
+              {
+                isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
+                isDetailedEnoughYesDetail: fc.string(),
+                isDetailedEnoughPartlyDetail: fc.string(),
+                isDetailedEnoughNoDetail: fc.string(),
+              },
+              { requiredKeys: ['isDetailedEnough'] },
+            ),
+          ),
+          fc.supportedLocale(),
+          fc.user(),
+          fc.oneof(
+            fc.anything().map(cause => new Queries.UnableToQuery({ cause })),
+            fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
+            fc.constant(Effect.succeedNone),
+          ),
+        ],
+        ([datasetReviewId, body, locale, user, result]) =>
+          Effect.gen(function* () {
+            const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(
+            Effect.provide(
+              Layer.mock(DatasetReviews.DatasetReviewCommands, {
+                answerIfTheDatasetIsDetailedEnough: () => Effect.void,
+              }),
+            ),
+            Effect.provide(
+              Layer.mock(DatasetReviews.DatasetReviewQueries, {
+                getNextExpectedCommandForAUserOnADatasetReview: () => result,
+              }),
+            ),
+            Effect.provideService(Locale, locale),
+            Effect.provideService(LoggedInUser, user),
+          ),
+      )
+    })
+
+    it.effect.prop(
+      "when the answer can't be saved",
+      [
         fc.uuid(),
         fc.urlParams(
           fc.record(
@@ -240,12 +296,15 @@ describe('IsDetailedEnoughSubmission', () => {
         ),
         fc.supportedLocale(),
         fc.user(),
-        fc.oneof(
-          fc.anything().map(cause => new Queries.UnableToQuery({ cause })),
-          fc.anything().map(cause => new DatasetReviews.UnknownDatasetReview({ cause })),
-          fc.constant(Effect.succeedNone),
+        fc.constantFrom(
+          new DatasetReviews.NotAuthorizedToRunCommand({}),
+          new DatasetReviews.UnableToHandleCommand({}),
+          new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+          new DatasetReviews.DatasetReviewIsBeingPublished(),
+          new DatasetReviews.DatasetReviewHasBeenPublished(),
         ),
-      ])("the next expected command can't be found", (datasetReviewId, body, locale, user, result) =>
+      ],
+      ([datasetReviewId, body, locale, user, error]) =>
         Effect.gen(function* () {
           const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
 
@@ -260,107 +319,56 @@ describe('IsDetailedEnoughSubmission', () => {
         }).pipe(
           Effect.provide(
             Layer.mock(DatasetReviews.DatasetReviewCommands, {
-              answerIfTheDatasetIsDetailedEnough: () => Effect.void,
+              answerIfTheDatasetIsDetailedEnough: () => error,
             }),
           ),
-          Effect.provide(
-            Layer.mock(DatasetReviews.DatasetReviewQueries, {
-              getNextExpectedCommandForAUserOnADatasetReview: () => result,
-            }),
-          ),
+          Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
           Effect.provideService(Locale, locale),
           Effect.provideService(LoggedInUser, user),
-          EffectTest.run,
         ),
-      )
-    })
+    )
+  })
 
-    test.prop([
+  it.effect.prop(
+    "when there isn't an answer",
+    [
       fc.uuid(),
-      fc.urlParams(
-        fc.record(
-          {
-            isDetailedEnough: fc.constantFrom('yes', 'partly', 'no', 'unsure'),
-            isDetailedEnoughYesDetail: fc.string(),
-            isDetailedEnoughPartlyDetail: fc.string(),
-            isDetailedEnoughNoDetail: fc.string(),
-          },
-          { requiredKeys: ['isDetailedEnough'] },
+      fc.oneof(
+        fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'isDetailedEnough'))),
+        fc.urlParams(
+          fc.record(
+            {
+              isDetailedEnough: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
+              isDetailedEnoughYesDetail: fc.string(),
+              isDetailedEnoughPartlyDetail: fc.string(),
+              isDetailedEnoughNoDetail: fc.string(),
+            },
+            { requiredKeys: ['isDetailedEnough'] },
+          ),
         ),
       ),
       fc.supportedLocale(),
       fc.user(),
-      fc.constantFrom(
-        new DatasetReviews.NotAuthorizedToRunCommand({}),
-        new DatasetReviews.UnableToHandleCommand({}),
-        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
-        new DatasetReviews.DatasetReviewIsBeingPublished(),
-        new DatasetReviews.DatasetReviewHasBeenPublished(),
-      ),
-    ])("when the answer can't be saved", (datasetReviewId, body, locale, user, error) =>
+    ],
+    ([datasetReviewId, body, locale, user]) =>
       Effect.gen(function* () {
         const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: StatusCodes.ServiceUnavailable,
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId }),
+          status: StatusCodes.BadRequest,
           title: expect.anything(),
+          nav: expect.anything(),
           main: expect.anything(),
-          skipToLabel: 'main',
-          js: [],
+          skipToLabel: 'form',
+          js: ['conditional-inputs.js', 'error-summary.js'],
         })
       }).pipe(
-        Effect.provide(
-          Layer.mock(DatasetReviews.DatasetReviewCommands, {
-            answerIfTheDatasetIsDetailedEnough: () => error,
-          }),
-        ),
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
         Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
         Effect.provideService(Locale, locale),
         Effect.provideService(LoggedInUser, user),
-        EffectTest.run,
       ),
-    )
-  })
-
-  test.prop([
-    fc.uuid(),
-    fc.oneof(
-      fc.urlParams().filter(urlParams => Option.isNone(UrlParams.getFirst(urlParams, 'isDetailedEnough'))),
-      fc.urlParams(
-        fc.record(
-          {
-            isDetailedEnough: fc.string().filter(string => !['yes', 'partly', 'no', 'unsure'].includes(string)),
-            isDetailedEnoughYesDetail: fc.string(),
-            isDetailedEnoughPartlyDetail: fc.string(),
-            isDetailedEnoughNoDetail: fc.string(),
-          },
-          { requiredKeys: ['isDetailedEnough'] },
-        ),
-      ),
-    ),
-    fc.supportedLocale(),
-    fc.user(),
-  ])("when there isn't an answer", (datasetReviewId, body, locale, user) =>
-    Effect.gen(function* () {
-      const actual = yield* _.IsDetailedEnoughSubmission({ body, datasetReviewId })
-
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: Routes.ReviewADatasetIsDetailedEnough.href({ datasetReviewId }),
-        status: StatusCodes.BadRequest,
-        title: expect.anything(),
-        nav: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'form',
-        js: ['conditional-inputs.js', 'error-summary.js'],
-      })
-    }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, {})),
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewQueries, {})),
-      Effect.provideService(Locale, locale),
-      Effect.provideService(LoggedInUser, user),
-      EffectTest.run,
-    ),
   )
 })

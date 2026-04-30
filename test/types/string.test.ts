@@ -1,33 +1,32 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/NonEmptyString.ts'
 import * as fc from '../fc.ts'
 
 describe('NonEmptyStringC', () => {
   describe('decode', () => {
-    test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('with a non-empty string', string => {
+    it.prop('with a non-empty string', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([string]) => {
       const actual = _.NonEmptyStringC.decode(string)
 
       expect(actual).toStrictEqual(D.success(string))
     })
 
-    test.prop([fc.string({ unit: fc.invisibleCharacter() })])('with an empty string', string => {
+    it.prop('with an empty string', [fc.string({ unit: fc.invisibleCharacter() })], ([string]) => {
       const actual = _.NonEmptyStringC.decode(string)
 
       expect(actual).toStrictEqual(D.failure(string, 'NonEmptyString'))
     })
 
-    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+    it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
       const actual = _.NonEmptyStringC.decode(value)
 
       expect(actual).toStrictEqual(D.failure(value, 'string'))
     })
   })
 
-  test.prop([fc.nonEmptyString()])('encode', string => {
+  it.prop('encode', [fc.nonEmptyString()], ([string]) => {
     const actual = _.NonEmptyStringC.encode(string)
 
     expect(actual).toStrictEqual(string)
@@ -36,26 +35,26 @@ describe('NonEmptyStringC', () => {
 
 describe('NonEmptyStringSchema', () => {
   describe('decode', () => {
-    test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('with a non-empty string', string => {
+    it.prop('with a non-empty string', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([string]) => {
       const actual = Schema.decodeSync(_.NonEmptyStringSchema)(string)
 
       expect(actual).toStrictEqual(string)
     })
 
-    test.prop([fc.string({ unit: fc.invisibleCharacter() })])('with an empty string', string => {
+    it.prop('with an empty string', [fc.string({ unit: fc.invisibleCharacter() })], ([string]) => {
       const actual = Either.mapLeft(Schema.decodeEither(_.NonEmptyStringSchema)(string), ArrayFormatter.formatErrorSync)
 
       expect(actual).toStrictEqual(Either.left([expect.objectContaining({ message: 'string is empty' })]))
     })
 
-    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+    it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
       const actual = Schema.decodeUnknownEither(_.NonEmptyStringSchema)(value)
 
       expect(actual).toStrictEqual(Either.left(expect.anything()))
     })
   })
 
-  test.prop([fc.pseudonym()])('encode', pseudonym => {
+  it.prop('encode', [fc.pseudonym()], ([pseudonym]) => {
     const actual = Schema.encodeSync(_.NonEmptyStringSchema)(pseudonym)
 
     expect(actual).toStrictEqual(pseudonym)
@@ -64,11 +63,11 @@ describe('NonEmptyStringSchema', () => {
 
 describe('isNonEmptyString', () => {
   describe('decode', () => {
-    test.prop([fc.string({ unit: fc.alphanumeric(), minLength: 1 })])('with a non-empty string', string => {
+    it.prop('with a non-empty string', [fc.string({ unit: fc.alphanumeric(), minLength: 1 })], ([string]) => {
       expect(_.isNonEmptyString(string)).toBe(true)
     })
 
-    test.prop([fc.string({ unit: fc.invisibleCharacter() })])('with an empty string', string => {
+    it.prop('with an empty string', [fc.string({ unit: fc.invisibleCharacter() })], ([string]) => {
       expect(_.isNonEmptyString(string)).toBe(false)
     })
   })

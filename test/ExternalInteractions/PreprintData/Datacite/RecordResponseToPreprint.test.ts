@@ -1,10 +1,9 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
-import { expect } from 'vitest'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { recordToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
@@ -22,9 +21,8 @@ import {
   ZenodoPreprintId,
 } from '../../../../src/Preprints/index.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
-test.each([
+it.effect.each([
   {
     response: 'osf-project',
     expected: Preprint({
@@ -445,16 +443,17 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-test.each([
-  'africarxiv-journal-article',
-  'figshare-africarxiv-journal-article',
-  'osf-file',
-  'osf-registration',
-  'zenodo-journal-article',
-])('returns a specific error for non-Preprint record (%s)', response =>
+it.effect.each([
+  ['africarxiv-journal-article'],
+  ['figshare-africarxiv-journal-article'],
+  ['osf-file'],
+  ['osf-registration'],
+  ['zenodo-dataset'],
+  ['zenodo-journal-article'],
+])('returns a specific error for non-Preprint record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -465,35 +464,35 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-test.each([
-  'cdl-ucb-dryad',
-  'cdl-ucb',
-  'cdl-ucd-dryad',
-  'cdl-ucd',
-  'cdl-uci-dryad',
-  'cdl-uci',
-  'cdl-ucla-dryad',
-  'cdl-ucm-dryad',
-  'cdl-ucm',
-  'cdl-ucr-dryad',
-  'cdl-ucr',
-  'cdl-ucsb-dryad',
-  'cdl-ucsc-dryad',
-  'cdl-ucsc',
-  'cdl-ucsf-dryad',
-  'cdl-ucsf',
-  'dryad',
-  'dryad-alt',
-  'dryad-collection',
-  'dryad-html',
-  'figshare',
-  'scielo-data-english',
-  'scielo-data-portuguese',
-  'scielo-data-spanish',
-])('returns a specific error for an unsupported DOI record (%s)', response =>
+it.effect.each([
+  ['cdl-ucb-dryad'],
+  ['cdl-ucb'],
+  ['cdl-ucd-dryad'],
+  ['cdl-ucd'],
+  ['cdl-uci-dryad'],
+  ['cdl-uci'],
+  ['cdl-ucla-dryad'],
+  ['cdl-ucm-dryad'],
+  ['cdl-ucm'],
+  ['cdl-ucr-dryad'],
+  ['cdl-ucr'],
+  ['cdl-ucsb-dryad'],
+  ['cdl-ucsc-dryad'],
+  ['cdl-ucsc'],
+  ['cdl-ucsf-dryad'],
+  ['cdl-ucsf'],
+  ['dryad'],
+  ['dryad-alt'],
+  ['dryad-collection'],
+  ['dryad-html'],
+  ['figshare'],
+  ['scielo-data-english'],
+  ['scielo-data-portuguese'],
+  ['scielo-data-spanish'],
+])('returns a specific error for an unsupported DOI record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -504,5 +503,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )

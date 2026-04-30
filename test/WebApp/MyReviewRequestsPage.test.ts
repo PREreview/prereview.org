@@ -1,19 +1,18 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../src/user.ts'
 import * as _ from '../../src/WebApp/MyReviewRequestsPage/index.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('MyReviewRequestsPage', () => {
-  test.prop([fc.supportedLocale(), fc.user(), fc.constant([])])(
+  it.effect.prop(
     'when the requests can be loaded',
-    (locale, user, reviewRequests) =>
+    [fc.supportedLocale(), fc.user(), fc.constant([])],
+    ([locale, user, reviewRequests]) =>
       Effect.gen(function* () {
         const listForPrereviewer = vi.fn<(typeof ReviewRequests.ReviewRequests.Service)['listForPrereviewer']>(_ =>
           Effect.succeed(reviewRequests),
@@ -35,10 +34,10 @@ describe('MyReviewRequestsPage', () => {
           js: [],
         })
         expect(listForPrereviewer).toHaveBeenCalledWith(user.orcid)
-      }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)]), EffectTest.run),
+      }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)])),
   )
 
-  test.prop([fc.supportedLocale(), fc.user()])("when the requests can't be loaded", (locale, user) =>
+  it.effect.prop("when the requests can't be loaded", [fc.supportedLocale(), fc.user()], ([locale, user]) =>
     Effect.gen(function* () {
       const actual = yield* _.MyReviewRequestsPage
 
@@ -58,7 +57,6 @@ describe('MyReviewRequestsPage', () => {
           listForPrereviewer: () => new ReviewRequests.ReviewRequestsAreUnavailable({}),
         }),
       ]),
-      EffectTest.run,
     ),
   )
 })

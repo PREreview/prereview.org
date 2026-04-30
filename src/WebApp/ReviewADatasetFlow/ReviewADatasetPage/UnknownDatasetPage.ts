@@ -20,6 +20,7 @@ export const UnknownDatasetPage = ({ dataset, locale }: { dataset: Datasets.Data
           Match.valueTags(dataset, {
             DryadDatasetId: () => t('doiCouldBeDryad'),
             ScieloDatasetId: () => t('doiCouldBeScielo'),
+            ZenodoDatasetId: () => t('doiCouldBeZenodo'),
           })({ doi: html`<q class="select-all" translate="no">${dataset.value}</q>`.toString() }),
         )}
       </p>

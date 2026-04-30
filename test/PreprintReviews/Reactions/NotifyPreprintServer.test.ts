@@ -1,6 +1,5 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, Layer, Option, pipe } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import { CoarNotify } from '../../../src/ExternalApis/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as PreprintReviews from '../../../src/PreprintReviews/index.ts'
@@ -9,15 +8,15 @@ import * as Preprints from '../../../src/Preprints/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as PublicUrl from '../../../src/public-url.ts'
 import { Uuid } from '../../../src/types/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('NotifyPreprintServer', () => {
   describe('when the review can be loaded', () => {
     describe('when the message can be sent', () => {
-      test.prop([fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() }), fc.uuid()])(
+      it.effect.prop(
         'when the feature is enabled',
-        (publicUrl, reviewId, review, uuid) =>
+        [fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() }), fc.uuid()],
+        ([publicUrl, reviewId, review, uuid]) =>
           Effect.gen(function* () {
             const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
 
@@ -52,13 +51,13 @@ describe('NotifyPreprintServer', () => {
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
               Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
             ]),
-            EffectTest.run,
           ),
       )
 
-      test.prop([fc.origin(), fc.integer(), fc.prereview(), fc.uuid()])(
+      it.effect.prop(
         'when the feature is sandboxed',
-        (publicUrl, reviewId, review, uuid) =>
+        [fc.origin(), fc.integer(), fc.prereview(), fc.uuid()],
+        ([publicUrl, reviewId, review, uuid]) =>
           Effect.gen(function* () {
             const sendMessage = vi.fn<(typeof CoarNotify.CoarNotify.Service)['sendMessage']>(_ => Effect.void)
 
@@ -97,14 +96,14 @@ describe('NotifyPreprintServer', () => {
               Layer.succeed(PublicUrl.PublicUrl, publicUrl),
               Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
             ]),
-            EffectTest.run,
           ),
       )
     })
 
-    test.prop([fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.notACoarNotifyTargetPreprintId() })])(
+    it.effect.prop(
       "when the message doesn't need to be sent",
-      (publicUrl, reviewId, review) =>
+      [fc.origin(), fc.integer(), fc.prereview({ preprintId: fc.notACoarNotifyTargetPreprintId() })],
+      ([publicUrl, reviewId, review]) =>
         Effect.gen(function* () {
           const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
 
@@ -117,64 +116,67 @@ describe('NotifyPreprintServer', () => {
             Layer.succeed(PublicUrl.PublicUrl, publicUrl),
             Layer.mock(Uuid.GenerateUuid, {}),
           ]),
-          EffectTest.run,
         ),
     )
 
-    test.prop([
+    it.effect.prop(
+      "when the message can't be sent",
+      [
+        fc.origin(),
+        fc.oneof(
+          fc.tuple(fc.constant(true), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() })),
+          fc.tuple(fc.constant('sandbox'), fc.prereview()),
+        ),
+        fc.integer(),
+        fc.uuid(),
+        fc.anything().map(cause => new CoarNotify.UnableToSendCoarNotifyMessage({ cause })),
+      ],
+      ([publicUrl, [sendCoarNotifyMessages, review], reviewId, uuid, error]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
+
+          expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
+        }).pipe(
+          Effect.provide([
+            Layer.mock(CoarNotify.CoarNotify, { sendMessage: () => error }),
+            FeatureFlags.layer({ sendCoarNotifyMessages }),
+            Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+            Layer.succeed(PublicUrl.PublicUrl, publicUrl),
+            Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
+          ]),
+        ),
+    )
+  })
+
+  it.effect.prop(
+    "when the review can't be loaded",
+    [
       fc.origin(),
-      fc.oneof(
-        fc.tuple(fc.constant(true), fc.prereview({ preprintId: fc.coarNotifyTargetPreprintId() })),
-        fc.tuple(fc.constant('sandbox'), fc.prereview()),
-      ),
+      fc.constantFrom(true, 'sandbox'),
       fc.integer(),
-      fc.uuid(),
-      fc.anything().map(cause => new CoarNotify.UnableToSendCoarNotifyMessage({ cause })),
-    ])("when the message can't be sent", (publicUrl, [sendCoarNotifyMessages, review], reviewId, uuid, error) =>
+      fc.constantFrom(
+        new Prereviews.PrereviewIsNotFound(),
+        new Prereviews.PrereviewIsUnavailable(),
+        new Prereviews.PrereviewWasRemoved(),
+      ),
+    ],
+    ([publicUrl, sendCoarNotifyMessages, reviewId, error]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
 
         expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
       }).pipe(
         Effect.provide([
-          Layer.mock(CoarNotify.CoarNotify, { sendMessage: () => error }),
+          Layer.mock(CoarNotify.CoarNotify, {}),
           FeatureFlags.layer({ sendCoarNotifyMessages }),
-          Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
+          Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
           Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-          Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
+          Layer.mock(Uuid.GenerateUuid, {}),
         ]),
-        EffectTest.run,
       ),
-    )
-  })
-
-  test.prop([
-    fc.origin(),
-    fc.constantFrom(true, 'sandbox'),
-    fc.integer(),
-    fc.constantFrom(
-      new Prereviews.PrereviewIsNotFound(),
-      new Prereviews.PrereviewIsUnavailable(),
-      new Prereviews.PrereviewWasRemoved(),
-    ),
-  ])("when the review can't be loaded", (publicUrl, sendCoarNotifyMessages, reviewId, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
-
-      expect(actual).toStrictEqual(Either.left(new PreprintReviews.FailedToNotifyPreprintServer({ cause: error })))
-    }).pipe(
-      Effect.provide([
-        Layer.mock(CoarNotify.CoarNotify, {}),
-        FeatureFlags.layer({ sendCoarNotifyMessages }),
-        Layer.mock(Prereviews.Prereviews, { getPrereview: () => error }),
-        Layer.succeed(PublicUrl.PublicUrl, publicUrl),
-        Layer.mock(Uuid.GenerateUuid, {}),
-      ]),
-      EffectTest.run,
-    ),
   )
 
-  test.prop([fc.origin(), fc.integer()])('when the feature is not enabled', (publicUrl, reviewId) =>
+  it.effect.prop('when the feature is not enabled', [fc.origin(), fc.integer()], ([publicUrl, reviewId]) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.NotifyPreprintServer(reviewId), Effect.either)
 
@@ -187,7 +189,6 @@ describe('NotifyPreprintServer', () => {
         Layer.succeed(PublicUrl.PublicUrl, publicUrl),
         Layer.mock(Uuid.GenerateUuid, {}),
       ]),
-      EffectTest.run,
     ),
   )
 })

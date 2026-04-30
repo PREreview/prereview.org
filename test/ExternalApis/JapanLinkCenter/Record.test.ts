@@ -1,15 +1,14 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Tuple } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('GetRecord', () => {
-  test.prop(
+  it.effect.prop(
+    'calls the record API',
     [
       fc
         .doi()
@@ -20,27 +19,29 @@ describe('GetRecord', () => {
           ),
         ),
     ],
+    ([[doi, expectedUrl]]) =>
+      Effect.gen(function* () {
+        const clientSpy = vi.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
+        const client = stubbedClient(clientSpy)
+
+        yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
+
+        expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
+      }),
     {
-      examples: [
-        [[Doi('10.51094/jxiv.1041'), 'https://api.japanlinkcenter.org/dois/10.51094%252Fjxiv.1041']],
-        [[Doi('10.51094/jxiv.1041/1'), 'https://api.japanlinkcenter.org/dois/10.51094%252Fjxiv.1041%252F1']],
-      ],
+      fastCheck: {
+        examples: [
+          [[Doi('10.51094/jxiv.1041'), 'https://api.japanlinkcenter.org/dois/10.51094%252Fjxiv.1041']],
+          [[Doi('10.51094/jxiv.1041/1'), 'https://api.japanlinkcenter.org/dois/10.51094%252Fjxiv.1041%252F1']],
+        ],
+      },
     },
-  )('calls the record API', ([doi, expectedUrl]) =>
-    Effect.gen(function* () {
-      const clientSpy = vi.fn((_: HttpClientRequest.HttpClientRequest) => new Response())
-      const client = stubbedClient(clientSpy)
-
-      yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
-
-      expect(clientSpy).toHaveBeenCalledWith(HttpClientRequest.get(expectedUrl))
-    }).pipe(EffectTest.run),
   )
 
   describe('with a response', () => {
     describe('with a 200 status code', () => {
       describe('with a record', () => {
-        test.prop([fc.doi()])('returns the record', doi =>
+        it.effect.prop('returns the record', [fc.doi()], ([doi]) =>
           Effect.gen(function* () {
             const record = {
               status: 'OK',
@@ -180,12 +181,12 @@ describe('GetRecord', () => {
                 publication_date: Temporal.PlainDate.from('2025-01-28'),
               }),
             )
-          }).pipe(EffectTest.run),
+          }),
         )
       })
 
       describe('with a unknown body', () => {
-        test.prop([fc.doi(), fc.string()])('returns an error', (doi, body) =>
+        it.effect.prop('returns an error', [fc.doi(), fc.string()], ([doi, body]) =>
           Effect.gen(function* () {
             const client = stubbedClient(() => new Response(body, { status: 200 }))
 
@@ -198,13 +199,13 @@ describe('GetRecord', () => {
             expect(actual.cause).toStrictEqual(
               expect.objectContaining({ _tag: expect.stringMatching(/^ParseError|ResponseError$/) }),
             )
-          }).pipe(EffectTest.run),
+          }),
         )
       })
     })
 
     describe('with a 404 status code', () => {
-      test.prop([fc.doi()])('always fails', doi =>
+      it.effect.prop('always fails', [fc.doi()], ([doi]) =>
         Effect.gen(function* () {
           const client = stubbedClient(() => new Response(null, { status: 404 }))
 
@@ -215,14 +216,15 @@ describe('GetRecord', () => {
 
           expect(actual._tag).toStrictEqual('RecordIsNotFound')
           expect(actual.cause).toStrictEqual(expect.objectContaining({ status: 404 }))
-        }).pipe(EffectTest.run),
+        }),
       )
     })
 
     describe('with another status code', () => {
-      test.prop([fc.doi(), fc.statusCode().filter(status => status >= 201 && status !== 404)])(
+      it.effect.prop(
         'with another status code',
-        (doi, status) =>
+        [fc.doi(), fc.statusCode().filter(status => status >= 201 && status !== 404)],
+        ([doi, status]) =>
           Effect.gen(function* () {
             const client = stubbedClient(() => new Response(null, { status }))
 
@@ -233,32 +235,32 @@ describe('GetRecord', () => {
 
             expect(actual._tag).toStrictEqual('RecordIsUnavailable')
             expect(actual.cause).toStrictEqual(expect.objectContaining({ status }))
-          }).pipe(EffectTest.run),
+          }),
       )
     })
   })
 
   describe('with a request error', () => {
-    test.prop([fc.doi(), fc.httpClientRequestError()])('returns unavailable', (doi, error) =>
+    it.effect.prop('returns unavailable', [fc.doi(), fc.httpClientRequestError()], ([doi, error]) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(error)
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 
   describe('with a response error', () => {
-    test.prop([fc.doi(), fc.httpClientResponseError()])('returns unavailable', (doi, error) =>
+    it.effect.prop('returns unavailable', [fc.doi(), fc.httpClientResponseError()], ([doi, error]) =>
       Effect.gen(function* () {
         const client = stubbedFailingClient(() => error)
         const actual = yield* pipe(Effect.flip(_.GetRecord(doi)), Effect.provideService(HttpClient.HttpClient, client))
 
         expect(actual._tag).toStrictEqual('RecordIsUnavailable')
         expect(actual.cause).toStrictEqual(error)
-      }).pipe(EffectTest.run),
+      }),
     )
   })
 })

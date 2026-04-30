@@ -1,4 +1,4 @@
-import { Array, Either, flow } from 'effect'
+import { Array, Either, flow, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
@@ -11,7 +11,7 @@ export interface Result {
 
 const createFilter = () =>
   Events.EventFilter({
-    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
+    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered', 'LegacyPseudonymReplaced'],
   })
 
 const query =
@@ -21,8 +21,11 @@ const query =
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
+    const replacedPseudonyms = Array.filter(filteredEvents, hasTag('LegacyPseudonymReplaced')).length
+
     const used = Array.filter(filteredEvents, event => possiblePseudonyms.has(event.pseudonym)).length
-    const legacyUsed = Array.filter(filteredEvents, event => !possiblePseudonyms.has(event.pseudonym)).length
+    const legacyUsed =
+      Array.filter(filteredEvents, event => !possiblePseudonyms.has(event.pseudonym)).length - replacedPseudonyms
 
     return {
       used,
@@ -37,3 +40,7 @@ export const CountAvailablePseudonyms = (possiblePseudonyms: Set<Pseudonym>) =>
     createFilter,
     query: flow(query(possiblePseudonyms), Either.right),
   })
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}

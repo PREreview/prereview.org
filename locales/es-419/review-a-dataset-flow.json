@@ -35,9 +35,6 @@
   "unsupportedUrl": {
     "message": "Lo sentimos, pero no admitimos esta URL"
   },
-  "supportDatasetsFrom": {
-    "message": "Aceptamos conjuntos de datos de Dryad y SciELO."
-  },
   "doiIsForDataset": {
     "message": "Si este DOI corresponde a un conjunto de datos de un repositorio que no admitimos, por favor <contact>contactáctanos</contact>."
   },

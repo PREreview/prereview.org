@@ -1,10 +1,9 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Effect, pipe, Schema } from 'effect'
-import { expect } from 'vitest'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
@@ -37,9 +36,8 @@ import {
   VerixivPreprintId,
 } from '../../../../src/Preprints/index.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
-test.each([
+it.effect.each([
   {
     response: 'ssrn.json',
     expected: Preprint({
@@ -904,16 +902,16 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-test.each([
-  'csh-press-journal.json',
-  'f1000.json',
-  'scielo-journal.json',
-  'science-open-journal-article.json',
-  'wellcome-open-research.json',
-])('returns a specific error for non-Preprint work (%s)', response =>
+it.effect.each([
+  ['csh-press-journal.json'],
+  ['f1000.json'],
+  ['scielo-journal.json'],
+  ['science-open-journal-article.json'],
+  ['wellcome-open-research.json'],
+])('returns a specific error for non-Preprint work (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -924,5 +922,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('NotAPreprint')
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )

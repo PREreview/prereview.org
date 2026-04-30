@@ -1,15 +1,13 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../../../src/Context.ts'
 import * as Routes from '../../../../src/routes.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/HandleDecision.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from './fc.ts'
 
 describe('handleDecision', () => {
-  test.prop([fc.preprintId(), fc.supportedLocale()])('with a BeginFlow decision', (preprint, locale) =>
+  it.effect.prop('with a BeginFlow decision', [fc.preprintId(), fc.supportedLocale()], ([preprint, locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'BeginFlow', preprint })
 
@@ -18,10 +16,10 @@ describe('handleDecision', () => {
         status: StatusCodes.SeeOther,
         location: Routes.RequestAReviewOfThisPreprint.href({ preprintId: preprint }),
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.supportedLocale()])('with a ShowError decision', locale =>
+  it.effect.prop('with a ShowError decision', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowError' })
 
@@ -33,10 +31,10 @@ describe('handleDecision', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.supportedLocale()])('with a ShowNotAPreprint decision', locale =>
+  it.effect.prop('with a ShowNotAPreprint decision', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowNotAPreprint' })
 
@@ -48,12 +46,13 @@ describe('handleDecision', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.supportedLocale()])(
+  it.effect.prop(
     'with a ShowUnknownPreprint decision',
-    (preprint, locale) =>
+    [fc.indeterminatePreprintId(), fc.supportedLocale()],
+    ([preprint, locale]) =>
       Effect.gen(function* () {
         const actual = yield* _.handleDecision({ _tag: 'ShowUnknownPreprint', preprint })
 
@@ -65,10 +64,10 @@ describe('handleDecision', () => {
           skipToLabel: 'main',
           js: [],
         })
-      }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+      }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.supportedLocale()])('with a ShowUnsupportedDoi decision', locale =>
+  it.effect.prop('with a ShowUnsupportedDoi decision', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowUnsupportedDoi' })
 
@@ -80,10 +79,10 @@ describe('handleDecision', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.supportedLocale()])('with a ShowUnsupportedUrl decision', locale =>
+  it.effect.prop('with a ShowUnsupportedUrl decision', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowUnsupportedUrl' })
 
@@ -95,10 +94,10 @@ describe('handleDecision', () => {
         skipToLabel: 'main',
         js: [],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.invalidForm(), fc.supportedLocale()])('with an ShowFormWithErrors decision', (form, locale) =>
+  it.effect.prop('with an ShowFormWithErrors decision', [fc.invalidForm(), fc.supportedLocale()], ([form, locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowFormWithErrors', form })
 
@@ -112,10 +111,10 @@ describe('handleDecision', () => {
         skipToLabel: 'form',
         js: ['error-summary.js'],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 
-  test.prop([fc.supportedLocale()])('with an ShowEmptyForm decision', locale =>
+  it.effect.prop('with an ShowEmptyForm decision', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.handleDecision({ _tag: 'ShowEmptyForm' })
 
@@ -129,6 +128,6 @@ describe('handleDecision', () => {
         skipToLabel: 'form',
         js: [],
       })
-    }).pipe(Effect.provide(Layer.succeed(Locale, locale)), EffectTest.run),
+    }).pipe(Effect.provide(Layer.succeed(Locale, locale))),
   )
 })

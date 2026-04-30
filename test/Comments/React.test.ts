@@ -1,17 +1,16 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Effect, Either, pipe } from 'effect'
-import { describe, expect, vi } from 'vitest'
 import * as Comments from '../../src/Comments/index.ts'
 import * as _ from '../../src/Comments/React.ts'
 import * as Queries from '../../src/Queries.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('CheckIfUserHasAVerifiedEmailAddress', () => {
-  test.prop([fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })])(
+  it.effect.prop(
     'marks the email addess as verified',
-    (commentId, comment) =>
+    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
+    ([commentId, comment]) =>
       Effect.gen(function* () {
         const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
@@ -27,33 +26,31 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
-        EffectTest.run,
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }),
-    fc.commentError(),
-  ])("when the comment can't be updated", (commentId, comment, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        _.CheckIfUserHasAVerifiedEmailAddress(commentId),
-        Effect.provideService(Comments.HandleCommentCommand, () => error),
-        Effect.either,
-      )
+  it.effect.prop(
+    "when the comment can't be updated",
+    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) }), fc.commentError()],
+    ([commentId, comment, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.CheckIfUserHasAVerifiedEmailAddress(commentId),
+          Effect.provideService(Comments.HandleCommentCommand, () => error),
+          Effect.either,
+        )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
-    }).pipe(
-      Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-      Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+      }).pipe(
+        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
+        Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(true)),
+      ),
   )
 
-  test.prop([fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })])(
+  it.effect.prop(
     "when there isn't a verified contact email address",
-    (commentId, comment) =>
+    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
+    ([commentId, comment]) =>
       Effect.gen(function* () {
         yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -62,13 +59,13 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provideService(Comments.DoesUserHaveAVerifiedEmailAddress, () => Effect.succeed(false)),
-        EffectTest.run,
       ),
   )
 
-  test.prop([fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })])(
+  it.effect.prop(
     "when a contact email address can't be read",
-    (commentId, comment) =>
+    [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
+    ([commentId, comment]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -78,13 +75,10 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
         )
 
         expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
-      }).pipe(
-        Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
-        EffectTest.run,
-      ),
+      }).pipe(Effect.provideService(Comments.GetComment, () => Effect.succeed(comment))),
   )
 
-  test.prop([fc.uuid()])("when the comment can't be read", commentId =>
+  it.effect.prop("when the comment can't be read", [fc.uuid()], ([commentId]) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.CheckIfUserHasAVerifiedEmailAddress(commentId),
@@ -95,14 +89,15 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
       )
 
       expect(actual).toStrictEqual(Either.left(new Queries.UnableToQuery({})))
-    }).pipe(EffectTest.run),
+    }),
   )
 })
 
 describe('AssignCommentADoiWhenPublicationWasRequested', () => {
-  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord(), fc.integer(), fc.doi()])(
+  it.effect.prop(
     'assigns a DOI',
-    (commentId, inputForCommentZenodoRecord, id, doi) =>
+    [fc.uuid(), fc.inputForCommentZenodoRecord(), fc.integer(), fc.doi()],
+    ([commentId, inputForCommentZenodoRecord, id, doi]) =>
       Effect.gen(function* () {
         const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
@@ -116,15 +111,13 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         )
 
         expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkDoiAsAssigned({ commentId, doi, id }))
-      }).pipe(
-        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        EffectTest.run,
-      ),
+      }).pipe(Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id]))),
   )
 
-  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord(), fc.integer(), fc.doi(), fc.commentError()])(
+  it.effect.prop(
     "when the command can't be handled",
-    (commentId, inputForCommentZenodoRecord, id, doi, error) =>
+    [fc.uuid(), fc.inputForCommentZenodoRecord(), fc.integer(), fc.doi(), fc.commentError()],
+    ([commentId, inputForCommentZenodoRecord, id, doi, error]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
@@ -133,15 +126,13 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         )
 
         expect(actual).toStrictEqual(Either.left(error))
-      }).pipe(
-        Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        EffectTest.run,
-      ),
+      }).pipe(Effect.provideService(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id]))),
   )
 
-  test.prop([fc.uuid(), fc.inputForCommentZenodoRecord()])(
+  it.effect.prop(
     "when a DOI can't be assigned",
-    (commentId, inputForCommentZenodoRecord) =>
+    [fc.uuid(), fc.inputForCommentZenodoRecord()],
+    ([commentId, inputForCommentZenodoRecord]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(
           _.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
@@ -154,50 +145,50 @@ describe('AssignCommentADoiWhenPublicationWasRequested', () => {
         )
 
         expect(actual).toStrictEqual(Either.left(new Comments.UnableToAssignADoi({})))
-      }).pipe(EffectTest.run),
+      }),
   )
 })
 
 describe('PublishCommentWhenCommentWasAssignedADoi', () => {
-  test.prop([
-    fc
-      .uuid()
-      .chain(commentId =>
-        fc.tuple(fc.constant(commentId), fc.commentWasAssignedADoi({ commentId: fc.constant(commentId) })),
-      ),
-  ])('published comment', ([commentId, event]) =>
-    Effect.gen(function* () {
-      const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
+  it.effect.prop(
+    'published comment',
+    [
+      fc
+        .uuid()
+        .chain(commentId =>
+          fc.tuple(fc.constant(commentId), fc.commentWasAssignedADoi({ commentId: fc.constant(commentId) })),
+        ),
+    ],
+    ([[commentId, event]]) =>
+      Effect.gen(function* () {
+        const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(_ => Effect.void)
 
-      yield* Effect.provideService(
-        _.PublishCommentWhenCommentWasAssignedADoi(event),
-        Comments.HandleCommentCommand,
-        handleCommentCommand,
-      )
+        yield* Effect.provideService(
+          _.PublishCommentWhenCommentWasAssignedADoi(event),
+          Comments.HandleCommentCommand,
+          handleCommentCommand,
+        )
 
-      expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkCommentAsPublished({ commentId }))
-    }).pipe(
-      Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
-      EffectTest.run,
-    ),
+        expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkCommentAsPublished({ commentId }))
+      }).pipe(Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void)),
   )
 
-  test.prop([fc.commentWasAssignedADoi(), fc.commentError()])("when the comment can't be updated", (event, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(
-        _.PublishCommentWhenCommentWasAssignedADoi(event),
-        Effect.provideService(Comments.HandleCommentCommand, () => error),
-        Effect.either,
-      )
+  it.effect.prop(
+    "when the comment can't be updated",
+    [fc.commentWasAssignedADoi(), fc.commentError()],
+    ([event, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(
+          _.PublishCommentWhenCommentWasAssignedADoi(event),
+          Effect.provideService(Comments.HandleCommentCommand, () => error),
+          Effect.either,
+        )
 
-      expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
-    }).pipe(
-      Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Either.left(new Comments.UnableToHandleCommand({ cause: error })))
+      }).pipe(Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void)),
   )
 
-  test.prop([fc.commentWasAssignedADoi()])("when the comment can't be published", event =>
+  it.effect.prop("when the comment can't be published", [fc.commentWasAssignedADoi()], ([event]) =>
     Effect.gen(function* () {
       const actual = yield* pipe(
         _.PublishCommentWhenCommentWasAssignedADoi(event),
@@ -209,6 +200,6 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
       )
 
       expect(actual).toStrictEqual(Either.left(new Comments.UnableToPublishComment({})))
-    }).pipe(EffectTest.run),
+    }),
   )
 })

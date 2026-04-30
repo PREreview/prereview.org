@@ -1,6 +1,6 @@
+import { expect, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Either, Option } from 'effect'
-import { expect, test } from 'vitest'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/Prereviewers/RegisterPrereviewer.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
@@ -14,6 +14,18 @@ const input = {
 
 const imported = new Events.RegisteredPrereviewerImported(input)
 const registered = new Events.PrereviewerRegistered(input)
+
+const importedLegacy = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  registeredAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Orange Panda 0'),
+})
+
+const legacyReplaced = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  replacedAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Orange Panda'),
+})
 
 const importedDifferentTime = new Events.RegisteredPrereviewerImported({
   ...input,
@@ -145,6 +157,12 @@ test.each<
   [
     'different orcid registered with same pseudonym',
     [registeredDifferentOrcidId],
+    input,
+    Either.left(new _.PseudonymAlreadyInUse()),
+  ],
+  [
+    'different orcid, but same pseudonym is use due to legacy pseudonym replacement',
+    [importedLegacy, legacyReplaced],
     input,
     Either.left(new _.PseudonymAlreadyInUse()),
   ],

@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Commands/ChoosePersona.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -39,36 +38,45 @@ const command = (): fc.Arbitrary<_.Command> =>
   })
 
 describe('foldState', () => {
-  test.prop(
+  it.prop(
+    'not started',
     [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted')))), fc.uuid()],
-    {
-      examples: [
-        [[], datasetReviewId], // no events
-        [[personaForDatasetReviewWasChosen1, datasetReviewWasPublished], datasetReviewId], // with events
-        [[started], datasetReviewId2], // with events for other dataset review
-        [[started, datasetReviewWasPublished], datasetReviewId2], // with multiple events for other dataset review
-      ],
+    ([events, datasetReviewId]) => {
+      const state = _.foldState(events, datasetReviewId)
+
+      expect(state).toStrictEqual(new _.NotStarted())
     },
-  )('not started', (events, datasetReviewId) => {
-    const state = _.foldState(events, datasetReviewId)
+    {
+      fastCheck: {
+        examples: [
+          [[], datasetReviewId], // no events
+          [[personaForDatasetReviewWasChosen1, datasetReviewWasPublished], datasetReviewId], // with events
+          [[started], datasetReviewId2], // with events for other dataset review
+          [[started, datasetReviewWasPublished], datasetReviewId2], // with multiple events for other dataset review
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
-
-  test.prop(
+  it.prop(
+    'not chosen',
     [fc.datasetReviewWasStarted().map(event => Tuple.make(Array.make(event), event.datasetReviewId, event.authorId))],
-    {
-      examples: [
-        [[[started], datasetReviewId, authorId]], // was started
-      ],
+    ([[events, datasetReviewId, expectedAuthorId]]) => {
+      const state = _.foldState(events, datasetReviewId)
+
+      expect(state).toStrictEqual(new _.NotChosen({ authorId: expectedAuthorId }))
     },
-  )('not chosen', ([events, datasetReviewId, expectedAuthorId]) => {
-    const state = _.foldState(events, datasetReviewId)
+    {
+      fastCheck: {
+        examples: [
+          [[[started], datasetReviewId, authorId]], // was started
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotChosen({ authorId: expectedAuthorId }))
-  })
-
-  test.prop(
+  it.prop(
+    'has been chosen',
     [
       fc
         .uuid()
@@ -84,33 +92,37 @@ describe('foldState', () => {
           Tuple.make(Array.make(started, chosen), chosen.persona, started.datasetReviewId, started.authorId),
         ),
     ],
-    {
-      examples: [
-        [
-          [
-            [started, personaForDatasetReviewWasChosen1],
-            personaForDatasetReviewWasChosen1.persona,
-            datasetReviewId,
-            authorId,
-          ],
-        ], // chosen once
-        [
-          [
-            [started, personaForDatasetReviewWasChosen1, personaForDatasetReviewWasChosen2],
-            personaForDatasetReviewWasChosen2.persona,
-            datasetReviewId,
-            authorId,
-          ],
-        ], // chosen twice
-      ],
+    ([[events, expectedPersona, datasetReviewId, expectedAuthorId]]) => {
+      const state = _.foldState(events, datasetReviewId)
+
+      expect(state).toStrictEqual(new _.HasBeenChosen({ persona: expectedPersona, authorId: expectedAuthorId }))
     },
-  )('has been chosen', ([events, expectedPersona, datasetReviewId, expectedAuthorId]) => {
-    const state = _.foldState(events, datasetReviewId)
+    {
+      fastCheck: {
+        examples: [
+          [
+            [
+              [started, personaForDatasetReviewWasChosen1],
+              personaForDatasetReviewWasChosen1.persona,
+              datasetReviewId,
+              authorId,
+            ],
+          ], // chosen once
+          [
+            [
+              [started, personaForDatasetReviewWasChosen1, personaForDatasetReviewWasChosen2],
+              personaForDatasetReviewWasChosen2.persona,
+              datasetReviewId,
+              authorId,
+            ],
+          ], // chosen twice
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.HasBeenChosen({ persona: expectedPersona, authorId: expectedAuthorId }))
-  })
-
-  test.prop(
+  it.prop(
+    'is being published',
     [
       fc
         .uuid()
@@ -128,32 +140,36 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
-        [
-          [
-            [started, personaForDatasetReviewWasChosen1, publicationOfDatasetReviewWasRequested],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // also chosen
-        [
-          [
-            [publicationOfDatasetReviewWasRequested, started, personaForDatasetReviewWasChosen1],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // different order
-      ],
+    ([[events, datasetReviewId, expectedAuthorId]]) => {
+      const state = _.foldState(events, datasetReviewId)
+
+      expect(state).toStrictEqual(new _.IsBeingPublished({ authorId: expectedAuthorId }))
     },
-  )('is being published', ([events, datasetReviewId, expectedAuthorId]) => {
-    const state = _.foldState(events, datasetReviewId)
+    {
+      fastCheck: {
+        examples: [
+          [[[started, publicationOfDatasetReviewWasRequested], datasetReviewId, authorId]], // was requested
+          [
+            [
+              [started, personaForDatasetReviewWasChosen1, publicationOfDatasetReviewWasRequested],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // also chosen
+          [
+            [
+              [publicationOfDatasetReviewWasRequested, started, personaForDatasetReviewWasChosen1],
+              datasetReviewId,
+              authorId,
+            ],
+          ], // different order
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.IsBeingPublished({ authorId: expectedAuthorId }))
-  })
-
-  test.prop(
+  it.prop(
+    'has been published',
     [
       fc
         .uuid()
@@ -171,46 +187,49 @@ describe('foldState', () => {
           ),
         ),
     ],
+    ([[events, datasetReviewId, expectedAuthorId]]) => {
+      const state = _.foldState(events, datasetReviewId)
+
+      expect(state).toStrictEqual(new _.HasBeenPublished({ authorId: expectedAuthorId }))
+    },
     {
-      examples: [
-        [[[started, personaForDatasetReviewWasChosen1, datasetReviewWasPublished], datasetReviewId, authorId]], // was published
-        [
+      fastCheck: {
+        examples: [
+          [[[started, personaForDatasetReviewWasChosen1, datasetReviewWasPublished], datasetReviewId, authorId]], // was published
           [
             [
-              started,
-              personaForDatasetReviewWasChosen1,
-              publicationOfDatasetReviewWasRequested,
-              datasetReviewWasPublished,
+              [
+                started,
+                personaForDatasetReviewWasChosen1,
+                publicationOfDatasetReviewWasRequested,
+                datasetReviewWasPublished,
+              ],
+              datasetReviewId,
+              authorId,
             ],
-            datasetReviewId,
-            authorId,
-          ],
-        ], // also requested
-        [[[started, datasetReviewWasPublished, personaForDatasetReviewWasChosen1], datasetReviewId, authorId]], // different order
-      ],
+          ], // also requested
+          [[[started, datasetReviewWasPublished, personaForDatasetReviewWasChosen1], datasetReviewId, authorId]], // different order
+        ],
+      },
     },
-  )('has been published', ([events, datasetReviewId, expectedAuthorId]) => {
-    const state = _.foldState(events, datasetReviewId)
-
-    expect(state).toStrictEqual(new _.HasBeenPublished({ authorId: expectedAuthorId }))
-  })
+  )
 })
 
 describe('authorize', () => {
-  test.prop([command()])('has not been started', command => {
+  it.prop('has not been started', [command()], ([command]) => {
     const result = _.authorize(new _.NotStarted(), command)
 
     expect(result).toBeTruthy()
   })
 
   describe('has not been chosen', () => {
-    test.prop([command()])('with the same user', command => {
+    it.prop('with the same user', [command()], ([command]) => {
       const result = _.authorize(new _.NotChosen({ authorId: command.userId }), command)
 
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
+    it.prop('with a different user', [command(), fc.orcidId()], ([command, authorId]) => {
       const result = _.authorize(new _.NotChosen({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -218,13 +237,13 @@ describe('authorize', () => {
   })
 
   describe('has been chosen', () => {
-    test.prop([command(), persona()])('with the same user', (command, persona) => {
+    it.prop('with the same user', [command(), persona()], ([command, persona]) => {
       const result = _.authorize(new _.HasBeenChosen({ persona, authorId: command.userId }), command)
 
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcidId(), persona()])('with a different user', (command, authorId, persona) => {
+    it.prop('with a different user', [command(), fc.orcidId(), persona()], ([command, authorId, persona]) => {
       const result = _.authorize(new _.HasBeenChosen({ persona, authorId }), command)
 
       expect(result).toBeFalsy()
@@ -232,13 +251,13 @@ describe('authorize', () => {
   })
 
   describe('is being published', () => {
-    test.prop([command()])('with the same user', command => {
+    it.prop('with the same user', [command()], ([command]) => {
       const result = _.authorize(new _.IsBeingPublished({ authorId: command.userId }), command)
 
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
+    it.prop('with a different user', [command(), fc.orcidId()], ([command, authorId]) => {
       const result = _.authorize(new _.IsBeingPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -246,13 +265,13 @@ describe('authorize', () => {
   })
 
   describe('is being published', () => {
-    test.prop([command()])('with the same user', command => {
+    it.prop('with the same user', [command()], ([command]) => {
       const result = _.authorize(new _.HasBeenPublished({ authorId: command.userId }), command)
 
       expect(result).toBeTruthy()
     })
 
-    test.prop([command(), fc.orcidId()])('with a different user', (command, authorId) => {
+    it.prop('with a different user', [command(), fc.orcidId()], ([command, authorId]) => {
       const result = _.authorize(new _.HasBeenPublished({ authorId }), command)
 
       expect(result).toBeFalsy()
@@ -261,13 +280,13 @@ describe('authorize', () => {
 })
 
 describe('decide', () => {
-  test.prop([command()])('has not been started', command => {
+  it.prop('has not been started', [command()], ([command]) => {
     const result = _.decide(new _.NotStarted(), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.orcidId(), command()])('has not been chosen', (authorId, command) => {
+  it.prop('has not been chosen', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.NotChosen({ authorId }), command)
 
     expect(result).toStrictEqual(
@@ -283,38 +302,42 @@ describe('decide', () => {
   })
 
   describe('has been chosen', () => {
-    test.prop([
-      fc.orcidId(),
-      fc.tuple(command(), persona()).filter(([command, persona]) => !Equal.equals(command.persona, persona)),
-    ])('with a different persona', (authorId, [command, persona]) => {
-      const result = _.decide(new _.HasBeenChosen({ persona, authorId }), command)
+    it.prop(
+      'with a different persona',
+      [
+        fc.orcidId(),
+        fc.tuple(command(), persona()).filter(([command, persona]) => !Equal.equals(command.persona, persona)),
+      ],
+      ([authorId, [command, persona]]) => {
+        const result = _.decide(new _.HasBeenChosen({ persona, authorId }), command)
 
-      expect(result).toStrictEqual(
-        Either.right(
-          Option.some(
-            new DatasetReviews.PersonaForDatasetReviewWasChosen({
-              persona: command.persona,
-              datasetReviewId: command.datasetReviewId,
-            }),
+        expect(result).toStrictEqual(
+          Either.right(
+            Option.some(
+              new DatasetReviews.PersonaForDatasetReviewWasChosen({
+                persona: command.persona,
+                datasetReviewId: command.datasetReviewId,
+              }),
+            ),
           ),
-        ),
-      )
-    })
+        )
+      },
+    )
 
-    test.prop([fc.orcidId(), command()])('with the same persona', (authorId, command) => {
+    it.prop('with the same persona', [fc.orcidId(), command()], ([authorId, command]) => {
       const result = _.decide(new _.HasBeenChosen({ persona: command.persona, authorId }), command)
 
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
   })
 
-  test.prop([fc.orcidId(), command()])('is being published', (authorId, command) => {
+  it.prop('is being published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.IsBeingPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()))
   })
 
-  test.prop([fc.orcidId(), command()])('has been published', (authorId, command) => {
+  it.prop('has been published', [fc.orcidId(), command()], ([authorId, command]) => {
     const result = _.decide(new _.HasBeenPublished({ authorId }), command)
 
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()))

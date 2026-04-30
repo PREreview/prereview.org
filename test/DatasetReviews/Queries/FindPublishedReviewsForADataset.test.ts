@@ -1,7 +1,6 @@
-import { it } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Equal, identity, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Queries/FindPublishedReviewsForADataset.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -42,6 +41,7 @@ const otherDatasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublis
 describe('FindPublishedReviewsForADataset', () => {
   describe('when there are published reviews', () => {
     it.prop(
+      'returns the reviews',
       [
         fc
           .datasetReviewWasStarted()
@@ -56,44 +56,48 @@ describe('FindPublishedReviewsForADataset', () => {
               ),
           ),
       ],
-      {
-        examples: [
-          [[datasetId, [datasetReviewWasStarted, datasetReviewWasPublished], [datasetReviewId]]], // one published
-          [
-            [
-              datasetId,
-              [
-                datasetReviewWasStarted,
-                datasetReviewWasStarted2,
-                datasetReviewWasPublished,
-                datasetReviewWasPublished2,
-              ],
-              [datasetReviewId2, datasetReviewId],
-            ],
-          ], // two published
-          [
-            [
-              datasetId,
-              [
-                datasetReviewWasPublished2,
-                datasetReviewWasPublished,
-                datasetReviewWasStarted,
-                datasetReviewWasStarted2,
-              ],
-              [datasetReviewId2, datasetReviewId],
-            ],
-          ], // different order,
-        ],
-      },
-    )('returns the reviews', ([datasetId, events, expected]) => {
-      const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
+      ([[datasetId, events, expected]]) => {
+        const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
 
-      expect(actual).toStrictEqual(expected)
-    })
+        expect(actual).toStrictEqual(expected)
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetId, [datasetReviewWasStarted, datasetReviewWasPublished], [datasetReviewId]]], // one published
+            [
+              [
+                datasetId,
+                [
+                  datasetReviewWasStarted,
+                  datasetReviewWasStarted2,
+                  datasetReviewWasPublished,
+                  datasetReviewWasPublished2,
+                ],
+                [datasetReviewId2, datasetReviewId],
+              ],
+            ], // two published
+            [
+              [
+                datasetId,
+                [
+                  datasetReviewWasPublished2,
+                  datasetReviewWasPublished,
+                  datasetReviewWasStarted,
+                  datasetReviewWasStarted2,
+                ],
+                [datasetReviewId2, datasetReviewId],
+              ],
+            ], // different order,
+          ],
+        },
+      },
+    )
   })
 
   describe('when there are no published reviews', () => {
     it.prop(
+      'returns nothing',
       [
         fc.datasetId(),
         fc
@@ -102,23 +106,27 @@ describe('FindPublishedReviewsForADataset', () => {
             identity<ReadonlyArray<DatasetReviews.DatasetReviewWasStarted | DatasetReviews.DatasetReviewWasPublished>>,
           ),
       ],
-      {
-        examples: [
-          [datasetId, []], // nothing has been started
-          [datasetId, [datasetReviewWasStarted]], // one has been started
-          [datasetId, [datasetReviewWasStarted, otherDatasetReviewWasStarted]], // multiple have been started
-          [datasetId, [datasetReviewWasPublished]], // no started events
-        ],
-      },
-    )('returns nothing', (datasetId, events) => {
-      const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
+      ([datasetId, events]) => {
+        const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
 
-      expect(actual).toStrictEqual([])
-    })
+        expect(actual).toStrictEqual([])
+      },
+      {
+        fastCheck: {
+          examples: [
+            [datasetId, []], // nothing has been started
+            [datasetId, [datasetReviewWasStarted]], // one has been started
+            [datasetId, [datasetReviewWasStarted, otherDatasetReviewWasStarted]], // multiple have been started
+            [datasetId, [datasetReviewWasPublished]], // no started events
+          ],
+        },
+      },
+    )
   })
 
   describe('when reviews are for other datasets', () => {
     it.prop(
+      'returns nothing',
       [
         fc
           .tuple(fc.datasetId(), fc.datasetId(), fc.uuid())
@@ -138,17 +146,20 @@ describe('FindPublishedReviewsForADataset', () => {
             ),
           ),
       ],
-      {
-        examples: [
-          [[datasetId, [otherDatasetReviewWasStarted]]], // other dataset review was started
-          [[datasetId, [otherDatasetReviewWasStarted, otherDatasetReviewWasPublished]]], // other dataset review was published
-          [[otherDatasetId, [datasetReviewWasStarted, datasetReviewWasPublished]]], // reversed
-        ],
-      },
-    )('returns nothing', ([datasetId, events]) => {
-      const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
+      ([[datasetId, events]]) => {
+        const actual = _.FindPublishedReviewsForADataset(events)(datasetId)
 
-      expect(actual).toStrictEqual([])
-    })
+        expect(actual).toStrictEqual([])
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[datasetId, [otherDatasetReviewWasStarted]]], // other dataset review was started
+            [[datasetId, [otherDatasetReviewWasStarted, otherDatasetReviewWasPublished]]], // other dataset review was published
+            [[otherDatasetId, [datasetReviewWasStarted, datasetReviewWasPublished]]], // reversed
+          ],
+        },
+      },
+    )
   })
 })

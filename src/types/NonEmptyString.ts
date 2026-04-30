@@ -18,7 +18,7 @@ export const NonEmptyStringSchema = pipe(
   Schema.String,
   Schema.filter(isNonEmptyString, { message: () => 'string is empty' }),
   Schema.brand(NonEmptyStringBrand),
-)
+).annotations({ arbitrary: () => fc => fc.string({ minLength: 1 }).filter(isNonEmptyString) })
 
 export function isNonEmptyString(value: string): value is NonEmptyString {
   return value.trim().length > 0

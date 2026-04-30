@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Commands/PublishDatasetReview.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -97,18 +96,26 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
-  test.prop(
+  it.prop(
+    'not ready',
     [
       fc
         .datasetReviewWasStarted()
@@ -135,82 +142,86 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [
-          [
-            [started],
-            [
-              'RatedTheQualityOfTheDataset',
-              'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-              'AnsweredIfTheDatasetHasEnoughMetadata',
-              'AnsweredIfTheDatasetHasTrackedChanges',
-              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
-              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-              'AnsweredIfTheDatasetSupportsRelatedConclusions',
-              'AnsweredIfTheDatasetIsDetailedEnough',
-              'AnsweredIfTheDatasetMattersToItsAudience',
-              'AnsweredIfTheDatasetIsErrorFree',
-              'AnsweredIfTheDatasetIsReadyToBeShared',
-              'AnsweredIfTheDatasetIsMissingAnything',
-              'PersonaForDatasetReviewWasChosen',
-              'CompetingInterestsForADatasetReviewWereDeclared',
-              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
-            ],
-          ],
-        ], // was started
-        [
-          [
-            [started, answeredIfTheDatasetFollowsFairAndCarePrinciples],
-            [
-              'RatedTheQualityOfTheDataset',
-              'AnsweredIfTheDatasetHasEnoughMetadata',
-              'AnsweredIfTheDatasetHasTrackedChanges',
-              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
-              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-              'AnsweredIfTheDatasetSupportsRelatedConclusions',
-              'AnsweredIfTheDatasetIsDetailedEnough',
-              'AnsweredIfTheDatasetMattersToItsAudience',
-              'AnsweredIfTheDatasetIsErrorFree',
-              'AnsweredIfTheDatasetIsReadyToBeShared',
-              'AnsweredIfTheDatasetIsMissingAnything',
-              'PersonaForDatasetReviewWasChosen',
-              'CompetingInterestsForADatasetReviewWereDeclared',
-              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
-            ],
-          ],
-        ], // one question answered
-        [
-          [
-            [
-              started,
-              ratedTheQualityOfTheDataset,
-              answeredIfTheDatasetFollowsFairAndCarePrinciples,
-              answeredIfTheDatasetHasEnoughMetadata,
-              answeredIfTheDatasetHasTrackedChanges,
-              answeredIfTheDatasetHasDataCensoredOrDeleted,
-              answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
-              answeredIfTheDatasetSupportsRelatedConclusions,
-              answeredIfTheDatasetIsDetailedEnough,
-              answeredIfTheDatasetMattersToItsAudience,
-              answeredIfTheDatasetIsErrorFree,
-              answeredIfTheDatasetIsReadyToBeShared,
-              answeredIfTheDatasetIsMissingAnything,
-              personaForDatasetReviewWasChosen,
-              competingInterestsForADatasetReviewWereDeclared,
-            ],
-            ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
-          ],
-        ], // one missing
-      ],
+    ([[events, expected]]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.NotReady({ missing: expected }))
     },
-  )('not ready', ([events, expected]) => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [
+            [
+              [started],
+              [
+                'RatedTheQualityOfTheDataset',
+                'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+                'AnsweredIfTheDatasetHasEnoughMetadata',
+                'AnsweredIfTheDatasetHasTrackedChanges',
+                'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+                'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+                'AnsweredIfTheDatasetSupportsRelatedConclusions',
+                'AnsweredIfTheDatasetIsDetailedEnough',
+                'AnsweredIfTheDatasetMattersToItsAudience',
+                'AnsweredIfTheDatasetIsErrorFree',
+                'AnsweredIfTheDatasetIsReadyToBeShared',
+                'AnsweredIfTheDatasetIsMissingAnything',
+                'PersonaForDatasetReviewWasChosen',
+                'CompetingInterestsForADatasetReviewWereDeclared',
+                'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+              ],
+            ],
+          ], // was started
+          [
+            [
+              [started, answeredIfTheDatasetFollowsFairAndCarePrinciples],
+              [
+                'RatedTheQualityOfTheDataset',
+                'AnsweredIfTheDatasetHasEnoughMetadata',
+                'AnsweredIfTheDatasetHasTrackedChanges',
+                'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+                'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+                'AnsweredIfTheDatasetSupportsRelatedConclusions',
+                'AnsweredIfTheDatasetIsDetailedEnough',
+                'AnsweredIfTheDatasetMattersToItsAudience',
+                'AnsweredIfTheDatasetIsErrorFree',
+                'AnsweredIfTheDatasetIsReadyToBeShared',
+                'AnsweredIfTheDatasetIsMissingAnything',
+                'PersonaForDatasetReviewWasChosen',
+                'CompetingInterestsForADatasetReviewWereDeclared',
+                'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+              ],
+            ],
+          ], // one question answered
+          [
+            [
+              [
+                started,
+                ratedTheQualityOfTheDataset,
+                answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                answeredIfTheDatasetHasEnoughMetadata,
+                answeredIfTheDatasetHasTrackedChanges,
+                answeredIfTheDatasetHasDataCensoredOrDeleted,
+                answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+                answeredIfTheDatasetSupportsRelatedConclusions,
+                answeredIfTheDatasetIsDetailedEnough,
+                answeredIfTheDatasetMattersToItsAudience,
+                answeredIfTheDatasetIsErrorFree,
+                answeredIfTheDatasetIsReadyToBeShared,
+                answeredIfTheDatasetIsMissingAnything,
+                personaForDatasetReviewWasChosen,
+                competingInterestsForADatasetReviewWereDeclared,
+              ],
+              ['DeclaredThatTheCodeOfConductWasFollowedForADatasetReview'],
+            ],
+          ], // one missing
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotReady({ missing: expected }))
-  })
-
-  test.prop(
+  it.prop(
+    'is ready',
     [
       fc
         .tuple(
@@ -234,100 +245,111 @@ describe('foldState', () => {
         )
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [
-          [
-            started,
-            ratedTheQualityOfTheDataset,
-            answeredIfTheDatasetFollowsFairAndCarePrinciples,
-            answeredIfTheDatasetHasEnoughMetadata,
-            answeredIfTheDatasetHasTrackedChanges,
-            answeredIfTheDatasetHasDataCensoredOrDeleted,
-            answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
-            answeredIfTheDatasetSupportsRelatedConclusions,
-            answeredIfTheDatasetIsDetailedEnough,
-            answeredIfTheDatasetMattersToItsAudience,
-            answeredIfTheDatasetIsErrorFree,
-            answeredIfTheDatasetIsReadyToBeShared,
-            answeredIfTheDatasetIsMissingAnything,
-            personaForDatasetReviewWasChosen,
-            competingInterestsForADatasetReviewWereDeclared,
-            declaredThatTheCodeOfConductWasFollowedForADatasetReview,
-          ],
-        ], // answered
-        [
-          [
-            declaredThatTheCodeOfConductWasFollowedForADatasetReview,
-            competingInterestsForADatasetReviewWereDeclared,
-            personaForDatasetReviewWasChosen,
-            answeredIfTheDatasetIsMissingAnything,
-            answeredIfTheDatasetIsReadyToBeShared,
-            answeredIfTheDatasetIsErrorFree,
-            answeredIfTheDatasetMattersToItsAudience,
-            answeredIfTheDatasetIsDetailedEnough,
-            answeredIfTheDatasetSupportsRelatedConclusions,
-            answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
-            answeredIfTheDatasetHasDataCensoredOrDeleted,
-            answeredIfTheDatasetHasTrackedChanges,
-            answeredIfTheDatasetHasEnoughMetadata,
-            answeredIfTheDatasetFollowsFairAndCarePrinciples,
-            ratedTheQualityOfTheDataset,
-            started,
-          ],
-        ], // different order
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.IsReady())
     },
-  )('is ready', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [
+            [
+              started,
+              ratedTheQualityOfTheDataset,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+              answeredIfTheDatasetHasEnoughMetadata,
+              answeredIfTheDatasetHasTrackedChanges,
+              answeredIfTheDatasetHasDataCensoredOrDeleted,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+              answeredIfTheDatasetSupportsRelatedConclusions,
+              answeredIfTheDatasetIsDetailedEnough,
+              answeredIfTheDatasetMattersToItsAudience,
+              answeredIfTheDatasetIsErrorFree,
+              answeredIfTheDatasetIsReadyToBeShared,
+              answeredIfTheDatasetIsMissingAnything,
+              personaForDatasetReviewWasChosen,
+              competingInterestsForADatasetReviewWereDeclared,
+              declaredThatTheCodeOfConductWasFollowedForADatasetReview,
+            ],
+          ], // answered
+          [
+            [
+              declaredThatTheCodeOfConductWasFollowedForADatasetReview,
+              competingInterestsForADatasetReviewWereDeclared,
+              personaForDatasetReviewWasChosen,
+              answeredIfTheDatasetIsMissingAnything,
+              answeredIfTheDatasetIsReadyToBeShared,
+              answeredIfTheDatasetIsErrorFree,
+              answeredIfTheDatasetMattersToItsAudience,
+              answeredIfTheDatasetIsDetailedEnough,
+              answeredIfTheDatasetSupportsRelatedConclusions,
+              answeredIfTheDatasetIsAppropriateForThisKindOfResearch,
+              answeredIfTheDatasetHasDataCensoredOrDeleted,
+              answeredIfTheDatasetHasTrackedChanges,
+              answeredIfTheDatasetHasEnoughMetadata,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+              ratedTheQualityOfTheDataset,
+              started,
+            ],
+          ], // different order
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.IsReady())
-  })
-
-  test.prop(
+  it.prop(
+    'is being published',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, publicationOfDatasetReviewWasRequested]], // was requested
-        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, publicationOfDatasetReviewWasRequested]], // also answered
-        [[started, publicationOfDatasetReviewWasRequested, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.IsBeingPublished())
     },
-  )('is being published', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[started, publicationOfDatasetReviewWasRequested]], // was requested
+          [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, publicationOfDatasetReviewWasRequested]], // also answered
+          [[started, publicationOfDatasetReviewWasRequested, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.IsBeingPublished())
-  })
-
-  test.prop(
+  it.prop(
+    'has been published',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // was published
-        [
-          [
-            started,
-            answeredIfTheDatasetFollowsFairAndCarePrinciples,
-            publicationOfDatasetReviewWasRequested,
-            datasetReviewWasPublished,
-          ],
-        ], // also requested
-        [[started, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
-      ],
-    },
-  )('has been published', events => {
-    const state = _.foldState(events)
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.HasBeenPublished())
-  })
+      expect(state).toStrictEqual(new _.HasBeenPublished())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started, answeredIfTheDatasetFollowsFairAndCarePrinciples, datasetReviewWasPublished]], // was published
+          [
+            [
+              started,
+              answeredIfTheDatasetFollowsFairAndCarePrinciples,
+              publicationOfDatasetReviewWasRequested,
+              datasetReviewWasPublished,
+            ],
+          ], // also requested
+          [[started, datasetReviewWasPublished, answeredIfTheDatasetFollowsFairAndCarePrinciples]], // different order
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
@@ -337,9 +359,10 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted()))
   })
 
-  test.prop([fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))])(
+  it.prop(
     'is not ready',
-    missing => {
+    [fc.nonEmptyArray(fc.constant('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'))],
+    ([missing]) => {
       const result = _.decide(new _.NotReady({ missing }), { datasetReviewId })
 
       expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewNotReadyToBePublished({ missing })))

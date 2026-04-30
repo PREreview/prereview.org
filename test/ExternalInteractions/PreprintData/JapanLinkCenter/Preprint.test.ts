@@ -1,8 +1,7 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { Either } from 'effect'
-import { describe, expect } from 'vitest'
 import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
@@ -33,7 +32,7 @@ describe('recordToPreprint', () => {
     )
   })
 
-  test.prop([fc.constantFrom('JA', 'BK', 'RD', 'EL')])('not a preprint', contentType => {
+  it.prop('not a preprint', [fc.constantFrom('JA', 'BK', 'RD', 'EL')], ([contentType]) => {
     const record = new JapanLinkCenter.Record({
       ...stubRecord,
       content_type: contentType,
@@ -45,7 +44,7 @@ describe('recordToPreprint', () => {
     expect(actual.cause).toStrictEqual(contentType)
   })
 
-  test.prop([fc.nonPreprintDoi()])('not a Japan Link Center preprint ID', doi => {
+  it.prop('not a Japan Link Center preprint ID', [fc.nonPreprintDoi()], ([doi]) => {
     const record = new JapanLinkCenter.Record({
       ...stubRecord,
       doi,

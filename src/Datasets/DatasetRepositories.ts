@@ -4,4 +4,5 @@ import type { DatasetId } from '../Datasets/index.ts'
 export const getRepositoryName = Match.typeTags<DatasetId, string>()({
   DryadDatasetId: () => 'Dryad',
   ScieloDatasetId: () => 'SciELO Data',
+  ZenodoDatasetId: () => 'Zenodo',
 })

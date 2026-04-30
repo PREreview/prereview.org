@@ -1,10 +1,8 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Effect } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect } from 'vitest'
 import * as _ from '../src/html.ts'
-import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
 test.each([
@@ -1145,29 +1143,36 @@ test.each([
   expect(actual.toString()).toBe(expected)
 })
 
-test.prop([fc.html().map(html => [html.toString(), html.toString()] as const)], {
-  examples: [
-    [
-      [
-        '$g_J$',
-        '<math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
-      ],
-    ],
-    [
-      [
-        '$$g_J$$',
-        '<math display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
-      ],
-    ],
-    [['$1 to $2', '$1 to $2']],
-    [['$100,000 to $200,000', '$100,000 to $200,000']],
-    [['$1.5 to $2.1 million', '$1.5 to $2.1 million']],
-  ],
-})('rawHtml', ([input, expected]) => {
-  const actual = _.rawHtml(input)
+it.prop(
+  'rawHtml',
+  [fc.html().map(html => [html.toString(), html.toString()] as const)],
+  ([[input, expected]]) => {
+    const actual = _.rawHtml(input)
 
-  expect(actual.toString()).toBe(expected)
-})
+    expect(actual.toString()).toBe(expected)
+  },
+  {
+    fastCheck: {
+      examples: [
+        [
+          [
+            '$g_J$',
+            '<math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+          ],
+        ],
+        [
+          [
+            '$$g_J$$',
+            '<math display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+          ],
+        ],
+        [['$1 to $2', '$1 to $2']],
+        [['$100,000 to $200,000', '$100,000 to $200,000']],
+        [['$1.5 to $2.1 million', '$1.5 to $2.1 million']],
+      ],
+    },
+  },
+)
 
 describe('plainText', () => {
   test.each([
@@ -1226,20 +1231,21 @@ describe('plainText', () => {
 
 describe('RawHtmlC', () => {
   describe('decode', () => {
-    test.prop([fc.string()])('with a string', string => {
+    it.prop('with a string', [fc.string()], ([string]) => {
       const actual = _.RawHtmlC.decode(string)
 
       expect(actual).toStrictEqual(D.success(_.rawHtml(string)))
     })
 
-    test.prop([fc.html()])('with HTML', html => {
+    it.prop('with HTML', [fc.html()], ([html]) => {
       const actual = _.RawHtmlC.decode(html)
 
       expect(actual).toStrictEqual(D.success(html))
     })
 
-    test.prop([fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))])(
+    it.prop(
       'with a non-string',
+      [fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))],
       value => {
         const actual = _.RawHtmlC.decode(value)
 
@@ -1248,14 +1254,14 @@ describe('RawHtmlC', () => {
     )
   })
 
-  test.prop([fc.html()])('encode', html => {
+  it.prop('encode', [fc.html()], ([html]) => {
     const actual = _.RawHtmlC.encode(html)
 
     expect(actual).toStrictEqual(html.toString())
   })
 })
 
-test.prop([fc.lorem()])('mjmlToHtml', text =>
+it.effect.prop('mjmlToHtml', [fc.lorem()], ([text]) =>
   Effect.gen(function* () {
     const actual = yield* _.mjmlToHtml(_.html`
       <mjml>
@@ -1267,11 +1273,11 @@ test.prop([fc.lorem()])('mjmlToHtml', text =>
               </mj-text>
             </mj-column>
           </mj-section>
-        </mj-body>
+        </mj-body> 
       </mjml>
     `)
 
     expect(actual.value).toStrictEqual(expect.stringMatching(/<!doctype html>/))
     expect(actual.value).toStrictEqual(expect.stringContaining(text))
-  }).pipe(EffectTest.run),
+  }),
 )

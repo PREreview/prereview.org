@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Queries/GetAuthor.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -28,36 +27,47 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 
 describe('GetAuthor', () => {
   describe('when the dataset review has been started', () => {
-    test.prop(
+    it.prop(
+      'returns the review',
       [
         fc
           .tuple(fc.array(fc.datasetReviewEvent()), fc.datasetReviewWasStarted())
           .map(([events, started]) => Tuple.make(Array.append(events, started), started.authorId)),
       ],
-      {
-        examples: [
-          [[Array.of(datasetReviewWasStarted), authorId]], // only a DatasetReviewWasStarted
-          [[Array.make(datasetReviewWasStarted, publicationOfDatasetReviewWasRequested), authorId]], // multiple events
-          [[Array.make(datasetReviewWasStarted2, datasetReviewWasStarted), authorId]], // multiple DatasetReviewWasStarted events
-        ],
-      },
-    )('returns the review', ([events, expected]) => {
-      const actual = _.GetAuthor(events)
+      ([[events, expected]]) => {
+        const actual = _.GetAuthor(events)
 
-      expect(actual).toStrictEqual(Either.right(expected))
-    })
+        expect(actual).toStrictEqual(Either.right(expected))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [[Array.of(datasetReviewWasStarted), authorId]], // only a DatasetReviewWasStarted
+            [[Array.make(datasetReviewWasStarted, publicationOfDatasetReviewWasRequested), authorId]], // multiple events
+            [[Array.make(datasetReviewWasStarted2, datasetReviewWasStarted), authorId]], // multiple DatasetReviewWasStarted events
+          ],
+        },
+      },
+    )
   })
 
   describe("when the dataset review hasn't been started", () => {
-    test.prop([fc.array(fc.datasetReviewEvent().filter(event => event._tag !== 'DatasetReviewWasStarted'))], {
-      examples: [
-        [Array.empty()], // no events
-        [Array.make(publicationOfDatasetReviewWasRequested, datasetReviewWasPublished)], // no DatasetReviewWasStarted
-      ],
-    })('returns an error', events => {
-      const actual = _.GetAuthor(events)
+    it.prop(
+      'returns an error',
+      [fc.array(fc.datasetReviewEvent().filter(event => event._tag !== 'DatasetReviewWasStarted'))],
+      ([events]) => {
+        const actual = _.GetAuthor(events)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
-    })
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+      },
+      {
+        fastCheck: {
+          examples: [
+            [Array.empty()], // no events
+            [Array.make(publicationOfDatasetReviewWasRequested, datasetReviewWasPublished)], // no DatasetReviewWasStarted
+          ],
+        },
+      },
+    )
   })
 })

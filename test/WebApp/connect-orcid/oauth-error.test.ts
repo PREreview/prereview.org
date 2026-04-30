@@ -1,11 +1,10 @@
-import { test } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from '@effect/vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/connect-orcid/oauth-error.ts'
 import * as fc from '../../fc.ts'
 
 describe('connectOrcidError', () => {
-  test.prop([fc.supportedLocale()])('with an access_denied error', locale => {
+  it.prop('with an access_denied error', [fc.supportedLocale()], ([locale]) => {
     const actual = _.connectOrcidError({ error: 'access_denied', locale })
 
     expect(actual).toStrictEqual({
@@ -18,9 +17,10 @@ describe('connectOrcidError', () => {
     })
   })
 
-  test.prop([fc.string().filter(string => string !== 'access_denied'), fc.supportedLocale()])(
+  it.prop(
     'with an unknown error',
-    (error, locale) => {
+    [fc.string().filter(string => string !== 'access_denied'), fc.supportedLocale()],
+    ([error, locale]) => {
       const actual = _.connectOrcidError({ error, locale })
 
       expect(actual).toStrictEqual({

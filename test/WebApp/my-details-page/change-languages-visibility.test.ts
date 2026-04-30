@@ -1,7 +1,7 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
-import { describe, expect, vi } from 'vitest'
 import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-languages-visibility.ts'
@@ -9,136 +9,158 @@ import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('changeLanguagesVisibility', () => {
-  test.prop([
-    fc.anything(),
-    fc.string().filter(method => method !== 'POST'),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.languages(),
-  ])('when there is a logged in user', async (body, method, user, locale, languages) => {
-    const actual = await _.changeLanguagesVisibility({ body, locale, method, user })({
-      deleteLanguages: shouldNotBeCalled,
-      getLanguages: () => TE.of(languages),
-      saveLanguages: shouldNotBeCalled,
-    })()
+  it.effect.prop(
+    'when there is a logged in user',
+    [fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.supportedLocale(), fc.languages()],
+    ([body, method, user, locale, languages]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({ body, locale, method, user })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: () => TE.of(languages),
+            saveLanguages: shouldNotBeCalled,
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
-      status: StatusCodes.OK,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }),
+  )
 
-  test.prop([fc.languagesVisibility(), fc.user(), fc.supportedLocale(), fc.languages()])(
+  it.effect.prop(
     'when the form has been submitted',
-    async (visibility, user, locale, existingLanguages) => {
-      const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+    [fc.languagesVisibility(), fc.user(), fc.supportedLocale(), fc.languages()],
+    ([visibility, user, locale, existingLanguages]) =>
+      Effect.gen(function* () {
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-      const actual = await _.changeLanguagesVisibility({
-        body: { languagesVisibility: visibility },
-        locale,
-        method: 'POST',
-        user,
-      })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.right(existingLanguages),
-        saveLanguages,
-      })()
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({
+            body: { languagesVisibility: visibility },
+            locale,
+            method: 'POST',
+            user,
+          })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: () => TE.right(existingLanguages),
+            saveLanguages,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
-      })
-      expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
-        value: existingLanguages.value,
-        visibility,
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+        expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
+          value: existingLanguages.value,
+          visibility,
+        })
+      }),
   )
 
-  test.prop([
-    fc.record({ languagesVisibility: fc.languagesVisibility() }),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.languages(),
-  ])('when the form has been submitted but the visibility cannot be saved', async (body, user, locale, languages) => {
-    const actual = await _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
-      deleteLanguages: shouldNotBeCalled,
-      getLanguages: () => TE.of(languages),
-      saveLanguages: () => TE.left('unavailable'),
-    })()
+  it.effect.prop(
+    'when the form has been submitted but the visibility cannot be saved',
+    [fc.record({ languagesVisibility: fc.languagesVisibility() }), fc.user(), fc.supportedLocale(), fc.languages()],
+    ([body, user, locale, languages]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: () => TE.of(languages),
+            saveLanguages: () => TE.left('unavailable'),
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
-      title: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'main',
-      js: [],
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
+  )
 
-  test.prop([
-    fc.record({ languagesVisibility: fc.string() }, { requiredKeys: [] }),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.languages(),
-  ])('when the form has been submitted without setting visibility', async (body, user, locale, languages) => {
-    const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+  it.effect.prop(
+    'when the form has been submitted without setting visibility',
+    [
+      fc.record({ languagesVisibility: fc.string() }, { requiredKeys: [] }),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.languages(),
+    ],
+    ([body, user, locale, languages]) =>
+      Effect.gen(function* () {
+        const saveLanguages = vi.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-    const actual = await _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
-      deleteLanguages: shouldNotBeCalled,
-      getLanguages: () => TE.of(languages),
-      saveLanguages,
-    })()
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({ body, locale, method: 'POST', user })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: () => TE.of(languages),
+            saveLanguages,
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: format(myDetailsMatch.formatter, {}),
-    })
-    expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
-      value: languages.value,
-      visibility: 'restricted',
-    })
-  })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+        expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
+          value: languages.value,
+          visibility: 'restricted',
+        })
+      }),
+  )
 
-  test.prop([fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
+  it.effect.prop(
     "there aren't languages",
-    async (body, method, user, locale) => {
-      const actual = await _.changeLanguagesVisibility({ body, locale, method, user })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.left('not-found'),
-        saveLanguages: shouldNotBeCalled,
-      })()
+    [fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({ body, locale, method, user })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: () => TE.left('not-found'),
+            saveLanguages: shouldNotBeCalled,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+      }),
   )
 
-  test.prop([fc.anything(), fc.string(), fc.supportedLocale()])(
+  it.effect.prop(
     'when the user is not logged in',
-    async (body, method, locale) => {
-      const actual = await _.changeLanguagesVisibility({ body, locale, method, user: undefined })({
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: shouldNotBeCalled,
-        saveLanguages: shouldNotBeCalled,
-      })()
+    [fc.anything(), fc.string(), fc.supportedLocale()],
+    ([body, method, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.changeLanguagesVisibility({ body, locale, method, user: undefined })({
+            deleteLanguages: shouldNotBeCalled,
+            getLanguages: shouldNotBeCalled,
+            saveLanguages: shouldNotBeCalled,
+          }),
+        )
 
-      expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: format(myDetailsMatch.formatter, {}),
-      })
-    },
+        expect(actual).toStrictEqual({
+          _tag: 'LogInResponse',
+          location: format(myDetailsMatch.formatter, {}),
+        })
+      }),
   )
 })

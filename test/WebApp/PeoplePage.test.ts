@@ -1,15 +1,13 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect } from 'effect'
-import { describe, expect } from 'vitest'
 import { Locale } from '../../src/Context.ts'
 import { GhostPage } from '../../src/ExternalInteractions/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/PeoplePage.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 
 describe('PeoplePage', () => {
-  test.prop([fc.supportedLocale()])('when the page cannot be loaded', async locale =>
+  it.effect.prop('when the page cannot be loaded', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
       const actual = yield* _.PeoplePage
 
@@ -24,7 +22,6 @@ describe('PeoplePage', () => {
     }).pipe(
       Effect.provideService(Locale, locale),
       Effect.provideService(GhostPage.GetPageFromGhost, () => new GhostPage.PageIsUnavailable()),
-      EffectTest.run,
     ),
   )
 })

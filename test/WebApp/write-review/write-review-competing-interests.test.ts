@@ -1,8 +1,8 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
+import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import Keyv from 'keyv'
-import { describe, expect } from 'vitest'
 import { PreprintIsNotFound, PreprintIsUnavailable } from '../../../src/Preprints/index.ts'
 import { writeReviewCompetingInterestsMatch, writeReviewMatch, writeReviewPublishMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
@@ -12,173 +12,216 @@ import * as _ from '../../../src/WebApp/write-review/index.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewCompetingInterests', () => {
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.oneof(
-      fc.constant({ competingInterests: 'no' }),
-      fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
-    ),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.completedForm(),
-  ])('when the form is completed', async (preprintId, preprintTitle, competingInterests, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
-
-    const actual = await _.writeReviewCompetingInterests({
-      body: competingInterests,
-      id: preprintId,
-      locale,
-      method: 'POST',
-      user,
-    })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
-
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(competingInterests)
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-    })
-  })
-
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.oneof(
-      fc.constant({ competingInterests: 'no' }),
-      fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
-    ),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.incompleteForm(),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, competingInterests, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-
-    const actual = await _.writeReviewCompetingInterests({
-      body: competingInterests,
-      id: preprintId,
-      locale,
-      method: 'POST',
-      user,
-    })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
-
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject(competingInterests)
-    expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: StatusCodes.SeeOther,
-      location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-    })
-  })
-
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.user(), fc.supportedLocale()])(
-    'when there is no form',
-    async (preprintId, preprintTitle, body, user, locale) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
-
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
-    'when the preprint cannot be loaded',
-    async (preprintId, body, method, user, locale) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
-
-  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()])(
-    'when the preprint cannot be found',
-    async (preprintId, body, method, user, locale) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.NotFound,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    },
-  )
-
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()])(
-    "when there isn't a session",
-    async (preprintId, preprintTitle, body, method, locale) => {
-      const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user: undefined })({
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: StatusCodes.SeeOther,
-        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-      })
-    },
-  )
-
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.oneof(
-      fc.record({ competingInterests: fc.string() }, { requiredKeys: [] }),
-      fc.record(
-        { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
-        { requiredKeys: [] },
+  it.effect.prop(
+    'when the form is completed',
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.oneof(
+        fc.constant({ competingInterests: 'no' }),
+        fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
       ),
-    ),
-    fc.user(),
-    fc.supportedLocale(),
-    fc.form(),
-  ])('without declaring any competing interests', async (preprintId, preprintTitle, body, user, locale, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      fc.user(),
+      fc.supportedLocale(),
+      fc.completedForm(),
+    ],
+    ([preprintId, preprintTitle, competingInterests, user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() =>
+          formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview))),
+        )
 
-    const actual = await _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({
+            body: competingInterests,
+            id: preprintId,
+            locale,
+            method: 'POST',
+            user,
+          })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
 
-    expect(actual).toStrictEqual({
-      _tag: 'StreamlinePageResponse',
-      canonical: format(writeReviewCompetingInterestsMatch.formatter, { id: preprintTitle.id }),
-      status: StatusCodes.BadRequest,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: ['conditional-inputs.js', 'error-summary.js'],
-    })
-  })
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(
+          competingInterests,
+        )
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
+  )
+
+  it.effect.prop(
+    'when the form is incomplete',
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.oneof(
+        fc.constant({ competingInterests: 'no' }),
+        fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.lorem() }),
+      ),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.incompleteForm(),
+    ],
+    ([preprintId, preprintTitle, competingInterests, user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({
+            body: competingInterests,
+            id: preprintId,
+            locale,
+            method: 'POST',
+            user,
+          })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
+
+        expect(yield* Effect.promise(() => formStore.get(formKey(user.orcid, preprintTitle.id)))).toMatchObject(
+          competingInterests,
+        )
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        })
+      }),
+  )
+
+  it.effect.prop(
+    'when there is no form',
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.user(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, body, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
+  )
+
+  it.effect.prop(
+    'when the preprint cannot be loaded',
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([preprintId, body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsUnavailable({})),
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
+  )
+
+  it.effect.prop(
+    'when the preprint cannot be found',
+    [fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.user(), fc.supportedLocale()],
+    ([preprintId, body, method, user, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.left(new PreprintIsNotFound({})),
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }),
+  )
+
+  it.effect.prop(
+    "when there isn't a session",
+    [fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.supportedLocale()],
+    ([preprintId, preprintTitle, body, method, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({ body, id: preprintId, locale, method, user: undefined })({
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.SeeOther,
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+        })
+      }),
+  )
+
+  it.effect.prop(
+    'without declaring any competing interests',
+    [
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.oneof(
+        fc.record({ competingInterests: fc.string() }, { requiredKeys: [] }),
+        fc.record(
+          { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
+          { requiredKeys: [] },
+        ),
+      ),
+      fc.user(),
+      fc.supportedLocale(),
+      fc.form(),
+    ],
+    ([preprintId, preprintTitle, body, user, locale, newReview]) =>
+      Effect.gen(function* () {
+        const formStore = new Keyv()
+        yield* Effect.promise(() => formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview)))
+
+        const actual = yield* Effect.promise(
+          _.writeReviewCompetingInterests({ body, id: preprintId, locale, method: 'POST', user })({
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: format(writeReviewCompetingInterestsMatch.formatter, { id: preprintTitle.id }),
+          status: StatusCodes.BadRequest,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: ['conditional-inputs.js', 'error-summary.js'],
+        })
+      }),
+  )
 })

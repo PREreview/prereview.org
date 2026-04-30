@@ -24,14 +24,22 @@ export class ScieloDatasetId extends Schema.TaggedClass<ScieloDatasetId>()('Scie
   value: Doi.RegistrantDoiSchema('48331'),
 }) {}
 
-export const DatasetId = Schema.Union(DryadDatasetId, ScieloDatasetId)
+export class ZenodoDatasetId extends Schema.TaggedClass<ZenodoDatasetId>()('ZenodoDatasetId', {
+  value: Doi.RegistrantDoiSchema('5281'),
+}) {}
+
+export const DatasetId = Schema.Union(DryadDatasetId, ScieloDatasetId, ZenodoDatasetId)
 
 const DatasetDoiSchema = Schema.Union(...Array.map(DatasetId.members, id => id.fields.value))
 
 export const DatasetIdFromDoi = Schema.transform(DatasetDoiSchema, Schema.typeSchema(DatasetId), {
   strict: true,
   decode: doi =>
-    Doi.hasRegistrant('48331')(doi) ? new ScieloDatasetId({ value: doi }) : new DryadDatasetId({ value: doi }),
+    Doi.hasRegistrant('48331')(doi)
+      ? new ScieloDatasetId({ value: doi })
+      : Doi.hasRegistrant('5281')(doi)
+        ? new ZenodoDatasetId({ value: doi })
+        : new DryadDatasetId({ value: doi }),
   encode: datasetId => datasetId.value,
 })
 

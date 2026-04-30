@@ -10,11 +10,15 @@ import { GetPseudonym } from './GetPseudonym.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
+import { ReplaceLegacyPseudonym } from './ReplaceLegacyPseudonym.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
+    replaceLegacyPseudonym: (
+      orcid: OrcidId.OrcidId,
+    ) => ReturnType<Commands.FromCommand<ReturnType<typeof ReplaceLegacyPseudonym>>>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
@@ -28,6 +32,12 @@ export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
+
+    const replaceLegacyPseudonym = yield* pipe(
+      possiblePseudonyms,
+      Effect.andThen(ReplaceLegacyPseudonym),
+      Effect.andThen(Commands.makeCommand),
+    )
 
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
@@ -58,6 +68,18 @@ export const layer = Layer.effect(
           'PseudonymAlreadyInUse',
           error => new UnableToHandleCommand({ cause: error }),
         ),
+      ),
+      replaceLegacyPseudonym: Effect.fnUntraced(
+        function* (orcidId) {
+          const input = {
+            orcidId,
+            replacedAt: yield* Temporal.currentInstant,
+            pseudonym: yield* getAvailablePseudonym(),
+          }
+
+          yield* replaceLegacyPseudonym(input)
+        },
+        Effect.catchTag('NoPseudonymAvailable', error => new UnableToHandleCommand({ cause: error })),
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),

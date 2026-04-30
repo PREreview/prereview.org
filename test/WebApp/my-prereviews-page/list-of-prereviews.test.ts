@@ -1,14 +1,14 @@
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { format } from 'fp-ts-routing'
-import { expect } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/list-of-prereviews.ts'
 import { myPrereviewsMatch } from '../../../src/routes.ts'
 import * as fc from './fc.ts'
 
-test.prop([fc.nonEmptyArray(fc.localPrereview()), fc.publicPersona(), fc.pseudonymPersona(), fc.supportedLocale()])(
+it.prop(
   'toResponse',
-  (prereviews, publicPersona, pseudonymPersona, locale) => {
+  [fc.nonEmptyArray(fc.localPrereview()), fc.publicPersona(), fc.pseudonymPersona(), fc.supportedLocale()],
+  ([prereviews, publicPersona, pseudonymPersona, locale]) => {
     const actual = _.toResponse(_.ListOfPrereviews({ prereviews, publicPersona, pseudonymPersona }), locale)
 
     expect(actual).toStrictEqual({

@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, Equal, Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as ReviewRequests from '../../../src/ReviewRequests/index.ts'
@@ -35,7 +34,8 @@ const command = (): fc.Arbitrary<_.Command> =>
   })
 
 describe('foldState', () => {
-  test.prop(
+  it.prop(
+    'not yet shared',
     [
       fc
         .uuid()
@@ -46,64 +46,71 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[], reviewRequestId]], // no events
-        [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
-        [[[otherReviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // for other review request
-      ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.NotShared())
     },
-  )('not yet shared', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    {
+      fastCheck: {
+        examples: [
+          [[[], reviewRequestId]], // no events
+          [[[reviewRequestForAPreprintWasAccepted], reviewRequestId]], // with events
+          [[[otherReviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // for other review request
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotShared())
-  })
-
-  test.prop(
+  it.prop(
+    'already shared',
     [
       fc
         .reviewRequestForAPreprintWasSharedOnTheCommunitySlack()
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId, event)),
     ],
+    ([[events, reviewRequestId, shared]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(
+        new _.HasBeenShared({ channelId: shared.channelId, messageTimestamp: shared.messageTimestamp }),
+      )
+    },
     {
-      examples: [
-        [
-          [
-            [reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
-            reviewRequestId,
-            reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-          ],
-        ], // was shared
-        [
-          [
-            [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
-            reviewRequestId,
-            reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-          ],
-        ], // other events
-        [
+      fastCheck: {
+        examples: [
           [
             [
+              [reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+              reviewRequestId,
               reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-              otherReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
             ],
-            reviewRequestId,
-            reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
-          ],
-        ], // other review request too
-      ],
+          ], // was shared
+          [
+            [
+              [reviewRequestForAPreprintWasAccepted, reviewRequestForAPreprintWasSharedOnTheCommunitySlack],
+              reviewRequestId,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+          ], // other events
+          [
+            [
+              [
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+                otherReviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              ],
+              reviewRequestId,
+              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+            ],
+          ], // other review request too
+        ],
+      },
     },
-  )('already shared', ([events, reviewRequestId, shared]) => {
-    const state = _.foldState(events, reviewRequestId)
-
-    expect(state).toStrictEqual(
-      new _.HasBeenShared({ channelId: shared.channelId, messageTimestamp: shared.messageTimestamp }),
-    )
-  })
+  )
 })
 
 describe('decide', () => {
-  test.prop([command()])('has not been shared', command => {
+  it.prop('has not been shared', [command()], ([command]) => {
     const result = _.decide(new _.NotShared(), command)
 
     expect(result).toStrictEqual(
@@ -120,7 +127,7 @@ describe('decide', () => {
   })
 
   describe('has already been shared', () => {
-    test.prop([command()])('with the same message', command => {
+    it.prop('with the same message', [command()], ([command]) => {
       const result = _.decide(
         new _.HasBeenShared({ channelId: command.channelId, messageTimestamp: command.messageTimestamp }),
         command,
@@ -129,24 +136,36 @@ describe('decide', () => {
       expect(result).toStrictEqual(Either.right(Option.none()))
     })
 
-    test.prop([
-      fc
-        .tuple(command(), fc.slackTimestamp())
-        .filter(([command, timestamp]) => !Equal.equals(command.messageTimestamp, timestamp)),
-    ])('with a different message', ([command, messageTimestamp]) => {
-      const result = _.decide(new _.HasBeenShared({ channelId: command.channelId, messageTimestamp }), command)
+    it.prop(
+      'with a different message',
+      [
+        fc
+          .tuple(command(), fc.slackTimestamp())
+          .filter(([command, timestamp]) => !Equal.equals(command.messageTimestamp, timestamp)),
+      ],
+      ([[command, messageTimestamp]]) => {
+        const result = _.decide(new _.HasBeenShared({ channelId: command.channelId, messageTimestamp }), command)
 
-      expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})))
-    })
+        expect(result).toStrictEqual(
+          Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
+        )
+      },
+    )
 
-    test.prop([
-      fc
-        .tuple(command(), fc.slackChannelId())
-        .filter(([command, channelId]) => !Equal.equals(command.channelId, channelId)),
-    ])('on a different channel', ([command, channelId]) => {
-      const result = _.decide(new _.HasBeenShared({ channelId, messageTimestamp: command.messageTimestamp }), command)
+    it.prop(
+      'on a different channel',
+      [
+        fc
+          .tuple(command(), fc.slackChannelId())
+          .filter(([command, channelId]) => !Equal.equals(command.channelId, channelId)),
+      ],
+      ([[command, channelId]]) => {
+        const result = _.decide(new _.HasBeenShared({ channelId, messageTimestamp: command.messageTimestamp }), command)
 
-      expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})))
-    })
+        expect(result).toStrictEqual(
+          Either.left(new ReviewRequests.ReviewRequestWasAlreadySharedOnTheCommunitySlack({})),
+        )
+      },
+    )
   })
 })

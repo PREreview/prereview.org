@@ -1,37 +1,35 @@
 import { HttpBody, UrlParams } from '@effect/platform'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../../src/ExternalApis/CoarNotify/SendMessage/CreateRequest.ts'
 import { CoarNotify } from '../../../../src/ExternalApis/index.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
-  test.prop([fc.coarNotifyMessage()])('creates a POST request', message =>
+  it.effect.prop('creates a POST request', [fc.coarNotifyMessage()], ([message]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(message)
 
       expect(actual.method).toStrictEqual('POST')
-    }).pipe(EffectTest.run),
+    }),
   )
 
-  test.prop([fc.coarNotifyMessage()])('sets the URL', message =>
+  it.effect.prop('sets the URL', [fc.coarNotifyMessage()], ([message]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(message)
 
       expect(actual.url).toStrictEqual(`${message.target.inbox.origin}${message.target.inbox.pathname}`)
       expect(actual.urlParams).toStrictEqual(UrlParams.fromInput(message.target.inbox.searchParams))
-    }).pipe(EffectTest.run),
+    }),
   )
 
-  test.prop([fc.coarNotifyMessage()])('sets the body', message =>
+  it.effect.prop('sets the body', [fc.coarNotifyMessage()], ([message]) =>
     Effect.gen(function* () {
       const actual = yield* _.CreateRequest(message)
 
       const expected = yield* HttpBody.jsonSchema(CoarNotify.MessageSchema)(message)
 
       expect(actual.body).toStrictEqual(expected)
-    }).pipe(EffectTest.run),
+    }),
   )
 })

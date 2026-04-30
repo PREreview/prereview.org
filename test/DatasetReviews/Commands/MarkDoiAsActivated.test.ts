@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../../src/DatasetReviews/Commands/MarkDoiAsActivated.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
@@ -36,67 +35,90 @@ const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
 const datasetReviewDoiWasActivated = new DatasetReviews.DatasetReviewDoiWasActivated({ datasetReviewId })
 
 describe('foldState', () => {
-  test.prop([fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))], {
-    examples: [
-      [[]], // no events
-      [[recordCreated, doiWasAssigned1, datasetReviewWasPublished]], // with events
-    ],
-  })('not started', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not started',
+    [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotStarted())
-  })
+      expect(state).toStrictEqual(new _.NotStarted())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[]], // no events
+          [[recordCreated, doiWasAssigned1, datasetReviewWasPublished]], // with events
+        ],
+      },
+    },
+  )
 
-  test.prop([fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)], {
-    examples: [
-      [[started]], // was started
-      [[started, answered]], // answered
-      [[started, publicationOfDatasetReviewWasRequested]], // was requested
-      [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
-      [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
-    ],
-  })('not published', events => {
-    const state = _.foldState(events)
+  it.prop(
+    'not published',
+    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    ([events]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.NotPublished())
-  })
+      expect(state).toStrictEqual(new _.NotPublished())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[started]], // was started
+          [[started, answered]], // answered
+          [[started, publicationOfDatasetReviewWasRequested]], // was requested
+          [[started, answered, publicationOfDatasetReviewWasRequested]], // also answered
+          [[started, publicationOfDatasetReviewWasRequested, answered]], // different order
+        ],
+      },
+    },
+  )
 
-  test.prop(
+  it.prop(
+    'does not have a DOI',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
         .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
     ],
-    {
-      examples: [
-        [[started, answered, publicationOfDatasetReviewWasRequested, recordCreated, datasetReviewWasPublished]], // was published with a DOI
-      ],
+    ([events]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.HasNotBeenAssignedADoi())
     },
-  )('does not have a DOI', events => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[started, answered, publicationOfDatasetReviewWasRequested, recordCreated, datasetReviewWasPublished]], // was published with a DOI
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.HasNotBeenAssignedADoi())
-  })
-
-  test.prop(
+  it.prop(
+    'has an inactive DOI',
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasAssignedADoi(), fc.datasetReviewWasPublished())
         .map(([started, assigned, published]) => Tuple.make([started, assigned, published], assigned.doi)),
     ],
-    {
-      examples: [
-        [[[started, doiWasAssigned1, datasetReviewWasPublished], doiWasAssigned1.doi]], // assigned once
-        [[[started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished], doiWasAssigned2.doi]], // assigned twice
-      ],
+    ([[events, expected]]) => {
+      const state = _.foldState(events)
+
+      expect(state).toStrictEqual(new _.HasAnInactiveDoi({ doi: expected }))
     },
-  )('has an inactive DOI', ([events, expected]) => {
-    const state = _.foldState(events)
+    {
+      fastCheck: {
+        examples: [
+          [[[started, doiWasAssigned1, datasetReviewWasPublished], doiWasAssigned1.doi]], // assigned once
+          [[[started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished], doiWasAssigned2.doi]], // assigned twice
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.HasAnInactiveDoi({ doi: expected }))
-  })
-
-  test.prop(
+  it.prop(
+    'has an active DOI',
     [
       fc
         .tuple(
@@ -109,23 +131,26 @@ describe('foldState', () => {
           Tuple.make([started, assigned, published, activated], assigned.doi),
         ),
     ],
-    {
-      examples: [
-        [[[started, doiWasAssigned1, datasetReviewWasPublished, datasetReviewDoiWasActivated], doiWasAssigned1.doi]], // assigned once
-        [
-          [
-            [started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished, datasetReviewDoiWasActivated],
-            doiWasAssigned2.doi,
-          ],
-        ], // assigned twice
-        [[[started, datasetReviewWasPublished, datasetReviewDoiWasActivated, doiWasAssigned1], doiWasAssigned1.doi]], // different order
-      ],
-    },
-  )('has an active DOI', ([events, expected]) => {
-    const state = _.foldState(events)
+    ([[events, expected]]) => {
+      const state = _.foldState(events)
 
-    expect(state).toStrictEqual(new _.HasAnActiveDoi({ doi: expected }))
-  })
+      expect(state).toStrictEqual(new _.HasAnActiveDoi({ doi: expected }))
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[started, doiWasAssigned1, datasetReviewWasPublished, datasetReviewDoiWasActivated], doiWasAssigned1.doi]], // assigned once
+          [
+            [
+              [started, doiWasAssigned1, doiWasAssigned2, datasetReviewWasPublished, datasetReviewDoiWasActivated],
+              doiWasAssigned2.doi,
+            ],
+          ], // assigned twice
+          [[[started, datasetReviewWasPublished, datasetReviewDoiWasActivated, doiWasAssigned1], doiWasAssigned1.doi]], // different order
+        ],
+      },
+    },
+  )
 })
 
 describe('decide', () => {
@@ -147,7 +172,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenAssignedADoi({})))
   })
 
-  test.prop([fc.doi()])('has a inactive DOI', doi => {
+  it.prop('has a inactive DOI', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.HasAnInactiveDoi({ doi }), { datasetReviewId })
 
     expect(result).toStrictEqual(
@@ -155,7 +180,7 @@ describe('decide', () => {
     )
   })
 
-  test.prop([fc.doi()])('with a different DOI', doi => {
+  it.prop('with a different DOI', [fc.doi()], ([doi]) => {
     const result = _.decide(new _.HasAnActiveDoi({ doi }), { datasetReviewId })
 
     expect(result).toStrictEqual(Either.right(Option.none()))

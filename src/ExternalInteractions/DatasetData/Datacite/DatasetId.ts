@@ -5,6 +5,7 @@ import { Doi } from '../../../types/index.ts'
 const dataciteDoiPrefixes = [
   '5061',
   '5068',
+  '5281',
   '6071',
   '6078',
   '6086',

@@ -1,19 +1,17 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Layer, pipe, Schema } from 'effect'
 import { URL } from 'url'
-import { expect } from 'vitest'
 import * as Datasets from '../../../../src/Datasets/index.ts'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/DatasetData/Datacite/RecordToDataset.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { rawHtml } from '../../../../src/html.ts'
 import { Doi, OrcidId } from '../../../../src/types/index.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
-test.each([
+it.effect.each([
   {
     response: 'dryad',
     expected: new Datasets.Dataset({
@@ -393,6 +391,28 @@ test.each([
       url: new URL('https://data.scielo.org/citation?persistentId=doi:10.48331/SCIELODATA.V2HJJE'),
     }),
   },
+  {
+    response: 'zenodo-dataset',
+    expected: new Datasets.Dataset({
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Data (.gdb ESRI file geodatabases) and R scripts used for the publication "Cross-Sections and Dimensions: A LiDAR-Based GIS Tool for Bankfull Channel Mapping". a_completed_s11.zip contains final dataset geodatabase and preliminary datasets for 4 tiles used for slope threshold calibration.</p>',
+        ),
+      },
+      authors: [
+        { name: 'Joshphar Kunapo', orcid: OrcidId.OrcidId('0000-0002-0514-4658') },
+        { name: 'Kathryn Russell', orcid: OrcidId.OrcidId('0000-0002-9613-4665') },
+      ],
+      id: new Datasets.ZenodoDatasetId({ value: Doi.Doi('10.5281/zenodo.18951275') }),
+      posted: Temporal.PlainDate.from({ year: 2026, month: 3, day: 11 }),
+      title: {
+        text: rawHtml('Cross-Sections and Dimensions: A LiDAR-Based GIS Tool for Bankfull Channel Mapping [Dataset]'),
+        language: 'en',
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.18951275'),
+    }),
+  },
 ])('can parse a record ($response)', ({ response, expected }) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
@@ -403,10 +423,18 @@ test.each([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, LanguageDetection.layerCld])),
 )
 
-test.each(['dryad-collection'])('returns a specific error for a non-dataset record (%s)', response =>
+it.effect.each([
+  ['dryad-collection'],
+  ['zenodo-africarxiv'],
+  ['zenodo-empty-resource-type'],
+  ['zenodo-journal-article'],
+  ['zenodo-no-abstract'],
+  ['zenodo-trailing-space'],
+  ['zenodo'],
+])('returns a specific error for a non-dataset record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -417,30 +445,24 @@ test.each(['dryad-collection'])('returns a specific error for a non-dataset reco
     )
 
     expect(actual._tag).toStrictEqual('NotADataset')
-  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})])),
 )
 
-test.each([
-  'arxiv',
-  'cdl-ucb',
-  'cdl-ucd',
-  'cdl-uci',
-  'cdl-ucm',
-  'cdl-ucr',
-  'cdl-ucsc',
-  'cdl-ucsf',
-  'lifecycle-journal-article',
-  'lifecycle-journal-registration',
-  'osf-file',
-  'osf-project',
-  'osf-registration',
-  'zenodo-africarxiv',
-  'zenodo-empty-resource-type',
-  'zenodo-journal-article',
-  'zenodo-no-abstract',
-  'zenodo-trailing-space',
-  'zenodo',
-])('returns a specific error for non-supported record (%s)', response =>
+it.effect.each([
+  ['arxiv'],
+  ['cdl-ucb'],
+  ['cdl-ucd'],
+  ['cdl-uci'],
+  ['cdl-ucm'],
+  ['cdl-ucr'],
+  ['cdl-ucsc'],
+  ['cdl-ucsf'],
+  ['lifecycle-journal-article'],
+  ['lifecycle-journal-registration'],
+  ['osf-file'],
+  ['osf-project'],
+  ['osf-registration'],
+])('returns a specific error for non-supported record (%s)', ([response]) =>
   Effect.gen(function* () {
     const actual = yield* pipe(
       FileSystem.FileSystem,
@@ -451,5 +473,5 @@ test.each([
     )
 
     expect(actual._tag).toStrictEqual('RecordIsNotSupported')
-  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})]), EffectTest.run),
+  }).pipe(Effect.provide([NodeFileSystem.layer, Layer.mock(LanguageDetection.LanguageDetection, {})])),
 )

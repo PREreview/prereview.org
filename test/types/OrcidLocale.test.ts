@@ -1,41 +1,59 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/types/OrcidLocale.ts'
 import * as fc from '../fc.ts'
 
 describe('isOrcidLocale', () => {
-  test.prop([fc.orcidLocale()])('with an ORCID locale', locale => {
+  it.prop('with an ORCID locale', [fc.orcidLocale()], ([locale]) => {
     expect(_.isOrcidLocale(locale)).toBeTruthy()
   })
 
-  test.prop([fc.string({ minLength: 3 })], { examples: [['en_US'], ['EN'], ['lb']] })(
+  it.prop(
     'with a non-ORCID locale',
-    string => {
+    [fc.string({ minLength: 3 })],
+    ([string]) => {
       expect(_.isOrcidLocale(string)).toBeFalsy()
+    },
+    {
+      fastCheck: {
+        examples: [['en_US'], ['EN'], ['lb']],
+      },
     },
   )
 
-  test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+  it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
     expect(_.isOrcidLocale(value)).toBeFalsy()
   })
 })
 
 describe('parse', () => {
-  test.prop([fc.orcidLocale().map(locale => Tuple.make<[string, _.OrcidLocale]>(locale, locale))], {
-    examples: [[['en-US', 'en']], [['en-US-x-twain', 'en']], [['es-419', 'es']], [['zh-CN', 'zh_CN']]],
-  })('with an ORCID locale', ([input, expected]) => {
-    const actual = _.parse(input)
+  it.prop(
+    'with an ORCID locale',
+    [fc.orcidLocale().map(locale => Tuple.make<[string, _.OrcidLocale]>(locale, locale))],
+    ([[input, expected]]) => {
+      const actual = _.parse(input)
 
-    expect(actual).toStrictEqual(Option.some(expected))
-  })
+      expect(actual).toStrictEqual(Option.some(expected))
+    },
+    {
+      fastCheck: {
+        examples: [[['en-US', 'en']], [['en-US-x-twain', 'en']], [['es-419', 'es']], [['zh-CN', 'zh_CN']]],
+      },
+    },
+  )
 
-  test.prop([fc.string({ minLength: 3 })], { examples: [['EN'], ['lb'], ['sv-SE'], ['zh_SG']] })(
+  it.prop(
     'with a non-ORCID locale',
-    input => {
+    [fc.string({ minLength: 3 })],
+    ([input]) => {
       const actual = _.parse(input)
 
       expect(actual).toStrictEqual(Option.none())
+    },
+    {
+      fastCheck: {
+        examples: [['EN'], ['lb'], ['sv-SE'], ['zh_SG']],
+      },
     },
   )
 })

@@ -1,33 +1,32 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Schema } from 'effect'
 import { ArrayFormatter } from 'effect/ParseResult'
 import * as D from 'io-ts/lib/Decoder.js'
-import { describe, expect, it } from 'vitest'
 import * as _ from '../../src/types/Pseudonym.ts'
 import * as fc from '../fc.ts'
 
 describe('PseudonymC', () => {
   describe('decode', () => {
-    test.prop([fc.pseudonym()])('with a pseudonym', string => {
+    it.prop('with a pseudonym', [fc.pseudonym()], ([string]) => {
       const actual = _.PseudonymC.decode(string)
 
       expect(actual).toStrictEqual(D.success(string))
     })
 
-    test.prop([fc.string()])('with a non-pseudonym', string => {
+    it.prop('with a non-pseudonym', [fc.string()], ([string]) => {
       const actual = _.PseudonymC.decode(string)
 
       expect(actual).toStrictEqual(D.failure(string, 'Pseudonym'))
     })
 
-    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+    it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
       const actual = _.PseudonymC.decode(value)
 
       expect(actual).toStrictEqual(D.failure(value, 'string'))
     })
   })
 
-  test.prop([fc.pseudonym()])('encode', pseudonym => {
+  it.prop('encode', [fc.pseudonym()], ([pseudonym]) => {
     const actual = _.PseudonymC.encode(pseudonym)
 
     expect(actual).toStrictEqual(pseudonym)
@@ -36,13 +35,13 @@ describe('PseudonymC', () => {
 
 describe('PseudonymSchema', () => {
   describe('decode', () => {
-    test.prop([fc.pseudonym()])('with a pseudonym', string => {
+    it.prop('with a pseudonym', [fc.pseudonym()], ([string]) => {
       const actual = Schema.decodeSync(_.PseudonymSchema)(string)
 
       expect(actual).toStrictEqual(string)
     })
 
-    test.prop([fc.string()])('with a non-pseudonym', string => {
+    it.prop('with a non-pseudonym', [fc.string()], ([string]) => {
       const actual = Either.mapLeft(Schema.decodeEither(_.PseudonymSchema)(string), ArrayFormatter.formatErrorSync)
 
       expect(actual).toStrictEqual(
@@ -52,14 +51,14 @@ describe('PseudonymSchema', () => {
       )
     })
 
-    test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
+    it.prop('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], ([value]) => {
       const actual = Schema.decodeUnknownEither(_.PseudonymSchema)(value)
 
       expect(actual).toStrictEqual(Either.left(expect.anything()))
     })
   })
 
-  test.prop([fc.pseudonym()])('encode', pseudonym => {
+  it.prop('encode', [fc.pseudonym()], ([pseudonym]) => {
     const actual = Schema.encodeSync(_.PseudonymSchema)(pseudonym)
 
     expect(actual).toStrictEqual(pseudonym)
@@ -67,49 +66,63 @@ describe('PseudonymSchema', () => {
 })
 
 describe('isPseudonym', () => {
-  test.prop([fc.pseudonym()], {
-    examples: [
-      ['Orange Panda' as _.Pseudonym],
-      ['Orange Panda 0' as _.Pseudonym],
-      ['Orange Panda 1' as _.Pseudonym],
-      ['Orange Panda 123' as _.Pseudonym],
-      ['Green Hawk' as _.Pseudonym],
-      ['Blue Sheep' as _.Pseudonym],
-      ['Red Hummingbird' as _.Pseudonym],
-      ['White Frog' as _.Pseudonym],
-      ['Pink Jellyfish' as _.Pseudonym],
-      ['Sapphire Kangaroo' as _.Pseudonym],
-      ['Black Dog' as _.Pseudonym],
-    ],
-  })('with a pseudonym', string => {
-    expect(_.isPseudonym(string)).toBe(true)
-  })
+  it.prop(
+    'with a pseudonym',
+    [fc.pseudonym()],
+    ([string]) => {
+      expect(_.isPseudonym(string)).toBe(true)
+    },
+    {
+      fastCheck: {
+        examples: [
+          ['Orange Panda' as _.Pseudonym],
+          ['Orange Panda 0' as _.Pseudonym],
+          ['Orange Panda 1' as _.Pseudonym],
+          ['Orange Panda 123' as _.Pseudonym],
+          ['Green Hawk' as _.Pseudonym],
+          ['Blue Sheep' as _.Pseudonym],
+          ['Red Hummingbird' as _.Pseudonym],
+          ['White Frog' as _.Pseudonym],
+          ['Pink Jellyfish' as _.Pseudonym],
+          ['Sapphire Kangaroo' as _.Pseudonym],
+          ['Black Dog' as _.Pseudonym],
+        ],
+      },
+    },
+  )
 
-  test.prop([fc.lorem()], {
-    examples: [
-      ['Orange panda'],
-      ['orange panda'],
-      ['ORANGE PANDA'],
-      ['Giant Panda'],
-      ['Giant Panda 1'],
-      ['OrangePanda'],
-      ['OrangePanda1'],
-      ['Orange  Panda'],
-      [' Orange Panda'],
-      ['Orange Panda '],
-      ['Orange  Panda 1'],
-      ['Orange Panda Bear'],
-      ['Orange Panda 1 Bear'],
-      ['Orange Panda -1'],
-      ['Orange Panda One'],
-      ['Orange Panda 1!'],
-      ['Orange Panda 1 !'],
-      ['Orange Panda 01'],
-      ['Orange Panda 1.0'],
-    ],
-  })('with a non-pseudonym', string => {
-    expect(_.isPseudonym(string)).toBe(false)
-  })
+  it.prop(
+    'with a non-pseudonym',
+    [fc.lorem()],
+    ([string]) => {
+      expect(_.isPseudonym(string)).toBe(false)
+    },
+    {
+      fastCheck: {
+        examples: [
+          ['Orange panda'],
+          ['orange panda'],
+          ['ORANGE PANDA'],
+          ['Giant Panda'],
+          ['Giant Panda 1'],
+          ['OrangePanda'],
+          ['OrangePanda1'],
+          ['Orange  Panda'],
+          [' Orange Panda'],
+          ['Orange Panda '],
+          ['Orange  Panda 1'],
+          ['Orange Panda Bear'],
+          ['Orange Panda 1 Bear'],
+          ['Orange Panda -1'],
+          ['Orange Panda One'],
+          ['Orange Panda 1!'],
+          ['Orange Panda 1 !'],
+          ['Orange Panda 01'],
+          ['Orange Panda 1.0'],
+        ],
+      },
+    },
+  )
 })
 
 describe('possiblePseudonyms', () => {

@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Tuple, type Types } from 'effect'
-import { describe, expect } from 'vitest'
 import * as Datasets from '../src/Datasets/index.ts'
 import * as _ from '../src/Events.ts'
 import * as Preprints from '../src/Preprints/index.ts'
@@ -25,71 +24,79 @@ const reviewRequestForAPreprintWasStarted = new _.ReviewRequestForAPreprintWasSt
 })
 
 describe('matches', () => {
-  test.prop(
+  it.prop(
+    'when the event matches the filter',
     [
       fc
         .event()
         .map(event => Tuple.make<[_.Event, _.EventFilter<Types.Tags<_.Event>>]>(event, { types: [event._tag] })),
     ],
-    {
-      examples: [
-        [[datasetReviewWasStarted, { types: ['DatasetReviewWasStarted'] }]], // single type
-        [
-          [
-            datasetReviewWasStarted,
-            { types: ['DatasetReviewWasStarted', 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] },
-          ], // multiple types
-        ],
-        [
-          [
-            datasetReviewWasStarted,
-            { types: ['DatasetReviewWasStarted'], predicates: { datasetId: datasetReviewWasStarted.datasetId } },
-          ], // single type and predicate
-        ],
-        [
-          [
-            datasetReviewWasStarted,
-            {
-              types: ['DatasetReviewWasStarted', 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-              predicates: { datasetId: datasetReviewWasStarted.datasetId, authorId: datasetReviewWasStarted.authorId },
-            },
-          ], // multiple types and predicates
-        ],
-        [
-          [
-            datasetReviewWasStarted,
-            [
-              {
-                types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
-                predicates: {
-                  datasetId: datasetReviewWasStarted.datasetId,
-                  authorId: datasetReviewWasStarted.authorId,
-                },
-              },
-              {
-                types: ['DatasetReviewWasStarted'],
-                predicates: {
-                  datasetId: datasetReviewWasStarted.datasetId,
-                  authorId: datasetReviewWasStarted.authorId,
-                },
-              },
-            ],
-          ], // multiple filters
-        ],
-        [
-          [
-            reviewRequestForAPreprintWasStarted,
-            { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: preprintIdIndeterminate } },
-          ], // complex predicate
-        ],
-      ],
-    },
-  )('when the event matches the filter', ([event, filter]) => {
-    const result = _.matches(event, filter)
+    ([[event, filter]]) => {
+      const result = _.matches(event, filter)
 
-    expect(result).toBeTruthy()
-  })
-  test.prop(
+      expect(result).toBeTruthy()
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[datasetReviewWasStarted, { types: ['DatasetReviewWasStarted'] }]], // single type
+          [
+            [
+              datasetReviewWasStarted,
+              { types: ['DatasetReviewWasStarted', 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] },
+            ], // multiple types
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              { types: ['DatasetReviewWasStarted'], predicates: { datasetId: datasetReviewWasStarted.datasetId } },
+            ], // single type and predicate
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              {
+                types: ['DatasetReviewWasStarted', 'AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+                predicates: {
+                  datasetId: datasetReviewWasStarted.datasetId,
+                  authorId: datasetReviewWasStarted.authorId,
+                },
+              },
+            ], // multiple types and predicates
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              [
+                {
+                  types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'],
+                  predicates: {
+                    datasetId: datasetReviewWasStarted.datasetId,
+                    authorId: datasetReviewWasStarted.authorId,
+                  },
+                },
+                {
+                  types: ['DatasetReviewWasStarted'],
+                  predicates: {
+                    datasetId: datasetReviewWasStarted.datasetId,
+                    authorId: datasetReviewWasStarted.authorId,
+                  },
+                },
+              ],
+            ], // multiple filters
+          ],
+          [
+            [
+              reviewRequestForAPreprintWasStarted,
+              { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: preprintIdIndeterminate } },
+            ], // complex predicate
+          ],
+        ],
+      },
+    },
+  )
+  it.prop(
+    "when the event doesn't match the filter",
     [
       fc
         .tuple(fc.event(), fc.event())
@@ -98,50 +105,59 @@ describe('matches', () => {
           Tuple.make<[_.Event, _.EventFilter<Types.Tags<_.Event>>]>(event1, { types: [event2._tag] }),
         ),
     ],
-    {
-      examples: [
-        [[datasetReviewWasStarted, { types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] }]], // single type
-        [
-          [
-            datasetReviewWasStarted,
-            { types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'PublicationOfDatasetReviewWasRequested'] },
-          ], // multiple types
-        ],
-        [
-          [datasetReviewWasStarted, { types: ['DatasetReviewWasStarted'], predicates: { datasetId: otherDatasetId } }], // single predicate doesn't match
-        ],
-        [
-          [
-            datasetReviewWasStarted,
-            { types: ['DatasetReviewWasStarted'], predicates: { datasetId: otherDatasetId, authorId: otherAuthorId } },
-          ], // multiple predicates don't match
-        ],
-        [
-          [
-            datasetReviewWasStarted,
-            [
-              {
-                types: ['DatasetReviewWasStarted'],
-                predicates: { datasetId, authorId: otherAuthorId },
-              },
-              {
-                types: ['DatasetReviewWasStarted'],
-                predicates: { datasetId: otherDatasetId, authorId },
-              },
-            ],
-          ], // multiple filters
-        ],
-        [
-          [
-            reviewRequestForAPreprintWasStarted,
-            { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: otherPreprintId } },
-          ], // complex predicate
-        ],
-      ],
-    },
-  )("when the event doesn't match the filter", ([event, filter]) => {
-    const result = _.matches(event, filter)
+    ([[event, filter]]) => {
+      const result = _.matches(event, filter)
 
-    expect(result).toBeFalsy()
-  })
+      expect(result).toBeFalsy()
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[datasetReviewWasStarted, { types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples'] }]], // single type
+          [
+            [
+              datasetReviewWasStarted,
+              { types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'PublicationOfDatasetReviewWasRequested'] },
+            ], // multiple types
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              { types: ['DatasetReviewWasStarted'], predicates: { datasetId: otherDatasetId } },
+            ], // single predicate doesn't match
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              {
+                types: ['DatasetReviewWasStarted'],
+                predicates: { datasetId: otherDatasetId, authorId: otherAuthorId },
+              },
+            ], // multiple predicates don't match
+          ],
+          [
+            [
+              datasetReviewWasStarted,
+              [
+                {
+                  types: ['DatasetReviewWasStarted'],
+                  predicates: { datasetId, authorId: otherAuthorId },
+                },
+                {
+                  types: ['DatasetReviewWasStarted'],
+                  predicates: { datasetId: otherDatasetId, authorId },
+                },
+              ],
+            ], // multiple filters
+          ],
+          [
+            [
+              reviewRequestForAPreprintWasStarted,
+              { types: ['ReviewRequestForAPreprintWasStarted'], predicates: { preprintId: otherPreprintId } },
+            ], // complex predicate
+          ],
+        ],
+      },
+    },
+  )
 })

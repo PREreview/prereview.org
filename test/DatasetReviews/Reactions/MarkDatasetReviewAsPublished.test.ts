@@ -1,13 +1,11 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
-import { describe, expect } from 'vitest'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/MarkDatasetReviewAsPublished.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('MarkDatasetReviewAsPublished', () => {
-  test.prop([fc.uuid()])('when the command can be completed', datasetReviewId =>
+  it.effect.prop('when the command can be completed', [fc.uuid()], ([datasetReviewId]) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
 
@@ -16,27 +14,28 @@ describe('MarkDatasetReviewAsPublished', () => {
       Effect.provide(
         Layer.mock(DatasetReviews.DatasetReviewCommands, { markDatasetReviewAsPublished: () => Effect.void }),
       ),
-      EffectTest.run,
     ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.constantFrom(
-      new DatasetReviews.DatasetReviewHasNotBeenStarted(),
-      new DatasetReviews.PublicationOfDatasetReviewWasNotRequested(),
-      new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing: ['DatasetReviewWasAssignedADoi'] }),
-      new DatasetReviews.NotAuthorizedToRunCommand({}),
-      new DatasetReviews.UnableToHandleCommand({}),
-    ),
-  ])("when the command can't be completed", (datasetReviewId, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
+  it.effect.prop(
+    "when the command can't be completed",
+    [
+      fc.uuid(),
+      fc.constantFrom(
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.PublicationOfDatasetReviewWasNotRequested(),
+        new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing: ['DatasetReviewWasAssignedADoi'] }),
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
+        new DatasetReviews.UnableToHandleCommand({}),
+      ),
+    ],
+    ([datasetReviewId, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.MarkDatasetReviewAsPublished(datasetReviewId), Effect.either)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToMarkDatasetReviewAsPublished({})))
-    }).pipe(
-      Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { markDatasetReviewAsPublished: () => error })),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToMarkDatasetReviewAsPublished({})))
+      }).pipe(
+        Effect.provide(Layer.mock(DatasetReviews.DatasetReviewCommands, { markDatasetReviewAsPublished: () => error })),
+      ),
   )
 })

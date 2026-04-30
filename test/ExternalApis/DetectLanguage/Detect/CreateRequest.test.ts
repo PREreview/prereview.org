@@ -1,23 +1,22 @@
 import { HttpBody } from '@effect/platform'
-import { test } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from '@effect/vitest'
 import * as _ from '../../../../src/ExternalApis/DetectLanguage/Detect/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('CreateRequest', () => {
-  test.prop([fc.string()])('creates a POST request', string => {
+  it.prop('creates a POST request', [fc.string()], ([string]) => {
     const actual = _.CreateRequest(string)
 
     expect(actual.method).toStrictEqual('POST')
   })
 
-  test.prop([fc.string()])('sets the URL', string => {
+  it.prop('sets the URL', [fc.string()], ([string]) => {
     const actual = _.CreateRequest(string)
 
     expect(actual.url).toStrictEqual('https://ws.detectlanguage.com/v3/detect')
   })
 
-  test.prop([fc.string()])('sets the body', string => {
+  it.prop('sets the body', [fc.string()], ([string]) => {
     const actual = _.CreateRequest(string)
 
     expect(actual.body).toStrictEqual(HttpBody.formDataRecord({ q: string }))

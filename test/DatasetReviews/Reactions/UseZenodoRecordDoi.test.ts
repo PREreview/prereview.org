@@ -1,16 +1,15 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Layer, pipe } from 'effect'
-import { describe, expect } from 'vitest'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Reactions/UseZenodoRecordDoi.ts'
 import { ZenodoRecords } from '../../../src/ExternalInteractions/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import * as fc from '../../fc.ts'
 
 describe('UseZenodoRecordDoi', () => {
-  test.prop([fc.uuid(), fc.integer(), fc.doi()])(
+  it.effect.prop(
     'when the command can be completed',
-    (datasetReviewId, recordId, doi) =>
+    [fc.uuid(), fc.integer(), fc.doi()],
+    ([datasetReviewId, recordId, doi]) =>
       Effect.gen(function* () {
         const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
 
@@ -20,35 +19,36 @@ describe('UseZenodoRecordDoi', () => {
           Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => Effect.void }),
           Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
         ]),
-        EffectTest.run,
       ),
   )
 
-  test.prop([
-    fc.uuid(),
-    fc.integer(),
-    fc.doi(),
-    fc.constantFrom(
-      new DatasetReviews.DatasetReviewHasNotBeenStarted(),
-      new DatasetReviews.DatasetReviewAlreadyHasADoi({}),
-      new DatasetReviews.NotAuthorizedToRunCommand({}),
-      new DatasetReviews.UnableToHandleCommand({}),
-    ),
-  ])("when the command can't be completed", (datasetReviewId, recordId, doi, error) =>
-    Effect.gen(function* () {
-      const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
+  it.effect.prop(
+    "when the command can't be completed",
+    [
+      fc.uuid(),
+      fc.integer(),
+      fc.doi(),
+      fc.constantFrom(
+        new DatasetReviews.DatasetReviewHasNotBeenStarted(),
+        new DatasetReviews.DatasetReviewAlreadyHasADoi({}),
+        new DatasetReviews.NotAuthorizedToRunCommand({}),
+        new DatasetReviews.UnableToHandleCommand({}),
+      ),
+    ],
+    ([datasetReviewId, recordId, doi, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
 
-      expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
-    }).pipe(
-      Effect.provide([
-        Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
-        Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
-      ]),
-      EffectTest.run,
-    ),
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.FailedToUseZenodoDoi({})))
+      }).pipe(
+        Effect.provide([
+          Layer.mock(DatasetReviews.DatasetReviewCommands, { markDoiAsAssigned: () => error }),
+          Layer.mock(ZenodoRecords.ZenodoRecords, { getDoiForDatasetReviewRecord: () => Effect.succeed(doi) }),
+        ]),
+      ),
   )
 
-  test.prop([fc.uuid(), fc.integer()])("when the DOI can't be fetched", (datasetReviewId, recordId) =>
+  it.effect.prop("when the DOI can't be fetched", [fc.uuid(), fc.integer()], ([datasetReviewId, recordId]) =>
     Effect.gen(function* () {
       const actual = yield* pipe(_.UseZenodoRecordDoi(datasetReviewId, recordId), Effect.either)
 
@@ -60,7 +60,6 @@ describe('UseZenodoRecordDoi', () => {
           getDoiForDatasetReviewRecord: () => new ZenodoRecords.FailedToGetRecordForDatasetReview({}),
         }),
       ]),
-      EffectTest.run,
     ),
   )
 })

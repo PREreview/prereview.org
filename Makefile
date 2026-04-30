@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request
+.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request dump-sandbox-events
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -80,7 +80,7 @@ test-fast: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx vitest run --changed --maxWorkers=50%
 
 test-watch: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx vitest watch ${TEST}
+	FAST_CHECK_NUM_RUNS=10 npx vitest watch --changed ${TEST}
 
 test-integration: test-integration-image
 	docker compose up postgres --wait
@@ -110,3 +110,6 @@ withdraw-review-request:
 
 categorize-review-request:
 	flyctl --config fly.prod.toml ssh console --region iad --pty --command "node dist/cli.js categorize-review-request --wizard"
+
+dump-sandbox-events:
+	echo "COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);" | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d prereview-sandbox | tail -n +2 > data/sandbox-events-dump.csv

@@ -1,14 +1,13 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
-import { describe, expect } from 'vitest'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/no-prereviews.ts'
 import { myPrereviewsMatch } from '../../../src/routes.ts'
 import * as fc from './fc.ts'
 
 describe('ensureThereArePrereviews', () => {
-  test.prop([fc.nonEmptyArray(fc.localPrereview())])('when the list is not empty', prereviews => {
+  it.prop('when the list is not empty', [fc.nonEmptyArray(fc.localPrereview())], ([prereviews]) => {
     const actual = _.ensureThereArePrereviews(prereviews)
 
     expect(actual).toStrictEqual(E.right(prereviews))
@@ -21,7 +20,7 @@ describe('ensureThereArePrereviews', () => {
   })
 })
 
-test.prop([fc.supportedLocale()])('toResponse', locale => {
+it.prop('toResponse', [fc.supportedLocale()], ([locale]) => {
   const actual = _.toResponse(_.NoPrereviews, locale)
 
   expect(actual).toStrictEqual({

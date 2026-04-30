@@ -1,7 +1,6 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, Option, Tuple } from 'effect'
-import { describe, expect } from 'vitest'
 import { Slack } from '../../../src/ExternalApis/index.ts'
 import * as Preprints from '../../../src/Preprints/index.ts'
 import * as _ from '../../../src/ReviewRequests/Commands/ReceiveReviewRequest.ts'
@@ -80,7 +79,8 @@ const command = (): fc.Arbitrary<_.Command> =>
   })
 
 describe('foldState', () => {
-  test.prop(
+  it.prop(
+    'not yet received',
     [
       fc
         .uuid()
@@ -91,55 +91,62 @@ describe('foldState', () => {
           ),
         ),
     ],
-    {
-      examples: [
-        [[[], reviewRequestId]], // no events
-        [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
-        [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
-        [[[otherReviewRequestByAPrereviewerWasImported], reviewRequestId]], // for other review request
-        [[[otherReviewRequestForAPreprintWasImported], reviewRequestId]], // for other imported review request
-      ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.NotReceived())
     },
-  )('not yet received', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
+    {
+      fastCheck: {
+        examples: [
+          [[[], reviewRequestId]], // no events
+          [[[reviewRequestForAPreprintWasSharedOnTheCommunitySlack], reviewRequestId]], // with events
+          [[[otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // for other review request
+          [[[otherReviewRequestByAPrereviewerWasImported], reviewRequestId]], // for other review request
+          [[[otherReviewRequestForAPreprintWasImported], reviewRequestId]], // for other imported review request
+        ],
+      },
+    },
+  )
 
-    expect(state).toStrictEqual(new _.NotReceived())
-  })
-
-  test.prop(
+  it.prop(
+    'already received',
     [
       fc
         .oneof(fc.reviewRequestForAPreprintWasReceived(), fc.reviewRequestFromAPreprintServerWasImported())
         .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId)),
     ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.HasBeenReceived())
+    },
     {
-      examples: [
-        [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was received
-        [[[reviewRequestForAPreprintWasStarted], reviewRequestId]], // was started
-        [[[reviewRequestByAPrereviewerWasImported], reviewRequestId]], // was imported from request by PREreviewer
-        [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
-        [
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived], reviewRequestId]], // was received
+          [[[reviewRequestForAPreprintWasStarted], reviewRequestId]], // was started
+          [[[reviewRequestByAPrereviewerWasImported], reviewRequestId]], // was imported from request by PREreviewer
+          [[[reviewRequestForAPreprintWasImported], reviewRequestId]], // was imported
           [
             [
-              reviewRequestForAPreprintWasReceived,
-              reviewRequestForAPreprintWasImported,
-              reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasImported,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              ],
+              reviewRequestId,
             ],
-            reviewRequestId,
-          ],
-        ], // other events
-        [[[reviewRequestForAPreprintWasReceived, otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // other review request too
-      ],
+          ], // other events
+          [[[reviewRequestForAPreprintWasReceived, otherReviewRequestForAPreprintWasReceived], reviewRequestId]], // other review request too
+        ],
+      },
     },
-  )('already received', ([events, reviewRequestId]) => {
-    const state = _.foldState(events, reviewRequestId)
-
-    expect(state).toStrictEqual(new _.HasBeenReceived())
-  })
+  )
 })
 
 describe('decide', () => {
-  test.prop([command()])('has not been received', command => {
+  it.prop('has not been received', [command()], ([command]) => {
     const result = _.decide(new _.NotReceived(), command)
 
     expect(result).toStrictEqual(
@@ -155,7 +162,7 @@ describe('decide', () => {
     )
   })
 
-  test.prop([command()])('has already been received', command => {
+  it.prop('has already been received', [command()], ([command]) => {
     const result = _.decide(new _.HasBeenReceived(), command)
 
     expect(result).toStrictEqual(Option.none())

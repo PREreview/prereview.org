@@ -1,6 +1,5 @@
-import { test } from '@fast-check/vitest'
+import { describe, expect, it, test } from '@effect/vitest'
 import { Option } from 'effect'
-import { describe, expect } from 'vitest'
 import * as _ from '../../src/Clubs/ClubDetails.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import * as fc from '../fc.ts'
@@ -17,7 +16,7 @@ describe('getClubByName', () => {
     expect(actual).toStrictEqual(Option.some(expected))
   })
 
-  test.prop([fc.string()])('with something else', name => {
+  it.prop('with something else', [fc.string()], ([name]) => {
     const actual = _.getClubByName(name)
 
     expect(actual).toStrictEqual(Option.none())
@@ -34,7 +33,7 @@ describe('isLeadFor', () => {
     expect(actual).toStrictEqual(expected)
   })
 
-  test.prop([fc.orcidId()])('when not a lead', orcid => {
+  it.prop('when not a lead', [fc.orcidId()], ([orcid]) => {
     const actual = _.isLeadFor(orcid)
 
     expect(actual).toHaveLength(0)
@@ -51,7 +50,7 @@ describe('isAClubLead', () => {
     expect(actual).toBeTruthy()
   })
 
-  test.prop([fc.orcidId()])('when not a lead', orcid => {
+  it.prop('when not a lead', [fc.orcidId()], ([orcid]) => {
     const actual = _.isAClubLead(orcid)
 
     expect(actual).toBeFalsy()
