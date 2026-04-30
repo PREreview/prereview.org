@@ -89,7 +89,7 @@ const decide =
         if (state.pseudonym === input.pseudonym) {
           return Either.right(Option.none())
         }
-        console.log(state.pseudonym, input.pseudonym, possiblePseudonyms)
+
         if (possiblePseudonyms.has(state.pseudonym)) {
           return Either.left(new PrereviewerDoesNotHaveLegacyPseudonym())
         }
