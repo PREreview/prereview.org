@@ -11,7 +11,7 @@ export class UnknownPrereviewer extends Data.TaggedError('UnknownPrereviewer')<{
 
 const createFilter = (orcidId: Input) =>
   Events.EventFilter({
-    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered'],
+    types: ['RegisteredPrereviewerImported', 'PrereviewerRegistered', 'LegacyPseudonymReplaced'],
     predicates: { orcidId },
   })
 

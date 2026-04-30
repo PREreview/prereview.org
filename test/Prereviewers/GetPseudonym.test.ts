@@ -32,14 +32,12 @@ const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant(),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importedLegacy = new Events.RegisteredPrereviewerImported({
   orcidId: input,
   pseudonym: Pseudonym.Pseudonym('Blue Panda 0'),
   registeredAt: Temporal.Now.instant(),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const replaced = new Events.LegacyPseudonymReplaced({
   orcidId: input,
   pseudonym: Pseudonym.Pseudonym('Green Horse'),
@@ -49,7 +47,7 @@ const replaced = new Events.LegacyPseudonymReplaced({
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.UnknownPrereviewer({}))],
   ['imported', input, [imported], Either.right(imported.pseudonym)],
-  // ['imported legacy replaced', input, [importedLegacy, replaced], Either.right(replaced.pseudonym)],
+  ['imported legacy replaced', input, [importedLegacy, replaced], Either.right(replaced.pseudonym)],
   ['registered', input, [registered], Either.right(registered.pseudonym)],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], Either.left(new _.UnknownPrereviewer({}))],
   [
