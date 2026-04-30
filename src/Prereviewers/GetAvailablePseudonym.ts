@@ -11,7 +11,11 @@ type State = Set<Pseudonym>
 
 const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>): State =>
   Array.reduce(events, state, (currentState, event) => {
-    if (event._tag !== 'RegisteredPrereviewerImported' && event._tag !== 'PrereviewerRegistered') {
+    if (
+      event._tag !== 'RegisteredPrereviewerImported' &&
+      event._tag !== 'PrereviewerRegistered' &&
+      event._tag !== 'LegacyPseudonymReplaced'
+    ) {
       return currentState
     }
     currentState.delete(event.pseudonym)

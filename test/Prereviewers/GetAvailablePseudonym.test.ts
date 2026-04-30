@@ -42,11 +42,11 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
   ['first pseudonym used', [imported1], Either.right(Pseudonym.Pseudonym('Blue Sheep'))],
   ['second pseudonym used', [registered2], Either.right(Pseudonym.Pseudonym('Orange Panda'))],
   ['legacy pseudonym in use', [imported1, imported2, registered2], Either.right(Pseudonym.Pseudonym('Green Horse'))],
-  // [
-  //   'all pseudonyms used',
-  //   [imported1, registered2, imported2, imported2replaced],
-  //   Either.left(new _.NoPseudonymAvailable()),
-  // ],
+  [
+    'all pseudonyms used',
+    [imported1, registered2, imported2, imported2replaced],
+    Either.left(new _.NoPseudonymAvailable()),
+  ],
 ])('%s', (_name, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.GetAvailablePseudonym(possiblePseudonyms)
 
