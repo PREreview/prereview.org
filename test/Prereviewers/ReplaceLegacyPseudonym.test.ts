@@ -72,6 +72,8 @@ const otherPrereviewerReplacedWithSame = new Events.LegacyPseudonymReplaced({
   pseudonym: input.pseudonym,
 })
 
+const possiblePseudonyms = new Set([Pseudonym('Orange Panda'), Pseudonym('Green Horse')])
+
 test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.PrereviewerNotRegistered())],
   [
@@ -114,7 +116,7 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     Either.left(new _.PseudonymAlreadyInUse()),
   ],
 ])('%s', (_name, events, input, expected) => {
-  const { foldState, decide } = _.ReplaceLegacyPseudonym
+  const { foldState, decide } = _.ReplaceLegacyPseudonym(possiblePseudonyms)
 
   const state = foldState(events, input)
 

@@ -18,7 +18,9 @@ export class PrereviewerDoesNotHaveLegacyPseudonym extends Data.TaggedError('Pre
 
 export class PrereviewerNotRegistered extends Data.TaggedError('PrereviewerNotRegistered') {}
 
-export declare const ReplaceLegacyPseudonym: Command.Command<
+export declare const ReplaceLegacyPseudonym: (
+  possiblePseudonyms: Set<Pseudonym.Pseudonym>,
+) => Command.Command<
   'RegisteredPrereviewerImported' | 'PrereviewerRegistered' | 'LegacyPseudonymReplaced',
   [Input],
   State,
