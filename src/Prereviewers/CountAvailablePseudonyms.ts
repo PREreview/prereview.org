@@ -1,4 +1,4 @@
-import { Array, Either, flow, Types } from 'effect'
+import { Array, Either, flow, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
