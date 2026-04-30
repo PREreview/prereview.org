@@ -21,3 +21,9 @@ export class LegacyPseudonymReplaced extends Schema.TaggedClass<LegacyPseudonymR
   replacedAt: Temporal.InstantSchema,
   pseudonym: Pseudonym.PseudonymSchema,
 }) {}
+
+export const PrereviewerEvent = Schema.Union(
+  RegisteredPrereviewerImported,
+  PrereviewerRegistered,
+  LegacyPseudonymReplaced,
+)
