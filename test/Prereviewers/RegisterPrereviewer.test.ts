@@ -15,6 +15,20 @@ const input = {
 const imported = new Events.RegisteredPrereviewerImported(input)
 const registered = new Events.PrereviewerRegistered(input)
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const importedLegacy = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  registeredAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Orange Panda 0'),
+})
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const legacyReplaced = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  replacedAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Orange Panda'),
+})
+
 const importedDifferentTime = new Events.RegisteredPrereviewerImported({
   ...input,
   registeredAt: input.registeredAt.subtract({ hours: 1 }),
@@ -148,6 +162,12 @@ test.each<
     input,
     Either.left(new _.PseudonymAlreadyInUse()),
   ],
+  // [
+  //   'different orcid, but same pseudonym is use due to legacy pseudonym replacement',
+  //   [importedLegacy, legacyReplaced],
+  //   input,
+  //   Either.left(new _.PseudonymAlreadyInUse()),
+  // ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.RegisterPrereviewer
 
