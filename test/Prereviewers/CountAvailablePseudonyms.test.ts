@@ -13,7 +13,7 @@ const imported1 = new Events.RegisteredPrereviewerImported({
 })
 
 const imported2 = new Events.RegisteredPrereviewerImported({
-  orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+  orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
   pseudonym: Pseudonym.Pseudonym('Orange Panda 1'),
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
@@ -24,13 +24,29 @@ const registered3 = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
-const possiblePseudonyms = new Set([Pseudonym.Pseudonym('Orange Panda'), Pseudonym.Pseudonym('Blue Sheep')])
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const imported2replaced = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
+  pseudonym: Pseudonym.Pseudonym('Green Horse'),
+  replacedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+})
+
+const possiblePseudonyms = new Set([
+  Pseudonym.Pseudonym('Orange Panda'),
+  Pseudonym.Pseudonym('Blue Sheep'),
+  Pseudonym.Pseudonym('Green Horse'),
+])
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
-  ['no events', [], { used: 0, legacyUsed: 0, available: 2 }],
-  ['first pseudonym used', [imported1], { used: 1, legacyUsed: 0, available: 1 }],
-  ['second pseudonym used', [registered3], { used: 1, legacyUsed: 0, available: 1 }],
-  ['all pseudonyms used', [imported1, imported2, registered3], { used: 2, legacyUsed: 1, available: 0 }],
+  ['no events', [], { used: 0, legacyUsed: 0, available: 3 }],
+  ['first pseudonym used', [imported1], { used: 1, legacyUsed: 0, available: 2 }],
+  ['second pseudonym used', [registered3], { used: 1, legacyUsed: 0, available: 2 }],
+  ['legacy pseudonym in use', [imported1, imported2, registered3], { used: 2, legacyUsed: 1, available: 1 }],
+  // [
+  //   'all pseudonyms used after legacy pseudonym replaced',
+  //   [imported1, imported2, registered3, imported2replaced],
+  //   { used: 3, legacyUsed: 0, available: 0 },
+  // ],
 ])('%s', (_name, events, expected) => {
   const { query } = _.CountAvailablePseudonyms(possiblePseudonyms)
 
