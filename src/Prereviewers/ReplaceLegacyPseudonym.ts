@@ -10,7 +10,7 @@ export interface Input {
 
 type State = unknown
 
-type Error = PseudonymAlreadyInUse | PrereviewerDoesNotHaveLegacyPseudonym | PrereviewerNotRegistered
+export type Error = PseudonymAlreadyInUse | PrereviewerDoesNotHaveLegacyPseudonym | PrereviewerNotRegistered
 
 export class PseudonymAlreadyInUse extends Data.TaggedError('PseudonymAlreadyInUse') {}
 
