@@ -26,6 +26,9 @@
   "doiCouldBeScielo": {
     "message": "crwdns6204:0{doi}crwdne6204:0"
   },
+  "doiCouldBeZenodo": {
+    "message": "crwdns6608:0{doi}crwdne6608:0"
+  },
   "checkCorrectDoi": {
     "message": "crwdns6132:0crwdne6132:0"
   },
@@ -42,7 +45,7 @@
     "message": "crwdns6144:0crwdne6144:0"
   },
   "supportDatasetsFrom": {
-    "message": "crwdns6206:0crwdne6206:0"
+    "message": "crwdns6610:0crwdne6610:0"
   },
   "doiIsForDataset": {
     "message": "crwdns6142:0crwdne6142:0"
