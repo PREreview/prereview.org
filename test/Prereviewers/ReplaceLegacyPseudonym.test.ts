@@ -74,7 +74,7 @@ const otherPrereviewerReplacedWithSame = new Events.LegacyPseudonymReplaced({
 
 const possiblePseudonyms = new Set([Pseudonym('Orange Panda'), Pseudonym('Green Horse')])
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.PrereviewerNotRegistered())],
   [
     'imported with legacy pseudonym',
