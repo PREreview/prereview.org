@@ -4,6 +4,7 @@
 /.git/
 /.github/
 /assets/locales/
+/backup/
 /data/
 /dist/
 /integration-results/
