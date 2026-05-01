@@ -2,6 +2,7 @@
 /.dev/server.crt
 /.dev/server.key
 /assets/locales/
+/backup/
 /data/
 /dist/
 /integration-results/
