@@ -13,9 +13,13 @@ export interface Input {
 
 export type Error = Errors.UnknownReviewRequest
 
-type State = NotAccepted | HasBeenPublished | HasBeenWithdrawn
+type State = UnknownReviewRequest | HasNotBeenAccepted | HasNotBeenPublished | HasBeenPublished | HasBeenWithdrawn
 
-class NotAccepted extends Data.TaggedClass('NotAccepted') {}
+class UnknownReviewRequest extends Data.TaggedClass('UnknownReviewRequest') {}
+
+class HasNotBeenAccepted extends Data.TaggedClass('HasNotBeenAccepted') {}
+
+class HasNotBeenPublished extends Data.TaggedClass('HasNotBeenPublished') {}
 
 class HasBeenPublished extends Data.TaggedClass('HasBeenPublished') {}
 
@@ -25,6 +29,7 @@ const createFilter = (input: Input) =>
   Events.EventFilter({
     types: [
       'ReviewRequestForAPreprintWasPublished',
+      'ReviewRequestForAPreprintWasReceived',
       'ReviewRequestForAPreprintWasAccepted',
       'ReviewRequestByAPrereviewerWasImported',
       'ReviewRequestFromAPreprintServerWasImported',
@@ -41,17 +46,38 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
       filteredEvents,
       hasTag(
         'ReviewRequestForAPreprintWasPublished',
+        'ReviewRequestForAPreprintWasReceived',
+        'ReviewRequestByAPrereviewerWasImported',
+        'ReviewRequestFromAPreprintServerWasImported',
+      ),
+    )
+  ) {
+    return new UnknownReviewRequest()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasWithdrawn'))) {
+    return new HasBeenWithdrawn()
+  }
+
+  if (
+    Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived')) &&
+    !Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))
+  ) {
+    return new HasNotBeenAccepted()
+  }
+
+  if (
+    !Array.some(
+      filteredEvents,
+      hasTag(
+        'ReviewRequestForAPreprintWasPublished',
         'ReviewRequestForAPreprintWasAccepted',
         'ReviewRequestByAPrereviewerWasImported',
         'ReviewRequestFromAPreprintServerWasImported',
       ),
     )
   ) {
-    return new NotAccepted()
-  }
-
-  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasWithdrawn'))) {
-    return new HasBeenWithdrawn()
+    return new HasNotBeenPublished()
   }
 
   return new HasBeenPublished()
@@ -59,7 +85,18 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
 const decide = (state: State, input: Input): Either.Either<Option.Option<Events.ReviewRequestEvent>, Error> =>
   Match.valueTags(state, {
-    NotAccepted: () => Either.left(new Errors.UnknownReviewRequest({})),
+    UnknownReviewRequest: () => Either.left(new Errors.UnknownReviewRequest({})),
+    HasNotBeenPublished: () => Either.left(new Errors.UnknownReviewRequest({})),
+    HasNotBeenAccepted: () =>
+      Either.right(
+        Option.some(
+          new Events.ReviewRequestForAPreprintWasWithdrawn({
+            withdrawnAt: input.withdrawnAt,
+            reviewRequestId: input.reviewRequestId,
+            reason: input.reason,
+          }),
+        ),
+      ),
     HasBeenPublished: () =>
       Either.right(
         Option.some(

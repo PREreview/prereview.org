@@ -73,7 +73,6 @@ const input = {
 describe.each<[string, ReadonlyArray<Events.Event>]>([
   ['no events', []],
   ['started but not published', [started]],
-  ['received but not accepted', [received]],
 ])('review request has not been published (%s)', (_case, events) => {
   it('rejects the command with an error', () => {
     const { foldState, decide } = _.WithdrawReviewRequest
@@ -83,6 +82,28 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
     const actual = decide(state, input)
 
     expect(actual).toStrictEqual(Either.left(new ReviewRequests.UnknownReviewRequest({})))
+  })
+})
+
+describe('review request has not been accepted (%s)', () => {
+  it('withdraws the review request', () => {
+    const { foldState, decide } = _.WithdrawReviewRequest
+
+    const state = foldState([received], input)
+
+    const actual = decide(state, input)
+
+    expect(actual).toStrictEqual(
+      Either.right(
+        Option.some(
+          new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+            withdrawnAt: input.withdrawnAt,
+            reviewRequestId: input.reviewRequestId,
+            reason: input.reason,
+          }),
+        ),
+      ),
+    )
   })
 })
 
