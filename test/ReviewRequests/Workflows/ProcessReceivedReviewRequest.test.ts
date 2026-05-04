@@ -64,6 +64,32 @@ describe('ProcessReceivedReviewRequest', () => {
           ]),
         ),
     )
+
+    it.effect.prop(
+      'when the review request has been withdrawn',
+      [
+        fc.uuid(),
+        fc.receivedReviewRequest(),
+        fc.preprintId(),
+        fc.anything().map(cause => new ReviewRequests.ReviewRequestHasBeenWithdrawn({ cause })),
+      ],
+      ([reviewRequestId, reviewRequest, preprint, error]) =>
+        Effect.gen(function* () {
+          const actual = yield* pipe(_.ProcessReceivedReviewRequest(reviewRequestId), Effect.either)
+
+          expect(actual).toStrictEqual(Either.void)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(Preprints.Preprints, { resolvePreprintId: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {
+              acceptReviewRequest: () => error,
+            }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              getReceivedReviewRequest: () => Effect.succeed(reviewRequest),
+            }),
+          ]),
+        ),
+    )
   })
 
   describe('when it is not a preprint', () => {

@@ -33,6 +33,7 @@ export const ProcessReceivedReviewRequest = Effect.fn(
       ),
     )
   },
+  Effect.catchTag('ReviewRequestHasBeenWithdrawn', () => Effect.void),
   Effect.catchIf(
     error => error._tag !== 'PreprintIsNotFound',
     error => new Errors.FailedToProcessReceivedReviewRequest({ cause: error }),
