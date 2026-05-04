@@ -8,7 +8,7 @@ import * as Errors from '../Errors.ts'
 export interface Input {
   readonly withdrawnAt: Temporal.Instant
   readonly reviewRequestId: Uuid.Uuid
-  readonly reason: 'preprint-withdrawn-from-preprint-server'
+  readonly reason: 'preprint-withdrawn-from-preprint-server' | 'mistakenly-requested'
 }
 
 export type Error = Errors.UnknownReviewRequest
