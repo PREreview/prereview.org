@@ -9,9 +9,12 @@ export interface Command {
   readonly reviewRequestId: Uuid.Uuid
 }
 
-export type Error = Errors.ReviewRequestHasBeenRejected | Errors.UnknownReviewRequest
+export type Error =
+  | Errors.ReviewRequestHasBeenRejected
+  | Errors.UnknownReviewRequest
+  | Errors.ReviewRequestHasBeenWithdrawn
 
-export type State = NotReceived | NotAccepted | HasBeenAccepted | HasBeenRejected
+export type State = NotReceived | NotAccepted | HasBeenAccepted | HasBeenRejected | HasBeenWithdrawn
 
 export class NotReceived extends Data.TaggedClass('NotReceived') {}
 
@@ -21,6 +24,8 @@ export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
 export class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
 
+export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
+
 export const createFilter = (
   reviewRequestId: Uuid.Uuid,
 ): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
@@ -28,6 +33,7 @@ export const createFilter = (
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasAccepted',
     'ReviewRequestForAPreprintWasRejected',
+    'ReviewRequestForAPreprintWasWithdrawn',
   ],
   predicates: { reviewRequestId },
 })
@@ -37,6 +43,10 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 
   if (!Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))) {
     return new NotReceived()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasWithdrawn'))) {
+    return new HasBeenWithdrawn()
   }
 
   if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasAccepted'))) {
@@ -59,6 +69,7 @@ export const decide: {
     Match.valueTags(state, {
       NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
       HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
+      HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
       HasBeenAccepted: () => Either.right(Option.none()),
       NotAccepted: () =>
         Either.right(

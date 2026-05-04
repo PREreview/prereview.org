@@ -64,4 +64,8 @@ export class ReviewRequestHasBeenRejected extends Data.TaggedError('ReviewReques
   cause?: unknown
 }> {}
 
+export class ReviewRequestHasBeenWithdrawn extends Data.TaggedError('ReviewRequestHasBeenWithdrawn')<{
+  cause?: unknown
+}> {}
+
 export class UnknownReviewRequest extends Data.TaggedError('UnknownReviewRequest')<{ cause?: unknown }> {}
