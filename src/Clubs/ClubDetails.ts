@@ -877,6 +877,7 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     leads: [
       { name: 'Barbora Turpin Knotkova', orcid: OrcidId('0000-0002-9838-0501') },
       { name: 'Natalie Friemel', orcid: OrcidId('0009-0002-4348-1396') },
+      { name: 'Matteo Hofmann', orcid: OrcidId('0009-0004-5033-4655') },
     ],
   },
   'sg-biofilms-microbiome': {
