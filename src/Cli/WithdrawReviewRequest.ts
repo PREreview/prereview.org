@@ -5,14 +5,28 @@ import { Temporal, Uuid } from '../types/index.ts'
 
 const reviewRequestId = pipe(Args.text({ name: 'reviewRequestId' }), Args.withSchema(Uuid.UuidSchema))
 
-const program = Effect.fnUntraced(function* ({ reviewRequestId }: { reviewRequestId: Uuid.Uuid }) {
+const reason = Args.choice(
+  [
+    ['Preprint withdrawn from preprint server', 'preprint-withdrawn-from-preprint-server' as const],
+    ['Mistakenly requested', 'mistakenly-requested' as const],
+  ],
+  { name: 'reason' },
+)
+
+const program = Effect.fnUntraced(function* ({
+  reviewRequestId,
+  reason,
+}: {
+  reviewRequestId: Uuid.Uuid
+  reason: 'preprint-withdrawn-from-preprint-server' | 'mistakenly-requested'
+}) {
   const withdrawnAt = yield* Temporal.currentInstant
 
   yield* ReviewRequests.withdrawReviewRequest({
     reviewRequestId,
     withdrawnAt,
-    reason: 'preprint-withdrawn-from-preprint-server',
+    reason,
   })
 })
 
-export const WithdrawReviewRequest = Command.make('withdraw-review-request', { reviewRequestId }, program)
+export const WithdrawReviewRequest = Command.make('withdraw-review-request', { reviewRequestId, reason }, program)
