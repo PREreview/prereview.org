@@ -10,9 +10,12 @@ export interface Command {
   readonly reason: 'not-a-preprint' | 'unknown-preprint'
 }
 
-export type Error = Errors.ReviewRequestHasBeenAccepted | Errors.UnknownReviewRequest
+export type Error =
+  | Errors.ReviewRequestHasBeenAccepted
+  | Errors.UnknownReviewRequest
+  | Errors.ReviewRequestHasBeenWithdrawn
 
-export type State = NotReceived | NotRejected | HasBeenRejected | HasBeenAccepted
+export type State = NotReceived | NotRejected | HasBeenRejected | HasBeenAccepted | HasBeenWithdrawn
 
 export class NotReceived extends Data.TaggedClass('NotReceived') {}
 
@@ -22,6 +25,8 @@ export class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
 
 export class HasBeenAccepted extends Data.TaggedClass('HasBeenAccepted') {}
 
+export class HasBeenWithdrawn extends Data.TaggedClass('HasBeenWithdrawn') {}
+
 export const createFilter = (
   reviewRequestId: Uuid.Uuid,
 ): Events.EventFilter<Types.Tags<Events.ReviewRequestEvent>> => ({
@@ -29,6 +34,7 @@ export const createFilter = (
     'ReviewRequestForAPreprintWasReceived',
     'ReviewRequestForAPreprintWasRejected',
     'ReviewRequestForAPreprintWasAccepted',
+    'ReviewRequestForAPreprintWasWithdrawn',
   ],
   predicates: { reviewRequestId },
 })
@@ -38,6 +44,10 @@ export const foldState = (events: ReadonlyArray<Events.ReviewRequestEvent>, revi
 
   if (!Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasReceived'))) {
     return new NotReceived()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasWithdrawn'))) {
+    return new HasBeenWithdrawn()
   }
 
   if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasRejected'))) {
@@ -60,6 +70,7 @@ export const decide: {
     Match.valueTags(state, {
       NotReceived: () => Either.left(new Errors.UnknownReviewRequest({})),
       HasBeenAccepted: () => Either.left(new Errors.ReviewRequestHasBeenAccepted({})),
+      HasBeenWithdrawn: () => Either.left(new Errors.ReviewRequestHasBeenWithdrawn({})),
       HasBeenRejected: () => Either.right(Option.none()),
       NotRejected: () =>
         Either.right(

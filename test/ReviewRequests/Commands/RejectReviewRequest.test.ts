@@ -43,6 +43,16 @@ const otherReviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewReque
   reviewRequestId: otherReviewRequestId,
   reason: 'unknown-preprint',
 })
+const reviewRequestForAPreprintWasWithdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId,
+  reason: 'preprint-withdrawn-from-preprint-server',
+})
+const otherReviewRequestForAPreprintWasWithdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  withdrawnAt: Temporal.Now.instant().subtract({ hours: 1 }),
+  reviewRequestId: otherReviewRequestId,
+  reason: 'mistakenly-requested',
+})
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
   new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
@@ -112,6 +122,70 @@ describe('foldState', () => {
               reviewRequestId,
             ],
           ], // for other review request
+        ],
+      },
+    },
+  )
+
+  it.prop(
+    'already withdrawn',
+    [
+      fc
+        .uuid()
+        .chain(reviewRequestId =>
+          fc
+            .tuple(
+              fc.reviewRequestForAPreprintWasReceived({ reviewRequestId: fc.constant(reviewRequestId) }),
+              fc.reviewRequestForAPreprintWasWithdrawn({ reviewRequestId: fc.constant(reviewRequestId) }),
+            )
+            .map(events =>
+              Tuple.make(
+                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                events[0].reviewRequestId,
+              ),
+            ),
+        ),
+    ],
+    ([[events, reviewRequestId]]) => {
+      const state = _.foldState(events, reviewRequestId)
+
+      expect(state).toStrictEqual(new _.HasBeenWithdrawn())
+    },
+    {
+      fastCheck: {
+        examples: [
+          [[[reviewRequestForAPreprintWasReceived, reviewRequestForAPreprintWasWithdrawn], reviewRequestId]], // was withdrawn
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasAccepted,
+                reviewRequestForAPreprintWasWithdrawn,
+              ],
+              reviewRequestId,
+            ],
+          ], // was withdrawn after being accepted
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasWithdrawn,
+                reviewRequestForAPreprintWasSharedOnTheCommunitySlack,
+              ],
+              reviewRequestId,
+            ],
+          ], // other events
+          [
+            [
+              [
+                reviewRequestForAPreprintWasReceived,
+                reviewRequestForAPreprintWasWithdrawn,
+                otherReviewRequestForAPreprintWasReceived,
+                otherReviewRequestForAPreprintWasWithdrawn,
+              ],
+              reviewRequestId,
+            ],
+          ], // other review request too
         ],
       },
     },
@@ -253,6 +327,12 @@ describe('decide', () => {
     const result = _.decide(new _.HasBeenAccepted(), command)
 
     expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenAccepted({})))
+  })
+
+  it.prop('has already been withdrawn', [command()], ([command]) => {
+    const result = _.decide(new _.HasBeenWithdrawn(), command)
+
+    expect(result).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenWithdrawn({})))
   })
 
   it.prop('has already been rejected', [command()], ([command]) => {
