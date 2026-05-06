@@ -8,6 +8,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
     canLogInAsDemoUser: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
     useCrowdinInContext: boolean
+    showSpotlight: boolean
   }
 >() {}
 
@@ -16,11 +17,13 @@ const defaults = {
   canLogInAsDemoUser: false,
   sendCoarNotifyMessages: false,
   useCrowdinInContext: false,
+  showSpotlight: false,
 } satisfies typeof FeatureFlags.Service
 
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 
-export const { canLogInAsDemoUser, sendCoarNotifyMessages, useCrowdinInContext } = Effect.serviceConstants(FeatureFlags)
+export const { canLogInAsDemoUser, sendCoarNotifyMessages, useCrowdinInContext, showSpotlight } =
+  Effect.serviceConstants(FeatureFlags)
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 
