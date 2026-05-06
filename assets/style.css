@@ -665,7 +665,7 @@ h2 {
   }
 
   form > div > &,
-  :is(section, .preview) & {
+  :is(section, .preview, .spotlight) & {
     font-size: var(--step-2);
   }
 
@@ -2718,6 +2718,32 @@ skip-link {
       filter: drop-shadow(0 0 0.05em CanvasText);
       box-shadow: none;
     }
+  }
+}
+
+.spotlight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  margin-inline: calc(50% - 50vi);
+  padding-block: var(--space-m);
+  padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
+  column-gap: var(--space-m-xl);
+  row-gap: var(--space-m);
+  background-color: var(--color-purple-600);
+  color: var(--color-white);
+
+  & > div > :first-child {
+    margin-block-start: 0;
+  }
+
+  & :--button {
+    margin-block-start: 0;
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-2xs);
+    border-radius: var(--radius-divider-narrow);
+    font-size: inherit;
   }
 }
 

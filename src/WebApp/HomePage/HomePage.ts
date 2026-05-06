@@ -21,15 +21,29 @@ export const createPage = ({
   recentPrereviews,
   recentReviewRequests,
   statistics,
+  showSpotlight = false,
 }: {
   locale: SupportedLocale
   recentPrereviews: ReadonlyArray<Prereviews.RecentPreprintPrereview | Prereviews.RecentDatasetPrereview>
   recentReviewRequests: ReadonlyArray<ReviewRequests.ReviewRequest>
   statistics: { prereviews: number; servers: number; users: number }
+  showSpotlight?: boolean
 }) =>
   PageResponse({
     title: plainText`PREreview: ${translate(locale, 'home-page', 'slogan')({ swoosh: identity })}`,
     main: html`
+      ${showSpotlight
+        ? html`
+            <div class="spotlight">
+              <div>
+                <h2>Matchmaking experiment</h2>
+                <div>Check out our experiment for suggestions about what to review next!</div>
+              </div>
+              <a href="https://matchmaking-experiment.prereview.org/" class="button">Find preprints to review</a>
+            </div>
+          `
+        : ''}
+
       <div class="hero">
         <div>
           <h1>${rawHtml(translate(locale, 'home-page', 'slogan')({ swoosh: text => `<em>${text}</em>` }))}</h1>
