@@ -43,6 +43,12 @@ const accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
   reviewRequestId: request1Id,
 })
 
+const rejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+  rejectedAt: now.subtract({ hours: 1 }),
+  reviewRequestId: request1Id,
+  reason: 'unknown-preprint',
+})
+
 const importedPrereviewer = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
@@ -104,6 +110,18 @@ describe('review request has not been accepted (%s)', () => {
         ),
       ),
     )
+  })
+})
+
+describe('review request has been rejected (%s)', () => {
+  it('rejects the command with an error', () => {
+    const { foldState, decide } = _.WithdrawReviewRequest
+
+    const state = foldState([received, rejected], input)
+
+    const actual = decide(state, input)
+
+    expect(actual).toStrictEqual(Either.left(new ReviewRequests.ReviewRequestHasBeenRejected({})))
   })
 })
 

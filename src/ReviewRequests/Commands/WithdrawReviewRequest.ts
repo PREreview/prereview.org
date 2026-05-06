@@ -11,13 +11,21 @@ export interface Input {
   readonly reason: 'preprint-withdrawn-from-preprint-server' | 'mistakenly-requested'
 }
 
-export type Error = Errors.UnknownReviewRequest
+export type Error = Errors.UnknownReviewRequest | Errors.ReviewRequestHasBeenRejected
 
-type State = UnknownReviewRequest | HasNotBeenAccepted | HasNotBeenPublished | HasBeenPublished | HasBeenWithdrawn
+type State =
+  | UnknownReviewRequest
+  | HasNotBeenAccepted
+  | HasBeenRejected
+  | HasNotBeenPublished
+  | HasBeenPublished
+  | HasBeenWithdrawn
 
 class UnknownReviewRequest extends Data.TaggedClass('UnknownReviewRequest') {}
 
 class HasNotBeenAccepted extends Data.TaggedClass('HasNotBeenAccepted') {}
+
+class HasBeenRejected extends Data.TaggedClass('HasBeenRejected') {}
 
 class HasNotBeenPublished extends Data.TaggedClass('HasNotBeenPublished') {}
 
@@ -31,6 +39,7 @@ const createFilter = (input: Input) =>
       'ReviewRequestForAPreprintWasPublished',
       'ReviewRequestForAPreprintWasReceived',
       'ReviewRequestForAPreprintWasAccepted',
+      'ReviewRequestForAPreprintWasRejected',
       'ReviewRequestByAPrereviewerWasImported',
       'ReviewRequestFromAPreprintServerWasImported',
       'ReviewRequestForAPreprintWasWithdrawn',
@@ -57,6 +66,10 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
   if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasWithdrawn'))) {
     return new HasBeenWithdrawn()
+  }
+
+  if (Array.some(filteredEvents, hasTag('ReviewRequestForAPreprintWasRejected'))) {
+    return new HasBeenRejected()
   }
 
   if (
@@ -97,6 +110,7 @@ const decide = (state: State, input: Input): Either.Either<Option.Option<Events.
           }),
         ),
       ),
+    HasBeenRejected: () => Either.left(new Errors.ReviewRequestHasBeenRejected({})),
     HasBeenPublished: () =>
       Either.right(
         Option.some(
