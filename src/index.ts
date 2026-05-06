@@ -115,6 +115,7 @@ pipe(
         false,
       ),
       useCrowdinInContext: Config.withDefault(Config.boolean('USE_CROWDIN_IN_CONTEXT'), false),
+      showSpotlight: Config.withDefault(Config.boolean('SHOW_SPOTLIGHT'), false),
     }),
     PostgresClientLayer,
     Layer.effect(Ghost.GhostApi, Config.all({ key: Config.redacted('GHOST_API_KEY') })),
