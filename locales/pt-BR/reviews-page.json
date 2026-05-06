@@ -14,9 +14,6 @@
   "filterTitle": {
     "message": "Filtrar"
   },
-  "filterTitleAuthorLabel": {
-    "message": "Título ou autor"
-  },
   "filterLanguageLabel": {
     "message": "Idioma"
   },
