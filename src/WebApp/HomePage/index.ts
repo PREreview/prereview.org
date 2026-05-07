@@ -20,7 +20,7 @@ export const HomePage: Effect.Effect<
     }),
     { concurrency: 'inherit' },
   ),
-  Effect.let('statistics', () => ({ prereviews: 1998, servers: 32, users: 4354 })),
+  Effect.let('statistics', () => ({ prereviews: 2013, servers: 32, users: 4376 })),
   Effect.bind('showSpotlight', () => FeatureFlags.showSpotlight),
   Effect.andThen(createPage),
 )
