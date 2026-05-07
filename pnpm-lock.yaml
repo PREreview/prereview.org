@@ -77,8 +77,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2(fp-ts@2.16.11)
       cloudinary:
-        specifier: ^2.9.0
-        version: 2.9.0
+        specifier: ^2.10.0
+        version: 2.10.0
       content-security-policy-builder:
         specifier: ^2.3.0
         version: 2.3.0
@@ -2781,8 +2781,8 @@ packages:
     resolution: {integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==}
     engines: {node: '>=6'}
 
-  cloudinary@2.9.0:
-    resolution: {integrity: sha512-F3iKMOy4y0zy0bi5JBp94SC7HY7i/ImfTPSUV07iJmRzH1Iz8WavFfOlJTR1zvYM/xKGoiGZ3my/zy64In0IQQ==}
+  cloudinary@2.10.0:
+    resolution: {integrity: sha512-sY09kYg7wprkndAOjZBAYqFZqwL+SxnEGcAvksOvFA+5upnFn949UjkEkHKNSwkBtW/xRDd0p6NgbSXZcxkI3w==}
     engines: {node: '>=9'}
 
   cluster-key-slot@1.1.2:
@@ -8847,7 +8847,7 @@ snapshots:
       kind-of: 6.0.3
       shallow-clone: 3.0.1
 
-  cloudinary@2.9.0:
+  cloudinary@2.10.0:
     dependencies:
       lodash: 4.18.1
 
