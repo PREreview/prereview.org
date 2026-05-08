@@ -97,7 +97,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-comments": "^1.2.1",
     "eslint-plugin-wc": "^3.1.0",
-    "expect": "^30.3.0",
+    "expect": "^30.4.1",
     "fast-check": "^3.23.2",
     "fetch-mock": "^12.6.0",
     "image-minimizer-webpack-plugin": "^5.0.0",
