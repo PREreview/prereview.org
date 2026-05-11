@@ -1,11 +1,11 @@
-import type { Array, HashMap } from 'effect'
+import type { Array, HashMap, HashSet } from 'effect'
 import type * as Preprints from '../../Preprints/index.ts'
 import type * as Queries from '../../Queries.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 
 export type Input = Preprints.IndeterminatePreprintId
 
-export type Result = ReadonlyArray<OrcidId.OrcidId>
+export type Result = HashSet.HashSet<OrcidId.OrcidId>
 
 interface PublishedReviewRequest {
   _tag: 'PublishedReviewRequest'
