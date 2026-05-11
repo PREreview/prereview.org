@@ -1,8 +1,10 @@
 import { Array, Context, Effect, Layer, pipe } from 'effect'
+import * as Commands from '../Commands.ts'
 import * as Personas from '../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Queries from '../Queries.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
+import type { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export * from './Errors.ts'
 export * from './Reactions/index.ts'
@@ -21,10 +23,14 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
     getRapidPrereviewsForAPreprint: (
       preprintId: IndeterminatePreprintId,
     ) => Effect.Effect<ReadonlyArray<RapidPrereview>, Queries.UnableToQuery>
+    recordEmailSentToNotifyPrereviewerOfAPrereview: Commands.FromStatelessCommand<
+      typeof RecordEmailSentToNotifyPrereviewerOfAPrereview
+    >
   }
 >() {}
 
-export const { getRapidPrereviewsForAPreprint } = Effect.serviceFunctions(PreprintReviews)
+export const { getRapidPrereviewsForAPreprint, recordEmailSentToNotifyPrereviewerOfAPrereview } =
+  Effect.serviceFunctions(PreprintReviews)
 
 export const layer = Layer.effect(
   PreprintReviews,
@@ -53,6 +59,8 @@ export const layer = Layer.effect(
           Effect.catchTag('UnableToGetPersona', error => new Queries.UnableToQuery({ cause: error })),
           Effect.withSpan('PreprintReviews.getRapidPrereviewsForAPreprint', { attributes: { id } }),
         ),
+      recordEmailSentToNotifyPrereviewerOfAPrereview: () =>
+        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
     }
   }),
 )
