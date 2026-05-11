@@ -4,6 +4,7 @@ import type { Nodemailer } from '../../ExternalApis/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
 import { AcknowledgeReviewRequest } from './AcknowledgeReviewRequest/index.ts'
 import { InviteAuthor } from './InviteAuthor/index.ts'
+import { NotifyRequesterOfReview } from './NotifyRequesterOfReview/index.ts'
 import { VerifyContactEmailAddress } from './VerifyContactEmailAddress/index.ts'
 import { VerifyContactEmailAddressForComment } from './VerifyContactEmailAddressForComment/index.ts'
 import { VerifyContactEmailAddressForInvitedAuthor } from './VerifyContactEmailAddressForInvitedAuthor/index.ts'
@@ -24,6 +25,12 @@ export class Email extends Context.Tag('Email')<
       Effect.Effect.Success<ReturnType<typeof InviteAuthor>>,
       Effect.Effect.Error<ReturnType<typeof InviteAuthor>>,
       Locale
+    >
+    notifyRequesterOfReview: (
+      ...args: Parameters<typeof NotifyRequesterOfReview>
+    ) => Effect.Effect<
+      Effect.Effect.Success<ReturnType<typeof NotifyRequesterOfReview>>,
+      Effect.Effect.Error<ReturnType<typeof NotifyRequesterOfReview>>
     >
     verifyContactEmailAddress: (
       ...args: Parameters<typeof VerifyContactEmailAddress>
@@ -59,6 +66,7 @@ export class Email extends Context.Tag('Email')<
 export const {
   acknowledgeReviewRequest,
   inviteAuthor,
+  notifyRequesterOfReview,
   verifyContactEmailAddress,
   verifyContactEmailAddressForReview,
   verifyContactEmailAddressForInvitedAuthor,
@@ -75,6 +83,7 @@ export const make: Effect.Effect<typeof Email.Service, never, Nodemailer.Nodemai
     return {
       acknowledgeReviewRequest: flow(AcknowledgeReviewRequest, Effect.provide(context)),
       inviteAuthor: flow(InviteAuthor, Effect.provide(context)),
+      notifyRequesterOfReview: flow(NotifyRequesterOfReview, Effect.provide(context)),
       verifyContactEmailAddress: flow(VerifyContactEmailAddress, Effect.provide(context)),
       verifyContactEmailAddressForReview: flow(VerifyContactEmailAddressForReview, Effect.provide(context)),
       verifyContactEmailAddressForInvitedAuthor: flow(
