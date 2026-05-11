@@ -2498,7 +2498,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
       if (seedEvents.length > 0) {
         await pipe(
-          Effect.forEach(seedEvents, event => EventStore.append(event)),
+          Effect.forEach(seedEvents, EventStore.append),
           Effect.provide(
             pipe(
               SqlEventStore.layer,

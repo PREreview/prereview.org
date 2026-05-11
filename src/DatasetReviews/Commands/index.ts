@@ -161,7 +161,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+                  EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
               }),
             ),
           )

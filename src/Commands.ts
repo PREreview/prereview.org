@@ -76,7 +76,7 @@ export const makeCommand = <
         yield* Option.match(decision, {
           onNone: () => Effect.void,
           onSome: event =>
-            EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+            EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
         })
       },
       Effect.catchTag(

@@ -56,7 +56,7 @@ export const makeHandleCommentCommand: Effect.Effect<
           Option.match({
             onNone: () => Effect.void,
             onSome: event =>
-              EventStore.append(event, {
+              EventStore.appendIf(event, {
                 filter: {
                   types: CommentEventTypes,
                   predicates: { commentId: command.commentId },

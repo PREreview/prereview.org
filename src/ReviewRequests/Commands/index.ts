@@ -90,7 +90,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
               Option.match({
                 onNone: () => Effect.void,
                 onSome: event =>
-                  EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+                  EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
               }),
             ),
           )
@@ -139,13 +139,13 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
           command,
           RecordFailureToCategorizeReviewRequest.decide,
           EventStore.append,
-          Effect.catchTag('FailedToCommitEvent', 'NewEventsFound', cause => new UnableToHandleCommand({ cause })),
+          Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
           Effect.provide(context),
         ),
       recordEmailSentToAcknowledgeReviewRequest: flow(
         RecordEmailSentToAcknowledgeReviewRequest.decide,
         EventStore.append,
-        Effect.catchTag('FailedToCommitEvent', 'NewEventsFound', cause => new UnableToHandleCommand({ cause })),
+        Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
         Effect.provide(context),
       ),
     }
