@@ -89,6 +89,9 @@ export const layer = Layer.scoped(
   ),
 )
 
+export type EventsForFilter<F extends EventFilter<Types.Tags<Event>>> =
+  F extends EventFilter<infer T> ? EventSubset<T> : never
+
 export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> = Types.ExtractTag<
   Event,
   SubsetTags extends ReadonlyArray<unknown> ? SubsetTags[number] : SubsetTags
