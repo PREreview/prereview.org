@@ -2294,6 +2294,15 @@ export const personaForAReviewRequestForAPreprintWasChosen = ({
     })
     .map(data => new Events.PersonaForAReviewRequestForAPreprintWasChosen(data))
 
+export const prereviewerOptedInToNotificationsForReviewsOfAPreprint = ({
+  reviewRequestId,
+}: {
+  reviewRequestId?: fc.Arbitrary<Events.PrereviewerOptedInToNotificationsForReviewsOfAPreprint['reviewRequestId']>
+} = {}): fc.Arbitrary<Events.PrereviewerOptedInToNotificationsForReviewsOfAPreprint> =>
+  fc
+    .record({ reviewRequestId: reviewRequestId ?? uuid() })
+    .map(data => new Events.PrereviewerOptedInToNotificationsForReviewsOfAPreprint(data))
+
 export const reviewRequestForAPreprintWasPublished = ({
   reviewRequestId,
 }: {
@@ -2486,6 +2495,7 @@ export const reviewRequestEvent = (
   fc.oneof(
     reviewRequestForAPreprintWasStarted(args),
     personaForAReviewRequestForAPreprintWasChosen(args),
+    prereviewerOptedInToNotificationsForReviewsOfAPreprint(args),
     reviewRequestForAPreprintWasReceived(args),
     reviewRequestForAPreprintWasAccepted(args),
     reviewRequestForAPreprintWasRejected(args),
