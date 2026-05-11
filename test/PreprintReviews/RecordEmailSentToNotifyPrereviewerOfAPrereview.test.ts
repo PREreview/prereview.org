@@ -11,7 +11,7 @@ const input = {
   sentAt: Temporal.Now.instant(),
 } satisfies _.Input
 
-test.fails('RecordEmailSentToNotifyPrereviewerOfAPrereview', () => {
+test('RecordEmailSentToNotifyPrereviewerOfAPrereview', () => {
   const { decide } = _.RecordEmailSentToNotifyPrereviewerOfAPrereview
 
   const actual = decide(input)

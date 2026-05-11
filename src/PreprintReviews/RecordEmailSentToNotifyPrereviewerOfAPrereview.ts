@@ -1,4 +1,5 @@
-import type * as Commands from '../Commands.ts'
+import * as Commands from '../Commands.ts'
+import * as Events from '../Events.ts'
 import type { OrcidId, Temporal } from '../types/index.ts'
 
 export interface Input {
@@ -7,4 +8,7 @@ export interface Input {
   readonly sentAt: Temporal.Instant
 }
 
-export declare const RecordEmailSentToNotifyPrereviewerOfAPrereview: Commands.StatelessCommand<[Input]>
+export const RecordEmailSentToNotifyPrereviewerOfAPrereview = Commands.StatelessCommand({
+  name: 'PreprintReviews.recordEmailSentToNotifyPrereviewerOfAPrereview',
+  decide: (input: Input) => new Events.EmailToNotifyPrereviewerOfAPrereviewWasSent(input),
+})

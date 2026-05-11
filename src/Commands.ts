@@ -88,3 +88,25 @@ export const makeCommand = <
       Effect.provide(context),
     )
   })
+
+export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
+  name,
+  decide,
+}: StatelessCommand<Input>): Effect.Effect<
+  (...input: Input) => Effect.Effect<void, UnableToHandleCommand>,
+  never,
+  EventStore.EventStore
+> =>
+  Effect.gen(function* () {
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+
+    return Effect.fn(name)(
+      function* (...input: Input) {
+        const event = decide(...input)
+
+        yield* EventStore.append(event)
+      },
+      Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
+      Effect.provide(context),
+    )
+  })
