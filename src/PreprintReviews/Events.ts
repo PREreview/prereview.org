@@ -28,3 +28,12 @@ export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImp
     editorialComments: Schema.OptionFromUndefinedOr(NonEmptyString.NonEmptyStringSchema),
   }),
 }) {}
+
+export class EmailToNotifyPrereviewerOfAPrereviewWasSent extends Schema.TaggedClass<EmailToNotifyPrereviewerOfAPrereviewWasSent>()(
+  'EmailToNotifyPrereviewerOfAPrereviewWasSent',
+  {
+    sentAt: Temporal.InstantSchema,
+    orcidId: OrcidId.OrcidIdSchema,
+    prereviewId: Schema.NonNegativeInt,
+  },
+) {}

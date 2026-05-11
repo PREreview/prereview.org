@@ -2515,6 +2515,7 @@ export const event = (): fc.Arbitrary<Events.Event> =>
     datasetReviewEvent(),
     reviewRequestEvent(),
     rapidPrereviewImported(),
+    emailToNotifyPrereviewerOfAPrereviewWasSent(),
     registeredPrereviewerImported(),
     prereviewerRegistered(),
     legacyPseudonymReplaced(),
@@ -2549,6 +2550,16 @@ export const rapidPrereviewImported = (): fc.Arbitrary<Events.RapidPrereviewImpo
       }),
     })
     .map(args => new Events.RapidPrereviewImported(args))
+
+export const emailToNotifyPrereviewerOfAPrereviewWasSent =
+  (): fc.Arbitrary<Events.EmailToNotifyPrereviewerOfAPrereviewWasSent> =>
+    fc
+      .record({
+        sentAt: instant(),
+        orcidId: orcidId(),
+        prereviewId: fc.integer({ min: 1 }),
+      })
+      .map(args => new Events.EmailToNotifyPrereviewerOfAPrereviewWasSent(args))
 
 export const registeredPrereviewerImported = (): fc.Arbitrary<Events.RegisteredPrereviewerImported> =>
   fc

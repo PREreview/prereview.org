@@ -34,6 +34,7 @@ export const Event = Schema.Union(
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
   PreprintReviews.RapidPrereviewImported,
+  PreprintReviews.EmailToNotifyPrereviewerOfAPrereviewWasSent,
   ...PrereviewerEvents.PrereviewerEvent.members,
 )
 
