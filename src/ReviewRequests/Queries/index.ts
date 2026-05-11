@@ -15,6 +15,7 @@ import { GetReviewRequestReadyToBePublished } from './GetReviewRequestReadyToBeP
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
 import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
+import type { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -38,6 +39,9 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       typeof ListAllPublishedReviewRequestsByAPrereviewer
     >
     listAllPublishedReviewRequestsForStats: Queries.FromStatefulQuery<typeof ListAllPublishedReviewRequestsForStats>
+    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: Queries.FromStatefulQuery<
+      typeof ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint
+    >
   }
 >() {}
 
@@ -56,6 +60,7 @@ export const {
   getReviewRequestToAcknowledge,
   listAllPublishedReviewRequestsByAPrereviewer,
   listAllPublishedReviewRequestsForStats,
+  listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
@@ -93,6 +98,8 @@ const makeReviewRequestQueries: Effect.Effect<
       ListAllPublishedReviewRequestsByAPrereviewer,
     ),
     listAllPublishedReviewRequestsForStats: yield* Queries.makeStatefulQuery(ListAllPublishedReviewRequestsForStats),
+    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: () =>
+      new Queries.UnableToQuery({ cause: 'not implemented' }),
   }
 })
 

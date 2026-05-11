@@ -34,6 +34,7 @@ export const Event = Schema.Union(
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
   PreprintReviews.RapidPrereviewImported,
+  PreprintReviews.EmailToNotifyPrereviewerOfAPrereviewWasSent,
   ...PrereviewerEvents.PrereviewerEvent.members,
 )
 
@@ -88,6 +89,9 @@ export const layer = Layer.scoped(
     flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Events stopped'))),
   ),
 )
+
+export type EventsForFilter<F extends EventFilter<Types.Tags<Event>>> =
+  F extends EventFilter<infer T> ? EventSubset<T> : never
 
 export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> = Types.ExtractTag<
   Event,

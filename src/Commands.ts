@@ -10,6 +10,11 @@ export type FromCommand<T extends Command<any, any, any, any>> = [T] extends [
   ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
   : never
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FromStatelessCommand<T extends StatelessCommand<any>> = [T] extends [StatelessCommand<infer Input>]
+  ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
+  : never
+
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export interface Command<
@@ -24,9 +29,18 @@ export interface Command<
   decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
 }
 
+export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
+  name: string
+  decide: (...input: Input) => Events.Event
+}
+
 export const Command: <EventTags extends Types.Tags<Events.Event>, Input extends ReadonlyArray<unknown>, State, Error>(
   command: Command<EventTags, Input, State, Error>,
 ) => Command<EventTags, Input, State, Error> = Data.struct
+
+export const StatelessCommand: <Input extends ReadonlyArray<unknown>>(
+  command: StatelessCommand<Input>,
+) => StatelessCommand<Input> = Data.struct
 
 export const makeCommand = <
   EventTags extends Types.Tags<Events.Event>,
@@ -62,7 +76,7 @@ export const makeCommand = <
         yield* Option.match(decision, {
           onNone: () => Effect.void,
           onSome: event =>
-            EventStore.append(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
+            EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullable(lastKnownPosition) }),
         })
       },
       Effect.catchTag(
@@ -71,6 +85,28 @@ export const makeCommand = <
         'NewEventsFound',
         cause => new UnableToHandleCommand({ cause }),
       ),
+      Effect.provide(context),
+    )
+  })
+
+export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
+  name,
+  decide,
+}: StatelessCommand<Input>): Effect.Effect<
+  (...input: Input) => Effect.Effect<void, UnableToHandleCommand>,
+  never,
+  EventStore.EventStore
+> =>
+  Effect.gen(function* () {
+    const context = yield* Effect.andThen(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+
+    return Effect.fn(name)(
+      function* (...input: Input) {
+        const event = decide(...input)
+
+        yield* EventStore.append(event)
+      },
+      Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
       Effect.provide(context),
     )
   })

@@ -219,7 +219,7 @@ export const make: Effect.Effect<
   }, Effect.provide(context))
 
   const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
-    function* (event, appendCondition) {
+    function* (event) {
       const id = yield* generateUuid
 
       const encoded = yield* Schema.encode(EventsTableInsert)({
@@ -227,19 +227,31 @@ export const make: Effect.Effect<
         event,
       })
 
-      if (!appendCondition) {
-        return yield* pipe(
-          sql`
-            INSERT INTO
-              events (id, type, payload)
-            SELECT
-              ${encoded.id},
-              ${encoded.type},
-              ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
-          `.raw,
-          Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
-        )
-      }
+      return yield* pipe(
+        sql`
+          INSERT INTO
+            events (id, type, payload)
+          SELECT
+            ${encoded.id},
+            ${encoded.type},
+            ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
+        `.raw,
+        Effect.andThen(Schema.decodeUnknown(SqlQueryResults)),
+      )
+    },
+    Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
+    Effect.catchTag('SqlError', 'ParseError', error => new EventStore.FailedToCommitEvent({ cause: error })),
+    Effect.provide(context),
+  )
+
+  const appendIf: EventStore.EventStore['appendIf'] = Effect.fn('SqlEventStore.appendIf')(
+    function* (event, appendCondition) {
+      const id = yield* generateUuid
+
+      const encoded = yield* Schema.encode(EventsTableInsert)({
+        id,
+        event,
+      })
 
       const condition = Option.match(appendCondition.lastKnownPosition, {
         onNone: () => sql`
@@ -292,7 +304,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, since, query, append }
+  return { all, since, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)

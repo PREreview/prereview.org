@@ -36,15 +36,17 @@ export interface EventStore {
     FailedToGetEvents
   >
 
-  readonly append: <Tag extends Types.Tags<Event>>(
+  readonly append: (event: Event) => Effect.Effect<void, FailedToCommitEvent>
+
+  readonly appendIf: <Tag extends Types.Tags<Event>>(
     event: Event,
-    condition?: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
+    condition: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
   ) => Effect.Effect<void, NewEventsFound | FailedToCommitEvent>
 }
 
 export const { all } = Effect.serviceConstants(EventStore)
 
-export const { since } = Effect.serviceFunctions(EventStore)
+export const { since, append } = Effect.serviceFunctions(EventStore)
 
 export const query = Effect.fn(function* <Tag extends Types.Tags<Event>>(filter: EventFilter<Tag>) {
   const eventStore = yield* EventStore
@@ -52,11 +54,11 @@ export const query = Effect.fn(function* <Tag extends Types.Tags<Event>>(filter:
   return yield* eventStore.query(filter)
 })
 
-export const append = Effect.fn(function* <Tag extends Types.Tags<Event>>(
+export const appendIf = Effect.fn(function* <Tag extends Types.Tags<Event>>(
   event: Event,
-  condition?: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
+  condition: { filter: EventFilter<Tag>; lastKnownPosition: Option.Option<Position> },
 ) {
   const eventStore = yield* EventStore
 
-  return yield* eventStore.append(event, condition)
+  return yield* eventStore.appendIf(event, condition)
 })

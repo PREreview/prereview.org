@@ -1,0 +1,12 @@
+Hi Josiah Carberry,
+
+Jean-Baptiste Botul has published a review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii” on PREreview.
+
+You can read the review by going to:
+
+  http://example.com/reviews/12345
+
+If you have any questions, please let us know at help@prereview.org.
+
+All the best,
+PREreview

@@ -85,9 +85,9 @@ describe('when the last known position is none', () => {
 
         const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
-        yield* Effect.forEach(otherEvents, otherEvent => eventStore.append(otherEvent))
+        yield* Effect.forEach(otherEvents, eventStore.append)
 
-        yield* eventStore.append(event, { filter, lastKnownPosition: Option.none() })
+        yield* eventStore.appendIf(event, { filter, lastKnownPosition: Option.none() })
 
         const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
         const all = yield* eventStore.all
@@ -115,11 +115,11 @@ describe('when the last known position has not changed', () => {
 
         const eventStore = yield* Effect.provide(_.make, Layer.mock(Events.Events, { publish } as never))
 
-        yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+        yield* Effect.forEach(existingEvents, eventStore.append)
 
         const { lastKnownPosition } = yield* Effect.flatten(eventStore.query({ types: Events.CommentEventTypes }))
 
-        yield* eventStore.append(event, {
+        yield* eventStore.appendIf(event, {
           filter: { types: Events.CommentEventTypes },
           lastKnownPosition: Option.some(lastKnownPosition),
         })
@@ -146,10 +146,10 @@ describe('when the last known position has changed', () => {
       Effect.gen(function* () {
         const eventStore = yield* _.make
 
-        yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+        yield* Effect.forEach(existingEvents, eventStore.append)
 
         const error = yield* Effect.flip(
-          eventStore.append(event, {
+          eventStore.appendIf(event, {
             filter: { types: Events.CommentEventTypes },
             lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
           }),
@@ -414,7 +414,7 @@ test.each<
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
-    yield* Effect.forEach(events, event => eventStore.append(event))
+    yield* Effect.forEach(events, eventStore.append)
 
     const actual = yield* eventStore.query(filter)
 
@@ -435,11 +435,11 @@ it.effect.prop(
     Effect.gen(function* () {
       const eventStore = yield* _.make
 
-      yield* Effect.forEach(existingEvents, existingEvent => eventStore.append(existingEvent))
+      yield* Effect.forEach(existingEvents, eventStore.append)
 
       const { lastKnownPosition } = yield* Effect.flatten(eventStore.all)
 
-      yield* Effect.forEach(newEvents, newEvent => eventStore.append(newEvent))
+      yield* Effect.forEach(newEvents, eventStore.append)
 
       const actual = yield* eventStore.since(lastKnownPosition)
 
