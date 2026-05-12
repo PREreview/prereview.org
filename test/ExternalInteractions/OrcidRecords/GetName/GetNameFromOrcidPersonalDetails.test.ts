@@ -1,9 +1,9 @@
 import { describe, expect, it, test } from '@effect/vitest'
 import { Option, Tuple } from 'effect'
-import { Orcid } from '../../src/ExternalApis/index.ts'
-import * as _ from '../../src/Personas/GetNameFromOrcidPersonalDetails.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
-import * as fc from '../fc.ts'
+import { Orcid } from '../../../../src/ExternalApis/index.ts'
+import * as _ from '../../../../src/ExternalInteractions/OrcidRecords/GetName/GetNameFromOrcidPersonalDetails.ts'
+import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
+import * as fc from '../../../fc.ts'
 
 describe('GetNameFromOrcidPersonalDetails', () => {
   it.prop(

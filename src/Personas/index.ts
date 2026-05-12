@@ -1,8 +1,7 @@
 import { Context, Data, Effect, Layer, Match, pipe, Scope } from 'effect'
-import { Orcid } from '../ExternalApis/index.ts'
+import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import { Prereviewers } from '../Prereviewers/index.ts'
 import type { OrcidId } from '../types/index.ts'
-import { GetNameFromOrcidPersonalDetails } from './GetNameFromOrcidPersonalDetails.ts'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.ts'
 
 export * from './Persona.ts'
@@ -27,28 +26,29 @@ export const getPersona = pipe(
   Match.exhaustive,
 )
 
-const make: Effect.Effect<typeof Personas.Service, never, Prereviewers | Orcid.Orcid> = Effect.gen(function* () {
-  const context = yield* Effect.andThen(Effect.context<Orcid.Orcid>(), Context.omit(Scope.Scope))
-  const prereviewers = yield* Prereviewers
+const make: Effect.Effect<typeof Personas.Service, never, Prereviewers | OrcidRecords.OrcidRecords> = Effect.gen(
+  function* () {
+    const context = yield* Effect.andThen(Effect.context<OrcidRecords.OrcidRecords>(), Context.omit(Scope.Scope))
+    const prereviewers = yield* Prereviewers
 
-  return {
-    getPublicPersona: orcidId =>
-      pipe(
-        Orcid.getPersonalDetails(orcidId),
-        Effect.andThen(GetNameFromOrcidPersonalDetails),
-        Effect.mapBoth({
-          onSuccess: name => new PublicPersona({ name, orcidId }),
-          onFailure: error => new UnableToGetPersona({ cause: error }),
-        }),
-        Effect.provide(context),
-      ),
-    getPseudonymPersona: orcidId =>
-      pipe(
-        prereviewers.getPseudonym(orcidId),
-        Effect.mapError(error => new UnableToGetPersona({ cause: error })),
-        Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
-      ),
-  }
-})
+    return {
+      getPublicPersona: orcidId =>
+        pipe(
+          OrcidRecords.getName(orcidId),
+          Effect.mapBoth({
+            onSuccess: name => new PublicPersona({ name, orcidId }),
+            onFailure: error => new UnableToGetPersona({ cause: error }),
+          }),
+          Effect.provide(context),
+        ),
+      getPseudonymPersona: orcidId =>
+        pipe(
+          prereviewers.getPseudonym(orcidId),
+          Effect.mapError(error => new UnableToGetPersona({ cause: error })),
+          Effect.andThen(pseudonym => new PseudonymPersona({ pseudonym })),
+        ),
+    }
+  },
+)
 
 export const layer = Layer.effect(Personas, make)

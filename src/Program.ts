@@ -30,6 +30,7 @@ import {
   GhostPage,
   LanguageDetection,
   OpenAlexWorks,
+  OrcidRecords,
   PreprintData,
   ZenodoRecords,
 } from './ExternalInteractions/index.ts'
@@ -293,6 +294,7 @@ export const Program = pipe(
     DatasetData.layer,
     PreprintData.layer,
     OpenAlexWorks.layer,
+    OrcidRecords.layer,
     Layer.provide(commentsForReview, CachingHttpClient.layer('10 minutes')),
     Prereviewers.layer,
     doesUserHaveAVerifiedEmailAddress,
