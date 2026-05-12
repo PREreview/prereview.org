@@ -9,3 +9,8 @@ export class FailedToNotifyPreprintServer extends Schema.TaggedError<FailedToNot
   'FailedToNotifyPreprintServer',
   { cause: Schema.optional(Schema.Unknown) },
 ) {}
+
+export class FailedToNotifyReviewRequesters extends Schema.TaggedError<FailedToNotifyReviewRequesters>()(
+  'FailedToNotifyReviewRequesters',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}

@@ -547,6 +547,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
           [
             PreprintReviews.NotifyCommunitySlackOfPreprintReview.execute({ reviewId }, { discard: true }),
             PreprintReviews.NotifyPreprintServerOfReview.execute({ reviewId }, { discard: true }),
+            PreprintReviews.NotifyReviewRequestersOfReview.execute({ reviewId }, { discard: true }),
           ],
           { concurrency: 'inherit' },
         ),
