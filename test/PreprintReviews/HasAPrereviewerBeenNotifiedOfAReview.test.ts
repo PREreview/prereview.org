@@ -24,7 +24,7 @@ const sentDifferentPrereviewId = new Events.EmailToNotifyPrereviewerOfAPrereview
   prereviewId: 67890,
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], false],
   ['email sent', input, [sent], true],
   ['email sent, different ORCID iD', input, [sentDifferentOrcidId], false],

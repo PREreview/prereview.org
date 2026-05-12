@@ -1,4 +1,6 @@
-import type * as Queries from '../Queries.ts'
+import { Array, Either, flow } from 'effect'
+import * as Events from '../Events.ts'
+import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/index.ts'
 
 export interface Input {
@@ -8,8 +10,20 @@ export interface Input {
 
 export type Result = boolean
 
-export declare const HasAPrereviewerBeenNotifiedOfAReview: Queries.OnDemandQuery<
-  'EmailToNotifyPrereviewerOfAPrereviewWasSent',
-  [Input],
-  Result
->
+const createFilter = ({ orcidId, prereviewId }: Input) =>
+  Events.EventFilter({
+    types: ['EmailToNotifyPrereviewerOfAPrereviewWasSent'],
+    predicates: { orcidId, prereviewId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+  const filter = createFilter(input)
+
+  return Array.some(events, Events.matches(filter))
+}
+
+export const HasAPrereviewerBeenNotifiedOfAReview = Queries.OnDemandQuery({
+  name: 'PreprintReviews.hasAPrereviewerBeenNotifiedOfAReview',
+  createFilter,
+  query: flow(query, Either.right),
+})
