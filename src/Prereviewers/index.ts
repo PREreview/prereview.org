@@ -2,7 +2,7 @@ import { Context, Effect, Layer, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import * as Queries from '../Queries.ts'
-import { Temporal, type OrcidId } from '../types/index.ts'
+import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
 import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
@@ -23,10 +23,14 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
+    getContactDetails: (
+      orcid: OrcidId.OrcidId,
+    ) => Effect.Effect<{ name: NonEmptyString.NonEmptyString; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
   }
 >() {}
 
-export const { countAvailablePseudonyms, listAllPrereviewersForStats } = Effect.serviceFunctions(Prereviewers)
+export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContactDetails } =
+  Effect.serviceFunctions(Prereviewers)
 
 export const layer = Layer.effect(
   Prereviewers,
@@ -85,6 +89,7 @@ export const layer = Layer.effect(
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
+      getContactDetails: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
     }
   }),
 )
