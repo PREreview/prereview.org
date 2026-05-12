@@ -1,6 +1,7 @@
-import { Struct } from 'effect'
+import { Match, Struct } from 'effect'
 import type { Slack } from '../../../ExternalApis/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
+import type { NonEmptyString } from '../../../types/index.ts'
 
 export interface DatasetReview {
   readonly author: Personas.Persona
@@ -35,7 +36,7 @@ export const DatasetReviewToChatPostMessageInput = (
   unfurlMedia: false,
 })
 
-const displayPersona = Personas.match({
-  onPublic: Struct.get('name'),
-  onPseudonym: Struct.get('pseudonym'),
+const displayPersona = Match.typeTags<Personas.Persona, NonEmptyString.NonEmptyString>()({
+  PublicPersona: Struct.get('name'),
+  PseudonymPersona: Struct.get('pseudonym'),
 })
