@@ -1,6 +1,6 @@
 import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
-import { Array, Function, Option, Predicate, Schema, String, Struct, Tuple, flow, identity, pipe } from 'effect'
+import { Array, Function, Match, Option, Predicate, Schema, String, Struct, Tuple, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/lib/Apply.js'
 import * as E from 'fp-ts/lib/Either.js'
@@ -38,7 +38,7 @@ import {
 import { type ClubId, getClubByName, getClubNameAndFormerNames } from '../../Clubs/index.ts'
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
 import { type Html, plainText, sanitizeHtml } from '../../html.ts'
-import * as Personas from '../../Personas/index.ts'
+import type * as Personas from '../../Personas/index.ts'
 import {
   type GetPreprintEnv,
   type GetPreprintIdEnv,
@@ -489,9 +489,9 @@ export const addAuthorToRecordOnZenodo = (
             pipe(
               named,
               Array.append(
-                Personas.match(persona, {
-                  onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
-                  onPseudonym: persona => ({ name: persona.pseudonym }),
+                Match.valueTags(persona, {
+                  PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                  PseudonymPersona: persona => ({ name: persona.pseudonym }),
                 }),
               ),
               Array.appendAll(
@@ -679,9 +679,9 @@ function createDepositMetadata(
           }”`.toString(),
           creators: pipe(
             Array.of(
-              Personas.match(newPrereview.persona, {
-                onPublic: persona => ({ name: persona.name, orcid: persona.orcidId }),
-                onPseudonym: persona => ({ name: persona.pseudonym }),
+              Match.valueTags(newPrereview.persona, {
+                PublicPersona: persona => ({ name: persona.name, orcid: persona.orcidId }),
+                PseudonymPersona: persona => ({ name: persona.pseudonym }),
               }),
             ),
             Array.appendAll(
