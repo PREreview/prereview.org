@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { Data, Schema } from 'effect'
 import { NonEmptyString } from '../../types/index.ts'
 
 export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDetails')({
@@ -28,3 +28,9 @@ export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDeta
     }),
   ),
 }) {}
+
+export class PersonalDetailsAreNotFound extends Data.TaggedError('PersonalDetailsAreNotFound')<{ cause?: unknown }> {}
+
+export class PersonalDetailsAreUnavailable extends Data.TaggedError('PersonalDetailsAreUnavailable')<{
+  cause?: unknown
+}> {}

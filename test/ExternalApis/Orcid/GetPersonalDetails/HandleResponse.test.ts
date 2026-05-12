@@ -1,4 +1,3 @@
-import type { HttpClientError } from '@effect/platform'
 import { describe, expect, it } from '@effect/vitest'
 import { Effect, Either, Predicate } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/HandleResponse.ts'
@@ -38,7 +37,8 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
-            expect(actual._tag).toStrictEqual('ParseError')
+            expect(actual._tag).toStrictEqual('PersonalDetailsAreUnavailable')
+            expect(actual.cause).toMatchObject({ _tag: 'ParseError' })
           }),
       )
     })
@@ -56,8 +56,8 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.flip(_.HandleResponse(response))
 
-            expect(actual._tag).toStrictEqual('ResponseError')
-            expect((actual as HttpClientError.ResponseError).reason).toStrictEqual('Decode')
+            expect(actual._tag).toStrictEqual('PersonalDetailsAreUnavailable')
+            expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'Decode', response })
           }),
       )
     })
@@ -71,8 +71,8 @@ describe('HandleResponse', () => {
         Effect.gen(function* () {
           const actual = yield* Effect.flip(_.HandleResponse(response))
 
-          expect(actual._tag).toStrictEqual('ResponseError')
-          expect((actual as HttpClientError.ResponseError).reason).toStrictEqual('StatusCode')
+          expect(actual._tag).toStrictEqual('PersonalDetailsAreUnavailable')
+          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
         }),
     )
   })
