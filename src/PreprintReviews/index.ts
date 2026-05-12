@@ -8,7 +8,7 @@ import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotif
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export * from './Errors.ts'
-export * from './Reactions/index.ts'
+export * from './Workflows/index.ts'
 
 export interface RapidPrereview {
   readonly author: Personas.Persona
