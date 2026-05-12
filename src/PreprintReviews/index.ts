@@ -4,6 +4,7 @@ import * as Personas from '../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Queries from '../Queries.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
+import type { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
 import type { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export * from './Errors.ts'
@@ -26,11 +27,15 @@ export class PreprintReviews extends Context.Tag('PreprintReviews')<
     recordEmailSentToNotifyPrereviewerOfAPrereview: Commands.FromStatelessCommand<
       typeof RecordEmailSentToNotifyPrereviewerOfAPrereview
     >
+    hasAPrereviewerBeenNotifiedOfAReview: Queries.FromOnDemandQuery<typeof HasAPrereviewerBeenNotifiedOfAReview>
   }
 >() {}
 
-export const { getRapidPrereviewsForAPreprint, recordEmailSentToNotifyPrereviewerOfAPrereview } =
-  Effect.serviceFunctions(PreprintReviews)
+export const {
+  getRapidPrereviewsForAPreprint,
+  recordEmailSentToNotifyPrereviewerOfAPrereview,
+  hasAPrereviewerBeenNotifiedOfAReview,
+} = Effect.serviceFunctions(PreprintReviews)
 
 export const layer = Layer.effect(
   PreprintReviews,
@@ -61,6 +66,7 @@ export const layer = Layer.effect(
         ),
       recordEmailSentToNotifyPrereviewerOfAPrereview: () =>
         new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      hasAPrereviewerBeenNotifiedOfAReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
     }
   }),
 )
