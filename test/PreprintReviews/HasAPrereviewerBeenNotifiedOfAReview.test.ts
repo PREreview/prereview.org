@@ -1,6 +1,7 @@
 import { expect } from '@effect/vitest'
 import { test } from '@fast-check/vitest'
 import { Temporal } from '@js-temporal/polyfill'
+import { Either } from 'effect'
 import * as Events from '../../src/Events.ts'
 import * as _ from '../../src/PreprintReviews/HasAPrereviewerBeenNotifiedOfAReview.ts'
 import { OrcidId } from '../../src/types/index.ts'
@@ -33,5 +34,5 @@ test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
 
   const actual = query(events, input)
 
-  expect(actual).toStrictEqual(expected)
+  expect(actual).toStrictEqual(Either.right(expected))
 })
