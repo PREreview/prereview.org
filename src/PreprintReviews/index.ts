@@ -4,8 +4,8 @@ import * as Personas from '../Personas/index.ts'
 import type { IndeterminatePreprintId } from '../Preprints/index.ts'
 import * as Queries from '../Queries.ts'
 import { GetRapidPrereviewsForAPreprint, type RapidPrereviewForAPreprint } from './GetRapidPrereviewsForAPreprint.ts'
-import type { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
-import type { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
+import { HasAPrereviewerBeenNotifiedOfAReview } from './HasAPrereviewerBeenNotifiedOfAReview.ts'
+import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
 
 export * from './Errors.ts'
 export * from './Reactions/index.ts'
@@ -64,9 +64,10 @@ export const layer = Layer.effect(
           Effect.catchTag('UnableToGetPersona', error => new Queries.UnableToQuery({ cause: error })),
           Effect.withSpan('PreprintReviews.getRapidPrereviewsForAPreprint', { attributes: { id } }),
         ),
-      recordEmailSentToNotifyPrereviewerOfAPrereview: () =>
-        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
-      hasAPrereviewerBeenNotifiedOfAReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      recordEmailSentToNotifyPrereviewerOfAPrereview: yield* Commands.makeStatelessCommand(
+        RecordEmailSentToNotifyPrereviewerOfAPrereview,
+      ),
+      hasAPrereviewerBeenNotifiedOfAReview: yield* Queries.makeOnDemandQuery(HasAPrereviewerBeenNotifiedOfAReview),
     }
   }),
 )

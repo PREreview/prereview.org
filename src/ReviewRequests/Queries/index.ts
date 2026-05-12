@@ -15,7 +15,7 @@ import { GetReviewRequestReadyToBePublished } from './GetReviewRequestReadyToBeP
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
 import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
-import type { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
+import { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -98,8 +98,9 @@ const makeReviewRequestQueries: Effect.Effect<
       ListAllPublishedReviewRequestsByAPrereviewer,
     ),
     listAllPublishedReviewRequestsForStats: yield* Queries.makeStatefulQuery(ListAllPublishedReviewRequestsForStats),
-    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: () =>
-      new Queries.UnableToQuery({ cause: 'not implemented' }),
+    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: yield* Queries.makeStatefulQuery(
+      ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
+    ),
   }
 })
 
