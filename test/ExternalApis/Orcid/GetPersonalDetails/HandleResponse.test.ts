@@ -63,10 +63,28 @@ describe('HandleResponse', () => {
     })
   })
 
+  describe('with a 404 status code', () => {
+    it.effect.prop(
+      'returns an error',
+      [fc.httpClientResponse({ status: fc.constant(StatusCodes.NotFound) })],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('PersonalDetailsAreNotFound')
+          expect(actual.cause).toMatchObject({ _tag: 'ResponseError', reason: 'StatusCode', response })
+        }),
+    )
+  })
+
   describe('with another status code', () => {
     it.effect.prop(
       'returns an error',
-      [fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.OK) })],
+      [
+        fc.httpClientResponse({
+          status: fc.statusCode().filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
+        }),
+      ],
       ([response]) =>
         Effect.gen(function* () {
           const actual = yield* Effect.flip(_.HandleResponse(response))
