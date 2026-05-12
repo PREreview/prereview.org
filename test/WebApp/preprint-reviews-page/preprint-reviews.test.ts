@@ -22,7 +22,7 @@ describe('preprintReviews', () => {
             named: fc.nonEmptyArray(
               fc.record(
                 {
-                  name: fc.string(),
+                  name: fc.nonEmptyString(),
                   orcid: fc.orcidId(),
                 },
                 { requiredKeys: ['name'] },
@@ -192,7 +192,7 @@ describe('preprintReviews', () => {
             named: fc.nonEmptyArray(
               fc.record(
                 {
-                  name: fc.string(),
+                  name: fc.nonEmptyString(),
                   orcid: fc.orcidId(),
                 },
                 { requiredKeys: ['name'] },

@@ -6,6 +6,7 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { ArxivPreprintId, BiorxivPreprintId, EdarxivPreprintId, ScieloPreprintId } from '../../src/Preprints/index.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import { EmailAddress } from '../../src/types/EmailAddress.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import { createPage } from '../../src/WebApp/ClubProfilePage/ClubProfilePage.ts'
 import { expect, test } from '../base.ts'
@@ -66,7 +67,7 @@ const id = 'asapbio-cancer-biology' satisfies ClubId
 
 const prereview1 = new Prereviews.RecentPreprintPrereview({
   id: 11062553,
-  reviewers: { named: ['Ashraya Ravikumar', 'Stephanie Wankowicz'], anonymous: 2 },
+  reviewers: { named: [NonEmptyString('Ashraya Ravikumar'), NonEmptyString('Stephanie Wankowicz')], anonymous: 2 },
   published: Temporal.PlainDate.from('2024-04-25'),
   fields: ['16'],
   subfields: ['1607'],
@@ -79,7 +80,7 @@ const prereview1 = new Prereviews.RecentPreprintPrereview({
 
 const prereview2 = new Prereviews.RecentPreprintPrereview({
   id: 10888905,
-  reviewers: { named: ['Alain Manuel Chaple Gil'], anonymous: 0 },
+  reviewers: { named: [NonEmptyString('Alain Manuel Chaple Gil')], anonymous: 0 },
   published: Temporal.PlainDate.from('2024-03-28'),
   fields: [],
   subfields: [],
@@ -94,23 +95,23 @@ const prereview3 = new Prereviews.RecentPreprintPrereview({
   id: 10870479,
   reviewers: {
     named: [
-      'Vanessa Fairhurst',
-      'Femi Qudus Arogundade',
-      'Cesar Acevedo-Triana',
-      'Kylie Yui Dan',
-      'Emerald Swan',
-      'Lamis Elkheir',
-      'Hickory Jaguar',
-      'Syeda Azra',
-      'María Sol Ruiz',
-      'Juan Bizzotto',
-      'Janaynne Carvalho do Amaral',
-      'Ebuka Ezeike',
-      'Ranea-Robles P.',
-      'María Eugenia Segretin',
-      'Samir  Hachani',
-      'Anna Oliveras',
-      'Prof. MI Subhani, PhD., PDoc.',
+      NonEmptyString('Vanessa Fairhurst'),
+      NonEmptyString('Femi Qudus Arogundade'),
+      NonEmptyString('Cesar Acevedo-Triana'),
+      NonEmptyString('Kylie Yui Dan'),
+      NonEmptyString('Emerald Swan'),
+      NonEmptyString('Lamis Elkheir'),
+      NonEmptyString('Hickory Jaguar'),
+      NonEmptyString('Syeda Azra'),
+      NonEmptyString('María Sol Ruiz'),
+      NonEmptyString('Juan Bizzotto'),
+      NonEmptyString('Janaynne Carvalho do Amaral'),
+      NonEmptyString('Ebuka Ezeike'),
+      NonEmptyString('Ranea-Robles P.'),
+      NonEmptyString('María Eugenia Segretin'),
+      NonEmptyString('Samir  Hachani'),
+      NonEmptyString('Anna Oliveras'),
+      NonEmptyString('Prof. MI Subhani, PhD., PDoc.'),
     ],
     anonymous: 3,
   },
@@ -128,15 +129,15 @@ const prereview4 = new Prereviews.RecentPreprintPrereview({
   id: 10779310,
   reviewers: {
     named: [
-      'James Fraser',
-      'Luisa Vasconcelos',
-      'Liyi Cheng',
-      'Samantha  Lish',
-      'S. Chan Baek',
-      'Lang Ding',
-      'Alexandra Probst',
-      'Naiya Phillips',
-      'William Grubbe',
+      NonEmptyString('James Fraser'),
+      NonEmptyString('Luisa Vasconcelos'),
+      NonEmptyString('Liyi Cheng'),
+      NonEmptyString('Samantha  Lish'),
+      NonEmptyString('S. Chan Baek'),
+      NonEmptyString('Lang Ding'),
+      NonEmptyString('Alexandra Probst'),
+      NonEmptyString('Naiya Phillips'),
+      NonEmptyString('William Grubbe'),
     ],
     anonymous: 3,
   },
@@ -154,13 +155,13 @@ const prereview5 = new Prereviews.RecentPreprintPrereview({
   id: 10411168,
   reviewers: {
     named: [
-      'Miguel Oliveira, Jr.',
-      'Arthur Ronald Brasil Terto',
-      'Cleber Ataíde',
-      'Glayci Kelli Reis da Silva Xavier',
-      'Kyvia Fernanda Tenório da Silva',
-      'Marcelo Travassos da Silva',
-      'Pedro Ricardo Bin',
+      NonEmptyString('Miguel Oliveira, Jr.'),
+      NonEmptyString('Arthur Ronald Brasil Terto'),
+      NonEmptyString('Cleber Ataíde'),
+      NonEmptyString('Glayci Kelli Reis da Silva Xavier'),
+      NonEmptyString('Kyvia Fernanda Tenório da Silva'),
+      NonEmptyString('Marcelo Travassos da Silva'),
+      NonEmptyString('Pedro Ricardo Bin'),
     ],
     anonymous: 0,
   },

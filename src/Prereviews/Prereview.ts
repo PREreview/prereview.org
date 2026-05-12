@@ -16,7 +16,7 @@ import type { SubfieldId } from '../types/subfield.ts'
 export class Prereview extends Data.TaggedClass('Prereview')<{
   addendum?: Html
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
+    named: Array.NonEmptyReadonlyArray<{ name: NonEmptyString.NonEmptyString; orcid?: OrcidId }>
     anonymous: number
   }
   club?: ClubId
@@ -50,7 +50,7 @@ export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPre
   id: number
   club?: ClubId
   reviewers: {
-    named: Array.NonEmptyReadonlyArray<string>
+    named: Array.NonEmptyReadonlyArray<NonEmptyString.NonEmptyString>
     anonymous: number
   }
   published: Temporal.PlainDate
@@ -69,7 +69,7 @@ export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrere
 
 export interface PreprintPrereview {
   authors: {
-    named: Array.NonEmptyReadonlyArray<{ name: string; orcid?: OrcidId }>
+    named: Array.NonEmptyReadonlyArray<{ name: NonEmptyString.NonEmptyString; orcid?: OrcidId }>
     anonymous: number
   }
   club?: ClubId

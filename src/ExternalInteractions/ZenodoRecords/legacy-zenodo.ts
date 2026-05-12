@@ -67,7 +67,7 @@ import { DomainIdFromOpenAlexUrlSchema } from '../../types/domain.ts'
 import { type FieldId, FieldIdFromOpenAlexUrlSchema } from '../../types/field.ts'
 import { ProfileId, Uuid } from '../../types/index.ts'
 import { iso6391To3, iso6393To1, iso6393Validate } from '../../types/iso639.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
@@ -926,10 +926,15 @@ const PrereviewLicenseD: D.Decoder<Record, 'CC-BY-4.0' | 'CC0-1.0'> = pipe(
 )
 
 function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview['authors'] {
-  const [named, last] = Array.unappend(FptsToEffect.array(record.metadata.creators))
+  const authors = Array.map(FptsToEffect.array(record.metadata.creators), ({ name, orcid }) => ({
+    name: NonEmptyString(name),
+    orcid,
+  }))
+
+  const [named, last] = Array.unappend(authors)
 
   if (!Array.isNonEmptyReadonlyArray(named)) {
-    return { named: FptsToEffect.array(record.metadata.creators), anonymous: 0 }
+    return { named: authors, anonymous: 0 }
   }
 
   const anonymous = pipe(
@@ -943,7 +948,7 @@ function getAuthors(record: Record | InProgressDeposition): Prereview.Prereview[
 
   return match(anonymous)
     .with(P.number.positive(), anonymous => ({ named, anonymous }))
-    .otherwise(() => ({ named: FptsToEffect.array(record.metadata.creators), anonymous: 0 }))
+    .otherwise(() => ({ named: authors, anonymous: 0 }))
 }
 
 function isInCommunity(record: Record) {

@@ -4,6 +4,7 @@ import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/Preprints/index.ts'
 import { Prereview } from '../../src/Prereviews/index.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
 import type { Comment } from '../../src/WebApp/review-page/index.ts'
 import { createPage } from '../../src/WebApp/review-page/review-page.ts'
@@ -130,15 +131,15 @@ test('content looks right when there are comments', async ({ showPage }) => {
 const review = new Prereview({
   authors: {
     named: [
-      { name: 'James Fraser', orcid: OrcidId('0000-0002-5080-2859') },
-      { name: 'Luisa Vasconcelos', orcid: OrcidId('0000-0003-2016-5606') },
-      { name: 'Liyi Cheng', orcid: OrcidId('0000-0002-5708-7835') },
-      { name: 'Samantha  Lish', orcid: OrcidId('0000-0003-0060-1458') },
-      { name: 'S. Chan Baek', orcid: OrcidId('0009-0004-3002-8888') },
-      { name: 'Lang Ding', orcid: OrcidId('0000-0002-5365-9445') },
-      { name: 'Alexandra Probst', orcid: OrcidId('0000-0001-8389-8159') },
-      { name: 'Naiya Phillips', orcid: OrcidId('0000-0003-1836-5182') },
-      { name: 'William Grubbe', orcid: OrcidId('0000-0002-4933-2626') },
+      { name: NonEmptyString('James Fraser'), orcid: OrcidId('0000-0002-5080-2859') },
+      { name: NonEmptyString('Luisa Vasconcelos'), orcid: OrcidId('0000-0003-2016-5606') },
+      { name: NonEmptyString('Liyi Cheng'), orcid: OrcidId('0000-0002-5708-7835') },
+      { name: NonEmptyString('Samantha  Lish'), orcid: OrcidId('0000-0003-0060-1458') },
+      { name: NonEmptyString('S. Chan Baek'), orcid: OrcidId('0009-0004-3002-8888') },
+      { name: NonEmptyString('Lang Ding'), orcid: OrcidId('0000-0002-5365-9445') },
+      { name: NonEmptyString('Alexandra Probst'), orcid: OrcidId('0000-0001-8389-8159') },
+      { name: NonEmptyString('Naiya Phillips'), orcid: OrcidId('0000-0003-1836-5182') },
+      { name: NonEmptyString('William Grubbe'), orcid: OrcidId('0000-0002-4933-2626') },
     ],
     anonymous: 0,
   },
@@ -230,7 +231,7 @@ const review = new Prereview({
 
 const structuredReview = new Prereview({
   authors: {
-    named: [{ name: 'Justice Nyakura', orcid: OrcidId('0000-0003-1065-1950') }],
+    named: [{ name: NonEmptyString('Justice Nyakura'), orcid: OrcidId('0000-0003-1065-1950') }],
     anonymous: 0,
   },
   doi: Doi('10.5281/zenodo.10775334'),

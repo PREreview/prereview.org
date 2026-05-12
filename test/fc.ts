@@ -1625,7 +1625,7 @@ export const prereview = ({
   fc
     .record({
       authors: fc.record({
-        named: nonEmptyArray(fc.record({ name: fc.string(), orcid: orcidId() }, { requiredKeys: ['name'] })),
+        named: nonEmptyArray(fc.record({ name: nonEmptyString(), orcid: orcidId() }, { requiredKeys: ['name'] })),
         anonymous: fc.integer({ min: 0 }),
       }),
       doi: doi(),
