@@ -4,7 +4,7 @@ import type * as Datasets from '../../../Datasets/index.ts'
 import type { Zenodo } from '../../../ExternalApis/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
-import * as Personas from '../../../Personas/index.ts'
+import type * as Personas from '../../../Personas/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
@@ -17,9 +17,9 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
 
   return {
     creators: [
-      Personas.match(review.author, {
-        onPublic: author => ({ name: author.name, orcid: author.orcidId }),
-        onPseudonym: author => ({ name: author.pseudonym }),
+      Match.valueTags(review.author, {
+        PublicPersona: author => ({ name: author.name, orcid: author.orcidId }),
+        PseudonymPersona: author => ({ name: author.pseudonym }),
       }),
     ],
     description: html`
