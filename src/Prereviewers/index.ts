@@ -1,6 +1,8 @@
-import { Context, Effect, Layer, pipe } from 'effect'
+import { Context, Effect, Layer, Match, pipe } from 'effect'
 import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
+import { GetContactEmailAddress } from '../contact-email-address.ts'
+import { OrcidRecords } from '../ExternalInteractions/index.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
@@ -35,6 +37,9 @@ export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContact
 export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
+    const orcidRecords = yield* OrcidRecords.OrcidRecords
+    const getContactEmailAddress = yield* GetContactEmailAddress
+
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
 
     const replaceLegacyPseudonym = yield* pipe(
@@ -89,7 +94,30 @@ export const layer = Layer.effect(
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
-      getContactDetails: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      getContactDetails: Effect.fn('Prereviewers.getContactDetails')(
+        function* (orcidId) {
+          const { contactEmailAddress, name } = yield* Effect.all({
+            contactEmailAddress: getContactEmailAddress(orcidId),
+            name: orcidRecords.getName(orcidId),
+          })
+
+          return yield* Match.valueTags(contactEmailAddress, {
+            UnverifiedContactEmailAddress: () =>
+              Effect.fail(new Queries.UnableToQuery({ cause: 'Contact email address is unverified' })),
+            VerifiedContactEmailAddress: contactEmailAddress =>
+              Effect.succeed({
+                name,
+                email: contactEmailAddress.value,
+              }),
+          })
+        },
+        Effect.catchTag(
+          'ContactEmailAddressIsNotFound',
+          'ContactEmailAddressIsUnavailable',
+          'NameIsNotAvailable',
+          error => new Queries.UnableToQuery({ cause: error }),
+        ),
+      ),
     }
   }),
 )
