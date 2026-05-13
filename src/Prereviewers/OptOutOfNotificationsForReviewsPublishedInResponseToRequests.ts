@@ -14,9 +14,9 @@ class PrereviewerHasOptedIn extends Data.TaggedClass('PrereviewerHasOptedIn') {}
 
 class PrereviewerHasOptedOut extends Data.TaggedClass('PrereviewerHasOptedOut') {}
 
-export class PrereviewerHasNotOptedIn extends Data.TaggedClass('PrereviewerHasNotOptedIn') {}
-
 export type Error = PrereviewerHasNotOptedIn | UnknownPrereviewer
+
+export class PrereviewerHasNotOptedIn extends Data.TaggedError('PrereviewerHasNotOptedIn') {}
 
 export class UnknownPrereviewer extends Data.TaggedError('UnknownPrereviewer') {}
 
