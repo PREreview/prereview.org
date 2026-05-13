@@ -16,7 +16,7 @@ import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.t
 import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
 import { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
-import type { ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications } from './ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
+import { ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications } from './ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -106,8 +106,9 @@ const makeReviewRequestQueries: Effect.Effect<
     listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: yield* Queries.makeStatefulQuery(
       ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
     ),
-    listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
-      new Queries.UnableToQuery({ cause: 'not implemented' }),
+    listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: yield* Queries.makeStatefulQuery(
+      ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
+    ),
   }
 })
 
