@@ -22,8 +22,17 @@ export class LegacyPseudonymReplaced extends Schema.TaggedClass<LegacyPseudonymR
   pseudonym: Pseudonym.PseudonymSchema,
 }) {}
 
+export class PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests extends Schema.TaggedClass<PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests>()(
+  'PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests',
+  {
+    orcidId: OrcidId.OrcidIdSchema,
+    optedInAt: Temporal.InstantSchema,
+  },
+) {}
+
 export const PrereviewerEvent = Schema.Union(
   RegisteredPrereviewerImported,
   PrereviewerRegistered,
+  PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests,
   LegacyPseudonymReplaced,
 )

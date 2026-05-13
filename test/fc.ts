@@ -2579,6 +2579,15 @@ export const prereviewerRegistered = (): fc.Arbitrary<Events.PrereviewerRegister
     })
     .map(args => new Events.PrereviewerRegistered(args))
 
+export const prereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests =
+  (): fc.Arbitrary<Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests> =>
+    fc
+      .record({
+        orcidId: orcidId(),
+        optedInAt: instant(),
+      })
+      .map(args => new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(args))
+
 export const legacyPseudonymReplaced = (): fc.Arbitrary<Events.LegacyPseudonymReplaced> =>
   fc
     .record({
