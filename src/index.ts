@@ -110,6 +110,10 @@ pipe(
         ),
       ),
       canLogInAsDemoUser: Config.withDefault(Config.boolean('CAN_LOG_IN_AS_DEMO_USER'), false),
+      canNotifyReviewsPublishedInResponseToRequests: Config.withDefault(
+        Config.boolean('CAN_NOTIFY_REVIEWS_PUBLISHED_IN_RESPONSE_TO_REQUESTS'),
+        false,
+      ),
       sendCoarNotifyMessages: Config.withDefault(
         Config.literal(true, false, 'sandbox')('SEND_COAR_NOTIFY_MESSAGES'),
         false,
