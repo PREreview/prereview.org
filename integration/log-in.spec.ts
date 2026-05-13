@@ -246,6 +246,70 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can received notifications for requested PREreviews being published',
+  async ({ page }, testInfo) => {
+    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
+    await menu.click()
+    await page.getByRole('link', { name: 'My details' }).click()
+
+    testInfo.fail()
+    await expect(page.getByRole('main')).toContainText('Requested review notifications Off')
+
+    await page.getByRole('link', { name: 'Change requested review notifications' }).click()
+
+    await page
+      .getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' })
+      .getByLabel('Yes')
+      .check()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Requested review notifications On')
+
+    await page.getByRole('link', { name: 'Change requested review notifications' }).click()
+
+    await expect(
+      page
+        .getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' })
+        .getByLabel('Yes'),
+    ).toBeChecked()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'have to say if you want to receive notifications for requested PREreviews being published',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
+
+    await menu.click()
+    await page.getByRole('link', { name: 'My details' }).click()
+    testInfo.fail()
+    await expect(page.getByRole('link', { name: 'Change requested review notifications' })).toBeVisible()
+    await page.getByRole('link', { name: 'Change requested review notifications' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select yes if you would like to be notified' }).click()
+
+    await expect(
+      page
+        .getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' })
+        .getByLabel('Yes'),
+    ).toBeFocused()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ page }) => {
   const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
