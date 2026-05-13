@@ -49,12 +49,17 @@ const PostgresClientLayer = Layer.mergeAll(
 
 const ClusterLayer = Layer.unwrapEffect(
   Effect.andThen(
-    Config.withDefault(
-      Config.all({ runnerIp: Config.string('FLY_PRIVATE_IP'), listenHost: Config.succeed('fly-local-6pn') }),
-      { runnerIp: 'localhost', listenHost: 'localhost' },
+    Effect.bind(
+      Config.withDefault(
+        Config.all({ runnerIp: Config.string('FLY_PRIVATE_IP'), listenHost: Config.succeed('fly-local-6pn') }),
+        { runnerIp: 'localhost', listenHost: 'localhost' },
+      ),
+      'clientOnly',
+      () => Config.withDefault(Config.boolean('CLUSTER_CLIENT_ONLY'), false),
     ),
-    ({ runnerIp, listenHost }) =>
+    ({ runnerIp, listenHost, clientOnly }) =>
       NodeClusterSocket.layer({
+        clientOnly,
         shardingConfig: {
           runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
           runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),

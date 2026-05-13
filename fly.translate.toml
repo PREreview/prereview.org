@@ -9,6 +9,7 @@ memory = "1gb"
 strategy = "bluegreen"
 
 [env]
+CLUSTER_CLIENT_ONLY = "true"
 ENVIRONMENT_LABEL = "sandbox"
 HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache-sandbox.internal?family=6"
 HTTP_CACHE_READONLY_FALLBACK_REDIS_URI = "redis://localhost:6379"
