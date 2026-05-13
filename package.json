@@ -133,7 +133,6 @@
       "@ibm/plex",
       "@parcel/watcher",
       "msgpackr-extract",
-      "protobufjs",
       "unrs-resolver"
     ],
     "onlyBuiltDependencies": [
