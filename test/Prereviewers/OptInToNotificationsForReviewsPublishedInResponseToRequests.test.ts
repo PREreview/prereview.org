@@ -44,7 +44,7 @@ const optedIn = new Events.PrereviewerOptedInToNotificationsForReviewsPublishedI
 
 const optedInDifferentTime = new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
   ...optedIn,
-  optedInAt: input.optedInAt,
+  optedInAt: now.subtract({ hours: 1 }),
 })
 
 const optedInDifferentPrereviewer =
