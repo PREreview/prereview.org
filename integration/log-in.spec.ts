@@ -270,11 +270,11 @@ test
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
     await expect(page.getByRole('main')).toContainText('Requested review notifications On')
 
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
 
+    testInfo.fail()
     await expect(
       page
         .getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' })
