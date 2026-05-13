@@ -15,7 +15,6 @@ import { GetReviewRequestReadyToBePublished } from './GetReviewRequestReadyToBeP
 import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.ts'
 import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
-import { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
 import { ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications } from './ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
@@ -40,9 +39,6 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
       typeof ListAllPublishedReviewRequestsByAPrereviewer
     >
     listAllPublishedReviewRequestsForStats: Queries.FromStatefulQuery<typeof ListAllPublishedReviewRequestsForStats>
-    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: Queries.FromStatefulQuery<
-      typeof ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint
-    >
     listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: Queries.FromStatefulQuery<
       typeof ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications
     >
@@ -64,7 +60,6 @@ export const {
   getReviewRequestToAcknowledge,
   listAllPublishedReviewRequestsByAPrereviewer,
   listAllPublishedReviewRequestsForStats,
-  listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
   listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
@@ -103,9 +98,6 @@ const makeReviewRequestQueries: Effect.Effect<
       ListAllPublishedReviewRequestsByAPrereviewer,
     ),
     listAllPublishedReviewRequestsForStats: yield* Queries.makeStatefulQuery(ListAllPublishedReviewRequestsForStats),
-    listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: yield* Queries.makeStatefulQuery(
-      ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
-    ),
     listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: yield* Queries.makeStatefulQuery(
       ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
     ),
