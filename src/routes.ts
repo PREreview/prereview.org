@@ -81,6 +81,7 @@ export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
 export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
+export const ChangeRequestedReviewNotifications = '/my-details/change-requested-review-notifications'
 
 const stringStartsWith =
   <P extends string>(prefix: P) =>

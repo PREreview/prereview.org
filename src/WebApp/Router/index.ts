@@ -1,6 +1,7 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
 import { AllowSiteCrawlers } from '../../Context.ts'
+import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
@@ -23,6 +24,7 @@ import { LiveReviewsPage } from '../LiveReviewsPage.ts'
 import { authenticate, AuthenticateError, logIn, LogOut } from '../log-in/index.ts'
 import { LogInDemoUser } from '../LogInDemoUser.ts'
 import { MenuPage } from '../MenuPage/index.ts'
+import * as MyDetails from '../MyDetails/index.ts'
 import { MyReviewRequestsPage } from '../MyReviewRequestsPage/index.ts'
 import { PageNotFound } from '../PageNotFound/index.ts'
 import { PartnersPage } from '../PartnersPage/index.ts'
@@ -406,6 +408,28 @@ const WriteCommentFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.WriteCommentPublished, WriteCommentFlow.PublishedPage),
 ])
 
+const MyDetailsRouter = HttpRouter.fromIterable([
+  MakeStaticRoute('GET', Routes.ChangeRequestedReviewNotifications, MyDetails.RequestedReviewNotificationsPage),
+  MakeStaticRoute(
+    'POST',
+    Routes.ChangeRequestedReviewNotifications,
+    pipe(
+      Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody')),
+      Effect.andThen(MyDetails.RequestedReviewNotificationsSubmission),
+    ),
+  ),
+]).pipe(
+  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpRouter.use(
+    HttpMiddleware.make(app =>
+      Effect.if(FeatureFlags.canNotifyReviewsPublishedInResponseToRequests, {
+        onTrue: () => app,
+        onFalse: () => Effect.andThen(PageNotFound, Response.toHttpServerResponse),
+      }),
+    ),
+  ),
+)
+
 const AuthRouter = HttpRouter.fromIterable([
   MakeStaticRoute('GET', Routes.LogIn, Effect.succeed(logIn)),
   HttpRouter.makeRoute(
@@ -468,6 +492,7 @@ export const Router = pipe(
   ),
   HttpRouter.concat(AuthRouter),
   HttpRouter.concat(DatasetReviewPages),
+  HttpRouter.concat(MyDetailsRouter),
   HttpRouter.concat(RequestAReviewFlowRouter),
   HttpRouter.concat(ReviewADatasetFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
