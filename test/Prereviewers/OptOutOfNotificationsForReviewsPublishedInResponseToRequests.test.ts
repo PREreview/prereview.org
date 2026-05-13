@@ -76,7 +76,7 @@ const optedOutAgainDifferentPrereviewer =
     optedOutAt: now.subtract({ hours: 10 }),
   })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.UnknownPrereviewer())],
   ['imported, not opted in', [imported], input, Either.left(new _.PrereviewerHasNotOptedIn())],
   ['registered, not opted in', [registered], input, Either.left(new _.PrereviewerHasNotOptedIn())],
