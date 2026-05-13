@@ -59,7 +59,7 @@ const prereviewer2OptedIn = new Events.PrereviewerOptedInToNotificationsForRevie
   optedInAt: now.subtract({ hours: 1 }),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', preprintId1, [], HashSet.empty()],
   ['not published', preprintId1, [request1Started], HashSet.empty()],
   ['published not opted-in', preprintId1, [request1Started, request1Published], HashSet.empty()],
