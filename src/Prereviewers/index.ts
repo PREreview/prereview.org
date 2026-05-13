@@ -3,6 +3,7 @@ import * as Commands from '../Commands.ts'
 import { UnableToHandleCommand } from '../Commands.ts'
 import { GetContactEmailAddress } from '../contact-email-address.ts'
 import { OrcidRecords } from '../ExternalInteractions/index.ts'
+import { FeatureFlags } from '../FeatureFlags.ts'
 import * as Queries from '../Queries.ts'
 import { Temporal, type EmailAddress, type NonEmptyString, type OrcidId } from '../types/index.ts'
 import { possiblePseudonyms } from '../types/Pseudonym.ts'
@@ -11,8 +12,8 @@ import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
-import type { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
-import type { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 import { ReplaceLegacyPseudonym } from './ReplaceLegacyPseudonym.ts'
 
@@ -45,6 +46,7 @@ export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContact
 export const layer = Layer.effect(
   Prereviewers,
   Effect.gen(function* () {
+    const featureFlags = yield* FeatureFlags
     const orcidRecords = yield* OrcidRecords.OrcidRecords
     const getContactEmailAddress = yield* GetContactEmailAddress
 
@@ -66,6 +68,14 @@ export const layer = Layer.effect(
       possiblePseudonyms,
       Effect.andThen(CountAvailablePseudonyms),
       Effect.andThen(Queries.makeOnDemandQuery),
+    )
+
+    const optInToNotificationsForReviewsPublishedInResponseToRequests = yield* Commands.makeCommand(
+      OptInToNotificationsForReviewsPublishedInResponseToRequests,
+    )
+
+    const optOutOfNotificationsForReviewsPublishedInResponseToRequests = yield* Commands.makeCommand(
+      OptOutOfNotificationsForReviewsPublishedInResponseToRequests,
     )
 
     return {
@@ -126,10 +136,30 @@ export const layer = Layer.effect(
           error => new Queries.UnableToQuery({ cause: error }),
         ),
       ),
-      optInToNotificationsForReviewsPublishedInResponseToRequests: () =>
-        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
-      optOutOfNotificationsForReviewsPublishedInResponseToRequests: () =>
-        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      optInToNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(function* (orcidId) {
+        if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
+          return yield* new UnableToHandleCommand({ cause: 'Feature flag is turned off' })
+        }
+
+        const input = {
+          orcidId,
+          optedInAt: yield* Temporal.currentInstant,
+        }
+
+        yield* optInToNotificationsForReviewsPublishedInResponseToRequests(input)
+      }),
+      optOutOfNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(function* (orcidId) {
+        if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
+          return yield* new UnableToHandleCommand({ cause: 'Feature flag is turned off' })
+        }
+
+        const input = {
+          orcidId,
+          optedOutAt: yield* Temporal.currentInstant,
+        }
+
+        yield* optOutOfNotificationsForReviewsPublishedInResponseToRequests(input)
+      }),
     }
   }),
 )
