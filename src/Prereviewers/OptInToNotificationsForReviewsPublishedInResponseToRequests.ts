@@ -61,7 +61,7 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
   })
 }
 
-const decide = (state: State, input: Input) =>
+const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
     PrereviewerHasNotOptedIn: () =>
       Either.right(
@@ -72,7 +72,7 @@ const decide = (state: State, input: Input) =>
         Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
       ),
     PrereviewerHasOptedIn: () => Either.right(Option.none()),
-    UnknownPrereviewer: Either.left,
+    UnknownPrereviewer: state => Either.left(state),
   })
 
 export const OptInToNotificationsForReviewsPublishedInResponseToRequests = Commands.Command({
