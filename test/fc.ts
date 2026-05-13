@@ -2508,6 +2508,8 @@ export const event = (): fc.Arbitrary<Events.Event> =>
     emailToNotifyPrereviewerOfAPrereviewWasSent(),
     registeredPrereviewerImported(),
     prereviewerRegistered(),
+    prereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(),
+    prereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(),
     legacyPseudonymReplaced(),
   )
 
@@ -2577,6 +2579,15 @@ export const prereviewerOptedInToNotificationsForReviewsPublishedInResponseToThe
         optedInAt: instant(),
       })
       .map(args => new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(args))
+
+export const prereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests =
+  (): fc.Arbitrary<Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests> =>
+    fc
+      .record({
+        orcidId: orcidId(),
+        optedOutAt: instant(),
+      })
+      .map(args => new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(args))
 
 export const legacyPseudonymReplaced = (): fc.Arbitrary<Events.LegacyPseudonymReplaced> =>
   fc

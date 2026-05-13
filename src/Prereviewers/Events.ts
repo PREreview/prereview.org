@@ -30,9 +30,18 @@ export class PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToThe
   },
 ) {}
 
+export class PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests extends Schema.TaggedClass<PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests>()(
+  'PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests',
+  {
+    orcidId: OrcidId.OrcidIdSchema,
+    optedOutAt: Temporal.InstantSchema,
+  },
+) {}
+
 export const PrereviewerEvent = Schema.Union(
   RegisteredPrereviewerImported,
   PrereviewerRegistered,
   PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests,
+  PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests,
   LegacyPseudonymReplaced,
 )
