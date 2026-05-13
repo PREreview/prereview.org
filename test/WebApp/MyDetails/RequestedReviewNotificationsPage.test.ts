@@ -1,6 +1,7 @@
 import { expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
+import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/MyDetails/RequestedReviewNotificationsPage/index.ts'
@@ -11,11 +12,13 @@ it.effect.prop('RequestedReviewNotificationsPage', [fc.supportedLocale(), fc.use
     const actual = yield* _.RequestedReviewNotificationsPage
 
     expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: StatusCodes.ServiceUnavailable,
+      _tag: 'StreamlinePageResponse',
+      canonical: Routes.ChangeRequestedReviewNotifications,
+      status: StatusCodes.OK,
       title: expect.anything(),
+      nav: expect.anything(),
       main: expect.anything(),
-      skipToLabel: 'main',
+      skipToLabel: 'form',
       js: [],
     })
   }).pipe(Effect.provide(Layer.mergeAll(Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)))),
