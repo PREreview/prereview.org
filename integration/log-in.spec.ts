@@ -289,7 +289,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)(
   'have to say if you want to receive notifications for requested PREreviews being published',
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
     await menu.click()
@@ -298,7 +298,6 @@ test
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    testInfo.fail()
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
