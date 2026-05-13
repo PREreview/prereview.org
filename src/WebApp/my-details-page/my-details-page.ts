@@ -1,4 +1,4 @@
-import { Match, Option } from 'effect'
+import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import type { CareerStage } from '../../career-stage.ts'
@@ -51,6 +51,7 @@ export function createPage({
   researchInterests,
   location,
   languages,
+  requestedReviewNotifications,
 }: {
   publicPersona: Personas.PublicPersona
   pseudonymPersona: Personas.PseudonymPersona
@@ -65,6 +66,7 @@ export function createPage({
   researchInterests: Option.Option<ResearchInterests>
   location: Option.Option<Location>
   languages: Option.Option<Languages>
+  requestedReviewNotifications?: boolean
 }) {
   const t = translate(locale)
 
@@ -240,6 +242,31 @@ export function createPage({
             `,
           )
           .exhaustive()}
+        ${Option.isSome(contactEmailAddress) && contactEmailAddress.value._tag === 'VerifiedContactEmailAddress'
+          ? pipe(
+              Match.value(requestedReviewNotifications),
+              Match.when(undefined, () => ''),
+              Match.when(
+                false,
+                () => html`
+                  <div>
+                    <dt><span>Requested review notifications</span></dt>
+                    <dd>Off</dd>
+                  </div>
+                `,
+              ),
+              Match.when(
+                true,
+                () => html`
+                  <div>
+                    <dt><span>Requested review notifications</span></dt>
+                    <dd>On</dd>
+                  </div>
+                `,
+              ),
+              Match.exhaustive,
+            )
+          : ''}
         ${match(slackUser)
           .when(Option.isNone, () => '')
           .when(

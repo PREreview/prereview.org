@@ -408,6 +408,7 @@ export const MyDetailsRouter = pipe(
           { sessionStore: env.sessionStore, ...env.logger },
         ),
         publicUrl: env.publicUrl,
+        runtime: env.runtime,
         saveAvatar: withEnv(Cloudinary.saveAvatarOnCloudinary, {
           cloudinaryApi: {
             cloudName: env.cloudinaryApiConfig.cloudName,

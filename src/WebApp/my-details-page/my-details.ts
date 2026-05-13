@@ -1,4 +1,4 @@
-import { Option, pipe } from 'effect'
+import { Effect, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as L from 'logger-fp-ts'
@@ -6,6 +6,7 @@ import { match, P } from 'ts-pattern'
 import { maybeGetAvatar } from '../../avatar.ts'
 import { maybeGetCareerStage } from '../../career-stage.ts'
 import { maybeGetContactEmailAddress } from '../../contact-email-address.ts'
+import { FeatureFlags } from '../../FeatureFlags.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import { maybeIsOpenForRequests } from '../../is-open-for-requests.ts'
 import { maybeGetLanguages } from '../../languages.ts'
@@ -13,6 +14,8 @@ import type { SupportedLocale } from '../../locales/index.ts'
 import { maybeGetLocation } from '../../location.ts'
 import { maybeGetOrcidToken } from '../../orcid-token.ts'
 import { getPseudonymPersona, getPublicPersona } from '../../persona.ts'
+import { Prereviewers } from '../../Prereviewers/index.ts'
+import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { maybeGetResearchInterests } from '../../research-interests.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'
@@ -43,6 +46,24 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
         RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(Option.fromNullable))),
         RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(Option.fromNullable))),
+        RTE.apSW(
+          'requestedReviewNotifications',
+          EffectToFpts.toReaderTaskEither(
+            Effect.gen(function* () {
+              const featureFlags = yield* FeatureFlags
+              const prereviewers = yield* Prereviewers
+
+              if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
+                return undefined
+              }
+
+              return yield* Effect.andThen(
+                prereviewers.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid),
+                Match.valueTags({ HasOptedIn: () => true, HasNotOptedIn: () => false, HasOptedOut: () => false }),
+              )
+            }),
+          ),
+        ),
       ),
     ),
     RTE.chainFirstW(({ publicPersona, userOnboarding }) =>
@@ -59,7 +80,10 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
-          .with(P.union('unavailable', { _tag: 'UnableToGetPersona' }), () => havingProblemsPage(locale))
+          .with(
+            P.union('unavailable', { _tag: P.union('UnableToGetPersona', 'UnableToQuery', 'UnknownPrereviewer') }),
+            () => havingProblemsPage(locale),
+          )
           .exhaustive(),
       createPage,
     ),

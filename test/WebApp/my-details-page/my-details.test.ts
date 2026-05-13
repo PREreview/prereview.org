@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from '@effect/vitest'
 import { SystemClock } from 'clock-ts'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import * as FeatureFlags from '../../../src/FeatureFlags.ts'
+import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { SaveUserOnboardingEnv } from '../../../src/user-onboarding.ts'
@@ -49,6 +51,8 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
@@ -66,6 +70,7 @@ describe('myDetails', () => {
                 getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
+                runtime,
               }),
             )
 
@@ -79,7 +84,7 @@ describe('myDetails', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }),
+          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
       )
 
       it.effect.prop(
@@ -119,6 +124,8 @@ describe('myDetails', () => {
           Effect.gen(function* () {
             const saveUserOnboarding = vi.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
+            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
@@ -136,6 +143,7 @@ describe('myDetails', () => {
                 getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
+                runtime,
               }),
             )
 
@@ -150,7 +158,7 @@ describe('myDetails', () => {
               js: [],
             })
             expect(saveUserOnboarding).toHaveBeenCalledWith(publicPersona.orcidId, { seenMyDetailsPage: true })
-          }),
+          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
       )
 
       it.effect.prop(
@@ -188,6 +196,8 @@ describe('myDetails', () => {
           languages,
         ]) =>
           Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
             const actual = yield* Effect.promise(
               _.myDetails({ locale, user })({
                 getAvatar: () => TE.fromEither(avatar),
@@ -205,6 +215,7 @@ describe('myDetails', () => {
                 getPseudonymPersona: () => TE.right(pseudonymPersona),
                 clock: SystemClock,
                 logger: () => IO.of(undefined),
+                runtime,
               }),
             )
 
@@ -216,7 +227,7 @@ describe('myDetails', () => {
               skipToLabel: 'main',
               js: [],
             })
-          }),
+          }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
       )
     })
 
@@ -253,6 +264,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -270,6 +283,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -281,7 +295,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -317,6 +331,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -334,6 +350,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -345,7 +362,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -381,6 +398,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -398,6 +417,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -409,7 +429,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -445,6 +465,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -462,6 +484,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -473,7 +496,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -509,6 +532,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -526,6 +551,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -537,7 +563,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -573,6 +599,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -590,6 +618,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -601,7 +630,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -637,6 +666,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -654,6 +685,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -665,7 +697,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -701,6 +733,8 @@ describe('myDetails', () => {
         languages,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -718,6 +752,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -729,7 +764,7 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
 
     it.effect.prop(
@@ -765,6 +800,8 @@ describe('myDetails', () => {
         location,
       ]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
           const actual = yield* Effect.promise(
             _.myDetails({ locale, user })({
               getAvatar: () => TE.fromEither(avatar),
@@ -782,6 +819,7 @@ describe('myDetails', () => {
               getPseudonymPersona: () => TE.right(pseudonymPersona),
               clock: SystemClock,
               logger: () => IO.of(undefined),
+              runtime,
             }),
           )
 
@@ -793,12 +831,14 @@ describe('myDetails', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
     )
   })
 
   it.effect.prop('when the user is not logged in', [fc.supportedLocale()], ([locale]) =>
     Effect.gen(function* () {
+      const runtime = yield* Effect.runtime<Prereviewers | FeatureFlags.FeatureFlags>()
+
       const actual = yield* Effect.promise(
         _.myDetails({ locale })({
           getAvatar: shouldNotBeCalled,
@@ -816,6 +856,7 @@ describe('myDetails', () => {
           getPseudonymPersona: shouldNotBeCalled,
           clock: SystemClock,
           logger: () => IO.of(undefined),
+          runtime,
         }),
       )
 
@@ -823,6 +864,6 @@ describe('myDetails', () => {
         _tag: 'LogInResponse',
         location: format(myDetailsMatch.formatter, {}),
       })
-    }),
+    }).pipe(Effect.provide([FeatureFlags.layerDefaults, Layer.mock(Prereviewers, {})])),
   )
 })
