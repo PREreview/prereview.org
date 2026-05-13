@@ -55,7 +55,8 @@ describe('NotifyReviewRequestersOfReview', () => {
             Effect.provide([
               Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
               Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: () => Effect.succeed(requesters),
+                listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
+                  Effect.succeed(requesters),
               }),
             ]),
           ),
@@ -79,7 +80,8 @@ describe('NotifyReviewRequestersOfReview', () => {
             Layer.mock(Prereviewers.Prereviewers, {}),
             Layer.mock(Prereviews.Prereviews, { getPrereview: () => Effect.succeed(review) }),
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
-              listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: () => Effect.succeed(requesters),
+              listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
+                Effect.succeed(requesters),
             }),
           ]),
         ),

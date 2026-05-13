@@ -12,7 +12,7 @@ export const NotifyReviewRequestersOfReview = Effect.fn(
     const prereview = yield* Prereviews.getPrereview(reviewId)
 
     const requestersNeedingNotification = yield* pipe(
-      ReviewRequests.listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint(prereview.preprint.id),
+      ReviewRequests.listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications(prereview.preprint.id),
       Effect.andThen(
         Effect.filter(
           requester =>
