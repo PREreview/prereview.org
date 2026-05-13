@@ -27,8 +27,6 @@ export const { canLogInAsDemoUser, sendCoarNotifyMessages, useCrowdinInContext, 
 
 export class CannotLogInAsDemoUser extends Data.TaggedError('CannotLogInAsDemoUser') {}
 
-export class CannotReviewDatasets extends Data.TaggedError('CannotReviewDatasets') {}
-
 export const EnsureCanLogInAsDemoUser = Effect.if(canLogInAsDemoUser, {
   onTrue: () => Effect.void,
   onFalse: () => new CannotLogInAsDemoUser(),
