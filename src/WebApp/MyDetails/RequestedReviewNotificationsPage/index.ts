@@ -10,15 +10,27 @@ import { RedirectResponse, type Response } from '../../Response/index.ts'
 import * as RequestedReviewNotificationsForm from './RequestedReviewNotificationsForm.ts'
 import { RequestedReviewNotificationsPage as CreatePage } from './RequestedReviewNotificationsPage.ts'
 
-export const RequestedReviewNotificationsPage: Effect.Effect<Response, never, Locale | LoggedInUser> = pipe(
-  Effect.gen(function* () {
-    const locale = yield* Locale
-    const form = new RequestedReviewNotificationsForm.EmptyForm()
+export const RequestedReviewNotificationsPage: Effect.Effect<Response, never, Locale | LoggedInUser | Prereviewers> =
+  pipe(
+    Effect.gen(function* () {
+      const locale = yield* Locale
+      const user = yield* LoggedInUser
+      const prereviewers = yield* Prereviewers
 
-    return CreatePage({ locale, form })
-  }),
-  Effect.withSpan('MyDetails.RequestedReviewNotificationsPage'),
-)
+      const form = yield* Effect.andThen(
+        prereviewers.hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(user.orcid),
+        Match.valueTags({
+          HasNotOptedIn: () => new RequestedReviewNotificationsForm.EmptyForm(),
+          HasOptedIn: () => new RequestedReviewNotificationsForm.CompletedForm({ requestedReviewNotifications: 'yes' }),
+          HasOptedOut: () => new RequestedReviewNotificationsForm.CompletedForm({ requestedReviewNotifications: 'no' }),
+        }),
+      )
+
+      return CreatePage({ locale, form })
+    }),
+    Effect.catchTag('UnableToQuery', 'UnknownPrereviewer', () => HavingProblemsPage),
+    Effect.withSpan('MyDetails.RequestedReviewNotificationsPage'),
+  )
 
 export const RequestedReviewNotificationsSubmission: (
   body: UrlParams.UrlParams,

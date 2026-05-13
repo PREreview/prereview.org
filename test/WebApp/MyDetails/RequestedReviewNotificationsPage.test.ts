@@ -4,30 +4,80 @@ import { Effect, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
+import {
+  HasNotOptedIn,
+  HasOptedIn,
+  HasOptedOut,
+} from '../../../src/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { UnknownPrereviewer } from '../../../src/Prereviewers/OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/MyDetails/RequestedReviewNotificationsPage/index.ts'
 import * as fc from '../../fc.ts'
 
-it.effect.prop('RequestedReviewNotificationsPage', [fc.supportedLocale(), fc.user()], ([locale, user]) =>
-  Effect.gen(function* () {
-    const actual = yield* _.RequestedReviewNotificationsPage
+describe('RequestedReviewNotificationsPage', () => {
+  it.effect.prop(
+    'when an existing preference can be loaded',
+    [fc.supportedLocale(), fc.user(), fc.constantFrom(new HasOptedIn(), new HasOptedOut(), new HasNotOptedIn())],
+    ([locale, user, preference]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.RequestedReviewNotificationsPage
 
-    expect(actual).toStrictEqual({
-      _tag: 'StreamlinePageResponse',
-      canonical: Routes.ChangeRequestedReviewNotifications,
-      status: StatusCodes.OK,
-      title: expect.anything(),
-      nav: expect.anything(),
-      main: expect.anything(),
-      skipToLabel: 'form',
-      js: [],
-    })
-  }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)])),
-)
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: Routes.ChangeRequestedReviewNotifications,
+          status: StatusCodes.OK,
+          title: expect.anything(),
+          nav: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'form',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Prereviewers, {
+            hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+              Effect.succeed(preference),
+          }),
+        ]),
+      ),
+  )
+
+  it.effect.prop(
+    "when an existing preference can't be loaded",
+    [
+      fc.supportedLocale(),
+      fc.user(),
+      fc.anything().chain(cause => fc.constantFrom(new UnableToQuery({ cause }), new UnknownPrereviewer())),
+    ],
+    ([locale, user, error]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.RequestedReviewNotificationsPage
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Prereviewers, {
+            hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: () => error,
+          }),
+        ]),
+      ),
+  )
+})
 
 describe('RequestedReviewNotificationsSubmission', () => {
   describe('when the form is valid', () => {

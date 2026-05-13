@@ -253,7 +253,7 @@ test
   .extend(areLoggedIn)
   .extend(hasAVerifiedEmailAddress)(
   'can received notifications for requested PREreviews being published',
-  async ({ page }, testInfo) => {
+  async ({ page }) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
 
     await menu.click()
@@ -274,7 +274,6 @@ test
 
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
 
-    testInfo.fail()
     await expect(
       page
         .getByRole('group', { name: 'Would you like to be notified a requested PREreview is published?' })
