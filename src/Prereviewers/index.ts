@@ -10,6 +10,7 @@ import { possiblePseudonyms } from '../types/Pseudonym.ts'
 import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
+import { HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests } from './HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
@@ -31,6 +32,9 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     getContactDetails: (
       orcid: OrcidId.OrcidId,
     ) => Effect.Effect<{ name: NonEmptyString.NonEmptyString; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
+    hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: Queries.FromOnDemandQuery<
+      typeof HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests
+    >
     optInToNotificationsForReviewsPublishedInResponseToRequests: (
       orcid: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof OptInToNotificationsForReviewsPublishedInResponseToRequests>>
@@ -69,6 +73,9 @@ export const layer = Layer.effect(
       Effect.andThen(CountAvailablePseudonyms),
       Effect.andThen(Queries.makeOnDemandQuery),
     )
+
+    const hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests =
+      yield* Queries.makeOnDemandQuery(HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests)
 
     const optInToNotificationsForReviewsPublishedInResponseToRequests = yield* Commands.makeCommand(
       OptInToNotificationsForReviewsPublishedInResponseToRequests,
@@ -135,6 +142,15 @@ export const layer = Layer.effect(
           'NameIsNotAvailable',
           error => new Queries.UnableToQuery({ cause: error }),
         ),
+      ),
+      hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(
+        function* (orcidId) {
+          if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
+            return yield* new Queries.UnableToQuery({ cause: 'Feature flag is turned off' })
+          }
+
+          return yield* hasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests(orcidId)
+        },
       ),
       optInToNotificationsForReviewsPublishedInResponseToRequests: Effect.fnUntraced(function* (orcidId) {
         if (!featureFlags.canNotifyReviewsPublishedInResponseToRequests) {
