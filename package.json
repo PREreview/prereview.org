@@ -85,7 +85,7 @@
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.16.1",
     "@types/turndown": "^5.0.6",
-    "@typescript/analyze-trace": "^0.10.1",
+    "@typescript/analyze-trace": "^0.11.0",
     "@vitest/expect": "^4.1.6",
     "babel-loader": "^10.1.1",
     "css-loader": "^7.1.4",
