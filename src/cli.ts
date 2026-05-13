@@ -7,6 +7,7 @@ import * as EventDispatcher from './EventDispatcher.ts'
 import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci } from './ExternalApis/index.ts'
 import { LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
+import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Prereviewers from './Prereviewers/index.ts'
 import * as ReviewRequest from './ReviewRequests/index.ts'
@@ -46,6 +47,7 @@ pipe(
         LoggingHttpClient.layer,
       ]),
       Layer.provide([
+        FeatureFlags.layerDefaults,
         NodeHttpClient.layer,
         OpenAlex.layerApiConfig({ key: Config.redacted('OPENALEX_API_KEY') }),
         Layer.effect(
