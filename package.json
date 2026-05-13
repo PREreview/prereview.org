@@ -121,7 +121,7 @@
     "stylelint-plugin-logical-css": "^2.1.0",
     "ts-deepmerge": "^7.0.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.2",
+    "typescript-eslint": "^8.59.3",
     "vitest": "^4.1.6",
     "webpack": "^5.106.2",
     "webpack-cli": "^7.0.2",
