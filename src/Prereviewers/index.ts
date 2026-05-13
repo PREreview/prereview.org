@@ -11,6 +11,7 @@ import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
+import type { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 import { ReplaceLegacyPseudonym } from './ReplaceLegacyPseudonym.ts'
 
@@ -28,6 +29,9 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     getContactDetails: (
       orcid: OrcidId.OrcidId,
     ) => Effect.Effect<{ name: NonEmptyString.NonEmptyString; email: EmailAddress.EmailAddress }, Queries.UnableToQuery>
+    optInToNotificationsForReviewsPublishedInResponseToRequests: (
+      orcid: OrcidId.OrcidId,
+    ) => ReturnType<Commands.FromCommand<typeof OptInToNotificationsForReviewsPublishedInResponseToRequests>>
   }
 >() {}
 
@@ -118,6 +122,8 @@ export const layer = Layer.effect(
           error => new Queries.UnableToQuery({ cause: error }),
         ),
       ),
+      optInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
     }
   }),
 )
