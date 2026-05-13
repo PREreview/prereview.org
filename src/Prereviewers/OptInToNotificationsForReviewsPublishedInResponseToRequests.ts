@@ -8,11 +8,13 @@ export interface Input {
   readonly optedInAt: Temporal.Instant
 }
 
-type State = PrereviewerHasOptedIn | PrereviewerHasNotOptedIn | UnknownPrereviewer
+type State = PrereviewerHasOptedIn | PrereviewerHasOptedOut | PrereviewerHasNotOptedIn | UnknownPrereviewer
 
 class PrereviewerHasOptedIn extends Data.TaggedClass('PrereviewerHasOptedIn')<{
   optedInAt: Temporal.Instant
 }> {}
+
+class PrereviewerHasOptedOut extends Data.TaggedClass('PrereviewerHasOptedOut') {}
 
 class PrereviewerHasNotOptedIn extends Data.TaggedClass('PrereviewerHasNotOptedIn') {}
 
@@ -27,6 +29,7 @@ const createFilter = (input: Input) =>
         'RegisteredPrereviewerImported',
         'PrereviewerRegistered',
         'PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests',
+        'PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests',
       ],
       predicates: { orcidId: input.orcidId },
     },
@@ -39,20 +42,32 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
     return new UnknownPrereviewer()
   }
 
-  const optedIn = Array.findLast(
+  const lastChoice = Array.findLast(
     filteredEvents,
-    hasTag('PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests'),
+    hasTag(
+      'PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests',
+      'PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests',
+    ),
   )
 
-  return Option.match(optedIn, {
+  return Option.match(lastChoice, {
     onNone: () => new PrereviewerHasNotOptedIn(),
-    onSome: ({ optedInAt }) => new PrereviewerHasOptedIn({ optedInAt }),
+    onSome: Match.valueTags({
+      PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests: event =>
+        new PrereviewerHasOptedIn({ optedInAt: event.optedInAt }),
+      PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests: () =>
+        new PrereviewerHasOptedOut(),
+    }),
   })
 }
 
 const decide = (state: State, input: Input) =>
   Match.valueTags(state, {
     PrereviewerHasNotOptedIn: () =>
+      Either.right(
+        Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+      ),
+    PrereviewerHasOptedOut: () =>
       Either.right(
         Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
       ),

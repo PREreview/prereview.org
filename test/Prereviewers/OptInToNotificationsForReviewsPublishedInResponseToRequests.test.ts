@@ -47,10 +47,27 @@ const optedInDifferentTime = new Events.PrereviewerOptedInToNotificationsForRevi
   optedInAt: now.subtract({ hours: 1 }),
 })
 
+const optedOut = new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests({
+  orcidId: input.orcidId,
+  optedOutAt: now.subtract({ minutes: 30 }),
+})
+
 const optedInDifferentPrereviewer =
   new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
-    ...optedIn,
     orcidId: importedDifferentPrereviewer.orcidId,
+    optedInAt: now.subtract({ hours: 1 }),
+  })
+
+const optedOutDifferentPrereviewer =
+  new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: importedDifferentPrereviewer.orcidId,
+    optedOutAt: now.subtract({ hours: 30 }),
+  })
+
+const optedOutAgainDifferentPrereviewer =
+  new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: importedDifferentPrereviewer.orcidId,
+    optedOutAt: now.subtract({ hours: 10 }),
   })
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
@@ -86,6 +103,73 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
   [
     'registered, opted in, different PREreviewer',
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'imported, opted out',
+    [imported, optedIn, optedOut],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'registered, opted out',
+    [registered, optedIn, optedOut],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'imported, opted out, different PREreviewer',
+    [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'registered, opted out, different PREreviewer',
+    [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  ['imported, opted in again', [imported, optedInDifferentTime, optedOut, optedIn], input, Either.right(Option.none())],
+  [
+    'registered, opted in again',
+    [registered, optedInDifferentTime, optedOut, optedIn],
+    input,
+    Either.right(Option.none()),
+  ],
+  [
+    'imported, opted in again, different PREreviewer',
+    [
+      imported,
+      importedDifferentPrereviewer,
+      optedInDifferentPrereviewer,
+      optedOutDifferentPrereviewer,
+      optedOutAgainDifferentPrereviewer,
+    ],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'registered, opted in again, different PREreviewer',
+    [
+      registered,
+      registeredDifferentPrereviewer,
+      optedInDifferentPrereviewer,
+      optedOutDifferentPrereviewer,
+      optedOutAgainDifferentPrereviewer,
+    ],
     input,
     Either.right(
       Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
