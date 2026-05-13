@@ -184,13 +184,13 @@ importers:
         version: 0.41.0(@effect/experimental@0.60.0(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2)(ioredis@5.10.1))(@effect/platform@0.96.1(effect@3.21.2))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2)(ioredis@5.10.1))(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2))(effect@3.21.2)
       '@effect/vitest':
         specifier: ^0.29.0
-        version: 0.29.0(effect@3.21.2)(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))
+        version: 0.29.0(effect@3.21.2)(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.3.0(jiti@2.6.1))
       '@fast-check/vitest':
         specifier: ^0.4.1
-        version: 0.4.1(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))
+        version: 0.4.1(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))
       '@ibm/plex':
         specifier: ^6.4.1
         version: 6.4.1
@@ -228,8 +228,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^24.12.4
+        version: 24.12.4
       '@types/nodemailer':
         specifier: ^8.0.0
         version: 8.0.0
@@ -355,7 +355,7 @@ importers:
         version: 8.59.2(eslint@10.3.0(jiti@2.6.1))(typescript@6.0.3)
       vitest:
         specifier: ^4.1.6
-        version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
+        version: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
       webpack:
         specifier: ^5.106.2
         version: 5.106.2(webpack-cli@7.0.2)
@@ -2183,8 +2183,8 @@ packages:
   '@types/mjml@5.0.0':
     resolution: {integrity: sha512-z6P0yjEOVOz6cZVyD3vkPSifzVH0fa9M8BFM8Jl9HtpeFkBJyCZHRLPx1uFnkZijgAYmtO/JfSbp4EF1fNwsXQ==}
 
-  '@types/node@24.12.3':
-    resolution: {integrity: sha512-8oljBDGun9cIsZRJR6fkihn0TSXJI0UDOOhncYaERq6M0JMDoPLxyscwruJcb4GKS6dvK/d8xebYBg27h/duaQ==}
+  '@types/node@24.12.4':
+    resolution: {integrity: sha512-GUUEShf+PBCGW2KaXwcIt3Yk+e3pkKwWKb9GSyM9WQVE+ep2jzmHdGsHzu4wgcZy5fN9FBdVzjpBQsYlpfpgLA==}
 
   '@types/nodemailer@8.0.0':
     resolution: {integrity: sha512-fyf8jWULsCo0d0BuoQ75i6IeoHs47qcqxWc7yUdUcV0pOZGjUTTOvwdG1PRXUDqN/8A64yQdQdnA2pZgcdi+cA==}
@@ -7371,10 +7371,10 @@ snapshots:
     dependencies:
       effect: 3.21.2
 
-  '@effect/vitest@0.29.0(effect@3.21.2)(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))':
+  '@effect/vitest@0.29.0(effect@3.21.2)(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))':
     dependencies:
       effect: 3.21.2
-      vitest: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
+      vitest: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
 
   '@effect/workflow@0.18.1(@effect/experimental@0.60.0(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2)(ioredis@5.10.1))(@effect/platform@0.96.1(effect@3.21.2))(@effect/rpc@0.75.0(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2))(effect@3.21.2)':
     dependencies:
@@ -7449,10 +7449,10 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-check/vitest@0.4.1(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))':
+  '@fast-check/vitest@0.4.1(vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)))':
     dependencies:
       fast-check: 3.23.2
-      vitest: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
+      vitest: 4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
 
   '@hapi/address@5.1.1':
     dependencies:
@@ -7495,7 +7495,7 @@ snapshots:
 
   '@jest/pattern@30.0.1':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       jest-regex-util: 30.0.1
 
   '@jest/schemas@30.0.5':
@@ -7508,7 +7508,7 @@ snapshots:
       '@jest/schemas': 30.0.5
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -8088,7 +8088,7 @@ snapshots:
 
   '@types/cookie-signature@1.1.2':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
 
   '@types/deep-eql@4.0.2': {}
 
@@ -8139,13 +8139,13 @@ snapshots:
     dependencies:
       '@types/mjml-core': 5.0.0
 
-  '@types/node@24.12.3':
+  '@types/node@24.12.4':
     dependencies:
       undici-types: 7.16.0
 
   '@types/nodemailer@8.0.0':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
 
   '@types/pegjs@0.10.6': {}
 
@@ -8161,7 +8161,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -8341,13 +8341,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.6(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))':
+  '@vitest/mocker@4.1.6(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))':
     dependencies:
       '@vitest/spy': 4.1.6
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)
+      vite: 8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)
 
   '@vitest/pretty-format@4.1.6':
     dependencies:
@@ -10050,7 +10050,7 @@ snapshots:
   jest-util@30.3.0:
     dependencies:
       '@jest/types': 30.3.0
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -10058,13 +10058,13 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@30.3.0:
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       '@ungap/structured-clone': 1.3.0
       jest-util: 30.3.0
       merge-stream: 2.0.0
@@ -12483,7 +12483,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3):
+  vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -12491,16 +12491,16 @@ snapshots:
       rolldown: 1.0.0-rc.17
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
       fsevents: 2.3.3
       jiti: 2.6.1
       terser: 5.46.1
       yaml: 2.8.3
 
-  vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.3)(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)):
+  vitest@4.1.6(@opentelemetry/api@1.9.1)(@types/node@24.12.4)(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.6
-      '@vitest/mocker': 4.1.6(vite@8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
+      '@vitest/mocker': 4.1.6(vite@8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))
       '@vitest/pretty-format': 4.1.6
       '@vitest/runner': 4.1.6
       '@vitest/snapshot': 4.1.6
@@ -12517,11 +12517,11 @@ snapshots:
       tinyexec: 1.1.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vite: 8.0.10(@types/node@24.12.3)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)
+      vite: 8.0.10(@types/node@24.12.4)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
-      '@types/node': 24.12.3
+      '@types/node': 24.12.4
     transitivePeerDependencies:
       - msw
 
