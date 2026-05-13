@@ -5,6 +5,7 @@ import {
   areLoggedIn,
   canLogIn,
   canLogInAsDemoUser,
+  canNotifyReviewsPublishedInResponseToRequests,
   canRegisterAsNewUser,
   expect,
   hasAVerifiedEmailAddress,
@@ -246,7 +247,11 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+test
+  .extend(canNotifyReviewsPublishedInResponseToRequests)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)(
   'can received notifications for requested PREreviews being published',
   async ({ page }, testInfo) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))
@@ -254,9 +259,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await menu.click()
     await page.getByRole('link', { name: 'My details' }).click()
 
-    testInfo.fail()
     await expect(page.getByRole('main')).toContainText('Requested review notifications Off')
 
+    testInfo.fail()
+    await expect(page.getByRole('link', { name: 'Change requested review notifications' })).toBeVisible()
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
 
     await page
@@ -278,7 +284,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+test
+  .extend(canNotifyReviewsPublishedInResponseToRequests)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)(
   'have to say if you want to receive notifications for requested PREreviews being published',
   async ({ javaScriptEnabled, page }, testInfo) => {
     const menu = page.getByRole('button', { name: 'Menu' }).or(page.getByRole('link', { name: 'Menu' }))

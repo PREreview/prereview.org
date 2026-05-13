@@ -99,6 +99,7 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canAddMultipleAuthors: (typeof FeatureFlags.FeatureFlags.Service)['canAddMultipleAuthors']
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
+  canNotifyReviewsPublishedInResponseToRequests: (typeof FeatureFlags.FeatureFlags.Service)['canNotifyReviewsPublishedInResponseToRequests']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
   emails: Array<nodemailer.SendMailOptions>
   seedEvents: ReadonlyArray<Events.Event>
@@ -115,6 +116,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canLogInAsDemoUser: async ({}, use) => {
+    await use(false)
+  },
+  canNotifyReviewsPublishedInResponseToRequests: async ({}, use) => {
     await use(false)
   },
   careerStageStore: async ({}, use) => {
@@ -2406,6 +2410,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         nodemailer,
         canAddMultipleAuthors,
         canLogInAsDemoUser,
+        canNotifyReviewsPublishedInResponseToRequests,
         sqlClientLayer,
         seedEvents,
       },
@@ -2442,6 +2447,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
           FeatureFlags.layer({
             canAddMultipleAuthors,
             canLogInAsDemoUser,
+            canNotifyReviewsPublishedInResponseToRequests,
           }),
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),
@@ -2614,6 +2620,16 @@ export const canLogInAsDemoUser: Fixtures<
   Pick<AppFixtures, 'canLogInAsDemoUser' | 'seedEvents'>
 > = {
   canLogInAsDemoUser: async ({}, use) => {
+    await use(true)
+  },
+}
+
+export const canNotifyReviewsPublishedInResponseToRequests: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canNotifyReviewsPublishedInResponseToRequests'>
+> = {
+  canNotifyReviewsPublishedInResponseToRequests: async ({}, use) => {
     await use(true)
   },
 }
