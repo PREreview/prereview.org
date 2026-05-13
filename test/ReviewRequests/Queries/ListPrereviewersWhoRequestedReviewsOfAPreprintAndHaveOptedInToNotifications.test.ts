@@ -54,6 +54,15 @@ const prereviewer1OptedIn = new Events.PrereviewerOptedInToNotificationsForRevie
   orcidId: prereviewer1,
   optedInAt: now.subtract({ hours: 1 }),
 })
+const prereviewer1OptedOut = new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests({
+  orcidId: prereviewer1,
+  optedOutAt: now.subtract({ minutes: 30 }),
+})
+const prereviewer1OptedInAgain =
+  new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
+    orcidId: prereviewer1,
+    optedInAt: now.subtract({ minutes: 10 }),
+  })
 const prereviewer2OptedIn = new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests({
   orcidId: prereviewer2,
   optedInAt: now.subtract({ hours: 1 }),
@@ -70,7 +79,26 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     [request1Started, prereviewer1OptedIn, request1Published],
     HashSet.make(prereviewer1),
   ],
+  [
+    'published opted-out',
+    preprintId1,
+    [request1Started, prereviewer1OptedIn, prereviewer1OptedOut, request1Published],
+    HashSet.empty(),
+  ],
+  [
+    'published opted-in again',
+    preprintId1,
+    [request1Started, prereviewer1OptedIn, prereviewer1OptedOut, prereviewer1OptedInAgain, request1Published],
+    HashSet.make(prereviewer1),
+  ],
   ['imported opted-in', preprintId1, [request1Imported, prereviewer1OptedIn], HashSet.make(prereviewer1)],
+  ['imported opted-out', preprintId1, [request1Imported, prereviewer1OptedIn, prereviewer1OptedOut], HashSet.empty()],
+  [
+    'imported opted-in again',
+    preprintId1,
+    [request1Imported, prereviewer1OptedIn, prereviewer1OptedOut, prereviewer1OptedInAgain],
+    HashSet.make(prereviewer1),
+  ],
   [
     'published opted-in, indeterminate ID',
     preprintId1Indeterminate,

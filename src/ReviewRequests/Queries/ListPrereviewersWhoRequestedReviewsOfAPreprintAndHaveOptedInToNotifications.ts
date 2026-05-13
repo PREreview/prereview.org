@@ -17,6 +17,7 @@ const filter = Events.EventFilter({
     'ReviewRequestForAPreprintWasWithdrawn',
     'ReviewRequestByAPrereviewerWasImported',
     'PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests',
+    'PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests',
   ],
 })
 
@@ -109,6 +110,7 @@ const updateReviewRequestsStateWithPertinentEvent = (
         requesterId: event.requester.orcidId,
       } satisfies PublishedReviewRequest),
     PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests: () => state,
+    PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests: () => state,
   })
 
 const updateReviewRequestsByPreprintIdStateWithPertinentEvent = (
@@ -137,6 +139,7 @@ const updateReviewRequestsByPreprintIdStateWithPertinentEvent = (
         ),
       ),
     PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests: () => state,
+    PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests: () => state,
   })
 
 const updatePreviewersOptedInToNotificationsStateWithPertinentEvent = (
@@ -150,6 +153,8 @@ const updatePreviewersOptedInToNotificationsStateWithPertinentEvent = (
     ReviewRequestByAPrereviewerWasImported: () => state,
     PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests: event =>
       HashSet.add(state, event.orcidId),
+    PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests: event =>
+      HashSet.remove(state, event.orcidId),
   })
 
 const query = (state: State, preprintId: Input): Result => {
