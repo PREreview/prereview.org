@@ -53,15 +53,13 @@ describe('requestReviewStart', () => {
             })
             expect(getNextExpectedCommandForAUserOnAReviewRequest).toHaveBeenCalledWith({ reviewRequestId: uuid })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-                Layer.mock(ReviewRequests.ReviewRequestCommands, { startReviewRequest: () => Effect.void }),
-                Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, { startReviewRequest: () => Effect.void }),
+              Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
+            ]),
           ),
       )
 
@@ -95,18 +93,16 @@ describe('requestReviewStart', () => {
               js: [],
             })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-                Layer.mock(ReviewRequests.ReviewRequestCommands, { startReviewRequest: () => error }),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                  findReviewRequestByAPrereviewer: () => Effect.succeedNone,
-                }),
-                Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+              Layer.mock(ReviewRequests.ReviewRequestCommands, { startReviewRequest: () => error }),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {
+                findReviewRequestByAPrereviewer: () => Effect.succeedNone,
+              }),
+              Layer.mock(Uuid.GenerateUuid, { v4: () => Effect.succeed(uuid) }),
+            ]),
           ),
       )
     })
@@ -130,18 +126,16 @@ describe('requestReviewStart', () => {
             location: Routes.RequestAReviewPublished.href({ preprintId: preprintTitle.id }),
           })
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.succeed(Locale, locale),
-              Layer.succeed(LoggedInUser, user),
-              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
-              }),
-              Layer.mock(Uuid.GenerateUuid, {}),
-            ),
-          ),
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
+            }),
+            Layer.mock(Uuid.GenerateUuid, {}),
+          ]),
         ),
     )
 
@@ -170,19 +164,17 @@ describe('requestReviewStart', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.succeed(Locale, locale),
-              Layer.succeed(LoggedInUser, user),
-              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
-              Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
-                getNextExpectedCommandForAUserOnAReviewRequest: () => Effect.succeed(nextExpectedCommand),
-              }),
-              Layer.mock(Uuid.GenerateUuid, {}),
-            ),
-          ),
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
+              getNextExpectedCommandForAUserOnAReviewRequest: () => Effect.succeed(nextExpectedCommand),
+            }),
+            Layer.mock(Uuid.GenerateUuid, {}),
+          ]),
         ),
     )
   })
@@ -199,15 +191,13 @@ describe('requestReviewStart', () => {
           location: Routes.RequestAReviewStartNow.href({ preprintId }),
         })
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.succeed(Locale, locale),
-            Layer.mock(Preprints.Preprints, {}),
-            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
-            Layer.mock(Uuid.GenerateUuid, {}),
-          ),
-        ),
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.mock(Preprints.Preprints, {}),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
+          Layer.mock(Uuid.GenerateUuid, {}),
+        ]),
       ),
   )
 })

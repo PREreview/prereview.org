@@ -26,7 +26,7 @@ it.effect.prop('RequestedReviewNotificationsPage', [fc.supportedLocale(), fc.use
       skipToLabel: 'form',
       js: [],
     })
-  }).pipe(Effect.provide(Layer.mergeAll(Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)))),
+  }).pipe(Effect.provide([Layer.succeed(Locale, locale), Layer.succeed(LoggedInUser, user)])),
 )
 
 describe('RequestedReviewNotificationsSubmission', () => {
@@ -45,15 +45,13 @@ describe('RequestedReviewNotificationsSubmission', () => {
               location: format(Routes.myDetailsMatch.formatter, {}),
             })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Prereviewers, {
-                  optInToNotificationsForReviewsPublishedInResponseToRequests: () => Effect.void,
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Prereviewers, {
+                optInToNotificationsForReviewsPublishedInResponseToRequests: () => Effect.void,
+              }),
+            ]),
           ),
       )
 
@@ -78,15 +76,13 @@ describe('RequestedReviewNotificationsSubmission', () => {
               js: [],
             })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Prereviewers, {
-                  optInToNotificationsForReviewsPublishedInResponseToRequests: () => error,
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Prereviewers, {
+                optInToNotificationsForReviewsPublishedInResponseToRequests: () => error,
+              }),
+            ]),
           ),
       )
     })
@@ -105,15 +101,13 @@ describe('RequestedReviewNotificationsSubmission', () => {
               location: format(Routes.myDetailsMatch.formatter, {}),
             })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Prereviewers, {
-                  optOutOfNotificationsForReviewsPublishedInResponseToRequests: () => Effect.void,
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Prereviewers, {
+                optOutOfNotificationsForReviewsPublishedInResponseToRequests: () => Effect.void,
+              }),
+            ]),
           ),
       )
 
@@ -138,15 +132,13 @@ describe('RequestedReviewNotificationsSubmission', () => {
               js: [],
             })
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                Layer.succeed(Locale, locale),
-                Layer.succeed(LoggedInUser, user),
-                Layer.mock(Prereviewers, {
-                  optOutOfNotificationsForReviewsPublishedInResponseToRequests: () => error,
-                }),
-              ),
-            ),
+            Effect.provide([
+              Layer.succeed(Locale, locale),
+              Layer.succeed(LoggedInUser, user),
+              Layer.mock(Prereviewers, {
+                optOutOfNotificationsForReviewsPublishedInResponseToRequests: () => error,
+              }),
+            ]),
           ),
       )
     })
@@ -181,13 +173,11 @@ describe('RequestedReviewNotificationsSubmission', () => {
           js: ['error-summary.js'],
         })
       }).pipe(
-        Effect.provide(
-          Layer.mergeAll(
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-            Layer.mock(Prereviewers, {}),
-          ),
-        ),
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Prereviewers, {}),
+        ]),
       ),
   )
 })

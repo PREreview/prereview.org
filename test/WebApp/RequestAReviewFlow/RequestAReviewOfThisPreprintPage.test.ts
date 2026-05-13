@@ -25,13 +25,10 @@ describe('requestReview', () => {
               Effect.succeed(preprint),
             )
 
-            const actual = yield* Effect.provide(
-              _.RequestAReviewOfThisPreprintPage({ preprintId }),
-              Layer.mergeAll(
-                Layer.mock(Preprints.Preprints, { getPreprintTitle }),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, { findReviewRequestByAPrereviewer }),
-              ),
-            )
+            const actual = yield* Effect.provide(_.RequestAReviewOfThisPreprintPage({ preprintId }), [
+              Layer.mock(Preprints.Preprints, { getPreprintTitle }),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, { findReviewRequestByAPrereviewer }),
+            ])
 
             expect(actual).toStrictEqual({
               _tag: 'PageResponse',
@@ -46,7 +43,7 @@ describe('requestReview', () => {
             })
             expect(findReviewRequestByAPrereviewer).toHaveBeenCalledWith({ requesterId: user.orcid, preprintId })
             expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-          }).pipe(Effect.provide(Layer.mergeAll(Layer.succeed(LoggedInUser, user), Layer.succeed(Locale, locale)))),
+          }).pipe(Effect.provide([Layer.succeed(LoggedInUser, user), Layer.succeed(Locale, locale)])),
       )
 
       it.effect.prop(
@@ -73,13 +70,11 @@ describe('requestReview', () => {
             })
             expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                user ? Layer.succeed(LoggedInUser, user) : Layer.empty,
-                Layer.succeed(Locale, locale),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
-              ),
-            ),
+            Effect.provide([
+              user ? Layer.succeed(LoggedInUser, user) : Layer.empty,
+              Layer.succeed(Locale, locale),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
+            ]),
           ),
       )
 
@@ -107,13 +102,11 @@ describe('requestReview', () => {
             })
             expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
           }).pipe(
-            Effect.provide(
-              Layer.mergeAll(
-                user ? Layer.succeed(LoggedInUser, user) : Layer.empty,
-                Layer.succeed(Locale, locale),
-                Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
-              ),
-            ),
+            Effect.provide([
+              user ? Layer.succeed(LoggedInUser, user) : Layer.empty,
+              Layer.succeed(Locale, locale),
+              Layer.mock(ReviewRequests.ReviewRequestQueries, {}),
+            ]),
           ),
       )
     })
@@ -140,16 +133,14 @@ describe('requestReview', () => {
             location: Routes.RequestAReviewStartNow.href({ preprintId: preprint.id }),
           })
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.succeed(LoggedInUser, user),
-              Layer.succeed(Locale, locale),
-              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.succeed(LoggedInUser, user),
+            Layer.succeed(Locale, locale),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer: () => Effect.succeedSome(reviewRequest),
+            }),
+          ]),
         ),
     )
 
@@ -175,16 +166,14 @@ describe('requestReview', () => {
             js: [],
           })
         }).pipe(
-          Effect.provide(
-            Layer.mergeAll(
-              Layer.succeed(LoggedInUser, user),
-              Layer.succeed(Locale, locale),
-              Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
-              Layer.mock(ReviewRequests.ReviewRequestQueries, {
-                findReviewRequestByAPrereviewer: () => error,
-              }),
-            ),
-          ),
+          Effect.provide([
+            Layer.succeed(LoggedInUser, user),
+            Layer.succeed(Locale, locale),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprint) }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, {
+              findReviewRequestByAPrereviewer: () => error,
+            }),
+          ]),
         ),
     )
   })
