@@ -261,8 +261,6 @@ test
 
     await expect(page.getByRole('main')).toContainText('Requested review notifications Off')
 
-    testInfo.fail()
-    await expect(page.getByRole('link', { name: 'Change requested review notifications' })).toBeVisible()
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
 
     await page
@@ -272,6 +270,7 @@ test
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    testInfo.fail()
     await expect(page.getByRole('main')).toContainText('Requested review notifications On')
 
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
@@ -295,12 +294,11 @@ test
 
     await menu.click()
     await page.getByRole('link', { name: 'My details' }).click()
-    testInfo.fail()
-    await expect(page.getByRole('link', { name: 'Change requested review notifications' })).toBeVisible()
     await page.getByRole('link', { name: 'Change requested review notifications' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    testInfo.fail()
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {

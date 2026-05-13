@@ -11,6 +11,7 @@ import type { Location } from '../../location.ts'
 import type { OrcidToken } from '../../orcid-token.ts'
 import type * as Personas from '../../Personas/index.ts'
 import type { ResearchInterests } from '../../research-interests.ts'
+import * as Routes from '../../routes.ts'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,
@@ -252,6 +253,11 @@ export function createPage({
                   <div>
                     <dt><span>Requested review notifications</span></dt>
                     <dd>Off</dd>
+                    <dd>
+                      <a href="${Routes.ChangeRequestedReviewNotifications}"
+                        >Change <span class="visually-hidden">requested review notifications</span></a
+                      >
+                    </dd>
                   </div>
                 `,
               ),
@@ -261,6 +267,11 @@ export function createPage({
                   <div>
                     <dt><span>Requested review notifications</span></dt>
                     <dd>On</dd>
+                    <dd>
+                      <a href="${Routes.ChangeRequestedReviewNotifications}"
+                        >Change <span class="visually-hidden">requested review notifications</span></a
+                      >
+                    </dd>
                   </div>
                 `,
               ),
