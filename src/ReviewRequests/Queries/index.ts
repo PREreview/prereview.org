@@ -16,6 +16,7 @@ import { GetReviewRequestToAcknowledge } from './GetReviewRequestToAcknowledge.t
 import { ListAllPublishedReviewRequestsByAPrereviewer } from './ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { ListAllPublishedReviewRequestsForStats } from './ListAllPublishedReviewRequestsForStats.ts'
 import { ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint } from './ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint.ts'
+import type { ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications } from './ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
 import { SearchForPublishedReviewRequests } from './SearchForPublishedReviewRequests.ts'
 
 export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
@@ -42,6 +43,9 @@ export class ReviewRequestQueries extends Context.Tag('ReviewRequestQueries')<
     listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: Queries.FromStatefulQuery<
       typeof ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint
     >
+    listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: Queries.FromStatefulQuery<
+      typeof ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications
+    >
   }
 >() {}
 
@@ -61,6 +65,7 @@ export const {
   listAllPublishedReviewRequestsByAPrereviewer,
   listAllPublishedReviewRequestsForStats,
   listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
+  listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications,
 } = Effect.serviceFunctions(ReviewRequestQueries)
 
 export type { RecentReviewRequest } from './GetFiveMostRecentReviewRequests.ts'
@@ -101,6 +106,8 @@ const makeReviewRequestQueries: Effect.Effect<
     listPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint: yield* Queries.makeStatefulQuery(
       ListPrereviewersWhoHaveOptedInToNotificationsForReviewsOfAPreprint,
     ),
+    listPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications: () =>
+      new Queries.UnableToQuery({ cause: 'not implemented' }),
   }
 })
 
