@@ -12,6 +12,7 @@ import { GetPseudonym } from './GetPseudonym.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import type { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import type { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
 import { ReplaceLegacyPseudonym } from './ReplaceLegacyPseudonym.ts'
 
@@ -32,6 +33,9 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     optInToNotificationsForReviewsPublishedInResponseToRequests: (
       orcid: OrcidId.OrcidId,
     ) => ReturnType<Commands.FromCommand<typeof OptInToNotificationsForReviewsPublishedInResponseToRequests>>
+    optOutOfNotificationsForReviewsPublishedInResponseToRequests: (
+      orcid: OrcidId.OrcidId,
+    ) => ReturnType<Commands.FromCommand<typeof OptOutOfNotificationsForReviewsPublishedInResponseToRequests>>
   }
 >() {}
 
@@ -123,6 +127,8 @@ export const layer = Layer.effect(
         ),
       ),
       optInToNotificationsForReviewsPublishedInResponseToRequests: () =>
+        new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      optOutOfNotificationsForReviewsPublishedInResponseToRequests: () =>
         new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
     }
   }),
