@@ -48,5 +48,5 @@ export const RequestedReviewNotificationsSubmission: (
       }),
     })
   },
-  Effect.catchTag('PrereviewerHasNotOptedIn', 'UnableToHandleCommand', 'UnknownPrereviewer', () => HavingProblemsPage),
+  Effect.catchTag('UnableToHandleCommand', 'UnknownPrereviewer', () => HavingProblemsPage),
 )

@@ -110,7 +110,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
   ],
   [
     'imported, opted out',
-    [imported, optedIn, optedOut],
+    [imported, optedOut],
     input,
     Either.right(
       Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
@@ -118,6 +118,22 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
   ],
   [
     'registered, opted out',
+    [registered, optedOut],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'imported, opted in and out',
+    [imported, optedIn, optedOut],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedInToNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'registered, opted in and out',
     [registered, optedIn, optedOut],
     input,
     Either.right(
@@ -125,7 +141,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     ),
   ],
   [
-    'imported, opted out, different PREreviewer',
+    'imported, opted in and out, different PREreviewer',
     [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
     Either.right(
@@ -133,7 +149,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     ),
   ],
   [
-    'registered, opted out, different PREreviewer',
+    'registered, opted in and out, different PREreviewer',
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
     Either.right(

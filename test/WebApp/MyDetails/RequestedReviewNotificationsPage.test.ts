@@ -6,7 +6,6 @@ import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import { UnknownPrereviewer } from '../../../src/Prereviewers/OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
-import { PrereviewerHasNotOptedIn } from '../../../src/Prereviewers/OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
@@ -124,15 +123,7 @@ describe('RequestedReviewNotificationsSubmission', () => {
           fc.supportedLocale(),
           fc.user(),
           fc.urlParams(fc.constant({ requestedReviewNotifications: 'no' })),
-          fc
-            .anything()
-            .chain(cause =>
-              fc.constantFrom(
-                new UnableToHandleCommand({ cause }),
-                new UnknownPrereviewer(),
-                new PrereviewerHasNotOptedIn(),
-              ),
-            ),
+          fc.anything().chain(cause => fc.constantFrom(new UnableToHandleCommand({ cause }), new UnknownPrereviewer())),
         ],
         ([locale, user, body, error]) =>
           Effect.gen(function* () {

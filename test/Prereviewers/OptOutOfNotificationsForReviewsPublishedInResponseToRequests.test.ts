@@ -78,8 +78,22 @@ const optedOutAgainDifferentPrereviewer =
 
 test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.UnknownPrereviewer())],
-  ['imported, not opted in', [imported], input, Either.left(new _.PrereviewerHasNotOptedIn())],
-  ['registered, not opted in', [registered], input, Either.left(new _.PrereviewerHasNotOptedIn())],
+  [
+    'imported, not opted in',
+    [imported],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
+  [
+    'registered, not opted in',
+    [registered],
+    input,
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
+  ],
   [
     'imported, opted in',
     [imported, optedIn],
@@ -96,31 +110,37 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
     ),
   ],
-  ['imported, opted out, same details', [imported, optedIn, optedOut], input, Either.right(Option.none())],
-  ['registered, opted out, same details', [registered, optedIn, optedOut], input, Either.right(Option.none())],
+  ['imported, opted out, same details', [imported, optedOut], input, Either.right(Option.none())],
+  ['registered, opted out, same details', [registered, optedOut], input, Either.right(Option.none())],
+  ['imported, opted in and out, same details', [imported, optedIn, optedOut], input, Either.right(Option.none())],
+  ['registered, opted in and out, same details', [registered, optedIn, optedOut], input, Either.right(Option.none())],
   [
-    'imported, opted out, different timestamp',
+    'imported, opted in and out, different timestamp',
     [imported, optedIn, optedOutDifferentTimestamp],
     input,
     Either.right(Option.none()),
   ],
   [
-    'registered, opted out, different timestamp',
+    'registered, opted in and out, different timestamp',
     [registered, optedIn, optedOutDifferentTimestamp],
     input,
     Either.right(Option.none()),
   ],
   [
-    'imported, opted out, different PREreviewer',
+    'imported, opted in and out, different PREreviewer',
     [imported, importedDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
-    Either.left(new _.PrereviewerHasNotOptedIn()),
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
   ],
   [
-    'registered, opted out, different PREreviewer',
+    'registered, opted in and out, different PREreviewer',
     [registered, registeredDifferentPrereviewer, optedInDifferentPrereviewer, optedOutDifferentPrereviewer],
     input,
-    Either.left(new _.PrereviewerHasNotOptedIn()),
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
   ],
   [
     'imported, opted in again',
@@ -148,7 +168,9 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       optedOutAgainDifferentPrereviewer,
     ],
     input,
-    Either.left(new _.PrereviewerHasNotOptedIn()),
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
   ],
   [
     'registered, opted in again, different PREreviewer',
@@ -160,7 +182,9 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
       optedOutAgainDifferentPrereviewer,
     ],
     input,
-    Either.left(new _.PrereviewerHasNotOptedIn()),
+    Either.right(
+      Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+    ),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.OptOutOfNotificationsForReviewsPublishedInResponseToRequests

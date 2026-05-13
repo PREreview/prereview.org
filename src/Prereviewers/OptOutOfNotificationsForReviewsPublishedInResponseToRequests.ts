@@ -14,9 +14,9 @@ class PrereviewerHasOptedIn extends Data.TaggedClass('PrereviewerHasOptedIn') {}
 
 class PrereviewerHasOptedOut extends Data.TaggedClass('PrereviewerHasOptedOut') {}
 
-export type Error = PrereviewerHasNotOptedIn | UnknownPrereviewer
+class PrereviewerHasNotOptedIn extends Data.TaggedClass('PrereviewerHasNotOptedIn') {}
 
-export class PrereviewerHasNotOptedIn extends Data.TaggedError('PrereviewerHasNotOptedIn') {}
+export type Error = UnknownPrereviewer
 
 export class UnknownPrereviewer extends Data.TaggedError('UnknownPrereviewer') {}
 
@@ -60,7 +60,10 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 
 const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
   Match.valueTags(state, {
-    PrereviewerHasNotOptedIn: state => Either.left(state),
+    PrereviewerHasNotOptedIn: () =>
+      Either.right(
+        Option.some(new Events.PrereviewerOptedOutOfNotificationsForReviewsPublishedInResponseToTheirRequests(input)),
+      ),
     PrereviewerHasOptedOut: () => Either.right(Option.none()),
     PrereviewerHasOptedIn: () =>
       Either.right(
