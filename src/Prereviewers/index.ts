@@ -16,13 +16,11 @@ import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
-import { ReplaceLegacyPseudonym } from './ReplaceLegacyPseudonym.ts'
 
 export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
-    replaceLegacyPseudonym: Commands.FromCommand<ReturnType<typeof ReplaceLegacyPseudonym>>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
@@ -53,12 +51,6 @@ export const layer = Layer.effect(
     const getContactEmailAddress = yield* GetContactEmailAddress
 
     const registerPrereviewer = yield* Commands.makeCommand(RegisterPrereviewer)
-
-    const replaceLegacyPseudonym = yield* pipe(
-      possiblePseudonyms,
-      Effect.andThen(ReplaceLegacyPseudonym),
-      Effect.andThen(Commands.makeCommand),
-    )
 
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
@@ -101,7 +93,6 @@ export const layer = Layer.effect(
           error => new UnableToHandleCommand({ cause: error }),
         ),
       ),
-      replaceLegacyPseudonym,
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       countAvailablePseudonyms,
