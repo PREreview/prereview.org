@@ -40,7 +40,10 @@ const createFilter = (input: Input) =>
 const isPseudonymRegisteredToDifferentOrcidId = (
   input: Input,
   event: Events.RegisteredPrereviewerImported | Events.PrereviewerRegistered | Events.LegacyPseudonymReplaced,
-) => event.pseudonym === input.pseudonym && event.orcidId !== input.orcidId
+) =>
+  event._tag !== 'RegisteredPrereviewerImported' &&
+  event.pseudonym === input.pseudonym &&
+  event.orcidId !== input.orcidId
 
 const isPrereviewerRegistered = (events: ReadonlyArray<Events.Event>, input: Input) =>
   Array.some(events, event => event._tag === 'PrereviewerRegistered' && event.orcidId === input.orcidId)

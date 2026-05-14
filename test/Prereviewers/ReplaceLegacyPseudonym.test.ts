@@ -48,6 +48,7 @@ const registered = new Events.PrereviewerRegistered({
   pseudonym: Pseudonym('Orange Panda'),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const otherPrereviewerImportedWithSame = new Events.RegisteredPrereviewerImported({
   orcidId: OrcidId('0000-0002-6109-0367'),
   registeredAt: Temporal.Now.instant(),
@@ -70,6 +71,18 @@ const otherPrereviewerReplacedWithSame = new Events.LegacyPseudonymReplaced({
   orcidId: OrcidId('0000-0002-6109-0367'),
   replacedAt: Temporal.Now.instant(),
   pseudonym: input.pseudonym,
+})
+
+const otherPrereviewerImportedWithNonLegacy = new Events.RegisteredPrereviewerImported({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  registeredAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Orange Panda'),
+})
+
+const otherPrereviewerRerolled = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId('0000-0002-6109-0367'),
+  replacedAt: Temporal.Now.instant(),
+  pseudonym: Pseudonym('Green Horse'),
 })
 
 const possiblePseudonyms = new Set([Pseudonym('Orange Panda'), Pseudonym('Green Horse')])
@@ -98,12 +111,6 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
   ],
   ['registered rather than imported', [registered], input, Either.left(new _.PrereviewerDoesNotHaveLegacyPseudonym())],
   [
-    'pseudonym already in use by imported PREreviewer',
-    [importWithLegacy, otherPrereviewerImportedWithSame],
-    input,
-    Either.left(new _.PseudonymAlreadyInUse()),
-  ],
-  [
     'pseudonym already in use by registered PREreviewer',
     [importWithLegacy, otherPrereviewerRegisteredWithSame],
     input,
@@ -114,6 +121,12 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     [importWithLegacy, otherPrereviewerImportedWithLegacy, otherPrereviewerReplacedWithSame],
     input,
     Either.left(new _.PseudonymAlreadyInUse()),
+  ],
+  [
+    'new case',
+    [importWithLegacy, otherPrereviewerImportedWithNonLegacy, otherPrereviewerRerolled],
+    input,
+    Either.right(Option.some(new Events.LegacyPseudonymReplaced(input))),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ReplaceLegacyPseudonym(possiblePseudonyms)
