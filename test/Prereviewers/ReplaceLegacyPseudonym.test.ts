@@ -24,6 +24,7 @@ const importWithSameNonLegacy = new Events.RegisteredPrereviewerImported({
   pseudonym: input.pseudonym,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importWithDifferentNonLegacy = new Events.RegisteredPrereviewerImported({
   orcidId: input.orcidId,
   registeredAt: 'not available from import source',
@@ -36,6 +37,7 @@ const replacedWithSame = new Events.LegacyPseudonymReplaced({
   pseudonym: input.pseudonym,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const replacedWithDifferent = new Events.LegacyPseudonymReplaced({
   orcidId: input.orcidId,
   replacedAt: Temporal.Now.instant(),
