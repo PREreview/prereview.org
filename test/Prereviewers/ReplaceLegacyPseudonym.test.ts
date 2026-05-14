@@ -24,7 +24,6 @@ const importWithSameNonLegacy = new Events.RegisteredPrereviewerImported({
   pseudonym: input.pseudonym,
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importWithDifferentNonLegacy = new Events.RegisteredPrereviewerImported({
   orcidId: input.orcidId,
   registeredAt: 'not available from import source',
@@ -37,7 +36,6 @@ const replacedWithSame = new Events.LegacyPseudonymReplaced({
   pseudonym: input.pseudonym,
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const replacedWithDifferent = new Events.LegacyPseudonymReplaced({
   orcidId: input.orcidId,
   replacedAt: Temporal.Now.instant(),
@@ -85,7 +83,19 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Op
     Either.right(Option.some(new Events.LegacyPseudonymReplaced(input))),
   ],
   ['imported with same non-legacy pseudonym', [importWithSameNonLegacy], input, Either.right(Option.none())],
+  [
+    'imported with different non-legacy pseudonym',
+    [importWithDifferentNonLegacy],
+    input,
+    Either.left(new _.PrereviewerDoesNotHaveLegacyPseudonym()),
+  ],
   ['already replaced with same pseudonym', [importWithLegacy, replacedWithSame], input, Either.right(Option.none())],
+  [
+    'already replaced with different pseudonym',
+    [importWithLegacy, replacedWithDifferent],
+    input,
+    Either.left(new _.PrereviewerDoesNotHaveLegacyPseudonym()),
+  ],
   ['registered rather than imported', [registered], input, Either.left(new _.PrereviewerDoesNotHaveLegacyPseudonym())],
   [
     'pseudonym already in use by imported PREreviewer',
