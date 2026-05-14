@@ -1,6 +1,7 @@
-import { Array, Either, flow, type Types } from 'effect'
+import { Array, Either, flow, HashMap } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
 import type { Pseudonym } from '../types/Pseudonym.ts'
 
 export interface Result {
@@ -21,11 +22,16 @@ const query =
 
     const filteredEvents = Array.filter(events, Events.matches(filter))
 
-    const replacedPseudonyms = Array.filter(filteredEvents, hasTag('LegacyPseudonymReplaced')).length
+    const currentPseudonyms = Array.reduce(
+      filteredEvents,
+      HashMap.empty<OrcidId, Pseudonym>(),
+      (currentPseudonyms, event) => HashMap.set(currentPseudonyms, event.orcidId, event.pseudonym),
+    )
 
-    const used = Array.filter(filteredEvents, event => possiblePseudonyms.has(event.pseudonym)).length
-    const legacyUsed =
-      Array.filter(filteredEvents, event => !possiblePseudonyms.has(event.pseudonym)).length - replacedPseudonyms
+    const legacyPseudonymsInUse = HashMap.filter(currentPseudonyms, pseudonym => !possiblePseudonyms.has(pseudonym))
+
+    const legacyUsed = HashMap.size(legacyPseudonymsInUse)
+    const used = HashMap.size(currentPseudonyms) - legacyUsed
 
     return {
       used,
@@ -40,7 +46,3 @@ export const CountAvailablePseudonyms = (possiblePseudonyms: Set<Pseudonym>) =>
     createFilter,
     query: flow(query(possiblePseudonyms), Either.right),
   })
-
-function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
-  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
-}

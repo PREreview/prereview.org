@@ -30,6 +30,18 @@ const imported2replaced = new Events.LegacyPseudonymReplaced({
   replacedAt: Temporal.Now.instant().subtract({ hours: 1 }),
 })
 
+const imported1rerolled = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
+  pseudonym: Pseudonym.Pseudonym('Green Horse'),
+  replacedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+})
+
+const imported2replacedWithFreedUp = new Events.LegacyPseudonymReplaced({
+  orcidId: OrcidId.OrcidId('0000-0002-5753-2556'),
+  pseudonym: Pseudonym.Pseudonym('Orange Panda'),
+  replacedAt: Temporal.Now.instant().subtract({ hours: 1 }),
+})
+
 const possiblePseudonyms = new Set([
   Pseudonym.Pseudonym('Orange Panda'),
   Pseudonym.Pseudonym('Blue Sheep'),
@@ -45,6 +57,11 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     'all pseudonyms used after legacy pseudonym replaced',
     [imported1, imported2, registered3, imported2replaced],
     { used: 3, legacyUsed: 0, available: 0 },
+  ],
+  [
+    'imported pseudonym re-rolled and used to replace legacy pseudonym',
+    [imported1, imported2, imported1rerolled, imported2replacedWithFreedUp],
+    { used: 2, legacyUsed: 0, available: 1 },
   ],
 ])('%s', (_name, events, expected) => {
   const { query } = _.CountAvailablePseudonyms(possiblePseudonyms)
