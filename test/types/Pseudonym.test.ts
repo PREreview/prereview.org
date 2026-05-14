@@ -133,6 +133,6 @@ describe('possiblePseudonyms', () => {
   })
 
   it('contains all combinations of colors and animals', () => {
-    expect(result.size).toStrictEqual((72 - 1) * 89)
+    expect(result.size).toStrictEqual((73 - 1) * 89)
   })
 })

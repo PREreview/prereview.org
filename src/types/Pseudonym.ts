@@ -26,6 +26,7 @@ const Color = Schema.Literal(
   'Aliceblue',
   'Amber',
   'Amthyst', // [sic]
+  'Amethyst',
   'Beige',
   'Black',
   'Blue',
