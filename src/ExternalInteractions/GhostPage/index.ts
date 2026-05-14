@@ -3,6 +3,7 @@ import type { Locale } from '../../Context.ts'
 import type { Ghost } from '../../ExternalApis/index.ts'
 import type { Html } from '../../html.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
+import { addListOfClubs } from './AddListOfClubs.ts'
 import { getPage } from './GetPage.ts'
 import { getGhostIdAndLocaleForPage, type PageId } from './PageIds.ts'
 
@@ -27,7 +28,7 @@ export const layer = Layer.effect(
 
     return flow(
       getGhostIdAndLocaleForPage,
-      Effect.bind('html', ({ id }) => getPage(id)),
+      Effect.bind('html', ({ id, locale }) => Effect.andThen(getPage(id), addListOfClubs(locale))),
       Effect.tapError(error => Effect.logError('Failed to load ghost page').pipe(Effect.annotateLogs({ error }))),
       Effect.catchTag('GhostPageNotFound', 'GhostPageUnavailable', () => new PageIsUnavailable()),
       Effect.provide(context),
