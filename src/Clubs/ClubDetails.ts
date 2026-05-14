@@ -165,6 +165,18 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     added: Temporal.PlainDate.from('2024-07-25'),
     leads: [{ name: 'Anna Oliveras', orcid: OrcidId('0000-0002-5880-5245') }],
   },
+  'bio-ed': {
+    name: 'Bio-Ed Preprint Review Community',
+    description: html`
+      <p>
+        We are a community of biology education students, researchers, and educators who collaboratively review emerging
+        bio-ed preprints.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-05-14'),
+    leads: [{ name: 'Josie L. Otto', orcid: OrcidId('0009-0003-5210-9091') }],
+    joinLink: new URL('https://forms.gle/3az7nTJGXjmQSKef7'),
+  },
   biobio: {
     name: 'Open Science Community BioBío (OSCB)',
     description: html`

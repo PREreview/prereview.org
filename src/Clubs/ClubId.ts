@@ -11,6 +11,7 @@ export const ClubIdSchema = Schema.Literal(
   'asapbio-microbiology',
   'asapbio-neurobiology',
   'bimsb-neuroscience',
+  'bio-ed',
   'biobio',
   'biomass-biocatalysis',
   'biopeers-slu',
