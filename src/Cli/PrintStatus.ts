@@ -23,9 +23,6 @@ const program = pipe(
     ),
     onFailure: Console.log,
   }),
-  Effect.andThen(Prereviewers.listPrereviewersWithLegacyPseudonym),
-  Effect.andThen(data => JSON.stringify(data)),
-  Effect.andThen(Console.log),
   Effect.andThen(Console.log('Review requests needing categorization')),
   Effect.andThen(ReviewRequests.findReviewRequestsNeedingCategorization),
   Effect.tapBoth({
