@@ -23,9 +23,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   Prereviewers,
   {
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
-    replaceLegacyPseudonym: (
-      orcid: OrcidId.OrcidId,
-    ) => ReturnType<Commands.FromCommand<ReturnType<typeof ReplaceLegacyPseudonym>>>
+    replaceLegacyPseudonym: Commands.FromCommand<ReturnType<typeof ReplaceLegacyPseudonym>>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
@@ -117,18 +115,7 @@ export const layer = Layer.effect(
           error => new UnableToHandleCommand({ cause: error }),
         ),
       ),
-      replaceLegacyPseudonym: Effect.fnUntraced(
-        function* (orcidId) {
-          const input = {
-            orcidId,
-            replacedAt: yield* Temporal.currentInstant,
-            pseudonym: yield* getAvailablePseudonym(),
-          }
-
-          yield* replaceLegacyPseudonym(input)
-        },
-        Effect.catchTag('NoPseudonymAvailable', error => new UnableToHandleCommand({ cause: error })),
-      ),
+      replaceLegacyPseudonym,
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       countAvailablePseudonyms,

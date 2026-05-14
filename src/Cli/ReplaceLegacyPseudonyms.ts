@@ -1,8 +1,12 @@
 import { Command } from '@effect/cli'
 import { Console, Effect, Schema, Stream, String } from 'effect'
-import { replayExistingEvents } from '../EventDispatcher.ts'
 import { Prereviewers } from '../Prereviewers/index.ts'
-import { OrcidId } from '../types/index.ts'
+import { OrcidId, Pseudonym, Temporal } from '../types/index.ts'
+
+const PrereviewerSchema = Schema.Struct({
+  orcidId: OrcidId.OrcidIdSchema,
+  pseudonym: Pseudonym.PseudonymSchema,
+})
 
 const program = Effect.fnUntraced(function* () {
   const prereviewers = yield* Prereviewers
@@ -14,14 +18,13 @@ const program = Effect.fnUntraced(function* () {
 
   const input = yield* Stream.runFold(stdinStream, '', String.concat)
 
-  const decoded = yield* Schema.decode(Schema.parseJson(Schema.Array(OrcidId.OrcidIdSchema)))(input)
+  const decoded = yield* Schema.decode(Schema.parseJson(Schema.Array(PrereviewerSchema)))(input)
 
-  yield* Effect.forEach(
-    decoded,
-    Effect.fnUntraced(function* (orcidId) {
-      yield* replayExistingEvents
+  yield* Effect.forEach(decoded, ({ orcidId, pseudonym }) =>
+    Effect.gen(function* () {
+      const replacedAt = yield* Temporal.currentInstant
 
-      yield* prereviewers.replaceLegacyPseudonym(orcidId)
+      yield* prereviewers.replaceLegacyPseudonym({ orcidId, pseudonym, replacedAt })
     }),
   )
 }, Effect.tapError(Console.log))
