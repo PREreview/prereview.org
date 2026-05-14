@@ -64,10 +64,10 @@ smoketest:
 	docker compose down
 
 typecheck: node_modules src/manifest.json
-	npx tsc --incremental --tsBuildInfoFile ".cache/tsc"
+	npx tsgo --incremental --tsBuildInfoFile ".cache/tsc"
 
 typecheck-watch: node_modules src/manifest.json
-	npx tsc --watch --incremental --tsBuildInfoFile ".cache/tsc"
+	npx tsgo --watch --incremental --tsBuildInfoFile ".cache/tsc"
 
 typecheck-analyze: node_modules src/manifest.json
 	npx tsc --incremental false --generateTrace ".cache/tsc-trace"
