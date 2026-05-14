@@ -8,7 +8,7 @@ WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
 
 # REDIS BACKUP
-REDIS_PASSWORD=$(fly redis status "$APP" 2>/dev/null | awk -F'[/:@]' '/Private URL/{print $5}')
+REDIS_PASSWORD=$(fly redis status "$APP" 2> /dev/null | awk -F'[/:@]' '/Private URL/{print $5}')
 
 for key in $(redis-cli -p 16379 -a "$REDIS_PASSWORD" --no-auth-warning --scan --pattern '*'); do
   type=$(redis-cli -p 16379 -a "$REDIS_PASSWORD" --no-auth-warning TYPE "$key")
@@ -19,12 +19,12 @@ for key in $(redis-cli -p 16379 -a "$REDIS_PASSWORD" --no-auth-warning --scan --
   else
     echo "can't backup: $key (type: $type)" >&2
   fi
-done >"$WORK_DIR/redis.jsonl"
+done > "$WORK_DIR/redis.jsonl"
 
 # EVENTS BACKUP
-echo 'COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);' |
-  fly mpg connect nvwq9oz78qe03kl1 -u readonly -d "$APP" \
-    >"$WORK_DIR/events.csv"
+echo 'COPY (SELECT * FROM events ORDER BY position) TO STDOUT WITH (FORMAT CSV, HEADER);' \
+  | fly mpg connect nvwq9oz78qe03kl1 -u readonly -d "$APP" \
+    > "$WORK_DIR/events.csv"
 
 # CREATE TARBALL
 tar -czf "$WORK_DIR/dump.tar.gz" -C "$WORK_DIR" events.csv redis.jsonl
