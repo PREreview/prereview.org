@@ -82,24 +82,21 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
 }
 
 const decide =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (possiblePseudonyms: Set<Pseudonym.Pseudonym>) =>
-  (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
-    Match.valueTags(state, {
-      PrereviewerImported: state => {
-        if (state.pseudonym === input.pseudonym) {
-          return Either.right(Option.none())
-        }
+    (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+      Match.valueTags(state, {
+        PrereviewerImported: state => {
+          if (state.pseudonym === input.pseudonym) {
+            return Either.right(Option.none())
+          }
 
-        if (possiblePseudonyms.has(state.pseudonym)) {
-          return Either.left(new PrereviewerDoesNotHaveLegacyPseudonym())
-        }
-
-        return Either.right(Option.some(new Events.LegacyPseudonymReplaced(input)))
-      },
-      PrereviewerRegistered: () => Either.left(new PrereviewerDoesNotHaveLegacyPseudonym()),
-      PrereviewerNotRegistered: state => Either.left(state),
-      PseudonymAlreadyInUse: state => Either.left(state),
-    })
+          return Either.right(Option.some(new Events.LegacyPseudonymReplaced(input)))
+        },
+        PrereviewerRegistered: () => Either.left(new PrereviewerDoesNotHaveLegacyPseudonym()),
+        PrereviewerNotRegistered: state => Either.left(state),
+        PseudonymAlreadyInUse: state => Either.left(state),
+      })
 
 export const ReplaceLegacyPseudonym = (possiblePseudonyms: Set<Pseudonym.Pseudonym>) =>
   Commands.Command({
