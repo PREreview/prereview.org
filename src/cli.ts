@@ -39,13 +39,9 @@ pipe(
         Orcid.layer,
         Philsci.layer,
       ]),
-      Layer.provide(SqlEventStore.layer),
-      Layer.provide([
-        Events.layer,
-        SqlSensitiveDataStore.layer,
-        EventDispatcher.EventDispatcherLayer,
-        LoggingHttpClient.layer,
-      ]),
+      Layer.provideMerge(SqlEventStore.layer),
+      Layer.provide([Events.layer, SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
+      Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
       Layer.provide([
         FeatureFlags.layerDefaults,
         NodeHttpClient.layer,

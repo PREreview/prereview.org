@@ -1,5 +1,6 @@
 import { Command } from '@effect/cli'
 import { Console, Effect, Schema, Stream, String } from 'effect'
+import { replayExistingEvents } from '../EventDispatcher.ts'
 import { Prereviewers } from '../Prereviewers/index.ts'
 import { OrcidId } from '../types/index.ts'
 
@@ -15,7 +16,14 @@ const program = Effect.fnUntraced(function* () {
 
   const decoded = yield* Schema.decode(Schema.parseJson(Schema.Array(OrcidId.OrcidIdSchema)))(input)
 
-  yield* Effect.forEach(decoded, prereviewers.replaceLegacyPseudonym)
+  yield* Effect.forEach(
+    decoded,
+    Effect.fnUntraced(function* (orcidId) {
+      yield* replayExistingEvents
+
+      yield* prereviewers.replaceLegacyPseudonym(orcidId)
+    }),
+  )
 }, Effect.tapError(Console.log))
 
 export const ReplaceLegacyPseudonyms = Command.make('replace-legacy-pseudonyms', {}, program)
