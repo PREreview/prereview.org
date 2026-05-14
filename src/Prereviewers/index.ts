@@ -70,10 +70,6 @@ export const layer = Layer.effect(
 
     const getAvailablePseudonym = yield* pipe(
       possiblePseudonyms,
-      Effect.andThen(pseudonyms => {
-        const withoutAmethyst = new Set([...pseudonyms].filter(pseudonym => !pseudonym.startsWith('Amethyst')))
-        return withoutAmethyst
-      }),
       Effect.andThen(GetAvailablePseudonym),
       Effect.andThen(Queries.makeStatefulQuery),
     )
