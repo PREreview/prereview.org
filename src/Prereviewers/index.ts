@@ -13,6 +13,7 @@ import { GetPseudonym } from './GetPseudonym.ts'
 import { HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests } from './HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
+import { ListPrereviewersWithLegacyPseudonym } from './ListPrereviewersWithLegacyPseudonym.ts'
 import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
@@ -28,6 +29,9 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
+    listPrereviewersWithLegacyPseudonym: Queries.FromOnDemandQuery<
+      ReturnType<typeof ListPrereviewersWithLegacyPseudonym>
+    >
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
     getContactDetails: (
       orcid: OrcidId.OrcidId,
@@ -44,8 +48,12 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   }
 >() {}
 
-export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContactDetails } =
-  Effect.serviceFunctions(Prereviewers)
+export const {
+  countAvailablePseudonyms,
+  listAllPrereviewersForStats,
+  getContactDetails,
+  listPrereviewersWithLegacyPseudonym,
+} = Effect.serviceFunctions(Prereviewers)
 
 export const layer = Layer.effect(
   Prereviewers,
@@ -71,6 +79,12 @@ export const layer = Layer.effect(
     const countAvailablePseudonyms = yield* pipe(
       possiblePseudonyms,
       Effect.andThen(CountAvailablePseudonyms),
+      Effect.andThen(Queries.makeOnDemandQuery),
+    )
+
+    const listPrereviewersWithLegacyPseudonym = yield* pipe(
+      possiblePseudonyms,
+      Effect.andThen(ListPrereviewersWithLegacyPseudonym),
       Effect.andThen(Queries.makeOnDemandQuery),
     )
 
@@ -118,6 +132,7 @@ export const layer = Layer.effect(
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
       countAvailablePseudonyms,
+      listPrereviewersWithLegacyPseudonym,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
       getContactDetails: Effect.fn('Prereviewers.getContactDetails')(
         function* (orcidId) {
