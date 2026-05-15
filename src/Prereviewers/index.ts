@@ -42,7 +42,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
   }
 >() {}
 
-export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContactDetails } =
+export const { countAvailablePseudonyms, listAllPrereviewersForStats, getContactDetails, isPseudonymInUse } =
   Effect.serviceFunctions(Prereviewers)
 
 export const layer = Layer.effect(

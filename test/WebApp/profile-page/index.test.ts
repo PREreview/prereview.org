@@ -1,12 +1,19 @@
 import { describe, expect, it, vi } from '@effect/vitest'
-import { Effect } from 'effect'
+import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
+import {
+  PseudonymHasBeenReplaced,
+  PseudonymInUse,
+  PseudonymNotInUse,
+} from '../../../src/Prereviewers/IsPseudonymInUse.ts'
+import { Prereviewers } from '../../../src/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Prereviews/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/profile-page/index.ts'
 import { plainText } from '../../../src/html.ts'
 import { profileMatch } from '../../../src/routes.ts'
+import { ProfileId } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
@@ -75,6 +82,7 @@ describe('profile', () => {
           const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
           const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
           const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
+          const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
@@ -87,6 +95,7 @@ describe('profile', () => {
               getResearchInterests,
               getSlackUser,
               isOpenForRequests,
+              runtime,
             }),
           )
 
@@ -108,7 +117,7 @@ describe('profile', () => {
           expect(getResearchInterests).toHaveBeenCalledWith(profile.orcid)
           expect(getSlackUser).toHaveBeenCalledWith(profile.orcid)
           expect(isOpenForRequests).toHaveBeenCalledWith(profile.orcid)
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -146,6 +155,8 @@ describe('profile', () => {
       ],
       ([locale, profile, avatar, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.of(avatar),
@@ -157,6 +168,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -168,7 +180,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -206,6 +218,8 @@ describe('profile', () => {
       ],
       ([locale, profile, avatar, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.of(avatar),
@@ -217,6 +231,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -228,7 +243,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -266,6 +281,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -277,6 +294,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -289,7 +307,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -327,6 +345,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('unavailable'),
@@ -338,6 +358,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -349,7 +370,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -387,6 +408,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -398,6 +421,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -409,7 +433,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -447,6 +471,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -458,6 +484,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('unavailable'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -469,7 +496,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -507,6 +534,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -518,6 +547,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -529,7 +559,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -567,6 +597,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -578,6 +610,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -589,7 +622,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -627,6 +660,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -638,6 +673,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('unavailable'),
               isOpenForRequests: () => TE.left('not-found'),
+              runtime,
             }),
           )
 
@@ -649,7 +685,7 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
 
     it.effect.prop(
@@ -687,6 +723,8 @@ describe('profile', () => {
       ],
       ([locale, profile, name, prereviews]) =>
         Effect.gen(function* () {
+          const runtime = yield* Effect.runtime<Prereviewers>()
+
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
               getAvatar: () => TE.left('not-found'),
@@ -698,6 +736,7 @@ describe('profile', () => {
               getResearchInterests: () => TE.left('not-found'),
               getSlackUser: () => TE.left('not-found'),
               isOpenForRequests: () => TE.left('unavailable'),
+              runtime,
             }),
           )
 
@@ -709,102 +748,184 @@ describe('profile', () => {
             skipToLabel: 'main',
             js: [],
           })
-        }),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
     )
   })
 
   describe('with a pseudonym', () => {
-    it.effect.prop(
-      'when the data can be loaded',
-      [
-        fc.supportedLocale(),
-        fc.pseudonymProfileId(),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
+    describe('when the pseudonym is used', () => {
+      it.effect.prop(
+        'when the data can be loaded',
+        [
+          fc.supportedLocale(),
+          fc.pseudonymProfileId(),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
           ),
-        ),
-      ],
-      ([locale, profile, prereviews]) =>
-        Effect.gen(function* () {
-          const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+        ],
+        ([locale, profile, prereviews]) =>
+          Effect.gen(function* () {
+            const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+            const runtime = yield* Effect.runtime<Prereviewers>()
 
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: shouldNotBeCalled,
-              getCareerStage: shouldNotBeCalled,
-              getLanguages: () => TE.left('not-found'),
-              getLocation: shouldNotBeCalled,
-              getName: shouldNotBeCalled,
-              getPrereviews,
-              getResearchInterests: shouldNotBeCalled,
-              getSlackUser: shouldNotBeCalled,
-              isOpenForRequests: shouldNotBeCalled,
-            }),
-          )
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: shouldNotBeCalled,
+                getCareerStage: shouldNotBeCalled,
+                getLanguages: () => TE.left('not-found'),
+                getLocation: shouldNotBeCalled,
+                getName: shouldNotBeCalled,
+                getPrereviews,
+                getResearchInterests: shouldNotBeCalled,
+                getSlackUser: shouldNotBeCalled,
+                isOpenForRequests: shouldNotBeCalled,
+                runtime,
+              }),
+            )
 
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            canonical: format(profileMatch.formatter, { profile }),
-            status: StatusCodes.OK,
-            title: expect.plainTextContaining(profile.pseudonym),
-            main: expect.htmlContaining(profile.pseudonym),
-            skipToLabel: 'main',
-            js: [],
-          })
-          expect(getPrereviews).toHaveBeenCalledWith(profile)
-        }),
-    )
-  })
-})
-
-it.effect.prop(
-  "when the PREreviews can't be loaded",
-  [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })],
-  ([locale, profile, avatar, name]) =>
-    Effect.gen(function* () {
-      const actual = yield* Effect.promise(
-        _.profile({ locale, profile })({
-          getAvatar: () => TE.of(avatar),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.left('unavailable'),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              canonical: format(profileMatch.formatter, { profile }),
+              status: StatusCodes.OK,
+              title: expect.plainTextContaining(profile.pseudonym),
+              main: expect.htmlContaining(profile.pseudonym),
+              skipToLabel: 'main',
+              js: [],
+            })
+            expect(getPrereviews).toHaveBeenCalledWith(profile)
+          }).pipe(
+            Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()) })),
+          ),
       )
+    })
+  })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: StatusCodes.ServiceUnavailable,
-        title: expect.anything(),
-        main: expect.anything(),
-        skipToLabel: 'main',
-        js: [],
-      })
-    }),
-)
+  it.effect.prop(
+    "when the PREreviews can't be loaded",
+    [fc.supportedLocale(), fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })],
+    ([locale, profile, avatar, name]) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
+        const actual = yield* Effect.promise(
+          _.profile({ locale, profile })({
+            getAvatar: () => TE.of(avatar),
+            getCareerStage: () => TE.left('not-found'),
+            getLanguages: () => TE.left('not-found'),
+            getLocation: () => TE.left('not-found'),
+            getName: () => TE.of(name),
+            getPrereviews: () => TE.left('unavailable'),
+            getResearchInterests: () => TE.left('not-found'),
+            getSlackUser: () => TE.left('not-found'),
+            isOpenForRequests: () => TE.left('not-found'),
+            runtime,
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()) })),
+      ),
+  )
+
+  it.effect.prop(
+    'when the pseudonym is not used',
+    [fc.supportedLocale(), fc.pseudonymProfileId()],
+    ([locale, profile]) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
+        const actual = yield* Effect.promise(
+          _.profile({ locale, profile })({
+            getAvatar: shouldNotBeCalled,
+            getCareerStage: shouldNotBeCalled,
+            getLanguages: shouldNotBeCalled,
+            getLocation: shouldNotBeCalled,
+            getName: shouldNotBeCalled,
+            getPrereviews: shouldNotBeCalled,
+            getResearchInterests: shouldNotBeCalled,
+            getSlackUser: shouldNotBeCalled,
+            isOpenForRequests: shouldNotBeCalled,
+            runtime,
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.NotFound,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymNotInUse()) })),
+      ),
+  )
+
+  it.effect.prop(
+    'when the pseudonym was replaced',
+    [fc.supportedLocale(), fc.pseudonymProfileId(), fc.pseudonym()],
+    ([locale, profile, replacedWith]) =>
+      Effect.gen(function* () {
+        const runtime = yield* Effect.runtime<Prereviewers>()
+
+        const actual = yield* Effect.promise(
+          _.profile({ locale, profile })({
+            getAvatar: shouldNotBeCalled,
+            getCareerStage: shouldNotBeCalled,
+            getLanguages: shouldNotBeCalled,
+            getLocation: shouldNotBeCalled,
+            getName: shouldNotBeCalled,
+            getPrereviews: shouldNotBeCalled,
+            getResearchInterests: shouldNotBeCalled,
+            getSlackUser: shouldNotBeCalled,
+            isOpenForRequests: shouldNotBeCalled,
+            runtime,
+          }),
+        )
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: StatusCodes.MovedPermanently,
+          location: format(profileMatch.formatter, { profile: ProfileId.forPseudonym(replacedWith) }),
+        })
+      }).pipe(
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            isPseudonymInUse: () => Effect.succeed(new PseudonymHasBeenReplaced({ replacedWith })),
+          }),
+        ),
+      ),
+  )
+})

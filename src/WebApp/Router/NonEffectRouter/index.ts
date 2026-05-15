@@ -359,6 +359,7 @@ const routerWithoutHyperTs = pipe(
                 isOpenForRequestsStore: env.users.isOpenForRequestsStore,
                 ...env.logger,
               }),
+              runtime: env.runtime,
             }),
       ),
     ),
