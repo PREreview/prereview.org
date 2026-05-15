@@ -19,736 +19,768 @@ import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {
-    it.effect.prop(
-      'when the data can be loaded',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.url(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
+    describe('when the ORCID iD is registered', () => {
+      it.effect.prop(
+        'when the data can be loaded',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.url(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
           ),
-        ),
-        fc.either(fc.constant('not-found'), fc.careerStage()),
-        fc.either(fc.constant('not-found'), fc.researchInterests()),
-        fc.either(fc.constant('not-found'), fc.location()),
-        fc.either(fc.constant('not-found'), fc.languages()),
-        fc.either(fc.constant('not-found'), fc.slackUser()),
-        fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
-      ],
-      ([
-        locale,
-        profile,
-        avatar,
-        name,
-        prereviews,
-        careerStage,
-        researchInterests,
-        location,
-        languages,
-        slackUser,
-        openForRequests,
-      ]) =>
+          fc.either(fc.constant('not-found'), fc.careerStage()),
+          fc.either(fc.constant('not-found'), fc.researchInterests()),
+          fc.either(fc.constant('not-found'), fc.location()),
+          fc.either(fc.constant('not-found'), fc.languages()),
+          fc.either(fc.constant('not-found'), fc.slackUser()),
+          fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
+        ],
+        ([
+          locale,
+          profile,
+          avatar,
+          name,
+          prereviews,
+          careerStage,
+          researchInterests,
+          location,
+          languages,
+          slackUser,
+          openForRequests,
+        ]) =>
+          Effect.gen(function* () {
+            const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
+            const getName = vi.fn<_.Env['getName']>(_ => TE.of(name))
+            const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+            const getCareerStage = vi.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
+            const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
+            const getLocation = vi.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
+            const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
+            const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
+            const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar,
+                getCareerStage,
+                getLanguages,
+                getLocation,
+                getName,
+                getPrereviews,
+                getResearchInterests,
+                getSlackUser,
+                isOpenForRequests,
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              canonical: format(profileMatch.formatter, { profile }),
+              status: StatusCodes.OK,
+              title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
+              main: expect.htmlContaining(profile.orcid),
+              skipToLabel: 'main',
+              js: [],
+            })
+            expect(getAvatar).toHaveBeenCalledWith(profile.orcid)
+            expect(getCareerStage).toHaveBeenCalledWith(profile.orcid)
+            expect(getLanguages).toHaveBeenCalledWith(profile.orcid)
+            expect(getLocation).toHaveBeenCalledWith(profile.orcid)
+            expect(getName).toHaveBeenCalledWith(profile.orcid)
+            expect(getPrereviews).toHaveBeenCalledWith(profile)
+            expect(getResearchInterests).toHaveBeenCalledWith(profile.orcid)
+            expect(getSlackUser).toHaveBeenCalledWith(profile.orcid)
+            expect(isOpenForRequests).toHaveBeenCalledWith(profile.orcid)
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        "when the name can't be found",
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.url(),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, avatar, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.of(avatar),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.left('not-found'),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.NotFound,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the name is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.url(),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, avatar, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.of(avatar),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.left('unavailable'),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        "when the avatar can't be found",
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              canonical: format(profileMatch.formatter, { profile }),
+              status: StatusCodes.OK,
+              title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
+              main: expect.htmlContaining(profile.orcid),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the avatar is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('unavailable'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the career stage is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('unavailable'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the research interests are unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('unavailable'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the location is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('unavailable'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when languages are unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('unavailable'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when the Slack user is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('unavailable'),
+                isOpenForRequests: () => TE.left('not-found'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+
+      it.effect.prop(
+        'when being open for requests is unavailable',
+        [
+          fc.supportedLocale(),
+          fc.orcidProfileId(),
+          fc.option(fc.nonEmptyString(), { nil: undefined }),
+          fc.array(
+            fc.oneof(
+              fc
+                .record({
+                  id: fc.integer(),
+                  reviewers: fc.record({
+                    named: fc.nonEmptyArray(fc.nonEmptyString()),
+                    anonymous: fc.integer({ min: 0 }),
+                  }),
+                  published: fc.plainDate(),
+                  fields: fc.array(fc.fieldId()),
+                  subfields: fc.array(fc.subfieldId()),
+                  preprint: fc.preprintTitle(),
+                })
+                .map(args => new Prereviews.RecentPreprintPrereview(args)),
+              fc
+                .record({
+                  id: fc.uuid(),
+                  doi: fc.doi(),
+                  author: fc.persona(),
+                  published: fc.plainDate(),
+                  dataset: fc.datasetTitle(),
+                })
+                .map(args => new Prereviews.RecentDatasetPrereview(args)),
+            ),
+          ),
+        ],
+        ([locale, profile, name, prereviews]) =>
+          Effect.gen(function* () {
+            const runtime = yield* Effect.runtime<Prereviewers>()
+
+            const actual = yield* Effect.promise(
+              _.profile({ locale, profile })({
+                getAvatar: () => TE.left('not-found'),
+                getCareerStage: () => TE.left('not-found'),
+                getLanguages: () => TE.left('not-found'),
+                getLocation: () => TE.left('not-found'),
+                getName: () => TE.of(name),
+                getPrereviews: () => TE.of(prereviews),
+                getResearchInterests: () => TE.left('not-found'),
+                getSlackUser: () => TE.left('not-found'),
+                isOpenForRequests: () => TE.left('unavailable'),
+                runtime,
+              }),
+            )
+
+            expect(actual).toStrictEqual({
+              _tag: 'PageResponse',
+              status: StatusCodes.ServiceUnavailable,
+              title: expect.anything(),
+              main: expect.anything(),
+              skipToLabel: 'main',
+              js: [],
+            })
+          }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(true) }))),
+      )
+    })
+
+    it.effect.prop(
+      'when the ORCID iD is not registered',
+      [fc.supportedLocale(), fc.orcidProfileId()],
+      ([locale, profile]) =>
         Effect.gen(function* () {
-          const getAvatar = vi.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
-          const getName = vi.fn<_.Env['getName']>(_ => TE.of(name))
-          const getPrereviews = vi.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
-          const getCareerStage = vi.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
-          const getResearchInterests = vi.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
-          const getLocation = vi.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
-          const getLanguages = vi.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
-          const getSlackUser = vi.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
-          const isOpenForRequests = vi.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
           const runtime = yield* Effect.runtime<Prereviewers>()
 
           const actual = yield* Effect.promise(
             _.profile({ locale, profile })({
-              getAvatar,
-              getCareerStage,
-              getLanguages,
-              getLocation,
-              getName,
-              getPrereviews,
-              getResearchInterests,
-              getSlackUser,
-              isOpenForRequests,
+              getAvatar: () => shouldNotBeCalled,
+              getCareerStage: () => shouldNotBeCalled,
+              getLanguages: () => shouldNotBeCalled,
+              getLocation: () => shouldNotBeCalled,
+              getName: () => shouldNotBeCalled,
+              getPrereviews: () => shouldNotBeCalled,
+              getResearchInterests: () => shouldNotBeCalled,
+              getSlackUser: () => shouldNotBeCalled,
+              isOpenForRequests: () => shouldNotBeCalled,
               runtime,
             }),
           )
 
           expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            canonical: format(profileMatch.formatter, { profile }),
-            status: StatusCodes.OK,
-            title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
-            main: expect.htmlContaining(profile.orcid),
-            skipToLabel: 'main',
-            js: [],
+            _tag: 'RedirectResponse',
+            status: StatusCodes.SeeOther,
+            location: new URL(`https://orcid.org/${profile.orcid}`),
           })
-          expect(getAvatar).toHaveBeenCalledWith(profile.orcid)
-          expect(getCareerStage).toHaveBeenCalledWith(profile.orcid)
-          expect(getLanguages).toHaveBeenCalledWith(profile.orcid)
-          expect(getLocation).toHaveBeenCalledWith(profile.orcid)
-          expect(getName).toHaveBeenCalledWith(profile.orcid)
-          expect(getPrereviews).toHaveBeenCalledWith(profile)
-          expect(getResearchInterests).toHaveBeenCalledWith(profile.orcid)
-          expect(getSlackUser).toHaveBeenCalledWith(profile.orcid)
-          expect(isOpenForRequests).toHaveBeenCalledWith(profile.orcid)
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      "when the name can't be found",
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.url(),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, avatar, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.of(avatar),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.left('not-found'),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.NotFound,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the name is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.url(),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, avatar, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.of(avatar),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.left('unavailable'),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      "when the avatar can't be found",
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            canonical: format(profileMatch.formatter, { profile }),
-            status: StatusCodes.OK,
-            title: expect.plainTextContaining(name ? plainText(name).toString() : profile.orcid),
-            main: expect.htmlContaining(profile.orcid),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the avatar is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('unavailable'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the career stage is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('unavailable'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the research interests are unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('unavailable'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the location is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('unavailable'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when languages are unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('unavailable'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when the Slack user is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('unavailable'),
-              isOpenForRequests: () => TE.left('not-found'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
-    )
-
-    it.effect.prop(
-      'when being open for requests is unavailable',
-      [
-        fc.supportedLocale(),
-        fc.orcidProfileId(),
-        fc.option(fc.nonEmptyString(), { nil: undefined }),
-        fc.array(
-          fc.oneof(
-            fc
-              .record({
-                id: fc.integer(),
-                reviewers: fc.record({
-                  named: fc.nonEmptyArray(fc.nonEmptyString()),
-                  anonymous: fc.integer({ min: 0 }),
-                }),
-                published: fc.plainDate(),
-                fields: fc.array(fc.fieldId()),
-                subfields: fc.array(fc.subfieldId()),
-                preprint: fc.preprintTitle(),
-              })
-              .map(args => new Prereviews.RecentPreprintPrereview(args)),
-            fc
-              .record({
-                id: fc.uuid(),
-                doi: fc.doi(),
-                author: fc.persona(),
-                published: fc.plainDate(),
-                dataset: fc.datasetTitle(),
-              })
-              .map(args => new Prereviews.RecentDatasetPrereview(args)),
-          ),
-        ),
-      ],
-      ([locale, profile, name, prereviews]) =>
-        Effect.gen(function* () {
-          const runtime = yield* Effect.runtime<Prereviewers>()
-
-          const actual = yield* Effect.promise(
-            _.profile({ locale, profile })({
-              getAvatar: () => TE.left('not-found'),
-              getCareerStage: () => TE.left('not-found'),
-              getLanguages: () => TE.left('not-found'),
-              getLocation: () => TE.left('not-found'),
-              getName: () => TE.of(name),
-              getPrereviews: () => TE.of(prereviews),
-              getResearchInterests: () => TE.left('not-found'),
-              getSlackUser: () => TE.left('not-found'),
-              isOpenForRequests: () => TE.left('unavailable'),
-              runtime,
-            }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-        }).pipe(Effect.provide(Layer.mock(Prereviewers, {}))),
+        }).pipe(Effect.provide(Layer.mock(Prereviewers, { isRegistered: () => Effect.succeed(false) }))),
     )
   })
 
@@ -854,7 +886,12 @@ describe('profile', () => {
           js: [],
         })
       }).pipe(
-        Effect.provide(Layer.mock(Prereviewers, { isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()) })),
+        Effect.provide(
+          Layer.mock(Prereviewers, {
+            isRegistered: () => Effect.succeed(true),
+            isPseudonymInUse: () => Effect.succeed(new PseudonymInUse()),
+          }),
+        ),
       ),
   )
 

@@ -7,7 +7,15 @@ import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'
 import { areLoggedIn, canLogIn, expect, isASlackUser, seedEvents, test } from './base.ts'
 
-test('can find and view a profile', async ({ fetch, page, port }) => {
+test.extend(
+  seedEvents(
+    new Events.PrereviewerRegistered({
+      orcidId: OrcidId('0000-0002-2695-5951'),
+      pseudonym: Pseudonym('Orange Panda'),
+      registeredAt: Temporal.Now.instant(),
+    }),
+  ),
+)('can find and view a profile', async ({ fetch, page, port }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
       body: RecordC.encode({

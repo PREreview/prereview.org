@@ -1,4 +1,4 @@
-import { flow, Match, pipe } from 'effect'
+import { Boolean, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -24,16 +24,26 @@ export const profile = ({ locale, profile: profileId }: { profile: ProfileId.Pro
     onPseudonym: profileForPseudonym(locale),
   })
 
-const profileForOrcid = (locale: SupportedLocale) =>
-  flow(
-    getOrcidProfile,
-    RTE.match(
-      error =>
-        match(error)
-          .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .exhaustive(),
-      profile => createPage(profile, locale),
+const profileForOrcid = (locale: SupportedLocale) => (profile: ProfileId.OrcidProfileId) =>
+  pipe(
+    EffectToFpts.toReaderTaskEither(Prereviewers.isRegistered(profile.orcid)),
+    RTE.matchEW(
+      () => RT.of(havingProblemsPage(locale)),
+      Boolean.match({
+        onFalse: () => RT.of(RedirectResponse({ location: new URL(`https://orcid.org/${profile.orcid}`) }) as Response),
+        onTrue: () =>
+          pipe(
+            getOrcidProfile(profile),
+            RTE.match(
+              error =>
+                match(error)
+                  .with('not-found', () => pageNotFound(locale))
+                  .with('unavailable', () => havingProblemsPage(locale))
+                  .exhaustive(),
+              profile => createPage(profile, locale),
+            ),
+          ),
+      }),
     ),
   )
 
