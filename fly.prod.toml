@@ -11,6 +11,7 @@ strategy = "bluegreen"
 [env]
 ALLOW_SITE_CRAWLERS = "true"
 CAN_ADD_MULTIPLE_AUTHORS = "true"
+CAN_NOTIFY_REVIEWS_PUBLISHED_IN_RESPONSE_TO_REQUESTS = "true"
 FATHOM_SITE_ID = "FEAJEBBA"
 HTTP_CACHE_REDIS_URI_TEMPLATE = "redis://{region}.http-cache.internal?family=6"
 HTTP_CACHE_READONLY_FALLBACK_REDIS_URI = "redis://localhost:6379"
