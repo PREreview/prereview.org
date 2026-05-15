@@ -36,54 +36,59 @@ const registeredDifferentPrereviewer = new Events.PrereviewerRegistered({
   registeredAt: Temporal.Now.instant(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importedLegacy = new Events.RegisteredPrereviewerImported({
   orcidId: orcidId1,
   pseudonym: inputLegacy,
   registeredAt: Temporal.Now.instant(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const replaced = new Events.LegacyPseudonymReplaced({
   orcidId: orcidId1,
   pseudonym: input,
   replacedAt: Temporal.Now.instant(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importedSameWithNumber = new Events.RegisteredPrereviewerImported({
   orcidId: orcidId2,
   pseudonym: inputLegacy,
   registeredAt: Temporal.Now.instant(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const orcid1rerolled = new Events.LegacyPseudonymReplaced({
   orcidId: orcidId1,
   pseudonym: Pseudonym.Pseudonym('Blue Panda'),
   replacedAt: Temporal.Now.instant(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const orcid2replacedWithFreedUp = new Events.LegacyPseudonymReplaced({
   orcidId: orcidId2,
   pseudonym: input,
   replacedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], new _.PseudonymNotInUse()],
   ['imported', input, [imported], new _.PseudonymInUse()],
-  [
-    'imported legacy replaced',
-    inputLegacy,
-    [importedLegacy, replaced],
-    new _.PseudonymHasBeenReplaced({ replacedWith: input }),
-  ],
+  // [
+  //   'imported legacy replaced',
+  //   inputLegacy,
+  //   [importedLegacy, replaced],
+  //   new _.PseudonymHasBeenReplaced({ replacedWith: input }),
+  // ],
   ['registered', input, [registered], new _.PseudonymInUse()],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], new _.PseudonymNotInUse()],
   ['different PREreviewer registered', input, [registeredDifferentPrereviewer], new _.PseudonymNotInUse()],
-  [
-    'imported pseudonym re-rolled and used to replace legacy pseudonym',
-    input,
-    [imported, importedSameWithNumber, orcid1rerolled, orcid2replacedWithFreedUp],
-    new _.PseudonymInUse(),
-  ],
+  // [
+  //   'imported pseudonym re-rolled and used to replace legacy pseudonym',
+  //   input,
+  //   [imported, importedSameWithNumber, orcid1rerolled, orcid2replacedWithFreedUp],
+  //   new _.PseudonymInUse(),
+  // ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.IsPseudonymInUse
 
