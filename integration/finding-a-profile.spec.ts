@@ -460,7 +460,15 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda')
 })
 
-test('the list might be empty', async ({ fetch, page, port }) => {
+test.extend(
+  seedEvents(
+    new Events.PrereviewerRegistered({
+      orcidId: OrcidId('0000-0002-6109-0367'),
+      pseudonym: Pseudonym('Orange Panda'),
+      registeredAt: Temporal.Now.instant(),
+    }),
+  ),
+)('the list might be empty', async ({ fetch, page, port }) => {
   fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-6109-0367/personal-details', {
     body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' }, 'credit-name': null } },
   })
