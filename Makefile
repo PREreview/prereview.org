@@ -77,7 +77,12 @@ test: node_modules src/manifest.json
 	npx vitest run ${TEST}
 
 test-fast: node_modules src/manifest.json
-	FAST_CHECK_NUM_RUNS=10 npx vitest run --changed --maxWorkers=50%
+	@TEST_DIRS=$$(git status --porcelain | sed 's/^...//' | grep -E '.ts$$' | grep -E '^(src|test)' | xargs -r dirname | sed 's/^src/test/' | tr '\n' ' '); \
+	if [ -n "$$TEST_DIRS" ]; then \
+		FAST_CHECK_NUM_RUNS=10 npx vitest run --maxWorkers=50% $$TEST_DIRS; \
+	else \
+		echo "No .ts files changed, skipping tests"; \
+	fi
 
 test-watch: node_modules src/manifest.json
 	FAST_CHECK_NUM_RUNS=10 npx vitest watch --changed ${TEST}
