@@ -50,21 +50,18 @@ const replaced = new Events.LegacyPseudonymReplaced({
   replacedAt: Temporal.Now.instant(),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const importedSameWithNumber = new Events.RegisteredPrereviewerImported({
   orcidId: orcidId2,
   pseudonym: inputLegacy,
   registeredAt: Temporal.Now.instant(),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const orcid1rerolled = new Events.LegacyPseudonymReplaced({
   orcidId: orcidId1,
   pseudonym: Pseudonym.Pseudonym('Blue Panda'),
   replacedAt: Temporal.Now.instant(),
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const orcid2replacedWithFreedUp = new Events.LegacyPseudonymReplaced({
   orcidId: orcidId2,
   pseudonym: input,
@@ -83,12 +80,6 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['registered', input, [registered], new _.PseudonymInUse()],
   ['different PREreviewer imported', input, [importedDifferentPrereviewer], new _.PseudonymNotInUse()],
   ['different PREreviewer registered', input, [registeredDifferentPrereviewer], new _.PseudonymNotInUse()],
-  // [
-  //   'imported pseudonym re-rolled and used to replace legacy pseudonym',
-  //   input,
-  //   [imported, importedSameWithNumber, orcid1rerolled, orcid2replacedWithFreedUp],
-  //   new _.PseudonymInUse(),
-  // ],
 ])('%s', (_name, input, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.IsPseudonymInUse
 
@@ -98,6 +89,25 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   })
 
   const actual = query(state, input)
+
+  expect(actual).toStrictEqual(Either.right(expected))
+})
+
+test.each<[string, _.Result]>([
+  ['Orange Panda', new _.PseudonymInUse()],
+  // ['Orange Panda 0', new _.PseudonymHasBeenReplaced({replacedWith: Pseudonym.Pseudonym('Orange Panda')})],
+  // ['Blue Panda', new _.PseudonymInUse()],
+])('re-rolled scenario with input: %s', (input, expected) => {
+  const { initialState, updateStateWithEvents, query } = _.IsPseudonymInUse
+
+  const events = [imported, importedSameWithNumber, orcid1rerolled, orcid2replacedWithFreedUp]
+
+  const state = Array.match(events, {
+    onNonEmpty: events => updateStateWithEvents(initialState, events),
+    onEmpty: () => initialState,
+  })
+
+  const actual = query(state, Pseudonym.Pseudonym(input))
 
   expect(actual).toStrictEqual(Either.right(expected))
 })
