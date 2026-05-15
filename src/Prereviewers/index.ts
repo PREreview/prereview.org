@@ -11,6 +11,7 @@ import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests } from './HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import type { IsPseudonymInUse } from './IsPseudonymInUse.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
@@ -23,6 +24,7 @@ export class Prereviewers extends Context.Tag('Prereviewers')<
     register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPseudonym: Queries.FromOnDemandQuery<typeof GetPseudonym>
+    isPseudonymInUse: Queries.FromStatefulQuery<typeof IsPseudonymInUse>
     countAvailablePseudonyms: Queries.FromOnDemandQuery<ReturnType<typeof CountAvailablePseudonyms>>
     listAllPrereviewersForStats: Queries.FromStatefulQuery<typeof ListAllPrereviewersForStats>
     getContactDetails: (
@@ -95,6 +97,7 @@ export const layer = Layer.effect(
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
+      isPseudonymInUse: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
       getContactDetails: Effect.fn('Prereviewers.getContactDetails')(
