@@ -11,7 +11,7 @@ import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests } from './HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
-import type { IsPseudonymInUse } from './IsPseudonymInUse.ts'
+import { IsPseudonymInUse } from './IsPseudonymInUse.ts'
 import { IsRegistered } from './IsRegistered.ts'
 import { ListAllPrereviewersForStats } from './ListAllPrereviewersForStats.ts'
 import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
@@ -97,7 +97,7 @@ export const layer = Layer.effect(
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),
       getPseudonym: yield* Queries.makeOnDemandQuery(GetPseudonym),
-      isPseudonymInUse: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      isPseudonymInUse: yield* Queries.makeStatefulQuery(IsPseudonymInUse),
       countAvailablePseudonyms,
       listAllPrereviewersForStats: yield* Queries.makeStatefulQuery(ListAllPrereviewersForStats),
       getContactDetails: Effect.fn('Prereviewers.getContactDetails')(
