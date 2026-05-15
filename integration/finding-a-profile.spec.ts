@@ -1,8 +1,11 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
+import * as Events from '../src/Events.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
-import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { areLoggedIn, canLogIn, expect, isASlackUser, seedEvents, test } from './base.ts'
 
 test('can find and view a profile', async ({ fetch, page, port }) => {
   fetch
@@ -247,7 +250,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
 })
 
-test("can find and view a pseduonym's profile", async ({ fetch, page, port }) => {
+test.extend(
+  seedEvents(
+    new Events.PrereviewerRegistered({
+      orcidId: OrcidId('0000-0002-1825-0097'),
+      pseudonym: Pseudonym('Blue Sheep'),
+      registeredAt: Temporal.Now.instant(),
+    }),
+  ),
+)("can find and view a pseduonym's profile", async ({ fetch, page, port }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
       body: RecordC.encode({
