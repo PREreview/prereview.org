@@ -173,9 +173,6 @@ importers:
       '@csstools/postcss-global-data':
         specifier: ^4.0.0
         version: 4.0.0(postcss@8.5.14)
-      '@effect/experimental':
-        specifier: ^0.60.0
-        version: 0.60.0(@effect/platform@0.96.1(effect@3.21.2))(effect@3.21.2)(ioredis@5.10.1)
       '@effect/language-service':
         specifier: ^0.85.1
         version: 0.85.1

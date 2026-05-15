@@ -1,5 +1,4 @@
 import { LanguageModel } from '@effect/ai'
-import { Reactivity } from '@effect/experimental'
 import { FetchHttpClient, HttpClient, HttpClientResponse, PlatformLogger, Url } from '@effect/platform'
 import { NodeFileSystem, NodeHttpServer } from '@effect/platform-node'
 import type { SqlClient } from '@effect/sql'
@@ -2554,20 +2553,17 @@ export const usePostgresDB: Fixtures<
 > = {
   postgresUrl: async ({}, use) => {
     const postgresConnection = await pipe(
-      Config.url('POSTGRES_URL'),
-      Effect.andThen(url =>
-        Effect.gen(function* () {
-          const pgClient = yield* PgClient.make({ url: Redacted.make(url.href) })
+      Effect.gen(function* () {
+        const pgClient = yield* PgClient.PgClient
 
-          const databaseName = `test${v4().slice(0, 8)}`
+        const databaseName = `test${v4().slice(0, 8)}`
 
-          yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
+        yield* pgClient.unsafe(`CREATE DATABASE ${databaseName}`)
 
-          return Url.setPathname(url, databaseName)
-        }),
-      ),
-      Effect.scoped,
-      Effect.provide(Reactivity.layer),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return Url.setPathname(new URL(Redacted.value(pgClient.config.url!)), databaseName)
+      }),
+      Effect.provide(PgClient.layerConfig({ url: Config.redacted(Config.string('POSTGRES_URL')) })),
       Effect.runPromise,
     )
 
