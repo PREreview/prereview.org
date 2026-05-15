@@ -51,6 +51,7 @@ format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
 lint-ts: node_modules src/manifest.json
+	npx oxlint .
 	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
 
 lint-css: node_modules

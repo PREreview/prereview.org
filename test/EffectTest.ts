@@ -6,4 +6,5 @@ const effectTestBoilerplate = flow(
   Logger.withMinimumLogLevel(LogLevel.None),
 )
 
+// oxlint-disable-next-line typescript/no-invalid-void-type -- oxlint lacks allowInGenericTypeArguments
 export const run = flow(effectTestBoilerplate<void, unknown, Scope.Scope>, Effect.runPromise)
