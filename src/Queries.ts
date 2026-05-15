@@ -13,17 +13,17 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
 /** @deprecated */
 export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromOnDemandQuery<T extends OnDemandQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   OnDemandQuery<any, infer Input, infer Result, infer Error>,
 ]
   ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
   : never
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-explicit-any
   StatefulQuery<any, infer Input, infer Result, infer Error>,
 ]
   ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>

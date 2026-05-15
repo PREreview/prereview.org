@@ -51,7 +51,7 @@ describe('getFromRedis', () => {
 
           yield* _.getFromRedis(redis)(request)
 
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+          // oxlint-disable-next-line typescript/unbound-method
           expect(redis.del).toHaveBeenCalledTimes(1)
         }),
       )
@@ -105,7 +105,7 @@ describe('writeToRedis', () => {
           const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
           expect(result).toStrictEqual(Either.right(undefined))
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+          // oxlint-disable-next-line typescript/unbound-method
           expect(redis.set as unknown).toHaveBeenCalledWith(
             _.keyForRequest(response.request),
             expect.stringContaining(JSON.stringify(body)),
@@ -128,7 +128,7 @@ describe('writeToRedis', () => {
           const result = yield* Effect.either(_.writeToRedis(redis)(response, staleAt))
 
           expect(result).toStrictEqual(Either.left(expect.anything()))
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+          // oxlint-disable-next-line typescript/unbound-method
           expect(redis.set).not.toHaveBeenCalled()
         }),
     )
@@ -163,7 +163,7 @@ describe('deleteFromRedis', () => {
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
         expect(result).toStrictEqual(Either.void)
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // oxlint-disable-next-line typescript/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }),
     )
@@ -179,7 +179,7 @@ describe('deleteFromRedis', () => {
         const result = yield* Effect.either(_.deleteFromRedis(redis)(url))
 
         expect(result).toStrictEqual(Either.void)
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // oxlint-disable-next-line typescript/unbound-method
         expect(redis.del).toHaveBeenCalledWith(_.normalizeUrl(url))
       }),
     )

@@ -45,7 +45,7 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.let('clubs', () => isLeadFor(profileId.orcid)),
     RTE.apSW('slackUser', maybeGetSlackUser(profileId.orcid)),
     RTE.apSW('isOpenForRequests', maybeIsPublicallyOpenForRequests(profileId.orcid)),
-  ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // eslint-disable-line @typescript-eslint/no-explicit-any
+  ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // oxlint-disable-line typescript/no-explicit-any
 }
 
 const maybeGetPublicCareerStage = flow(

@@ -57,6 +57,6 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line typescript/no-empty-object-type, typescript/no-explicit-any
   interface Matchers<T = any> extends CustomMatchers<T> {}
 }

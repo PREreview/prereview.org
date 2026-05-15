@@ -51,68 +51,20 @@ Commit message: `expand: enable type-aware rules in oxlint (165 rules, 37s)`
 
 ---
 
-## Step 3 — Contract: slim down ESLint to only unmigrated rules
+## Step 3 — Contract: slim down ESLint to only unmigrated rules  ✅ done
 
-Once oxlint covers everything it can, replace `eslint.config.mjs` with a minimal config
-that contains only the rules oxlint cannot run. This removes the duplicate effort and makes
-the remaining ESLint scope explicit.
+Replaced `eslint.config.mjs` with a minimal config that runs only the 3 rules oxlint
+cannot cover. All `// eslint-disable-next-line @typescript-eslint/*` comments in source
+files were converted to `// oxlint-disable-next-line typescript/*`. The
+`no-comments/disallowComments` suppressions were converted to `oxlint-disable-next-line`.
+The `@typescript-eslint/no-unnecessary-condition` disable comment was removed (nursery
+rule, not enabled in oxlint). `@typescript-eslint/no-unused-vars` became `no-unused-vars`.
 
-The minimal ESLint config should keep only:
+Key lesson: do not use `pluginImport.flatConfigs.recommended` — it re-enables
+`import/no-named-as-default` which was explicitly off. Instead, register the plugin
+manually via `plugins: { import: pluginImport }` and declare only the needed rules.
 
-```js
-// Only rules that oxlint cannot cover — see oxlint-migration.md for details
-import pluginImport from 'eslint-plugin-import'
-import { defineConfig, globalIgnores } from 'eslint/config'
-import typescriptEslint from 'typescript-eslint'
-
-export default defineConfig([
-  globalIgnores(['.cache/', '.dev/', 'assets/locales/', 'data/', 'dist/',
-    'integration-results/', 'src/locales/', '*.cjs', '*.mjs']),
-  typescriptEslint.configs.strictTypeChecked,      // for type-aware rules not yet in oxlint
-  pluginImport.flatConfigs.recommended,
-  pluginImport.flatConfigs.typescript,
-  {
-    linterOptions: { reportUnusedDisableDirectives: 'error' },
-    languageOptions: {
-      parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
-    },
-    settings: { 'import/resolver': { typescript: true } },
-  },
-  {
-    rules: {
-      'import/no-extraneous-dependencies': ['error', {
-        devDependencies: ['assets/**/*.ts', 'integration/**/*.ts',
-          'test/**/*.ts', 'visual-regression/**/*.ts', '*.ts'],
-      }],
-      'import/no-internal-modules': ['error', {
-        allow: [
-          'fp-ts/lib/!(Array|boolean|Eq|function|Identity|NonEmptyArray|Option|Ord|Ordering|Predicate|ReadonlyArray|ReadonlyNonEmptyArray|ReadonlyRecord|ReadonlySet|ReadonlyTuple|Refinement|string).js',
-          'io-ts/lib/*', 'iso-639-3/to-*.json', 'logging-ts/lib/*',
-          'remixicon/**/*.svg', 'integration/base', 'types/*',
-          'vitest/config', '*/index.ts',
-        ],
-      }],
-      'no-restricted-syntax': ['error',
-        { selector: 'ImportDeclaration[specifiers.length = 0]',
-          message: 'Empty imports are not allowed' }],
-    },
-  },
-  {
-    files: ['src/RefactoringUtilities/**/*.ts'],
-    rules: {
-      'import/no-internal-modules': ['error', { allow: ['fp-ts/lib/*', 'io-ts/lib/*'] }],
-    },
-  },
-  {
-    files: ['integration/**/*.ts', 'test/**/*.ts', 'visual-regression/**/*.ts'],
-    rules: {
-      'import/no-internal-modules': ['error', { forbid: ['**/assets/**/*'] }],
-    },
-  },
-])
-```
-
-Commit message: `contract: reduce eslint to only rules oxlint cannot cover`
+Commit message: `contract: slim eslint to 3 rules oxlint cannot cover`
 
 ---
 

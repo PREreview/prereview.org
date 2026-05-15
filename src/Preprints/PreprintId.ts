@@ -483,7 +483,7 @@ const extractFromEngrxivPath: (path: string) => ReadonlyArray<IndeterminatePrepr
   Array.fromOption,
 )
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line no-unused-vars
 const extractFromFigsharePath = (type: 'africarxiv'): ((path: string) => ReadonlyArray<IndeterminatePreprintId>) =>
   flow(
     Option.liftNullable(s => /^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i.exec(s)?.[1]),

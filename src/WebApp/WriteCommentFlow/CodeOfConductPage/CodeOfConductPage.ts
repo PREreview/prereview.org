@@ -99,7 +99,7 @@ export const CodeOfConductPage = ({
 
             <details>
               ${
-                // eslint-disable-next-line no-comments/disallowComments
+                // oxlint-disable-next-line no-comments/disallowComments
                 // prettier-ignore
                 html`<summary><span>${translate(locale, 'write-comment-flow', 'examplesUnacceptableBehaviors')()}</span></summary>`
               }
