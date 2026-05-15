@@ -12,6 +12,9 @@
   "categories": {
     "correctness": "off"
   },
+  "options": {
+    "typeAware": true
+  },
   "env": {
     "builtin": true,
     "es2018": true
@@ -133,35 +136,88 @@
       }
     ],
     "object-shorthand": "error",
+    "typescript/await-thenable": "error",
     "typescript/ban-ts-comment": [
       "error",
       {
         "minimumDescriptionLength": 10
       }
     ],
+    "typescript/no-array-delete": "error",
+    "typescript/no-base-to-string": "error",
     "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-duplicate-type-constituents": "error",
     "typescript/no-dynamic-delete": "error",
     "typescript/no-empty-object-type": "error",
     "typescript/no-explicit-any": "error",
     "typescript/no-extra-non-null-assertion": "error",
     "typescript/no-extraneous-class": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-for-in-array": "error",
+    "typescript/no-implied-eval": "error",
     "typescript/no-invalid-void-type": "error",
+    "typescript/no-meaningless-void-operator": "error",
     "typescript/no-misused-new": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/no-mixed-enums": "error",
     "typescript/no-namespace": "error",
     "typescript/no-non-null-asserted-nullish-coalescing": "error",
     "typescript/no-non-null-asserted-optional-chain": "error",
     "typescript/no-non-null-assertion": "error",
+    "typescript/no-redundant-type-constituents": "error",
     "typescript/no-require-imports": "error",
     "typescript/no-this-alias": "error",
+    "typescript/no-unnecessary-boolean-literal-compare": "error",
+    "typescript/no-unnecessary-template-expression": "error",
+    "typescript/no-unnecessary-type-arguments": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
     "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unnecessary-type-conversion": "error",
+    "typescript/no-unnecessary-type-parameters": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
     "typescript/no-unsafe-declaration-merging": "error",
+    "typescript/no-unsafe-enum-comparison": "error",
     "typescript/no-unsafe-function-type": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-unary-minus": "error",
+    "typescript/no-useless-default-assignment": "error",
     "typescript/no-wrapper-object-types": "error",
+    "typescript/only-throw-error": "error",
     "typescript/prefer-as-const": "error",
     "typescript/prefer-literal-enum-member": "error",
     "typescript/prefer-namespace-keyword": "error",
+    "typescript/prefer-promise-reject-errors": "error",
+    "typescript/prefer-reduce-type-parameter": "error",
+    "typescript/prefer-return-this-type": "error",
+    "typescript/related-getter-setter-pairs": "error",
+    "typescript/require-await": "error",
+    "typescript/restrict-plus-operands": [
+      "error",
+      {
+        "allowAny": false,
+        "allowBoolean": false,
+        "allowNullish": false,
+        "allowNumberAndString": false,
+        "allowRegExp": false
+      }
+    ],
+    "typescript/restrict-template-expressions": [
+      "error",
+      {
+        "allowNumber": true
+      }
+    ],
+    "typescript/return-await": [
+      "error",
+      "error-handling-correctness-only"
+    ],
     "typescript/triple-slash-reference": "error",
+    "typescript/unbound-method": "error",
     "typescript/unified-signatures": "error",
+    "typescript/use-unknown-in-catch-callback-variable": "error",
     "typescript/adjacent-overload-signatures": "error",
     "typescript/array-type": [
       "error",
@@ -175,17 +231,36 @@
     "typescript/consistent-indexed-object-style": "error",
     "typescript/consistent-type-assertions": "error",
     "typescript/consistent-type-definitions": "error",
+    "typescript/dot-notation": "error",
     "typescript/no-confusing-non-null-assertion": "error",
     "typescript/no-inferrable-types": "error",
+    "typescript/non-nullable-type-assertion-style": "error",
+    "typescript/prefer-find": "error",
     "typescript/prefer-for-of": "error",
     "typescript/prefer-function-type": "error",
+    "typescript/prefer-includes": "error",
+    "typescript/prefer-nullish-coalescing": [
+      "error",
+      {
+        "ignoreConditionalTests": true
+      }
+    ],
+    "typescript/prefer-regexp-exec": "error",
+    "typescript/prefer-string-starts-ends-with": "error",
+    "typescript/consistent-type-exports": [
+      "error",
+      {
+        "fixMixedExportsWithInlineTypeSpecifier": true
+      }
+    ],
     "typescript/consistent-type-imports": [
       "error",
       {
         "fixStyle": "inline-type-imports"
       }
     ],
-    "typescript/no-import-type-side-effects": "error"
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/strict-boolean-expressions": "error"
   },
   "overrides": [
     {
@@ -230,7 +305,14 @@
             "argsIgnorePattern": "^_"
           }
         ],
-        "typescript/no-non-null-assertion": "off"
+        "typescript/no-non-null-assertion": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-useless-default-assignment": "off",
+        "typescript/prefer-promise-reject-errors": "off",
+        "typescript/restrict-template-expressions": "off"
       },
       "jsPlugins": [
         "eslint-plugin-no-comments"
@@ -242,7 +324,18 @@
         "visual-regression/**/*.ts"
       ],
       "rules": {
-        "no-empty-pattern": "off"
+        "no-empty-pattern": "off",
+        "typescript/unbound-method": "off"
+      }
+    },
+    {
+      "files": [
+        "integration/**/*.ts",
+        "test/**/*.ts",
+        "visual-regression/**/*.ts"
+      ],
+      "rules": {
+        "typescript/no-base-to-string": "off"
       }
     }
   ]
