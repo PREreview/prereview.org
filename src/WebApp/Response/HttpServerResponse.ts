@@ -1,4 +1,4 @@
-import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
+import { Cookies, HttpServerRequest, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
 import { FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
@@ -21,7 +21,12 @@ export const toHttpServerResponse = (
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   never,
-  Locale | TemplatePage | OrcidOauth | PublicUrl.PublicUrl | FeatureFlags.FeatureFlags
+  | Locale
+  | TemplatePage
+  | OrcidOauth
+  | PublicUrl.PublicUrl
+  | FeatureFlags.FeatureFlags
+  | HttpServerRequest.HttpServerRequest
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -77,8 +82,14 @@ export const toHttpServerResponse = (
         ),
     })
 
+    const cookies = yield* HttpServerRequest.schemaCookies(
+      Schema.Struct({ 'dismiss-matchmaking-spotlight': Schema.BooleanFromString }),
+    ).pipe(Effect.orElseSucceed(() => ({ 'dismiss-matchmaking-spotlight': false })))
+
     const showSpotlight =
-      response._tag === 'PageResponse' && response.current === 'home' ? yield* FeatureFlags.showSpotlight : false
+      response._tag === 'PageResponse' && response.current === 'home'
+        ? (yield* FeatureFlags.showSpotlight) && !cookies['dismiss-matchmaking-spotlight']
+        : false
 
     return yield* pipe(
       templatePage(
