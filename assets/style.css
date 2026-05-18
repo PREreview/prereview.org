@@ -2731,6 +2731,7 @@ skip-link {
   padding-inline: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
   column-gap: var(--space-m-xl);
   row-gap: var(--space-m);
+  border-block: var(--width-divider-wide) solid transparent;
   background-color: var(--color-purple-600);
   color: var(--color-white);
 
