@@ -62,6 +62,27 @@ it.effect.each([
     }),
   },
   {
+    response: 'ssrn-encoded-html.json',
+    expected: Preprint({
+      authors: [{ name: 'Manish Kumar', orcid: OrcidId('0000-0002-6021-7063') }],
+      id: new SsrnPreprintId({ value: Doi('10.2139/ssrn.6518178') }),
+      posted: 2026,
+      title: {
+        language: 'en',
+        text: rawHtml(
+          'Precision Oncology: Targeting Genomic Alterations and Cancer Signaling with Integrative Multi-Omics, Deep Learning and\u00a0Network Biology in Medical Oncology',
+        ),
+      },
+      abstract: {
+        language: 'en',
+        text: rawHtml(
+          '<p>Cancer is a complex genetic disease involving uncontrolled cell growth and proliferation and\u00a0necessitates effective targeting of dysregulated cellular pathways underlying cancer progression. Multiple genetic and epigenetic alterations characterize tumor progression and define hallmarks of cancer. It may result in dysregulation of growth factors, regulatory proteins, cell adhesion molecules, and molecules of immune system driven by alterations in the expression profile of tumor suppressor genes and oncogenes that may vary among different cancer types. Importantly, patients with the same cancer type respond differently to available cancer treatments, likely due to tumor-specific DNA, RNA, and proteins, indicating the need for patient-specific treatment options. Precision oncology has evolved as a form of cancer therapy that is focused on genetic and molecular profiling of tumors to identify specific molecular alterations involved in carcinogenesis for tailored individualized cancer treatment. Advances in high-throughput technologies, that include next-generation sequencing, have enabled gene expression profiling, providing detailed molecular characterization of various tumors. Moreover, the application of multiomic technologies, including genomics, proteomics, metabolomics, and single-cell multiomics, constitutes a novel approach for the identification and quantification of a comprehensive set of biological molecules to study how they translate into cellular functions and tissue pathologies. Integration and analysis of various multiomic sequencing data are crucial in this regard, as they can reveal critical molecular changes, such as cancer-driving mutations, post-translational modifications, gene fusions, amplifications, and alterations in signaling networks within tumors. Furthermore, the role of computational techniques such as artificial intelligence and deep learning, in analyzing complex data and identifying patterns of disease development for better outcomes is now well established in precision medicine. Additionally, AI-powered multi-omics and network biology have been harnessed to integrate and analyze biological data through networks, which may prove crucial in solving key problems facing precision oncology. This article aims to briefly explain the foundations and frontiers of precision oncology in the context of cutting-edge developments in tools and techniques associated with it and try to assess its scope and importance in achieving the intended goals over time.</p>',
+        ),
+      },
+      url: new URL('https://www.ssrn.com/abstract=6518178'),
+    }),
+  },
+  {
     response: 'neurolibre.json',
     expected: Preprint({
       authors: [

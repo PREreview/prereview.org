@@ -1,0 +1,875 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "indexed": {
+      "date-parts": [[2026, 5, 15]],
+      "date-time": "2026-05-15T17:09:40Z",
+      "timestamp": 1778864980723,
+      "version": "3.51.4"
+    },
+    "posted": { "date-parts": [[2026]] },
+    "group-title": "SSRN",
+    "reference-count": 88,
+    "publisher": "Elsevier BV",
+    "content-domain": { "domain": [], "crossmark-restriction": false },
+    "short-container-title": [],
+    "abstract": "<jats:p>&lt;p&gt;&lt;span&gt;Cancer is a complex genetic disease involving uncontrolled cell growth and proliferation and&lt;\/span&gt;&lt;span&gt;&amp;nbsp;necessitates effective targeting of dysregulated cellular pathways underlying cancer progression. Multiple genetic and epigenetic alterations characterize tumor progression and define hallmarks of cancer. It may result in dysregulation of growth factors, regulatory proteins, cell adhesion molecules, and molecules of immune system driven by alterations in the expression profile of tumor suppressor genes and oncogenes that may vary among different cancer types. Importantly, patients with the same cancer type respond differently to available cancer treatments, likely due to tumor-specific DNA, RNA, and proteins, indicating the need for patient-specific treatment options. Precision oncology has evolved as a form of cancer therapy that is focused on genetic and molecular profiling of tumors to identify specific molecular alterations involved in carcinogenesis for tailored individualized cancer treatment. Advances in high-throughput technologies, that include next-generation sequencing, have enabled gene expression profiling, providing detailed molecular characterization of various tumors. Moreover, the application of multiomic technologies, including genomics, proteomics, metabolomics, and single-cell multiomics, constitutes a novel approach for the identification and quantification of a comprehensive set of biological molecules to study how they translate into cellular functions and tissue pathologies. Integration and analysis of various multiomic sequencing data are crucial in this regard, as they can reveal critical molecular changes, such as cancer-driving mutations, post-translational modifications, gene fusions, amplifications, and alterations in signaling networks within tumors. Furthermore, the role of computational techniques such as artificial intelligence and deep learning, in analyzing complex data and identifying patterns of disease development for better outcomes is now well established in precision medicine. Additionally, AI-powered multi-omics and network biology have been harnessed to integrate and analyze biological data through networks, which may prove crucial in solving key problems facing precision oncology. This article aims to briefly explain the foundations and frontiers of precision oncology in the context of cutting-edge developments in tools and techniques associated with it and try to assess its scope and importance in achieving the intended goals over time.&lt;\/span&gt;&lt;\/p&gt;\n&lt;p&gt;&lt;span&gt;&lt;span&gt;&amp;nbsp;&lt;\/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;\/span&gt;&lt;\/p&gt;<\/jats:p>",
+    "DOI": "10.2139\/ssrn.6518178",
+    "type": "posted-content",
+    "created": { "date-parts": [[2026, 4, 6]], "date-time": "2026-04-06T18:53:42Z", "timestamp": 1775501622000 },
+    "source": "Crossref",
+    "is-referenced-by-count": 0,
+    "title": [
+      "&lt;p&gt;Precision Oncology: Targeting Genomic Alterations and Cancer Signaling with Integrative Multi-Omics, Deep Learning and&amp;nbsp;&lt;span&gt;Network Biology in Medical Oncology&lt;\/span&gt;&lt;\/p&gt;"
+    ],
+    "prefix": "10.2139",
+    "author": [
+      {
+        "ORCID": "https:\/\/orcid.org\/0000-0002-6021-7063",
+        "authenticated-orcid": true,
+        "given": "Manish",
+        "family": "Kumar",
+        "sequence": "first",
+        "affiliation": []
+      }
+    ],
+    "member": "78",
+    "reference": [
+      {
+        "issue": "3",
+        "key": "ref1",
+        "doi-asserted-by": "crossref",
+        "first-page": "448",
+        "DOI": "10.21037\/jtd.2017.02.75",
+        "article-title": "Cancer prevention from the perspective of global cancer burden patterns",
+        "volume": "9",
+        "author": "H Nagai",
+        "year": "2017",
+        "journal-title": "J Thorac Dis"
+      },
+      {
+        "key": "ref2",
+        "first-page": "417",
+        "volume": "20",
+        "author": "L X Clegg",
+        "year": "2008",
+        "journal-title": "Impact of socioeconomic status on cancer incidence and stage at diagnosis: selected findings from the surveillance, epidemiology, and end results: National Longitudinal Mortality Study. Cancer Causes Control"
+      },
+      {
+        "key": "ref3",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1038\/s41598-023-39608-2",
+        "article-title": "Mutational landscape of cancer-driver genes across human cancers",
+        "volume": "13",
+        "author": "M Sinkala",
+        "year": "2023",
+        "journal-title": "Sci Rep"
+      },
+      {
+        "issue": "41",
+        "key": "ref4",
+        "doi-asserted-by": "crossref",
+        "first-page": "62111",
+        "DOI": "10.1007\/s11356-021-16726-w",
+        "article-title": "Unboxing the molecular modalities of mutagens in cancer",
+        "volume": "29",
+        "author": "S Kumari",
+        "year": "2021",
+        "journal-title": "Environ Sci Pollut Res Int"
+      },
+      {
+        "key": "ref5",
+        "doi-asserted-by": "crossref",
+        "first-page": "795",
+        "DOI": "10.1038\/nrg3317",
+        "article-title": "Evolution of the cancer genome",
+        "volume": "13",
+        "author": "L Yates",
+        "year": "2012",
+        "journal-title": "Nat Rev Genet"
+      },
+      { "key": "ref6", "author": "S Sharma", "year": "2010", "journal-title": "Epigenetics in cancer" },
+      { "key": "ref7", "first-page": "27", "volume": "31", "year": "2009" },
+      {
+        "key": "ref8",
+        "first-page": "9",
+        "volume": "22",
+        "author": "J S You",
+        "year": "2012",
+        "journal-title": "Cancer genetics and epigenetics: two sides of the same coin? Cancer Cell"
+      },
+      {
+        "issue": "3",
+        "key": "ref9",
+        "doi-asserted-by": "crossref",
+        "first-page": "374",
+        "DOI": "10.1016\/j.ccell.2023.02.016",
+        "article-title": "The evolving tumor microenvironment: From cancer initiation to metastatic outgrowth",
+        "volume": "41",
+        "author": "K E De Visser",
+        "year": "2023",
+        "journal-title": "Cancer Cell"
+      },
+      {
+        "issue": "9",
+        "key": "ref10",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3390\/cancers13092053",
+        "article-title": "The Role of Tumor Microenvironment in Cancer Metastasis: Molecular Mechanisms and Therapeutic Opportunities",
+        "volume": "13",
+        "author": "C M Neophytou",
+        "year": "2021",
+        "journal-title": "Cancers"
+      },
+      {
+        "issue": "6",
+        "key": "ref11",
+        "doi-asserted-by": "crossref",
+        "first-page": "654",
+        "DOI": "10.1002\/humu.22559",
+        "article-title": "Germline TP53 mutations and the changing landscape of Li-Fraumeni syndrome",
+        "volume": "35",
+        "author": "J Kamihara",
+        "year": "2014",
+        "journal-title": "Hum Mutat"
+      },
+      {
+        "issue": "4",
+        "key": "ref12",
+        "doi-asserted-by": "crossref",
+        "first-page": "354",
+        "DOI": "10.1158\/2159-8290.CD-17-0192",
+        "article-title": "Exploring the Link between the Germline and Somatic Genome in Cancer",
+        "volume": "7",
+        "author": "P Geeleher",
+        "year": "2017",
+        "journal-title": "Cancer Discov"
+      },
+      {
+        "issue": "2",
+        "key": "ref13",
+        "article-title": "Probing altered enzyme activity in the biochemical characterization of cancer",
+        "volume": "42",
+        "author": "Maa Adam",
+        "year": "2022",
+        "journal-title": "Biosci Rep"
+      },
+      {
+        "key": "ref14",
+        "article-title": "Targeting monoamine oxidase A: a strategy for inhibiting tumor growth with both immune checkpoint inhibitors and immune modulators",
+        "volume": "73",
+        "author": "Y Ma",
+        "year": "2024",
+        "journal-title": "Cancer Immunol Immunother"
+      },
+      {
+        "issue": "16",
+        "key": "ref15",
+        "doi-asserted-by": "crossref",
+        "first-page": "2011",
+        "DOI": "10.1038\/onc.2014.155",
+        "article-title": "Ribonucleotide reductase and cancer: biological mechanisms and targeted therapies",
+        "volume": "34",
+        "author": "Y Aye",
+        "year": "2009",
+        "journal-title": "Oncogene"
+      },
+      {
+        "issue": "6",
+        "key": "ref16",
+        "doi-asserted-by": "crossref",
+        "first-page": "659",
+        "DOI": "10.1097\/MOP.0000000000000283",
+        "article-title": "Mutations in the noncoding genome",
+        "volume": "27",
+        "author": "C A Scacheri",
+        "year": "2015",
+        "journal-title": "Curr Opin Pediatr"
+      },
+      {
+        "issue": "3",
+        "key": "ref17",
+        "doi-asserted-by": "crossref",
+        "first-page": "409",
+        "DOI": "10.1016\/j.cell.2012.01.014",
+        "article-title": "The genetic basis for cancer treatment decisions",
+        "volume": "148",
+        "author": "J E Dancey",
+        "year": "2012",
+        "journal-title": "Cell"
+      },
+      {
+        "key": "ref18",
+        "article-title": "Precision Oncology Bringing a Paradigm Shift in the Treatment of Cancer",
+        "author": "M Kumar",
+        "year": "2021",
+        "journal-title": "Academia Letters, Article 2490"
+      },
+      {
+        "issue": "3",
+        "key": "ref19",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3390\/cancers14030664",
+        "article-title": "Targeting Oncogenic Pathways in the Era of Personalized Oncology: A Systemic Analysis Reveals Highly Mutated Signaling Pathways in Cancer Patients and Potential Therapeutic Targets",
+        "volume": "14",
+        "author": "A Karagiannakos",
+        "year": "2022",
+        "journal-title": "Cancers"
+      },
+      {
+        "key": "ref20",
+        "article-title": "Precision Oncology: Evolving Clinical Trials across Tumor Types",
+        "volume": "15",
+        "author": "I.-W Song",
+        "year": "1967",
+        "journal-title": "Cancers"
+      },
+      {
+        "issue": "3",
+        "key": "ref21",
+        "first-page": "418",
+        "article-title": "Precision Oncology, Signaling, and Anticancer Agents in Cancer Therapeutics",
+        "volume": "22",
+        "author": "D Advani",
+        "year": "2014",
+        "journal-title": "Anticancer Agents Med Chem"
+      },
+      {
+        "key": "ref22",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1038\/s41392-024-01823-2",
+        "article-title": "Tumor biomarkers for diagnosis, prognosis and targeted therapy",
+        "volume": "9",
+        "author": "Y Zhou",
+        "year": "2024",
+        "journal-title": "Sig Transduct Target Ther"
+      },
+      {
+        "issue": "1",
+        "key": "ref23",
+        "volume": "24",
+        "author": "S Das",
+        "year": "2024",
+        "journal-title": "Diagnosis, and Prognosis. Sensors"
+      },
+      {
+        "key": "ref24",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1038\/s41467-021-23965-5",
+        "article-title": "Homing in on genomic instability as a therapeutic target in cancer",
+        "volume": "12",
+        "author": "C M Bielski",
+        "year": "2021",
+        "journal-title": "Nat Commun"
+      },
+      {
+        "issue": "3-4",
+        "key": "ref25",
+        "doi-asserted-by": "crossref",
+        "first-page": "353",
+        "DOI": "10.1007\/s10555-013-9426-8",
+        "article-title": "Do mutator mutations fuel tumorigenesis?",
+        "volume": "32",
+        "author": "E J Fox",
+        "year": "2013",
+        "journal-title": "Cancer Metastasis Rev"
+      },
+      {
+        "key": "ref26",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3390\/ijms18050974",
+        "article-title": "Transposable Elements in Human Cancer: Causes and Consequences of Deregulation",
+        "volume": "18",
+        "author": "S L Anwar",
+        "year": "2017",
+        "journal-title": "Int. J. Mol. Sci"
+      },
+      {
+        "key": "ref27",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3390\/jpm12050715",
+        "article-title": "Biomarkers of Cancer Stem Cells for Experimental Research and Clinical Application",
+        "volume": "12",
+        "author": "S Saito",
+        "year": "2022",
+        "journal-title": "J.Pers. Med"
+      },
+      {
+        "key": "ref28",
+        "doi-asserted-by": "crossref",
+        "first-page": "1203",
+        "DOI": "10.1038\/labinvest.3700488",
+        "article-title": "The cancer stem cell hypothesis: a work in progress",
+        "volume": "86",
+        "author": "B Tan",
+        "year": "2006",
+        "journal-title": "Lab Invest"
+      },
+      {
+        "key": "ref29",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3390\/ph14070676",
+        "article-title": "Phytomedicines Targeting Cancer Stem Cells: Therapeutic Opportunities and Prospects for Pharmaceutical Development",
+        "volume": "14",
+        "author": "P K Gupta",
+        "year": "2021",
+        "journal-title": "Pharmaceuticals"
+      },
+      {
+        "key": "ref30",
+        "volume": "11",
+        "author": "L Walcher",
+        "year": "2020",
+        "journal-title": "Cancer Stem Cells-Origins and Biomarkers: Perspectives for Targeted Personalized Therapies. Front Immunol"
+      },
+      {
+        "key": "ref31",
+        "doi-asserted-by": "crossref",
+        "first-page": "105",
+        "DOI": "10.1038\/35102167",
+        "article-title": "Stem cells, cancer, and cancer stem cells",
+        "volume": "414",
+        "author": "T Reya",
+        "year": "2001",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "ref32",
+        "volume": "12",
+        "author": "K Kesh",
+        "year": "2020",
+        "journal-title": "Therapy Resistance, Cancer Stem Cells and ECM in Cancer: The Matrix Reloaded. Cancers (Basel)"
+      },
+      {
+        "issue": "2",
+        "key": "ref33",
+        "doi-asserted-by": "crossref",
+        "first-page": "375",
+        "DOI": "10.1101\/gr.120477.111",
+        "article-title": "De novo discovery of mutated driver pathways in cancer",
+        "volume": "22",
+        "author": "F Vandin",
+        "year": "2011",
+        "journal-title": "Genome Res"
+      },
+      {
+        "key": "ref34",
+        "article-title": "Next-generation technologies for multiomics approaches including interactome sequencing",
+        "author": "H Ohashi",
+        "year": "2015",
+        "journal-title": "Biomed Res Int"
+      },
+      {
+        "issue": "7",
+        "key": "ref35",
+        "doi-asserted-by": "crossref",
+        "first-page": "433",
+        "DOI": "10.14348\/molcells.2021.0042",
+        "article-title": "Integrative Multi-Omics Approaches in Cancer Research: From Biological Networks to Clinical Subtypes",
+        "volume": "44",
+        "author": "Y J Heo",
+        "year": "2021",
+        "journal-title": "Mol Cells"
+      },
+      {
+        "issue": "2",
+        "key": "ref36",
+        "doi-asserted-by": "crossref",
+        "first-page": "269",
+        "DOI": "10.1158\/1541-7786.MCR-17-0378",
+        "article-title": "Precision Oncology beyond Targeted Therapy: Combining Omics Data with Machine Learning Matches the Majority of Cancer Cells to Effective Therapeutics",
+        "volume": "16",
+        "author": "M Q Ding",
+        "year": "2017",
+        "journal-title": "Mol Cancer Res"
+      },
+      {
+        "key": "ref37",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3389\/fonc.2020.01030",
+        "article-title": "Integrated Multi-Omics Analyses in Oncology: A Review of Machine Learning Methods and Tools",
+        "volume": "10",
+        "author": "G Nicora",
+        "year": "2020",
+        "journal-title": "Front Oncol"
+      },
+      {
+        "key": "ref38",
+        "first-page": "933",
+        "volume": "59",
+        "author": "B J Erickson",
+        "year": "2021",
+        "journal-title": "Basic Artificial Intelligence Techniques: Machine Learning and Deep Learning"
+      },
+      {
+        "issue": "1",
+        "key": "ref39",
+        "article-title": "Application of Artificial Intelligence-Based Technologies in the Healthcare Industry: Opportunities and Challenges",
+        "volume": "18",
+        "author": "Donhee Lee",
+        "year": "2021",
+        "journal-title": "International Journal of Environmental Research and Public Health"
+      },
+      {
+        "key": "ref40",
+        "author": "F V Filipp",
+        "journal-title": "Opportunities for Artificial Intelligence in Advancing Precision Medicine"
+      },
+      {
+        "key": "ref41",
+        "doi-asserted-by": "crossref",
+        "first-page": "208",
+        "DOI": "10.1007\/s40142-019-00177-4",
+        "volume": "7",
+        "year": "2019",
+        "journal-title": "Curr Genet Med Rep"
+      },
+      {
+        "key": "ref42",
+        "volume": "3",
+        "author": "F Azuaje",
+        "year": "2019",
+        "journal-title": "Artificial intelligence for precision oncology: beyond patient stratification"
+      },
+      {
+        "key": "ref43",
+        "volume": "23",
+        "author": "C Deng",
+        "year": "2020",
+        "journal-title": "Integrating Machine Learning with Human Knowledge. iScience"
+      },
+      {
+        "key": "ref44",
+        "article-title": "Artificial intelligence in oncology",
+        "author": "H Shimizu",
+        "year": "2020",
+        "journal-title": "Cancer Sci"
+      },
+      { "key": "ref45", "first-page": "1452", "volume": "111", "year": "2020" },
+      {
+        "key": "ref46",
+        "volume": "4",
+        "author": "G Adam",
+        "year": "2020",
+        "journal-title": "Machine learning approaches to drug response prediction: challenges and recent progress. npj Precis"
+      },
+      {
+        "issue": "5",
+        "key": "ref47",
+        "doi-asserted-by": "crossref",
+        "first-page": "672",
+        "DOI": "10.1016\/j.ccell.2020.09.014",
+        "article-title": "Predicting Drug Response and Synergy Using a Deep Learning Model of Human Cancer Cells",
+        "volume": "38",
+        "author": "B M Kuenzi",
+        "year": "2020",
+        "journal-title": "Cancer Cell"
+      },
+      {
+        "key": "ref48",
+        "doi-asserted-by": "crossref",
+        "first-page": "583",
+        "DOI": "10.1038\/s41586-021-03819-2",
+        "article-title": "Highly accurate protein structure prediction with AlphaFold",
+        "volume": "596",
+        "author": "J Jumper",
+        "year": "2021",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "ref49",
+        "article-title": "Accurate structure prediction of biomolecular interactions with AlphaFold 3",
+        "author": "J Abramson",
+        "year": "2024",
+        "journal-title": "Nature"
+      },
+      {
+        "key": "ref50",
+        "volume": "14",
+        "author": "H Keskin Karakoyun",
+        "year": "2023",
+        "journal-title": "Evaluation of AlphaFold structure-based protein stability prediction on missense variations in cancer. Front Genet"
+      },
+      {
+        "issue": "10",
+        "key": "ref51",
+        "doi-asserted-by": "crossref",
+        "first-page": "1113",
+        "DOI": "10.1038\/ng.2764",
+        "article-title": "The Cancer Genome Atlas Pan-Cancer analysis project",
+        "volume": "45",
+        "author": "Cancer Genome",
+        "year": "2013",
+        "journal-title": "Nat Genet"
+      },
+      {
+        "issue": "1A",
+        "key": "ref52",
+        "first-page": "68",
+        "article-title": "The Cancer Genome Atlas (TCGA): an immeasurable source of knowledge",
+        "volume": "19",
+        "author": "K Tomczak",
+        "year": "2015",
+        "journal-title": "Contemp Oncol (Pozn)"
+      },
+      {
+        "key": "ref53",
+        "author": "D Chakravarty",
+        "year": "2017",
+        "journal-title": "A Precision Oncology Knowledge Base"
+      },
+      {
+        "key": "ref54",
+        "article-title": "Comparative Analysis of Public Knowledge Bases for Precision Oncology",
+        "volume": "3",
+        "author": "S Pallarz",
+        "year": "2019",
+        "journal-title": "JCO Precis Oncol"
+      },
+      {
+        "issue": "10",
+        "key": "ref55",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1371\/journal.pone.0165395",
+        "article-title": "TCGA Expedition: A Data Acquisition and Management System for TCGA Data",
+        "volume": "11",
+        "author": "U R Chandran",
+        "year": "2016",
+        "journal-title": "PLoS One"
+      },
+      {
+        "key": "ref56",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1038\/srep39259",
+        "article-title": "A cloud-based workflow to quantify transcript-expression levels in public cancer compendia",
+        "volume": "6",
+        "author": "P Tatlow",
+        "year": "2016",
+        "journal-title": "Sci Rep"
+      },
+      {
+        "key": "ref57",
+        "article-title": "A comprehensive genomic pan-cancer classification using The Cancer Genome Atlas gene expression data",
+        "volume": "18",
+        "author": "Y Li",
+        "year": "2017",
+        "journal-title": "BMC Genomics"
+      },
+      {
+        "issue": "5",
+        "key": "ref58",
+        "doi-asserted-by": "crossref",
+        "first-page": "512",
+        "DOI": "10.1002\/path.5028",
+        "article-title": "PanCancer insights from The Cancer Genome Atlas: the pathologist's perspective",
+        "volume": "244",
+        "author": "L A Cooper",
+        "year": "2018",
+        "journal-title": "J Pathol"
+      },
+      {
+        "issue": "4",
+        "key": "ref59",
+        "doi-asserted-by": "crossref",
+        "first-page": "929",
+        "DOI": "10.1016\/j.cell.2014.06.049",
+        "article-title": "Multiplatform analysis of 12 cancer types reveals molecular classification within and across tissues of origin",
+        "volume": "158",
+        "author": "K A Hoadley",
+        "year": "2014",
+        "journal-title": "Cell"
+      },
+      {
+        "key": "ref60",
+        "first-page": "291",
+        "volume": "173",
+        "author": "K A Hoadley",
+        "year": "2018",
+        "journal-title": "Cell-of-Origin Patterns Dominate the Molecular Classification of 10,000 Tumors from 33 Types of Cancer. Cell"
+      },
+      {
+        "issue": "2",
+        "key": "ref61",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1016\/j.cell.2018.03.035",
+        "article-title": "Oncogenic Signaling Pathways in The Cancer Genome Atlas",
+        "volume": "173",
+        "author": "F Sanchez-Vega",
+        "year": "2018",
+        "journal-title": "Cell"
+      },
+      {
+        "key": "ref62",
+        "doi-asserted-by": "crossref",
+        "first-page": "4",
+        "DOI": "10.1016\/j.semcancer.2014.04.002",
+        "article-title": "Predictive genomics: a cancer hallmark network framework for predicting tumor clinical phenotypes using genome sequencing data",
+        "volume": "30",
+        "author": "E Wang",
+        "year": "2014",
+        "journal-title": "Semin Cancer Biol"
+      },
+      {
+        "issue": "2",
+        "key": "ref63",
+        "doi-asserted-by": "crossref",
+        "first-page": "261",
+        "DOI": "10.1016\/j.canlet.2012.11.050",
+        "article-title": "Understanding genomic alterations in cancer genomes using an integrative network approach",
+        "volume": "340",
+        "author": "E Wang",
+        "year": "2012",
+        "journal-title": "Cancer Lett"
+      },
+      {
+        "issue": "4",
+        "key": "ref64",
+        "doi-asserted-by": "crossref",
+        "first-page": "690",
+        "DOI": "10.1016\/j.molcel.2015.05.008",
+        "article-title": "The cancer cell map initiative: defining the hallmark networks of cancer",
+        "volume": "58",
+        "author": "N J Krogan",
+        "year": "2015",
+        "journal-title": "Mol Cell"
+      },
+      {
+        "key": "ref65",
+        "doi-asserted-by": "crossref",
+        "first-page": "110",
+        "DOI": "10.1016\/j.gde.2019.04.005",
+        "article-title": "Mapping the protein-protein and genetic interactions of cancer to guide precision medicine",
+        "volume": "54",
+        "author": "M Bouhaddou",
+        "year": "2019",
+        "journal-title": "Curr Opin Genet Dev"
+      },
+      {
+        "issue": "7757",
+        "key": "ref66",
+        "doi-asserted-by": "crossref",
+        "first-page": "503",
+        "DOI": "10.1038\/s41586-019-1186-3",
+        "article-title": "Next-generation characterization of the Cancer Cell Line Encyclopedia",
+        "volume": "569",
+        "author": "M Ghandi",
+        "year": "2019",
+        "journal-title": "Nature"
+      },
+      {
+        "issue": "1",
+        "key": "ref67",
+        "doi-asserted-by": "crossref",
+        "first-page": "3",
+        "DOI": "10.1158\/1541-7786.MCR-15-0189",
+        "article-title": "Tumor-Derived Cell Lines as Molecular Models of Cancer Pharmacogenomics",
+        "volume": "14",
+        "author": "A Goodspeed",
+        "year": "2015",
+        "journal-title": "Mol Cancer Res"
+      },
+      {
+        "issue": "1",
+        "key": "ref68",
+        "article-title": "Studying hematopoiesis using single-cell technologies",
+        "volume": "10",
+        "author": "F Ye",
+        "year": "2017",
+        "journal-title": "J Hematol Oncol"
+      },
+      {
+        "key": "ref69",
+        "article-title": "Applications of single-cell sequencing in cancer research: progress and perspectives",
+        "volume": "14",
+        "author": "Y Lei",
+        "year": "2021",
+        "journal-title": "J Hematol Oncol"
+      },
+      {
+        "key": "ref70",
+        "doi-asserted-by": "crossref",
+        "first-page": "171",
+        "DOI": "10.1146\/annurev-genom-111320-090436",
+        "article-title": "Applications of Single-Cell DNA Sequencing",
+        "volume": "22",
+        "author": "G D Evrony",
+        "year": "2021",
+        "journal-title": "Annu Rev Genomics Hum Genet"
+      },
+      {
+        "key": "ref71",
+        "doi-asserted-by": "crossref",
+        "first-page": "1151",
+        "DOI": "10.1038\/nprot.2017.029",
+        "article-title": "Single-cell template strand sequencing by Strand-seq enables the characterization of individual homologs",
+        "volume": "12",
+        "author": "A Sanders",
+        "year": "2017",
+        "journal-title": "Nat Protoc"
+      },
+      {
+        "key": "ref72",
+        "doi-asserted-by": "crossref",
+        "first-page": "1497",
+        "DOI": "10.1007\/s12033-023-00777-0",
+        "article-title": "Single-Cell RNA Sequencing: Technological Progress and Biomedical Application in Cancer Research",
+        "volume": "66",
+        "author": "X Chang",
+        "year": "2024",
+        "journal-title": "Mol Biotechnol"
+      },
+      {
+        "key": "ref73",
+        "doi-asserted-by": "crossref",
+        "first-page": "1396",
+        "DOI": "10.1126\/science.1254257",
+        "article-title": "Single-Cell RNA-Seq Highlights Intratumoral Heterogeneity in Primary Glioblastoma",
+        "volume": "344",
+        "author": "A P Patel",
+        "year": "2014",
+        "journal-title": "Science"
+      },
+      {
+        "issue": "4",
+        "key": "ref74",
+        "article-title": "Single-cell CRISPR immune screens reveal immunological roles of tumor intrinsic factors",
+        "volume": "4",
+        "author": "J Hou",
+        "year": "2022",
+        "journal-title": "NAR Cancer"
+      },
+      { "key": "ref75", "author": "M Guo", "journal-title": "Epigenetic heterogeneity in cancer" },
+      { "key": "ref76", "volume": "7", "author": "Biomark Res", "year": "2019" },
+      {
+        "key": "ref77",
+        "volume": "6",
+        "author": "Y Yuan",
+        "year": "2016",
+        "journal-title": "Spatial Heterogeneity in the Tumor Microenvironment. Cold Spring Harb Perspect Med"
+      },
+      {
+        "key": "ref78",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1038\/s41598-020-75708-z",
+        "article-title": "Spatial transcriptomics inferred from pathology whole-slide images links tumor heterogeneity to survival in breast and lung cancer",
+        "volume": "10",
+        "author": "A Levy-Jurgenson",
+        "year": "2020",
+        "journal-title": "Sci Rep"
+      },
+      {
+        "key": "ref79",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.1186\/s13046-022-02385-3",
+        "article-title": "Spatially resolved transcriptomics provide a new method for cancer research",
+        "volume": "41",
+        "author": "B Zheng",
+        "year": "2022",
+        "journal-title": "J Exp Clin Cancer Res"
+      },
+      {
+        "key": "ref80",
+        "article-title": "Spatial multi-omics: deciphering technological landscape of integration of multi-omics and its applications",
+        "volume": "17",
+        "author": "X Liu",
+        "year": "2024",
+        "journal-title": "J Hematol Oncol"
+      },
+      {
+        "issue": "1",
+        "key": "ref81",
+        "article-title": "Single-cell multi-omics in cancer immunotherapy: from tumor heterogeneity to personalized precision treatment",
+        "volume": "24",
+        "author": "J Le",
+        "year": "2025",
+        "journal-title": "Mol Cancer"
+      },
+      {
+        "issue": "1",
+        "key": "ref82",
+        "article-title": "Studying hematopoiesis using single-cell technologies",
+        "volume": "10",
+        "author": "F Ye",
+        "year": "2017",
+        "journal-title": "J Hematol Oncol"
+      },
+      {
+        "key": "ref83",
+        "article-title": "Technological advances in cancer immunity: from immunogenomics to single-cell analysis and artificial intelligence",
+        "volume": "6",
+        "author": "Y Xu",
+        "year": "2021",
+        "journal-title": "Sig Transduct Target Ther"
+      },
+      {
+        "issue": "1",
+        "key": "ref84",
+        "doi-asserted-by": "crossref",
+        "first-page": "23",
+        "DOI": "10.1007\/s13577-021-00642-9",
+        "article-title": "3D modeling in cancer studies",
+        "volume": "35",
+        "author": "O E Atat",
+        "year": "2021",
+        "journal-title": "Hum Cell"
+      },
+      {
+        "issue": "12",
+        "key": "ref85",
+        "doi-asserted-by": "crossref",
+        "first-page": "733",
+        "DOI": "10.1089\/omi.2018.0172",
+        "article-title": "Three-Dimensional Organoids in Cancer Research: The Search for the Holy Grail of Preclinical Cancer Modeling",
+        "volume": "22",
+        "author": "K Dzobo",
+        "year": "2018",
+        "journal-title": "OMICS"
+      },
+      {
+        "key": "ref86",
+        "doi-asserted-by": "crossref",
+        "DOI": "10.3389\/fcell.2024.1507388",
+        "article-title": "Breaking the mold: 3D cell cultures reshaping the future of cancer research",
+        "volume": "12",
+        "author": "S Cordeiro",
+        "year": "2024",
+        "journal-title": "Front Cell Dev Biol"
+      },
+      {
+        "key": "ref87",
+        "first-page": "1351",
+        "volume": "5",
+        "author": "L Tong",
+        "year": "2024",
+        "journal-title": "Patient-derived organoids in precision cancer medicine"
+      },
+      {
+        "key": "ref88",
+        "doi-asserted-by": "crossref",
+        "first-page": "1531",
+        "DOI": "10.1038\/s12276-024-01272-5",
+        "article-title": "Patient-derived tumor organoids: a new avenue for preclinical research and precision medicine in oncology",
+        "volume": "56",
+        "author": "L Thorel",
+        "year": "2024",
+        "journal-title": "Exp Mol Med"
+      }
+    ],
+    "container-title": [],
+    "original-title": [],
+    "deposited": { "date-parts": [[2026, 5, 15]], "date-time": "2026-05-15T16:31:01Z", "timestamp": 1778862661000 },
+    "score": 1,
+    "resource": { "primary": { "URL": "https:\/\/www.ssrn.com\/abstract=6518178" } },
+    "subtitle": [],
+    "short-title": [],
+    "issued": { "date-parts": [[2026]] },
+    "references-count": 88,
+    "URL": "https:\/\/doi.org\/10.2139\/ssrn.6518178",
+    "relation": {},
+    "subject": [],
+    "published": { "date-parts": [[2026]] },
+    "subtype": "preprint"
+  }
+}
