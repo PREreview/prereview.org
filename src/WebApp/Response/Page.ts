@@ -4,6 +4,7 @@ import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { UserOnboarding } from '../../user-onboarding.ts'
 import { showNotificationBanner } from '../notification-banner.ts'
 import type { Page } from '../page.ts'
+import { showSpotlightBanner } from '../SpotlightBanner.ts'
 import type { PageUrls } from './ConstructPageUrls.ts'
 import type { FlashMessageSchema } from './FlashMessage.ts'
 import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from './Response.ts'
@@ -80,15 +81,11 @@ export const toPage = ({
         userOnboarding,
       }
 
-const spotlight = html`
-  <div class="spotlight">
-    <div>
-      <h2>Matchmaking experiment</h2>
-      <div>Check out our experiment for suggestions about what to review next!</div>
-    </div>
-    <a href="https://matchmaking-experiment.prereview.org/" class="button">Find preprints to review</a>
-  </div>
-`
+const spotlight = showSpotlightBanner({
+  title: html`Matchmaking experiment`,
+  text: html`Check out our experiment for suggestions about what to review next!`,
+  cta: { text: html`Find preprints to review`, link: new URL('https://matchmaking-experiment.prereview.org/') },
+})
 
 function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
   return match(message)
