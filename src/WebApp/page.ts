@@ -109,11 +109,10 @@ export const page = ({
               <link href="${assets['crowdin.css']}" rel="stylesheet" />
             `
           : ''}
-        ${scripts.flatMap(file =>
-          Array.map(
-            assets[file].preload,
-            preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`,
-          ),
+        ${pipe(
+          Array.flatMap(scripts, file => assets[file].preload),
+          Array.dedupe,
+          Array.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
         )}
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
         ${typeof fathomId === 'string'
