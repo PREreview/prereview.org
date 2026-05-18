@@ -2,6 +2,7 @@ import { Cookies, HttpServerResponse, UrlParams } from '@effect/platform'
 import { Array, Boolean, Effect, HashMap, identity, Match, Option, pipe, Schema, String } from 'effect'
 import { FlashMessage, Locale, SessionStore } from '../../Context.ts'
 import * as CookieSignature from '../../CookieSignature.ts'
+import * as FeatureFlags from '../../FeatureFlags.ts'
 import { OrcidOauth } from '../../OrcidOauth.ts'
 import * as PublicUrl from '../../public-url.ts'
 import * as Routes from '../../routes.ts'
@@ -20,7 +21,7 @@ export const toHttpServerResponse = (
 ): Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   never,
-  Locale | TemplatePage | OrcidOauth | PublicUrl.PublicUrl
+  Locale | TemplatePage | OrcidOauth | PublicUrl.PublicUrl | FeatureFlags.FeatureFlags
 > => {
   return Effect.gen(function* () {
     if (response._tag === 'RedirectResponse') {
@@ -76,6 +77,9 @@ export const toHttpServerResponse = (
         ),
     })
 
+    const showSpotlight =
+      response._tag === 'PageResponse' && response.current === 'home' ? yield* FeatureFlags.showSpotlight : false
+
     return yield* pipe(
       templatePage(
         toPage({
@@ -85,6 +89,7 @@ export const toHttpServerResponse = (
           response,
           userOnboarding: Option.getOrUndefined(userOnboarding),
           isLoggedIn: Option.isSome(user),
+          showSpotlight,
         }),
       ).toString(),
       HttpServerResponse.html,

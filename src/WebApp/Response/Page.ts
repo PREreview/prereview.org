@@ -15,6 +15,7 @@ export const toPage = ({
   pageUrls,
   response,
   isLoggedIn,
+  showSpotlight = false,
 }: {
   locale: SupportedLocale
   message?: (typeof FlashMessageSchema.literals)[number]
@@ -22,6 +23,7 @@ export const toPage = ({
   response: PageResponse | StreamlinePageResponse | TwoUpPageResponse
   pageUrls?: PageUrls
   isLoggedIn: boolean
+  showSpotlight?: boolean
 }): Page =>
   response._tag === 'TwoUpPageResponse'
     ? {
@@ -41,7 +43,9 @@ export const toPage = ({
             ${response.aside}
           </aside>
 
-          <main id="prereviews">${message ? showFlashMessage(message, locale) : ''} ${response.main}</main>
+          <main id="prereviews">
+            ${showSpotlight ? spotlight : ''} ${message ? showFlashMessage(message, locale) : ''} ${response.main}
+          </main>
         `,
         skipLinks: [
           [rawHtml(translate(locale, 'skip-links', `${response.type}Details`)()), `#${response.type}-details`],
@@ -60,7 +64,9 @@ export const toPage = ({
         content: html`
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
-          <main id="${response.skipToLabel}">${message ? showFlashMessage(message, locale) : ''}${response.main}</main>
+          <main id="${response.skipToLabel}">
+            ${showSpotlight ? spotlight : ''}${message ? showFlashMessage(message, locale) : ''}${response.main}
+          </main>
         `,
         skipLinks: [
           [rawHtml(translate(locale, 'skip-links', response.skipToLabel)()), `#${response.skipToLabel}`],
@@ -73,6 +79,16 @@ export const toPage = ({
         isLoggedIn,
         userOnboarding,
       }
+
+const spotlight = html`
+  <div class="spotlight">
+    <div>
+      <h2>Matchmaking experiment</h2>
+      <div>Check out our experiment for suggestions about what to review next!</div>
+    </div>
+    <a href="https://matchmaking-experiment.prereview.org/" class="button">Find preprints to review</a>
+  </div>
+`
 
 function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
   return match(message)

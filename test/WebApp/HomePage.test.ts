@@ -1,7 +1,6 @@
 import { expect, it } from '@effect/vitest'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
-import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import * as Prereviews from '../../src/Prereviews/index.ts'
 import * as ReviewRequests from '../../src/ReviewRequests/index.ts'
 import * as Routes from '../../src/routes.ts'
@@ -34,7 +33,6 @@ it.effect.prop('HomePage', [fc.supportedLocale()], ([locale]) =>
         getFiveMostRecent: Effect.succeed([]),
       }),
     ),
-    Effect.provide(FeatureFlags.layerDefaults),
     Effect.provideService(Locale, locale),
   ),
 )
