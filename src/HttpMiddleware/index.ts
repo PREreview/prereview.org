@@ -62,7 +62,7 @@ export const serveStaticFiles = HttpMiddleware.make(app =>
 
     const response = yield* HttpServerResponse.file(filePath, {})
 
-    if (!/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.exec(filePath)) {
+    if (!/\.[A-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.exec(filePath)) {
       return yield* response
     }
 
