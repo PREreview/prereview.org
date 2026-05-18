@@ -32,6 +32,7 @@ export default (env, argv) => ({
     'poll-redirect': path.resolve('assets', 'poll-redirect.ts'),
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     'skip-link': path.resolve('assets', 'skip-link.ts'),
+    'spotlight-banner': path.resolve('assets', 'spotlight-banner.ts'),
     style: path.resolve('assets', 'style.css'),
     ...globSync(`assets/{illustrations,logos}/**/*.{png,svg}`).reduce(
       (files, file) => ({

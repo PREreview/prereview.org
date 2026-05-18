@@ -52,7 +52,10 @@ export const toPage = ({
           [rawHtml(translate(locale, 'skip-links', `${response.type}Details`)()), `#${response.type}-details`],
           [rawHtml(translate(locale, 'skip-links', 'prereviews')()), '#prereviews'],
         ],
-        js: message ? (['notification-banner.js'] as const) : [],
+        js: [
+          ...(message ? (['notification-banner.js'] as const) : []),
+          ...(showSpotlight ? (['spotlight-banner.js'] as const) : []),
+        ],
         pageUrls,
         type: 'two-up',
         isLoggedIn,
@@ -74,7 +77,10 @@ export const toPage = ({
           ...(response._tag === 'PageResponse' && response.extraSkipLink ? [response.extraSkipLink] : []),
         ],
         current: response.current,
-        js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+        js: response.js.concat(
+          ...(message ? (['notification-banner.js'] as const) : []),
+          ...(showSpotlight ? (['spotlight-banner.js'] as const) : []),
+        ),
         pageUrls,
         type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
         isLoggedIn,

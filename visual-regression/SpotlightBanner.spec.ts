@@ -12,6 +12,7 @@ test('banner looks right', async ({ showPage }) => {
         text: html`Check out our experiment for suggestions about what to review next!`,
         cta: { text: html`Find preprints to review`, link: new URL('https://matchmaking-experiment.prereview.org/') },
       }),
+      js: ['spotlight-banner.js'],
     }),
   )
 
