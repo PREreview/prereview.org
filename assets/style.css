@@ -1227,7 +1227,7 @@ label {
     }
   }
 
-  :not(.button-group) > & {
+  :not(:where(.button-group)) > & {
     margin-block-start: var(--space-m-l);
   }
 
