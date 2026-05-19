@@ -1,11 +1,11 @@
 import { expect, showSpotlight, test } from './base.ts'
 
-test.extend(showSpotlight)('can dismiss the spotlight banner', async ({ page }, testInfo) => {
+test.extend(showSpotlight)('can dismiss the spotlight banner', async ({ javaScriptEnabled, page }, testInfo) => {
   await page.goto('/', { waitUntil: 'commit' })
 
   await expect(page.getByRole('main')).toContainText('Matchmaking experiment')
 
-  testInfo.fail()
+  testInfo.fail(!javaScriptEnabled)
   await expect(page.getByRole('button', { name: 'Dismiss' })).toBeVisible()
 
   await page.getByRole('button', { name: 'Dismiss' }).click()

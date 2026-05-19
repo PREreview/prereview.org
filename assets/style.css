@@ -2723,6 +2723,7 @@ skip-link {
 
 spotlight-banner {
   display: flex;
+  position: relative;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
@@ -2745,6 +2746,13 @@ spotlight-banner {
     padding-inline: var(--space-2xs);
     border-radius: var(--radius-divider-narrow);
     font-size: inherit;
+
+    &.dismiss {
+      position: absolute;
+      inset-block-start: var(--space-3xs);
+      inset-inline-end: max(var(--grid-gutter), calc(var(--grid-gutter) + (100vi - var(--grid-max-width)) / 2));
+      font-size: var(--step--1);
+    }
   }
 }
 
