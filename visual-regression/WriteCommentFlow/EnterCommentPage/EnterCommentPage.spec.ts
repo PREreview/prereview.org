@@ -51,8 +51,9 @@ const comment = html`
   <ul>
     <li>Aenean eget velit quis sapien gravida efficitur et vitae felis.</li>
     <li>
+      Etiam libero justo.
       <ol>
-        <li>Etiam libero justo, vulputate sit amet turpis non, sollicitudin ornare velit.</li>
+        <li>Vulputate sit amet turpis non, sollicitudin ornare velit.</li>
         <li>Mauris vel lorem ac erat pulvinar sollicitudin.</li>
         <li>
           Vestibulum auctor, augue et bibendum blandit, massa est ullamcorper libero, eget finibus justo sem eget elit.
