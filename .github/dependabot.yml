@@ -24,9 +24,6 @@ updates:
     schedule:
       interval: 'daily'
     groups:
-      babel:
-        patterns:
-          - '@babel/*'
       effect:
         patterns:
           - '@effect/*'

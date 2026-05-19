@@ -112,7 +112,9 @@ export const page = ({
         ${pipe(
           Array.flatMap(scripts, file => assets[file].preload),
           Array.dedupe,
-          Array.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
+          Array.map(
+            preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" crossorigin />`,
+          ),
         )}
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
         ${typeof fathomId === 'string'

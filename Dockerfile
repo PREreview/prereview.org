@@ -70,7 +70,7 @@ FROM npm AS build-prod
 ENV NODE_ENV=production
 
 COPY --from=npm-dev /app/node_modules/ node_modules/
-COPY tsconfig.build.json tsconfig.json webpack.config.mjs ./
+COPY tsconfig.build.json tsconfig.json vite.config.ts ./
 COPY src/ src/
 COPY assets/ assets/
 COPY --from=build-intlc /app/assets/locales/ assets/locales/

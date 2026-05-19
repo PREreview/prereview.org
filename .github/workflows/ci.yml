@@ -46,9 +46,9 @@ jobs:
         uses: actions/cache@v5.0.5
         if: ${{ !env.ACT }}
         with:
-          path: .cache/webpack
-          key: webpack-${{ github.head_ref || github.ref_name }}
-          restore-keys: webpack-
+          path: .cache/vite
+          key: vite-${{ github.head_ref || github.ref_name }}
+          restore-keys: vite-
 
       - name: 'Download assets locales'
         uses: actions/download-artifact@v8.0.1

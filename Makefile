@@ -23,7 +23,7 @@ src/locales: $(shell find locales -type f)
 	touch src/locales
 
 src/manifest.json: node_modules src/locales $(shell find assets -type f | grep -v assets/locales)
-	npx webpack build --mode development
+	npx vite build --mode development
 	touch src/manifest.json
 
 start-app: .env node_modules start-services src/manifest.json
