@@ -266,8 +266,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
             Sed id nibh in felis porta ultricies.
           </li>
           <li>
+            Praesent aliquet velit.
             <ol>
-              <li>Praesent aliquet velit non nibh luctus imperdiet.</li>
+              <li>Non nibh luctus imperdiet.</li>
             </ol>
           </li>
         </ul>
@@ -286,7 +287,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByLabel('Paste your PREreview').getByRole('heading', { level: 1 })).toHaveText('Lorem ipsum')
       await expect(page.getByLabel('Paste your PREreview').getByRole('listitem')).toHaveText([
         'Sed id nibh in felis porta ultricies.',
-        'Praesent aliquet velit non nibh luctus imperdiet.',
+        'Praesent aliquet velit.Non nibh luctus imperdiet.',
+        'Non nibh luctus imperdiet.',
       ])
     } else {
       await expect(page.getByLabel('Paste your PREreview')).toHaveValue(/Lorem ipsum/)
