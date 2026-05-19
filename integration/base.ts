@@ -100,6 +100,7 @@ interface AppFixtures {
   canLogInAsDemoUser: (typeof FeatureFlags.FeatureFlags.Service)['canLogInAsDemoUser']
   canNotifyReviewsPublishedInResponseToRequests: (typeof FeatureFlags.FeatureFlags.Service)['canNotifyReviewsPublishedInResponseToRequests']
   nodemailer: typeof Nodemailer.NodemailerTransporter.Service
+  showSpotlight: (typeof FeatureFlags.FeatureFlags.Service)['showSpotlight']
   emails: Array<nodemailer.SendMailOptions>
   seedEvents: ReadonlyArray<Events.Event>
 }
@@ -2410,6 +2411,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         canAddMultipleAuthors,
         canLogInAsDemoUser,
         canNotifyReviewsPublishedInResponseToRequests,
+        showSpotlight,
         sqlClientLayer,
         seedEvents,
       },
@@ -2447,6 +2449,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
             canAddMultipleAuthors,
             canLogInAsDemoUser,
             canNotifyReviewsPublishedInResponseToRequests,
+            showSpotlight,
           }),
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),
@@ -2532,6 +2535,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     },
     { auto: true },
   ],
+  showSpotlight: async ({}, use) => {
+    await use(false)
+  },
   slackUserIdStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -3474,6 +3480,17 @@ export const canAddMultipleAuthors: Fixtures<
 > = {
   canAddMultipleAuthors: async ({}, use) => {
     await use(() => true)
+  },
+}
+
+export const showSpotlight: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'showSpotlight'>,
+  Record<never, never>
+> = {
+  showSpotlight: async ({}, use) => {
+    await use(true)
   },
 }
 
