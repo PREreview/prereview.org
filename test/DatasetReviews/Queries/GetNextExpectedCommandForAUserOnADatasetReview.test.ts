@@ -193,6 +193,33 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   })
 
   describe('when it is in progress', () => {
+    it.fails.each<[string, ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NextExpectedCommand]>([
+      [
+        'flow completed up choice of persona',
+        [
+          datasetReviewWasStarted,
+          ratedTheQualityOfTheDataset1,
+          answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+          answeredIfTheDatasetHasEnoughMetadata1,
+          answeredIfTheDatasetHasTrackedChanges1,
+          answeredIfTheDatasetHasDataCensoredOrDeleted1,
+          answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+          answeredIfTheDatasetSupportsRelatedConclusions1,
+          answeredIfTheDatasetIsDetailedEnough1,
+          answeredIfTheDatasetIsErrorFree1,
+          answeredIfTheDatasetMattersToItsAudience1,
+          answeredIfTheDatasetIsReadyToBeShared1,
+          answeredIfTheDatasetIsMissingAnything1,
+          personaForDatasetReviewWasChosen1,
+        ],
+        'AnswerIfOthersNeedToBeListedOnTheReview',
+      ],
+    ])('returns the next expected command', (_name, events, expected) => {
+      const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
+
+      expect(actual).toStrictEqual(Option.some(expected))
+    })
+
     it.prop(
       'returns the next expected command',
       [
