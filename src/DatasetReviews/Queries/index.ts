@@ -6,6 +6,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
+import type { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.ts'
@@ -96,6 +97,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       ) => CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.Result
     >
     checkIfUserCanChoosePersona: Query<(input: CheckIfUserCanChoosePersona.Input) => CheckIfUserCanChoosePersona.Result>
+    checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: Queries.FromOnDemandQuery<
+      typeof CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview
+    >
     checkIfUserCanDeclareCompetingInterests: Query<
       (input: CheckIfUserCanDeclareCompetingInterests.Input) => CheckIfUserCanDeclareCompetingInterests.Result
     >
@@ -153,6 +157,7 @@ export const {
   checkIfUserCanAnswerIfTheDatasetIsReadyToBeShared,
   checkIfUserCanAnswerIfTheDatasetIsMissingAnything,
   checkIfUserCanChoosePersona,
+  checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview,
   checkIfUserCanDeclareCompetingInterests,
   checkIfUserCanDeclareFollowingCodeOfConduct,
   getPublishedReview,
@@ -262,6 +267,8 @@ const makeDatasetReviewQueries: Effect.Effect<
       CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.createFilter,
       CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.query,
     ),
+    checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: () =>
+      new Queries.UnableToQuery({ cause: 'not implemented' }),
     checkIfUserCanChoosePersona: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanChoosePersona',
       CheckIfUserCanChoosePersona.createFilter,
