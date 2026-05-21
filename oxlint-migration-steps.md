@@ -36,6 +36,14 @@ Migration can be achieved in small steps:
 - `import/no-extraneous-dependencies`
   - does not exist in oxlint
   - superfluous since our switch to pnpm as it only exposes direct deps in `node_modules`
+- `no-internal-modules`
+  - won't be implement by oxlint team
+    - <https://github.com/oxc-project/oxc/blob/69a6ba6353a8210505786506bec7d9853d68c0e4/tasks/lint_rules/src/unsupported-rules.json#L33>
+    - suggest using `no-restricted-imports` instead
+  - [depcruiser](https://github.com/sverweij/dependency-cruiser) might be better fit
+    - richer rule syntax
+    - could separate rules by concern (fp-ts migration, import rules for our code...)
+    - [ai generated config](https://kagi.com/assistant/3a2d4d8b-923b-499b-8d03-8b62c9d8843c) looks promising
 
 ## Notes from agent that still need investigating
 
@@ -43,21 +51,3 @@ Migration can be achieved in small steps:
 
 `import/no-named-as-default` re-enabled by `flatConfigs.recommended`:
 An initial attempt to use `pluginImport.flatConfigs.recommended` in the minimal ESLint config re-enabled `import/no-named-as-default`, producing 31 warnings across test files. The original ESLint config had this rule explicitly off. The fix was to not use any import preset and instead register the plugin manually (`plugins: { import: pluginImport }`) with only the three needed rules declared explicitly.
-
-### Remaining eslint rules
-
-#### `import/no-internal-modules`
-
-**Why it can't be migrated:** The oxlint team has marked this as "won't implement", on the
-grounds that `no-restricted-imports` (which oxlint does support) can cover the same use-cases.
-
-**Purpose:** Controls which internal subpaths of packages may be imported directly. In this
-repo the rule maintains a precise allowlist of `fp-ts` and `io-ts` internals that are
-permitted, enforcing a migration boundary as the codebase moves towards Effect.
-
-**How to replace:**
-Convert the allowlist to `no-restricted-imports` deny patterns in
-`.oxlintrc.json`. The logic is inverted — instead of listing what is allowed, you list what
-is forbidden — which makes the patterns more verbose but achieves the same effect. The
-conversion is non-trivial given the negated glob in the current allow pattern
-(`fp-ts/lib/!(Array|boolean|…).js`).
