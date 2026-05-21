@@ -262,6 +262,20 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
       Effect.andThen(ReviewADatasetFlow.ChooseYourPersonaSubmission),
     ),
   ),
+  MakeRoute(
+    'GET',
+    Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+    ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewPage,
+  ),
+  MakeRoute(
+    'POST',
+    Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(ReviewADatasetFlow.OthersNeedToBeListedOnTheReviewSubmission),
+    ),
+  ),
   MakeRoute('GET', Routes.ReviewADatasetDeclareCompetingInterests, ReviewADatasetFlow.DeclareCompetingInterestsPage),
   MakeRoute(
     'POST',
