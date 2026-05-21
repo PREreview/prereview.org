@@ -26,6 +26,7 @@ import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADatas
 import { GetAuthor } from './GetAuthor.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
+import { GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview } from './GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
 import { GetPublishedReview } from './GetPublishedReview.ts'
 import { GetPublishedReviewDetails } from './GetPublishedReviewDetails.ts'
@@ -334,7 +335,7 @@ const makeDatasetReviewQueries: Effect.Effect<
           return GetNextExpectedCommandForAUserOnADatasetReview(events)
         }
 
-        return GetNextExpectedCommandForAUserOnADatasetReview(events)
+        return GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview(events)
       },
       Effect.catchTag('NoSuchElementException', cause => new Errors.UnknownDatasetReview({ cause })),
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
