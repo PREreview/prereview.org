@@ -83,6 +83,10 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
     return Option.some('ChoosePersona')
   }
 
+  if (!hasEvent(events, 'AnsweredIfOthersNeedToBeListedOnTheReview')) {
+    return Option.some('AnswerIfOthersNeedToBeListedOnTheReview')
+  }
+
   if (!hasEvent(events, 'CompetingInterestsForADatasetReviewWereDeclared')) {
     return Option.some('DeclareCompetingInterests')
   }

@@ -143,6 +143,10 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
+const answeredIfOthersNeedToBeListedOnTheReview = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'yes',
+  datasetReviewId,
+})
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
     competingInterests: Option.none(),
@@ -193,7 +197,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
   })
 
   describe('when it is in progress', () => {
-    it.fails.each<[string, ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NextExpectedCommand]>([
+    it.each<[string, ReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NextExpectedCommand]>([
       [
         'flow completed up choice of persona',
         [
@@ -239,6 +243,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsReadyToBeShared(),
             fc.answeredIfTheDatasetIsMissingAnything(),
             fc.personaForDatasetReviewWasChosen(),
+            fc.answeredIfOthersNeedToBeListedOnTheReview(),
             fc.competingInterestsForADatasetReviewWereDeclared(),
             fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
           )
@@ -414,6 +419,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
+                answeredIfOthersNeedToBeListedOnTheReview,
               ],
               'DeclareCompetingInterests',
             ], // persona chosen
@@ -433,6 +439,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
+                answeredIfOthersNeedToBeListedOnTheReview,
                 competingInterestsForADatasetReviewWereDeclared1,
               ],
               'DeclareFollowingCodeOfConduct',
@@ -453,6 +460,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
+                answeredIfOthersNeedToBeListedOnTheReview,
                 competingInterestsForADatasetReviewWereDeclared1,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
               ],
@@ -476,6 +484,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsDetailedEnough1,
                 ratedTheQualityOfTheDataset1,
                 personaForDatasetReviewWasChosen1,
+                answeredIfOthersNeedToBeListedOnTheReview,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
                 competingInterestsForADatasetReviewWereDeclared2,
                 answeredIfTheDatasetIsMissingAnything2,
