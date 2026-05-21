@@ -1,14 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "typescript",
-    "import",
-    "unicorn"
-  ],
-  "jsPlugins": [
-    "eslint-plugin-wc",
-    "eslint-plugin-no-comments"
-  ],
+  "plugins": ["typescript", "import", "unicorn"],
+  "jsPlugins": ["eslint-plugin-wc", "eslint-plugin-no-comments"],
   "categories": {
     "correctness": "off"
   },
@@ -115,10 +108,7 @@
     "wc/no-typos": "error",
     "wc/require-listener-teardown": "error",
     "import/no-cycle": "error",
-    "import/extensions": [
-      "error",
-      "ignorePackages"
-    ],
+    "import/extensions": ["error", "ignorePackages"],
     "no-comments/disallowComments": [
       "error",
       {
@@ -211,10 +201,7 @@
         "allowNumber": true
       }
     ],
-    "typescript/return-await": [
-      "error",
-      "error-handling-correctness-only"
-    ],
+    "typescript/return-await": ["error", "error-handling-correctness-only"],
     "typescript/triple-slash-reference": "error",
     "typescript/unbound-method": "error",
     "typescript/unified-signatures": "error",
@@ -265,12 +252,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "rules": {
         "constructor-super": "off",
         "getter-return": "off",
@@ -295,9 +277,7 @@
       }
     },
     {
-      "files": [
-        "**/*.test.ts"
-      ],
+      "files": ["**/*.test.ts"],
       "rules": {
         "no-comments/disallowComments": "off",
         "no-unused-vars": [
@@ -315,26 +295,17 @@
         "typescript/prefer-promise-reject-errors": "off",
         "typescript/restrict-template-expressions": "off"
       },
-      "jsPlugins": [
-        "eslint-plugin-no-comments"
-      ]
+      "jsPlugins": ["eslint-plugin-no-comments"]
     },
     {
-      "files": [
-        "integration/**/*.ts",
-        "visual-regression/**/*.ts"
-      ],
+      "files": ["integration/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "no-empty-pattern": "off",
         "typescript/unbound-method": "off"
       }
     },
     {
-      "files": [
-        "integration/**/*.ts",
-        "test/**/*.ts",
-        "visual-regression/**/*.ts"
-      ],
+      "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "typescript/no-base-to-string": "off"
       }
