@@ -6,7 +6,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
-import type { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
+import { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata from './CheckIfUserCanAnswerIfTheDatasetHasEnoughMetadata.ts'
@@ -267,8 +267,9 @@ const makeDatasetReviewQueries: Effect.Effect<
       CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.createFilter,
       CheckIfUserCanAnswerIfTheDatasetIsMissingAnything.query,
     ),
-    checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: () =>
-      new Queries.UnableToQuery({ cause: 'not implemented' }),
+    checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: yield* Queries.makeOnDemandQuery(
+      CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview,
+    ),
     checkIfUserCanChoosePersona: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanChoosePersona',
       CheckIfUserCanChoosePersona.createFilter,
