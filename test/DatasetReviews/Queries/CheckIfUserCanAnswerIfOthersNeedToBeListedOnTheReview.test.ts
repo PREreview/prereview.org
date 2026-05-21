@@ -58,8 +58,18 @@ test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     Either.left(new DatasetReviews.DatasetReviewWasStartedByAnotherUser()),
   ],
   ['answered', input, [started, answered], Either.right(Option.some(answered.answer))],
-  ['publication requested', input, [started, answered, publicationRequested], Either.right(Option.none())],
-  ['published', input, [started, answered, publicationRequested, published], Either.right(Option.none())],
+  [
+    'publication requested',
+    input,
+    [started, answered, publicationRequested],
+    Either.left(new DatasetReviews.DatasetReviewIsBeingPublished()),
+  ],
+  [
+    'published',
+    input,
+    [started, answered, publicationRequested, published],
+    Either.left(new DatasetReviews.DatasetReviewHasBeenPublished()),
+  ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview
 
