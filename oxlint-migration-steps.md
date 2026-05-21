@@ -18,9 +18,6 @@ Migration can be achieved in small steps:
 - initial plan and commits by agent, tidied up by human
   - used [skill published by oxlint team](https://github.com/oxc-project/oxc/blob/main/.agents/skills/migrate-oxlint/SKILL.md) to inform agent
   - resulted in use of `@oxlint/migrate` for copying/migrating rules
-- use of `no-restricted-syntax` to avoid empty `import` statements is redundant
-  - empty `import type {}` get stripped by prettier as it calls out to typescript for sorting and typescript removes this
-  - empty `import {}` is flagged by oxlint `no-import-type-side-effects`
 - `oxlint` needs to be added to `no-comments/disallowComments` allow list
 - oxlint flags use of `void` in `test/EffectTest.ts`
   - eslint has `allowInGenericTypeArguments` option enabled by default, oxlint does not have this rule config
@@ -29,6 +26,16 @@ Migration can be achieved in small steps:
 - `typescript/no-unused-vars` becomes `no-unused-vars`
   - the oxlint version of `no-unused-vars` is type-aware
   - `typescript/no-unused-vars` overwrites the `no-unused-vars` in eslint to make it type aware
+
+## Rules that aren't automatically migrated
+
+- use of `no-restricted-syntax` to avoid empty `import`
+  - redundant due to combination of prettier and oxlint
+  - empty `import type {}` get stripped by prettier as it calls out to typescript for sorting and typescript removes this
+  - empty `import {}` is flagged by oxlint `no-import-type-side-effects`
+- `import/no-extraneous-dependencies`
+  - does not exist in oxlint
+  - superfluous since our switch to pnpm as it only exposes direct deps in `node_modules`
 
 ## Notes from agent that still need investigating
 
@@ -54,17 +61,3 @@ Convert the allowlist to `no-restricted-imports` deny patterns in
 is forbidden — which makes the patterns more verbose but achieves the same effect. The
 conversion is non-trivial given the negated glob in the current allow pattern
 (`fp-ts/lib/!(Array|boolean|…).js`).
-
-#### `import/no-extraneous-dependencies`
-
-**Why it can't be migrated:** Not yet implemented in oxlint.
-
-**Purpose:** Ensures every import comes from a package declared as a dependency (or
-devDependency for test/asset files) in `package.json`, preventing accidental reliance on
-transitive dependencies that could disappear without warning.
-
-**How to replace:**
-
-- Wait for oxlint to implement the rule <https://github.com/oxc-project/oxc/issues/1117>
-- Use `knip` or `depcheck` as a separate CI step to detect undeclared dependencies. Neither
-  is a line-by-line linter, but both catch the same class of problem at the package level.

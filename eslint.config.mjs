@@ -30,18 +30,6 @@ export default defineConfig([
       'import/resolver': { typescript: true },
     },
     rules: {
-      'import/no-extraneous-dependencies': [
-        'error',
-        {
-          devDependencies: [
-            'assets/**/*.ts',
-            'integration/**/*.ts',
-            'test/**/*.ts',
-            'visual-regression/**/*.ts',
-            '*.ts',
-          ],
-        },
-      ],
       'import/no-internal-modules': [
         'error',
         {
