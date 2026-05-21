@@ -1,12 +1,10 @@
 import { HttpClient, HttpClientResponse } from '@effect/platform'
-import { describe, expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { type Duration, Effect, Exit, Fiber, pipe, TestClock } from 'effect'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
-import * as EffectTest from './EffectTest.ts'
 
 describe('requestCollapsingHttpClient', () => {
-  test('when the requests are sent in parallel', () =>
+  it.effect('when the requests are sent in parallel', () =>
     Effect.gen(function* () {
       let responseCount = 0
 
@@ -31,9 +29,10 @@ describe('requestCollapsingHttpClient', () => {
 
       expect(responseCount).toBe(1)
       expect(actual).toStrictEqual(['response 1', 'response 1'])
-    }).pipe(EffectTest.run))
+    }),
+  )
 
-  test('when the first request is interrupted', () =>
+  it.effect('when the first request is interrupted', () =>
     Effect.gen(function* () {
       const client = yield* pipe(
         _.requestCollapsingHttpClient,
@@ -57,9 +56,10 @@ describe('requestCollapsingHttpClient', () => {
       const cause = yield* Exit.causeOption(actual)
 
       expect(cause._tag).toStrictEqual('Sequential')
-    }).pipe(EffectTest.run))
+    }),
+  )
 
-  test('when the requests are sent in serial', () =>
+  it.effect('when the requests are sent in serial', () =>
     Effect.gen(function* () {
       let responseCount = 0
 
@@ -83,9 +83,10 @@ describe('requestCollapsingHttpClient', () => {
 
       expect(responseCount).toBe(2)
       expect(actual).toStrictEqual(['response 1', 'response 2'])
-    }).pipe(EffectTest.run))
+    }),
+  )
 
-  test('when the requests are different', () =>
+  it.effect('when the requests are different', () =>
     Effect.gen(function* () {
       let responseCount = 0
 
@@ -111,7 +112,8 @@ describe('requestCollapsingHttpClient', () => {
 
       expect(responseCount).toBe(2)
       expect(actual).toStrictEqual(['response 1', 'response 2'])
-    }).pipe(EffectTest.run))
+    }),
+  )
 })
 
 const stubbedClient = (response: () => Response, responseDelay: Duration.DurationInput = 0): HttpClient.HttpClient =>

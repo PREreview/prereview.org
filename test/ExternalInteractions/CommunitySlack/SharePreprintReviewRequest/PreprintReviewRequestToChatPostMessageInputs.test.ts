@@ -1,5 +1,4 @@
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Array, Effect, Option } from 'effect'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'
@@ -7,9 +6,10 @@ import { html, rawHtml } from '../../../../src/html.ts'
 import * as Preprints from '../../../../src/Preprints/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import { Doi, NonEmptyString, OrcidId, Temporal } from '../../../../src/types/index.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 
-test.each([
+it.effect.each<
+  [string, _.PreprintReviewRequestWithThread, Array.NonEmptyReadonlyArray<Slack.ChatPostMessageInput['blocks']>]
+>([
   [
     'with abstract',
     {
@@ -53,7 +53,7 @@ test.each([
         abstract: Option.some("Here's the abstract"),
         callToAction: "Here's the call to action",
       },
-    } satisfies _.PreprintReviewRequestWithThread,
+    },
     [
       [{ type: 'markdown', text: "Here's the main" }],
       [{ type: 'markdown', text: "Here's the detail" }],
@@ -88,7 +88,7 @@ test.each([
           ],
         },
       ],
-    ] satisfies Array.NonEmptyReadonlyArray<Slack.ChatPostMessageInput['blocks']>,
+    ],
   ],
   [
     'without abstract',
@@ -130,12 +130,12 @@ test.each([
       ],
     ],
   ],
-])('PreprintReviewRequestToChatPostMessageInputs (%s)', (_name, datasetReview, expectedBlocks) =>
+])('PreprintReviewRequestToChatPostMessageInputs (%s)', ([, datasetReview, expectedBlocks]) =>
   Effect.gen(function* () {
     const actual = yield* _.PreprintReviewRequestToChatPostMessageInputs(datasetReview)
 
     expect(actual).toStrictEqual(
       Array.map(expectedBlocks, blocks => ({ blocks, unfurlLinks: false, unfurlMedia: false })),
     )
-  }).pipe(Effect.provideService(PublicUrl, new URL('http://example.com')), EffectTest.run),
+  }).pipe(Effect.provideService(PublicUrl, new URL('http://example.com'))),
 )

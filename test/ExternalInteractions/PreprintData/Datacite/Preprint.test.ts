@@ -1,11 +1,10 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('recordToPreprint', () => {
@@ -56,7 +55,7 @@ describe('recordToPreprint', () => {
       }).pipe(Effect.provide(LanguageDetection.layerCld)),
   )
 
-  test('no creators', () =>
+  it.effect('no creators', () =>
     Effect.gen(function* () {
       const record = new Datacite.Record({
         ...stubRecord,
@@ -67,9 +66,10 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ creators: [] })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld)),
+  )
 
-  test('title language unknown', () =>
+  it.effect('title language unknown', () =>
     Effect.gen(function* () {
       const record = new Datacite.Record({
         ...stubRecord,
@@ -80,9 +80,10 @@ describe('recordToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual(new LanguageDetection.UnableToDetectLanguage({}))
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld)),
+  )
 
-  test('abstract language unknown', () =>
+  it.effect('abstract language unknown', () =>
     Effect.gen(function* () {
       const record = new Datacite.Record({
         ...stubRecord,
@@ -92,7 +93,8 @@ describe('recordToPreprint', () => {
       const actual = yield* _.recordToPreprint(record)
 
       expect(actual.abstract).toStrictEqual(undefined)
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld)),
+  )
 
   it.effect.prop(
     'no posted date',

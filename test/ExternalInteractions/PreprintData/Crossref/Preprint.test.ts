@@ -1,10 +1,9 @@
-import { describe, expect, it, test } from '@effect/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect } from 'effect'
 import { Crossref } from '../../../../src/ExternalApis/index.ts'
 import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Crossref/Preprint.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
-import * as EffectTest from '../../../EffectTest.ts'
 import * as fc from '../../../fc.ts'
 
 describe('workToPreprint', () => {
@@ -53,7 +52,7 @@ describe('workToPreprint', () => {
       }).pipe(Effect.provide(LanguageDetection.layerCld)),
   )
 
-  test('no authors', () =>
+  it.effect('no authors', () =>
     Effect.gen(function* () {
       const work = new Crossref.Work({
         ...stubWork,
@@ -64,9 +63,10 @@ describe('workToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ author: [] })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld)),
+  )
 
-  test('no title', () =>
+  it.effect('no title', () =>
     Effect.gen(function* () {
       const work = new Crossref.Work({
         ...stubWork,
@@ -77,7 +77,8 @@ describe('workToPreprint', () => {
 
       expect(actual._tag).toStrictEqual('PreprintIsUnavailable')
       expect(actual.cause).toStrictEqual({ title: [] })
-    }).pipe(Effect.provide(LanguageDetection.layerCld), EffectTest.run))
+    }).pipe(Effect.provide(LanguageDetection.layerCld)),
+  )
 })
 
 const stubWork = {

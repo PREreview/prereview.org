@@ -1,7 +1,7 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { describe, expect, it, test, vi } from '@effect/vitest'
+import { describe, expect, it, vi } from '@effect/vitest'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, Layer, Option, type PubSub, type Types } from 'effect'
 import * as Events from '../src/Events.ts'
@@ -10,7 +10,6 @@ import * as Preprints from '../src/Preprints/index.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
-import * as EffectTest from './EffectTest.ts'
 import * as fc from './fc.ts'
 
 const now = Temporal.Now.instant()
@@ -183,7 +182,7 @@ const preprintId1Indeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ valu
 const preprintId2 = new Preprints.PhilsciPreprintId({ value: 1 })
 const preprintId3 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
 
-test.each<
+it.effect.each<
   [
     string,
     Events.EventFilter<Types.Tags<Events.Event>>,
@@ -410,7 +409,7 @@ test.each<
       }),
     ],
   ],
-])('find events (%s)', (_name, filter, events, expected) =>
+])('find events (%s)', ([, filter, events, expected]) =>
   Effect.gen(function* () {
     const eventStore = yield* _.make
 
@@ -424,7 +423,6 @@ test.each<
     Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
     Effect.provide(Layer.mock(Events.Events, {} as never)),
     Effect.provide(TestLibsqlClient),
-    EffectTest.run,
   ),
 )
 

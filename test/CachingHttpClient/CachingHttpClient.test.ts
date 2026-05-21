@@ -1,10 +1,9 @@
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from '@effect/platform'
 import { beforeEach, describe, expect, it } from '@effect/vitest'
-import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock } from 'effect'
+import { Duration, Effect, Either, Fiber, Layer, pipe, Queue, TestClock, TestContext } from 'effect'
 import * as _ from '../../src/CachingHttpClient/index.ts'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
-import * as EffectTest from '../EffectTest.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
@@ -166,11 +165,11 @@ describe.sequential('there is a cache entry', () => {
         Effect.provide(_.layerInMemory(cache)),
       )
       yield* clientToPopulateCache.get(url)
-    }).pipe(Effect.provide(emptyQueue), EffectTest.run),
+    }).pipe(Effect.provide(emptyQueue), Effect.provide(TestContext.TestContext), Effect.runPromise),
   )
 
   describe('the cached response is fresh', () => {
-    it('the cached response is returned without making any requests', () =>
+    it.effect('the cached response is returned without making any requests', () =>
       Effect.gen(function* () {
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
@@ -182,7 +181,8 @@ describe.sequential('there is a cache entry', () => {
         expect(responseFromFreshCache.status).toStrictEqual(originalResponse.status)
         expect(responseFromFreshCache.headers).toStrictEqual(originalResponse.headers)
         expect(yield* responseFromFreshCache.text).toStrictEqual(yield* originalResponse.text)
-      }).pipe(Effect.provide(emptyQueue), EffectTest.run))
+      }).pipe(Effect.provide(emptyQueue)),
+    )
   })
 
   describe('the cached response is stale', () => {

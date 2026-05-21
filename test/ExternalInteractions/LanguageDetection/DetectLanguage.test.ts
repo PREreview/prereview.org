@@ -1,14 +1,12 @@
 import { FileSystem } from '@effect/platform'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { expect, it } from '@effect/vitest'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DetectLanguage } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/DetectLanguage.ts'
-import * as EffectTest from '../../EffectTest.ts'
 
-test.each<{ response: string; expected: Option.Option<LanguageCode> }>([
+it.effect.each<{ response: string; expected: Option.Option<LanguageCode> }>([
   {
     response: 'hello',
     expected: Option.some('en'),
@@ -41,10 +39,10 @@ test.each<{ response: string; expected: Option.Option<LanguageCode> }>([
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide(NodeFileSystem.layer)),
 )
 
-test.each<{ response: string; languages: ReadonlyArray<LanguageCode>; expected: Option.Option<LanguageCode> }>([
+it.effect.each<{ response: string; languages: ReadonlyArray<LanguageCode>; expected: Option.Option<LanguageCode> }>([
   {
     response: 'hello',
     languages: ['en'],
@@ -81,5 +79,5 @@ test.each<{ response: string; languages: ReadonlyArray<LanguageCode>; expected: 
     )
 
     expect(actual).toStrictEqual(expected)
-  }).pipe(Effect.provide(NodeFileSystem.layer), EffectTest.run),
+  }).pipe(Effect.provide(NodeFileSystem.layer)),
 )

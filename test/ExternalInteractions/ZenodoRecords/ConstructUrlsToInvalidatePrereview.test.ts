@@ -6,10 +6,9 @@ import { BiorxivPreprintId } from '../../../src/Preprints/index.ts'
 import { Doi } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
-import * as EffectTest from '../../EffectTest.ts'
 
 describe('constructUrlsToInvalidatePrereview', () => {
-  it('constructs valid urls', () =>
+  it.effect('constructs valid urls', () =>
     Effect.gen(function* () {
       const prereviewId = 12345
       const preprintId = new BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
@@ -29,6 +28,6 @@ describe('constructUrlsToInvalidatePrereview', () => {
       expect(Array.map(results, result => result.href).sort()).toStrictEqual(expectedUrls.sort())
     }).pipe(
       Effect.provideService(Zenodo.ZenodoApi, { key: Redacted.make('key'), origin: new URL('http://zenodo.test') }),
-      EffectTest.run,
-    ))
+    ),
+  )
 })

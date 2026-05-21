@@ -1,6 +1,5 @@
 import { HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { describe, expect } from '@effect/vitest'
-import { test } from '@fast-check/vitest'
+import { describe, expect, it } from '@effect/vitest'
 import { Effect, Redacted } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
@@ -11,11 +10,10 @@ import { PublicUrl } from '../../../src/public-url.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/Router/LegacyRouter.ts'
 import { TemplatePage } from '../../../src/WebApp/TemplatePage.ts'
-import * as EffectTest from '../../EffectTest.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
 
 describe('LegacyRouter', () => {
-  test.each([
+  it.effect.each<[string, string]>([
     ['/10.1101/2020.08.27.270835', '/preprints/doi-10.1101-2020.08.27.270835'],
     ['/10.5281/zenodo.3733767', '/preprints/doi-10.5281-zenodo.3733767'],
     ['/blog', 'https://content.prereview.org/'],
@@ -56,7 +54,7 @@ describe('LegacyRouter', () => {
     ['/signup', '/log-in'],
     ['/)', '/'],
     ['/),', '/'],
-  ])('redirects %s', (path, expected) =>
+  ])('redirects %s', ([path, expected]) =>
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost/${path}`))
 
@@ -71,11 +69,10 @@ describe('LegacyRouter', () => {
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
       Effect.provide(FeatureFlags.layerDefaults),
-      EffectTest.run,
     ),
   )
 
-  test.each([
+  it.effect.each<[string]>([
     ['/admin'],
     ['/api'],
     ['/api/docs'],
@@ -98,7 +95,7 @@ describe('LegacyRouter', () => {
     ],
     ['/settings/api'],
     ['/settings/drafts'],
-  ])('removed page for %s', path =>
+  ])('removed page for %s', ([path]) =>
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
 
@@ -117,11 +114,10 @@ describe('LegacyRouter', () => {
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
       Effect.provide(FeatureFlags.layerDefaults),
-      EffectTest.run,
     ),
   )
 
-  test.each([
+  it.effect.each<[string]>([
     ['/dashboard'],
     ['/dashboard?page=2'],
     ['/dashboard?search=covid-19&page=2&limit=10&offset=0'],
@@ -129,7 +125,7 @@ describe('LegacyRouter', () => {
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
     ['/extension'],
-  ])('removed page for %s', path =>
+  ])('removed page for %s', ([path]) =>
     Effect.gen(function* () {
       const request = HttpServerRequest.fromWeb(new Request(`http://localhost${path}`))
 
@@ -148,7 +144,6 @@ describe('LegacyRouter', () => {
       ),
       Effect.provideService(PublicUrl, new URL('http://example.com')),
       Effect.provide(FeatureFlags.layerDefaults),
-      EffectTest.run,
     ),
   )
 })

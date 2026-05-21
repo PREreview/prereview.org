@@ -3,10 +3,9 @@ import { Effect, Redacted } from 'effect'
 import { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/ConstructCommentListUrl.ts'
 import { Doi } from '../../../src/types/index.ts'
-import * as EffectTest from '../../EffectTest.ts'
 
 describe('ConstructCommentListUrl', () => {
-  it('constructs a valid url', () =>
+  it.effect('constructs a valid url', () =>
     Effect.gen(function* () {
       const prereviewDoi = Doi.Doi('10.1101/12345')
       const expectedUrl =
@@ -16,6 +15,6 @@ describe('ConstructCommentListUrl', () => {
       expect(result.href).toStrictEqual(expectedUrl)
     }).pipe(
       Effect.provideService(Zenodo.ZenodoApi, { key: Redacted.make('key'), origin: new URL('http://zenodo.test') }),
-      EffectTest.run,
-    ))
+    ),
+  )
 })
