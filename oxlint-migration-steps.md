@@ -142,7 +142,7 @@ transitive dependencies that could disappear without warning.
 
 **How to replace:**
 
-- Wait for oxlint to implement the rule.
+- Wait for oxlint to implement the rule <https://github.com/oxc-project/oxc/issues/1117>
 - Use `knip` or `depcheck` as a separate CI step to detect undeclared dependencies. Neither
   is a line-by-line linter, but both catch the same class of problem at the package level.
 
