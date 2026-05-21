@@ -5,6 +5,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
   FeatureFlags,
   {
     canAddMultipleAuthors: (user?: User) => boolean
+    canInviteOthersToDatasetReviews: boolean
     canLogInAsDemoUser: boolean
     canNotifyReviewsPublishedInResponseToRequests: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
@@ -15,6 +16,7 @@ export class FeatureFlags extends Context.Tag('FeatureFlags')<
 
 const defaults = {
   canAddMultipleAuthors: () => false,
+  canInviteOthersToDatasetReviews: false,
   canLogInAsDemoUser: false,
   canNotifyReviewsPublishedInResponseToRequests: false,
   sendCoarNotifyMessages: false,
@@ -25,6 +27,7 @@ const defaults = {
 export const canAddMultipleAuthors = Effect.serviceFunction(FeatureFlags, Struct.get('canAddMultipleAuthors'))
 
 export const {
+  canInviteOthersToDatasetReviews,
   canLogInAsDemoUser,
   canNotifyReviewsPublishedInResponseToRequests,
   sendCoarNotifyMessages,
