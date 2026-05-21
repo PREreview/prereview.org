@@ -20,6 +20,7 @@ const commandRoutes = {
   AnswerIfTheDatasetIsReadyToBeShared: Routes.ReviewADatasetIsReadyToBeShared,
   AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   ChoosePersona: Routes.ReviewADatasetChooseYourPersona,
+  AnswerIfOthersNeedToBeListedOnTheReview: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
   DeclareCompetingInterests: Routes.ReviewADatasetDeclareCompetingInterests,
   DeclareFollowingCodeOfConduct: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,

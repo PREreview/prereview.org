@@ -303,6 +303,12 @@ export const ReviewADatasetChooseYourPersona = Route({
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 })
 
+export const ReviewADatasetOthersNeedToBeListedOnTheReview = Route({
+  path: '/review-a-dataset/:datasetReviewId/others-need-to-be-listed',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/others-need-to-be-listed`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+})
+
 export const ReviewADatasetDeclareCompetingInterests = Route({
   path: '/review-a-dataset/:datasetReviewId/declare-competing-interests',
   href: params => `/review-a-dataset/${params.datasetReviewId}/declare-competing-interests`,

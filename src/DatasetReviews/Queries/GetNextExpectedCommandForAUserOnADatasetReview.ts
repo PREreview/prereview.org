@@ -15,6 +15,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetIsReadyToBeShared'
   | 'AnswerIfTheDatasetIsMissingAnything'
   | 'ChoosePersona'
+  | 'AnswerIfOthersNeedToBeListedOnTheReview'
   | 'DeclareCompetingInterests'
   | 'DeclareFollowingCodeOfConduct'
   | 'PublishDatasetReview'
