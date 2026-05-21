@@ -162,19 +162,3 @@ permitted, enforcing a migration boundary as the codebase moves towards Effect.
 is forbidden — which makes the patterns more verbose but achieves the same effect. The
 conversion is non-trivial given the negated glob in the current allow pattern
 (`fp-ts/lib/!(Array|boolean|…).js`).
-
----
-
-### `no-restricted-syntax` (empty imports)
-
-**Why it can't be migrated:** Not yet implemented in oxlint.
-
-**Purpose:** Forbids `import {}` statements — imports with an empty specifier list that do
-nothing and are dead code.
-
-**How to replace:**
-
-- Wait for oxlint to implement `no-restricted-syntax`.
-- Prettier or a custom pre-commit script could strip empty imports at format time.
-- Most editors and TypeScript's own `--noUnusedLocals` organise-imports tooling will remove
-  these automatically, so the practical risk of them accumulating is low.

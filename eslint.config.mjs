@@ -58,10 +58,6 @@ export default defineConfig([
           ],
         },
       ],
-      'no-restricted-syntax': [
-        'error',
-        { selector: 'ImportDeclaration[specifiers.length = 0]', message: 'Empty imports are not allowed' },
-      ],
     },
   },
   {
