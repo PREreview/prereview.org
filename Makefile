@@ -1,4 +1,4 @@
-.PHONY: check clean start start-app start-services format lint-css lint-ts prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request dump-sandbox-events
+.PHONY: check clean start start-app start-services format lint-css lint-ts* prod smoketest typecheck typecheck-watch typecheck-analyze test test-fast test-watch test-integration test-integration-chrome update-incontext-locale update-snapshots test-integration-image status-prod withdraw-review-request categorize-review-request dump-sandbox-events
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -50,9 +50,13 @@ start-services: .dev/server.crt .dev/server.key
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
-lint-ts: node_modules src/manifest.json
+lint-ts-oxlint: node_modules src/manifest.json
 	npx oxlint .
+
+lint-ts-eslint: node_modules src/manifest.json
 	npx eslint --cache --cache-location ".cache/eslint/" --max-warnings 0
+
+lint-ts: lint-ts-oxlint lint-ts-eslint
 
 lint-css: node_modules
 	npx stylelint '**/*.css'
