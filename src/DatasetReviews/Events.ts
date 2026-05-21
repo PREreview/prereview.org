@@ -130,6 +130,14 @@ export class PersonaForDatasetReviewWasChosen extends Schema.TaggedClass<Persona
   },
 ) {}
 
+export class AnsweredIfOthersNeedToBeListedOnTheReview extends Schema.TaggedClass<AnsweredIfOthersNeedToBeListedOnTheReview>()(
+  'AnsweredIfOthersNeedToBeListedOnTheReview',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    answer: Schema.Literal('no', 'yes'),
+  },
+) {}
+
 export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.TaggedClass<CompetingInterestsForADatasetReviewWereDeclared>()(
   'CompetingInterestsForADatasetReviewWereDeclared',
   {
@@ -192,6 +200,7 @@ export const DatasetReviewEvent = Schema.Union(
   ZenodoRecordForDatasetReviewWasCreated,
   DeclaredThatTheCodeOfConductWasFollowedForADatasetReview,
   PersonaForDatasetReviewWasChosen,
+  AnsweredIfOthersNeedToBeListedOnTheReview,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
