@@ -20,12 +20,12 @@ export const OthersNeedToBeListedOnTheReviewPage = ({
     const user = yield* LoggedInUser
     const locale = yield* Locale
 
-    yield* DatasetReviews.checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview({
+    const answer = yield* DatasetReviews.checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview({
       datasetReviewId,
       authorId: user.orcid,
     })
 
-    const form = new OthersNeedToBeListedForm.EmptyForm()
+    const form = OthersNeedToBeListedForm.fromAnswer(answer)
 
     return OthersNeedToBeListedPage({ datasetReviewId, form, locale })
   }).pipe(
