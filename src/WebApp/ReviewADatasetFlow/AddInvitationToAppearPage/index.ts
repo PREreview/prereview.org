@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
-import type { Locale } from '../../../Context.ts'
+import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
@@ -8,6 +8,8 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
+import * as AddInvitationToAppearForm from './AddInvitationToAppearForm.ts'
+import { AddInvitationToAppearPage as createAddInvitationToAppearPage } from './AddInvitationToAppearPage.ts'
 
 export const AddInvitationToAppearPage = ({
   datasetReviewId,
@@ -16,13 +18,14 @@ export const AddInvitationToAppearPage = ({
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
+    const locale = yield* Locale
 
     yield* DatasetReviews.checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList({
       datasetReviewId,
       authorId: user.orcid,
     })
 
-    return yield* HavingProblemsPage
+    return createAddInvitationToAppearPage({ datasetReviewId, form: new AddInvitationToAppearForm.EmptyForm(), locale })
   }).pipe(
     Effect.catchTags({
       DatasetReviewDoesNotNeedInvitationsToAppear: () =>
