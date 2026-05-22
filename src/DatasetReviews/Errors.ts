@@ -4,6 +4,10 @@ export class DatasetReviewHasNotBeenStarted extends Data.TaggedError('DatasetRev
 
 export class DatasetReviewWasStartedByAnotherUser extends Data.TaggedError('DatasetReviewWasStartedByAnotherUser') {}
 
+export class DatasetReviewDoesNotNeedInvitationsToAppear extends Data.TaggedError(
+  'DatasetReviewDoesNotNeedInvitationsToAppear',
+) {}
+
 export class DatasetReviewHasBeenPublished extends Data.TaggedError('DatasetReviewHasBeenPublished') {}
 
 export class DatasetReviewIsBeingPublished extends Data.TaggedError('DatasetReviewIsBeingPublished') {}
