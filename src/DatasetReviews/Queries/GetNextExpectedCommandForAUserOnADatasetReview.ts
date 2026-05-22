@@ -16,6 +16,7 @@ export type NextExpectedCommand =
   | 'AnswerIfTheDatasetIsMissingAnything'
   | 'ChoosePersona'
   | 'AnswerIfOthersNeedToBeListedOnTheReview'
+  | 'AddInvitationToAppearOnADatasetReviewToTheList'
   | 'DeclareCompetingInterests'
   | 'DeclareFollowingCodeOfConduct'
   | 'PublishDatasetReview'
@@ -83,8 +84,14 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
     return Option.some('ChoosePersona')
   }
 
-  if (!hasEvent(events, 'AnsweredIfOthersNeedToBeListedOnTheReview')) {
+  const others = Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview'))
+
+  if (Option.isNone(others)) {
     return Option.some('AnswerIfOthersNeedToBeListedOnTheReview')
+  }
+
+  if (others.value.answer === 'yes' && !hasEvent(events, 'InvitationToAppearOnADatasetReviewAddedToTheList')) {
+    return Option.some('AddInvitationToAppearOnADatasetReviewToTheList')
   }
 
   if (!hasEvent(events, 'CompetingInterestsForADatasetReviewWereDeclared')) {

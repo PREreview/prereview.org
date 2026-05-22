@@ -4,7 +4,7 @@ import { type Array, identity, Option, Predicate } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -143,10 +143,23 @@ const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetRe
   persona: 'pseudonym',
   datasetReviewId,
 })
-const answeredIfOthersNeedToBeListedOnTheReview = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const answeredYesIfOthersNeedToBeListedOnTheReview = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
   answer: 'yes',
   datasetReviewId,
 })
+const answeredNoIfOthersNeedToBeListedOnTheReview = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'no',
+  datasetReviewId,
+})
+const invitationToAppearOnADatasetReviewAddedToTheList =
+  new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+    invitationId: Uuid.Uuid('9af6576d-1733-4461-a000-a31d2b172e5d'),
+    contactDetails: Option.some({
+      name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+      emailAddress: EmailAddress.EmailAddress('arnesaknussemm@example.com'),
+    }),
+    datasetReviewId,
+  })
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
     competingInterests: Option.none(),
@@ -218,6 +231,49 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
         ],
         'AnswerIfOthersNeedToBeListedOnTheReview',
       ],
+      [
+        'answered yes to others needing to be listed',
+        [
+          datasetReviewWasStarted,
+          ratedTheQualityOfTheDataset1,
+          answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+          answeredIfTheDatasetHasEnoughMetadata1,
+          answeredIfTheDatasetHasTrackedChanges1,
+          answeredIfTheDatasetHasDataCensoredOrDeleted1,
+          answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+          answeredIfTheDatasetSupportsRelatedConclusions1,
+          answeredIfTheDatasetIsDetailedEnough1,
+          answeredIfTheDatasetIsErrorFree1,
+          answeredIfTheDatasetMattersToItsAudience1,
+          answeredIfTheDatasetIsReadyToBeShared1,
+          answeredIfTheDatasetIsMissingAnything1,
+          personaForDatasetReviewWasChosen1,
+          answeredYesIfOthersNeedToBeListedOnTheReview,
+        ],
+        'AddInvitationToAppearOnADatasetReviewToTheList',
+      ],
+      [
+        'added an invitation',
+        [
+          datasetReviewWasStarted,
+          ratedTheQualityOfTheDataset1,
+          answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+          answeredIfTheDatasetHasEnoughMetadata1,
+          answeredIfTheDatasetHasTrackedChanges1,
+          answeredIfTheDatasetHasDataCensoredOrDeleted1,
+          answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+          answeredIfTheDatasetSupportsRelatedConclusions1,
+          answeredIfTheDatasetIsDetailedEnough1,
+          answeredIfTheDatasetIsErrorFree1,
+          answeredIfTheDatasetMattersToItsAudience1,
+          answeredIfTheDatasetIsReadyToBeShared1,
+          answeredIfTheDatasetIsMissingAnything1,
+          personaForDatasetReviewWasChosen1,
+          answeredYesIfOthersNeedToBeListedOnTheReview,
+          invitationToAppearOnADatasetReviewAddedToTheList,
+        ],
+        'DeclareCompetingInterests',
+      ],
     ])('returns the next expected command', (_name, events, expected) => {
       const actual = _.GetNextExpectedCommandForAUserOnADatasetReview(events)
 
@@ -244,6 +300,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
             fc.answeredIfTheDatasetIsMissingAnything(),
             fc.personaForDatasetReviewWasChosen(),
             fc.answeredIfOthersNeedToBeListedOnTheReview(),
+            fc.invitationToAppearOnADatasetReviewAddedToTheList(),
             fc.competingInterestsForADatasetReviewWereDeclared(),
             fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
           )
@@ -419,7 +476,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
-                answeredIfOthersNeedToBeListedOnTheReview,
+                answeredNoIfOthersNeedToBeListedOnTheReview,
               ],
               'DeclareCompetingInterests',
             ], // persona chosen
@@ -439,7 +496,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
-                answeredIfOthersNeedToBeListedOnTheReview,
+                answeredNoIfOthersNeedToBeListedOnTheReview,
                 competingInterestsForADatasetReviewWereDeclared1,
               ],
               'DeclareFollowingCodeOfConduct',
@@ -460,7 +517,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsReadyToBeShared1,
                 answeredIfTheDatasetIsMissingAnything1,
                 personaForDatasetReviewWasChosen1,
-                answeredIfOthersNeedToBeListedOnTheReview,
+                answeredNoIfOthersNeedToBeListedOnTheReview,
                 competingInterestsForADatasetReviewWereDeclared1,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview1,
               ],
@@ -484,7 +541,7 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
                 answeredIfTheDatasetIsDetailedEnough1,
                 ratedTheQualityOfTheDataset1,
                 personaForDatasetReviewWasChosen1,
-                answeredIfOthersNeedToBeListedOnTheReview,
+                answeredNoIfOthersNeedToBeListedOnTheReview,
                 declaredThatTheCodeOfConductWasFollowedForADatasetReview2,
                 competingInterestsForADatasetReviewWereDeclared2,
                 answeredIfTheDatasetIsMissingAnything2,

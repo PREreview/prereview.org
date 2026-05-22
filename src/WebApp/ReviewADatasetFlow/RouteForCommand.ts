@@ -21,6 +21,7 @@ const commandRoutes = {
   AnswerIfTheDatasetIsMissingAnything: Routes.ReviewADatasetIsMissingAnything,
   ChoosePersona: Routes.ReviewADatasetChooseYourPersona,
   AnswerIfOthersNeedToBeListedOnTheReview: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+  AddInvitationToAppearOnADatasetReviewToTheList: Routes.ReviewADatasetAddInvitationToAppear,
   DeclareCompetingInterests: Routes.ReviewADatasetDeclareCompetingInterests,
   DeclareFollowingCodeOfConduct: Routes.ReviewADatasetDeclareFollowingCodeOfConduct,
   PublishDatasetReview: Routes.ReviewADatasetCheckYourReview,
