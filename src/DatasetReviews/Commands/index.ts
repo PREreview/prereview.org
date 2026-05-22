@@ -1,8 +1,10 @@
 import { Context, Data, Effect, type Either, Layer, Option, pipe, Scope, type Types } from 'effect'
+import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import type * as Errors from '../Errors.ts'
+import type { AnswerIfOthersNeedToBeListedOnTheReview } from './AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
 import * as AnswerIfTheDatasetHasEnoughMetadata from './AnswerIfTheDatasetHasEnoughMetadata.ts'
@@ -76,6 +78,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
       AnswerIfTheDatasetIsMissingAnything.Error
     >
     choosePersona: CommandHandler<ChoosePersona.Command, ChoosePersona.Error>
+    answerIfOthersNeedToBeListedOnTheReview: Commands.FromCommand<typeof AnswerIfOthersNeedToBeListedOnTheReview>
     declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
     declareFollowingCodeOfConduct: CommandHandler<
       DeclareFollowingCodeOfConduct.Command,
@@ -119,6 +122,7 @@ export const {
   answerIfTheDatasetIsReadyToBeShared,
   answerIfTheDatasetIsMissingAnything,
   choosePersona,
+  answerIfOthersNeedToBeListedOnTheReview,
   declareCompetingInterests,
   declareFollowingCodeOfConduct,
   markRecordCreatedOnZenodo,
@@ -263,6 +267,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         ChoosePersona.authorize,
         ChoosePersona.decide,
       ),
+      answerIfOthersNeedToBeListedOnTheReview: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
       declareCompetingInterests: handleCommand(
         DeclareCompetingInterests.createFilter,
         DeclareCompetingInterests.foldState,
