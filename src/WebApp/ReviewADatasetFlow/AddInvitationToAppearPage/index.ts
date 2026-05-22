@@ -1,19 +1,49 @@
 import type { UrlParams } from '@effect/platform'
-import type { Effect } from 'effect'
+import { Effect } from 'effect'
 import type { Locale } from '../../../Context.ts'
-import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { LoggedInUser } from '../../../user.ts'
+import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
-import type * as Response from '../../Response/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../Response/index.ts'
 
 export const AddInvitationToAppearPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  HavingProblemsPage
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+
+    yield* DatasetReviews.checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList({
+      datasetReviewId,
+      authorId: user.orcid,
+    })
+
+    return yield* HavingProblemsPage
+  }).pipe(
+    Effect.catchTags({
+      DatasetReviewDoesNotNeedInvitationsToAppear: () =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId }),
+          }),
+        ),
+      DatasetReviewHasNotBeenStarted: () => PageNotFound,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
+      UnableToQuery: () => HavingProblemsPage,
+    }),
+  )
 
 export const AddInvitationToAppearSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
