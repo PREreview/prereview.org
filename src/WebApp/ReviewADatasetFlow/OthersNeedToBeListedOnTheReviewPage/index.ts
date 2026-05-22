@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -8,6 +8,7 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as OthersNeedToBeListedForm from './OthersNeedToBeListedForm.ts'
 import { OthersNeedToBeListedPage } from './OthersNeedToBeListedPage.ts'
 
@@ -45,9 +46,7 @@ export const OthersNeedToBeListedOnTheReviewPage = ({
   )
 
 export const OthersNeedToBeListedOnTheReviewSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   body: UrlParams.UrlParams
@@ -56,4 +55,32 @@ export const OthersNeedToBeListedOnTheReviewSubmission = ({
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> => HavingProblemsPage
+> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const locale = yield* Locale
+
+    const form = yield* OthersNeedToBeListedForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: Effect.fnUntraced(
+        function* (form: OthersNeedToBeListedForm.CompletedForm) {
+          yield* DatasetReviews.answerIfOthersNeedToBeListedOnTheReview({
+            answer: form.othersNeedToBeListed,
+            datasetReviewId,
+            userId: user.orcid,
+          })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
+      InvalidForm: form => Effect.succeed(OthersNeedToBeListedPage({ datasetReviewId, form, locale })),
+    })
+  })
