@@ -46,7 +46,7 @@ const published = new Events.DatasetReviewWasPublished({
   publicationDate: now.toZonedDateTimeISO('UTC').toPlainDate(),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
   ['not answered', input, [started], Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [

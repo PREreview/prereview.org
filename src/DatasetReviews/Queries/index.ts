@@ -6,7 +6,7 @@ import type { Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
-import type { CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList } from './CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
+import { CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList } from './CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
 import { CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview } from './CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples from './CheckIfUserCanAnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted from './CheckIfUserCanAnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
@@ -275,8 +275,9 @@ const makeDatasetReviewQueries: Effect.Effect<
     checkIfUserCanAnswerIfOthersNeedToBeListedOnTheReview: yield* Queries.makeOnDemandQuery(
       CheckIfUserCanAnswerIfOthersNeedToBeListedOnTheReview,
     ),
-    checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList: () =>
-      new Queries.UnableToQuery({ cause: 'not implemented' }),
+    checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList: yield* Queries.makeOnDemandQuery(
+      CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList,
+    ),
     checkIfUserCanChoosePersona: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanChoosePersona',
       CheckIfUserCanChoosePersona.createFilter,
