@@ -26,6 +26,7 @@ export interface Command<
   name: string
   createFilter: (...input: Input) => Events.EventFilter<EventTags>
   foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
+  authorize?: (state: State, ...input: Input) => boolean
   decide: (state: State, ...input: Input) => Either.Either<Option.Option<Events.Event>, Error>
 }
 
@@ -51,6 +52,7 @@ export const makeCommand = <
   name,
   createFilter,
   foldState,
+  authorize = () => true,
   decide,
 }: Command<EventTags, Input, State, Error>): Effect.Effect<
   (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>,
@@ -70,6 +72,10 @@ export const makeCommand = <
         )
 
         const state = foldState(events, ...input)
+
+        if (!authorize(state, ...input)) {
+          throw new UnableToHandleCommand({ cause: 'unauthorized' })
+        }
 
         const decision = yield* decide(state, ...input)
 
