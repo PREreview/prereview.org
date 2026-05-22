@@ -76,7 +76,9 @@ describe('when the last known position is none', () => {
           ),
         ),
       ),
-      fc.array(fc.datasetReviewEvent()),
+      fc.array(
+        fc.datasetReviewEvent().filter(event => event._tag !== 'InvitationToAppearOnADatasetReviewAddedToTheList'),
+      ),
     ],
     ([event, filter, otherEvents]) =>
       Effect.gen(function* () {

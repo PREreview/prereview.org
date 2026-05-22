@@ -1,6 +1,7 @@
 import { Array, Schema, Struct } from 'effect'
 import * as Datasets from '../Datasets/index.ts'
-import { Doi, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
+import { SensitiveData } from '../SensitiveData.ts'
+import { Doi, EmailAddress, NonEmptyString, OrcidId, Temporal, Uuid } from '../types/index.ts'
 
 export type DatasetReviewEvent = typeof DatasetReviewEvent.Type
 
@@ -138,6 +139,20 @@ export class AnsweredIfOthersNeedToBeListedOnTheReview extends Schema.TaggedClas
   },
 ) {}
 
+export class InvitationToAppearOnADatasetReviewAddedToTheList extends Schema.TaggedClass<InvitationToAppearOnADatasetReviewAddedToTheList>()(
+  'InvitationToAppearOnADatasetReviewAddedToTheList',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    invitationId: Uuid.UuidSchema,
+    contactDetails: SensitiveData(
+      Schema.Struct({
+        name: NonEmptyString.NonEmptyStringSchema,
+        emailAddress: EmailAddress.EmailAddressSchema,
+      }),
+    ),
+  },
+) {}
+
 export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.TaggedClass<CompetingInterestsForADatasetReviewWereDeclared>()(
   'CompetingInterestsForADatasetReviewWereDeclared',
   {
@@ -201,6 +216,7 @@ export const DatasetReviewEvent = Schema.Union(
   DeclaredThatTheCodeOfConductWasFollowedForADatasetReview,
   PersonaForDatasetReviewWasChosen,
   AnsweredIfOthersNeedToBeListedOnTheReview,
+  InvitationToAppearOnADatasetReviewAddedToTheList,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,

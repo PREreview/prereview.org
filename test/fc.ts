@@ -2161,6 +2161,19 @@ export const answeredIfOthersNeedToBeListedOnTheReview = ({
     })
     .map(data => new Events.AnsweredIfOthersNeedToBeListedOnTheReview(data))
 
+export const invitationToAppearOnADatasetReviewAddedToTheList = ({
+  datasetReviewId,
+}: {
+  datasetReviewId?: fc.Arbitrary<Events.InvitationToAppearOnADatasetReviewAddedToTheList['datasetReviewId']>
+} = {}): fc.Arbitrary<Events.InvitationToAppearOnADatasetReviewAddedToTheList> =>
+  fc
+    .record({
+      datasetReviewId: datasetReviewId ?? uuid(),
+      invitationId: uuid(),
+      contactDetails: maybe(fc.record({ name: nonEmptyString(), emailAddress: emailAddress() })),
+    })
+    .map(data => new Events.InvitationToAppearOnADatasetReviewAddedToTheList(data))
+
 export const competingInterestsForADatasetReviewWereDeclared = ({
   datasetReviewId,
 }: {
@@ -2253,6 +2266,7 @@ export const datasetReviewEvent = (
     declaredThatTheCodeOfConductWasFollowedForADatasetReview(args),
     personaForDatasetReviewWasChosen(args),
     answeredIfOthersNeedToBeListedOnTheReview(args),
+    invitationToAppearOnADatasetReviewAddedToTheList(args),
     competingInterestsForADatasetReviewWereDeclared(args),
     publicationOfDatasetReviewWasRequested(args),
     zenodoRecordForDatasetReviewWasCreated(args),
