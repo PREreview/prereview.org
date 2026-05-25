@@ -96,7 +96,7 @@
     "fetch-mock": "^12.6.0",
     "iso-639-3": "^2.2.0",
     "oauth2-mock-server": "^8.2.2",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.15",
     "postcss-font-display": "^0.3.0",
     "postcss-preset-env": "^11.3.0",
     "prettier": "^3.8.3",
