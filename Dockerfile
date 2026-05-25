@@ -18,13 +18,13 @@ COPY package.json pnpm-lock.yaml ./
 #
 # Stage: intlc environment
 #
-FROM --platform=linux/amd64 debian:13.4-slim AS intlc-amd64
+FROM --platform=linux/amd64 debian:13.5-slim AS intlc-amd64
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ADD https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-x86_64 /usr/local/bin/intlc
 RUN chmod +x /usr/local/bin/intlc
 
-FROM --platform=linux/arm64 debian:13.4-slim AS intlc-arm64
+FROM --platform=linux/arm64 debian:13.5-slim AS intlc-arm64
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ADD https://github.com/unsplash/intlc/releases/download/v0.8.6/intlc-v0.8.6-linux-aarch64 /usr/local/bin/intlc
