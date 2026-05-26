@@ -87,7 +87,7 @@ export const AddInvitationToAppearPage = ({
             : ''}
 
           <input
-            name="email-address"
+            name="emailAddress"
             id="email-address"
             type="text"
             inputmode="email"
