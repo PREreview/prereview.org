@@ -27,11 +27,13 @@ const inputDifferentName = {
 
 const inputDifferentEmailAddress = {
   ...input,
+  invitationId: Uuid('432fcb89-f5e6-4ea1-a366-19917be054c7'),
   emailAddress: EmailAddress('notjcarberry@example.com'),
 } satisfies _.Input
 
 const inputDifferentEmailAddressCase = {
   ...input,
+  invitationId: Uuid('432fcb89-f5e6-4ea1-a366-19917be054c7'),
   emailAddress: EmailAddress('JCarberry@example.com'),
 } satisfies _.Input
 
