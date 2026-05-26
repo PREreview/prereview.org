@@ -27,16 +27,21 @@ export const ReviewPublishedPage = ({
 
       <h2>${t('whatHappensNext')()}</h2>
 
-      <p>
-        ${rawHtml(
-          t('inviteOthers')({
-            emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
-              >help@prereview.org<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
-            >`.toString(),
-          }),
-        )}
-      </p>
-
+      ${typeof datasetReview.otherAuthors === 'boolean'
+        ? datasetReview.otherAuthors
+          ? html` <p>We’ve sent emails to the other authors, inviting them to appear.</p> `
+          : ''
+        : html`
+            <p>
+              ${rawHtml(
+                t('inviteOthers')({
+                  emailAddress: html`<a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
+                    >help@prereview.org<span class="visually-hidden"> ${t('opensNewTabSuffix')()}</span></a
+                  >`.toString(),
+                }),
+              )}
+            </p>
+          `}
       ${datasetReview.persona === 'public'
         ? html`
             <h2>${t('shareYourReview')()}</h2>

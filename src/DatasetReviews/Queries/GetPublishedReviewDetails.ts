@@ -6,6 +6,7 @@ import type * as Events from '../Events.ts'
 export interface PublishedReviewDetails {
   doi: Doi.Doi
   id: Uuid.Uuid
+  otherAuthors?: boolean
   persona: 'public' | 'pseudonym'
 }
 
