@@ -13,6 +13,7 @@ test.each([
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
+      otherAuthors: 0,
       url: new URL('http://example.com/public-persona-review'),
     } satisfies _.DatasetReview,
     [
@@ -35,6 +36,7 @@ test.each([
     'pseudonym persona',
     {
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      otherAuthors: 0,
       url: new URL('http://example.com/pseudonym-persona-review'),
     } satisfies _.DatasetReview,
     [
@@ -47,6 +49,58 @@ test.each([
               { type: 'text', text: 'Orange Panda', style: { bold: true } },
               { type: 'text', text: ' has published a PREreview: ' },
               { type: 'link', url: new URL('http://example.com/pseudonym-persona-review') },
+            ],
+          },
+        ],
+      },
+    ] satisfies Slack.ChatPostMessageInput['blocks'],
+  ],
+  [
+    '1 other author',
+    {
+      author: new Personas.PublicPersona({
+        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+      otherAuthors: 1,
+      url: new URL('http://example.com/public-persona-review'),
+    } satisfies _.DatasetReview,
+    [
+      {
+        type: 'rich_text',
+        elements: [
+          {
+            type: 'rich_text_section',
+            elements: [
+              { type: 'text', text: 'Josiah Carberry', style: { bold: true } },
+              { type: 'text', text: ' and 1 other have published a PREreview: ' },
+              { type: 'link', url: new URL('http://example.com/public-persona-review') },
+            ],
+          },
+        ],
+      },
+    ] satisfies Slack.ChatPostMessageInput['blocks'],
+  ],
+  [
+    '2 other authors',
+    {
+      author: new Personas.PublicPersona({
+        name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+        orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      }),
+      otherAuthors: 2,
+      url: new URL('http://example.com/public-persona-review'),
+    } satisfies _.DatasetReview,
+    [
+      {
+        type: 'rich_text',
+        elements: [
+          {
+            type: 'rich_text_section',
+            elements: [
+              { type: 'text', text: 'Josiah Carberry', style: { bold: true } },
+              { type: 'text', text: ' and 2 others have published a PREreview: ' },
+              { type: 'link', url: new URL('http://example.com/public-persona-review') },
             ],
           },
         ],

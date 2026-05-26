@@ -5,6 +5,7 @@ import type { NonEmptyString } from '../../../types/index.ts'
 
 export interface DatasetReview {
   readonly author: Personas.Persona
+  readonly otherAuthors: number
   readonly url: URL
 }
 
@@ -25,7 +26,12 @@ export const DatasetReviewToChatPostMessageInput = (
                 bold: true,
               },
             },
-            { type: 'text', text: ' has published a PREreview: ' },
+            review.otherAuthors > 0
+              ? {
+                  type: 'text',
+                  text: ` and ${review.otherAuthors} other${review.otherAuthors > 1 ? 's' : ''} have published a PREreview: `,
+                }
+              : { type: 'text', text: ' has published a PREreview: ' },
             { type: 'link', url: review.url },
           ],
         },
