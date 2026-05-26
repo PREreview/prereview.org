@@ -22,7 +22,14 @@ export const CreateRecordOnZenodo = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    const recordId = yield* ZenodoRecords.createRecordForDatasetReview({ ...datasetReview, author, dataset, url })
+    const recordId = yield* ZenodoRecords.createRecordForDatasetReview({
+      ...datasetReview,
+      author,
+      otherAuthors: [],
+      anonymousAuthors: 0,
+      dataset,
+      url,
+    })
 
     yield* Commands.markRecordCreatedOnZenodo({ recordId, datasetReviewId })
   },

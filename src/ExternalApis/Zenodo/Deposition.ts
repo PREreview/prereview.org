@@ -25,7 +25,7 @@ const PlainTextSchema: Schema.Schema<PlainText, string> = Schema.transform(
 )
 
 export const DepositMetadata = Schema.Struct({
-  creators: Schema.Tuple(Schema.Struct({ name: Schema.String, orcid: Schema.optional(OrcidId.OrcidIdSchema) })),
+  creators: Schema.NonEmptyArray(Schema.Struct({ name: Schema.String, orcid: Schema.optional(OrcidId.OrcidIdSchema) })),
   description: HtmlSchema,
   title: PlainTextSchema,
   communities: Schema.optionalWith(Schema.Array(Schema.Struct({ identifier: Schema.Literal('prereview-reviews') })), {

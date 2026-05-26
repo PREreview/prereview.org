@@ -16,6 +16,13 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
+      otherAuthors: [
+        new Personas.PublicPersona({
+          name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+          orcidId: OrcidId.OrcidId('0000-0002-6109-0367'),
+        }),
+      ],
+      anonymousAuthors: 2,
       dataset: new Datasets.DatasetTitle({
         id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
         language: 'en',
@@ -41,7 +48,11 @@ const cases = [
       url: new URL('http://example.com/dataset-review'),
     },
     {
-      creators: [{ name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') }],
+      creators: [
+        { name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') },
+        { name: 'Arne Saknussemm', orcid: OrcidId.OrcidId('0000-0002-6109-0367') },
+        { name: '2 other authors' },
+      ],
       description: rawHtml(`
       <dl>
         
@@ -158,6 +169,8 @@ const cases = [
         name: NonEmptyString.NonEmptyString('Josiah Carberry'),
         orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
       }),
+      otherAuthors: [],
+      anonymousAuthors: 1,
       dataset: new Datasets.DatasetTitle({
         id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
         language: 'en',
@@ -216,7 +229,10 @@ const cases = [
       url: new URL('http://example.com/dataset-review'),
     },
     {
-      creators: [{ name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') }],
+      creators: [
+        { name: 'Josiah Carberry', orcid: OrcidId.OrcidId('0000-0002-1825-0097') },
+        { name: '1 other author' },
+      ],
       description: rawHtml(`
       <dl>
         
@@ -330,6 +346,8 @@ const cases = [
     'minimal questions answered',
     {
       author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+      otherAuthors: [],
+      anonymousAuthors: 0,
       dataset: new Datasets.DatasetTitle({
         id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
         language: 'en',

@@ -8,6 +8,8 @@ import type * as Personas from '../../../Personas/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
+  readonly otherAuthors: ReadonlyArray<Personas.Persona>
+  readonly anonymousAuthors: number
   readonly dataset: Datasets.DatasetTitle
   readonly url: URL
 }
@@ -21,6 +23,15 @@ export const DatasetReviewToDepositMetadata = (review: DatasetReview): Zenodo.De
         PublicPersona: author => ({ name: author.name, orcid: author.orcidId }),
         PseudonymPersona: author => ({ name: author.pseudonym }),
       }),
+      ...review.otherAuthors.map(author =>
+        Match.valueTags(author, {
+          PublicPersona: author => ({ name: author.name, orcid: author.orcidId }),
+          PseudonymPersona: author => ({ name: author.pseudonym }),
+        }),
+      ),
+      ...(review.anonymousAuthors > 0
+        ? [{ name: `${review.anonymousAuthors} other author${review.anonymousAuthors > 1 ? 's' : ''}` }]
+        : []),
     ],
     description: html`
       <dl>
