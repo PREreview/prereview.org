@@ -4,6 +4,7 @@ import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import type * as Errors from '../Errors.ts'
+import type { AddInvitationToAppearToTheList } from './AddInvitationToAppearToTheList.ts'
 import { AnswerIfOthersNeedToBeListedOnTheReview } from './AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
@@ -79,6 +80,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     >
     choosePersona: CommandHandler<ChoosePersona.Command, ChoosePersona.Error>
     answerIfOthersNeedToBeListedOnTheReview: Commands.FromCommand<typeof AnswerIfOthersNeedToBeListedOnTheReview>
+    addInvitationToAppearToTheList: Commands.FromCommand<typeof AddInvitationToAppearToTheList>
     declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
     declareFollowingCodeOfConduct: CommandHandler<
       DeclareFollowingCodeOfConduct.Command,
@@ -123,6 +125,7 @@ export const {
   answerIfTheDatasetIsMissingAnything,
   choosePersona,
   answerIfOthersNeedToBeListedOnTheReview,
+  addInvitationToAppearToTheList,
   declareCompetingInterests,
   declareFollowingCodeOfConduct,
   markRecordCreatedOnZenodo,
@@ -268,6 +271,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         ChoosePersona.decide,
       ),
       answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
+      addInvitationToAppearToTheList: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
       declareCompetingInterests: handleCommand(
         DeclareCompetingInterests.createFilter,
         DeclareCompetingInterests.foldState,
