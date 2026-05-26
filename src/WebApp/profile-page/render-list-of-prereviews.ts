@@ -7,10 +7,11 @@ import { type Html, html, rawHtml } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Personas from '../../Personas/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
+import type { RecentDatasetPrereview } from '../../Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
 import { reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import type { Prereviews } from './prereviews.ts'
 
@@ -124,20 +125,27 @@ export function renderListOfPrereviews(
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    ${rawHtml(
-                      translate(
-                        locale,
-                        'dataset-reviews-list',
-                        'reviewText',
-                      )({
-                        reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                        dataset: html`<cite
-                          dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                          lang="${prereview.dataset.language}"
-                          >${prereview.dataset.title}</cite
-                        >`.toString(),
-                      }),
-                    )}
+                    ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
+                      ? html`${authorList(prereview, locale)} reviewed
+                          <cite
+                            dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                            lang="${prereview.dataset.language}"
+                            >${prereview.dataset.title}</cite
+                          >`
+                      : rawHtml(
+                          translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewText',
+                          )({
+                            reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
+                            dataset: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                              lang="${prereview.dataset.language}"
+                              >${prereview.dataset.title}</cite
+                            >`.toString(),
+                          }),
+                        )}
                   </a>
 
                   <dl>
@@ -154,6 +162,18 @@ export function renderListOfPrereviews(
       </ol>
     `,
   })
+}
+
+const authorList = (datasetReview: RecentDatasetPrereview, locale: SupportedLocale) => {
+  const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayPersona)
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(
+      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
+    )
+  }
+
+  return formatList(locale)(Array.map(list, name => html`<b>${name}</b>`))
 }
 
 const displayPersona = Personas.match({

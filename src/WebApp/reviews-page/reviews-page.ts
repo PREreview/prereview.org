@@ -13,7 +13,7 @@ import * as Routes from '../../routes.ts'
 import { reviewMatch, reviewsMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { type FieldId, fieldIds, getFieldName } from '../../types/field.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
@@ -120,20 +120,27 @@ export const createPage = (
               <li>
                 <article>
                   <a href="${Routes.DatasetReview.href({ datasetReviewId: prereview.id })}">
-                    ${rawHtml(
-                      translate(
-                        locale,
-                        'dataset-reviews-list',
-                        'reviewText',
-                      )({
-                        reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
-                        dataset: html`<cite
-                          dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
-                          lang="${prereview.dataset.language}"
-                          >${prereview.dataset.title}</cite
-                        >`.toString(),
-                      }),
-                    )}
+                    ${prereview.otherAuthors.length + prereview.anonymousAuthors > 0
+                      ? html`${authorList(prereview, locale)} reviewed
+                          <cite
+                            dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                            lang="${prereview.dataset.language}"
+                            >${prereview.dataset.title}</cite
+                          >`
+                      : rawHtml(
+                          translate(
+                            locale,
+                            'dataset-reviews-list',
+                            'reviewText',
+                          )({
+                            reviewer: html`<b>${displayPersona(prereview.author)}</b>`.toString(),
+                            dataset: html`<cite
+                              dir="${rtlDetect.getLangDir(prereview.dataset.language)}"
+                              lang="${prereview.dataset.language}"
+                              >${prereview.dataset.title}</cite
+                            >`.toString(),
+                          }),
+                        )}
                   </a>
 
                   <dl>
@@ -281,6 +288,18 @@ const form = ({
     <button>${translate(locale, 'reviews-page', 'filterButton')()}</button>
   </form>
 `
+
+const authorList = (datasetReview: Prereviews.RecentDatasetPrereview, locale: SupportedLocale) => {
+  const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayPersona)
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(
+      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
+    )
+  }
+
+  return formatList(locale)(list)
+}
 
 const displayPersona = Personas.match({
   onPublic: Struct.get('name'),

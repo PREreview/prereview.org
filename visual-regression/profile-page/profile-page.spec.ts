@@ -160,6 +160,8 @@ const prereview4 = new Prereviews.RecentDatasetPrereview({
     orcidId: OrcidId('0000-0002-1825-0097'),
     name: NonEmptyString('Josiah Carberry'),
   }),
+  otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') })],
+  anonymousAuthors: 1,
   dataset: new Datasets.DatasetTitle({
     id: new Datasets.DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
     language: 'en',

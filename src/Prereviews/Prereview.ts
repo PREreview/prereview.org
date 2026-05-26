@@ -61,6 +61,8 @@ export class RecentPreprintPrereview extends Data.TaggedClass('RecentPreprintPre
 
 export class RecentDatasetPrereview extends Data.TaggedClass('RecentDatasetPrereview')<{
   author: Personas.Persona
+  otherAuthors: ReadonlyArray<Personas.Persona>
+  anonymousAuthors: number
   dataset: Datasets.DatasetTitle
   doi: Doi
   id: Uuid.Uuid

@@ -280,6 +280,8 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
 
   return new RecentDatasetPrereview({
     author,
+    otherAuthors: [],
+    anonymousAuthors: 0,
     dataset,
     doi: datasetReview.doi,
     id: datasetReview.id,

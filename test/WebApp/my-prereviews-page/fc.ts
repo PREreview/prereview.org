@@ -25,6 +25,8 @@ export const localPrereview = (): fc.Arbitrary<Prereview> =>
         id: fc.uuid(),
         doi: fc.doi(),
         author: fc.persona(),
+        otherAuthors: fc.array(fc.persona()),
+        anonymousAuthors: fc.integer({ min: 0 }),
         published: fc.plainDate(),
         dataset: fc.datasetTitle(),
       })
