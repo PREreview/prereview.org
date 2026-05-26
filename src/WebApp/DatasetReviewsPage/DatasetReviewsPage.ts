@@ -9,10 +9,13 @@ import * as Personas from '../../Personas/index.ts'
 import * as Routes from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { Doi, ProfileId } from '../../types/index.ts'
+import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
+  readonly otherAuthors: ReadonlyArray<Personas.Persona>
+  readonly anonymousAuthors: number
 }
 
 export const createDatasetReviewsPage = ({
@@ -112,13 +115,15 @@ export const createDatasetReviewsPage = ({
                   <article aria-labelledby="prereview-${datasetReview.id}-title">
                     <header>
                       <h3 class="visually-hidden" id="prereview-${datasetReview.id}-title">
-                        ${t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
+                        ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                          ? html`PREreview by ${displayAuthor(datasetReview.author)} et al.`
+                          : t('prereviewTitle')({ author: displayAuthor(datasetReview.author) })}
                       </h3>
 
                       <div class="byline">
                         ${rawHtml(
                           t('prereviewAuthoredBy')({
-                            author: displayAuthor(datasetReview.author),
+                            author: authorList(datasetReview, locale).toString(),
                             visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
                           }),
                         )}
@@ -126,12 +131,17 @@ export const createDatasetReviewsPage = ({
                     </header>
 
                     <a href="${Routes.DatasetReview.href({ datasetReviewId: datasetReview.id })}" class="more">
-                      ${rawHtml(
-                        t('readPrereview')({
-                          author: displayAuthor(datasetReview.author),
-                          visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
-                        }),
-                      )}
+                      ${datasetReview.otherAuthors.length + datasetReview.anonymousAuthors > 0
+                        ? html`Read
+                            <span class="visually-hidden"
+                              >the PREreview by ${displayAuthor(datasetReview.author)} et al.</span
+                            >`
+                        : rawHtml(
+                            t('readPrereview')({
+                              author: displayAuthor(datasetReview.author),
+                              visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
+                            }),
+                          )}
                     </a>
                   </article>
                 </li>
@@ -144,6 +154,18 @@ export const createDatasetReviewsPage = ({
     canonical: Routes.DatasetReviews.href({ datasetId: dataset.id }),
     type: 'dataset',
   })
+}
+
+const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
+  const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(
+      NonEmptyString(`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`),
+    )
+  }
+
+  return formatList(locale)(list)
 }
 
 const displayAuthor = Personas.match({

@@ -21,7 +21,7 @@ export const DatasetReviewsPage = Effect.fn(
               const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
               const author = yield* Personas.getPersona(datasetReview.author)
 
-              return { ...datasetReview, author }
+              return { ...datasetReview, otherAuthors: [], anonymousAuthors: 0, author }
             }),
             { concurrency: 'inherit' },
           ),

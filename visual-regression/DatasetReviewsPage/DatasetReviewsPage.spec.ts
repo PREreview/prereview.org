@@ -68,6 +68,8 @@ const prereview1: _.DatasetReview = {
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
   }),
+  otherAuthors: [],
+  anonymousAuthors: 0,
   doi: Doi.Doi('10.5281/zenodo.10779310'),
   id: Uuid.Uuid('2da3f8dc-b177-47be-87e2-bd511565c85a'),
   questions: {
@@ -127,6 +129,13 @@ const prereview1: _.DatasetReview = {
 
 const prereview2: _.DatasetReview = {
   author: new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') }),
+  otherAuthors: [
+    new Personas.PublicPersona({
+      orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+      name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    }),
+  ],
+  anonymousAuthors: 1,
   doi: Doi.Doi('10.5281/zenodo.10779311'),
   id: Uuid.Uuid('8074a853-06a3-4539-b59b-0504be3844ec'),
   questions: {
