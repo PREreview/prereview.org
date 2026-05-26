@@ -1,4 +1,4 @@
-import { identity, Match, Option, pipe } from 'effect'
+import { Array, flow, identity, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { LanguageCode } from 'iso-639-1'
 import rtlDetect from 'rtl-detect'
@@ -14,6 +14,8 @@ import { PageResponse } from '../Response/index.ts'
 
 export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
   readonly author: Personas.Persona
+  readonly otherAuthors: ReadonlyArray<Personas.Persona>
+  readonly anonymousAuthors: number
   readonly dataset: {
     readonly id: Datasets.DatasetId
     readonly language: LanguageCode
@@ -34,7 +36,7 @@ export const createDatasetReviewPage = ({
   return PageResponse({
     title: plainText(t('structuredReviewTitle')({ dataset: plainText`“${datasetReview.dataset.title}”`.toString() })),
     description: plainText(
-      t('authoredBy')({ author: displayAuthor(datasetReview.author).toString(), visuallyHidden: identity }),
+      t('authoredBy')({ author: authorList(datasetReview, locale).toString(), visuallyHidden: identity }),
     ),
     nav: html`
       <a href="${Routes.DatasetReviews.href({ datasetId: datasetReview.dataset.id })}" class="back"
@@ -59,7 +61,7 @@ export const createDatasetReviewPage = ({
         <div class="byline">
           ${rawHtml(
             t('authoredBy')({
-              author: displayAuthor(datasetReview.author).toString(),
+              author: authorList(datasetReview, locale).toString(),
               visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
             }),
           )}
@@ -320,6 +322,16 @@ export const createDatasetReviewPage = ({
   })
 }
 
+const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
+  const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
+
+  if (datasetReview.anonymousAuthors > 0) {
+    list.push(html`${datasetReview.anonymousAuthors} other author${datasetReview.anonymousAuthors > 1 ? 's' : ''}`)
+  }
+
+  return formatList(locale)(list)
+}
+
 const displayAuthor = Personas.match({
   onPublic: persona =>
     html`<a href="${format(Routes.profileMatch.formatter, { profile: ProfileId.forPersona(persona) })}" class="orcid"
@@ -330,3 +342,15 @@ const displayAuthor = Personas.match({
       >${persona.pseudonym}</a
     >`,
 })
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
+}

@@ -4,7 +4,7 @@ import * as Datasets from '../../src/Datasets/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import * as Personas from '../../src/Personas/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../src/types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import * as _ from '../../src/WebApp/DatasetReviewPage/DatasetReviewPage.ts'
 import { expect, test } from '../base.ts'
 
@@ -19,11 +19,28 @@ test('content looks right', async ({ showPage }) => {
   await expect(content).toHaveScreenshot()
 })
 
+test('content looks right with multiple authors', async ({ showPage }) => {
+  const response = _.createDatasetReviewPage({
+    datasetReview: {
+      ...datasetReview,
+      otherAuthors: [new Personas.PseudonymPersona({ pseudonym: Pseudonym.Pseudonym('Orange Panda') })],
+      anonymousAuthors: 1,
+    },
+    locale: DefaultLocale,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
 const datasetReview: _.DatasetReview = {
   author: new Personas.PublicPersona({
     name: NonEmptyString.NonEmptyString('Josiah Carberry'),
     orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
   }),
+  otherAuthors: [],
+  anonymousAuthors: 0,
   dataset: {
     id: new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') }),
     title: html`Metadata collected from 500 articles in the field of ecology and evolution`,

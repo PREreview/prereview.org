@@ -25,6 +25,8 @@ export const DatasetReviewPage = Effect.fn(
       datasetReview: {
         ...datasetReview,
         author,
+        otherAuthors: [],
+        anonymousAuthors: 0,
         dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },
       },
       locale,
