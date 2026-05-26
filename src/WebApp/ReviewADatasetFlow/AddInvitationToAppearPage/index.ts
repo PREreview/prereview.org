@@ -3,11 +3,12 @@ import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
-import type { Uuid } from '../../../types/index.ts'
+import { Uuid } from '../../../types/index.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import * as AddInvitationToAppearForm from './AddInvitationToAppearForm.ts'
 import { AddInvitationToAppearPage as createAddInvitationToAppearPage } from './AddInvitationToAppearPage.ts'
 
@@ -57,15 +58,35 @@ export const AddInvitationToAppearSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
+  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
 > =>
   Effect.gen(function* () {
+    const user = yield* LoggedInUser
     const locale = yield* Locale
 
     const form = AddInvitationToAppearForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fnUntraced(
+        function* (form: AddInvitationToAppearForm.CompletedForm) {
+          yield* DatasetReviews.addInvitationToAppearToTheList({
+            datasetReviewId,
+            name: form.name,
+            emailAddress: form.emailAddress,
+            invitationId: yield* Uuid.v4(),
+            userId: user.orcid,
+          })
+
+          const nextExpectedCommand = yield* Effect.flatten(
+            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+          )
+
+          return Response.RedirectResponse({
+            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+          })
+        },
+        Effect.catchAll(() => HavingProblemsPage),
+      ),
       InvalidForm: form => Effect.succeed(createAddInvitationToAppearPage({ datasetReviewId, form, locale })),
     })
   })
