@@ -160,6 +160,20 @@ const invitationToAppearOnADatasetReviewAddedToTheList =
     }),
     datasetReviewId,
   })
+const invitationToAppearOnADatasetReviewAddedToTheList2 =
+  new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+    invitationId: Uuid.Uuid('ab2d3965-8f40-4de8-97cd-73322daa5dda'),
+    contactDetails: Option.some({
+      name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+      emailAddress: EmailAddress.EmailAddress('arnesaknussemm@example.com'),
+    }),
+    datasetReviewId,
+  })
+const invitationToAppearOnADatasetReviewRemovedFromTheList =
+  new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+    invitationId: Uuid.Uuid('9af6576d-1733-4461-a000-a31d2b172e5d'),
+    datasetReviewId,
+  })
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
     competingInterests: Option.none(),
@@ -271,6 +285,53 @@ describe('GetNextExpectedCommandForAUserOnADatasetReview', () => {
           personaForDatasetReviewWasChosen1,
           answeredYesIfOthersNeedToBeListedOnTheReview,
           invitationToAppearOnADatasetReviewAddedToTheList,
+        ],
+        'DeclareCompetingInterests',
+      ],
+      [
+        'added and removed an invitation',
+        [
+          datasetReviewWasStarted,
+          ratedTheQualityOfTheDataset1,
+          answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+          answeredIfTheDatasetHasEnoughMetadata1,
+          answeredIfTheDatasetHasTrackedChanges1,
+          answeredIfTheDatasetHasDataCensoredOrDeleted1,
+          answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+          answeredIfTheDatasetSupportsRelatedConclusions1,
+          answeredIfTheDatasetIsDetailedEnough1,
+          answeredIfTheDatasetIsErrorFree1,
+          answeredIfTheDatasetMattersToItsAudience1,
+          answeredIfTheDatasetIsReadyToBeShared1,
+          answeredIfTheDatasetIsMissingAnything1,
+          personaForDatasetReviewWasChosen1,
+          answeredYesIfOthersNeedToBeListedOnTheReview,
+          invitationToAppearOnADatasetReviewAddedToTheList,
+          invitationToAppearOnADatasetReviewRemovedFromTheList,
+        ],
+        'AddInvitationToAppearOnADatasetReviewToTheList',
+      ],
+      [
+        'added multiple invitations',
+        [
+          datasetReviewWasStarted,
+          ratedTheQualityOfTheDataset1,
+          answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+          answeredIfTheDatasetHasEnoughMetadata1,
+          answeredIfTheDatasetHasTrackedChanges1,
+          answeredIfTheDatasetHasDataCensoredOrDeleted1,
+          answeredIfTheDatasetIsAppropriateForThisKindOfResearch1,
+          answeredIfTheDatasetSupportsRelatedConclusions1,
+          answeredIfTheDatasetIsDetailedEnough1,
+          answeredIfTheDatasetIsErrorFree1,
+          answeredIfTheDatasetMattersToItsAudience1,
+          answeredIfTheDatasetIsReadyToBeShared1,
+          answeredIfTheDatasetIsMissingAnything1,
+          personaForDatasetReviewWasChosen1,
+          answeredYesIfOthersNeedToBeListedOnTheReview,
+          invitationToAppearOnADatasetReviewAddedToTheList,
+          invitationToAppearOnADatasetReviewRemovedFromTheList,
+          invitationToAppearOnADatasetReviewAddedToTheList2,
         ],
         'DeclareCompetingInterests',
       ],

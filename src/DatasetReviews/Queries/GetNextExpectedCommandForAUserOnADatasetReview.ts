@@ -90,8 +90,22 @@ export const GetNextExpectedCommandForAUserOnADatasetReview = (
     return Option.some('AnswerIfOthersNeedToBeListedOnTheReview')
   }
 
-  if (others.value.answer === 'yes' && !hasEvent(events, 'InvitationToAppearOnADatasetReviewAddedToTheList')) {
-    return Option.some('AddInvitationToAppearOnADatasetReviewToTheList')
+  if (others.value.answer === 'yes') {
+    const added = Array.filterMap(events, event =>
+      event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList'
+        ? Option.some(event.invitationId)
+        : Option.none(),
+    )
+
+    const removed = Array.filterMap(events, event =>
+      event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+        ? Option.some(event.invitationId)
+        : Option.none(),
+    )
+
+    if (added.length === removed.length) {
+      return Option.some('AddInvitationToAppearOnADatasetReviewToTheList')
+    }
   }
 
   if (!hasEvent(events, 'CompetingInterestsForADatasetReviewWereDeclared')) {
