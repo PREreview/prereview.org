@@ -40,6 +40,8 @@ export const EmailAddressFromUrlSchema = Schema.transform(
 
 export const EmailAddress = (email: string) => EmailAddressSchema.make(email)
 
+export const isEmailAddress: (value: string) => value is EmailAddress = Schema.is(EmailAddressSchema)
+
 export const toUrl: (emailAddress: EmailAddress) => URL = flow(
   Schema.encodeSync(EmailAddressFromUrlSchema),
   url => new URL(url),

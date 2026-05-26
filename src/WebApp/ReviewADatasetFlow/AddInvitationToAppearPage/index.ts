@@ -1,5 +1,5 @@
 import type { UrlParams } from '@effect/platform'
-import { Effect } from 'effect'
+import { Effect, Match } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -49,9 +49,7 @@ export const AddInvitationToAppearPage = ({
   )
 
 export const AddInvitationToAppearSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   body,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   body: UrlParams.UrlParams
@@ -60,4 +58,14 @@ export const AddInvitationToAppearSubmission = ({
   Response.Response,
   never,
   DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser
-> => HavingProblemsPage
+> =>
+  Effect.gen(function* () {
+    const locale = yield* Locale
+
+    const form = AddInvitationToAppearForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: () => HavingProblemsPage,
+      InvalidForm: form => Effect.succeed(createAddInvitationToAppearPage({ datasetReviewId, form, locale })),
+    })
+  })
