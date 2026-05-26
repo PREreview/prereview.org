@@ -74,6 +74,11 @@ const addedToList = new Events.InvitationToAppearOnADatasetReviewAddedToTheList(
   contactDetails: Option.some({ name: input.name, emailAddress: input.emailAddress }),
 })
 
+const removedFromList = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+  datasetReviewId: input.datasetReviewId,
+  invitationId: input.invitationId,
+})
+
 const publicationRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId: input.datasetReviewId,
 })
@@ -143,6 +148,29 @@ test.each<
     [started, answeredYes, addedToList],
     inputDifferentInvitationId,
     Either.right(Option.none()),
+  ],
+  [
+    'answered yes, already added and removed with same invitation ID',
+    [started, answeredYes, addedToList, removedFromList],
+    input,
+    Either.right(Option.none()),
+  ],
+  [
+    'answered yes, already added and removed with different invitation ID',
+    [started, answeredYes, addedToList, removedFromList],
+    inputDifferentInvitationId,
+    Either.right(
+      Option.some(
+        new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+          datasetReviewId: inputDifferentInvitationId.datasetReviewId,
+          invitationId: inputDifferentInvitationId.invitationId,
+          contactDetails: Option.some({
+            name: inputDifferentInvitationId.name,
+            emailAddress: inputDifferentInvitationId.emailAddress,
+          }),
+        }),
+      ),
+    ),
   ],
   [
     'different dataset review ID',

@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Either, Equal, Match, Option, Struct, type Types } from 'effect'
+import { Array, Boolean, Data, Either, Equal, HashSet, Match, Option, Struct, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import { EmailAddress, type NonEmptyString, type OrcidId, type Uuid } from '../../types/index.ts'
@@ -47,6 +47,7 @@ const createFilter = (input: Input) =>
         'DatasetReviewWasStarted',
         'AnsweredIfOthersNeedToBeListedOnTheReview',
         'InvitationToAppearOnADatasetReviewAddedToTheList',
+        'InvitationToAppearOnADatasetReviewRemovedFromTheList',
         'PublicationOfDatasetReviewWasRequested',
         'DatasetReviewWasPublished',
       ],
@@ -80,14 +81,38 @@ const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => 
         return new DoesNotNeedInvitationsToAppear({ authorId })
       }
 
-      return Boolean.match(
+      if (
         Array.some(
-          filteredEvents,
+          events,
           event =>
             event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList' &&
-            (Equal.equals(event.invitationId, input.invitationId) ||
-              (Option.isSome(event.contactDetails) &&
-                EmailAddress.EmailAddressEquivalence(event.contactDetails.value.emailAddress, input.emailAddress))),
+            Equal.equals(event.invitationId, input.invitationId),
+        )
+      ) {
+        return new HasBeenAdded({ authorId })
+      }
+
+      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+
+      const removedInvitations = HashSet.fromIterable(
+        Array.filterMap(events, event =>
+          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+            ? Option.some(event.invitationId)
+            : Option.none(),
+        ),
+      )
+
+      const currentInvitations = Array.filter(
+        addedInvitations,
+        invitation => !HashSet.has(removedInvitations, invitation.invitationId),
+      )
+
+      return Boolean.match(
+        Array.some(
+          currentInvitations,
+          event =>
+            Option.isSome(event.contactDetails) &&
+            EmailAddress.EmailAddressEquivalence(event.contactDetails.value.emailAddress, input.emailAddress),
         ),
         {
           onFalse: () => new HasNotBeenAdded({ authorId }),
@@ -124,6 +149,7 @@ export const AddInvitationToAppearToTheList = Commands.Command<
   | 'DatasetReviewWasStarted'
   | 'AnsweredIfOthersNeedToBeListedOnTheReview'
   | 'InvitationToAppearOnADatasetReviewAddedToTheList'
+  | 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
   | 'PublicationOfDatasetReviewWasRequested'
   | 'DatasetReviewWasPublished',
   [Input],
