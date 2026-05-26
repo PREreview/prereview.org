@@ -4,7 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPreviewForAReviewReadyToBePublished.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -142,6 +142,35 @@ const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetRe
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
   persona: 'pseudonym',
   datasetReviewId,
+})
+const othersNeedToBeListedYes = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'yes',
+  datasetReviewId,
+})
+const othersNeedToBeListedNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'no',
+  datasetReviewId,
+})
+const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
+  contactDetails: Option.some({
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
+  }),
+})
+const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
+  contactDetails: Option.some({
+    name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+    emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
+  }),
+})
+const invited3 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('bf962433-30c0-415f-ae8f-faeca117b9e1'),
+  contactDetails: Option.none(),
 })
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
@@ -367,6 +396,70 @@ describe('GetPreviewForAReviewReadyToBePublished', () => {
                 },
               ],
             ], // with multiple answers
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  othersNeedToBeListedYes,
+                  invited1,
+                  invited2,
+                  invited3,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  authorsToInvite: Option.some(
+                    Array.make(
+                      Option.getOrThrow(invited1.contactDetails).name,
+                      Option.getOrThrow(invited2.contactDetails).name,
+                    ),
+                  ),
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // with authors to invite
+            [
+              [
+                [datasetReviewWasStarted, answeredIfTheDatasetFollowsFairAndCarePrinciples, othersNeedToBeListedNo],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: Option.none() },
+                  authorsToInvite: Option.none(),
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // without authors to invite
           ],
         },
       },

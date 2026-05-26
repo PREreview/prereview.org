@@ -1,9 +1,9 @@
-import { Match, Option, pipe } from 'effect'
+import { Array, flow, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import rtlDetect from 'rtl-detect'
 import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
 import * as Datasets from '../../../Datasets/index.ts'
-import { html, plainText, rawHtml } from '../../../html.ts'
+import { html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -94,6 +94,26 @@ export const CheckYourReviewPage = ({
                 </div>
               </div>`,
           })}
+          ${review.authorsToInvite
+            ? html`
+                <div class="summary-card">
+                  <div>
+                    <h2 id="invited-authors-label">Invited authors</h2>
+
+                    <a href="${Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId })}"
+                      >Change <span class="visually-hidden">invited authors</span></a
+                    >
+                  </div>
+
+                  <div aria-labelledby="invited-authors-label" role="region">
+                    ${Option.match(review.authorsToInvite, {
+                      onNone: () => html`None`,
+                      onSome: formatList(locale),
+                    })}
+                  </div>
+                </div>
+              `
+            : ''}
 
           <div class="summary-card">
             <div>
@@ -455,3 +475,15 @@ const displayAuthor = Personas.match({
       >${persona.pseudonym}</a
     >`,
 })
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: Array.NonEmptyReadonlyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    Array.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
+}

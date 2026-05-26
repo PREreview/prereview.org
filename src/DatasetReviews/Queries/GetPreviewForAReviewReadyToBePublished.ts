@@ -1,6 +1,7 @@
 import { Array, Either, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import type { OrcidId } from '../../types/index.ts'
+import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 
@@ -9,6 +10,7 @@ export interface DatasetReviewPreview {
     readonly orcidId: OrcidId.OrcidId
     readonly persona: Option.Option<Events.PersonaForDatasetReviewWasChosen['persona']>
   }
+  readonly authorsToInvite?: Option.Option<Array.NonEmptyReadonlyArray<NonEmptyString>>
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>
@@ -75,6 +77,21 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
 
+  const authorsToInvite = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
+    onNone: () => undefined,
+    onSome: ({ answer }) =>
+      answer === 'yes'
+        ? Option.liftPredicate(
+            Array.filterMap(events, event =>
+              event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList' && Option.isSome(event.contactDetails)
+                ? Option.some(event.contactDetails.value.name)
+                : Option.none(),
+            ),
+            Array.isNonEmptyArray,
+          )
+        : Option.none(),
+  })
+
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
 
   const answerToIfTheDatasetFollowsFairAndCarePrinciples = Array.findLast(
@@ -126,6 +143,7 @@ export const GetPreviewForAReviewReadyToBePublished = (
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
       Either.right({
         author: { orcidId: started.authorId, persona: Option.map(author, Struct.get('persona')) },
+        authorsToInvite,
         dataset: started.datasetId,
         competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
