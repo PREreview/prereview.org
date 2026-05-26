@@ -1,5 +1,5 @@
 import { isEmailValid } from '@hapi/address'
-import { Either, Schema, Tuple, flow, pipe } from 'effect'
+import { Either, Equivalence, Schema, String, Tuple, flow, pipe } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'
@@ -39,6 +39,11 @@ export const EmailAddressFromUrlSchema = Schema.transform(
 )
 
 export const EmailAddress = (email: string) => EmailAddressSchema.make(email)
+
+export const EmailAddressEquivalence: Equivalence.Equivalence<EmailAddress> = Equivalence.mapInput(
+  String.Equivalence,
+  String.toLowerCase,
+)
 
 export const isEmailAddress: (value: string) => value is EmailAddress = Schema.is(EmailAddressSchema)
 

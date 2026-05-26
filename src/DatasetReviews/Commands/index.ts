@@ -4,7 +4,7 @@ import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import type { Uuid } from '../../types/index.ts'
 import type * as Errors from '../Errors.ts'
-import type { AddInvitationToAppearToTheList } from './AddInvitationToAppearToTheList.ts'
+import { AddInvitationToAppearToTheList } from './AddInvitationToAppearToTheList.ts'
 import { AnswerIfOthersNeedToBeListedOnTheReview } from './AnswerIfOthersNeedToBeListedOnTheReview.ts'
 import * as AnswerIfTheDatasetFollowsFairAndCarePrinciples from './AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as AnswerIfTheDatasetHasDataCensoredOrDeleted from './AnswerIfTheDatasetHasDataCensoredOrDeleted.ts'
@@ -271,7 +271,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
         ChoosePersona.decide,
       ),
       answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
-      addInvitationToAppearToTheList: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
       declareCompetingInterests: handleCommand(
         DeclareCompetingInterests.createFilter,
         DeclareCompetingInterests.foldState,

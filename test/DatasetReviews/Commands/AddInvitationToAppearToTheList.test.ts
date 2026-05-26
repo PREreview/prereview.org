@@ -83,7 +83,7 @@ const published = new Events.DatasetReviewWasPublished({
   datasetReviewId: input.datasetReviewId,
 })
 
-test.fails.each<
+test.each<
   [
     string,
     ReadonlyArray<Events.Event>,
