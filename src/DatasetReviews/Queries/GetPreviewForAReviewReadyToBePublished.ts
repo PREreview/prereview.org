@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct, type Types } from 'effect'
+import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import type { OrcidId } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
@@ -79,17 +79,33 @@ export const GetPreviewForAReviewReadyToBePublished = (
 
   const authorsToInvite = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
     onNone: () => undefined,
-    onSome: ({ answer }) =>
-      answer === 'yes'
-        ? Option.liftPredicate(
-            Array.filterMap(events, event =>
-              event._tag === 'InvitationToAppearOnADatasetReviewAddedToTheList' && Option.isSome(event.contactDetails)
-                ? Option.some(event.contactDetails.value.name)
-                : Option.none(),
-            ),
-            Array.isNonEmptyArray,
-          )
-        : Option.none(),
+    onSome: ({ answer }) => {
+      if (answer === 'no') {
+        return Option.none()
+      }
+
+      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+
+      const removedInvitations = HashSet.fromIterable(
+        Array.filterMap(events, event =>
+          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+            ? Option.some(event.invitationId)
+            : Option.none(),
+        ),
+      )
+
+      const currentInvitations = Array.filter(
+        addedInvitations,
+        invitation => !HashSet.has(removedInvitations, invitation.invitationId),
+      )
+
+      return Option.liftPredicate(
+        Array.filterMap(currentInvitations, invitation =>
+          Option.isSome(invitation.contactDetails) ? Option.some(invitation.contactDetails.value.name) : Option.none(),
+        ),
+        Array.isNonEmptyArray,
+      )
+    },
   })
 
   const qualityRating = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
