@@ -153,6 +153,14 @@ export class InvitationToAppearOnADatasetReviewAddedToTheList extends Schema.Tag
   },
 ) {}
 
+export class InvitationToAppearOnADatasetReviewRemovedFromTheList extends Schema.TaggedClass<InvitationToAppearOnADatasetReviewRemovedFromTheList>()(
+  'InvitationToAppearOnADatasetReviewRemovedFromTheList',
+  {
+    datasetReviewId: Uuid.UuidSchema,
+    invitationId: Uuid.UuidSchema,
+  },
+) {}
+
 export class CompetingInterestsForADatasetReviewWereDeclared extends Schema.TaggedClass<CompetingInterestsForADatasetReviewWereDeclared>()(
   'CompetingInterestsForADatasetReviewWereDeclared',
   {
@@ -217,6 +225,7 @@ export const DatasetReviewEvent = Schema.Union(
   PersonaForDatasetReviewWasChosen,
   AnsweredIfOthersNeedToBeListedOnTheReview,
   InvitationToAppearOnADatasetReviewAddedToTheList,
+  InvitationToAppearOnADatasetReviewRemovedFromTheList,
   CompetingInterestsForADatasetReviewWereDeclared,
   DatasetReviewWasAssignedADoi,
   DatasetReviewWasPublished,
