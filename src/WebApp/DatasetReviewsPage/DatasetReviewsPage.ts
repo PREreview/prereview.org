@@ -12,7 +12,7 @@ import { Doi, ProfileId } from '../../types/index.ts'
 import { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { TwoUpPageResponse } from '../Response/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.PublishedReview, 'author' | 'otherAuthors' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number

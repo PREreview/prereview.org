@@ -19,9 +19,18 @@ export const DatasetReviewsPage = Effect.fn(
           Effect.forEach(
             Effect.fn(function* (datasetReviewId) {
               const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
-              const author = yield* Personas.getPersona(datasetReview.author)
 
-              return { ...datasetReview, otherAuthors: [], anonymousAuthors: 0, author }
+              const { author, otherAuthors } = yield* Effect.all(
+                {
+                  author: Personas.getPersona(datasetReview.author),
+                  otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, {
+                    concurrency: 'inherit',
+                  }),
+                },
+                { concurrency: 'inherit' },
+              )
+
+              return { ...datasetReview, otherAuthors, anonymousAuthors: datasetReview.anonymousAuthors ?? 0, author }
             }),
             { concurrency: 'inherit' },
           ),

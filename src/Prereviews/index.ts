@@ -270,9 +270,10 @@ export const layer = Layer.effect(
 const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
   const datasetReview = yield* DatasetReviews.getPublishedReview(id)
 
-  const { author, dataset } = yield* Effect.all(
+  const { author, otherAuthors, dataset } = yield* Effect.all(
     {
       author: Personas.getPersona(datasetReview.author),
+      otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
       dataset: Datasets.getDatasetTitle(datasetReview.dataset),
     },
     { concurrency: 'inherit' },
@@ -280,8 +281,8 @@ const getRecentDatasetPrereview = Effect.fn(function* (id: Uuid.Uuid) {
 
   return new RecentDatasetPrereview({
     author,
-    otherAuthors: [],
-    anonymousAuthors: 0,
+    otherAuthors,
+    anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
     dataset,
     doi: datasetReview.doi,
     id: datasetReview.id,

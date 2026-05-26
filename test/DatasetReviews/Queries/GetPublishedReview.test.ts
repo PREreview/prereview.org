@@ -4,7 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
+import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
@@ -153,6 +153,39 @@ const competingInterestsForADatasetReviewWereDeclared2 =
     competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
     datasetReviewId,
   })
+const answeredNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  datasetReviewId,
+  answer: 'no',
+})
+const answeredYes = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+  datasetReviewId,
+  answer: 'yes',
+})
+const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
+  contactDetails: Option.some({
+    name: NonEmptyString.NonEmptyString('Josiah Carberry'),
+    emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
+  }),
+})
+const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
+  contactDetails: Option.some({
+    name: NonEmptyString.NonEmptyString('Arne Saknussemm'),
+    emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
+  }),
+})
+const invited3 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('bf962433-30c0-415f-ae8f-faeca117b9e1'),
+  contactDetails: Option.none(),
+})
+const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
+})
 const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
@@ -436,6 +469,125 @@ describe('GetPublishedReview', () => {
                   },
                 ],
               ], // different order
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    answeredYes,
+                    invited1,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    otherAuthors: [],
+                    anonymousAuthors: 1,
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    published: datasetReviewWasPublished1.publicationDate,
+                  },
+                ],
+              ], // invited author
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    answeredYes,
+                    invited1,
+                    invited2,
+                    invited3,
+                    removed,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    otherAuthors: [],
+                    anonymousAuthors: 2,
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    published: datasetReviewWasPublished1.publicationDate,
+                  },
+                ],
+              ], // multiple invited authors
+              [
+                [
+                  [
+                    datasetReviewWasStarted,
+                    answeredIfTheDatasetFollowsFairAndCarePrinciples1,
+                    answeredNo,
+                    datasetReviewWasAssignedADoi1,
+                    datasetReviewWasPublished1,
+                  ],
+                  {
+                    author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                    otherAuthors: [],
+                    anonymousAuthors: 0,
+                    dataset: datasetReviewWasStarted.datasetId,
+                    doi: datasetReviewWasAssignedADoi1.doi,
+                    id: datasetReviewId,
+                    questions: {
+                      qualityRating: Option.none(),
+                      answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                        answer: answeredIfTheDatasetFollowsFairAndCarePrinciples1.answer,
+                        detail: answeredIfTheDatasetFollowsFairAndCarePrinciples1.detail,
+                      },
+                      answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                      answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                      answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                      answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                      answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                      answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                      answerToIfTheDatasetIsErrorFree: Option.none(),
+                      answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                      answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                      answerToIfTheDatasetIsMissingAnything: Option.none(),
+                    },
+                    competingInterests: Option.none(),
+                    published: datasetReviewWasPublished1.publicationDate,
+                  },
+                ],
+              ], // no other authors
             ],
           },
         },

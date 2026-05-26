@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Either, Option, Struct, type Types } from 'effect'
+import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -7,6 +7,8 @@ import type * as Events from '../Events.ts'
 
 export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
+  otherAuthors?: Array<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>
+  anonymousAuthors?: number
   dataset: Datasets.DatasetId
   doi: Doi.Doi
   id: Uuid.Uuid
@@ -140,6 +142,29 @@ export const GetPublishedReview = (
     Struct.get('competingInterests'),
   )
 
+  const anonymousAuthors = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
+    onNone: () => undefined,
+    onSome: ({ answer }) => {
+      if (answer === 'no') {
+        return 0
+      }
+
+      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+
+      const removedInvitations = HashSet.fromIterable(
+        Array.filterMap(events, event =>
+          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+            ? Option.some(event.invitationId)
+            : Option.none(),
+        ),
+      )
+
+      return Array.length(
+        Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
+      )
+    },
+  })
+
   return Option.match(data, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: data =>
@@ -148,6 +173,8 @@ export const GetPublishedReview = (
           orcidId: data.datasetReviewWasStarted.authorId,
           persona: Option.match(author, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
+        otherAuthors: typeof anonymousAuthors === 'number' ? [] : undefined,
+        anonymousAuthors,
         dataset: data.datasetReviewWasStarted.datasetId,
         doi: data.datasetReviewWasAssignedADoi.doi,
         id: data.datasetReviewWasStarted.datasetReviewId,

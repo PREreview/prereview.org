@@ -13,9 +13,10 @@ export const DatasetReviewPage = Effect.fn(
     const locale = yield* Locale
 
     const datasetReview = yield* DatasetReviews.getPublishedReview(datasetReviewId)
-    const { author, dataset } = yield* Effect.all(
+    const { author, otherAuthors, dataset } = yield* Effect.all(
       {
         author: Personas.getPersona(datasetReview.author),
+        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
         dataset: Datasets.getDataset(datasetReview.dataset),
       },
       { concurrency: 'inherit' },
@@ -25,8 +26,8 @@ export const DatasetReviewPage = Effect.fn(
       datasetReview: {
         ...datasetReview,
         author,
-        otherAuthors: [],
-        anonymousAuthors: 0,
+        otherAuthors,
+        anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
         dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },
       },
       locale,

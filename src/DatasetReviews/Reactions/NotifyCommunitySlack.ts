@@ -19,7 +19,11 @@ export const NotifyCommunitySlack = Effect.fn(
       { concurrency: 'inherit' },
     )
 
-    yield* CommunitySlack.shareDatasetReview({ author, otherAuthors: 0, url })
+    yield* CommunitySlack.shareDatasetReview({
+      author,
+      otherAuthors: (datasetReview.otherAuthors?.length ?? 0) + (datasetReview.anonymousAuthors ?? 0),
+      url,
+    })
   },
   Effect.catchAll(error => new Errors.FailedToNotifyCommunitySlack({ cause: error })),
 )
