@@ -13,3 +13,11 @@ export const CheckInvitationsToAppearPage = ({
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
   HavingProblemsPage
+
+export const CheckInvitationsToAppearSubmission = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  datasetReviewId,
+}: {
+  datasetReviewId: Uuid.Uuid
+}): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
+  HavingProblemsPage
