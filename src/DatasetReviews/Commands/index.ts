@@ -27,7 +27,7 @@ import * as MarkRecordAsPublishedOnZenodo from './MarkRecordAsPublishedOnZenodo.
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.ts'
 import * as PublishDatasetReview from './PublishDatasetReview.ts'
 import * as RateTheQuality from './RateTheQuality.ts'
-import type { RemoveInvitationToAppearFromTheList } from './RemoveInvitationToAppearFromTheList.ts'
+import { RemoveInvitationToAppearFromTheList } from './RemoveInvitationToAppearFromTheList.ts'
 import * as StartDatasetReview from './StartDatasetReview.ts'
 
 export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
@@ -275,7 +275,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       ),
       answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
       addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
-      removeInvitationToAppearFromTheList: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      removeInvitationToAppearFromTheList: yield* Commands.makeCommand(RemoveInvitationToAppearFromTheList),
       declareCompetingInterests: handleCommand(
         DeclareCompetingInterests.createFilter,
         DeclareCompetingInterests.foldState,
