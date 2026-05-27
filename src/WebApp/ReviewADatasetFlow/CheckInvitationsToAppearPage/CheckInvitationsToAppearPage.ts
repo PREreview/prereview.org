@@ -14,7 +14,7 @@ export const CheckInvitationsToAppearPage = ({
   locale,
 }: {
   datasetReviewId: Uuid.Uuid
-  authors: Array.NonEmptyReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
+  authors: Array.NonEmptyReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress; invitationId: Uuid.Uuid }>
   locale: SupportedLocale
 }) => {
   const t = translate(locale, 'review-a-dataset-flow')
@@ -36,6 +36,18 @@ export const CheckInvitationsToAppearPage = ({
             <div class="summary-card">
               <div>
                 <h2>Author ${index + 1}</h2>
+
+                <ul>
+                  <li>
+                    <a
+                      href="${Routes.ReviewADatasetRemoveInvitationToAppear.href({
+                        datasetReviewId,
+                        invitationId: author.invitationId,
+                      })}"
+                      >Remove <span class="visually-hidden">${author.name}</span></a
+                    >
+                  </li>
+                </ul>
               </div>
 
               <dl class="summary-list">
