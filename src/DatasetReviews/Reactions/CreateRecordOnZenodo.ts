@@ -13,9 +13,10 @@ export const CreateRecordOnZenodo = Effect.fn(
   function* (datasetReviewId: Uuid.Uuid) {
     const datasetReview = yield* Queries.getDataForZenodoRecord(datasetReviewId)
 
-    const { author, dataset, url } = yield* Effect.all(
+    const { author, otherAuthors, dataset, url } = yield* Effect.all(
       {
         author: Personas.getPersona(datasetReview.author),
+        otherAuthors: Effect.forEach(datasetReview.otherAuthors ?? [], Personas.getPersona, { concurrency: 'inherit' }),
         dataset: Datasets.getDatasetTitle(datasetReview.dataset),
         url: PublicUrl.forRoute(Routes.DatasetReview, { datasetReviewId }),
       },
@@ -25,8 +26,8 @@ export const CreateRecordOnZenodo = Effect.fn(
     const recordId = yield* ZenodoRecords.createRecordForDatasetReview({
       ...datasetReview,
       author,
-      otherAuthors: [],
-      anonymousAuthors: 0,
+      otherAuthors,
+      anonymousAuthors: datasetReview.anonymousAuthors ?? 0,
       dataset,
       url,
     })

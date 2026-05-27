@@ -18,6 +18,7 @@ describe('CreateRecordOnZenodo', () => {
         fc.origin(),
         fc.datasetReviewDataForZenodoRecord({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('public') }),
+          otherAuthors: fc.constant(undefined),
         }),
         fc.datasetTitle(),
         fc.publicPersona(),
@@ -51,6 +52,7 @@ describe('CreateRecordOnZenodo', () => {
         fc.origin(),
         fc.datasetReviewDataForZenodoRecord({
           author: fc.record({ orcidId: fc.orcidId(), persona: fc.constant('pseudonym') }),
+          otherAuthors: fc.constant(undefined),
         }),
         fc.datasetTitle(),
         fc.pseudonymPersona(),

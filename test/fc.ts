@@ -1777,11 +1777,19 @@ export const datasetReviewPreview = ({
 
 export const datasetReviewDataForZenodoRecord = ({
   author,
+  otherAuthors,
 }: {
   author?: fc.Arbitrary<DatasetReviews.DataForZenodoRecord['author']>
+  otherAuthors?: fc.Arbitrary<DatasetReviews.DataForZenodoRecord['otherAuthors']>
 } = {}): fc.Arbitrary<DatasetReviews.DataForZenodoRecord> =>
   fc.record({
     author: author ?? fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') }),
+    otherAuthors:
+      otherAuthors ??
+      fc.option(fc.array(fc.record({ orcidId: orcidId(), persona: constantFrom('public', 'pseudonym') })), {
+        nil: undefined,
+      }),
+    anonymousAuthors: fc.option(fc.integer({ min: 0 }), { nil: undefined }),
     dataset: datasetId(),
     datasetReviewId: uuid(),
     competingInterests: competingInterestsForADatasetReviewWereDeclared().map(Struct.get('competingInterests')),

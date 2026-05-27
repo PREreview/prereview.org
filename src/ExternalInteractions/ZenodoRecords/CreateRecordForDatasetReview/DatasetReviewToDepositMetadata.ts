@@ -6,7 +6,7 @@ import { html, plainText } from '../../../html.ts'
 import { DefaultLocale, translate } from '../../../locales/index.ts'
 import type * as Personas from '../../../Personas/index.ts'
 
-export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'dataset'> & {
+export type DatasetReview = Omit<DatasetReviews.DataForZenodoRecord, 'author' | 'otherAuthors' | 'dataset'> & {
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number

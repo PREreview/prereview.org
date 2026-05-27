@@ -4,6 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as _ from '../../../src/DatasetReviews/Queries/GetDataForZenodoRecord.ts'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Events from '../../../src/Events.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
@@ -142,6 +143,23 @@ const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetRe
 const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
   persona: 'pseudonym',
   datasetReviewId,
+})
+const answeredYes = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'yes',
+  datasetReviewId,
+})
+const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
+  answer: 'no',
+  datasetReviewId,
+})
+const addedToList = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
+  datasetReviewId,
+  invitationId: Uuid.Uuid('6e4a8f93-b134-4d88-8d0c-cafef43da788'),
+  contactDetails: Option.none(),
+})
+const removedFromList = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+  datasetReviewId,
+  invitationId: addedToList.invitationId,
 })
 const competingInterestsForADatasetReviewWereDeclared1 =
   new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
@@ -434,6 +452,105 @@ describe('GetDataForZenodoRecord', () => {
                 },
               ],
             ], // already has a record
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  answeredNo,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  otherAuthors: [],
+                  anonymousAuthors: 0,
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // no
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  answeredYes,
+                  addedToList,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  otherAuthors: [],
+                  anonymousAuthors: 1,
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // added
+            [
+              [
+                [
+                  datasetReviewWasStarted,
+                  answeredIfTheDatasetFollowsFairAndCarePrinciples,
+                  answeredYes,
+                  addedToList,
+                  removedFromList,
+                  publicationOfDatasetReviewWasRequested,
+                ],
+                {
+                  author: { orcidId: datasetReviewWasStarted.authorId, persona: 'public' },
+                  otherAuthors: [],
+                  anonymousAuthors: 0,
+                  dataset: datasetReviewWasStarted.datasetId,
+                  competingInterests: Option.none(),
+                  qualityRating: Option.none(),
+                  answerToIfTheDatasetFollowsFairAndCarePrinciples: {
+                    answer: answeredIfTheDatasetFollowsFairAndCarePrinciples.answer,
+                    detail: answeredIfTheDatasetFollowsFairAndCarePrinciples.detail,
+                  },
+                  answerToIfTheDatasetHasEnoughMetadata: Option.none(),
+                  answerToIfTheDatasetHasTrackedChanges: Option.none(),
+                  answerToIfTheDatasetHasDataCensoredOrDeleted: Option.none(),
+                  answerToIfTheDatasetIsAppropriateForThisKindOfResearch: Option.none(),
+                  answerToIfTheDatasetSupportsRelatedConclusions: Option.none(),
+                  answerToIfTheDatasetIsDetailedEnough: Option.none(),
+                  answerToIfTheDatasetIsErrorFree: Option.none(),
+                  answerToIfTheDatasetMattersToItsAudience: Option.none(),
+                  answerToIfTheDatasetIsReadyToBeShared: Option.none(),
+                  answerToIfTheDatasetIsMissingAnything: Option.none(),
+                },
+              ],
+            ], // added and removed
           ],
         },
       },

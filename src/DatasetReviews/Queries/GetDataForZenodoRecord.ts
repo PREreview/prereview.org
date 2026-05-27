@@ -1,4 +1,4 @@
-import { Array, Either, Option, Struct, type Types } from 'effect'
+import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
 import type { OrcidId } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
@@ -6,6 +6,8 @@ import type * as Events from '../Events.ts'
 
 export interface DataForZenodoRecord {
   readonly author: { orcidId: OrcidId.OrcidId; persona: Events.PersonaForDatasetReviewWasChosen['persona'] }
+  readonly otherAuthors?: ReadonlyArray<{ orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }>
+  readonly anonymousAuthors?: number
   readonly dataset: Datasets.DatasetId
   readonly competingInterests: Events.CompetingInterestsForADatasetReviewWereDeclared['competingInterests']
   readonly qualityRating: Option.Option<Pick<Events.RatedTheQualityOfTheDataset, 'rating' | 'detail'>>
@@ -110,6 +112,29 @@ export const GetDataForZenodoRecord = (
 
   const competingInterests = Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared'))
 
+  const anonymousAuthors = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
+    onNone: () => undefined,
+    onSome: ({ answer }) => {
+      if (answer === 'no') {
+        return 0
+      }
+
+      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+
+      const removedInvitations = HashSet.fromIterable(
+        Array.filterMap(events, event =>
+          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+            ? Option.some(event.invitationId)
+            : Option.none(),
+        ),
+      )
+
+      return Array.length(
+        Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
+      )
+    },
+  })
+
   return Option.match(answerToIfTheDatasetFollowsFairAndCarePrinciples, {
     onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
     onSome: answerToIfTheDatasetFollowsFairAndCarePrinciples =>
@@ -118,6 +143,8 @@ export const GetDataForZenodoRecord = (
           orcidId: started.authorId,
           persona: Option.match(chosenPersona, { onSome: Struct.get('persona'), onNone: () => 'public' }),
         },
+        otherAuthors: typeof anonymousAuthors === 'number' ? [] : undefined,
+        anonymousAuthors,
         dataset: started.datasetId,
         competingInterests: Option.andThen(competingInterests, Struct.get('competingInterests')),
         qualityRating: Option.map(qualityRating, Struct.pick('rating', 'detail')),
