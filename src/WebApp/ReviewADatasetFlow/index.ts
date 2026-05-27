@@ -1,4 +1,5 @@
 export * from './AddInvitationToAppearPage/index.ts'
+export * from './CheckInvitationsToAppearPage/index.ts'
 export * from './CheckYourReviewPage/index.ts'
 export * from './ChooseYourPersonaPage/index.ts'
 export * from './DeclareCompetingInterestsPage/index.ts'
