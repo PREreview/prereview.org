@@ -8,7 +8,6 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
-import { RouteForCommand } from '../RouteForCommand.ts'
 import * as AddInvitationToAppearForm from './AddInvitationToAppearForm.ts'
 import { AddInvitationToAppearPage as createAddInvitationToAppearPage } from './AddInvitationToAppearPage.ts'
 
@@ -77,12 +76,8 @@ export const AddInvitationToAppearSubmission = ({
             userId: user.orcid,
           })
 
-          const nextExpectedCommand = yield* Effect.flatten(
-            DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
-          )
-
           return Response.RedirectResponse({
-            location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+            location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
           })
         },
         Effect.catchAll(() => HavingProblemsPage),
