@@ -27,6 +27,7 @@ import * as MarkRecordAsPublishedOnZenodo from './MarkRecordAsPublishedOnZenodo.
 import * as MarkRecordCreatedOnZenodo from './MarkRecordCreatedOnZenodo.ts'
 import * as PublishDatasetReview from './PublishDatasetReview.ts'
 import * as RateTheQuality from './RateTheQuality.ts'
+import type { RemoveInvitationToAppearFromTheList } from './RemoveInvitationToAppearFromTheList.ts'
 import * as StartDatasetReview from './StartDatasetReview.ts'
 
 export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
@@ -81,6 +82,7 @@ export class DatasetReviewCommands extends Context.Tag('DatasetReviewCommands')<
     choosePersona: CommandHandler<ChoosePersona.Command, ChoosePersona.Error>
     answerIfOthersNeedToBeListedOnTheReview: Commands.FromCommand<typeof AnswerIfOthersNeedToBeListedOnTheReview>
     addInvitationToAppearToTheList: Commands.FromCommand<typeof AddInvitationToAppearToTheList>
+    removeInvitationToAppearFromTheList: Commands.FromCommand<typeof RemoveInvitationToAppearFromTheList>
     declareCompetingInterests: CommandHandler<DeclareCompetingInterests.Command, DeclareCompetingInterests.Error>
     declareFollowingCodeOfConduct: CommandHandler<
       DeclareFollowingCodeOfConduct.Command,
@@ -126,6 +128,7 @@ export const {
   choosePersona,
   answerIfOthersNeedToBeListedOnTheReview,
   addInvitationToAppearToTheList,
+  removeInvitationToAppearFromTheList,
   declareCompetingInterests,
   declareFollowingCodeOfConduct,
   markRecordCreatedOnZenodo,
@@ -272,6 +275,7 @@ const makeDatasetReviewCommands: Effect.Effect<typeof DatasetReviewCommands.Serv
       ),
       answerIfOthersNeedToBeListedOnTheReview: yield* Commands.makeCommand(AnswerIfOthersNeedToBeListedOnTheReview),
       addInvitationToAppearToTheList: yield* Commands.makeCommand(AddInvitationToAppearToTheList),
+      removeInvitationToAppearFromTheList: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
       declareCompetingInterests: handleCommand(
         DeclareCompetingInterests.createFilter,
         DeclareCompetingInterests.foldState,
