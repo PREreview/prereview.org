@@ -1,3 +1,4 @@
+import type { UrlParams } from '@effect/platform'
 import { Effect } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as DatasetReviews from '../../../DatasetReviews/index.ts'
@@ -64,10 +65,13 @@ export const RemoveInvitationToAppearPage = ({
 
 export const RemoveInvitationToAppearSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  body,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   invitationId,
 }: {
+  body: UrlParams.UrlParams
   datasetReviewId: Uuid.Uuid
   invitationId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewCommands | Locale | LoggedInUser> =>
