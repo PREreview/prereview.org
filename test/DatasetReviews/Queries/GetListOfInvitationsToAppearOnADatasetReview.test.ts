@@ -55,7 +55,7 @@ const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFrom
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
   ['not answered', input, [started], Either.left(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
   [

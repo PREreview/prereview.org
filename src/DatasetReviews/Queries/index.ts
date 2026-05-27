@@ -27,7 +27,7 @@ import { FindInProgressReviewForADataset } from './FindInProgressReviewForADatas
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
 import { GetAuthor } from './GetAuthor.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
-import type { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
+import { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import { GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview } from './GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
@@ -364,7 +364,9 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
-    getListOfInvitationsToAppearOnADatasetReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+    getListOfInvitationsToAppearOnADatasetReview: yield* Queries.makeOnDemandQuery(
+      GetListOfInvitationsToAppearOnADatasetReview,
+    ),
     getPreviewForAReviewReadyToBePublished: Effect.fn(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatten(
