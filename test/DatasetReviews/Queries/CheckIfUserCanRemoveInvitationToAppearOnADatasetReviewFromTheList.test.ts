@@ -96,7 +96,12 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     [started, answeredYes],
     Either.left(new DatasetReviews.DatasetReviewInvitationNotInList()),
   ],
-  ['answered yes, added', input, [started, answeredYes, invited], Either.void],
+  [
+    'answered yes, added',
+    input,
+    [started, answeredYes, invited],
+    Either.right(Option.getOrThrow(invited.contactDetails).name),
+  ],
   [
     'different invitation ID, answered yes, added',
     inputDifferentInvitationId,

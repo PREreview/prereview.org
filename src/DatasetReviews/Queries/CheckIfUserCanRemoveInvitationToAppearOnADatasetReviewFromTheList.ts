@@ -1,7 +1,7 @@
 import { Array, Either, Equal, Option, Struct, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
-import type { OrcidId, Uuid } from '../../types/index.ts'
+import type { NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
@@ -11,7 +11,7 @@ export interface Input {
 }
 
 export type Result = Either.Either<
-  void,
+  NonEmptyString.NonEmptyString,
   | Errors.DatasetReviewHasNotBeenStarted
   | Errors.DatasetReviewWasStartedByAnotherUser
   | Errors.DatasetReviewIsBeingPublished
@@ -87,7 +87,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
       return yield* Either.left(new Errors.DatasetReviewInvitationNotInList())
     }
 
-    return
+    return added.value.contactDetails.value.name
   })
 
 export const CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList = Queries.OnDemandQuery({
