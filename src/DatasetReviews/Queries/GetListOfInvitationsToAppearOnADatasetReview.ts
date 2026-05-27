@@ -15,11 +15,7 @@ export interface InvitationToAppear {
 
 export type Result = Either.Either<
   ReadonlyArray<InvitationToAppear>,
-  | Errors.DatasetReviewHasNotBeenStarted
-  | Errors.DatasetReviewWasStartedByAnotherUser
-  | Errors.DatasetReviewIsBeingPublished
-  | Errors.DatasetReviewHasBeenPublished
-  | Errors.DatasetReviewDoesNotNeedInvitationsToAppear
+  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewDoesNotNeedInvitationsToAppear
 >
 
 export declare const GetListOfInvitationsToAppearOnADatasetReview: Queries.OnDemandQuery<
