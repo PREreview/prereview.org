@@ -23,7 +23,7 @@ import * as CheckIfUserCanChoosePersona from './CheckIfUserCanChoosePersona.ts'
 import * as CheckIfUserCanDeclareCompetingInterests from './CheckIfUserCanDeclareCompetingInterests.ts'
 import * as CheckIfUserCanDeclareFollowingCodeOfConduct from './CheckIfUserCanDeclareFollowingCodeOfConduct.ts'
 import * as CheckIfUserCanRateTheQuality from './CheckIfUserCanRateTheQuality.ts'
-import type { CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList } from './CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList.ts'
+import { CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList } from './CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList.ts'
 import { FindInProgressReviewForADataset } from './FindInProgressReviewForADataset.ts'
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
 import { GetAuthor } from './GetAuthor.ts'
@@ -290,8 +290,9 @@ const makeDatasetReviewQueries: Effect.Effect<
     checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList: yield* Queries.makeOnDemandQuery(
       CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList,
     ),
-    checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList: () =>
-      new Queries.UnableToQuery({ cause: 'not implemented' }),
+    checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList: yield* Queries.makeOnDemandQuery(
+      CheckIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList,
+    ),
     checkIfUserCanChoosePersona: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfUserCanChoosePersona',
       CheckIfUserCanChoosePersona.createFilter,
