@@ -8,6 +8,8 @@ export class DatasetReviewDoesNotNeedInvitationsToAppear extends Data.TaggedErro
   'DatasetReviewDoesNotNeedInvitationsToAppear',
 ) {}
 
+export class DatasetReviewInvitationNotInList extends Data.TaggedError('DatasetReviewInvitationNotInList') {}
+
 export class DatasetReviewHasBeenPublished extends Data.TaggedError('DatasetReviewHasBeenPublished') {}
 
 export class DatasetReviewIsBeingPublished extends Data.TaggedError('DatasetReviewIsBeingPublished') {}
