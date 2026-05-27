@@ -315,6 +315,12 @@ export const ReviewADatasetAddInvitationToAppear = Route({
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 })
 
+export const ReviewADatasetRemoveInvitationToAppear = Route({
+  path: '/review-a-dataset/:datasetReviewId/remove-author/:invitationId',
+  href: params => `/review-a-dataset/${params.datasetReviewId}/remove-author/${params.invitationId}`,
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema, invitationId: Uuid.UuidSchema }),
+})
+
 export const ReviewADatasetCheckInvitationsToAppear = Route({
   path: '/review-a-dataset/:datasetReviewId/add-more-authors',
   href: params => `/review-a-dataset/${params.datasetReviewId}/add-more-authors`,
