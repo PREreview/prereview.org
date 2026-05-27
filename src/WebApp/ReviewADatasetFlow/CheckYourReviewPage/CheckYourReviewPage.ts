@@ -100,7 +100,11 @@ export const CheckYourReviewPage = ({
                   <div>
                     <h2 id="invited-authors-label">Invited authors</h2>
 
-                    <a href="${Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId })}"
+                    <a
+                      href="${Option.match(review.authorsToInvite, {
+                        onNone: () => Routes.ReviewADatasetOthersNeedToBeListedOnTheReview,
+                        onSome: () => Routes.ReviewADatasetCheckInvitationsToAppear,
+                      }).href({ datasetReviewId })}"
                       >Change <span class="visually-hidden">invited authors</span></a
                     >
                   </div>
