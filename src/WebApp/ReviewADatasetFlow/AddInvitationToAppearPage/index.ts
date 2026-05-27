@@ -57,7 +57,7 @@ export const AddInvitationToAppearSubmission = ({
 }): Effect.Effect<
   Response.Response,
   never,
-  DatasetReviews.DatasetReviewCommands | DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser | Uuid.GenerateUuid
+  DatasetReviews.DatasetReviewCommands | Locale | LoggedInUser | Uuid.GenerateUuid
 > =>
   Effect.gen(function* () {
     const user = yield* LoggedInUser
