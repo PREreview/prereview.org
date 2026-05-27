@@ -27,6 +27,7 @@ import { FindInProgressReviewForADataset } from './FindInProgressReviewForADatas
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
 import { GetAuthor } from './GetAuthor.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
+import type { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import { GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview } from './GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview.ts'
 import { GetPreviewForAReviewReadyToBePublished } from './GetPreviewForAReviewReadyToBePublished.ts'
@@ -117,6 +118,9 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetNextExpectedCommandForAUserOnADatasetReview>,
       Errors.UnknownDatasetReview
     >
+    getListOfInvitationsToAppearOnADatasetReview: Queries.FromOnDemandQuery<
+      typeof GetListOfInvitationsToAppearOnADatasetReview
+    >
     getPreviewForAReviewReadyToBePublished: Query<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetPreviewForAReviewReadyToBePublished>,
       Errors.UnknownDatasetReview
@@ -171,6 +175,7 @@ export const {
   findPublishedReviewsForADataset,
   getAuthor,
   getNextExpectedCommandForAUserOnADatasetReview,
+  getListOfInvitationsToAppearOnADatasetReview,
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
   getZenodoRecordId,
@@ -185,6 +190,8 @@ export type { PublishedReview } from './GetPublishedReview.ts'
 export type { PublishedReviewDetails } from './GetPublishedReviewDetails.ts'
 
 export type { NextExpectedCommand } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
+
+export type { InvitationToAppear } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 
 const makeDatasetReviewQueries: Effect.Effect<
   typeof DatasetReviewQueries.Service,
@@ -357,6 +364,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
+    getListOfInvitationsToAppearOnADatasetReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
     getPreviewForAReviewReadyToBePublished: Effect.fn(
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatten(
