@@ -8,6 +8,7 @@ import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import type * as Response from '../../Response/index.ts'
 import { RedirectResponse } from '../../Response/index.ts'
+import { RouteForCommand } from '../RouteForCommand.ts'
 import { CheckInvitationsToAppearPage as createCheckInvitationsToAppearPage } from './CheckInvitationsToAppearPage.ts'
 
 export const CheckInvitationsToAppearPage = ({
@@ -52,9 +53,16 @@ export const CheckInvitationsToAppearPage = ({
   )
 
 export const CheckInvitationsToAppearSubmission = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  HavingProblemsPage
+  Effect.gen(function* () {
+    const nextExpectedCommand = yield* Effect.flatten(
+      DatasetReviews.getNextExpectedCommandForAUserOnADatasetReview(datasetReviewId),
+    )
+
+    return RedirectResponse({
+      location: RouteForCommand(nextExpectedCommand).href({ datasetReviewId }),
+    })
+  }).pipe(Effect.catchAll(() => HavingProblemsPage))
