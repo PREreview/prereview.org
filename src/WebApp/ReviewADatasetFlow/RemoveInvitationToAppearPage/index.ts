@@ -1,21 +1,66 @@
-import type { Effect } from 'effect'
-import type { Locale } from '../../../Context.ts'
-import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import { Effect } from 'effect'
+import { Locale } from '../../../Context.ts'
+import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { LoggedInUser } from '../../../user.ts'
+import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
-import type * as Response from '../../Response/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
+import * as Response from '../../Response/index.ts'
+import * as RemoveInvitationToAppearForm from './RemoveInvitationToAppearForm.ts'
+import { RemoveInvitationToAppearPage as createRemoveInvitationToAppearPage } from './RemoveInvitationToAppearPage.ts'
 
 export const RemoveInvitationToAppearPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   invitationId,
 }: {
   datasetReviewId: Uuid.Uuid
   invitationId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  HavingProblemsPage
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const locale = yield* Locale
+
+    const authorName = yield* DatasetReviews.checkIfUserCanRemoveInvitationToAppearOnADatasetReviewFromTheList({
+      datasetReviewId,
+      invitationId,
+      authorId: user.orcid,
+    })
+
+    return createRemoveInvitationToAppearPage({
+      authorName,
+      datasetReviewId,
+      invitationId,
+      form: new RemoveInvitationToAppearForm.EmptyForm(),
+      locale,
+    })
+  }).pipe(
+    Effect.catchTags({
+      DatasetReviewDoesNotNeedInvitationsToAppear: () =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId }),
+          }),
+        ),
+      DatasetReviewInvitationNotInList: () =>
+        Effect.succeed(
+          Response.RedirectResponse({
+            location: Routes.ReviewADatasetCheckInvitationsToAppear.href({ datasetReviewId }),
+          }),
+        ),
+      DatasetReviewHasNotBeenStarted: () => PageNotFound,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
+      UnableToQuery: () => HavingProblemsPage,
+    }),
+  )
 
 export const RemoveInvitationToAppearSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
