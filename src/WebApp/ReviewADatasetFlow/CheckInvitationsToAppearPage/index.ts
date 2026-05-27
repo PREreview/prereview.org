@@ -1,18 +1,55 @@
-import type { Effect } from 'effect'
-import type { Locale } from '../../../Context.ts'
-import type * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import { Array, Effect } from 'effect'
+import { Locale } from '../../../Context.ts'
+import * as DatasetReviews from '../../../DatasetReviews/index.ts'
+import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
-import type { LoggedInUser } from '../../../user.ts'
+import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
 import type * as Response from '../../Response/index.ts'
+import { RedirectResponse } from '../../Response/index.ts'
+import { CheckInvitationsToAppearPage as createCheckInvitationsToAppearPage } from './CheckInvitationsToAppearPage.ts'
 
 export const CheckInvitationsToAppearPage = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   datasetReviewId,
 }: {
   datasetReviewId: Uuid.Uuid
 }): Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> =>
-  HavingProblemsPage
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const locale = yield* Locale
+
+    yield* DatasetReviews.checkIfUserCanAddInvitationToAppearOnADatasetReviewToTheList({
+      datasetReviewId,
+      authorId: user.orcid,
+    })
+
+    const authors = yield* DatasetReviews.getListOfInvitationsToAppearOnADatasetReview({ datasetReviewId })
+
+    if (!Array.isNonEmptyReadonlyArray(authors)) {
+      return RedirectResponse({ location: Routes.ReviewADatasetAddInvitationToAppear.href({ datasetReviewId }) })
+    }
+
+    return createCheckInvitationsToAppearPage({ datasetReviewId, authors, locale })
+  }).pipe(
+    Effect.catchTags({
+      DatasetReviewDoesNotNeedInvitationsToAppear: () =>
+        Effect.succeed(
+          RedirectResponse({
+            location: Routes.ReviewADatasetOthersNeedToBeListedOnTheReview.href({ datasetReviewId }),
+          }),
+        ),
+      DatasetReviewHasNotBeenStarted: () => PageNotFound,
+      DatasetReviewHasBeenPublished: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) })),
+      DatasetReviewIsBeingPublished: () =>
+        Effect.succeed(
+          RedirectResponse({ location: Routes.ReviewADatasetReviewBeingPublished.href({ datasetReviewId }) }),
+        ),
+      DatasetReviewWasStartedByAnotherUser: () => PageNotFound,
+      UnableToQuery: () => HavingProblemsPage,
+    }),
+  )
 
 export const CheckInvitationsToAppearSubmission = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
