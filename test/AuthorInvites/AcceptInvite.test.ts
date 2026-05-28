@@ -39,7 +39,7 @@ const inviteAccepted = new Events.AuthorInviteAccepted(input)
 
 const publicationRequested = new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId })
 
-test.skip.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.InvitationNotFound())],
   [
     'author added, publication requested',

@@ -1,4 +1,4 @@
-import { Data, Either, type Option } from 'effect'
+import { Array, Data, Either, Match, Option, type Types } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Events from '../Events.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -41,12 +41,54 @@ const createFilter = (input: Input) =>
     },
   ])
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => new NoSuchInvitation()
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => {
+  const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const eventWeAreInterestedIn = Array.findLast(
+    filteredEvents,
+    hasTag(
+      'InvitationToAppearOnADatasetReviewAddedToTheList',
+      'InvitationToAppearOnADatasetReviewRemovedFromTheList',
+      'AuthorInviteAccepted',
+    ),
+  )
+
+  if (Option.isNone(eventWeAreInterestedIn)) {
+    return new NoSuchInvitation()
+  }
+
+  if (eventWeAreInterestedIn.value._tag === 'AuthorInviteAccepted') {
+    return new AcceptedInvitation({ acceptedBy: eventWeAreInterestedIn.value.orcidId })
+  }
+
+  if (eventWeAreInterestedIn.value._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList') {
+    return new NoSuchInvitation()
+  }
+
+  const datasetReviewId = eventWeAreInterestedIn.value.datasetReviewId
+
+  if (
+    !Array.some(
+      filteredEvents,
+      event => event._tag === 'PublicationOfDatasetReviewWasRequested' && event.datasetReviewId === datasetReviewId,
+    )
+  ) {
+    return new PendingInvitation()
+  }
+
+  return new OpenInvitation()
+}
+
 const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
-  Either.left(new InvitationNotFound())
+  Match.valueTags(state, {
+    NoSuchInvitation: () => Either.left(new InvitationNotFound()),
+    PendingInvitation: () => Either.left(new InvitationNotFound()),
+    OpenInvitation: () => Either.right(Option.some(new Events.AuthorInviteAccepted(input))),
+    AcceptedInvitation: ({ acceptedBy }) =>
+      acceptedBy === input.orcidId
+        ? Either.right(Option.none())
+        : Either.left(new InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer()),
+  })
 
 export const AcceptInvite = Commands.Command({
   name: 'AuthorInvites.acceptInvite',
@@ -54,3 +96,7 @@ export const AcceptInvite = Commands.Command({
   foldState,
   decide,
 })
+
+function hasTag<Tag extends Types.Tags<T>, T extends { _tag: string }>(...tags: ReadonlyArray<Tag>) {
+  return (tagged: T): tagged is Types.ExtractTag<T, Tag> => Array.contains(tags, tagged._tag)
+}
