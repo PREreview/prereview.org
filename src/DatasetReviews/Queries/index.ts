@@ -1,8 +1,12 @@
 import { Array, Context, Effect, type Either, Layer, Scope } from 'effect'
+import { DryadDatasetId } from '../../Datasets/index.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as Queries from '../../Queries.ts'
-import type { Uuid } from '../../types/index.ts'
+import { Doi } from '../../types/Doi.ts'
+import { Uuid } from '../../types/index.ts'
+import { OrcidId } from '../../types/OrcidId.ts'
+import { PlainDate } from '../../types/Temporal.ts'
 import * as Errors from '../Errors.ts'
 import { DatasetReviewEventTypes } from '../Events.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
@@ -28,6 +32,7 @@ import { FindInProgressReviewForADataset } from './FindInProgressReviewForADatas
 import { FindPublishedReviewsForADataset } from './FindPublishedReviewsForADataset.ts'
 import { GetAuthor } from './GetAuthor.ts'
 import { GetDataForZenodoRecord } from './GetDataForZenodoRecord.ts'
+import type { DatasetReviewForInvite, GetDatasetReviewForInvite } from './GetDatasetReviewForInvite.ts'
 import { GetListOfInvitationsToAppearOnADatasetReview } from './GetListOfInvitationsToAppearOnADatasetReview.ts'
 import { GetNextExpectedCommandForAUserOnADatasetReview } from './GetNextExpectedCommandForAUserOnADatasetReview.ts'
 import { GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview } from './GetNextExpectedCommandWithoutAuthorInvitesForAUserOnADatasetReview.ts'
@@ -145,6 +150,7 @@ export class DatasetReviewQueries extends Context.Tag('DatasetReviewQueries')<
       (datasetReviewId: Uuid.Uuid) => ReturnType<typeof GetZenodoRecordId>,
       Errors.UnknownDatasetReview
     >
+    getDatasetReviewForInvite: Queries.FromStatefulQuery<typeof GetDatasetReviewForInvite>
   }
 >() {}
 
@@ -184,6 +190,7 @@ export const {
   getPreviewForAReviewReadyToBePublished,
   getDataForZenodoRecord,
   getZenodoRecordId,
+  getDatasetReviewForInvite,
 } = Effect.serviceFunctions(DatasetReviewQueries)
 
 export type { DataForZenodoRecord } from './GetDataForZenodoRecord.ts'
@@ -450,6 +457,16 @@ const makeDatasetReviewQueries: Effect.Effect<
       Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     ),
+    getDatasetReviewForInvite: () =>
+      Effect.succeed({
+        author: { orcidId: OrcidId('0000-0002-1825-0097'), persona: 'public' },
+        otherAuthors: [],
+        doi: Doi('10.1235/234234'),
+        id: Uuid.Uuid('6e1cc29e-be34-4bbc-b174-fdb4e5c57327'),
+        published: PlainDate.from('2020-12-01'),
+        anonymousAuthors: 1,
+        dataset: new DryadDatasetId({ value: Doi('10.5061/dryad.wstqjq2n3') }),
+      } satisfies DatasetReviewForInvite),
   }
 })
 
