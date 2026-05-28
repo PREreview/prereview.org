@@ -1,5 +1,6 @@
-import { Data } from 'effect'
-import type * as Commands from '../Commands.ts'
+import { Data, Either, type Option } from 'effect'
+import * as Commands from '../Commands.ts'
+import * as Events from '../Events.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Instant } from '../types/Temporal.ts'
 import type { Uuid } from '../types/Uuid.ts'
@@ -18,6 +19,38 @@ export class InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer extends Data.T
 
 export type Error = InvitationNotFound | InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer
 
-type State = unknown
+class NoSuchInvitation extends Data.TaggedClass('NoSuchInvitation') {}
+class PendingInvitation extends Data.TaggedClass('PendingInvitation') {}
+class OpenInvitation extends Data.TaggedClass('OpenInvitation') {}
+class AcceptedInvitation extends Data.TaggedClass('AcceptedInvitation')<{ acceptedBy: OrcidId }> {}
 
-export declare const AcceptInvite: Commands.Command<'AuthorInviteAccepted', [Input], State, Error>
+type State = NoSuchInvitation | PendingInvitation | OpenInvitation | AcceptedInvitation
+
+const createFilter = (input: Input) =>
+  Events.EventFilter([
+    {
+      types: [
+        'InvitationToAppearOnADatasetReviewAddedToTheList',
+        'InvitationToAppearOnADatasetReviewRemovedFromTheList',
+        'AuthorInviteAccepted',
+      ],
+      predicates: { invitationId: input.invitationId },
+    },
+    {
+      types: ['PublicationOfDatasetReviewWasRequested'],
+    },
+  ])
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const foldState = (events: ReadonlyArray<Events.Event>, input: Input): State => new NoSuchInvitation()
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const decide = (state: State, input: Input): Either.Either<Option.Option<Events.Event>, Error> =>
+  Either.left(new InvitationNotFound())
+
+export const AcceptInvite = Commands.Command({
+  name: 'AuthorInvites.acceptInvite',
+  createFilter,
+  foldState,
+  decide,
+})
