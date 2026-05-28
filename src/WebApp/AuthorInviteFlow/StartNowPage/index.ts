@@ -1,3 +1,4 @@
-import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { Effect } from 'effect'
+import { renderStartNowPage } from './StartNowPage.ts'
 
-export const StartNowPage = () => HavingProblemsPage
+export const StartNowPage = () => Effect.sync(renderStartNowPage)
