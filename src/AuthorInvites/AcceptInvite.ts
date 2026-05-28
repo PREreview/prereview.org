@@ -1,3 +1,4 @@
+import { Data } from 'effect'
 import type * as Commands from '../Commands.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import type { Instant } from '../types/Temporal.ts'
@@ -9,7 +10,9 @@ export interface Input {
   readonly acceptedAt: Instant
 }
 
-export type Error = unknown
+export class InvitationNotFound extends Data.TaggedError('InvitationNotFound') {}
+
+export type Error = InvitationNotFound
 
 type State = unknown
 
