@@ -33,6 +33,7 @@ export const StartNowPage = ({
 
     const viewModel = {
       ...datasetReviewForInvite,
+      invitationId,
       author,
       otherAuthors,
       dataset: { id: dataset.id, title: dataset.title.text, language: dataset.title.language, url: dataset.url },

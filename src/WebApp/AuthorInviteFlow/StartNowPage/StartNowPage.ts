@@ -11,12 +11,14 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { renderDate } from '../../../time.ts'
 import { Doi, ProfileId } from '../../../types/index.ts'
+import type { Uuid } from '../../../types/Uuid.ts'
 import { PageResponse } from '../../Response/index.ts'
 
 export type ViewModel = Omit<
   DatasetReviews.PublishedReview,
   'author' | 'otherAuthors' | 'dataset' | 'questions' | 'competingInterests'
 > & {
+  readonly invitationId: Uuid
   readonly author: Personas.Persona
   readonly otherAuthors: ReadonlyArray<Personas.Persona>
   readonly anonymousAuthors: number
@@ -83,6 +85,12 @@ export const renderStartNowPage = ({ locale, viewModel }: { locale: SupportedLoc
           </dl>
         </header>
       </article>
+      <a
+        href="${Routes.AuthorInviteAcceptInvite.href({ invitationId: viewModel.invitationId })}"
+        role="button"
+        draggable="false"
+        >Start now</a
+      >
     `,
   })
 }
