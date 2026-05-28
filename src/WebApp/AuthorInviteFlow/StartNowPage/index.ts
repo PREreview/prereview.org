@@ -8,12 +8,12 @@ import { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import { OrcidId } from '../../../types/OrcidId.ts'
 import { PlainDate } from '../../../types/Temporal.ts'
 import { Uuid } from '../../../types/Uuid.ts'
-import { renderStartNowPage, type DatasetReview } from './StartNowPage.ts'
+import { renderStartNowPage, type ViewModel } from './StartNowPage.ts'
 
 export const StartNowPage = () =>
   Effect.gen(function* () {
     const locale = yield* Locale
-    const datasetReview = {
+    const viewModel = {
       doi: Doi('10.1235/234234'),
       id: Uuid('6e1cc29e-be34-4bbc-b174-fdb4e5c57327'),
       published: PlainDate.from('2020-12-01'),
@@ -29,7 +29,7 @@ export const StartNowPage = () =>
         title: html``,
         url: new URL('http://example.com'),
       },
-    } satisfies DatasetReview
+    } satisfies ViewModel
 
-    return renderStartNowPage({ locale, datasetReview })
+    return renderStartNowPage({ locale, viewModel })
   })

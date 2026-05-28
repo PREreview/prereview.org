@@ -13,7 +13,7 @@ import { renderDate } from '../../../time.ts'
 import { Doi, ProfileId } from '../../../types/index.ts'
 import { PageResponse } from '../../Response/index.ts'
 
-export type DatasetReview = Omit<
+export type ViewModel = Omit<
   DatasetReviews.PublishedReview,
   'author' | 'otherAuthors' | 'dataset' | 'questions' | 'competingInterests'
 > & {
@@ -28,13 +28,7 @@ export type DatasetReview = Omit<
   }
 }
 
-export const renderStartNowPage = ({
-  locale,
-  datasetReview,
-}: {
-  locale: SupportedLocale
-  datasetReview: DatasetReview
-}) => {
+export const renderStartNowPage = ({ locale, viewModel }: { locale: SupportedLocale; viewModel: ViewModel }) => {
   const t = translate(locale, 'dataset-review-page')
 
   return PageResponse({
@@ -48,9 +42,9 @@ export const renderStartNowPage = ({
             ${rawHtml(
               t('structuredReviewTitle')({
                 dataset: html`<cite
-                  lang="${datasetReview.dataset.language}"
-                  dir="${rtlDetect.getLangDir(datasetReview.dataset.language)}"
-                  >${datasetReview.dataset.title}</cite
+                  lang="${viewModel.dataset.language}"
+                  dir="${rtlDetect.getLangDir(viewModel.dataset.language)}"
+                  >${viewModel.dataset.title}</cite
                 >`.toString(),
               }),
             )}
@@ -59,7 +53,7 @@ export const renderStartNowPage = ({
           <div class="byline">
             ${rawHtml(
               t('authoredBy')({
-                author: authorList(datasetReview, locale).toString(),
+                author: authorList(viewModel, locale).toString(),
                 visuallyHidden: text => html`<span class="visually-hidden">${text}</span>`.toString(),
               }),
             )}
@@ -68,12 +62,12 @@ export const renderStartNowPage = ({
           <dl>
             <div>
               <dt>${t('published')()}</dt>
-              <dd>${renderDate(locale)(datasetReview.published)}</dd>
+              <dd>${renderDate(locale)(viewModel.published)}</dd>
             </div>
             <div>
               <dt>DOI</dt>
               <dd>
-                <a href="${Doi.toUrl(datasetReview.doi).href}" class="doi" translate="no">${datasetReview.doi}</a>
+                <a href="${Doi.toUrl(viewModel.doi).href}" class="doi" translate="no">${viewModel.doi}</a>
               </dd>
             </div>
             <div>
@@ -93,7 +87,7 @@ export const renderStartNowPage = ({
   })
 }
 
-const authorList = (datasetReview: DatasetReview, locale: SupportedLocale) => {
+const authorList = (datasetReview: ViewModel, locale: SupportedLocale) => {
   const list = Array.map(Array.make(datasetReview.author, ...datasetReview.otherAuthors), displayAuthor)
 
   if (datasetReview.anonymousAuthors > 0) {
