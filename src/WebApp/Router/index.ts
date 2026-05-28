@@ -349,8 +349,11 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
 )
 
 const AuthorInviteFlowRouter = HttpRouter.fromIterable([
-  MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage),
-])
+  MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite),
+]).pipe(
+  HttpRouter.use(HttpMiddleware.ensureUserIsLoggedIn),
+  HttpRouter.append(MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage)),
+)
 
 const DatasetReviewPages = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
