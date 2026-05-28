@@ -15,12 +15,14 @@ import {
   flow,
   pipe,
 } from 'effect'
+import * as AuthorInviteEvents from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as CommentEvents from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as DatasetReviewEvents from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PreprintReviews from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as PrereviewerEvents from './Prereviewers/Events.ts' // eslint-disable-line import/no-internal-modules
 import * as ReviewRequestsEvents from './ReviewRequests/Events.ts' // eslint-disable-line import/no-internal-modules
 
+export * from './AuthorInvites/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './Comments/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './DatasetReviews/Events.ts' // eslint-disable-line import/no-internal-modules
 export * from './PreprintReviews/Events.ts' // eslint-disable-line import/no-internal-modules
@@ -30,6 +32,7 @@ export * from './ReviewRequests/Events.ts' // eslint-disable-line import/no-inte
 export type Event = typeof Event.Type
 
 export const Event = Schema.Union(
+  AuthorInviteEvents.AuthorInviteAccepted,
   ...CommentEvents.CommentEvent.members,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,

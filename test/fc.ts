@@ -2547,8 +2547,18 @@ export const reviewRequestEvent = (
     reviewRequestForAPreprintWasSharedOnTheCommunitySlack(args),
   )
 
+export const authorInviteAccepted = (): fc.Arbitrary<Events.AuthorInviteAccepted> =>
+  fc
+    .record({
+      invitationId: uuid(),
+      orcidId: orcidId(),
+      acceptedAt: instant(),
+    })
+    .map(args => new Events.AuthorInviteAccepted(args))
+
 export const event = (): fc.Arbitrary<Events.Event> =>
   fc.oneof(
+    authorInviteAccepted(),
     commentEvent(),
     datasetReviewEvent(),
     reviewRequestEvent(),
