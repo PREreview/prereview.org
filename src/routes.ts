@@ -358,8 +358,8 @@ export const ReviewADatasetReviewPublished = Route({
 })
 
 export const AuthorInviteStartNow = Route({
-  path: '/author-invite/:invitationId/start-now',
-  href: params => `/author-invite/${params.invitationId}`,
+  path: '/dataset-review-author-invite/:invitationId/start-now',
+  href: params => `/dataset-review-author-invite/${params.invitationId}/start-now`,
   schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
 })
 
