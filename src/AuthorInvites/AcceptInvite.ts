@@ -12,7 +12,11 @@ export interface Input {
 
 export class InvitationNotFound extends Data.TaggedError('InvitationNotFound') {}
 
-export type Error = InvitationNotFound
+export class InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer extends Data.TaggedError(
+  'InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer',
+) {}
+
+export type Error = InvitationNotFound | InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer
 
 type State = unknown
 
