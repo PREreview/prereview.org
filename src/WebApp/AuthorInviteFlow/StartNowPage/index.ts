@@ -8,9 +8,10 @@ import { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import { OrcidId } from '../../../types/OrcidId.ts'
 import { PlainDate } from '../../../types/Temporal.ts'
 import { Uuid } from '../../../types/Uuid.ts'
+import type { Response } from '../../Response/index.ts'
 import { renderStartNowPage, type ViewModel } from './StartNowPage.ts'
 
-export const StartNowPage = () =>
+export const StartNowPage = (): Effect.Effect<Response, never, Locale> =>
   Effect.gen(function* () {
     const locale = yield* Locale
     const viewModel = {
