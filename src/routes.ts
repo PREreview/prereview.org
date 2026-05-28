@@ -357,6 +357,12 @@ export const ReviewADatasetReviewPublished = Route({
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
 })
 
+export const AuthorInviteStartNow = Route({
+  path: '/author-invite/:invitationId/start-now',
+  href: params => `/author-invite/${params.invitationId}`,
+  schema: Schema.Struct({ invitationId: Uuid.UuidSchema }),
+})
+
 export const WriteComment = Route({
   path: '/reviews/:id/write-a-comment',
   href: params => `/reviews/${params.id}/write-a-comment`,

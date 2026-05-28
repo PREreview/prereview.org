@@ -7,6 +7,7 @@ import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
+import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
 import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
 import { ChooseLocalePage } from '../ChooseLocalePage/index.ts'
 import { ClubProfilePage } from '../ClubProfilePage/index.ts'
@@ -347,6 +348,10 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
   HttpRouter.append(MakeRoute('GET', Routes.ReviewThisDataset, ReviewADatasetFlow.ReviewThisDatasetPage)),
 )
 
+const AuthorInviteFlowRouter = HttpRouter.fromIterable([
+  MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage),
+])
+
 const DatasetReviewPages = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
   MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
@@ -535,6 +540,7 @@ export const Router = pipe(
   HttpRouter.concat(MyDetailsRouter),
   HttpRouter.concat(RequestAReviewFlowRouter),
   HttpRouter.concat(ReviewADatasetFlowRouter),
+  HttpRouter.concat(AuthorInviteFlowRouter),
   HttpRouter.concat(WriteCommentFlowRouter),
   HttpRouter.use(
     HttpMiddleware.make(
