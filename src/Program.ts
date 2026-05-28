@@ -1,6 +1,7 @@
 import type { HttpClient } from '@effect/platform'
 import KeyvRedis from '@keyv/redis'
 import { Context, Duration, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope } from 'effect'
+import * as AuthorInvites from './AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import * as Comments from './Comments/index.ts'
 import * as ContactEmailAddress from './contact-email-address.ts'
@@ -288,7 +289,13 @@ export const Program = pipe(
   ),
   Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
   Layer.provide([PreprintReviews.workflowsLayer, publishComment, createRecordOnZenodoForComment]),
-  Layer.provide([PreprintReviews.layer, Prereviews.layer, ReviewRequests.layer, verifyContactEmailAddressForComment]),
+  Layer.provide([
+    AuthorInvites.layer,
+    PreprintReviews.layer,
+    Prereviews.layer,
+    ReviewRequests.layer,
+    verifyContactEmailAddressForComment,
+  ]),
   Layer.provide(Personas.layer),
   Layer.provide(Prereviewers.layer),
   Layer.provide([
