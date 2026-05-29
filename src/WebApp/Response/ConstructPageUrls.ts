@@ -40,11 +40,11 @@ export const constructPageUrls = (
         HashMap.union(
           pipe(
             UserSelectableLanguages,
-            HashSet.map(langauge =>
+            HashSet.map(language =>
               Tuple.make(
-                langauge,
+                language,
                 new URL(
-                  `${appOrigin}/${getLocaleForLanguage(langauge).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
+                  `${appOrigin}/${getLocaleForLanguage(language).toLowerCase()}${encodeURI(canonical).replace(/^\/(?=\?|$)/, '')}`,
                 ),
               ),
             ),
