@@ -350,6 +350,15 @@ const ReviewADatasetFlowRouter = HttpRouter.fromIterable([
 
 const AuthorInviteFlowRouter = HttpRouter.fromIterable([
   MakeRoute('GET', Routes.AuthorInviteChooseYourPersona, AuthorInviteFlow.ChooseYourPersonaPage),
+  MakeRoute(
+    'POST',
+    Routes.AuthorInviteChooseYourPersona,
+    flow(
+      Effect.succeed,
+      Effect.bind('body', () => Effect.andThen(HttpServerRequest.HttpServerRequest, Struct.get('urlParamsBody'))),
+      Effect.andThen(AuthorInviteFlow.ChooseYourPersonaSubmission),
+    ),
+  ),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsOneThatAcceptedTheInvite),
   HttpRouter.append(MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite)),
