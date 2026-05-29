@@ -203,6 +203,8 @@ export const ensureUserIsLoggedIn = HttpMiddleware.make(app =>
   ),
 )
 
+export const ensureUserIsOneThatAcceptedTheInvite = HttpMiddleware.make(app => app)
+
 export const removeLocaleFromPathForRouting = HttpMiddleware.make(
   Effect.updateService(HttpServerRequest.HttpServerRequest, request =>
     request.modify({ url: LocaleInPath.removeLocaleFromPath(request.url) }),
