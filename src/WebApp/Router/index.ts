@@ -1,6 +1,5 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
 import { Cause, Effect, flow, Match, pipe, Record, Struct } from 'effect'
-import { AllowSiteCrawlers } from '../../Context.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
 import * as Routes from '../../routes.ts'
@@ -36,6 +35,7 @@ import { ResourcesPage } from '../ResourcesPage.ts'
 import * as Response from '../Response/index.ts'
 import * as ReviewADatasetFlow from '../ReviewADatasetFlow/index.ts'
 import { ReviewRequestsPage } from '../ReviewRequestsPage/index.ts'
+import { RobotsTxt } from '../RobotsTxt.ts'
 import { TrainingsPage } from '../TrainingsPage.ts'
 import * as WriteCommentFlow from '../WriteCommentFlow/index.ts'
 import { LegacyRouter } from './LegacyRouter.ts'
@@ -563,46 +563,7 @@ export const Router = pipe(
   HttpRouter.concat(DataRouter),
   HttpRouter.post(Routes.Inbox, Inbox),
   HttpRouter.get('/health', HealthCheck),
-  HttpRouter.get(
-    '/robots.txt',
-    Effect.if(AllowSiteCrawlers, {
-      onTrue: () =>
-        HttpServerResponse.text(
-          `
-User-agent: AhrefsBot
-User-agent: Amazonbot
-User-agent: bingbot
-User-agent: SemrushBot
-User-agent: SERankingBacklinksBot
-Allow: /reviews/*
-Disallow: /reviews
-Allow: /review-requests/*
-Disallow: /review-requests
-Allow: /
-Crawl-delay: 5
-
-User-agent: *
-Allow: /
-Crawl-delay: 2
-`.trim(),
-        ),
-      onFalse: () =>
-        HttpServerResponse.text(
-          `
-User-agent: AhrefsBot
-User-agent: Amazonbot
-User-agent: bingbot
-User-agent: SemrushBot
-User-agent: SERankingBacklinksBot
-Disallow: /
-
-User-agent: *
-Allow: /
-Crawl-delay: 10
-`.trim(),
-        ),
-    }),
-  ),
+  HttpRouter.get('/robots.txt', RobotsTxt),
   HttpRouter.concat(LegacyRouter),
   Effect.catchTag('RouteNotFound', () => Effect.interruptible(nonEffectRouter)),
   Effect.catchTag('RouteNotFound', () =>
