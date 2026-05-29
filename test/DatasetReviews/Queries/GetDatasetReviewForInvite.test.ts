@@ -82,7 +82,7 @@ const publication = new Events.DatasetReviewWasPublished({
   publicationDate: Temporal.Now.plainDateISO(),
 })
 
-test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
+test.each<[string, ReadonlyArray<Events.Event>, _.Input, _.Result]>([
   ['no events', [], input, Either.left(new DatasetReviews.DatasetReviewInvitationNotInList())],
   [
     'invitation ID not in list',
