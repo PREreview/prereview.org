@@ -8,7 +8,7 @@ import { shouldNotBeCalled } from '../should-not-be-called.ts'
 
 describe('CheckIfUserHasAVerifiedEmailAddress', () => {
   it.effect.prop(
-    'marks the email addess as verified',
+    'marks the email address as verified',
     [fc.uuid(), fc.commentInProgress({ verifiedEmailAddressExists: fc.constant(undefined) })],
     ([commentId, comment]) =>
       Effect.gen(function* () {
