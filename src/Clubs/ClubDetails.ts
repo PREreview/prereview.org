@@ -688,6 +688,25 @@ const clubs: Record.ReadonlyRecord<ClubId, Club> = {
     ],
     contact: EmailAddress('csilvera@fcien.edu.uy'),
   },
+  'osi-sfu': {
+    name: 'Open Scholarship Initiative at Simon Fraser University',
+    description: html`
+      <p>
+        Simon Fraser University is the first university in Canada to adopt open science for the whole institution – a
+        reflection of SFU’s progressive spirit that has earned us an international reputation for transdisciplinary
+        research and innovation.
+      </p>
+      <p>
+        The Open Scholarship Initiative at SFU aims at promoting people-first open scholarship principles and practices.
+        This club will provide infrastructure to make one of these practices visible and recognized, by compiling a
+        record of all the preprint reviews published by our community. You must be affiliated with SFU to join the club,
+        but collaborations are welcome.
+      </p>
+    `,
+    added: Temporal.PlainDate.from('2026-05-29'),
+    leads: [{ name: 'Gracielle Higino', orcid: OrcidId('0000-0003-2791-8383') }],
+    joinLink: new URL('https://forms.cloud.microsoft/r/uNGaWJ5UeS'),
+  },
   oxplants: {
     name: 'OxPlants Preprint Club',
     description: html`

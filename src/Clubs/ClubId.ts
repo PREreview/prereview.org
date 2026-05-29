@@ -37,6 +37,7 @@ export const ClubIdSchema = Schema.Literal(
   'open-box-science',
   'open-science-community-iraqi',
   'open-science-community-uruguay',
+  'osi-sfu',
   'oxplants',
   'padua-biomedical-sciences',
   'parasitology-infectious-diseases',
