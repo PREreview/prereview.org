@@ -42,7 +42,7 @@ export const ChooseYourPersonaSubmission = ({
       CompletedForm: Effect.fnUntraced(
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           const authorInvites = yield* AuthorInvites
-          yield* authorInvites.choosePersona({ invitationId, orcidId: user.orcid, persona: form.chooseYourPersona })
+          yield* authorInvites.choosePersona({ invitationId, persona: form.chooseYourPersona })
 
           return yield* HavingProblemsPage
         },
