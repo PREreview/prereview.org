@@ -27,10 +27,7 @@ export type Result = Either.Either<
   Errors.DatasetReviewInvitationNotInList | Errors.DatasetReviewHasNotBeenPublished
 >
 
-type State = unknown
-
 export declare const GetDatasetReviewForInvite: Queries.StatefulQuery<
-  State,
   [Input],
   Either.Either.Right<Result>,
   Either.Either.Left<Result>

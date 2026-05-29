@@ -14,17 +14,17 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
 export type SimpleQuery<F> = () => Effect.Effect<F, UnableToQuery>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FromOnDemandQuery<T extends OnDemandQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
+export type FromOnDemandQuery<T extends OnDemandQuery<ReadonlyArray<any>, any, any>> = [T] extends [
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  OnDemandQuery<any, infer Input, infer Result, infer Error>,
+  OnDemandQuery<infer Input, infer Result, infer Error, any>,
 ]
   ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
   : never
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, any, any>> = [T] extends [
+export type FromStatefulQuery<T extends StatefulQuery<ReadonlyArray<any>, any, any, any>> = [T] extends [
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  StatefulQuery<any, infer Input, infer Result, infer Error>,
+  StatefulQuery<infer Input, infer Result, infer Error, any>,
 ]
   ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
   : never
@@ -32,17 +32,17 @@ export type FromStatefulQuery<T extends StatefulQuery<any, ReadonlyArray<any>, a
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
 export interface OnDemandQuery<
-  EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
   Error = never,
+  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
 > {
   name: string
   createFilter: (...input: Input) => Events.EventFilter<EventTags>
   query: (events: ReadonlyArray<Events.Event>, ...input: Input) => Either.Either<Result, Error>
 }
 
-export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Result, Error = never> {
+export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown> {
   name: string
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
@@ -50,28 +50,28 @@ export interface StatefulQuery<State, Input extends ReadonlyArray<unknown>, Resu
 }
 
 export const OnDemandQuery: <
-  EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
   Error = never,
+  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
 >(
-  query: OnDemandQuery<EventTags, Input, Result, Error>,
-) => OnDemandQuery<EventTags, Input, Result, Error> = Data.struct
+  query: OnDemandQuery<Input, Result, Error, EventTags>,
+) => OnDemandQuery<Input, Result, Error, EventTags> = Data.struct
 
-export const StatefulQuery: <State, Input extends ReadonlyArray<unknown>, Result, Error = never>(
-  query: StatefulQuery<State, Input, Result, Error>,
-) => StatefulQuery<State, Input, Result, Error> = Data.struct
+export const StatefulQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>(
+  query: StatefulQuery<Input, Result, Error, State>,
+) => StatefulQuery<Input, Result, Error, State> = Data.struct
 
 export const makeOnDemandQuery = <
-  EventTags extends Types.Tags<Events.Event>,
   Input extends ReadonlyArray<unknown>,
   Result,
   Error = never,
+  EventTags extends Types.Tags<Events.Event> = Types.Tags<Events.Event>,
 >({
   name,
   createFilter,
   query,
-}: OnDemandQuery<EventTags, Input, Result, Error>): Effect.Effect<
+}: OnDemandQuery<Input, Result, Error, EventTags>): Effect.Effect<
   (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>,
   never,
   EventStore.EventStore
@@ -97,12 +97,12 @@ export const makeOnDemandQuery = <
     )
   })
 
-export const makeStatefulQuery = <State, Input extends ReadonlyArray<unknown>, Result, Error = never>({
+export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>({
   name,
   initialState,
   updateStateWithEvents,
   query,
-}: StatefulQuery<State, Input, Result, Error>): Effect.Effect<
+}: StatefulQuery<Input, Result, Error, State>): Effect.Effect<
   (...input: Input) => Effect.Effect<Result, Error>,
   never,
   EventDispatcher.EventDispatcher
