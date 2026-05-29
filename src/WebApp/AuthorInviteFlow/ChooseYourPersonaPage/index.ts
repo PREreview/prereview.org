@@ -1,4 +1,6 @@
-import { Effect } from 'effect'
+import type { UrlParams } from '@effect/platform'
+import { Effect, Match } from 'effect'
+import type { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Personas from '../../../Personas/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
@@ -23,4 +25,29 @@ export const ChooseYourPersonaPage = ({
     return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
   }).pipe(Effect.catchTags({ UnableToGetPersona: () => HavingProblemsPage }))
 
-export const ChooseYourPersonaSubmission = () => HavingProblemsPage
+export const ChooseYourPersonaSubmission = ({
+  body,
+  invitationId,
+}: {
+  body: UrlParams.UrlParams
+  invitationId: Uuid
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
+  Effect.gen(function* () {
+    const user = yield* LoggedInUser
+    const locale = yield* Locale
+
+    const form = yield* ChooseYourPersonaForm.fromBody(body)
+
+    return yield* Match.valueTags(form, {
+      CompletedForm: () => HavingProblemsPage,
+      InvalidForm: Effect.fnUntraced(
+        function* (form: ChooseYourPersonaForm.InvalidForm) {
+          const publicPersona = yield* Personas.getPublicPersona(user.orcid)
+          const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
+
+          return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
+        },
+        Effect.catchTag('UnableToGetPersona', () => HavingProblemsPage),
+      ),
+    })
+  })
