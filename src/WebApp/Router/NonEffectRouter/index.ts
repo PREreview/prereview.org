@@ -72,11 +72,7 @@ import { WriteReviewRouter } from './WriteReviewRouter.ts'
 export const nonEffectRouter: Effect.Effect<
   HttpServerResponse.HttpServerResponse,
   HttpServerError.RouteNotFound | HttpServerError.RequestError,
-  | HttpServerRequest.HttpServerRequest
   | Locale
-  | TemplatePage
-  | OrcidOauth
-  | PublicUrl
   | FeatureFlags.FeatureFlags
   | CommentsForReview
   | FetchHttpClient.Fetch
@@ -207,13 +203,17 @@ export interface Env {
     | CommunitySlack.CommunitySlack
     | GenerateUuid
     | HttpClient.HttpClient
+    | HttpServerRequest.HttpServerRequest
     | LanguageDetection.LanguageDetection
     | OpenAlexWorks.OpenAlexWorks
+    | OrcidOauth
     | Personas.Personas
     | PreprintReviews.PreprintReviews
     | Preprints.Preprints
     | Prereviewers.Prereviewers
     | Prereviews.Prereviews
+    | PublicUrl
+    | TemplatePage
     | ReviewRequests.ReviewRequests
     | ReviewRequests.ReviewRequestCommands
     | ReviewRequests.ReviewRequestQueries
@@ -248,8 +248,6 @@ export interface Env {
   zenodoApiConfig: typeof Zenodo.ZenodoApi.Service
   fetch: typeof globalThis.fetch
 }
-
-const PaltW: <B>(that: () => P.Parser<B>) => <A>(fa: P.Parser<A>) => P.Parser<A | B> = P.alt as never
 
 const routerWithoutHyperTs = pipe(
   [
@@ -418,5 +416,5 @@ const routerWithoutHyperTs = pipe(
   ],
   concatAll(P.getParserMonoid()),
   P.map(handler => flow(FptsToEffect.taskK(handler), Effect.andThen(Response.toHttpServerResponse))),
-  PaltW(() => DataRouter),
+  P.alt(() => DataRouter),
 ) satisfies P.Parser<(env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, unknown>>
