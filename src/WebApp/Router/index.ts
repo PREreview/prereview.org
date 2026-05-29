@@ -1,11 +1,9 @@
 import { type HttpMethod, HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from '@effect/platform'
-import { Cause, Effect, flow, identity, Match, Option, pipe, Record, Struct } from 'effect'
+import { Cause, Effect, flow, Match, pipe, Record, Struct } from 'effect'
 import { AllowSiteCrawlers } from '../../Context.ts'
 import * as FeatureFlags from '../../FeatureFlags.ts'
 import * as HttpMiddleware from '../../HttpMiddleware/index.ts'
-import { DataStoreRedis } from '../../Redis.ts'
 import * as Routes from '../../routes.ts'
-import * as StatusCodes from '../../StatusCodes.ts'
 import { AboutUsPage } from '../AboutUsPage/index.ts'
 import * as AuthorInviteFlow from '../AuthorInviteFlow/index.ts'
 import { ChampionsProgramPage } from '../ChampionsProgramPage/index.ts'
@@ -18,6 +16,7 @@ import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { EdiaStatementPage } from '../EdiaStatementPage.ts'
 import { FundingPage } from '../FundingPage.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { HealthCheck } from '../HealthCheck.ts'
 import { HomePage } from '../HomePage/index.ts'
 import { HowToUsePage } from '../HowToUsePage.ts'
 import { Inbox } from '../Inbox/index.ts'
@@ -563,38 +562,7 @@ export const Router = pipe(
   ),
   HttpRouter.concat(DataRouter),
   HttpRouter.post(Routes.Inbox, Inbox),
-  HttpRouter.get(
-    '/health',
-    Effect.gen(function* () {
-      const maybeRedis = yield* Effect.serviceOption(DataStoreRedis)
-
-      if (Option.isNone(maybeRedis)) {
-        return yield* HttpServerResponse.json({ status: 'ok' })
-      }
-
-      const redis = maybeRedis.value
-
-      if (redis.status !== 'ready') {
-        return yield* Effect.fail(new Error(`Redis not ready (${redis.status})`))
-      }
-
-      yield* Effect.tryPromise({ try: () => redis.ping(), catch: identity })
-
-      return yield* HttpServerResponse.json({ status: 'ok' })
-    }).pipe(
-      Effect.catchAll(error =>
-        Effect.gen(function* () {
-          const asError = error instanceof Error ? error : new Error(String(error))
-          yield* Effect.logError('healthcheck failed').pipe(
-            Effect.annotateLogs({ message: asError.message, name: asError.name }),
-          )
-
-          return yield* HttpServerResponse.json({ status: 'error' }, { status: StatusCodes.ServiceUnavailable })
-        }),
-      ),
-      HttpMiddleware.withLoggerDisabled,
-    ),
-  ),
+  HttpRouter.get('/health', HealthCheck),
   HttpRouter.get(
     '/robots.txt',
     Effect.if(AllowSiteCrawlers, {
