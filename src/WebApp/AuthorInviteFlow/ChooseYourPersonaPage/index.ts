@@ -1,6 +1,6 @@
 import type { UrlParams } from '@effect/platform'
 import { Effect, Match } from 'effect'
-import type { AuthorInvites } from '../../../AuthorInvites/index.ts'
+import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Personas from '../../../Personas/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
@@ -39,7 +39,18 @@ export const ChooseYourPersonaSubmission = ({
     const form = yield* ChooseYourPersonaForm.fromBody(body)
 
     return yield* Match.valueTags(form, {
-      CompletedForm: () => HavingProblemsPage,
+      CompletedForm: Effect.fnUntraced(
+        function* (form: ChooseYourPersonaForm.CompletedForm) {
+          const authorInvites = yield* AuthorInvites
+          yield* authorInvites.choosePersona({ invitationId, orcidId: user.orcid, persona: form.chooseYourPersona })
+
+          return yield* HavingProblemsPage
+        },
+        Effect.catchTags({
+          InvitationNotFound: () => HavingProblemsPage,
+          UnableToHandleCommand: () => HavingProblemsPage,
+        }),
+      ),
       InvalidForm: Effect.fnUntraced(
         function* (form: ChooseYourPersonaForm.InvalidForm) {
           const publicPersona = yield* Personas.getPublicPersona(user.orcid)
