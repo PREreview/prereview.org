@@ -74,15 +74,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     )
   })
 
-export const GetListOfInvitationsToAppearOnADatasetReview: Queries.OnDemandQuery<
-  | 'DatasetReviewWasStarted'
-  | 'AnsweredIfOthersNeedToBeListedOnTheReview'
-  | 'InvitationToAppearOnADatasetReviewAddedToTheList'
-  | 'InvitationToAppearOnADatasetReviewRemovedFromTheList',
-  [Input],
-  Either.Either.Right<Result>,
-  Either.Either.Left<Result>
-> = Queries.OnDemandQuery({
+export const GetListOfInvitationsToAppearOnADatasetReview = Queries.OnDemandQuery({
   name: 'DatasetReviewQueries.getListOfInvitationsToAppearOnADatasetReview',
   createFilter,
   query,

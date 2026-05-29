@@ -68,7 +68,7 @@ const query = (state: State, pseudonym: Input): Result =>
     Option.getOrElse(() => new PseudonymNotInUse()),
   )
 
-export const IsPseudonymInUse: Queries.StatefulQuery<State, [Input], Result> = Queries.StatefulQuery({
+export const IsPseudonymInUse = Queries.StatefulQuery({
   name: 'Prereviewers.isPseudonymInUse',
   initialState,
   updateStateWithEvents,
