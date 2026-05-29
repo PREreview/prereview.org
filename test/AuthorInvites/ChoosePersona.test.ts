@@ -16,7 +16,7 @@ const inputWithDifferentPersona = {
   persona: 'pseudonym',
 } satisfies _.Input
 
-const inputWithDifferntInvitationId = {
+const inputWithDifferentInvitationId = {
   ...input,
   invitationId: Uuid('17914f94-6e6c-4f9c-88eb-860522596169'),
 } satisfies _.Input
@@ -48,7 +48,7 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
   [
     'no matching invitation id',
     [authorAdded, inviteAccepted],
-    inputWithDifferntInvitationId,
+    inputWithDifferentInvitationId,
     Either.left(new _.InvitationNotFound()),
   ],
   [
