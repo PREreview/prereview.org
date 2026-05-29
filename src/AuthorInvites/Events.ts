@@ -6,3 +6,9 @@ export class AuthorInviteAccepted extends Schema.TaggedClass<AuthorInviteAccepte
   orcidId: OrcidId.OrcidIdSchema,
   acceptedAt: Temporal.InstantSchema,
 }) {}
+
+export class PersonaForAReviewChosen extends Schema.TaggedClass<PersonaForAReviewChosen>()('PersonaForAReviewChosen', {
+  reviewId: Uuid.UuidSchema,
+  orcidId: OrcidId.OrcidIdSchema,
+  persona: Schema.Literal('public', 'pseudonym'),
+}) {}

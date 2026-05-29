@@ -48,6 +48,7 @@ export const ChooseYourPersonaSubmission = ({
         },
         Effect.catchTags({
           InvitationNotFound: () => HavingProblemsPage,
+          InvitationNotAccepted: () => HavingProblemsPage,
           UnableToHandleCommand: () => HavingProblemsPage,
         }),
       ),

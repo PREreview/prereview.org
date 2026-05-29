@@ -33,6 +33,7 @@ export type Event = typeof Event.Type
 
 export const Event = Schema.Union(
   AuthorInviteEvents.AuthorInviteAccepted,
+  AuthorInviteEvents.PersonaForAReviewChosen,
   ...CommentEvents.CommentEvent.members,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,

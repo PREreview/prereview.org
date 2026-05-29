@@ -9,7 +9,9 @@ export interface Input {
 
 export class InvitationNotFound extends Data.TaggedError('InvitationNotFound') {}
 
-export type Error = InvitationNotFound
+export class InvitationNotAccepted extends Data.TaggedError('InvitationNotAccepted') {}
+
+export type Error = InvitationNotFound | InvitationNotAccepted
 
 type State = unknown
 
