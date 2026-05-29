@@ -5,6 +5,7 @@ import { Datasets } from '../../../Datasets/index.ts'
 import * as Personas from '../../../Personas/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
 import type { Response } from '../../Response/index.ts'
 import { renderStartNowPage, type ViewModel } from './StartNowPage.ts'
 
@@ -42,6 +43,8 @@ export const StartNowPage = ({
     return renderStartNowPage({ locale, viewModel })
   }).pipe(
     Effect.catchTags({
+      DatasetReviewInvitationNotInList: () => PageNotFound,
+      DatasetReviewHasNotBeenPublished: () => PageNotFound,
       DatasetIsNotFound: () => HavingProblemsPage,
       UnableToGetPersona: () => HavingProblemsPage,
       DatasetIsUnavailable: () => HavingProblemsPage,

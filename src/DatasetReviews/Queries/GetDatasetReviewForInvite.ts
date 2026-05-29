@@ -2,6 +2,7 @@ import type { Either } from 'effect'
 import type { DatasetId } from '../../Datasets/index.ts'
 import type * as Queries from '../../Queries.ts'
 import type { Doi, OrcidId, Temporal, Uuid } from '../../types/index.ts'
+import type * as Errors from '../Errors.ts'
 
 export type Input = Uuid.Uuid
 
@@ -21,8 +22,16 @@ export interface DatasetReviewForInvite {
   dataset: DatasetId
 }
 
-export type Result = Either.Either<DatasetReviewForInvite>
+export type Result = Either.Either<
+  DatasetReviewForInvite,
+  Errors.DatasetReviewInvitationNotInList | Errors.DatasetReviewHasNotBeenPublished
+>
 
 type State = unknown
 
-export declare const GetDatasetReviewForInvite: Queries.StatefulQuery<State, [Input], Either.Either.Right<Result>>
+export declare const GetDatasetReviewForInvite: Queries.StatefulQuery<
+  State,
+  [Input],
+  Either.Either.Right<Result>,
+  Either.Either.Left<Result>
+>
