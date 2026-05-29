@@ -4,6 +4,7 @@ import { Array, Either, identity, Option, Predicate, Tuple } from 'effect'
 import * as DatasetReviews from '../../../src/DatasetReviews/index.ts'
 import * as _ from '../../../src/DatasetReviews/Queries/GetPublishedReview.ts'
 import * as Datasets from '../../../src/Datasets/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import { Doi, EmailAddress, NonEmptyString, OrcidId, Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
@@ -214,11 +215,11 @@ describe('GetPublishedReview', () => {
         [
           fc
             .tuple(
-              fc.datasetReviewWasStarted(),
-              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
-              fc.personaForDatasetReviewWasChosen(),
-              fc.datasetReviewWasAssignedADoi(),
-              fc.datasetReviewWasPublished(),
+              fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.personaForDatasetReviewWasChosen({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.datasetReviewWasAssignedADoi({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
             )
             .map(events =>
               Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReview]>(events, {
@@ -249,7 +250,9 @@ describe('GetPublishedReview', () => {
             ),
         ],
         ([[events, expected]]) => {
-          const actual = _.GetPublishedReview(events)
+          const { query } = _.GetPublishedReview
+
+          const actual = query(events, datasetReviewId)
 
           expect(actual).toStrictEqual(Either.right(expected))
         },
@@ -600,16 +603,18 @@ describe('GetPublishedReview', () => {
         [
           fc
             .tuple(
-              fc.datasetReviewWasStarted(),
-              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples(),
-              fc.datasetReviewWasPublished(),
+              fc.datasetReviewWasStarted({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({ datasetReviewId: fc.constant(datasetReviewId) }),
+              fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
             )
             .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
         ],
         ([events]) => {
-          const actual = _.GetPublishedReview(events)
+          const { query } = _.GetPublishedReview
 
-          expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+          const actual = query(events, datasetReviewId)
+
+          expect(actual).toStrictEqual(Either.left(new Queries.UnexpectedSequenceOfEvents({})))
         },
         {
           fastCheck: {
@@ -634,11 +639,17 @@ describe('GetPublishedReview', () => {
       'returns an error',
       [
         fc
-          .nonEmptyArray(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasPublished'))))
+          .nonEmptyArray(
+            fc
+              .datasetReviewEvent({ datasetReviewId: fc.constant(datasetReviewId) })
+              .filter(Predicate.not(Predicate.isTagged('DatasetReviewWasPublished'))),
+          )
           .filter(Array.some(Predicate.isTagged('DatasetReviewWasStarted'))),
       ],
       ([events]) => {
-        const actual = _.GetPublishedReview(events)
+        const { query } = _.GetPublishedReview
+
+        const actual = query(events, datasetReviewId)
 
         expect(actual).toStrictEqual(Either.left(new DatasetReviews.DatasetReviewHasNotBeenPublished({})))
       },
@@ -659,9 +670,11 @@ describe('GetPublishedReview', () => {
       'returns an error',
       [fc.array(fc.datasetReviewEvent().filter(Predicate.not(Predicate.isTagged('DatasetReviewWasStarted'))))],
       ([events]) => {
-        const actual = _.GetPublishedReview(events)
+        const { query } = _.GetPublishedReview
 
-        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnexpectedSequenceOfEvents({})))
+        const actual = query(events, datasetReviewId)
+
+        expect(actual).toStrictEqual(Either.left(new DatasetReviews.UnknownDatasetReview({})))
       },
       {
         fastCheck: {

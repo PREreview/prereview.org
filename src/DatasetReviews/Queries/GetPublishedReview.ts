@@ -1,9 +1,10 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Either, HashSet, Option, Struct, type Types } from 'effect'
 import type * as Datasets from '../../Datasets/index.ts'
+import * as Events from '../../Events.ts'
+import * as Queries from '../../Queries.ts'
 import type { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
 import * as Errors from '../Errors.ts'
-import type * as Events from '../Events.ts'
 
 export interface PublishedReview {
   author: { orcidId: OrcidId.OrcidId; persona: 'public' | 'pseudonym' }
@@ -63,14 +64,31 @@ export interface PublishedReview {
   published: Temporal.PlainDate
 }
 
-export const GetPublishedReview = (
-  events: ReadonlyArray<Events.DatasetReviewEvent>,
-): Either.Either<PublishedReview, Errors.DatasetReviewHasNotBeenPublished | Errors.UnexpectedSequenceOfEvents> => {
-  if (!hasEvent(events, 'DatasetReviewWasStarted')) {
-    return Either.left(new Errors.UnexpectedSequenceOfEvents({ cause: 'No DatasetReviewWasStarted event found' }))
+export type Input = Uuid.Uuid
+
+export type Error =
+  | Errors.DatasetReviewHasNotBeenPublished
+  | Errors.UnknownDatasetReview
+  | Queries.UnexpectedSequenceOfEvents
+
+export type Result = Either.Either<PublishedReview, Error>
+
+export const createFilter = (datasetReviewId: Input) =>
+  Events.EventFilter({
+    types: Events.DatasetReviewEventTypes,
+    predicates: { datasetReviewId },
+  })
+
+const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
+  const filter = createFilter(input)
+
+  const filteredEvents = Array.filter(events, Events.matches(filter))
+
+  if (!hasEvent(filteredEvents, 'DatasetReviewWasStarted')) {
+    return Either.left(new Errors.UnknownDatasetReview({ cause: 'No DatasetReviewWasStarted event found' }))
   }
 
-  if (!hasEvent(events, 'DatasetReviewWasPublished')) {
+  if (!hasEvent(filteredEvents, 'DatasetReviewWasPublished')) {
     return Either.left(
       new Errors.DatasetReviewHasNotBeenPublished({ cause: 'No DatasetReviewWasPublished event found' }),
     )
@@ -78,95 +96,104 @@ export const GetPublishedReview = (
 
   const data = Option.all({
     answerToIfTheDatasetFollowsFairAndCarePrinciples: Array.findLast(
-      events,
+      filteredEvents,
       hasTag('AnsweredIfTheDatasetFollowsFairAndCarePrinciples'),
     ),
-    datasetReviewWasAssignedADoi: Array.findLast(events, hasTag('DatasetReviewWasAssignedADoi')),
-    datasetReviewWasPublished: Array.findLast(events, hasTag('DatasetReviewWasPublished')),
-    datasetReviewWasStarted: Array.findLast(events, hasTag('DatasetReviewWasStarted')),
+    datasetReviewWasAssignedADoi: Array.findLast(filteredEvents, hasTag('DatasetReviewWasAssignedADoi')),
+    datasetReviewWasPublished: Array.findLast(filteredEvents, hasTag('DatasetReviewWasPublished')),
+    datasetReviewWasStarted: Array.findLast(filteredEvents, hasTag('DatasetReviewWasStarted')),
   })
 
-  const author = Array.findLast(events, hasTag('PersonaForDatasetReviewWasChosen'))
+  const author = Array.findLast(filteredEvents, hasTag('PersonaForDatasetReviewWasChosen'))
 
-  const ratedTheQualityOfTheDataset = Array.findLast(events, hasTag('RatedTheQualityOfTheDataset'))
+  const ratedTheQualityOfTheDataset = Array.findLast(filteredEvents, hasTag('RatedTheQualityOfTheDataset'))
 
-  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(events, hasTag('AnsweredIfTheDatasetHasEnoughMetadata'))
+  const answerToIfTheDatasetHasEnoughMetadata = Array.findLast(
+    filteredEvents,
+    hasTag('AnsweredIfTheDatasetHasEnoughMetadata'),
+  )
 
   const answerToIfTheDatasetHasTrackedChanges = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasTrackedChanges')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetHasDataCensoredOrDeleted = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetHasDataCensoredOrDeleted')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsAppropriateForThisKindOfResearch = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetSupportsRelatedConclusions = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetSupportsRelatedConclusions')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsDetailedEnough = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsDetailedEnough')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsDetailedEnough')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsErrorFree = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsErrorFree')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsErrorFree')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetMattersToItsAudience = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetMattersToItsAudience')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetMattersToItsAudience')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsReadyToBeShared = Option.map(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsReadyToBeShared')),
     Struct.pick('answer', 'detail'),
   )
 
   const answerToIfTheDatasetIsMissingAnything = Option.andThen(
-    Array.findLast(events, hasTag('AnsweredIfTheDatasetIsMissingAnything')),
+    Array.findLast(filteredEvents, hasTag('AnsweredIfTheDatasetIsMissingAnything')),
     Struct.get('answer'),
   )
 
   const competingInterests = Option.andThen(
-    Array.findLast(events, hasTag('CompetingInterestsForADatasetReviewWereDeclared')),
+    Array.findLast(filteredEvents, hasTag('CompetingInterestsForADatasetReviewWereDeclared')),
     Struct.get('competingInterests'),
   )
 
-  const anonymousAuthors = Option.match(Array.findLast(events, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')), {
-    onNone: () => undefined,
-    onSome: ({ answer }) => {
-      if (answer === 'no') {
-        return 0
-      }
+  const anonymousAuthors = Option.match(
+    Array.findLast(filteredEvents, hasTag('AnsweredIfOthersNeedToBeListedOnTheReview')),
+    {
+      onNone: () => undefined,
+      onSome: ({ answer }) => {
+        if (answer === 'no') {
+          return 0
+        }
 
-      const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
+        const addedInvitations = Array.filter(
+          filteredEvents,
+          hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'),
+        )
 
-      const removedInvitations = HashSet.fromIterable(
-        Array.filterMap(events, event =>
-          event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
-            ? Option.some(event.invitationId)
-            : Option.none(),
-        ),
-      )
+        const removedInvitations = HashSet.fromIterable(
+          Array.filterMap(filteredEvents, event =>
+            event._tag === 'InvitationToAppearOnADatasetReviewRemovedFromTheList'
+              ? Option.some(event.invitationId)
+              : Option.none(),
+          ),
+        )
 
-      return Array.length(
-        Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
-      )
+        return Array.length(
+          Array.filter(addedInvitations, invitation => !HashSet.has(removedInvitations, invitation.invitationId)),
+        )
+      },
     },
-  })
+  )
 
   return Option.match(data, {
-    onNone: () => Either.left(new Errors.UnexpectedSequenceOfEvents({})),
+    onNone: () => Either.left(new Queries.UnexpectedSequenceOfEvents({})),
     onSome: data =>
       Either.right({
         author: {
@@ -204,6 +231,12 @@ export const GetPublishedReview = (
       }),
   })
 }
+
+export const GetPublishedReview = Queries.OnDemandQuery({
+  name: 'DatasetReviewQueries.getPublishedReview',
+  createFilter,
+  query,
+})
 
 function hasEvent(
   events: ReadonlyArray<Events.DatasetReviewEvent>,
