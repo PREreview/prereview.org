@@ -31,6 +31,8 @@ export type FromStatefulQuery<T extends StatefulQuery<ReadonlyArray<any>, any, a
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 
+export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
+
 export interface OnDemandQuery<
   Input extends ReadonlyArray<unknown>,
   Result,
@@ -39,7 +41,10 @@ export interface OnDemandQuery<
 > {
   name: string
   createFilter: (...input: Input) => Events.EventFilter<EventTags>
-  query: (events: ReadonlyArray<Events.Event>, ...input: Input) => Either.Either<Result, Error>
+  query: (
+    events: ReadonlyArray<Events.Event>,
+    ...input: Input
+  ) => Either.Either<Result, Error | UnexpectedSequenceOfEvents>
 }
 
 export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown> {
@@ -93,7 +98,7 @@ export const makeOnDemandQuery = <
           Effect.withSpan('query'),
         )
       },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.catchTag('FailedToGetEvents', 'UnexpectedSequenceOfEvents', cause => new UnableToQuery({ cause })),
     )
   })
 
