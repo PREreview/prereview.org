@@ -48,6 +48,12 @@ const personaChosen = new Events.PersonaForAReviewChosen({
   persona: input.persona,
 })
 
+const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
+  orcidId: input.orcidId,
+  reviewId: input.reviewId,
+  confirmedAt: Temporal.Now.instant(),
+})
+
 test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
   ['no events', [], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
   [
@@ -80,6 +86,18 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     [authorAdded, inviteAccepted, personaChosen],
     inputWithDifferentPersona,
     Either.right(Option.some(new Events.PersonaForAReviewChosen(inputWithDifferentPersona))),
+  ],
+  [
+    'choices confirmed',
+    [authorAdded, inviteAccepted, personaChosen, confirmed],
+    input,
+    Either.left(new _.PersonaCannotBeChanged()),
+  ],
+  [
+    'choices confirmed with a persona',
+    [authorAdded, inviteAccepted, confirmed],
+    input,
+    Either.left(new _.PersonaCannotBeChanged()),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ChoosePersona
