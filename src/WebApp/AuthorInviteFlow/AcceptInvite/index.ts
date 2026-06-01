@@ -22,19 +22,17 @@ export const AcceptInvite = ({
 
     yield* authorInvites.acceptInvite({ invitationId, orcidId: user.orcid, acceptedAt })
 
-    const nextExpectedCommand = yield* Effect.flatten(
-      authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
-        invitationId,
-        orcidId: user.orcid,
-      }),
-    )
+    const nextExpectedCommand = yield* authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
+      invitationId,
+      orcidId: user.orcid,
+    })
 
     return RedirectResponse({ location: RouteForCommand(nextExpectedCommand).href({ invitationId }) })
   }).pipe(
     Effect.catchTags({
       InvitationNotFound: () => PageNotFound,
       InvitationHasAlreadyBeenAcceptedByAnotherPrereviewer: () => NoPermissionPage,
-      NoSuchElementException: () => HavingProblemsPage,
+      NothingToDo: () => HavingProblemsPage,
       PrereviewerIsNotListedOnTheReview: () => HavingProblemsPage,
       UnableToHandleCommand: () => HavingProblemsPage,
       UnableToQuery: () => HavingProblemsPage,

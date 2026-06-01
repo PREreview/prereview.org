@@ -66,7 +66,7 @@ const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
   ['not accepted an invite', input, [added], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
-  ['accepted an invite', input, [added, accepted], Either.right(Option.some('ChoosePersona'))],
+  ['accepted an invite', input, [added, accepted], Either.right('ChoosePersona')],
   [
     'accepted an invite, different review ID',
     inputDifferentReviewId,
@@ -79,15 +79,15 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     [added, accepted],
     Either.left(new _.PrereviewerIsNotListedOnTheReview()),
   ],
-  ['started the review', input, [started, added, accepted], Either.right(Option.none())],
+  ['started the review', input, [started, added, accepted], Either.left(new _.NothingToDo())],
   [
     'different ORCID iD started the review',
     input,
     [startedDifferentOrcidId, added, accepted],
-    Either.right(Option.some('ChoosePersona')),
+    Either.right('ChoosePersona'),
   ],
-  ['persona chosen', input, [added, accepted, persona], Either.right(Option.some('ConfirmAuthorChoices'))],
-  ['details confirmed', input, [added, accepted, persona, confirmed], Either.right(Option.none())],
+  ['persona chosen', input, [added, accepted, persona], Either.right('ConfirmAuthorChoices')],
+  ['details confirmed', input, [added, accepted, persona, confirmed], Either.left(new _.NothingToDo())],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetNextExpectedCommandForAPrereviewerOnAReview
 

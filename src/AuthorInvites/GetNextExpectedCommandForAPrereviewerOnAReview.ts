@@ -1,4 +1,4 @@
-import { Array, Data, Either, Option, type Types } from 'effect'
+import { Array, Data, Either, type Types } from 'effect'
 import * as Events from '../Events.ts'
 import * as Queries from '../Queries.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
@@ -9,11 +9,13 @@ export interface Input {
   readonly orcidId: OrcidId
 }
 
-export type Result = Either.Either<Option.Option<NextExpectedCommand>, Error>
+export type Result = Either.Either<NextExpectedCommand, Error>
 
 export type NextExpectedCommand = 'ChoosePersona' | 'ConfirmAuthorChoices'
 
-export type Error = PrereviewerIsNotListedOnTheReview
+export type Error = PrereviewerIsNotListedOnTheReview | NothingToDo
+
+export class NothingToDo extends Data.TaggedError('NothingToDo') {}
 
 export class PrereviewerIsNotListedOnTheReview extends Data.TaggedError('PrereviewerIsNotListedOnTheReview') {}
 
@@ -40,18 +42,18 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     }
 
     if (Array.some(filteredEvents, hasTag('DatasetReviewWasStarted'))) {
-      return Option.none()
+      return yield* Either.left(new NothingToDo())
     }
 
     if (Array.some(filteredEvents, hasTag('AuthorChoicesForAReviewConfirmed'))) {
-      return Option.none()
+      return yield* Either.left(new NothingToDo())
     }
 
     if (!Array.some(filteredEvents, hasTag('PersonaForAReviewChosen'))) {
-      return Option.some('ChoosePersona')
+      return 'ChoosePersona'
     }
 
-    return Option.some('ConfirmAuthorChoices')
+    return 'ConfirmAuthorChoices'
   })
 
 export const GetNextExpectedCommandForAPrereviewerOnAReview = Queries.OnDemandQuery({
