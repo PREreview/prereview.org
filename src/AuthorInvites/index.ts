@@ -18,17 +18,27 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
         invitationId: Uuid
       },
     ) => ReturnType<Commands.FromCommand<typeof ChoosePersona>>
-    getNextExpectedCommandForAPrereviewerOnAReview: Queries.FromOnDemandQuery<
-      typeof GetNextExpectedCommandForAPrereviewerOnAReview
-    >
+    getNextExpectedCommandForAPrereviewerOnAReview: (
+      args: Omit<
+        Parameters<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>[0],
+        'reviewId'
+      > & {
+        invitationId: Uuid
+      },
+    ) => ReturnType<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>
   }
 >() {}
+
+export type { NextExpectedCommand } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 
 export const layer = Layer.effect(
   AuthorInvites,
   Effect.gen(function* () {
     const acceptInvite = yield* Commands.makeCommand(AcceptInvite)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
+    const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
+      GetNextExpectedCommandForAPrereviewerOnAReview,
+    )
 
     return {
       acceptInvite: flow(
@@ -38,8 +48,11 @@ export const layer = Layer.effect(
         Effect.catchTag('UnableToQuery', error => new Commands.UnableToHandleCommand({ cause: error })),
       ),
       choosePersona: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
-      getNextExpectedCommandForAPrereviewerOnAReview: yield* Queries.makeOnDemandQuery(
-        GetNextExpectedCommandForAPrereviewerOnAReview,
+      getNextExpectedCommandForAPrereviewerOnAReview: flow(
+        Effect.succeed,
+        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
+        Effect.andThen(getNextExpectedCommandForAPrereviewerOnAReview),
+        Effect.catchTag('InvitationNotFound', error => new Queries.UnableToQuery({ cause: error })),
       ),
     }
   }),
