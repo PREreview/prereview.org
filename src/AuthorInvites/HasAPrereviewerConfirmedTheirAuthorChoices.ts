@@ -10,11 +10,9 @@ export interface Input {
 
 export type Result = Either.Either<boolean, Error>
 
-export type Error = PrereviewerIsNotListedOnTheReview | ChoicesHaveNotBeenConfirmed
+export type Error = PrereviewerIsNotListedOnTheReview
 
 export class PrereviewerIsNotListedOnTheReview extends Data.TaggedError('PrereviewerIsNotListedOnTheReview') {}
-
-export class ChoicesHaveNotBeenConfirmed extends Data.TaggedError('ChoicesHaveNotBeenConfirmed') {}
 
 export declare const HasAPrereviewerConfirmedTheirAuthorChoices: Queries.OnDemandQuery<
   [Input],
