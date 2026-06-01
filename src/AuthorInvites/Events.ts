@@ -12,3 +12,5 @@ export class PersonaForAReviewChosen extends Schema.TaggedClass<PersonaForARevie
   orcidId: OrcidId.OrcidIdSchema,
   persona: Schema.Literal('public', 'pseudonym'),
 }) {}
+
+export const AuthorInviteEvent = Schema.Union(AuthorInviteAccepted, PersonaForAReviewChosen)

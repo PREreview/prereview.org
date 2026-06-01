@@ -32,8 +32,7 @@ export * from './ReviewRequests/Events.ts' // eslint-disable-line import/no-inte
 export type Event = typeof Event.Type
 
 export const Event = Schema.Union(
-  AuthorInviteEvents.AuthorInviteAccepted,
-  AuthorInviteEvents.PersonaForAReviewChosen,
+  ...AuthorInviteEvents.AuthorInviteEvent.members,
   ...CommentEvents.CommentEvent.members,
   ...DatasetReviewEvents.DatasetReviewEvent.members,
   ...ReviewRequestsEvents.ReviewRequestEvent.members,
