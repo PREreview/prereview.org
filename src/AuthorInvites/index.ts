@@ -4,7 +4,7 @@ import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import { ChoosePersona, PersonaDoesNotNeedToBeChosen } from './ChoosePersona.ts'
-import type { ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
+import { ChoicesDoNotNeedToBeConfirmed, ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 
@@ -42,6 +42,7 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const acceptInvite = yield* Commands.makeCommand(AcceptInvite)
     const choosePersona = yield* Commands.makeCommand(ChoosePersona)
+    const confirmAuthorChoices = yield* Commands.makeCommand(ConfirmAuthorChoices)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
     const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAPrereviewerOnAReview,
@@ -63,7 +64,15 @@ export const layer = Layer.effect(
           UnableToQuery: error => new Commands.UnableToHandleCommand({ cause: error }),
         }),
       ),
-      confirmAuthorChoices: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      confirmAuthorChoices: flow(
+        Effect.succeed,
+        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
+        Effect.andThen(confirmAuthorChoices),
+        Effect.catchTags({
+          InvitationNotFound: () => new ChoicesDoNotNeedToBeConfirmed(),
+          UnableToQuery: error => new Commands.UnableToHandleCommand({ cause: error }),
+        }),
+      ),
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
