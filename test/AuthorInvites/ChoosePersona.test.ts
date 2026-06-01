@@ -7,8 +7,19 @@ import { OrcidId } from '../../src/types/OrcidId.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
 
 const input = {
-  invitationId: Uuid('4ecba4c3-f0f7-4631-8011-58e7a0a62e6a'),
+  reviewId: Uuid('4ecba4c3-f0f7-4631-8011-58e7a0a62e6a'),
+  orcidId: OrcidId('0000-0002-1825-0097'),
   persona: 'public',
+} satisfies _.Input
+
+const inputWithDifferentReviewId = {
+  ...input,
+  reviewId: Uuid('17914f94-6e6c-4f9c-88eb-860522596169'),
+} satisfies _.Input
+
+const inputWithDifferentOrcidId = {
+  ...input,
+  orcidId: OrcidId('0000-0002-6109-0367'),
 } satisfies _.Input
 
 const inputWithDifferentPersona = {
@@ -16,49 +27,48 @@ const inputWithDifferentPersona = {
   persona: 'pseudonym',
 } satisfies _.Input
 
-const inputWithDifferentInvitationId = {
-  ...input,
-  invitationId: Uuid('17914f94-6e6c-4f9c-88eb-860522596169'),
-} satisfies _.Input
-
-const orcidId = OrcidId('0000-0002-1825-0097')
-
-const reviewId = Uuid('aa39be59-6e33-4756-a4c9-109a152a6fc5')
+const invitationId = Uuid('aa39be59-6e33-4756-a4c9-109a152a6fc5')
 
 const authorAdded = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
-  datasetReviewId: reviewId,
-  invitationId: input.invitationId,
+  datasetReviewId: input.reviewId,
+  invitationId,
   contactDetails: Option.none(),
 })
 
 const inviteAccepted = new Events.AuthorInviteAccepted({
-  invitationId: input.invitationId,
-  reviewId,
-  orcidId,
+  invitationId,
+  reviewId: input.reviewId,
+  orcidId: input.orcidId,
   acceptedAt: Temporal.Now.instant(),
 })
 
 const personaChosen = new Events.PersonaForAReviewChosen({
-  orcidId,
-  reviewId,
+  orcidId: input.orcidId,
+  reviewId: input.reviewId,
   persona: input.persona,
 })
 
 test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Option.Option<Events.Event>, _.Error>]>([
-  ['no events', [], input, Either.left(new _.InvitationNotFound())],
+  ['no events', [], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
   [
-    'no matching invitation id',
+    'no matching review id',
     [authorAdded, inviteAccepted],
-    inputWithDifferentInvitationId,
-    Either.left(new _.InvitationNotFound()),
+    inputWithDifferentReviewId,
+    Either.left(new _.PersonaDoesNotNeedToBeChosen()),
+  ],
+  [
+    'no matching ORCID iD',
+    [authorAdded, inviteAccepted],
+    inputWithDifferentOrcidId,
+    Either.left(new _.PersonaDoesNotNeedToBeChosen()),
   ],
   [
     'invitation accepted',
     [authorAdded, inviteAccepted],
     input,
-    Either.right(Option.some(new Events.PersonaForAReviewChosen({ reviewId, orcidId, persona: input.persona }))),
+    Either.right(Option.some(new Events.PersonaForAReviewChosen(input))),
   ],
-  ['invitation not accepted', [authorAdded], input, Either.left(new _.InvitationNotAccepted())],
+  ['invitation not accepted', [authorAdded], input, Either.left(new _.PersonaDoesNotNeedToBeChosen())],
   [
     'persona already chosen with same value',
     [authorAdded, inviteAccepted, personaChosen],
@@ -69,11 +79,7 @@ test.fails.each<[string, ReadonlyArray<Events.Event>, _.Input, Either.Either<Opt
     'persona already chosen with different value',
     [authorAdded, inviteAccepted, personaChosen],
     inputWithDifferentPersona,
-    Either.right(
-      Option.some(
-        new Events.PersonaForAReviewChosen({ reviewId, orcidId, persona: inputWithDifferentPersona.persona }),
-      ),
-    ),
+    Either.right(Option.some(new Events.PersonaForAReviewChosen(inputWithDifferentPersona))),
   ],
 ])('%s', (_name, events, input, expected) => {
   const { foldState, decide } = _.ChoosePersona

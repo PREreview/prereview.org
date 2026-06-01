@@ -1,6 +1,7 @@
 import { Context, Effect, flow, Layer } from 'effect'
 import * as Commands from '../Commands.ts'
 import * as Queries from '../Queries.ts'
+import type { Uuid } from '../types/Uuid.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import type { ChoosePersona } from './ChoosePersona.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
@@ -12,7 +13,11 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
     acceptInvite: (
       args: Omit<Parameters<Commands.FromCommand<typeof AcceptInvite>>[0], 'reviewId'>,
     ) => ReturnType<Commands.FromCommand<typeof AcceptInvite>>
-    choosePersona: Commands.FromCommand<typeof ChoosePersona>
+    choosePersona: (
+      args: Omit<Parameters<Commands.FromCommand<typeof ChoosePersona>>[0], 'reviewId' | 'orcidId'> & {
+        invitationId: Uuid
+      },
+    ) => ReturnType<Commands.FromCommand<typeof ChoosePersona>>
     getNextExpectedCommandForAPrereviewerOnAReview: Queries.FromOnDemandQuery<
       typeof GetNextExpectedCommandForAPrereviewerOnAReview
     >

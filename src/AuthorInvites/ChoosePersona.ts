@@ -1,17 +1,19 @@
 import { Data } from 'effect'
 import type * as Commands from '../Commands.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
 import type { Uuid } from '../types/Uuid.ts'
 
 export interface Input {
-  readonly invitationId: Uuid
+  readonly reviewId: Uuid
+  readonly orcidId: OrcidId
   readonly persona: 'public' | 'pseudonym'
 }
 
-export class InvitationNotFound extends Data.TaggedError('InvitationNotFound') {}
+export class PersonaDoesNotNeedToBeChosen extends Data.TaggedError('PersonaDoesNotNeedToBeChosen') {}
 
-export class InvitationNotAccepted extends Data.TaggedError('InvitationNotAccepted') {}
+export class PersonaCannotBeChanged extends Data.TaggedError('PersonaCannotBeChanged') {}
 
-export type Error = InvitationNotFound | InvitationNotAccepted
+export type Error = PersonaDoesNotNeedToBeChosen | PersonaCannotBeChanged
 
 type State = unknown
 
