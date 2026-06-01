@@ -360,6 +360,7 @@ const AuthorInviteFlowRouter = HttpRouter.fromIterable([
   ),
   MakeRoute('GET', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesPage),
   MakeRoute('POST', Routes.AuthorInviteConfirmAuthorChoices, AuthorInviteFlow.ConfirmAuthorChoicesSubmission),
+  MakeRoute('GET', Routes.AuthorInvitePublished, AuthorInviteFlow.PublishedPage),
 ]).pipe(
   HttpRouter.use(HttpMiddleware.ensureUserIsOneThatAcceptedTheInvite),
   HttpRouter.append(MakeRoute('GET', Routes.AuthorInviteAcceptInvite, AuthorInviteFlow.AcceptInvite)),

@@ -26,7 +26,8 @@ export const ConfirmAuthorChoicesPage = ({
     return renderConfirmAuthorChoicesPage({ invitationId, persona })
   }).pipe(
     Effect.catchTags({
-      ChoicesHaveBeenConfirmed: () => HavingProblemsPage,
+      ChoicesHaveBeenConfirmed: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
       PersonaHasNotBeenChosen: () =>
         Effect.succeed(RedirectResponse({ location: Routes.AuthorInviteChooseYourPersona.href({ invitationId }) })),
       PrereviewerIsNotListedOnTheReview: () => PageNotFound,
