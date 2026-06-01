@@ -69,7 +69,7 @@ const confirmed = new Events.AuthorChoicesForAReviewConfirmed({
   confirmedAt: Temporal.Now.instant(),
 })
 
-test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
   ['not accepted an invite', input, [added], Either.left(new _.PrereviewerIsNotListedOnTheReview())],
   ['accepted an invite', input, [added, accepted], Either.right(Option.none())],

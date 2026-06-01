@@ -7,7 +7,7 @@ import { ChoosePersona, PersonaDoesNotNeedToBeChosen } from './ChoosePersona.ts'
 import { ChoicesDoNotNeedToBeConfirmed, ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
 import { GetAuthorChoicesToConfirm, PrereviewerIsNotListedOnTheReview } from './GetAuthorChoicesToConfirm.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
-import type { GetPersonaChoice } from './GetPersonaChoice.ts'
+import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 
 export class AuthorInvites extends Context.Tag('AuthorInvites')<
@@ -56,6 +56,7 @@ export const layer = Layer.effect(
     const choosePersona = yield* Commands.makeCommand(ChoosePersona)
     const confirmAuthorChoices = yield* Commands.makeCommand(ConfirmAuthorChoices)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
+    const getPersonaChoice = yield* Queries.makeOnDemandQuery(GetPersonaChoice)
     const getAuthorChoicesToConfirm = yield* Queries.makeOnDemandQuery(GetAuthorChoicesToConfirm)
     const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAPrereviewerOnAReview,
@@ -86,7 +87,12 @@ export const layer = Layer.effect(
           UnableToQuery: error => new Commands.UnableToHandleCommand({ cause: error }),
         }),
       ),
-      getPersonaChoice: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      getPersonaChoice: flow(
+        Effect.succeed,
+        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
+        Effect.andThen(getPersonaChoice),
+        Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
+      ),
       getAuthorChoicesToConfirm: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
