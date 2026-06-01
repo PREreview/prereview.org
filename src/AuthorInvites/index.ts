@@ -5,6 +5,7 @@ import type { Uuid } from '../types/Uuid.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import { ChoosePersona, PersonaDoesNotNeedToBeChosen } from './ChoosePersona.ts'
 import { ChoicesDoNotNeedToBeConfirmed, ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
+import type { GetAuthorChoicesToConfirm } from './GetAuthorChoicesToConfirm.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 
@@ -24,6 +25,11 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
         invitationId: Uuid
       },
     ) => ReturnType<Commands.FromCommand<typeof ConfirmAuthorChoices>>
+    getAuthorChoicesToConfirm: (
+      args: Omit<Parameters<Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>>[0], 'reviewId'> & {
+        invitationId: Uuid
+      },
+    ) => ReturnType<Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>>
     getNextExpectedCommandForAPrereviewerOnAReview: (
       args: Omit<
         Parameters<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>[0],
@@ -73,6 +79,7 @@ export const layer = Layer.effect(
           UnableToQuery: error => new Commands.UnableToHandleCommand({ cause: error }),
         }),
       ),
+      getAuthorChoicesToConfirm: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
