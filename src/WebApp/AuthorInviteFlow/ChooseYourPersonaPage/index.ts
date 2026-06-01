@@ -3,9 +3,11 @@ import { Effect, Match } from 'effect'
 import { AuthorInvites } from '../../../AuthorInvites/index.ts'
 import { Locale } from '../../../Context.ts'
 import * as Personas from '../../../Personas/index.ts'
+import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
+import { PageNotFound } from '../../PageNotFound/index.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
 import { RouteForCommand } from '../RouteForCommand.ts'
 import * as ChooseYourPersonaForm from './ChooseYourPersonaForm.ts'
@@ -15,16 +17,29 @@ export const ChooseYourPersonaPage = ({
   invitationId,
 }: {
   invitationId: Uuid
-}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas> =>
+}): Effect.Effect<Response, never, Locale | LoggedInUser | Personas.Personas | AuthorInvites> =>
   Effect.gen(function* () {
+    const authorInvites = yield* AuthorInvites
     const locale = yield* Locale
     const user = yield* LoggedInUser
-    const form = new ChooseYourPersonaForm.EmptyForm()
+
+    const currentPersona = yield* authorInvites.getPersonaChoice({ invitationId, orcidId: user.orcid })
+
+    const form = ChooseYourPersonaForm.fromPersona(currentPersona)
+
     const publicPersona = yield* Personas.getPublicPersona(user.orcid)
     const pseudonymPersona = yield* Personas.getPseudonymPersona(user.orcid)
 
     return renderChooseYourPersonaPage({ invitationId, form, publicPersona, pseudonymPersona, locale })
-  }).pipe(Effect.catchTags({ UnableToGetPersona: () => HavingProblemsPage }))
+  }).pipe(
+    Effect.catchTags({
+      PersonaCannotBeChanged: () =>
+        Effect.succeed(RedirectResponse({ location: Routes.AuthorInvitePublished.href({ invitationId }) })),
+      PrereviewerIsNotListedOnTheReview: () => PageNotFound,
+      UnableToGetPersona: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
+    }),
+  )
 
 export const ChooseYourPersonaSubmission = ({
   body,
