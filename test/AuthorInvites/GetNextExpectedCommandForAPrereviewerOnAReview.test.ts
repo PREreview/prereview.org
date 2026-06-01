@@ -32,6 +32,12 @@ const started = new Events.DatasetReviewWasStarted({
   datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
 })
 
+const startedDifferentOrcidId = new Events.DatasetReviewWasStarted({
+  datasetReviewId: input.reviewId,
+  authorId: inputDifferentOrcidId.orcidId,
+  datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
+})
+
 const added = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.reviewId,
   invitationId,
@@ -62,6 +68,12 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     Either.left(new _.PrereviewerIsNotListedOnTheReview()),
   ],
   ['started the review', input, [started, added, accepted], Either.right(Option.none())],
+  [
+    'different ORCID iD started the review',
+    input,
+    [startedDifferentOrcidId, added, accepted],
+    Either.right(Option.some('ChoosePersona')),
+  ],
 ])('%s', (_name, input, events, expected) => {
   const { query } = _.GetNextExpectedCommandForAPrereviewerOnAReview
 

@@ -25,7 +25,7 @@ const createFilter = (input: Input) =>
     },
     {
       types: ['DatasetReviewWasStarted'],
-      predicates: { datasetReviewId: input.reviewId, orcidId: input.orcidId },
+      predicates: { datasetReviewId: input.reviewId, authorId: input.orcidId },
     },
   ])
 
