@@ -3,7 +3,7 @@ import * as Commands from '../Commands.ts'
 import * as Queries from '../Queries.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import type { ChoosePersona } from './ChoosePersona.ts'
-import type { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
+import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 
 export class AuthorInvites extends Context.Tag('AuthorInvites')<
@@ -33,7 +33,9 @@ export const layer = Layer.effect(
         Effect.catchTag('UnableToQuery', error => new Commands.UnableToHandleCommand({ cause: error })),
       ),
       choosePersona: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
-      getNextExpectedCommandForAPrereviewerOnAReview: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
+      getNextExpectedCommandForAPrereviewerOnAReview: yield* Queries.makeOnDemandQuery(
+        GetNextExpectedCommandForAPrereviewerOnAReview,
+      ),
     }
   }),
 )
