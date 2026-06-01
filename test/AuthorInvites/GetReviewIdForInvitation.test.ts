@@ -26,5 +26,5 @@ test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
 
   const actual = query(events, input)
 
-  expect(actual).toStrictEqual(Either.right(expected))
+  expect(actual).toStrictEqual(expected)
 })
