@@ -3,6 +3,7 @@ import { OrcidId, Temporal, Uuid } from '../types/index.ts'
 
 export class AuthorInviteAccepted extends Schema.TaggedClass<AuthorInviteAccepted>()('AuthorInviteAccepted', {
   invitationId: Uuid.UuidSchema,
+  reviewId: Uuid.UuidSchema,
   orcidId: OrcidId.OrcidIdSchema,
   acceptedAt: Temporal.InstantSchema,
 }) {}

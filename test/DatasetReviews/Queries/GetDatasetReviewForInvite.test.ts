@@ -52,6 +52,7 @@ const incompleteAcceptedAuthorAdded = new Events.InvitationToAppearOnADatasetRev
 const incompleteAcceptedAuthorAccepted = new Events.AuthorInviteAccepted({
   invitationId: incompleteAcceptedAuthorAdded.invitationId,
   orcidId: OrcidId('0000-0002-6109-0367'),
+  reviewId: datasetReviewId,
   acceptedAt: Temporal.Now.instant(),
 })
 

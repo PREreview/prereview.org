@@ -40,6 +40,7 @@ const added = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
 
 const accepted = new Events.AuthorInviteAccepted({
   invitationId,
+  reviewId: input.reviewId,
   orcidId: input.orcidId,
   acceptedAt: Temporal.Now.instant(),
 })

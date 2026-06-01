@@ -2551,6 +2551,7 @@ export const authorInviteAccepted = (): fc.Arbitrary<Events.AuthorInviteAccepted
   fc
     .record({
       invitationId: uuid(),
+      reviewId: uuid(),
       orcidId: orcidId(),
       acceptedAt: instant(),
     })
