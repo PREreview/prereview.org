@@ -5,7 +5,7 @@ import { StreamlinePageResponse } from '../../Response/index.ts'
 
 export const renderPublishedPage = ({ invitationId, reviewId }: { invitationId: Uuid.Uuid; reviewId: Uuid.Uuid }) => {
   return StreamlinePageResponse({
-    title: plainText('Check your details'),
+    title: plainText('Name added'),
     main: html`
       <div class="panel">
         <h1>Name added</h1>
