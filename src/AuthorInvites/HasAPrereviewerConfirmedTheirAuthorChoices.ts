@@ -1,0 +1,23 @@
+import { Data, type Either } from 'effect'
+import type * as Queries from '../Queries.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import type { Uuid } from '../types/Uuid.ts'
+
+export interface Input {
+  readonly reviewId: Uuid
+  readonly orcidId: OrcidId
+}
+
+export type Result = Either.Either<boolean, Error>
+
+export type Error = PrereviewerIsNotListedOnTheReview | ChoicesHaveNotBeenConfirmed
+
+export class PrereviewerIsNotListedOnTheReview extends Data.TaggedError('PrereviewerIsNotListedOnTheReview') {}
+
+export class ChoicesHaveNotBeenConfirmed extends Data.TaggedError('ChoicesHaveNotBeenConfirmed') {}
+
+export declare const HasAPrereviewerConfirmedTheirAuthorChoices: Queries.OnDemandQuery<
+  [Input],
+  Either.Either.Right<Result>,
+  Either.Either.Left<Result>
+>

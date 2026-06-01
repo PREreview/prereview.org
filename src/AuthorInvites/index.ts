@@ -9,6 +9,7 @@ import { GetAuthorChoicesToConfirm, PrereviewerIsNotListedOnTheReview } from './
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
+import type { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
 
 export class AuthorInvites extends Context.Tag('AuthorInvites')<
   AuthorInvites,
@@ -36,6 +37,14 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
         invitationId: Uuid
       },
     ) => ReturnType<Queries.FromOnDemandQuery<typeof GetAuthorChoicesToConfirm>>
+    hasAPrereviewerConfirmedTheirAuthorChoices: (
+      args: Omit<
+        Parameters<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>[0],
+        'reviewId'
+      > & {
+        invitationId: Uuid
+      },
+    ) => ReturnType<Queries.FromOnDemandQuery<typeof HasAPrereviewerConfirmedTheirAuthorChoices>>
     getNextExpectedCommandForAPrereviewerOnAReview: (
       args: Omit<
         Parameters<Queries.FromOnDemandQuery<typeof GetNextExpectedCommandForAPrereviewerOnAReview>>[0],
@@ -99,6 +108,7 @@ export const layer = Layer.effect(
         Effect.andThen(getAuthorChoicesToConfirm),
         Effect.catchTag('InvitationNotFound', () => new PrereviewerIsNotListedOnTheReview()),
       ),
+      hasAPrereviewerConfirmedTheirAuthorChoices: () => new Queries.UnableToQuery({ cause: 'not implemented' }),
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
