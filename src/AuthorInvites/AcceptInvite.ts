@@ -7,6 +7,7 @@ import type { Uuid } from '../types/Uuid.ts'
 
 export interface Input {
   readonly invitationId: Uuid
+  readonly reviewId: Uuid
   readonly orcidId: OrcidId
   readonly acceptedAt: Instant
 }
@@ -38,6 +39,7 @@ const createFilter = (input: Input) =>
     },
     {
       types: ['PublicationOfDatasetReviewWasRequested'],
+      predicates: { datasetReviewId: input.reviewId },
     },
   ])
 
