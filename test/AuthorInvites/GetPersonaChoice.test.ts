@@ -90,7 +90,7 @@ test.fails.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
     'different ORCID iD started the review',
     input,
     [startedDifferentOrcidId, added, accepted],
-    Either.left(new _.PersonaCannotBeChanged()),
+    Either.right(Option.none()),
   ],
   ['persona chosen', input, [added, accepted, persona], Either.right(Option.some(persona.persona))],
   [
