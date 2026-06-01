@@ -3,7 +3,7 @@ import * as Commands from '../Commands.ts'
 import * as Queries from '../Queries.ts'
 import type { Uuid } from '../types/Uuid.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
-import type { ChoosePersona } from './ChoosePersona.ts'
+import { ChoosePersona, PersonaDoesNotNeedToBeChosen } from './ChoosePersona.ts'
 import { GetNextExpectedCommandForAPrereviewerOnAReview } from './GetNextExpectedCommandForAPrereviewerOnAReview.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 
@@ -14,7 +14,7 @@ export class AuthorInvites extends Context.Tag('AuthorInvites')<
       args: Omit<Parameters<Commands.FromCommand<typeof AcceptInvite>>[0], 'reviewId'>,
     ) => ReturnType<Commands.FromCommand<typeof AcceptInvite>>
     choosePersona: (
-      args: Omit<Parameters<Commands.FromCommand<typeof ChoosePersona>>[0], 'reviewId' | 'orcidId'> & {
+      args: Omit<Parameters<Commands.FromCommand<typeof ChoosePersona>>[0], 'reviewId'> & {
         invitationId: Uuid
       },
     ) => ReturnType<Commands.FromCommand<typeof ChoosePersona>>
@@ -35,6 +35,7 @@ export const layer = Layer.effect(
   AuthorInvites,
   Effect.gen(function* () {
     const acceptInvite = yield* Commands.makeCommand(AcceptInvite)
+    const choosePersona = yield* Commands.makeCommand(ChoosePersona)
     const getReviewIdForInvitation = yield* Queries.makeOnDemandQuery(GetReviewIdForInvitation)
     const getNextExpectedCommandForAPrereviewerOnAReview = yield* Queries.makeOnDemandQuery(
       GetNextExpectedCommandForAPrereviewerOnAReview,
@@ -47,7 +48,15 @@ export const layer = Layer.effect(
         Effect.andThen(acceptInvite),
         Effect.catchTag('UnableToQuery', error => new Commands.UnableToHandleCommand({ cause: error })),
       ),
-      choosePersona: () => new Commands.UnableToHandleCommand({ cause: 'not implemented' }),
+      choosePersona: flow(
+        Effect.succeed,
+        Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),
+        Effect.andThen(choosePersona),
+        Effect.catchTags({
+          InvitationNotFound: () => new PersonaDoesNotNeedToBeChosen(),
+          UnableToQuery: error => new Commands.UnableToHandleCommand({ cause: error }),
+        }),
+      ),
       getNextExpectedCommandForAPrereviewerOnAReview: flow(
         Effect.succeed,
         Effect.bind('reviewId', ({ invitationId }) => getReviewIdForInvitation(invitationId)),

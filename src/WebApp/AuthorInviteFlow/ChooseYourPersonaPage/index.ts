@@ -43,7 +43,7 @@ export const ChooseYourPersonaSubmission = ({
       CompletedForm: Effect.fnUntraced(
         function* (form: ChooseYourPersonaForm.CompletedForm) {
           const authorInvites = yield* AuthorInvites
-          yield* authorInvites.choosePersona({ invitationId, persona: form.chooseYourPersona })
+          yield* authorInvites.choosePersona({ orcidId: user.orcid, invitationId, persona: form.chooseYourPersona })
 
           const nextExpectedCommand = yield* Effect.flatten(
             authorInvites.getNextExpectedCommandForAPrereviewerOnAReview({
